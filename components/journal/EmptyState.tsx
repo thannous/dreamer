@@ -31,12 +31,14 @@ function MoonStarsIcon({ size = 64, color }: { size?: number; color: string }) {
 interface EmptyStateProps {
   /** Whether a filter is currently active (shows different message) */
   hasActiveFilter: boolean;
+  compact?: boolean;
   onClearFilters?: () => void;
   onStartRememberedDream?: () => void;
 }
 
 export function EmptyState({
   hasActiveFilter,
+  compact = false,
   onClearFilters,
   onStartRememberedDream,
 }: EmptyStateProps) {
@@ -49,8 +51,8 @@ export function EmptyState({
     // The empty state mounts once, and it is the only thing on screen: an entrance is
     // what tells the user the list finished loading and is genuinely empty.
     <Reveal delay={100}>
-      <View className="items-center gap-4 px-6 pt-20">
-        <MoonStarsIcon size={64} color={noctalia.text.tertiary} />
+      <View className={`items-center gap-4 px-6 ${compact ? 'py-4' : 'pt-20'}`}>
+        {!compact ? <MoonStarsIcon size={64} color={noctalia.text.tertiary} /> : null}
         <View className="items-center gap-2">
           <Text className="text-center font-sans text-body text-ivory">
             {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}

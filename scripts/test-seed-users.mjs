@@ -4,7 +4,7 @@
 // refused before any request, and only e2e+free@ / e2e+premium@<domain> are
 // touched. Idempotent: an existing account gets its password reset, its dreams
 // quota usage and HD credits deleted and its tier set again; a missing one is created.
-// Premium mirrors the local backend fixture (e2e/backend/fixtures.ts): the
+// Premium mirrors the local backend fixture (tools/e2e/backend-fixtures.ts): the
 // service-role RPC apply_subscription_state_update with p_tier 'plus' and
 // p_is_active true. Free is set back with p_tier 'free', p_is_active false.
 // It never prints a key or a password.

@@ -1,7 +1,7 @@
-import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
+import { createClient, type AuthChangeEvent, type Session, type User } from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 
-import { supabase } from './supabase';
+import { getSupabasePublicConfiguration, supabase } from './supabase';
 import * as mockAuth from './mockAuth';
 import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
@@ -382,11 +382,11 @@ export function getNativeEmailRedirect(): string {
     : 'https://dream.noctalia.app/recording';
 }
 
-// The recovery link is handled by the web app: it lands on the reset-password
-// screen with the recovery session in the URL fragment (supabase-js implicit flow).
+// Both web and native builds have a reset-password route. Its token hash is
+// redeemed by an isolated client, leaving any existing account untouched.
 export function getPasswordResetRedirect(): string {
   if (isLucidTrainer) {
-    return 'https://lucid.noctalia.app/lucid/account';
+    return `https://lucid.noctalia.app${PASSWORD_RESET_ROUTE}`;
   }
   if (Platform.OS === 'web') {
     return `${getWebRedirectTo()}${PASSWORD_RESET_ROUTE}`;
@@ -424,6 +424,64 @@ export async function updatePassword(newPassword: string): Promise<User | null> 
   const { data: sessionData } = await supabase.auth.getSession();
   await ensureSessionPersistence(sessionData.session ?? null, 'updatePassword');
   return data.user ?? null;
+}
+
+/** Native recovery continues through its regular authenticated session. */
+export { webAuthCallbackPromise } from './supabase';
+
+export function getWebRecoveryLinkState(): 'none' | 'checking' | 'pending' | 'invalid' {
+  return 'none';
+}
+
+export async function updatePasswordFromWebRecovery(_email: string, _newPassword: string): Promise<User | null> {
+  throw new Error('Web password recovery is unavailable on this platform.');
+}
+
+let nativeRecovery: {
+  tokenHash: string;
+  auth: typeof supabase.auth;
+  user: User;
+} | null = null;
+
+/** Redeem only a GoTrue recovery proof without replacing the app's current session. */
+export async function updatePasswordFromNativeRecovery(
+  tokenHash: string,
+  email: string,
+  newPassword: string
+): Promise<User | null> {
+  const configuration = getSupabasePublicConfiguration();
+  if (Platform.OS === 'web' || !tokenHash || !configuration) {
+    throw new Error('Password recovery link is unavailable.');
+  }
+
+  if (!nativeRecovery || nativeRecovery.tokenHash !== tokenHash) {
+    const client = createClient(configuration.projectUrl, configuration.publicKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        flowType: 'implicit',
+      },
+    });
+    const { data, error } = await client.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+    if (error) throw error;
+    if (!data.user?.email || !data.session || data.session.user.id !== data.user.id) {
+      throw new Error('Password recovery link is invalid.');
+    }
+    nativeRecovery = { tokenHash, auth: client.auth, user: data.user };
+  }
+
+  const recovery = nativeRecovery;
+  if (!recovery) throw new Error('Password recovery link is invalid.');
+  const { auth, user } = recovery;
+  if (user.email!.trim().toLowerCase() !== email.trim().toLowerCase()) {
+    throw new Error('recovery_email_mismatch');
+  }
+  const { data, error } = await auth.updateUser({ password: newPassword });
+  if (error) throw error;
+  if (data.user?.id !== user.id) throw new Error('Password recovery account changed.');
+  nativeRecovery = null;
+  return data.user;
 }
 
 /**

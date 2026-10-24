@@ -1,5 +1,8 @@
 /* global describe, expect, it */
 const {
+  parseStatusEnv,
+  readLocalStackDbUrl,
+  resolveDbUrl,
   runGuestAnalysisIdempotencyBehaviorCheck,
   runGuestChatIdempotencyBehaviorCheck,
   runGuestQuotaImageSupportBehaviorCheck,
@@ -98,7 +101,8 @@ describe('check-db-contract guest analysis idempotency behavior', () => {
     const client = createMockClient([
       { rows: [] },
       { rows: [{ result: { allowed: true, new_count: 1, claimed: true, duplicate: false } }] },
-      { rows: [{ result: { allowed: true, new_count: 1, claimed: false, duplicate: true } }] },
+      { rows: [{ result: { allowed: false, code: 'ANALYSIS_ALREADY_CLAIMED', new_count: 1, claimed: false, duplicate: true } }] },
+      { rows: [{ result: { allowed: false, code: 'ANALYSIS_TRANSCRIPT_MISMATCH', new_count: 1, claimed: false, duplicate: true } }] },
       { rows: [{ result: { allowed: false, new_count: 1, claimed: false, duplicate: false } }] },
       { rows: [] },
     ]);
@@ -107,13 +111,14 @@ describe('check-db-contract guest analysis idempotency behavior', () => {
 
     expect(result).toEqual({
       ok: true,
-      details: 'guest analysis quota is claimed exactly once per request UUID',
+      details: 'guest analysis receipts reject changed transcripts and repeated provider work',
     });
     expect(client.calls[1]).toMatchObject({
-      sql: 'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      params: [expect.any(String), '3f73ab45-9a14-4db9-94a3-d24724457d9e', 1],
+      sql: 'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      params: [expect.any(String), '3f73ab45-9a14-4db9-94a3-d24724457d9e', 1, 'a'.repeat(64)],
     });
     expect(client.calls[2].params).toEqual(client.calls[1].params);
+    expect(client.calls[3].params[3]).toBe('b'.repeat(64));
     expect(client.calls.at(-1)).toMatchObject({ sql: 'ROLLBACK' });
   });
 
@@ -121,7 +126,7 @@ describe('check-db-contract guest analysis idempotency behavior', () => {
     const client = createMockClient([
       { rows: [] },
       { rows: [{ result: { allowed: true, new_count: 1, claimed: true } }] },
-      { rows: [{ result: { allowed: true, new_count: 2, duplicate: true } }] },
+      { rows: [{ result: { allowed: false, code: 'ANALYSIS_ALREADY_CLAIMED', new_count: 2, duplicate: true } }] },
       { rows: [] },
     ]);
 
@@ -155,5 +160,39 @@ describe('check-db-contract guest chat idempotency behavior', () => {
     });
     expect(client.calls[2].params).toEqual(client.calls[1].params);
     expect(client.calls.at(-1)).toMatchObject({ sql: 'ROLLBACK' });
+  });
+});
+
+describe('local database URL resolution', () => {
+  // Shape printed by Supabase CLI 2.121.0 for `status --env --output-format json` on a native stack.
+  const statusEnv = '{"API_URL":"http://127.0.0.1:20710","DB_URL":"postgresql://postgres:postgres@127.0.0.1:32102/postgres"}\n';
+
+  it('--local reads DB_URL from supabase status --env instead of assuming port 54322', () => {
+    const calls = [];
+    const spawn = (binary, argv, options) => {
+      calls.push({ binary, argv, env: options.env });
+      return { status: 0, stdout: statusEnv };
+    };
+    expect(readLocalStackDbUrl({}, spawn)).toBe('postgresql://postgres:postgres@127.0.0.1:32102/postgres');
+    expect(calls[0].argv).toEqual(['status', '--env', '--output-format', 'json']);
+    expect(calls[0].binary.replace(/\\/g, '/')).toMatch(/node_modules\/\.bin\/supabase$/);
+    expect(calls[0].env.SUPABASE_EXPERIMENTAL_STACK).toBe('1');
+    expect(resolveDbUrl({ local: true }, {}, () => 'from-status')).toBe('from-status');
+  });
+
+  it('--local fails instead of guessing a port when no local stack is running', () => {
+    expect(() => readLocalStackDbUrl({}, () => ({ status: 1, stdout: '' }))).toThrow(/needs a running local stack/);
+    expect(() => readLocalStackDbUrl({}, () => ({ status: 0, stdout: 'API_URL="x"\n' }))).toThrow(/needs a running local stack/);
+    expect(parseStatusEnv('{"API_URL":"x"}')).toBe(null);
+    expect(parseStatusEnv("API_URL='x'\nDB_URL='postgresql://u@127.0.0.1:25000/postgres'\n")).toBe('postgresql://u@127.0.0.1:25000/postgres');
+  });
+
+  it('explicit URLs keep priority and never call the CLI', () => {
+    const readLocal = () => { throw new Error('must not run'); };
+    expect(resolveDbUrl({ local: true, dbUrl: 'a' }, {}, readLocal)).toBe('a');
+    expect(resolveDbUrl({ local: true }, { SUPABASE_DB_URL: 'b' }, readLocal)).toBe('b');
+    expect(resolveDbUrl({ local: true }, { DATABASE_URL: 'c' }, readLocal)).toBe('c');
+    expect(resolveDbUrl({ local: true }, { SUPABASE_LOCAL_DB_URL: 'd' }, readLocal)).toBe('d');
+    expect(resolveDbUrl({ local: false }, {}, readLocal)).toBe(null);
   });
 });

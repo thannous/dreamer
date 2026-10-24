@@ -7,6 +7,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { parseEnv: parseExpoEnv } = require('@expo/env');
+const { sync: spawnPortable } = require('cross-spawn');
+const {
+  acquireBuildLock, contextForBuild, iterationPlan, recordBuild,
+} = require('./lib/android-build-iteration');
 
 const { resolveCommand } = require('./android-tooling');
 const { parseAdbDevices } = require('./check-android-adb-device');
@@ -29,7 +33,6 @@ const DEFAULT_GRADLE_JVM_ARGS =
 const COMMON_RELEASE_ENV_OVERRIDES = Object.freeze({
   EXPO_NO_DOTENV: '1',
   EXPO_PUBLIC_MOCK_MODE: 'false',
-  EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED: 'false',
 });
 const RELEASE_ENV_OVERRIDES = Object.freeze({
   ...COMMON_RELEASE_ENV_OVERRIDES,
@@ -62,6 +65,7 @@ function parseArgs(argv) {
     profileable: false,
     profile: RELEASE_BUILD_PROFILE,
     reuseNativeProject: false,
+    incremental: false,
     sideBySideQa: false,
     lockOwner: 'dreamer',
     stealLock: false,
@@ -120,6 +124,11 @@ function parseArgs(argv) {
       continue;
     }
 
+    if (arg === '--incremental') {
+      options.incremental = true;
+      continue;
+    }
+
     if (arg === '--side-by-side-qa') {
       options.sideBySideQa = true;
       continue;
@@ -174,15 +183,17 @@ function getGradleWrapper(rootDir = ROOT, platform = process.platform) {
   );
 }
 
-function getGradleArgs(abi, jvmArgs = DEFAULT_GRADLE_JVM_ARGS) {
+function getGradleArgs(abi, jvmArgs = DEFAULT_GRADLE_JVM_ARGS, incremental = false) {
   return [
-    ':app:clean',
+    ...(incremental ? [] : [':app:clean']),
+    // RN's declared bundle inputs only include JS/TS. Regenerate this task even
+    // for an asset-only edit, while retaining native compilation and transforms.
+    ...(incremental ? [':app:createBundleReleaseJsAndAssets', '--rerun'] : []),
     ':app:assembleRelease',
     `-PreactNativeArchitectures=${normalizeAbi(abi)}`,
     '-Pkotlin.compiler.execution.strategy=in-process',
     `-Dorg.gradle.jvmargs=${jvmArgs}`,
-    '--no-build-cache',
-    '--no-daemon',
+    ...(incremental ? ['--build-cache', '--daemon'] : ['--no-build-cache', '--no-daemon']),
     '--stacktrace',
     '--console=plain',
   ];
@@ -288,8 +299,10 @@ function getBuildEnv(
   return nextEnv;
 }
 
-function getPrebuildArgs() {
-  return ['expo', 'prebuild', '--platform', 'android', '--no-install'];
+function getPrebuildArgs(preserveNative = false) {
+  // SDK 58 recreates native folders by default. Only a passed identical
+  // iteration context may opt into its explicit --no-clean update.
+  return ['expo', 'prebuild', '--platform', 'android', '--no-install', ...(preserveNative ? ['--no-clean'] : [])];
 }
 
 function getApkPath(rootDir = ROOT) {
@@ -309,7 +322,8 @@ function getOutputApkPath(
   rootDir = ROOT,
   profileName = RELEASE_BUILD_PROFILE,
   profileable = false,
-  sideBySideQa = false
+  sideBySideQa = false,
+  incremental = false
 ) {
   const normalizedProfile = normalizeBuildProfile(profileName);
   const qa = sideBySideQa ? '-qa' : '';
@@ -318,7 +332,7 @@ function getOutputApkPath(
     rootDir,
     'dist',
     'android',
-    `${normalizedProfile}${qa}${variant}-release.apk`
+    `${normalizedProfile}${qa}${variant}-${incremental ? 'iteration' : 'release'}.apk`
   );
 }
 
@@ -347,7 +361,7 @@ function removeStaleApk(
 }
 
 function runChecked(command, args, options = {}) {
-  const result = spawnSync(command, args, {
+  const result = spawnPortable(command, args, {
     cwd: options.cwd ?? ROOT,
     env: options.env ?? process.env,
     shell: options.shell ?? false,
@@ -515,7 +529,7 @@ function inspectApkApplicationId(
   {
     env = process.env,
     platform = process.platform,
-    spawn = spawnSync,
+    spawn = spawnPortable,
     existsSync = fs.existsSync,
     readdirSync = fs.readdirSync,
     resolveCommandFn = resolveCommand,
@@ -679,9 +693,12 @@ function printHelp() {
       `The ${TESTSTORE_BUILD_PROFILE} profile explicitly loads .env.teststore.`,
       '--profileable enables low-overhead local profiling only for production-apk.',
       '--reuse-native-project skips Expo prebuild and requires an already-generated compatible Android project.',
+      '--incremental opts into a local iteration APK, never a qualified Release receipt.',
+      'It still runs prebuild; it cannot be combined with --reuse-native-project.',
+      'Unchanged native/profile/ABI/environment inputs allow the build cache and daemon; otherwise a clean build runs.',
       '--side-by-side-qa builds a distinct Dreamer QA package that can sit beside Play.',
       '--lock-owner and --steal-lock apply only to --install on a physical phone.',
-      'Requires Java 17; JAVA_HOME takes precedence over Java on PATH.',
+      'Requires Java 17 and an Android SDK with CMake; JAVA_HOME takes precedence over Java on PATH.',
       'Java is checked before version synchronization, prebuild or Gradle.',
       'Automatic dotenv loading remains disabled for every profile.',
       'This is a debug-signed emulator/device validation build. Distribution builds remain multi-ABI.',
@@ -699,7 +716,16 @@ function main() {
 
   assertProfileableBuildProfile(options.profile, options.profileable);
   assertSideBySideQaProfile(options.profile, options.sideBySideQa);
+  if (options.incremental && options.reuseNativeProject)
+    throw new Error('--incremental must run Expo prebuild; remove --reuse-native-project.');
   assertAndroidJava17(process.env);
+
+  const releaseBuildLock = acquireBuildLock(ROOT);
+  try { buildLocal(options); }
+  finally { releaseBuildLock(); }
+}
+
+function buildLocal(options) {
 
   const releaseEnv = loadReleaseBuildEnv(
     ROOT,
@@ -732,34 +758,47 @@ function main() {
     }
     abi = abi ?? deviceAbi;
   }
+  const currentContext = () => contextForBuild(ROOT, { env, abi, profile: options.profile,
+    profileable: options.profileable, sideBySideQa: options.sideBySideQa }, options.incremental);
+  let preservedNative = false;
+  const prebuild = preserve => runChecked(process.platform === 'win32' ? 'npx.cmd' : 'npx', getPrebuildArgs(preserve), {
+    cwd: ROOT, env, label: 'Expo Android prebuild',
+  });
   if (options.reuseNativeProject) {
     assertReusableNativeProject(ROOT, options.profileable);
   } else {
-    const npxCommand = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-    runChecked(npxCommand, getPrebuildArgs(), {
-      cwd: ROOT,
-      env,
-      label: 'Expo Android prebuild',
-    });
+    preservedNative = options.incremental && fs.existsSync(path.join(ROOT, 'android'))
+      && iterationPlan(ROOT, currentContext(), true).reuse;
+    prebuild(preservedNative);
   }
 
   const gradleWrapper = getGradleWrapper();
+  let context = currentContext();
+  let plan = iterationPlan(ROOT, context, options.incremental);
+  if (options.incremental && (!preservedNative || !plan.reuse)) {
+    // An unexpected prebuild mutation also requires full native regeneration;
+    // updating an old project cannot reliably undo a removed plugin's effects.
+    if (preservedNative) { prebuild(false); context = currentContext(); }
+    plan = { context, reuse: false, reason: 'native regeneration required or no passed matching build' };
+  }
+  if (options.incremental) process.stdout.write(`[android-iteration] ${plan.reuse ? 'incremental' : 'clean'}: ${plan.reason}\n`);
+  recordBuild(ROOT, plan, 'building');
   const apkPath = getApkPath();
   const outputApkPath = getOutputApkPath(
     ROOT,
     options.profile,
     options.profileable,
-    options.sideBySideQa
+    options.sideBySideQa,
+    options.incremental
   );
   removeStaleApk(apkPath);
   removeStaleApk(outputApkPath);
   runChecked(
     gradleWrapper,
-    getGradleArgs(abi, env.ANDROID_RELEASE_GRADLE_JVMARGS || DEFAULT_GRADLE_JVM_ARGS),
+    getGradleArgs(abi, env.ANDROID_RELEASE_GRADLE_JVMARGS || DEFAULT_GRADLE_JVM_ARGS, plan.reuse),
     {
       cwd: path.join(ROOT, 'android'),
       env,
-      shell: process.platform === 'win32',
       label: 'Android Release build',
     }
   );
@@ -779,6 +818,7 @@ function main() {
       process.stdout.write(`Package identity: ${applicationId}\n`);
     }
   }
+  recordBuild(ROOT, plan, 'passed');
 
   if (options.install) {
     const deviceLocks = prepareInstallDeviceLocks(options, device, {
@@ -799,7 +839,7 @@ function main() {
   }
 
   process.stdout.write(
-    `Release APK built for ${abi} (${options.profile}${options.profileable ? ', profileable' : ''}${options.sideBySideQa ? ', side-by-side QA' : ''}): ${path.relative(ROOT, outputApkPath)}\n`
+    `${options.incremental ? 'Iteration APK (not release-qualified)' : 'Release APK'} built for ${abi} (${options.profile}${options.profileable ? ', profileable' : ''}${options.sideBySideQa ? ', side-by-side QA' : ''}): ${path.relative(ROOT, outputApkPath)}\n`
   );
 }
 

@@ -1,14 +1,15 @@
+import { isLoaded } from 'expo-font';
 import React, { useId, useMemo, useState } from 'react';
-import { Image, Text, View, type ImageSourcePropType, type StyleProp, type ViewStyle } from 'react-native';
+import { Image, Platform, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { EASE } from '@/components/motion/motion';
-import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 import type { DreamTheme } from '@/lib/types';
 
 import { DREAM_EASE, DREAM_STORY } from './dreamStoryMotion';
+import { SEAL_EMBLEMS, SEAL_GOLD } from './sealEmblems';
 import { sparklePath } from './sparkle';
 
 /*
@@ -17,17 +18,8 @@ import { sparklePath } from './sparkle';
  * capture seal, which strikes it in the journal, and the saved moment, which shows it.
  */
 
-/** Each theme's emblem, an ink mask the seal tints. */
-export const SEAL_EMBLEMS: Record<DreamTheme, ImageSourcePropType> = {
-  mystical: require('@/assets/images/dream-seal-emblem-mystical.webp'),
-  calm: require('@/assets/images/dream-seal-emblem-calm.webp'),
-  surreal: require('@/assets/images/dream-seal-emblem-surreal.webp'),
-  noir: require('@/assets/images/dream-seal-emblem-noir.webp'),
-  luminous: require('@/assets/images/dream-seal-emblem-luminous.webp'),
-  nostalgic: require('@/assets/images/dream-seal-emblem-nostalgic.webp'),
-};
-/** The emblem is pressed in the warm light of the journal's lamp, in both themes. */
-export const SEAL_GOLD = getNoctaliaPalette('dark').accent;
+export { SEAL_EMBLEMS, SEAL_GOLD };
+
 const EMBLEM = 92;
 /** The legend runs between the window's rim and the astrolabe's inner orbit. */
 const LEGEND_RADIUS = 84;
@@ -315,6 +307,15 @@ function Glow({ size, color }: { size: number; color: string }) {
 
 /** Each letter's last measured width: a legend drawn again sits on its arc at once. */
 const glyphWidths = new Map<string, number>();
+/** The face of the legend's letters (`font-sans-medium`). */
+const LEGEND_FACE = 'Outfit_500Medium';
+/** Letters measured once their face had loaded: their widths no longer change. */
+const settledGlyphs = new Set<string>();
+/** Whether the legend's face has arrived: on the web, expo-font counts a face as loaded once declared. */
+function legendFaceLoaded(): boolean {
+  if (Platform.OS === 'web') return globalThis.document?.fonts?.check(`10px "${LEGEND_FACE}"`) ?? false;
+  return isLoaded(LEGEND_FACE);
+}
 
 /**
  * The legend engraved around the window, letter after letter from its start, centred on
@@ -338,10 +339,12 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
     return width === undefined ? [] : [[glyph, width]];
   })));
   const measured = glyphs.every((glyph) => widths[glyph] !== undefined);
-  // Still measured afresh, unseen, each time it is drawn: should its font have loaded since,
-  // the letters move to their true widths.
-  const [remeasured, setRemeasured] = useState<Record<string, true>>({});
-  const measuring = !glyphs.every((glyph) => remeasured[glyph]);
+  // Still measured afresh, unseen, each time it is drawn, until measured in its own face:
+  // should its font have loaded since, the letters move to their true widths.
+  const [remeasured, setRemeasured] = useState<Record<string, true>>(() => Object.fromEntries(glyphs
+    .filter((glyph) => settledGlyphs.has(glyph) && glyphWidths.has(glyph)).map((glyph) => [glyph, true])));
+  const unmeasured = glyphs.filter((glyph) => !remeasured[glyph]);
+  const measuring = unmeasured.length > 0;
 
   const placed = useMemo(() => {
     if (!measured) return null;
@@ -384,10 +387,11 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
     <>
       {measuring ? (
         <View className="absolute opacity-0" style={{ left: 0, top: 0 }}>
-          {glyphs.map((glyph) => (
+          {unmeasured.map((glyph) => (
             <Text key={glyph} allowFontScaling={false} className={`absolute ${letterClass}`} style={{ lineHeight: LEGEND_LINE }}
               onLayout={({ nativeEvent: { layout } }) => {
                 glyphWidths.set(glyph, layout.width);
+                if (legendFaceLoaded()) settledGlyphs.add(glyph);
                 setWidths((current) => (current[glyph] === layout.width ? current : { ...current, [glyph]: layout.width }));
                 setRemeasured((current) => ({ ...current, [glyph]: true }));
               }}>
@@ -401,9 +405,14 @@ export function SealLegend({ text, reduced, from = DREAM_STORY.sealContact, stil
           left: letter.left, top: letter.top, width: letter.width, height: LEGEND_LINE,
           transform: [{ rotate: `${letter.angle}rad` }],
         }}>
-          <Animated.View style={letter.motion as StyleProp<ViewStyle>}>
+          {/* An engraved letter is drawn as it rests; only one being engraved moves. */}
+          {letter.motion ? (
+            <Animated.View style={letter.motion as StyleProp<ViewStyle>}>
+              <Text allowFontScaling={false} className={letterClass} style={{ lineHeight: LEGEND_LINE }}>{letter.letter}</Text>
+            </Animated.View>
+          ) : (
             <Text allowFontScaling={false} className={letterClass} style={{ lineHeight: LEGEND_LINE }}>{letter.letter}</Text>
-          </Animated.View>
+          )}
         </View>
       ))}
     </>

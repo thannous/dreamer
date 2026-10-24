@@ -216,7 +216,7 @@ function Info({
 const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.md },
   copy: { flex: 1, gap: LucidSpace.xs },
-  title: { fontFamily: 'SpaceGrotesk_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
+  title: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   info: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.md },
-  body: { fontFamily: 'SpaceGrotesk_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
+  body: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1] },
 });

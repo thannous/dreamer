@@ -42,7 +42,7 @@ L'accueil personnalisé, les univers et la progression existants répondent à c
 | expo-image | `~57.0.2` | artworks, avec cache disque |
 | react-native-svg | `15.15.4` | fond atmosphérique, anneaux de respiration |
 | expo-haptics | `~57.0.1` | retours de respiration |
-| expo-font | `~57.0.0` + `@expo-google-fonts/{fraunces,space-grotesk,lora}` | |
+| expo-font | `~57.0.0` + `@expo-google-fonts/{fraunces,outfit,lora}` | |
 | expo-localization | `~57.0.1` | détection de langue |
 | @react-native-async-storage/async-storage | `2.2.0` | persistance locale |
 | expo-file-system | `~57.0.x` | cache disque des pistes distantes |
@@ -252,10 +252,10 @@ Source de vérité : `constants/journalTheme.ts` et `constants/noctaliaDesign.ts
 | Rôle | Police | Graisses |
 |---|---|---|
 | Titres, chiffres de statistiques, phases de respiration | **Fraunces** | 400 / 500 / 600 / 700 |
-| Corps, boutons, libellés, navigation | **Space Grotesk** | 400 / 500 / 700 |
+| Corps, boutons, libellés, navigation | **Outfit** (comme le site ; remplace Space Grotesk, décision de Thanh du 20/10/2026) | 400 / 500 / 700 |
 | Citations, intentions, textes d'ambiance | **Lora** (italique inclus) | 400 / 400i / 700 |
 
-Échelle : `display 34/40`, `h1 28/34`, `h2 22/28`, `h3 18/24`, `body 16/24`, `bodySm 14/20`, `caption 12/16`, `overline 11/14` (tracking +0,12 em, capitales).
+Échelle : `display 34/40`, `h1 28/34`, `h2 22/28`, `h3 18/24`, `body 16/24`, `bodySm 14/20`, `caption 12/16`, `overline 11/14` (tracking 1,3 px, capitales). Mêmes valeurs que Dreamer : `npm run brand:check` compare les deux apps.
 
 ### 5.4 Formes, ombres, atmosphère
 
@@ -562,7 +562,7 @@ Les visuels peuvent être générés (pipeline Higgsfield déjà en place côté
 }
 ```
 
-Variables `EXPO_PUBLIC_*` : `EXPO_PUBLIC_MOCK_MODE`, `EXPO_PUBLIC_REVENUECAT_IOS_KEY`, `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`, `EXPO_PUBLIC_MEDIA_BASE_URL`, `EXPO_PUBLIC_ACCOUNTS_ENABLED`. Accès **uniquement** via `lib/env.ts` avec union de clés typée et `switch` statique (règle Noctalia : pas de `process.env[key]` dynamique, jamais de secret dans `EXPO_PUBLIC_*`).
+Variables `EXPO_PUBLIC_*` : `EXPO_PUBLIC_MOCK_MODE`, `EXPO_PUBLIC_MOCK_AUDIO`, `EXPO_PUBLIC_REVENUECAT_IOS_KEY`, `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`, `EXPO_PUBLIC_ACCOUNTS_ENABLED`, `EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED`. Accès **uniquement** via `lib/env.ts` avec union de clés typée et `switch` statique (règle Noctalia : pas de `process.env[key]` dynamique, jamais de secret dans `EXPO_PUBLIC_*`).
 
 Profils : `.env.mock`, `.env.real`, `.env.teststore` + `scripts/expo-safe-runner.js` repris de Noctalia.
 

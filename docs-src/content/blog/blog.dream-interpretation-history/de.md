@@ -14,7 +14,7 @@
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
   "ogTitle": "Traumdeutung: 5.000 Jahre Geschichte | Noctalia",
-  "ogDescription": "Vom Traum eines sumerischen Herrschers bis ins Schlaflabor: 4000 Jahre Traumdeutung und was jede Epoche Ihnen heute noch zeigt.",
+  "ogDescription": "Vom Traum eines sumerischen Herrschers bis ins Schlaflabor: 4000 Jahre Traumdeutung und was jede Epoche dir heute noch zeigt.",
   "ogImage": "https://noctalia.app/img/blog/dream-interpretation-history.webp",
   "ogImageAlt": "Alter Tempel unter einem Sternenhimmel als Symbol für die Geschichte der Traumdeutung",
   "twitterCard": "summary_large_image",
@@ -30,7 +30,7 @@
   "preloadImage": "/img/blog/dream-interpretation-history.webp",
   "jsonLd": [
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Die Geschichte der Traumdeutung: von antiken Tempeln bis zur modernen Wissenschaft\",\n    \"description\": \"Die Geschichte der Traumdeutung: mesopotamische Omen, ein ägyptisches Traumbuch, Aristoteles, Freud, Jung und die Schlafforschung, mit Quellen belegt.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-interpretation-history.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer und Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2243,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wer hat als Erster Träume gedeutet?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Das lässt sich nicht sagen. Eines der ältesten erhaltenen Beispiele ist der Gudea-Zylinder A, den der Louvre auf 2120 bis 2110 v. Chr. datiert; er erzählt von einem Traum, in dem ein Tempelbau verlangt wird. Er belegt eine Praxis, nicht ihren Anfang.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Hat Freud die Traumdeutung erfunden?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Aristoteles suchte schon nach natürlichen Ursachen von Träumen, und Artemidor schrieb mehr als 1500 Jahre vor ihm ein Handbuch der Traumdeutung. Freud legte 1899 eine psychologische Theorie vor, die auf den Assoziationen des Träumenden beruht.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie deuten verschiedene Kulturen Träume?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Träume wurden als göttliche Botschaften, Vorzeichen, Zeichen des Körpers oder Wünsche der Seele gelesen. Ein einzelner Text steht aber nie für eine ganze Gemeinschaft: Fragen Sie, wer eine Deutung aufgezeichnet hat, wann und in welchem Zusammenhang.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was sagt die moderne Wissenschaft über die Bedeutung von Träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Schlaflabore messen die Hirnaktivität und sammeln Traumberichte, aus dem REM- wie aus dem Non-REM-Schlaf. Träume greifen oft auf das jüngste Wachleben zurück, doch die Forschung hat keinen allgemeingültigen Symbolschlüssel gefunden. Die Bedeutung eines Traums bleibt eine persönliche Lesart, die Sie an Ihrem eigenen Kontext prüfen.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wer hat als Erster Träume gedeutet?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Das lässt sich nicht sagen. Eines der ältesten erhaltenen Beispiele ist der Gudea-Zylinder A, den der Louvre auf 2120 bis 2110 v. Chr. datiert; er erzählt von einem Traum, in dem ein Tempelbau verlangt wird. Er belegt eine Praxis, nicht ihren Anfang.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Hat Freud die Traumdeutung erfunden?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Aristoteles suchte schon nach natürlichen Ursachen von Träumen, und Artemidor schrieb mehr als 1500 Jahre vor ihm ein Handbuch der Traumdeutung. Freud legte 1899 eine psychologische Theorie vor, die auf den Assoziationen des Träumenden beruht.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie deuten verschiedene Kulturen Träume?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Träume wurden als göttliche Botschaften, Vorzeichen, Zeichen des Körpers oder Wünsche der Seele gelesen. Ein einzelner Text steht aber nie für eine ganze Gemeinschaft: Frag, wer eine Deutung aufgezeichnet hat, wann und in welchem Zusammenhang.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was sagt die moderne Wissenschaft über die Bedeutung von Träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Schlaflabore messen die Hirnaktivität und sammeln Traumberichte, aus dem REM- wie aus dem Non-REM-Schlaf. Träume greifen oft auf das jüngste Wachleben zurück, doch die Forschung hat keinen allgemeingültigen Symbolschlüssel gefunden. Die Bedeutung eines Traums bleibt eine persönliche Lesart, die du an deinem eigenen Kontext prüfst.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Geschichte der Traumdeutung\",\n            \"item\": \"https://noctalia.app/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -69,7 +69,7 @@
                     Die Geschichte der Traumdeutung: von antiken Tempeln bis zur modernen Wissenschaft
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Sie wachen mit einem Bild auf, das Sie nicht loslässt, bröckelnde Zähne oder eine Schlange auf der Treppe, und suchen sofort nach seiner Bedeutung. Dieser Reflex ist alt: Seit mehr als 4000 Jahren schreiben Menschen Träume auf und versuchen, sie zu deuten. Hier lesen Sie, wie sich die Traumdeutung verändert hat, von Tonzylindern bis zum Schlaflabor, und was jede Epoche Ihnen heute noch zeigen kann.
+                    Du wachst mit einem Bild auf, das dich nicht loslässt, bröckelnde Zähne oder eine Schlange auf der Treppe, und suchst sofort nach seiner Bedeutung. Dieser Reflex ist alt: Seit mehr als 4000 Jahren schreiben Menschen Träume auf und versuchen, sie zu deuten. Hier liest du, wie sich die Traumdeutung verändert hat, von Tonzylindern bis zum Schlaflabor, und was jede Epoche dir heute noch zeigen kann.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -129,7 +129,7 @@
                     Eselsfleisch zu essen war gut: Der Träumende würde aufsteigen. <a class="text-dream-salmon hover:underline" href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation">Ausfallende Zähne</a>, bis heute ein häufiger Traum, waren schlecht: Ein von ihm abhängiger Mensch würde sterben. Wie in Mesopotamien beruhen viele dieser Verbindungen auf Wortspielen, die nur im Ägyptischen funktionieren.
                 </p>
 <p>
-                    Das Handbuch zeigt, wie eine Gesellschaft über die Nacht nachdachte. Seine Vorhersagen bestätigt es nicht. Wenn Sie letzte Nacht von ausfallenden Zähnen geträumt haben, sagt der Papyrus mehr über ägyptische Schreiber als über Sie.
+                    Das Handbuch zeigt, wie eine Gesellschaft über die Nacht nachdachte. Seine Vorhersagen bestätigt es nicht. Wenn du letzte Nacht von ausfallenden Zähnen geträumt hast, sagt der Papyrus mehr über ägyptische Schreiber als über dich.
                 </p>
 <h2 id="ancient-greece">Griechenland: Heiltempel, ein Philosoph und ein Handbuch</h2>
 <p>
@@ -207,12 +207,12 @@
                     <a class="text-dream-salmon hover:underline" href="https://www.gutenberg.org/ebooks/66048" rel="noopener noreferrer" target="_blank"><em>Die Traumdeutung</em></a> erschien im November 1899, auf 1900 datiert. Freud vertritt darin, dass der Traum die verkleidete Erfüllung eines Wunsches ist, und stellt die Traumdeutung als bevorzugten Zugang zum unbewussten Seelenleben dar. Das Buch beginnt mit einem langen Überblick über frühere Autoren: Freud hat die psychologische Traumforschung nicht erfunden.
                 </p>
 <ul>
-<li><strong>Manifester Trauminhalt:</strong> der Traum, wie Sie ihn erinnern und erzählen.</li>
+<li><strong>Manifester Trauminhalt:</strong> der Traum, wie du ihn erinnerst und erzählst.</li>
 <li><strong>Latente Traumgedanken:</strong> das, was Freud durch die Analyse rekonstruieren wollte.</li>
 <li><strong>Traumarbeit:</strong> die Umformungen, die er zwischen beidem annahm, etwa Verdichtung und Verschiebung.</li>
 </ul>
 <p>
-                    Seine Methode beruht auf der freien Assoziation: Der Träumende sagt, was ihm zu jedem Element des Traums einfällt. Die Theorie ist umstritten und kein Schlüssel, mit dem sich jeder Traum entschlüsseln ließe. Ein Teil davon hilft aber allen, die ein Traumtagebuch führen: Ihre eigenen Assoziationen zählen mehr als ein Lexikoneintrag.
+                    Seine Methode beruht auf der freien Assoziation: Der Träumende sagt, was ihm zu jedem Element des Traums einfällt. Die Theorie ist umstritten und kein Schlüssel, mit dem sich jeder Traum entschlüsseln ließe. Ein Teil davon hilft aber allen, die ein Traumtagebuch führen: Deine eigenen Assoziationen zählen mehr als ein Lexikoneintrag.
                 </p>
 <h2 id="jung-archetypes">Jung: Träume, Mythen und Archetypen</h2>
 <p>
@@ -230,7 +230,7 @@
                 </p>
 <h3>Träume und Wachleben</h3>
 <p>
-                    In einer <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/12590838/" rel="noopener noreferrer" target="_blank">Studie von 2003</a> protokollierten 29 Teilnehmende zwei Wochen lang ihre Träume und ihren Alltag. Rund zwei Drittel der 299 Berichte (65 %) enthielten Elemente aus dem jüngsten Wachleben, aber nur 1 bis 2 % gaben eine tatsächliche Episode wieder. Eine einzelne Studie, kein allgemeines Gesetz, doch sie passt zu dem, was viele beim Traumtagebuch bemerken: Träume borgen sich etwas aus Ihren Tagen und setzen es neu zusammen.
+                    In einer <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/12590838/" rel="noopener noreferrer" target="_blank">Studie von 2003</a> protokollierten 29 Teilnehmende zwei Wochen lang ihre Träume und ihren Alltag. Rund zwei Drittel der 299 Berichte (65 %) enthielten Elemente aus dem jüngsten Wachleben, aber nur 1 bis 2 % gaben eine tatsächliche Episode wieder. Eine einzelne Studie, kein allgemeines Gesetz, doch sie passt zu dem, was viele beim Traumtagebuch bemerken: Träume borgen sich etwas aus deinen Tagen und setzen es neu zusammen.
                 </p>
 <h3>Funktionen des Träumens bleiben Hypothesen</h3>
 <p>
@@ -246,8 +246,8 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halten Sie Ihre Träume fest, bevor sie verblassen</h4>
-<p class="text-sm text-gray-400 mb-4">Alle Deuter in dieser Geschichte gingen von einem Traum aus, an den sich jemand erinnerte. Sprechen Sie Ihren Traum nach dem Aufwachen in Noctalia ein: Er wird transkribiert und in Ihrem Tagebuch gespeichert, bereit für Ihre eigenen Assoziationen.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Halte deine Träume fest, bevor sie verblassen</h4>
+<p class="text-sm text-gray-400 mb-4">Alle Deuter in dieser Geschichte gingen von einem Traum aus, an den sich jemand erinnerte. Sprich deinen Traum nach dem Aufwachen in Noctalia ein: Er wird transkribiert und in deinem Tagebuch gespeichert, bereit für deine eigenen Assoziationen.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
                                 Noctalia kostenlos ausprobieren <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -262,10 +262,10 @@
                     Auch Übersetzungen können täuschen. Das englische Wort <em>Dreaming</em> („Traumzeit“), das für Vorstellungen australischer Aborigines verwendet wird, <a class="text-dream-salmon hover:underline" href="https://theconversation.com/dreamtime-and-the-dreaming-who-dreamed-up-these-terms-20835" rel="noopener noreferrer" target="_blank">stammt von Übersetzern des 19. Jahrhunderts</a>. Es meint das Gesetz der Ahnen und die Erschaffung der Welt, nicht in erster Linie nächtliche Träume.
                 </p>
 <p>
-                    Bei Symbolen ist es nicht anders: Eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlange</a>, <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a> oder <a class="text-dream-salmon hover:underline" href="../traumsymbole/feuer">Feuer</a> können von einem Text zum nächsten gegensätzliche Bedeutungen tragen. Bevor Sie einer Deutung vertrauen, fragen Sie: Wer hat sie geschrieben, wann, und beschreibt sie einen Glauben, eine persönliche Praxis oder ein Forschungsergebnis?
+                    Bei Symbolen ist es nicht anders: Eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/schlange">Schlange</a>, <a class="text-dream-salmon hover:underline" href="../traumsymbole/wasser">Wasser</a> oder <a class="text-dream-salmon hover:underline" href="../traumsymbole/feuer">Feuer</a> können von einem Text zum nächsten gegensätzliche Bedeutungen tragen. Bevor du einer Deutung vertraust, frag: Wer hat sie geschrieben, wann, und beschreibt sie einen Glauben, eine persönliche Praxis oder ein Forschungsergebnis?
                 </p>
 <h3>Drei Blicke auf denselben Traum</h3>
-<p><strong>Fiktives Beispiel:</strong> Es zeigt, wie Ihnen diese Geschichte helfen kann, einen Traum anzuschauen, ohne Ihnen seine Bedeutung vorzuschreiben.</p>
+<p><strong>Fiktives Beispiel:</strong> Es zeigt, wie dir diese Geschichte helfen kann, einen Traum anzuschauen, ohne dir seine Bedeutung vorzuschreiben.</p>
 <ul>
 <li><strong>Traum:</strong> „In einer Besprechung lösten sich beim Reden meine Zähne, einer nach dem anderen.“</li>
 <li><strong>Gefühl:</strong> „Eher Scham als Schmerz. Ich versuchte, meinen Mund zu verdecken.“</li>
@@ -273,7 +273,7 @@
 <li><strong>Frage zum Aufheben:</strong> „Kommt dieser Traum auch vor anderen Situationen, in denen ich mich beurteilt fühle?“</li>
 </ul>
 <p>
-                    Ein ägyptischer Schreiber hätte ein schlechtes Omen gesehen. Freud hätte gefragt, was Ihnen zu Zähnen einfällt. Eine Forscherin würde den Bezug zu einer aktuellen Sorge notieren. Welche Spur passt, können nur Sie prüfen, und ein einzelner Eintrag beweist nichts: Erst wenn Sie dieselben Angaben über mehrere Nächte notieren, werden Zusammenhänge sichtbar.
+                    Ein ägyptischer Schreiber hätte ein schlechtes Omen gesehen. Freud hätte gefragt, was dir zu Zähnen einfällt. Eine Forscherin würde den Bezug zu einer aktuellen Sorge notieren. Welche Spur passt, kannst nur du prüfen, und ein einzelner Eintrag beweist nichts: Erst wenn du dieselben Angaben über mehrere Nächte notierst, werden Zusammenhänge sichtbar.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -283,7 +283,7 @@
                     Verwandte Symbole erkunden
                 </h2>
 <p class="text-sm text-purple-300/60 mb-4">
-                    Vertiefen Sie die Symbole aus diesem Artikel oder durchsuchen Sie das <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Lexikon der Traumsymbole</a>.
+                    Vertiefe die Symbole aus diesem Artikel oder durchsuche das <a class="text-dream-salmon hover:underline" href="../guides/traumsymbole-lexikon">Lexikon der Traumsymbole</a>.
                 </p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schlange">
@@ -305,7 +305,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Jede Deutung beginnt mit einem aufgeschriebenen Traum</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Halten Sie Ihre Träume in Noctalia fest, per Sprache oder schriftlich, zusammen mit dem, was Sie gefühlt haben. Nebeneinander gelesen zeigen sie Ihnen, was wiederkehrt und wann.
+                    Halte deine Träume in Noctalia fest, per Sprache oder schriftlich, zusammen mit dem, was du gefühlt hast. Nebeneinander gelesen zeigen sie dir, was wiederkehrt und wann.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -339,7 +339,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Träume wurden als göttliche Botschaften, Vorzeichen, Zeichen des Körpers oder Wünsche der Seele gelesen. Ein einzelner Text steht aber nie für eine ganze Gemeinschaft: Fragen Sie, wer eine Deutung aufgezeichnet hat, wann und in welchem Zusammenhang.
+                            Träume wurden als göttliche Botschaften, Vorzeichen, Zeichen des Körpers oder Wünsche der Seele gelesen. Ein einzelner Text steht aber nie für eine ganze Gemeinschaft: Frag, wer eine Deutung aufgezeichnet hat, wann und in welchem Zusammenhang.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -348,7 +348,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Schlaflabore messen die Hirnaktivität und sammeln Traumberichte, aus dem REM- wie aus dem Non-REM-Schlaf. Träume greifen oft auf das jüngste Wachleben zurück, doch die Forschung hat keinen allgemeingültigen Symbolschlüssel gefunden. Die Bedeutung eines Traums bleibt eine persönliche Lesart, die Sie an Ihrem eigenen Kontext prüfen.
+                            Schlaflabore messen die Hirnaktivität und sammeln Traumberichte, aus dem REM- wie aus dem Non-REM-Schlaf. Träume greifen oft auf das jüngste Wachleben zurück, doch die Forschung hat keinen allgemeingültigen Symbolschlüssel gefunden. Die Bedeutung eines Traums bleibt eine persönliche Lesart, die du an deinem eigenen Kontext prüfst.
                         </p>
 </details>
 </div>
@@ -396,7 +396,7 @@
     <a href="stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Stressträume über die Arbeit: Warum der Job Sie bis in den Schlaf verfolgt</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Stressträume über die Arbeit: Warum der Job dich bis in den Schlaf verfolgt</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -414,7 +414,7 @@
         <a href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume? Die Forschung zur Traumamnesie</h3>
-            <p class="text-sm text-gray-400">Lesen Sie, welche Vorgänge im Gehirn erklären könnten, warum wir beim Aufwachen 95 % unserer Träume vergessen.</p>
+            <p class="text-sm text-gray-400">Lies, welche Vorgänge im Gehirn erklären könnten, warum wir beim Aufwachen 95 % unserer Träume vergessen.</p>
         </a>
         <a href="koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
@@ -424,7 +424,7 @@
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Was der Schlaf über die Psyche verrät</h3>
-            <p class="text-sm text-gray-400">Erfahren Sie, wie Angst, Depression und Trauma Träume beeinflussen können und welche Rolle Traumarbeit im Heilungsprozess spielen kann.</p>
+            <p class="text-sm text-gray-400">Erfahre, wie Angst, Depression und Trauma Träume beeinflussen können und welche Rolle Traumarbeit im Heilungsprozess spielen kann.</p>
         </a>
   </div>
 </section>
@@ -433,6 +433,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>

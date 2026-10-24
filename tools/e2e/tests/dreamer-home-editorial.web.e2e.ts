@@ -1,7 +1,7 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import path from 'node:path';
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, expectCaptureDraftSaved, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
 
 const artwork = path.resolve(process.cwd(), '../../e2e/fixtures/home-dream.png');
 const dreamTitle = 'L’éléphant au sommet de la grande roue';
@@ -60,7 +60,7 @@ async function theme(page: Page, value: 'dark' | 'light') {
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId(`quick-settings.theme.${value}`).click();
   await page.getByTestId('quick-settings.close').click();
-  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await expect(page.getByTestId('screen.home')).toHaveCSS('background-color', value === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
 }
 
@@ -73,7 +73,7 @@ test('home prioritizes the saved draft and keeps capture available without artwo
   await page.getByTestId('btn.home.today.cta').click();
   const transcript = page.getByTestId('input.dreamTranscript');
   await transcript.fill('A lighthouse over a turquoise ocean.');
-  await expect(page.getByText('Draft kept on this device', { exact: true })).toBeVisible();
+  await expectCaptureDraftSaved(page, 'A lighthouse over a turquoise ocean.');
   await home(page);
   await expect(page.getByTestId('text.home.today.state')).toHaveText('draft_resume');
   await page.screenshot({ path: info.outputPath('home-draft.png') });
@@ -88,13 +88,16 @@ test('home keeps the dream image unchanged when explicit themes override the sys
   const image = page.getByTestId('image.home.today').locator('img');
   await expect(image).toBeVisible();
   await expect.poll(() => image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  // Like the paintings since the top veil left (#394), the dream's image reaches the top edge.
+  expect((await image.boundingBox())!.y, 'The dream image starts at the top of the screen').toBeLessThanOrEqual(0);
   const originalSource = await image.getAttribute('src');
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId('quick-settings.language').click();
   await page.getByTestId('quick-settings.language.fr').click();
   await page.getByTestId('quick-settings.close').click();
-  await expect(page.getByRole('heading', { name: 'Aujourd’hui', exact: true })).toBeVisible();
-  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
+  // The tab bar says Today; the page's headline is the dream, whose action now reads in French.
+  await expect(page.getByTestId('btn.home.today.cta')).toContainText('Relire mon rêve');
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await expect(page.getByText('Rêve analysé · Touchez pour ouvrir', { exact: true })).toBeHidden();
 
   for (const value of ['dark', 'light'] as const) {
@@ -108,8 +111,15 @@ test('home keeps the dream image unchanged when explicit themes override the sys
   await page.getByTestId('btn.home.today.cta').click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
   await page.goBack();
-  await page.getByTestId('btn.inspiration.personalReadingRecap').click();
+  // The week's last night is today's dream; the symbol of the day opens its dictionary page.
+  await page.locator('[data-testid^="btn.home.week.night."]').last().click();
+  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
+  await page.goBack();
+  await page.getByTestId('btn.home.week.recap').click();
   await expect(page.getByTestId('screen.weeklyRecap')).toBeVisible();
+  await page.goBack();
+  await page.getByTestId('btn.home.resources.dailySymbol').click();
+  await expect(page.getByTestId('screen.symbolDetail')).toBeVisible();
   await page.goBack();
   // Reminder scheduling stays native-only; web does not advertise an unsupported CTA.
   await expect(page.getByTestId('btn.home.reminder')).toHaveCount(0);

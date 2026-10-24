@@ -4,7 +4,7 @@ const TOKEN_TTL_MS = 15 * 60 * 1000;
 type AnalyticsGuestPlatform = 'android' | 'ios';
 
 type AnalyticsGuestTokenPayload = {
-  v: 1;
+  v: 1 | 2;
   purpose: 'product_analytics';
   session_id: string;
   platform: AnalyticsGuestPlatform;
@@ -59,7 +59,9 @@ export async function createAnalyticsGuestToken(
 ): Promise<{ token: string; expiresAt: string }> {
   const now = Date.now();
   const payload: AnalyticsGuestTokenPayload = {
-    v: 1,
+    // v1 iOS sessions were issued without integrity proof. Reject them as soon
+    // as the App Attest-backed exchange becomes mandatory.
+    v: platform === 'ios' ? 2 : 1,
     purpose: 'product_analytics',
     session_id: crypto.randomUUID(),
     platform,
@@ -90,7 +92,7 @@ export async function verifyAnalyticsGuestToken(token: string | null): Promise<b
       new TextDecoder().decode(base64UrlDecode(payloadB64))
     ) as Partial<AnalyticsGuestTokenPayload>;
     return (
-      payload.v === 1 &&
+      payload.v === (payload.platform === 'ios' ? 2 : 1) &&
       payload.purpose === 'product_analytics' &&
       (payload.platform === 'android' || payload.platform === 'ios') &&
       typeof payload.session_id === 'string' &&

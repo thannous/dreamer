@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import { Linking, Platform } from 'react-native';
-import Purchases, { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
+import Purchases, { CustomerInfo, LOG_LEVEL, PurchasesPackage } from 'react-native-purchases';
 
 import {
   mapPackage as mapPackagePure,
@@ -40,6 +40,18 @@ let ensureConfiguredQueue: Promise<void> = Promise.resolve();
 let cachedPackages: InternalPackage[] = [];
 // Keep a live listener-driven cache up to date with RevenueCat (source of truth)
 let customerInfoListener: ((info: CustomerInfo) => void) | null = null;
+
+// The SDK logs a refresh that failed or timed out at error level even when it keeps its cached
+// data (« … Keeping cached configuration. ») and tries again by itself. Only that refresh is a
+// warning, so a development build on a slow connection raises no red box. A purchase, restore or
+// uncached fetch that fails has nothing behind it: it stays an error, logged in production too.
+const CACHE_BACKED_SDK_LOG = /keeping cached/i;
+
+function forwardSdkLog(level: LOG_LEVEL, message: string): void {
+  if (level === LOG_LEVEL.ERROR && !CACHE_BACKED_SDK_LOG.test(message)) log.error(message);
+  else if (level === LOG_LEVEL.ERROR || level === LOG_LEVEL.WARN) log.warn(message);
+  else log.debug(message);
+}
 
 function isAnonymousAppUserId(appUserId: string | null | undefined): boolean {
   return typeof appUserId === 'string' && appUserId.startsWith('$RCAnonymousID:');
@@ -103,6 +115,8 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
   // Best practice: start anonymous, then link authenticated users via logIn/logOut.
   // This prevents orphaning purchases that happened before sign-in and makes webhook `app_user_id` mapping reliable.
   if (!sameConfig) {
+    // Set first: configure installs the SDK's own handler only when none is set.
+    Purchases.setLogHandler(forwardSdkLog);
     Purchases.configure({ apiKey });
 
     // Subscribe once to live customer info updates so the app UI reflects

@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useMemo } from 'react';
-import { StyleSheet, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { cubicBezier, useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
@@ -15,6 +15,7 @@ import {
   type SceneLight,
   type SleepAmbienceScene as Scene,
 } from './sleepAmbienceScenes';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 const WARM = '#F6DFB8';
 const RAIN = '214, 224, 245';
@@ -65,7 +66,7 @@ type Props = {
  */
 export const SleepAmbienceScene = memo(function SleepAmbienceScene({ soundId, playing, ground }: Props) {
   const reduced = useReducedMotion();
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
 
   const breath = useMemo<CSSStyle<ViewStyle>>(() => (reduced ? {} : {
     animationName: { from: { transform: [{ scale: 1 }] }, to: { transform: [{ scale: 1.06 }] } },

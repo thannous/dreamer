@@ -181,7 +181,8 @@ export const getTranslator = (lang?: string) => {
       for (const [k, value] of Object.entries(replacements)) {
         const replacement = String(value);
         const { doubleBracePattern, singleBracePattern } = getPlaceholderPatterns(k);
-        s = s.replace(doubleBracePattern, replacement).replace(singleBracePattern, replacement);
+        // A function inserts the value as is: a dreamer's "$&" or "$$" stays theirs.
+        s = s.replace(doubleBracePattern, () => replacement).replace(singleBracePattern, () => replacement);
       }
     }
 

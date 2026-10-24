@@ -27,14 +27,14 @@ function Figure({ testID, value, label, note, spoken, entrance, reduced, delay, 
     <View testID={testID} accessible accessibilityLabel={spoken}
       className={stacked ? 'flex-row items-baseline gap-3' : 'min-w-0 flex-1 gap-[2px]'}>
       <Text testID={`${testID}.value`} maxFontSizeMultiplier={stacked ? undefined : 1.15}
-        className="text-[40px] leading-[46px] font-display-semibold text-ivory" style={{ fontVariant: ['tabular-nums'] }}>
+        className="text-hero font-display-semibold text-ivory" style={{ fontVariant: ['tabular-nums'] }}>
         {formatNumber(shown)}
       </Text>
       <View className={stacked ? 'min-w-0 flex-1 gap-[2px]' : 'gap-[2px]'}>
-        <Text className="text-[13px] leading-[18px] font-sans text-ivory">{label}</Text>
+        <Text className="text-body-sm font-sans text-ivory">{label}</Text>
         {note ? (
           <Text testID={`${testID}.note`}
-            className={`text-[12px] leading-[16px] ${note.tone === 'up' ? 'font-sans-medium text-champagne-on' : 'font-sans text-ivory-muted'}`}>
+            className={`text-caption ${note.tone === 'up' ? 'font-sans-medium text-champagne-on' : 'font-sans text-ivory-muted'}`}>
             {note.text}
           </Text>
         ) : null}

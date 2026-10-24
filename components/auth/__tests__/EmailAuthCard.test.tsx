@@ -1,11 +1,11 @@
 /* @jest-environment jsdom */
-jest.mock('@/components/auth/AuthBottomSheet', () => ({ AuthBottomSheet: require('@/components/ui/StandardBottomSheet').StandardBottomSheet }));
 import React from 'react';
 import { act, cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Alert } from 'react-native';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-
 import { TID } from '@/lib/testIDs';
+
+jest.mock('@/components/auth/AuthBottomSheet', () => ({ AuthBottomSheet: require('@/components/ui/StandardBottomSheet').StandardBottomSheet }));
 
 jest.mock('react-native', () => {
   const React = require('react');
@@ -273,9 +273,9 @@ jest.mock('@/constants/journalTheme', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
     },
   },
   GlassCardTokens: {
@@ -620,7 +620,7 @@ describe('EmailAuthCard', () => {
 
     render(<EmailAuthCard />);
 
-    expect(screen.getByText('settings.account.hint.configure_supabase')).toBeDefined();
+    expect(screen.getByText('settings.account.hint.auth_unavailable')).toBeDefined();
   });
 
   it('hides Google sign-in and its divider when the companion credentials are unavailable', () => {

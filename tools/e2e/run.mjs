@@ -5,12 +5,21 @@ import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SDK_PINS, digest, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
-import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
+import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
+import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
+import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { readNativeBackendState } from './native-backend-state.ts';
+import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const parameters = process.argv.slice(2);
+if (parameters[0] === 'all') {
+  if (parameters[1] !== 'web' || ![undefined, 'run'].includes(parameters[2]) || parameters.length > 3)
+    throw new Error('The full campaign takes all web [run], without selections.');
+  const { runFullCampaign } = await import('./full-campaign.mjs');
+  process.exit(await runFullCampaign());
+}
 if (['mobile', 'inspect', 'mcp'].includes(parameters[0])) {
   const mode = parameters.shift();
   if (!parameters[0] || !['android', 'ios'].includes(parameters[1]))
@@ -28,9 +37,9 @@ for (let index = 0; index < rawArgs.length; index++) {
   } else if (rawArgs[index] === '--install-release') installRelease = true;
   else args.push(rawArgs[index]);
 }
-if (!['dreamer', 'lucid', 'meditation', 'site'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'mcp', 'inspect', 'build', 'collect'].includes(command))
-  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site web|android|ios [run|list|mcp|inspect] [e2e flags]');
-if (product === 'site' && platform !== 'web') throw new Error('Site supports web only.');
+if (!['dreamer', 'lucid', 'meditation', 'site', 'backend', 'branch'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'report', 'mcp', 'inspect', 'build', 'collect'].includes(command))
+  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site|backend|branch web|android|ios [run|list|mcp|inspect] [e2e flags]');
+if (['site', 'backend', 'branch'].includes(product) && platform !== 'web') throw new Error('Site and backend support web only.');
 if ((releaseFile || installRelease || command === 'build') && platform === 'web') throw new Error('Release options require a native target.');
 if (installRelease && command !== 'run') throw new Error('Only a native run can request installation.');
 if (command === 'build' && args.length) throw new Error('Build uses the explicit E2E_BUILD_COMMAND descriptor, without SDK flags.');
@@ -59,11 +68,16 @@ if (!existsSync(cli)) throw new Error('Install with npm run test:testerarmy:setu
 const matcherPreload = new URL('./preload-web-matchers.mjs', import.meta.url).href;
 const webNodeArgs = platform === 'web' ? ['--import', matcherPreload] : [];
 const env = { ...process.env, E2E_PRODUCT: product, E2E_PLATFORM: platform, E2E_TELEMETRY_DISABLED: '1', DO_NOT_TRACK: '1' };
+const nativeJourneys = env.E2E_NATIVE_JOURNEYS === '1' || env.E2E_BUILD_PROFILE === 'local-backend';
+if (nativeJourneys && (product !== 'dreamer' || platform === 'web' || env.E2E_PERSONAS === '1'))
+  throw new Error('Local backend journeys require Dreamer on one owned native QA target.');
+if (nativeJourneys) env.E2E_NATIVE_JOURNEYS = '1';
 // Local web files run in parallel against the one local server, each attempt in its
 // own browser context and storage: half the cores, at most four. CI keeps e2e's single
 // worker and shards; a native target drives its one named device. The resolved count
 // reaches the config and the evidence's rerun environment.
-if (platform === 'web' && env.E2E_WORKERS === undefined)
+if (['backend', 'branch'].includes(product)) env.E2E_WORKERS = '1';
+else if (platform === 'web' && env.E2E_WORKERS === undefined)
   env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(4, Math.max(1, Math.floor(availableParallelism() / 2))));
 function cliEnvironment() {
   if (platform !== 'web') return env;
@@ -79,7 +93,7 @@ function cliEnvironment() {
 // Object spreading loses process.env's case-insensitive lookup on Windows.
 const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') ?? 'PATH';
 env[pathKey] = [dirname(process.execPath), env[pathKey]].join(delimiter);
-if (process.version !== 'v24.19.0') throw new Error('PINNED_NODE_RUNTIME');
+if (process.version !== 'v24.22.1') throw new Error('PINNED_NODE_RUNTIME');
 const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT ?? (process.platform === 'darwin' ? join(homedir(), 'Library/Android/sdk') : undefined);
 if (sdk && existsSync(sdk)) {
   env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
@@ -91,22 +105,39 @@ if (command === 'list') {
   if (result.error) throw result.error;
   process.exit(result.status ?? 1);
 }
+if (command === 'report') {
+  if (args.length || platform !== 'web') throw new Error('Report takes one web product, without selections.');
+  const base = join(cwd, '.e2e', `${product}-web`);
+  const latest = existsSync(base) && readdirSync(base).filter(name =>
+    ['end.json', 'summary.md', 'report.json'].every(file => existsSync(join(base, name, file))))
+    .sort((a, b) => Number(b.split('-')[0]) - Number(a.split('-')[0]))[0];
+  if (!latest) throw new Error('No completed TesterArmy run.');
+  const path = join(base, latest);
+  verifyEvidenceFiles(path);
+  console.log(readFileSync(join(path, 'summary.md'), 'utf8'));
+  console.log('TesterArmy report: ' + join(path, 'report.json'));
+  process.exit(JSON.parse(readFileSync(join(path, 'end.json'), 'utf8')).exitCode === 0 ? 0 : 1);
+}
 const relativeOutput = `.e2e/${product}-${platform}/${Date.now()}-${process.pid}-${randomUUID()}`;
 env.E2E_OUTPUT = relativeOutput;
 const output = createAttemptOutput(join(cwd, '.e2e', `${product}-${platform}`), basename(relativeOutput));
-const bundle = { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' }[product];
+const bundle = nativeJourneys ? 'com.tanuki75.noctalia.qa'
+  : { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' }[product];
 function read(executable, argv, options = {}) {
   const result = spawnSync(executable, argv, { cwd: root, env, encoding: 'utf8', ...options });
   if (result.error || result.status !== 0) throw result.error ?? new Error(result.stderr || `${executable} failed`);
   return result.stdout.trim();
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
 }
 let lock;
+let backendLock;
+let reversePort;
+let hostStalls = [];
 let fd;
 let identity;
 let primary = 0;
@@ -124,11 +155,12 @@ let resourceCleanup = 'not-started';
 const secondary = [];
 const installationErrorDetails = [];
 const startedAt = Date.now();
-const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099 }[product])}` : undefined;
+const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099, backend: 8085, branch: 8087 }[product])}` : undefined;
 const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agent-device'].map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
-const context = () => ({ locale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true' });
+const context = () => ({ locale: platform !== 'web' && env.E2E_PERSONAS === '1' ? 'fr-FR' : env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
+  ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || 'gpt-6.1-sol' } : {}) });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
   const child = spawn(executable, argv, { cwd: workdir, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
@@ -164,6 +196,20 @@ async function buildRelease() {
   const buildEnv = { ...env, CI: '1', EXPO_NO_DOTENV: '1' };
   const appRoot = product === 'meditation' ? join(root, 'apps/meditation') : root;
   const profileFile = buildEnv.E2E_BUILD_ENV_FILE;
+  const backend = nativeJourneys ? readNativeBackendState() : null;
+  if (backend) {
+    if (profileFile || buildEnv.EAS_BUILD === 'true') throw new Error('Local backend is only an isolated local QA build.');
+    const profileValues = Object.fromEntries(readFileSync(backend.profilePath, 'utf8').trim().split('\n').map(line => {
+      const equal = line.indexOf('='); return [line.slice(0, equal), line.slice(equal + 1)];
+    }));
+    if (profileValues.EXPO_PUBLIC_SUPABASE_URL !== backend.proxy.origin
+      || profileValues.EXPO_PUBLIC_SUPABASE_ANON_KEY !== backend.status.ANON_KEY
+      || profileValues.EXPO_PUBLIC_API_URL !== `${backend.proxy.origin}/functions/v1/api`)
+      throw new Error('Local backend build profile differs from the owned stack.');
+    Object.assign(buildEnv, profileValues, { NOCTALIA_DREAMER_QA_BUILD: '1',
+      EXPO_PUBLIC_NATIVE_QA_AUDIO: 'true', EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED: 'true',
+      EXPO_PUBLIC_SUPABASE_FUNCTION_JWT: backend.status.ANON_KEY });
+  }
   if (profileFile) {
     if (!['.env.mock', '.env.lucid.mock'].includes(profileFile) || (product === 'dreamer' && profileFile !== '.env.mock') || (product === 'lucid' && profileFile !== '.env.lucid.mock') || product === 'meditation') throw new Error('Unknown build environment profile.');
     require(join(root, 'scripts/expo-safe-runner.js')).loadEnvProfile(profileFile, { cwd: root, env: buildEnv });
@@ -185,13 +231,16 @@ async function buildRelease() {
   const profile = {
     name: buildEnv.E2E_BUILD_PROFILE,
     mock: buildEnv.EXPO_PUBLIC_MOCK_MODE === 'true', persistence: buildEnv.EXPO_PUBLIC_MOCK_PERSISTENCE === 'true',
-    audioMock: buildEnv.EXPO_PUBLIC_MOCK_AUDIO === 'true', featureSheets: buildEnv.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
+    audioMock: buildEnv.EXPO_PUBLIC_MOCK_AUDIO === 'true', featureSheets: buildEnv.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'false',
     categorizationDelayMs: Number(buildEnv.EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS ?? 0),
+    ...(backend ? { nativeQaAudio: true, backend: { origin: backend.proxy.origin,
+      stackId: backend.status.LOCAL_E2E_STACK.id, anonKeySha256: digest(backend.status.ANON_KEY) } } : {}),
   };
-  if (!['production-apk', 'mock-persistent', 'lucid-mock', 'meditation-local'].includes(profile.name)
+  if (!['production-apk', 'mock-persistent', 'local-backend', 'lucid-mock', 'meditation-local'].includes(profile.name)
     || !Number.isSafeInteger(profile.categorizationDelayMs)
     || (product === 'lucid' && profile.name !== 'lucid-mock') || (product === 'meditation' && profile.name !== 'meditation-local')
-    || (product === 'dreamer' && !['production-apk', 'mock-persistent'].includes(profile.name))
+    || (product === 'dreamer' && !['production-apk', 'mock-persistent', 'local-backend'].includes(profile.name))
+    || (profile.name === 'local-backend' && (!backend || profile.mock || profile.persistence || profile.audioMock))
     || (profile.name === 'production-apk' && profile.mock)
     || (profile.name === 'mock-persistent' && (!profile.mock || !profile.persistence))
     || (profile.categorizationDelayMs !== 0 && (!profile.mock || !profile.persistence || profile.categorizationDelayMs < 20000 || profile.categorizationDelayMs > 60000)))
@@ -213,6 +262,8 @@ async function buildRelease() {
     configuration: 'Release', buildExitCode: 0, startedAt: new Date(startedAt).toISOString(), finishedAt: new Date().toISOString(),
     buildCommand, source, nativeInputDigest: native.digest, nativeInputs: native.files, profile,
     binary: { ...archiveReleaseBinary(path, platform, output), ...metadata } };
+  if (backend) verifyLocalBackendBinaryConfig({ binaryPath: release.binary.path, platform, profile, read: readBuild,
+    record: proof => writeOnce(join(output, 'embedded-public-config.json'), { binarySha256: release.binary.sha256, ...proof }) });
   writeOnce(join(output, 'release.json'), release);
   console.log('Release receipt: ' + join(output, 'release.json'));
 }
@@ -250,7 +301,7 @@ function collectCampaign() {
   }
   if (!reports.length) diagnostics.push({ qualified: false, code: 'NO_CURRENT_QUALIFIED_REPORTS' });
   if (product === 'dreamer') {
-    for (const [locale, featureSheets] of [['en-US', true], ['fr-FR', true], ['de-DE', true], ['en-US', false]]) {
+    for (const { locale, featureSheets } of dreamerCampaignContexts) {
       if (!reports.some(proof => proof.context?.locale === locale && proof.context?.featureSheets === featureSheets)) diagnostics.push({ qualified: false, code: 'CAMPAIGN_CONTEXT_MISSING', context: { locale, featureSheets } });
     }
   }
@@ -266,6 +317,9 @@ function collectCampaign() {
   writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
 async function runSdk() {
+  // The auth script rejects production and unlisted targets before any request.
+  // Sessions stay in ignored .auth/; their tokens never enter SDK step arguments.
+  if (product === 'branch') read(process.execPath, ['scripts/test-auth-setup.mjs']);
   const collectionArgs = [];
   let repeatCount = 1;
   for (let index = 0; index < args.length; index++) {
@@ -276,11 +330,14 @@ async function runSdk() {
   writeOnce(join(output, 'collection.json'), collection);
   if (!collection.pairs?.length) throw new Error('No selected pairs.');
   sdkLaunched = true;
-  primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment());
+  const stopStallMonitor = startHostStallMonitor();
+  try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment()); }
+  finally { hostStalls = stopStallMonitor(); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
-      startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: true, collection, repeatCount });
+      startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: true, collection, repeatCount,
+      ...(env.E2E_PERSONAS === '1' ? { personaModel: context().personaModel } : {}) });
     writeOnce(join(output, 'qualification.json'), proof);
   }
   return primary;
@@ -310,9 +367,31 @@ try {
     writeFileSync(fd, JSON.stringify({ pid: process.pid, product, platform, device }));
     if (!releaseFile) throw new Error('E2E_RELEASE_RECEIPT is required; create it through the explicit native build command.');
     release = JSON.parse(readFileSync(resolve(releaseFile), 'utf8'));
+    if (nativeJourneys) {
+      const backend = readNativeBackendState();
+      if (release.profile.name !== 'local-backend' || release.profile.backend?.origin !== backend.proxy.origin
+        || release.profile.backend?.stackId !== backend.status.LOCAL_E2E_STACK.id
+        || release.profile.backend?.anonKeySha256 !== digest(backend.status.ANON_KEY))
+        throw new Error('Release does not belong to the live disposable backend.');
+      // Device ownership alone cannot protect the shared accounts and outage control.
+      backendLock = acquireNativeBackendRunLock({ stackId: backend.status.LOCAL_E2E_STACK.id,
+        product, platform, device: identity });
+      env.E2E_NATIVE_QA_AUDIO = String(release.profile.nativeQaAudio === true);
+      if (platform === 'android') {
+        const port = new URL(backend.proxy.origin).port;
+        if (read('adb', ['-s', identity, 'reverse', '--list']).split('\n').some(line => line.includes(`tcp:${port}`)))
+          throw new Error('Existing Android reverse mapping belongs to another invocation.');
+        read('adb', ['-s', identity, 'reverse', `tcp:${port}`, `tcp:${port}`]);
+        reversePort = port;
+      }
+    }
     const artifact = binaryInputs(release.binary.path, platform);
     validateReleaseReceipt(release, { product, platform, bundle, inputDigest: appInputs(root, product).inputDigest,
       nativeInputDigest: nativeInputs(root, product, platform).digest, binaryDigest: artifact.sha256 });
+    if (nativeJourneys) verifyLocalBackendBinaryConfig({ binaryPath: release.binary.path, platform, profile: release.profile, read,
+      record: proof => writeOnce(join(output, 'embedded-public-config.json'), { binarySha256: artifact.sha256, ...proof }) });
+    if (env.E2E_PERSONAS === '1' && (product !== 'dreamer' || release.profile.name !== 'mock-persistent'))
+      throw new Error('Native personas require the owned Dreamer mock-persistent Release.');
     binary = release.binary;
     writeOnce(join(output, 'release-used.json'), release);
     if (Object.hasOwn(env, 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED')
@@ -320,6 +399,7 @@ try {
       throw new Error('Test onboarding flag differs from compiled Release profile.');
     env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED = String(release.profile.featureSheets);
     env.E2E_NATIVE_MOCK_MODE = String(release.profile.mock);
+    env.E2E_NATIVE_MOCK_PERSISTENCE = String(release.profile.persistence);
     env.E2E_NATIVE_MOCK_CATEGORIZATION_MS = String(release.profile.categorizationDelayMs);
     if (command !== 'run') {
       writeOnce(join(output, 'installed-start.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read }));
@@ -328,15 +408,19 @@ try {
   }
   if (product === 'site' && command !== 'list' && !existsSync(join(root, 'docs/en/index.html')))
     throw new Error('Build the generated site with npm run docs:build before running.');
-  const diff = read('git', ['diff', 'HEAD']);
+  const diffSha256 = await trackedDiffSha256(root, env);
   writeOnce(join(output, 'source-start.json'), sourceBefore);
   writeOnce(join(output, 'evidence.json'), {
     startedAt: new Date(startedAt).toISOString(), product, platform, device: env.E2E_DEVICE ?? null, bundle, binary,
     campaignId, pins, origin: expectedOrigin, repeatCount: args.includes('--repeat-each') ? Number(args[args.indexOf('--repeat-each') + 1]) : 1, context: context(), requestedMedia: { video: args.includes('--video'), trace: true },
     revision: read('git', ['rev-parse', 'HEAD']), workingTree: read('git', ['status', '--porcelain']),
-    trackedDiffSha256: createHash('sha256').update(diff).digest('hex'),
+    trackedDiffSha256: diffSha256,
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
-    rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37' },
+    rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null,
+      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37',
+      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}),
+      ...(nativeJourneys ? { E2E_NATIVE_JOURNEYS: '1', E2E_NATIVE_BACKEND_MANIFEST: env.E2E_NATIVE_BACKEND_MANIFEST,
+        E2E_NATIVE_QA_AUDIO: env.E2E_NATIVE_QA_AUDIO, E2E_NATIVE_RECOVERY_PORT: env.E2E_NATIVE_RECOVERY_PORT ?? '31284' } : {}) },
     ...(platform === 'web' ? {
       webInputsSha256: webInputIdentity(),
       webLocale: env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'),
@@ -345,7 +429,12 @@ try {
       nodeOptionsRestored: Object.hasOwn(env, 'NODE_OPTIONS') ? 'original value' : 'absent',
     } : {}),
     release: release ? { receipt: resolve(releaseFile ?? join(output, 'release.json')), buildSource: release.source.revision, profile: release.profile } : null,
-    services: platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'identified local Release / generated site',
+    services: nativeJourneys ? 'owned local Auth/Postgres, real native storage and handlers; deterministic model transport, recorded system speech input; no physical microphone or Store proof'
+      : product === 'backend' ? 'owned local Supabase Auth/Postgres/PostgREST; no external AI, OAuth or payment'
+      : product === 'branch' ? 'allowlisted persistent Supabase test branch; guarded existing shared test accounts'
+      : platform === 'web' && product !== 'site' ? 'mock services; local real UI' : 'identified local Release / generated site',
+    ...(product === 'backend' ? { backend: { runtime: env.E2E_BACKEND_RUNTIME, cliVersion: env.E2E_BACKEND_CLI_VERSION,
+      migrationFixtures: JSON.parse(env.E2E_BACKEND_MIGRATION_FIXTURES ?? '{}'), rerun: env.E2E_BACKEND_RERUN } } : {}),
   });
   if (command === 'build') {
     await buildRelease();
@@ -409,6 +498,7 @@ try {
   // Every final check and lock operation is independent. Persistence failure
   // cannot prevent cleanup or replace the original SDK failure/signal.
   const attempt = (code, body) => { try { return body(); } catch { secondary.push(code); return undefined; } };
+  if (reversePort) attempt('ANDROID_REVERSE_CLEANUP', () => read('adb', ['-s', identity, 'reverse', '--remove', `tcp:${reversePort}`]));
   if (installedReady || installHandoffStarted) attempt('INSTALLED_END_REFUSED', () => writeOnce(join(output, 'installed-end.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read })));
   const end = attempt('SOURCE_END_REFUSED', () => sourceSnapshot(root, product));
   const stability = sourceBefore && end ? compareSnapshots(sourceBefore, end) : null;
@@ -417,6 +507,7 @@ try {
   if (platform !== 'web' && sdkLaunched) {
     resourceCleanup = attempt('NATIVE_CLEANUP_UNPROVEN', () => verifyNativeCleanup(JSON.parse(readFileSync(join(output, 'report.json'), 'utf8')), {
       target: `${product}-${platform}`, platform, revision: sourceBefore.revision, startedAt,
+      ...(env.E2E_PERSONAS === '1' ? { personaModel: context().personaModel } : {}),
     })) ? 'complete' : 'unproven';
   } else if (inspectionStarted) {
     resourceCleanup = inspectionClosed ? 'complete' : 'unproven';
@@ -424,6 +515,7 @@ try {
   } else if (mcpStarted) {
     resourceCleanup = 'unproven'; secondary.push('NATIVE_MCP_CLEANUP_UNPROVEN');
   }
+  if (backendLock) attempt('BACKEND_LOCK_RELEASE', () => releaseNativeBackendRunLock(backendLock));
   if (fd !== undefined) {
     attempt('LOCK_CLOSE', () => closeSync(fd));
     attempt('LOCK_OWNERSHIP', () => {
@@ -434,6 +526,12 @@ try {
       unlinkSync(lock);
     });
   }
+  if (hostStalls.length) {
+    // A failed run during a host stall stays failed; the code says why, so it is rerun on a
+    // quiet host instead of being read as an app regression. A passed run is left as it is.
+    if ((requestedSignal ?? primary) !== 0) secondary.push('HOST_STALL');
+    console.error(`Host stall: this machine stopped running processes for ${hostStalls.map(stall => `${Math.round(Math.max(stall.wallGapMs, stall.monotonicGapMs) / 1000)} s (resumed ${stall.resumedAt})`).join(', ')}; heartbeat gap over ${HOST_STALL_MS / 1000} s. Attempt deadlines spent in it are not the app's.`);
+  }
   attempt('MANIFEST_PERSISTENCE', () => writeOnce(join(output, 'files.json'), hashFiles(output, directoryFiles(output, '.'))));
   attempt('END_PERSISTENCE', () => writeOnce(join(output, 'end.json'), {
     finishedAt: new Date().toISOString(), primaryExitCode: requestedSignal ?? primary,
@@ -441,6 +539,7 @@ try {
     applicationQualified: command === 'run' && preserveStatus(requestedSignal ?? primary, secondary) === 0,
     ownerDecision: '2026-10-06-install-hash-diagnostic-and-release-own-wrapper-lock',
     secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true,
+    ...(backendLock ? { backendLockReleased: !existsSync(backendLock.path) } : {}), hostStalls,
   }));
   process.exitCode = preserveStatus(requestedSignal ?? primary, secondary);
   console.log('E2E evidence: ' + output);

@@ -398,7 +398,7 @@ function assertManifestParity(manifest) {
       const expectedLanguages = expectedEntryLanguages(collectionId, entry.id);
 
       // Entries must not expose locales outside their collection coverage
-      // (e.g. no pt-br blog, symbol or guide locales).
+      // (e.g. no pt-br blog locales).
       for (const lang of Object.keys(entry.locales || {})) {
         if (!expectedLanguages.includes(lang)) {
           errors.push(`[unexpected locale] ${entry.id} language=${lang}`);

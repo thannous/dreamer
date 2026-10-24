@@ -15,8 +15,9 @@ import time
 import xml.etree.ElementTree as ET
 
 DEFAULT_PHASES = ['detail-open', 'detail-scroll', 'reading-open', 'reading-scroll']
-PHASES = ['journal-scroll', *DEFAULT_PHASES]
+PHASES = ['journal-scroll', 'screen-scroll', 'screen-open', *DEFAULT_PHASES]
 PACKAGE = 'com.tanuki75.noctalia'
+PACKAGES = frozenset((PACKAGE, PACKAGE + '.qa'))
 
 def save(file, value):
     temporary = file.with_suffix(file.suffix + '.tmp')
@@ -74,11 +75,17 @@ class Runner:
         self.phases = options.get('phases', ','.join(DEFAULT_PHASES)).split(',')
         if not self.phases or any(p not in PHASES for p in self.phases):
             raise ValueError('Unknown reading phase')
-        if options['packageName'] != PACKAGE:
-            raise ValueError('Reading scenario is restricted to the base Noctalia package')
+        self.settle_seconds = self.scenario.get('settleMs', 1200) / 1000
+        if not 0 <= self.settle_seconds <= 10:
+            raise ValueError('Scenario settleMs must be between 0 and 10000')
+        self.package = options['packageName']
+        if self.package not in PACKAGES:
+            raise ValueError('Reading scenario requires the Dreamer base or owned QA package')
+        if any(p.startswith('screen-') for p in self.phases) and len(self.phases) != 1:
+            raise ValueError('A screen scenario measures exactly one phase at a time')
         self.statefile = self.out / 'report.json'
         self.scenario_hash = hashlib.sha256(json.dumps({k:v for k,v in self.scenario.items() if k != 'expected'}, sort_keys=True).encode()).hexdigest()
-        self.state = dict(schemaVersion=1, scenarioHash=self.scenario_hash, rows=[], durations={}, status='running')
+        self.state = dict(schemaVersion=1, scenarioHash=self.scenario_hash, scenarioName=self.scenario.get('name'), rows=[], durations={}, status='running')
         if self.statefile.exists():
             if not options.get('resume'):
                 raise ValueError('Output already contains a report. Use --resume or a fresh directory.')
@@ -102,27 +109,37 @@ class Runner:
         self.state['durations']['elapsedThisInvocationSeconds'] = round(time.monotonic() - self.started, 2)
         save(self.statefile, self.state)
 
+    def assert_foreground(self):
+        windows = self.shell('dumpsys', 'window')
+        focus = re.search(r'mCurrentFocus=Window\{[^\n]*?\s([^\s/]+)/', windows)
+        if focus is None or focus[1] != self.package:
+            raise ValueError('Selected application is not foreground; refusing input')
+
     def tree(self):
+        self.assert_foreground()
         raw = self.adb('exec-out', 'uiautomator', 'dump', '/dev/tty').decode()
         return ET.fromstring(raw[raw.index('<?xml'):raw.rindex('</hierarchy>') + 12])
 
     def find(self, tree, identifier):
-        return next((n for n in tree.iter('node') if n.get('resource-id') == identifier), None)
+        return next((n for n in tree.iter('node') if n.get('resource-id') == identifier and n.get('package') == self.package), None)
 
     def tap(self, node):
         if node is None:
             raise ValueError('Required UI target absent')
+        if node.get('package') != self.package:
+            raise ValueError('UI target belongs to another application; refusing input')
+        self.assert_foreground()
         x, y, right, bottom = map(int, re.findall(r'\d+', node.get('bounds')))
         self.shell('input', 'tap', str((x + right) // 2), str((y + bottom) // 2))
 
     def preflight(self):
         start = time.monotonic()
-        dump = self.shell('dumpsys', 'package', PACKAGE)
-        pid = self.shell('pidof', PACKAGE)
+        dump = self.shell('dumpsys', 'package', self.package)
+        pid = self.shell('pidof', self.package)
         if not pid.isdigit():
             raise ValueError('Open the installed Noctalia app before the pilot')
         version = int(re.search(r'versionCode=(\d+)', dump)[1])
-        paths = self.shell('pm', 'path', PACKAGE).splitlines()
+        paths = self.shell('pm', 'path', self.package).splitlines()
         base = next(p.removeprefix('package:') for p in paths if p.endswith('/base.apk'))
         apk = self.out / 'installed-base.apk'
         self.adb('pull', base, str(apk))
@@ -151,9 +168,11 @@ class Runner:
         for key, value in expected.items():
             if observed.get(key) != value:
                 raise ValueError(f'Installed provenance mismatch: {key}')
+        if runtime.get('applicationId') != self.package:
+            raise ValueError('Runtime application does not match the selected package')
         if runtime.get('development') or runtime.get('isEmergencyLaunch'):
             raise ValueError('Development/emergency launch is not a valid candidate')
-        conditions = dict(device=self.o['device'], model=self.shell('getprop', 'ro.product.model'),
+        conditions = dict(device=self.o['device'], package=self.package, model=self.shell('getprop', 'ro.product.model'),
                           android=self.shell('getprop', 'ro.build.version.release'),
                           screenSize=self.shell('wm', 'size'),
                           fontScale=self.shell('settings', 'get', 'system', 'font_scale'),
@@ -171,15 +190,16 @@ class Runner:
             if not profileable(manifest):
                 raise ValueError('Installed manifest does not allow shell profiling')
             probe = f'/data/local/tmp/noctalia-perf-probe-{os.getpid()}.data'
-            self.adb('shell', 'simpleperf', 'record', '--app', PACKAGE, '-o', probe, '-e', 'cpu-clock:u', '--duration', '1')
+            self.adb('shell', 'simpleperf', 'record', '--app', self.package, '-o', probe, '-e', 'cpu-clock:u', '--duration', '1')
             self.adb('shell', 'rm', probe)
             self.state['provenance']['profilerProbe'] = 'passed'
         self.state['durations']['preflightSeconds'] = round(time.monotonic() - start, 2)
         self.persist()
 
     def assert_same_process(self):
+        self.assert_foreground()
         checks = [
-            (self.shell('pidof', PACKAGE), self.state['provenance']['pid'], 'Application process'),
+            (self.shell('pidof', self.package), self.state['provenance']['pid'], 'Application process'),
             (self.shell('settings', 'get', 'system', 'font_scale'), self.state['conditions']['fontScale'], 'Font scale'),
             (self.shell('settings', 'get', 'system', 'peak_refresh_rate'), self.state['conditions']['peakRefreshRate'], 'Refresh-rate setting'),
         ]
@@ -222,7 +242,7 @@ class Runner:
             if row.get('trace') == trace['local'] and not row.get('valid'):
                 sql = ("SELECT COUNT(*) AS frames, SUM(CASE WHEN f.jank_type LIKE '%App Deadline Missed%' THEN 1 ELSE 0 END) AS missed, "
                        "ROUND(PERCENTILE(f.dur/1e6,95),2) AS p95 FROM actual_frame_timeline_slice f JOIN process p USING(upid) "
-                       f"WHERE p.name='{PACKAGE}' AND f.dur>0 AND f.ts>={row['startNs']} AND f.ts<{row['endNs']};")
+                       f"WHERE p.name='{self.package}' AND f.dur>0 AND f.ts>={row['startNs']} AND f.ts<{row['endNs']};")
                 result = self.query(trace['local'], sql)[0]
                 row.update(surfaceFrames=int(result['frames']), missed=int(result['missed']) if result['missed'] not in ('', '[NULL]') else 0,
                            p95Ms=float(result['p95']) if result['p95'] not in ('', '[NULL]') else None,
@@ -238,11 +258,11 @@ class Runner:
         already = any(r['run'] == run and r['phase'] == phase and r.get('valid') for r in self.state['rows'])
         if phase not in self.phases or already:
             action()
-            time.sleep(1.2)
+            time.sleep(self.settle_seconds)
             return
         start = int(float(self.shell('cat', '/proc/uptime').split()[0]) * 1e9)
         action()
-        time.sleep(1.2)
+        time.sleep(self.settle_seconds)
         end = int(float(self.shell('cat', '/proc/uptime').split()[0]) * 1e9)
         self.state['rows'].append(dict(run=run, phase=phase, startNs=start, endNs=end,
                                       trace=self.state['activeTrace']['local'], valid=False))
@@ -251,11 +271,39 @@ class Runner:
     def scroll(self):
         x, bottom, top, duration = self.scenario['swipe']
         for a,b in [(bottom,top),(bottom,top),(top,bottom),(top,bottom)]:
+            self.assert_foreground()
             self.shell('input', 'swipe', str(x), str(a), str(x), str(b), str(duration))
             time.sleep(.35)
 
+    def verify_screen(self, tree):
+        if self.find(tree, self.scenario['screenTestId']) is None:
+            raise ValueError('Expected screen is not visible')
+        anchor = self.find(tree, self.scenario['targetTestId'])
+        if anchor is None:
+            raise ValueError('Reference content is not visible')
+        label = anchor.get('content-desc', '') or ''.join(n.get('text', '') for n in anchor.iter('node'))
+        if hashlib.sha256(label.encode()).hexdigest() != self.scenario['targetLabelSha256']:
+            raise ValueError('Reference screen content changed')
+
     def journey(self, run):
         tree = self.tree()
+        if self.phases == ['screen-scroll']:
+            self.verify_screen(tree)
+            self.measure(run, 'screen-scroll', self.scroll)
+            self.verify_screen(self.tree())
+            return
+        if self.phases == ['screen-open']:
+            if self.find(tree, self.scenario['originScreenTestId']) is None:
+                self.tap(self.find(tree, self.scenario['returnTestId']))
+                tree = self.tree()
+            if self.find(tree, self.scenario['originScreenTestId']) is None:
+                raise ValueError('Navigation origin screen is not visible')
+            button = self.find(tree, self.scenario['navigationTestId'])
+            if button is None:
+                raise ValueError('Navigation target is not visible')
+            self.measure(run, 'screen-open', lambda: self.tap(button))
+            self.verify_screen(self.tree())
+            return
         for key in ['analysis.reading.close', 'btn.navigateJournal', 'tab.journal']:
             node = self.find(tree, key)
             if node is not None:
@@ -323,6 +371,13 @@ class Runner:
                 status = re.search(r'Thermal Status:\s+(\d+)', thermal)
                 level = re.search(r'level:\s+(\d+)', battery)
                 self.state.setdefault('conditionsByRun', []).append(dict(run=run, thermalStatus=int(status[1]) if status else None, batteryLevel=int(level[1]) if level else None))
+            except BaseException as error:
+                # A healthy frame trace is not a successful UI journey. Preserve
+                # the failure before finally analyzes it, including across resume.
+                trace = self.state.get('activeTrace')
+                if trace and not trace.get('invalidReason'):
+                    trace['invalidReason'] = 'Journey failed: ' + type(error).__name__ + ': ' + str(error)
+                raise
             finally:
                 self.finish_trace()
                 self.state['durations'].setdefault('captureAndAnalysisSeconds', []).append(round(time.monotonic()-capture_started,2))

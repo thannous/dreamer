@@ -5,9 +5,9 @@ import {
   inferTierFromSubscriber,
   isActiveEntitlement,
   type RevenueCatV1SubscriberResponse,
-} from '../revenuecatSubscriber';
+} from '@/supabase/lib/revenuecatSubscriber';
 
-describe('revenuecatSubscriber', () => {
+describe('server revenuecatSubscriber entitlement contract', () => {
   it('returns free when entitlement keys are empty', () => {
     expect(inferTierFromEntitlementKeys([])).toBe('free');
   });

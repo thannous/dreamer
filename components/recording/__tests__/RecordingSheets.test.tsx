@@ -86,10 +86,6 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
   ),
 }));
 
-jest.mock('@/components/journal/ReferenceImagePicker', () => ({
-  ReferenceImagePicker: () => null,
-}));
-
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
 }));
@@ -124,10 +120,10 @@ jest.mock('@/constants/theme', () => ({
     lora: {
       regular: 'Lora-Regular',
     },
-    spaceGrotesk: {
-      bold: 'SpaceGrotesk-Bold',
-      medium: 'SpaceGrotesk-Medium',
-      regular: 'SpaceGrotesk-Regular',
+    outfit: {
+      bold: 'Outfit-Bold',
+      medium: 'Outfit-Medium',
+      regular: 'Outfit-Regular',
     },
   },
 }));

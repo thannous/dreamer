@@ -121,16 +121,27 @@ export interface DreamEmotionInsight {
   insight: string;
 }
 
+export interface DreamPersonalNote {
+  id: string;
+  text: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface DreamAnalysis {
   id: number; // timestamp for unique ID and sorting
   remoteId?: number; // Supabase row id when persisted online
   clientRequestId?: string; // Idempotency key for creates to avoid duplicates
+  /** Local-only recovery owned by the account that claimed an unfinished guest upload. */
+  migrationRecovery?: { userId: string; mutationId: string; receiptId: string; remoteId: number; revisionId: string; operation?: 'delete'; localChanges?: boolean };
   revisionId?: string; // Server-side optimistic concurrency token
   updatedAt?: number; // Server timestamp for the latest accepted mutation
   clientUpdatedAt?: number; // Client timestamp for the latest local edit
   transcript: string;
   /** Original capture exchanges, retained on this device after narrative formatting. */
   captureOriginalTranscript?: string;
+  /** Private, dated reflections; never part of the original story or AI context. */
+  personalNotes?: DreamPersonalNote[];
   title: string;
   interpretation: string;
   /** Legacy storage key: an original poetic line for poetic prompt versions; older entries may contain an excerpt. */
@@ -168,7 +179,7 @@ export interface DreamAnalysis {
   conflictRemoteDream?: DreamAnalysis;
   pendingSync?: boolean;
 
-  // Subject detection for reference image generation
+  // Subject detection from dream categorization
   // undefined = not yet checked, null = unknown/couldn't determine, true/false = explicitly detected
   hasPerson?: boolean | null;
   hasAnimal?: boolean | null;
@@ -363,26 +374,6 @@ export type OfflineAction =
       timestamp: number;
       retries?: number;
     };
-
-/**
- * Reference image for subject-driven image generation
- */
-export interface ReferenceImage {
-  uri: string;
-  mimeType: string;
-  type: 'person' | 'animal';
-}
-
-/**
- * Request for generating an image with reference subjects
- */
-export interface ReferenceImageGenerationRequest {
-  transcript: string;
-  prompt?: string;
-  referenceImages: ReferenceImage[];
-  previousImageUrl?: string;
-  lang?: string;
-}
 
 export type GuestDreamMigrationOwner = {
   userId: string;

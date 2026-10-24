@@ -1,4 +1,3 @@
-import type { ViewInstance } from 'react-native';
 import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
@@ -12,6 +11,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getLegalLink } from '@/constants/legalLinks';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -49,10 +49,12 @@ import {
   type LayoutChangeEvent,
   type TextStyle,
   type ViewStyle,
+  type ViewInstance,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
+import { TypeScale } from '@/constants/typeScale';
 
 type PathDefinition = {
   id: OnboardingPath;
@@ -91,6 +93,9 @@ const BACKGROUND_IMAGE = require('@/assets/images/onboarding-reverie-background.
 // The immersive artwork always needs its nocturnal contrast, independently of
 // the user's app theme. The privacy sheet retains the app's own palette.
 const ONBOARDING_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
+// As narrow as Split View on the open iPhone Duo (about 290 pt): the top bar can no longer
+// hold the full-size wordmark, the step counter and the skip button side by side.
+const NARROW_TOP_BAR_WIDTH = 360;
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -121,6 +126,7 @@ export default function OnboardingScreen() {
   const isReplay = useLocalSearchParams<{ replay?: string }>().replay === '1';
   const [replayStep, setReplayStep] = useState<OnboardingStep>('intro');
   const { height: viewportHeight, fontScale } = useWindowDimensions();
+  const narrowTopBar = useContentWindow().width < NARROW_TOP_BAR_WIDTH;
   const [selectedPathOverride, setSelectedPathOverride] = useState<OnboardingPath | null>(null);
   const [isLeaving, setIsLeaving] = useState(false);
   const [isStepTransitioning, setIsStepTransitioning] = useState(false);
@@ -621,7 +627,7 @@ export default function OnboardingScreen() {
             />
           </>
         ) : (
-          <NightSky step={step} leaving={isLeaving} arrival={arrival} />
+          <NightSky step={step} leaving={isLeaving} arrival={arrival} covered={(featureSheetsEnabled && activeFeature !== null) || doorPassage} />
         )}
       </View>
       <Animated.ScrollView
@@ -643,6 +649,7 @@ export default function OnboardingScreen() {
               pointerEvents="none"
               style={[
                 styles.brand,
+                narrowTopBar && styles.brandNarrow,
                 { color: noctalia.text.primary },
                 step !== 'intro' && styles.inactiveControl,
               ]}
@@ -667,7 +674,7 @@ export default function OnboardingScreen() {
               <IconSymbol name="chevron.left" size={22} color={noctalia.text.primary} />
             </Pressable>
           </View>
-          <View style={styles.stepProgress} accessible accessibilityLabel={t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })}>
+          <View style={[styles.stepProgress, narrowTopBar && styles.stepProgressNarrow]} accessible accessibilityLabel={t('onboarding.progress', { current: step === 'intro' ? 1 : 2, total: 2 })}>
             <View accessible={false} style={styles.stepMarks}>
               {[0, 1].map((index) => <Animated.View key={index} style={[styles.stepMark, {
                 backgroundColor: titleAccent,
@@ -675,7 +682,9 @@ export default function OnboardingScreen() {
                 transitionProperty: 'opacity', transitionDuration: DURATION.fast, transitionTimingFunction: EASE.out,
               }]} />)}
             </View>
-            <Text accessible={false} style={[styles.stepNumber, { color: noctalia.text.secondary }]}>{step === 'intro' ? '01' : '02'}{' / 02'}</Text>
+            {narrowTopBar ? null : (
+              <Text accessible={false} style={[styles.stepNumber, { color: noctalia.text.secondary }]}>{step === 'intro' ? '01' : '02'}{' / 02'}</Text>
+            )}
           </View>
           <Pressable
             accessibilityRole="button"
@@ -1010,8 +1019,7 @@ export default function OnboardingScreen() {
 
       {featureSheetsEnabled && activeFeature ? (
         <React.Suspense fallback={null}>
-          <OnboardingFeatureSheet feature={activeFeature} onClose={confirmLeaveStories}
-            onFeatureChange={setActiveFeature} ending={{
+          <OnboardingFeatureSheet feature={activeFeature} onClose={confirmLeaveStories} ending={{
               label: t('onboarding.narrative.finish_guided'),
               restartLabel: t('onboarding.narrative.restart'),
               onFinish: passThroughDoor,
@@ -1097,34 +1105,37 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   stepProgress: { alignItems: 'center', gap: 6, marginLeft: -20 },
+  // The marks alone (the bar keeps its spoken label), sitting where the space falls.
+  stepProgressNarrow: { marginLeft: 0 },
   stepMarks: { flexDirection: 'row', gap: 5 },
   stepMark: { width: 18, height: 2, borderRadius: 1 },
-  stepNumber: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.5 },
+  stepNumber: { fontFamily: Fonts.outfit.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.5 },
   topBarLeading: { position: 'relative', minWidth: 80, height: 44, justifyContent: 'center' },
   topBarBack: { position: 'absolute', top: 0, left: 0 },
-  brand: { fontFamily: Fonts.fraunces.regular, fontSize: 26, lineHeight: 32, minWidth: 80 },
+  brand: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h1.fontSize, lineHeight: TypeScale.h1.lineHeight, minWidth: 80 },
+  brandNarrow: { fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   skipButton: { minWidth: 72, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' },
-  skipText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15 },
+  skipText: { fontFamily: Fonts.outfit.bold, fontSize: TypeScale.body.fontSize },
   intro: { alignItems: 'center', gap: 16 },
   title: {
     fontFamily: Fonts.fraunces.regular,
-    fontSize: 34,
+    fontSize: TypeScale.display.fontSize,
     lineHeight: 40,
     textAlign: 'center',
   },
   subtitle: {
     maxWidth: 520,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
     textAlign: 'center',
   },
   signalList: { width: '100%', alignItems: 'center' },
   titleBlock: { alignItems: 'center' },
   titleAccent: { marginTop: -2 },
   privacyLink: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 8 },
-  privacyLinkText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, textDecorationLine: 'underline' },
+  privacyLinkText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.bodySm.fontSize, textDecorationLine: 'underline' },
   stepStage: { position: 'relative', alignSelf: 'stretch' },
   column: { width: '100%', maxWidth: 560, alignSelf: 'center' },
   copyVeil: { position: 'absolute', left: -60, right: -60, height: 560 },
@@ -1133,35 +1144,35 @@ const styles = StyleSheet.create({
   inactiveControl: { opacity: 0 },
   paths: { gap: 12 },
   hiddenStep: { display: 'none' },
-  pathHeading: { fontFamily: Fonts.fraunces.regular, fontSize: 34, lineHeight: 40, textAlign: 'center' },
-  pathSubtitle: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 21, textAlign: 'center' },
+  pathHeading: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.display.fontSize, lineHeight: 40, textAlign: 'center' },
+  pathSubtitle: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: 'center' },
   pathList: { marginTop: 10, gap: 10 },
   pathRow: { minHeight: 88, paddingHorizontal: 16, paddingVertical: 14, flexDirection: 'row', alignItems: 'center', gap: 14, borderWidth: StyleSheet.hairlineWidth, borderRadius: 22, borderCurve: 'continuous', overflow: 'hidden', backgroundColor: 'rgba(14, 10, 26, 0.72)' },
   pathRowPressed: { transform: [{ scale: 0.985 }] },
   pathSelection: { borderWidth: 1, borderRadius: 22, borderCurve: 'continuous' },
   pathIcon: { width: 46, height: 46, borderRadius: 23, borderWidth: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(3,4,13,0.45)' },
   pathCopy: { flex: 1, gap: 4 },
-  pathTitle: { fontFamily: Fonts.fraunces.medium, fontSize: 19, lineHeight: 24 },
-  pathBody: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 18 },
+  pathTitle: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
+  pathBody: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: TypeScale.bodySm.lineHeight },
   radio: { width: 28, height: 28, borderRadius: 14, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   errorCard: { borderWidth: 1, borderRadius: 16, padding: 14, gap: 10 },
-  errorText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 14, lineHeight: 20 },
+  errorText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.bodySm.fontSize, lineHeight: 20 },
   errorActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   errorButton: { minHeight: 44, justifyContent: 'center', borderWidth: 1, borderColor: 'transparent', borderRadius: 12, paddingHorizontal: 12 },
-  errorButtonText: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 13 },
+  errorButtonText: { fontFamily: Fonts.outfit.bold, fontSize: TypeScale.bodySm.fontSize },
   ctaInvite: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderWidth: 1, borderRadius: 28, borderCurve: 'continuous' },
   footer: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 24, paddingTop: 10 },
   primaryButton: { minHeight: 56, borderRadius: 28, borderCurve: 'continuous', borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingHorizontal: 18 },
   primaryContent: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingVertical: 14 },
-  primaryText: { flexShrink: 1, fontFamily: Fonts.spaceGrotesk.bold, fontSize: 17, lineHeight: 22, textAlign: 'center' },
-  privacyAssuranceText: { flex: 1, fontFamily: Fonts.spaceGrotesk.regular, fontSize: 13, lineHeight: 19 },
+  primaryText: { flexShrink: 1, fontFamily: Fonts.outfit.bold, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: 'center' },
+  privacyAssuranceText: { flex: 1, fontFamily: Fonts.outfit.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: TypeScale.bodySm.lineHeight },
   privacyPoints: { gap: 12, marginBottom: 14 },
   privacyPolicyLink: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center', marginBottom: 6 },
-  privacyDetails: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 13, lineHeight: 18, textDecorationLine: 'underline' },
+  privacyDetails: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.bodySm.fontSize, lineHeight: TypeScale.bodySm.lineHeight, textDecorationLine: 'underline' },
   privacyCheckRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 48, marginBottom: 16 },
   privacyCheckbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   privacyCheckCopy: { flex: 1, gap: 2 },
   privacyPoint: { flexDirection: 'row', alignItems: 'flex-start', gap: 12 },
-  privacyToggleLabel: { fontFamily: Fonts.spaceGrotesk.bold, fontSize: 15, lineHeight: 20 },
-  privacyStatus: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16 },
+  privacyToggleLabel: { fontFamily: Fonts.outfit.bold, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
+  privacyStatus: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16 },
 });

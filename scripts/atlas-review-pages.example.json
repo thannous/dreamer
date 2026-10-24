@@ -1,0 +1,8 @@
+[
+  { "id": "moon", "slug": "lune", "name": "Lune", "mood": "témoin : brume basse sur le lac, scintillements dans le ciel à droite" },
+  { "id": "door", "slug": "porte", "name": "Porte", "mood": "A : poussière fine qui monte · B : large lumière ivoire venue du haut à droite" },
+  { "id": "fire", "slug": "feu", "name": "Feu", "mood": "A : volutes de fumée diffuses · B : cendre fine qui s'élève, sans flamme" },
+  { "id": "bird", "slug": "oiseau", "name": "Oiseau", "mood": "A : points de pollen ivoire et lavande · B : lumière douce en bordure haute à droite" },
+  { "id": "train", "slug": "train", "name": "Train", "mood": "A : poussière qui dérive de côté · B : reflets courbes sur métal, verre et rail" },
+  { "id": "clock", "slug": "horloge", "name": "Horloge", "mood": "A : poussière très lente autour du boîtier · B : reflets sur le verre et le boîtier, aiguilles immobiles" }
+]

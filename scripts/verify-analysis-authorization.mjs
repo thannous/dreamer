@@ -1,5 +1,6 @@
 // Synthetic PostgreSQL regression checks. No hosted DB, credentials or provider calls.
 // Usage: npm run test:analysis-authorization:db (optional argv[2]: existing PGlite module path)
+import './verify-analysis-boundaries.mjs';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
@@ -98,10 +99,59 @@ try {
   await db.exec("update dreams set image_url='synthetic-existing-image' where id=6");
   await query("update ai_jobs set status='failed' where id=$1",[request(61)]);
   check(await reason() === null,'an existing image is never replaced by a failure notice');
+  // Plus stays unlimited per month with at most 10 new analyses per rolling 24 hours.
+  await db.exec(await migration('20261021153000_cap_plus_daily_analyses'));
+  await db.exec("select set_config('test.tier','plus',false)");
+  const daily = '00000000-0000-4000-8000-000000000003';
+  await query('insert into auth.users values ($1)', [daily]);
+  for (let id = 101; id <= 112; id++) {
+    await query('insert into dreams(id,user_id,analysis_request_id) values ($1,$2,$3)', [id, daily, request(id)]);
+  }
+  await query("insert into quota_usage(user_id,dream_id,quota_type,occurred_at,metadata) values ($1,100,'analysis',now()-interval '25 hours',jsonb_build_object('analysis_request_id',$2::text))", [daily, request(100)]);
+  // A legacy trigger row (an imported guest dream) has no request id: it is not a new analysis.
+  await query("insert into quota_usage(user_id,dream_id,quota_type,occurred_at) values ($1,99,'analysis',now()-interval '1 hour')", [daily]);
+  const dailyClaim = async id => (await query('select public.claim_authenticated_analysis_quota($1,$2,$3) as result', [daily, id, request(id)]))[0].result;
+  const dailyReceipts = async () => Number((await query("select count(*) as n from quota_usage where user_id=$1 and quota_type='analysis'", [daily]))[0].n);
+  const firstTen = [];
+  for (let id = 101; id <= 110; id++) firstTen.push(await dailyClaim(id));
+  check(firstTen.every(result => result.allowed && result.code === 'UNLIMITED'), 'ten Plus analyses in 24 hours are allowed, neither an older claim nor a legacy row counts');
+  const capped = await dailyClaim(111);
+  check(capped.code === 'DAILY_ANALYSIS_LIMIT' && capped.daily_limit === 10 && capped.limit === null && capped.claimed === false
+    && await dailyReceipts() === 12, 'the eleventh new Plus analysis in 24 hours is refused without a receipt');
+  check(capped.retry_after_seconds > 86000 && capped.retry_after_seconds <= 86400, 'the refusal says when the oldest of the ten leaves the window');
+  check((await dailyClaim(110)).code === 'ANALYSIS_ALREADY_CLAIMED', 'a retry of a claimed request is not blocked by the ceiling');
+  const queuedCapped = (await query("select public.admit_authenticated_analysis_job($1,$2,112,$3,'fr',false,3,10,600,100,1000) as result", [request(1120), daily, request(112)]))[0].result;
+  check(queuedCapped.code === 'DAILY_ANALYSIS_LIMIT' && Number((await query('select count(*) as n from ai_jobs where user_id=$1', [daily]))[0].n) === 0,
+    'the queued path meets the same ceiling and admits no job');
+  await query("update quota_usage set occurred_at=now()-interval '24 hours 1 minute' where user_id=$1 and dream_id=101", [daily]);
+  check((await dailyClaim(111)).allowed, 'a claim leaving the 24-hour window frees one analysis');
+  await db.exec("select set_config('test.tier','free',false)");
+  check((await dailyClaim(112)).code === 'QUOTA_EXCEEDED', 'the free monthly quota answers first, the daily ceiling is Plus only');
+  await db.exec("select set_config('test.tier','plus',false)");
   const grants = await query("select bool_and(not has_function_privilege('anon',p.oid,'EXECUTE') and not has_function_privilege('authenticated',p.oid,'EXECUTE') and has_function_privilege('service_role',p.oid,'EXECUTE')) as restricted from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('claim_authenticated_analysis_quota','admit_authenticated_analysis_job','reserve_authenticated_analysis_authorization')");
   check(grants[0].restricted,'RPCs remain service-role only');
   await db.exec("select set_config('request.jwt.claims','{\"role\":\"authenticated\"}',false)");
   await assert.rejects(() => claim(4),e => e.code === '42501'); checks++;
   await assert.rejects(() => admit(),e => e.code === '42501'); checks++;
+  // Keep the historical quota/Plus cases above, then verify the migration
+  // retires the real unbound function rather than only changing API callers.
+  await db.exec(await migration('20261022013139_retire_unbound_authenticated_analysis_quota'));
+  check((await query("select to_regprocedure('public.claim_authenticated_analysis_quota(uuid,bigint,uuid)') as legacy"))[0].legacy === null,
+    'unbound authenticated quota RPC is absent after migration');
+  await db.exec("select set_config('request.jwt.claims','{\"role\":\"service_role\"}',false)");
+  await assert.rejects(
+    () => query('select public.claim_authenticated_analysis_quota($1::uuid,$2::bigint,$3::uuid)', [user, 4, request(4)]),
+    e => e.code === '42883'
+  ); checks++;
+  check((await admit()).duplicate === true, 'queued analysis admission still works after legacy RPC removal');
+  // Production may still run this pre-binding admission. The Portuguese
+  // migration carries the transcript-bound body, so it must refuse to install
+  // here rather than turn every queued analysis into a transcript mismatch.
+  const admissionDefinition = async () => (await query("select pg_get_functiondef('public.admit_authenticated_analysis_job(uuid,uuid,bigint,uuid,text,boolean,integer,integer,integer,integer,integer)'::regprocedure) as def"))[0].def;
+  const preBinding = await admissionDefinition();
+  const portuguese = await migration('20261022040000_admit_portuguese_analysis_jobs');
+  await assert.rejects(() => db.exec(portuguese),
+    e => e.message.includes('apply 20261021201021_bind_analysis_receipts_to_transcript.sql first')); checks++;
+  check(await admissionDefinition() === preBinding, 'the Portuguese admission waits for the transcript-bound authorization');
   console.log(JSON.stringify({status:'ok',checks,engine:'PGlite',hosted_access:false,concurrency_tested:false}));
 } finally { await db.close(); }

@@ -3,7 +3,7 @@
  * Tests monthly quota period calculation and reset logic
  */
 import { describe, expect, it } from '@jest/globals';
-import { getMonthlyQuotaPeriod, shouldResetQuota } from '../quotaReset';
+import { formatQuotaLastDay, formatQuotaResetDate, getMonthlyQuotaPeriod, shouldResetQuota } from '../quotaReset';
 
 describe('quotaReset', () => {
   describe('getMonthlyQuotaPeriod', () => {
@@ -216,6 +216,33 @@ describe('quotaReset', () => {
 
       // Then
       expect(result).toBe(false); // Should not reset since it's on the first day of current month
+    });
+  });
+
+  describe('formatQuotaResetDate', () => {
+    const now = new Date('2026-10-21T23:30:00Z');
+
+    it('given the end of a month when formatting the reset day then writes the first as each language does', () => {
+      expect(formatQuotaResetDate('fr-FR', {}, now)).toBe('1er novembre');
+      expect(formatQuotaResetDate('it-IT', {}, now)).toBe('1° novembre');
+      expect(formatQuotaResetDate('pt-BR', {}, now)).toBe('1º de novembro');
+      expect(formatQuotaResetDate('en-US', {}, now)).toBe('November 1');
+      expect(formatQuotaResetDate('de-DE', {}, now)).toBe('1. November');
+    });
+
+    it('given a year option when formatting the reset day then keeps the ordinal before the month', () => {
+      expect(formatQuotaResetDate('fr-FR', { year: 'numeric' }, now)).toBe('1er novembre 2026');
+    });
+  });
+
+  describe('formatQuotaLastDay', () => {
+    it('given the period ends at midnight UTC when naming its last day then names only a day it fully covers', () => {
+      // Jest keeps the time zone it started with: run under TZ=America/Los_Angeles to see the west.
+      const now = new Date('2026-10-28T09:00:00Z');
+      const westOfUtc = new Date(Date.UTC(2026, 10, 1)).getTimezoneOffset() > 0;
+      // West of UTC the 31st's evening already belongs to November's analyses.
+      expect(formatQuotaLastDay('en-US', now)).toBe(westOfUtc ? 'October 30' : 'October 31');
+      expect(formatQuotaLastDay('fr-FR', now)).toBe(westOfUtc ? '30 octobre' : '31 octobre');
     });
   });
 });

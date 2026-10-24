@@ -420,7 +420,7 @@ function printHelp() {
     'Usage:',
     '  npm run android:perf:measure -- --device <serial> [--apk <release.apk>] [--mode cold|warm|resume|all] [--runs 15] [--output <dir>]',
     '',
-    'Reading: --mode reading --scenario <private.json> --trace-processor <binary> [--phases reading-open,reading-scroll] [--pilot] [--resume] [--baseline <report.json>]',
+    'Reading: --mode reading --scenario <private.json> --trace-processor <binary> [--phases reading-open,reading-scroll|screen-open|screen-scroll] [--pilot] [--resume] [--baseline <report.json>]',
     'Reading mode verifies installed manifest/signature/runtime, retains partial results and analyzes FrameTimeline. See scripts/android/README-performance.md.',
     '',
     'The script refuses debuggable builds, removes tcp:8081 adb reverse, records raw artifacts, and writes report.json/report.csv.',

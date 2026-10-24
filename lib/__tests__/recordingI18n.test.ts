@@ -61,7 +61,6 @@ const analysisLimitSheetKeys = [
 ] as const;
 
 const recordingStatusKeys = [
-  'recording.write.instruction',
   'recording.tell.title',
   'recording.tell.empty',
   'recording.tell.edit',
@@ -101,18 +100,10 @@ const recordingModeKeys = [
   'recording.mode.voice_resume_detail',
 ] as const;
 
-const recordingActivationInsightKeys = [
-  'recording.activation_insight.eyebrow',
-  'recording.activation_insight.summary.memory',
-  'recording.activation_insight.summary.memory_draft',
-  'recording.activation_insight.summary.signals',
-  'recording.activation_insight.summary.fragment',
+// This label is still shared by remembered dreams in the journal and detail.
+// The retired activation insight card's other copy is no longer a UI contract.
+const rememberedDreamLabelKeys = [
   'recording.activation_insight.signal.memory',
-  'recording.activation_insight.signal.emotion',
-  'recording.activation_insight.signal.place',
-  'recording.activation_insight.signal.person',
-  'recording.activation_insight.signal.symbol',
-  'recording.activation_insight.signal.recurrence',
 ] as const;
 
 const recordingMicKeys = [
@@ -265,10 +256,6 @@ const rememberedDreamPromptKeys = [
 ] as const;
 
 const settingsOnboardingKeys = [
-  'settings.onboarding.title',
-  'settings.onboarding.description',
-  'settings.onboarding.restart',
-  'settings.onboarding.restart_hint',
   'analytics.privacy.title',
   'analytics.privacy.description',
   'analytics.privacy.enabled',
@@ -395,14 +382,14 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
-  it('has translations for first activation insight in all supported languages', async () => {
+  it('has translations for the remembered dream label in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
     for (const lang of languages) {
       const t = getTranslator(lang);
 
-      for (const key of recordingActivationInsightKeys) {
-        const value = t(key, { signals: 'Emotion, Place' });
+      for (const key of rememberedDreamLabelKeys) {
+        const value = t(key);
         expect(value).not.toBe(key);
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);
@@ -544,25 +531,6 @@ describe('Recording i18n - bottom sheets', () => {
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);
       }
-    }
-  });
-
-  it('tells every locale that a confirmed draft is saved on this device', async () => {
-    await Promise.all(languages.map((lang) => loadTranslations(lang)));
-
-    const savedByLocale: Record<(typeof languages)[number], RegExp> = {
-      en: /draft.*on this device/i,
-      fr: /brouillon.*sur cet appareil/i,
-      es: /borrador.*en este dispositivo/i,
-      de: /entwurf.*auf diesem gerät/i,
-      it: /bozza.*su questo dispositivo/i,
-      pt: /rascunho.*neste dispositivo/i,
-    };
-
-    for (const lang of languages) {
-      const value = getTranslator(lang)('recording.draft_progress.saved_locally');
-      expect(value).not.toBe('recording.draft_progress.saved_locally');
-      expect(value).toMatch(savedByLocale[lang]);
     }
   });
 });

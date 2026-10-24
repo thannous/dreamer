@@ -1,10 +1,9 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
-
 import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 const mockPush = jest.fn();
 let mockRitualId = 'lucid';

@@ -210,6 +210,26 @@ describe('content hub registry', () => {
     expectInvalid({ manifest: incompleteManifest }, /"blog\.spoke\.a" must exist in exactly/);
   });
 
+  it('accepts pt-br on symbol and guide entries but never on blog entries', () => {
+    const manifest = makeManifest();
+    manifest.collections.symbols.entries['symbol.snake'].locales['pt-br'] = {
+      slug: 'cobra',
+      path: '/pt-br/simbolos/cobra',
+    };
+    manifest.collections.guides.entries['guide.dictionary'].locales['pt-br'] = {
+      slug: 'dicionario-simbolos-sonhos',
+      path: '/pt-br/guides/dicionario-simbolos-sonhos',
+    };
+    expect(() => loadFixture({ manifest })).not.toThrow();
+
+    const blogManifest = makeManifest();
+    blogManifest.collections.blog.entries['blog.spoke.a'].locales['pt-br'] = {
+      slug: 'spoke-a',
+      path: '/pt-br/blog/spoke-a',
+    };
+    expectInvalid({ manifest: blogManifest }, /"blog\.spoke\.a" must exist in exactly/);
+  });
+
   it('enforces a single primary hub per spoke', () => {
     const config = makeConfig();
     config.hubs[1].spokePageIds = ['blog.spoke.a'];

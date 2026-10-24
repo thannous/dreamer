@@ -8,7 +8,7 @@ import { getRandomImageForTheme } from '@/mock-data/assets';
 import { getMockCategorizationDelayMs } from '@/lib/env';
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
 
-import type { ChatMessage, DreamTheme, DreamType, ReferenceImageGenerationRequest } from '@/lib/types';
+import type { ChatMessage, DreamTheme, DreamType } from '@/lib/types';
 
 import type {
   AnalysisJobCommandRequest,
@@ -349,20 +349,4 @@ export async function generateSpeechForText(text: string): Promise<string> {
 
   console.log('[MOCK] generateSpeechForText returning dummy audio');
   return dummyAudioBase64;
-}
-
-/**
- * Reference-image generation is hard-disabled in mock mode too.
- */
-export async function generateImageWithReference(
-  request: ReferenceImageGenerationRequest
-): Promise<string> {
-  void request;
-  throw Object.assign(new Error('Reference image generation is disabled'), {
-    status: 410,
-    body: {
-      code: 'FEATURE_DISABLED',
-      error: 'Reference image generation is disabled',
-    },
-  });
 }

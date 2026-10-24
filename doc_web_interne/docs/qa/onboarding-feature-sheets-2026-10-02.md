@@ -447,3 +447,14 @@ hashes and delivery revision are recorded in its `verification.json`.
 The opt-in feature flag still defaults to false. This web evidence does not
 qualify iOS/Android native hit testing or Release motion quality. No native build,
 prebuild, installation or physical-phone test was performed in this turn.
+
+## On by default — 2026-10-20
+
+Owner decision (thanh, 2026-10-20): the advanced onboarding is active from now on.
+`isOnboardingFeatureSheetsEnabled()` now returns true unless
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED` is exactly `false`, so a build
+without the variable (EAS profiles included) shows the feature sheets and the
+story. The commands above that unset the variable to get the off state now need
+`=false`. The E2E harnesses still pass an explicit value to the bundle; the
+qualifying Dreamer passes use `true`, and the off case runs with `false`. Release
+evidence builds use `true` so they match what ships.

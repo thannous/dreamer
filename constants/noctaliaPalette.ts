@@ -17,6 +17,31 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     // `raised` with a light veil: the screen's painting shows through cards laid on it.
     raisedTranslucent: dark ? 'rgba(20, 19, 26, 0.84)' : 'rgba(245, 234, 219, 0.88)',
     line: dark ? '#514637' : 'rgba(126, 83, 49, 0.25)',
+    // The floating navigation's frosted glass: the tint laid over the blur, a denser tint
+    // where nothing is blurred (Android), the light its top edge catches, and its rim.
+    // The tint keeps the tab labels at 4.5:1 over a painting or card scrolling beneath.
+    navGlass: {
+      tint: dark ? 'rgba(20, 19, 26, 0.7)' : 'rgba(245, 234, 219, 0.6)',
+      solid: dark ? 'rgba(20, 19, 26, 0.9)' : 'rgba(245, 234, 219, 0.94)',
+      highlight: dark ? ['rgba(255, 249, 239, 0.09)', 'rgba(255, 249, 239, 0)'] as const : ['rgba(255, 255, 255, 0.55)', 'rgba(255, 255, 255, 0)'] as const,
+      rim: dark ? 'rgba(234, 212, 180, 0.18)' : 'rgba(124, 76, 43, 0.16)',
+    },
+    // Noctalia listening: the halo that swells behind "I'm listening…" with the dreamer's voice.
+    listeningHalo: dark ? '#F2D3B8' : '#E7A873',
+    // The full moon's silver seal: its lit face, its seas, and a rim that holds it on paper
+    // (the rim keeps 4.5:1 against the paper).
+    fullMoon: {
+      light: dark ? '#F3F5FA' : '#EEF0F5',
+      shade: dark ? '#AEB6C6' : '#9AA2B2',
+      rim: dark ? '#D9DEE8' : '#5E6778',
+      halo: dark ? 'rgba(217, 222, 232, 0.3)' : 'rgba(94, 103, 120, 0.18)',
+    },
+    // The active tab's lens inside that glass: a champagne tint, a sheen across its top, a rim.
+    navActive: {
+      fill: dark ? 'rgba(234, 212, 180, 0.12)' : 'rgba(124, 76, 43, 0.08)',
+      sheen: dark ? ['rgba(255, 249, 239, 0.12)', 'rgba(255, 249, 239, 0)'] as const : ['rgba(255, 255, 255, 0.6)', 'rgba(255, 255, 255, 0)'] as const,
+      rim: dark ? 'rgba(234, 212, 180, 0.26)' : 'rgba(124, 76, 43, 0.2)',
+    },
     overlay: dark ? 'rgba(0, 0, 0, 0.64)' : 'rgba(38, 27, 28, 0.44)',
     onAccent: dark ? '#382D35' : '#FFF9EF',
     // The journal's block of leaves and its binding as its art draws them, in night paper
@@ -41,6 +66,38 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     illustration: dark
       ? { text: '#FFF9EF', scrim: 'rgba(3, 4, 13, 0.86)', transparent: 'rgba(3, 4, 13, 0)' }
       : { text: '#382D35', scrim: 'rgba(245, 234, 219, 0.92)', transparent: 'rgba(245, 234, 219, 0)' },
+    // The collection's cards are night objects in either theme, like the illustrations they
+    // hold: a night ground, a frame of the tier's metal (shadow, light, shadow, edge), the
+    // glow it casts and an ink at 4.5:1 or more on that ground. A card not yet earned has
+    // no metal; a card earned once, a discovery, is moonlit violet rather than a metal. The
+    // foil, nacre, prism and sheen are the light the gold, platinum, diamond and silver
+    // cards catch.
+    collection: {
+      ground: ['#121A42', '#070B24', '#03040D'] as const,
+      text: '#FFF9EF',
+      muted: '#B7AEC9',
+      locked: { frame: ['#2B3150', '#4A5175', '#2B3150', '#1C2038'] as const, glow: 'rgba(183, 174, 201, 0.12)', ink: '#B7AEC9' },
+      bronze: { frame: ['#6B3F22', '#E6AE7E', '#9A5F35', '#4E2D18'] as const, glow: 'rgba(230, 174, 126, 0.3)', ink: '#EDBE95' },
+      silver: { frame: ['#6F7789', '#F5F7FC', '#A3ACBD', '#4E5566'] as const, glow: 'rgba(225, 231, 243, 0.3)', ink: '#E3E8F2' },
+      gold: { frame: ['#7E5414', '#FFF0B8', '#C9973A', '#5E3E0C'] as const, glow: 'rgba(255, 214, 128, 0.42)', ink: '#F5D88E' },
+      platinum: { frame: ['#5C6677', '#FFFFFF', '#C7D1E0', '#3B4454'] as const, glow: 'rgba(214, 228, 255, 0.42)', ink: '#EEF3FB' },
+      diamond: { frame: ['#2F527F', '#F2FBFF', '#9AD6F5', '#1F375C'] as const, glow: 'rgba(160, 222, 255, 0.5)', ink: '#C8EEFF' },
+      discovery: { frame: ['#3A2E6E', '#D9CCFF', '#7A68C2', '#241B4A'] as const, glow: 'rgba(190, 170, 255, 0.32)', ink: '#D6CCFF' },
+      nacre: ['rgba(255, 255, 255, 0)', 'rgba(255, 236, 246, 0.45)', 'rgba(222, 240, 255, 0.5)', 'rgba(236, 255, 246, 0.45)', 'rgba(255, 255, 255, 0)'] as const,
+      prism: ['rgba(255, 120, 160, 0)', 'rgba(255, 140, 170, 0.55)', 'rgba(255, 220, 140, 0.55)', 'rgba(140, 240, 200, 0.55)', 'rgba(130, 190, 255, 0.55)', 'rgba(200, 150, 255, 0.55)', 'rgba(255, 120, 160, 0)'] as const,
+      foil: ['rgba(255, 170, 205, 0)', 'rgba(255, 170, 205, 0.5)', 'rgba(255, 236, 170, 0.5)', 'rgba(150, 240, 220, 0.5)', 'rgba(165, 175, 255, 0.5)', 'rgba(255, 170, 230, 0.5)', 'rgba(255, 170, 205, 0)'] as const,
+      sheen: ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0)'] as const,
+      // The night a held card is shown against (opaque: no album text ghosts behind the tiers),
+      // its tracks, hairlines, chosen tier and close button.
+      scrim: '#03040D',
+      track: 'rgba(183, 174, 201, 0.18)',
+      hairline: 'rgba(183, 174, 201, 0.22)',
+      hairlineStrong: 'rgba(183, 174, 201, 0.35)',
+      chosen: 'rgba(255, 249, 239, 0.06)',
+      button: 'rgba(20, 19, 26, 0.8)',
+      // The medallion drawn if an illustration cannot be shown.
+      standIn: { night: ['#24307A', '#101849', '#060A24'] as const, ring: '#E9C77B', glyph: '#F5E6C0' },
+    },
     danger: dark ? '#E6A49B' : '#873830',
     status: {
       danger: { background: dark ? '#302126' : '#E4C2AF', border: dark ? '#936D68' : '#A56959', text: dark ? '#E6A49B' : '#873830', icon: dark ? '#E6A49B' : '#873830' },
@@ -105,7 +162,10 @@ export function getNoctaliaDesignTokens(colors: ThemeColors, mode: ThemeMode) {
     surface: { base: p.raised, raised: p.raised, translucent: p.raisedTranslucent, active: p.actionTint, soft: p.surface, border: p.line, borderStrong: p.line, overlay: p.overlay },
     action: { primary: p.accent, primaryBorder: p.line, primaryText: p.onAccent, disabled: p.actionTint, disabledBorder: p.line, disabledText: p.muted },
     status: p.status,
-    nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive },
+    nav: { background: colors.navbarBg, border: colors.navbarBorder, active: colors.navbarTextActive, inactive: colors.navbarTextInactive, glass: p.navGlass, activePill: p.navActive },
+    listeningHalo: p.listeningHalo,
+    fullMoon: p.fullMoon,
+    collection: p.collection,
     atmosphere: {
       glow: p.accent,
       glowOpacity: dark ? 0.16 : 0.08,

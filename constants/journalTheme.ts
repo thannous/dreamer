@@ -231,28 +231,3 @@ export const DecoLines = {
     alignSelf: 'center' as const,
   },
 } as const;
-
-/**
- * Legacy export for backward compatibility
- * @deprecated Use DarkTheme or LightTheme directly
- */
-// Backward-compatible theme that includes both colors and layout tokens
-// Many components import `JournalTheme` and expect spacing/borderRadius, so
-// we merge color palette with layout tokens here.
-export type JournalThemeType = ThemeColors & typeof ThemeLayout;
-export const JournalTheme: JournalThemeType = {
-  ...DarkTheme,
-  ...ThemeLayout,
-};
-
-/**
- * Get tag color based on theme type and color mode
- * @param theme - The dream theme type (surreal, mystical, calm, noir)
- * @param colors - The theme colors to use (DarkTheme or LightTheme)
- */
-export function getTagColor(theme?: string, colors: ThemeColors = DarkTheme): string {
-  if (!theme) return colors.tags.surreal;
-
-  const themeKey = theme.toLowerCase() as keyof typeof colors.tags;
-  return colors.tags[themeKey] || colors.tags.surreal;
-}

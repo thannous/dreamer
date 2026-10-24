@@ -10,7 +10,7 @@ let mockMediaPending = false;
 let mockTranscriptHeight = 0;
 const mockIsMockModeEnabled = jest.fn(() => false);
 
-jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: mockMediaPending ? undefined : dream.imageUrl, thumbnailUrl: mockMediaPending ? undefined : dream.thumbnailUrl, loading: mockMediaPending, error: false }) }));
+jest.mock('@/hooks/useDreamMedia', () => ({ useDreamMedia: (dream: any) => ({ imageUrl: mockMediaPending ? undefined : dream.imageUrl, thumbnailUrl: mockMediaPending ? undefined : dream.thumbnailUrl, loadOriginal: () => {}, loading: mockMediaPending, error: false }) }));
 
 jest.mock('@/lib/env', () => ({
   isMockModeEnabled: () => mockIsMockModeEnabled(),
@@ -41,6 +41,9 @@ jest.mock('react-native', () => {
       </button>
     ),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
+    // The seal of a dream without a painting is drawn, not read.
+    Image: () => null,
+    Dimensions: { get: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }) },
     useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
     Text: ({ children, testID, onLayout, numberOfLines }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void; numberOfLines?: number }) => {
       React.useLayoutEffect(() => {
@@ -48,9 +51,13 @@ jest.mock('react-native', () => {
       }, [onLayout, testID]);
       return <span data-testid={testID} data-visible-lines={numberOfLines}>{children}</span>;
     },
-    View: ({ children, testID }: { children?: React.ReactNode; testID?: string }) => (
-      <div data-testid={testID}>{children}</div>
-    ),
+    View: ({ children, testID, onLayout }: { children?: React.ReactNode; testID?: string; onLayout?: (event: unknown) => void }) => {
+      // The arrow beside the dream's last line waits for the height of the labels below it.
+      React.useLayoutEffect(() => {
+        onLayout?.({ nativeEvent: { layout: { x: 16, y: 60, width: 240, height: 66 } } });
+      }, [onLayout]);
+      return <div data-testid={testID}>{children}</div>;
+    },
   };
 });
 
@@ -82,6 +89,7 @@ jest.mock('expo-image', () => ({
 
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
+    mode: 'dark',
     colors: {
       backgroundCard: '#111',
       backgroundSecondary: '#222',
@@ -102,14 +110,6 @@ jest.mock('@/context/ThemeContext', () => ({
   }),
 }));
 
-jest.mock('@/hooks/useJournalAnimations', () => ({
-  useScalePress: () => ({
-    animatedStyle: {},
-    onPressIn: () => {},
-    onPressOut: () => {},
-  }),
-}));
-
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -118,9 +118,9 @@ jest.mock('@/hooks/useTranslation', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
     },
     lora: {
       bold: 'Lora-Bold',
@@ -174,6 +174,42 @@ describe('DreamCard image fallback', () => {
     expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(expectedFull);
   });
 
+  it('shows the original painting when the stored thumbnail is an uploaded square', () => {
+    const { DreamCard } = require('../DreamCard');
+    // The 320 px square would be cropped and enlarged in the card's 9:16 frame.
+    const dream: DreamAnalysis = {
+      id: 1457,
+      transcript: 'dream transcript',
+      title: 'Dream title',
+      interpretation: 'Dream interpretation',
+      shareableQuote: 'Dream quote',
+      imageUrl: 'supabase-storage://dream-images/user-1/dream-42.webp',
+      thumbnailUrl: 'supabase-storage://dream-images/user-1/dream-42-thumb.webp',
+      chatHistory: [],
+      dreamType: 'Symbolic Dream',
+    };
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    const version = getDreamImageVersion(dream);
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(withCacheBuster(dream.imageUrl, version));
+    // An original that cannot load leaves the square rather than no painting at all.
+    fireEvent.error(screen.getByTestId('dream-image'));
+    expect(screen.getByTestId('dream-image').getAttribute('data-src')).toBe(withCacheBuster(dream.thumbnailUrl!, version));
+  });
+
+  it('keeps a square thumbnail when the original is not available', () => {
+    const { DreamCard } = require('../DreamCard');
+    // Offline, only the thumbnail may be cached.
+    const dream = { id: 1459, transcript: 'dream transcript', title: 'Dream title', chatHistory: [], imageUrl: '',
+      thumbnailUrl: 'supabase-storage://dream-images/user-1/dream-43-thumb.webp' } as unknown as DreamAnalysis;
+
+    render(<DreamCard dream={dream} onPress={jest.fn()} />);
+
+    expect(screen.getByTestId('dream-image').getAttribute('data-src'))
+      .toBe(withCacheBuster(dream.thumbnailUrl!, getDreamImageVersion(dream)));
+  });
+
   it('hides sync badges in mock mode because mock dreams are local only', () => {
     mockIsMockModeEnabled.mockReturnValue(true);
     const { DreamCard } = require('../DreamCard');
@@ -208,6 +244,15 @@ it('unfolds short text that wraps past three lines and collapses a recycled drea
   expect(screen.getByRole('button', { name: 'journal.card.collapse' }).getAttribute('aria-expanded')).toBe('true');
   expect(screen.getByTestId('journal.preview.reading').getAttribute('data-visible-lines')).toBeNull();
   rerender(<DreamCard {...props} dream={{ ...dream, id: 1457, title: 'Second dream' }} />);
+  expect(screen.getByRole('button', { name: 'journal.card.expand' }).getAttribute('aria-expanded')).toBe('false');
+  expect(screen.getByTestId('journal.preview.reading').getAttribute('data-visible-lines')).toBe('3');
+  // The card keeps its last verdict across recycles: a short dream measured next drops the arrow.
+  mockTranscriptHeight = 44;
+  rerender(<DreamCard {...props} dream={{ ...dream, id: 1458, title: 'Short dream', transcript: 'A door.' }} />);
+  expect(screen.queryByRole('button', { name: 'journal.card.expand' })).toBeNull();
+  // The dream unfolded first comes back to this card folded.
+  mockTranscriptHeight = 88;
+  rerender(<DreamCard {...props} dream={dream} />);
   expect(screen.getByRole('button', { name: 'journal.card.expand' }).getAttribute('aria-expanded')).toBe('false');
   expect(screen.getByTestId('journal.preview.reading').getAttribute('data-visible-lines')).toBe('3');
   mockTranscriptHeight = 0;

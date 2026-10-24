@@ -91,9 +91,9 @@ jest.mock('@/context/ThemeContext', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      bold: 'SpaceGrotesk-Bold',
-      medium: 'SpaceGrotesk-Medium',
+    outfit: {
+      bold: 'Outfit-Bold',
+      medium: 'Outfit-Medium',
     },
   },
 }));

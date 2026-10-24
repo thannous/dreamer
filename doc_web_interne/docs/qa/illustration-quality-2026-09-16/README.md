@@ -2,6 +2,8 @@
 
 ## État courant : HD désactivée
 
+Le 2026-10-23, le code HD client (drapeau `EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED`, réglage de qualité, quota HD, routage `illustration-hd`) a été retiré de Dreamer ; l'app envoie uniquement des demandes Standard. Le backend ci-dessous n'a pas changé. Le reste de cette page est l'historique.
+
 À la demande de l'utilisateur, `EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED` et `HD_ILLUSTRATIONS_ENABLED` sont des opt-ins stricts (`true` uniquement). L'absence du flag signifie false. Les profils EAS, dont production/release, définissent explicitement le flag client à false.
 
 - UI HD masquée, sans lecture du quota. Les anciennes préférences HD sont conservées mais ignorées ; le service client force aussi une ancienne demande 2K/4K à 1K.

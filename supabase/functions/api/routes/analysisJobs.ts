@@ -7,6 +7,7 @@ import {
   normalizeAiLanguage,
   validateBoundedText,
 } from '../lib/aiRequestPolicy.ts';
+import { PLUS_DAILY_LIMITS, plusDailyLimitResponse } from '../lib/plusDailyLimits.ts';
 import {
   createAnalysisAdminClient,
   triggerAnalysisWorkerAndLog,
@@ -21,6 +22,7 @@ type AnalysisJobAdmission = {
   retry_after_seconds?: number;
   tier?: string;
   limit?: number | null;
+  daily_limit?: number | null;
   new_count?: number | null;
   job?: AnalysisJobRow;
 };
@@ -71,6 +73,14 @@ export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Respo
     );
   }
 
+  if (admission.code === 'DAILY_ANALYSIS_LIMIT') {
+    return plusDailyLimitResponse({
+      code: admission.code,
+      dailyLimit: admission.daily_limit ?? PLUS_DAILY_LIMITS.analysis,
+      retryAfterSeconds: admission.retry_after_seconds,
+    });
+  }
+
   if (admission.code === 'DREAM_NOT_FOUND') {
     return jsonResponse({ error: 'Dream not found', code: admission.code }, 404);
   }
@@ -79,6 +89,8 @@ export const blockedAdmissionResponse = (admission: AnalysisJobAdmission): Respo
     admission.code === 'ANALYSIS_ALREADY_COMPLETE'
     || admission.code === 'ANALYSIS_REQUEST_CONFLICT'
     || admission.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED'
+    || admission.code === 'ANALYSIS_ALREADY_CLAIMED'
+    || admission.code === 'ANALYSIS_TRANSCRIPT_MISMATCH'
   ) {
     return jsonResponse({ error: 'Analysis state conflict', code: admission.code }, 409);
   }

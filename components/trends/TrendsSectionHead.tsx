@@ -11,12 +11,12 @@ export function TrendsSectionHead({ title, subtitle, children }: {
   return (
     <View className="gap-1">
       <View className="mb-2 h-[2px] w-7 rounded-full bg-champagne" />
-      <Text accessibilityRole="header" className="text-[25px] leading-[31px] font-display-semibold text-ivory">
+      <Text accessibilityRole="header" className="text-h1 font-display-semibold text-ivory">
         {title}
       </Text>
       {subtitle || children ? (
         <View className="flex-row flex-wrap items-center gap-x-3 gap-y-2">
-          {subtitle ? <Text className="shrink text-[13px] leading-[19px] font-sans text-ivory-muted">{subtitle}</Text> : null}
+          {subtitle ? <Text className="shrink text-body-sm font-sans text-ivory-muted">{subtitle}</Text> : null}
           {children}
         </View>
       ) : null}

@@ -1,10 +1,9 @@
-import type { ViewToken } from '@shopify/flash-list';
-import type { TextInputInstance } from 'react-native';
 import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
-import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
 import { UpsellCard } from '@/components/guest/UpsellCard';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
@@ -12,6 +11,7 @@ import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
+import { DreamShareComposer } from '@/components/journal/DreamShareComposer';
 import { takeDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { EmptyState } from '@/components/journal/EmptyState';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -28,8 +28,8 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import {
   DESKTOP_BREAKPOINT,
   LAYOUT_MAX_WIDTH,
-  TABLET_BREAKPOINT,
   getBottomNavigationLayout,
+  getWindowClass,
 } from '@/constants/layout';
 import { useDreams } from '@/context/DreamsContext';
 import { AuthContext } from '@/context/AuthContext';
@@ -47,22 +47,21 @@ import { getDreamThumbnailCacheKey, getDreamThumbnailUri, preloadImage } from '@
 import { trackProductEvent } from '@/lib/analytics';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
-import { FlashList, type FlashListRef, type ListRenderItemInfo } from '@shopify/flash-list';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
+import { FlashList, type FlashListRef, type ListRenderItemInfo, type ViewToken } from '@shopify/flash-list';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useContext, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useDeferredValue, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   Keyboard,
+  KeyboardAvoidingView,
   Platform,
-  Share,
   Text,
   type GestureResponderEvent,
   type NativeScrollEvent,
   type NativeSyntheticEvent,
-  type TextInput,
+  type TextInputInstance,
   View,
-  useWindowDimensions,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
@@ -72,6 +71,8 @@ const SCROLL_IDLE_MS = 140;
 const PREFETCH_CACHE_LIMIT = 250;
 const PREFETCH_MAX_PER_FLUSH = 8;
 const OVERLAY_SEARCH_DRAG_SLOP = 8;
+// A list scroll this soon after the user's wheel or touch on the web is theirs.
+const USER_SCROLL_INPUT_MS = 150;
 
 /**
  * FlashList owns these through props that take a style object, and the desktop max
@@ -117,54 +118,85 @@ function JournalListScreen() {
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
   const firstUsefulList = useRef(false);
   const firstUsefulContent = useRef(false);
+  const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
+  // The dream at the top of the list, and the one kept when its columns change (an iPhone
+  // Duo folded or opened, a phone turned): the list remounts in its new columns and opens on
+  // that dream. Kept by identity, so it is only found again among the same dreams.
+  const topDreamKeyRef = useRef<string | null>(null);
+  const resumeDreamKeyRef = useRef<string | null>(null);
+  const listItemsRef = useRef<DreamAnalysis[]>([]);
+  const searchInputRef = useRef<TextInputInstance>(null);
+  const { width, height, fontScale } = useContentWindow();
+  const insets = useSafeAreaInsets();
   const onListLoaded = useCallback(() => {
     if (!firstUsefulList.current) {
       firstUsefulList.current = true;
       markPerformance('journal.first_list_painted');
     }
-  }, []);
-  const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
-  const searchInputRef = useRef<TextInputInstance>(null);
-  const { width, height, fontScale } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
+    const resumeKey = resumeDreamKeyRef.current;
+    resumeDreamKeyRef.current = null;
+    const resumeIndex = resumeKey ? listItemsRef.current.findIndex((item) => getDreamIdentityKey(item) === resumeKey) : -1;
+    if (resumeIndex > 0) {
+      // Below the status bar: the search has scrolled away by then.
+      void flatListRef.current?.scrollToIndex({ index: resumeIndex, animated: false, viewOffset: -(insets.top + ThemeLayout.spacing.sm) });
+    }
+  }, [insets.top]);
 
   const isWeb = Platform.OS === 'web';
   const isDesktopLayout = isWeb && width >= DESKTOP_BREAKPOINT;
-  const isTabletLayout = !isDesktopLayout && width >= TABLET_BREAKPOINT;
+  // One column on a phone or the folded Duo, two open, three when the open Duo lies on its side.
+  // The web window follows the visual viewport, which the on-screen keyboard shrinks; the
+  // page keeps its height, so focusing the search never regroups the dreams.
+  const columnsHeight = isWeb && typeof document !== 'undefined'
+    ? Math.max(height, document.documentElement.clientHeight)
+    : height;
+  const windowClass = getWindowClass(width, columnsHeight);
+  const listColumns = windowClass === 'expanded' ? 3 : windowClass === 'large' ? 2 : 1;
   const desktopColumns = width >= 1440 ? 4 : 3;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   // Keep the shared brand header and search outside the column-keyed list so
   // rotation cannot remount the input. Filters remain in ListHeaderComponent;
   // on short viewports the measured chrome can collapse as the list scrolls.
-  const scrollHeader = !isDesktopLayout;
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
-  // The tab bar in app/(tabs)/_layout.tsx is position:absolute, so FlashList must
-  // reserve the full overlay from the viewport. Capping marginBottom would leave
-  // the remaining list box covered by the bar. On phones the header and search stay
+  // The tab bar in app/(tabs)/_layout.tsx is position:absolute glass, so dreams scroll
+  // behind it and the list's bottom padding clears it for the last one. On phones the header and search stay
   // mounted outside the column-keyed list but float over it: a header spacer and a
   // scroll translation carry them away with the first dreams, so the list gets the
   // whole screen once it scrolls.
-  const headerMeasureKey = `${width}:${fontScale}:${insets.top}`;
-  const [measuredHeader, setMeasuredHeader] = useState({ key: '', height: 0 });
+  // The spacer takes the chrome's last measured height, whatever width it was read at:
+  // on the web a resize can report it before the screen renders at the new width, and a
+  // chrome that keeps its height reports nothing more, so the spacer would otherwise
+  // stay on the estimate below and hide the filters under the header.
+  const [measuredHeaderHeight, setMeasuredHeaderHeight] = useState(0);
   const mobileSearchHeaderHeight = isDesktopLayout
     ? 0
-    : measuredHeader.key === headerMeasureKey
-      ? measuredHeader.height
+    : measuredHeaderHeight > 0
+      ? measuredHeaderHeight
       : insets.top + ThemeLayout.spacing.sm + searchBarLayout(fontScale).minHeight + ThemeLayout.spacing.sm;
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
-  const searchConsumesLayout = isDesktopLayout;
-  // A column change remounts the list; keyboard/height changes retain its offset.
-  const mobileListKey = isTabletLayout ? 'tablet-2col' : 'mobile-cards-1col';
+  // A column change remounts the list, which opens on the same dream; the keyboard keeps
+  // its columns and offset.
+  const mobileListKey = listColumns > 1 ? `tablet-${listColumns}col` : 'mobile-cards-1col';
+  // The columns of the list on screen: the desktop grid keeps its own.
+  const columnsKey = isDesktopLayout ? `desktop-${desktopColumns}` : mobileListKey;
   const listScrollY = useSharedValue(0);
   // The journal's own scroll, read by its header, painting and dream cards.
   const headerScrollY = useHeaderScrollY();
   const staticScrollY = useRef(0);
-  const scrollLayout = useRef({ mobileListKey, isDesktopLayout, searchConsumesLayout });
-  const searchCollapseStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: searchConsumesLayout ? 0 :
-      -Math.max(0, Math.min(listScrollY.get(), mobileSearchHeaderHeight)) }],
-  }));
+  const scrollLayoutKey = useRef(columnsKey);
+  // Open at the top and gone once scrolled past: those two hand back the same transform on
+  // each scroll frame, since Reanimated commits a style each time it gets a new one.
+  const searchEnds = useMemo(() => ({
+    open: [{ translateY: 0 }],
+    collapsed: [{ translateY: -mobileSearchHeaderHeight }],
+  }), [mobileSearchHeaderHeight]);
+  const searchCollapseStyle = useAnimatedStyle(() => {
+    const y = listScrollY.get();
+    if (isDesktopLayout || y <= 0) return { transform: searchEnds.open };
+    if (y >= mobileSearchHeaderHeight) return { transform: searchEnds.collapsed };
+    return { transform: [{ translateY: -y }] };
+  });
 
   useEffect(() => {
     const show = Keyboard.addListener(
@@ -206,29 +238,41 @@ function JournalListScreen() {
   const [sortOrder, setSortOrder] = useState<JournalSortOrder>('newest');
   // A symbol's link key: only the dreams of its thread.
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
+  // For the collection: whether a search or a filter narrows the list a dream is opened from.
+  const badgeNarrowedRef = useRef(false);
 
   // Another screen (Tendances, a symbol's sheet) can open the journal on a set of dreams:
   // its filters replace the current ones and then stay like filters set by hand (shown as
   // chips, kept while a dream is open). The params leave the route so they apply only once.
   const filterParams = useLocalSearchParams<JournalFilterRouteParams>();
   const filterLink = parseJournalFilterParams(filterParams);
+  // This consumes an external navigation command once, then preserves filters edited by hand.
+  // Applied while rendering, once per link (its parsed dates are new objects on every
+  // render): the list never renders with the previous filters, and no effect needs a
+  // lint suppression, which would keep React Compiler off this screen.
+  const filterLinkKey = filterLink?.key ?? null;
+  const [appliedFilterLinkKey, setAppliedFilterLinkKey] = useState<string | null>(null);
+  if (filterLinkKey !== appliedFilterLinkKey) {
+    setAppliedFilterLinkKey(filterLinkKey);
+    if (filterLink) {
+      setSearchQuery('');
+      setSelectedTheme(filterLink.theme);
+      setSelectedDreamType(filterLink.dreamType);
+      setDateRange({ start: filterLink.start, end: filterLink.end });
+      setQuickFilter('all');
+      setShowRememberedOnly(false);
+      setShowRecurringOnly(false);
+      setAnalysisStatus(filterLink.analysis);
+      setSelectedSymbol(filterLink.symbol);
+      setSortOrder('newest');
+    }
+  }
+  // The params leave the route so they apply only once.
   useEffect(() => {
-    const link = filterLink;
-    if (!link) return;
-    setSearchQuery('');
-    setSelectedTheme(link.theme);
-    setSelectedDreamType(link.dreamType);
-    setDateRange({ start: link.start, end: link.end });
-    setQuickFilter('all');
-    setShowRememberedOnly(false);
-    setShowRecurringOnly(false);
-    setAnalysisStatus(link.analysis);
-    setSelectedSymbol(link.symbol);
-    setSortOrder('newest');
-    router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined, symbol: undefined });
-    // Applied once per link: the parsed dates are new objects on every render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterLink?.key]);
+    if (filterLinkKey) {
+      router.setParams({ filter: undefined, theme: undefined, type: undefined, from: undefined, to: undefined, analysis: undefined, symbol: undefined });
+    }
+  }, [filterLinkKey]);
 
   // Modal states
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -241,10 +285,10 @@ function JournalListScreen() {
   const prefetchedImageUrisRef = useRef(new Set<string>());
   const isNavigatingRef = useRef(false);
   const viewableRangeRef = useRef<{ min: number; max: number } | null>(null);
-  const viewabilityConfigRef = useRef({
+  const viewabilityConfig = useMemo(() => ({
     itemVisiblePercentThreshold: JOURNAL_LIST.VIEWABILITY_THRESHOLD,
     minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME,
-  });
+  }), []);
 
   // A ref only: prefetch waits for scroll to rest, and no element of this screen reads it,
   // so starting or ending a scroll does not render the screen again.
@@ -253,17 +297,14 @@ function JournalListScreen() {
   const overlaySearchDragOriginRef = useRef({ pageX: 0, pageY: 0, offset: 0 });
 
   useLayoutEffect(() => {
-    const previous = scrollLayout.current;
-    if (previous.mobileListKey !== mobileListKey || previous.isDesktopLayout !== isDesktopLayout) {
+    if (scrollLayoutKey.current !== columnsKey) {
+      // The dream at the top, before the remount's own first rows replace it.
+      resumeDreamKeyRef.current = topDreamKeyRef.current;
       staticScrollY.current = 0;
       listScrollY.set(0);
-    } else if (previous.searchConsumesLayout !== searchConsumesLayout) {
-      // Transfer once when the header changes mode; keep retained list offsets.
-      if (searchConsumesLayout) staticScrollY.current = listScrollY.get();
-      else listScrollY.set(staticScrollY.current);
     }
-    scrollLayout.current = { mobileListKey, isDesktopLayout, searchConsumesLayout };
-  }, [mobileListKey, isDesktopLayout, searchConsumesLayout, listScrollY]);
+    scrollLayoutKey.current = columnsKey;
+  }, [columnsKey, listScrollY]);
 
   const setScrolling = useCallback((next: boolean) => {
     isScrollingRef.current = next;
@@ -273,8 +314,8 @@ function JournalListScreen() {
     ? ThemeLayout.spacing.xl
     : ThemeLayout.spacing.lg;
   const listContentStyle = useMemo(
-    () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding }],
-    [listBottomPadding]
+    () => [LIST_CONTENT_STYLE, { paddingBottom: listBottomPadding + overlayNavClearance }],
+    [listBottomPadding, overlayNavClearance]
   );
   const listContentDesktopStyle = useMemo(
     () => [LIST_CONTENT_STYLE, DESKTOP_MAX_WIDTH_STYLE, { paddingBottom: listBottomPadding }],
@@ -335,10 +376,8 @@ function JournalListScreen() {
       labelsSource: t,
     });
 
-    const orderedDreams = baseDreams;
-
     // Stored order is newest-first; only the opposite order needs a sort.
-    return sortOrder === 'oldest' ? sortDreamsByDate(orderedDreams, true) : orderedDreams;
+    return sortOrder === 'oldest' ? sortDreamsByDate(baseDreams, true) : baseDreams;
   }, [
     dreams,
     deferredSearchQuery,
@@ -383,6 +422,8 @@ function JournalListScreen() {
     if (!previewMounted.current || previewScopeRef.current.userId !== userId) return;
     void reloadDreams();
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(full) });
+    // This list only shows under a search.
+    if (badgeNarrowedRef.current) recordBadgeEvent({ type: 'journal_result_opened', now: Date.now() });
   }, [mediaUserId, loadRemoteDreamForPreview, reloadDreams]);
   const previewFiltersSupported = !selectedTheme && !selectedDreamType && !dateRange.start && !dateRange.end &&
     quickFilter === 'all' && !showRememberedOnly && !showRecurringOnly && !analysisStatus && !symbolThread &&
@@ -391,6 +432,14 @@ function JournalListScreen() {
     dateRange.start, dateRange.end, quickFilter, showRememberedOnly, showRecurringOnly, analysisStatus,
     symbolThread?.linkKey ?? null, sortOrder]);
   const { visibleItems, hasMore, loadMore } = useJournalListPagination(filteredDreams, paginationScope);
+  useLayoutEffect(() => {
+    listItemsRef.current = visibleItems;
+  }, [visibleItems]);
+  useLayoutEffect(() => {
+    // New results: the dream kept for a column change belonged to the previous ones.
+    topDreamKeyRef.current = null;
+    resumeDreamKeyRef.current = null;
+  }, [paginationScope]);
   const paginationFooter = hasMore ? (
     <PressableScale onPress={loadMore} accessibilityRole="button" className="min-h-[48px] items-center justify-center p-4">
       <Text className="font-sans-bold text-body text-champagne-on">{t('journal.pagination.more')}</Text>
@@ -405,6 +454,7 @@ function JournalListScreen() {
     </View>
   );
   const mediaGeneration = useRef(0);
+  const mediaFocused = useRef(false);
   // A new list cancels the warm-up still running for the previous one. The thumbnails already
   // warmed stay known until the account changes: their keys name the exact image, so a search
   // keystroke or a favourite does not decode the first thumbnails again.
@@ -417,13 +467,14 @@ function JournalListScreen() {
   }, [mediaUserId]);
 
   const prefetchDreamMedia = useCallback(async (entries: DreamAnalysis[]) => {
+    if (!mediaFocused.current || isScrollingRef.current) return;
     const generation = mediaGeneration.current;
     const resolved = await Promise.all(entries.slice(0, PREFETCH_MAX_PER_FLUSH).map(async (dream) => ({
       ...dream,
-      ...await resolveWithDiskCache(dream, mediaUserId, false),
+      ...await resolveWithDiskCache(dream, mediaUserId, false, { variant: 'thumbnail' }),
     })));
     for (const dream of resolved) {
-      if (generation !== mediaGeneration.current) return;
+      if (!mediaFocused.current || isScrollingRef.current || generation !== mediaGeneration.current) return;
       const uri = getDreamThumbnailUri(dream);
       if (uri && isLikelyOptimizedThumbnailUri(uri) && rememberPrefetchedUri(getDreamThumbnailCacheKey(dream) ?? uri)) {
         await preloadImage(uri, getDreamThumbnailCacheKey(dream));
@@ -431,17 +482,21 @@ function JournalListScreen() {
     }
   }, [mediaUserId, rememberPrefetchedUri]);
 
-  // Only warm a bounded window. Text rendering never waits for signatures.
-  useEffect(() => {
+  // Only warm a bounded, focused window. A hidden journal must not compete with reading.
+  useFocusEffect(useCallback(() => {
+    mediaFocused.current = true;
     void prefetchDreamMedia(filteredDreams.slice(0, PREFETCH_MAX_PER_FLUSH));
-  }, [filteredDreams, prefetchDreamMedia]);
+    return () => { mediaFocused.current = false; mediaGeneration.current += 1; };
+  }, [filteredDreams, prefetchDreamMedia]));
 
-  // Scroll to top when filters change
-  useEffect(() => {
+  // Scroll to top when filters change, not when the filtered dreams merely update.
+  const scrollFilteredListToTop = useEffectEvent(() => {
     if (filteredDreams.length > 0) {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+  useEffect(() => {
+    scrollFilteredListToTop();
   }, [
     deferredSearchQuery,
     selectedTheme,
@@ -513,28 +568,33 @@ function JournalListScreen() {
     }
     isNavigatingRef.current = true;
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
+    if (badgeNarrowedRef.current) recordBadgeEvent({ type: 'journal_result_opened', now: Date.now() });
   }, []);
 
-  // On a phone the system share sheet opens right away with the dream's words; the web has no
-  // reliable share sheet, so it opens the dream, whose detail falls back to copying.
+  // On a phone, sharing from a card lets the dreamer choose what the shared card shows, over
+  // the journal they stay in. The web, with no reliable share sheet, opens the dream, whose
+  // share falls back to copying.
+  const [shareTarget, setShareTarget] = useState<{ dream: DreamAnalysis; open: boolean } | null>(null);
   const handleDreamShare = useCallback((dream: DreamAnalysis) => {
-    if (Platform.OS === 'web') {
-      if (isNavigatingRef.current) return;
-      isNavigatingRef.current = true;
-      router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
+    if (Platform.OS !== 'web') {
+      setShareTarget({ dream, open: true });
       return;
     }
-    const quote = dream.shareableQuote?.trim();
-    const excerpt = dream.transcript?.trim().slice(0, 220);
-    const message = [
-      dream.title ? `🌙 ${dream.title}` : null,
-      quote ? `“${quote}”` : excerpt ? `${excerpt}${(dream.transcript?.trim().length ?? 0) > 220 ? '…' : ''}` : null,
-      t('journal.detail.share.footer'),
-    ].filter(Boolean).join('\n\n');
-    void Share.share({ message, title: dream.title }).catch(() => {
-      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
-    });
-  }, [t]);
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    router.push({ pathname: '/journal/[id]', params: { ...getDreamRouteParams(dream), share: '1' } });
+  }, []);
+  const closeDreamShare = useCallback(() => setShareTarget((current) => current && { ...current, open: false }), []);
+  // Once its sheet has slid away, the composer lets go of the dream.
+  useEffect(() => {
+    if (!shareTarget || shareTarget.open) return undefined;
+    const timer = setTimeout(() => setShareTarget((current) => (current && !current.open ? null : current)), 600);
+    return () => clearTimeout(timer);
+  }, [shareTarget]);
+  // The dream as the journal holds it now, through a sync that names it anew. A dream deleted
+  // meanwhile, or gone with its account, ends the share: it never reopens by itself.
+  const sharedDream = shareTarget ? dreams.find((dream) => matchesDreamTarget(dream, shareTarget.dream)) ?? null : null;
+  if (shareTarget && !sharedDream) setShareTarget(null);
 
   const handleDreamFavorite = useCallback((dream: DreamAnalysis) => {
     setFavoriteError(null);
@@ -564,7 +624,20 @@ function JournalListScreen() {
     await prefetchDreamMedia(currentFilteredDreams.slice(start, end + 1));
   }, [prefetchDreamMedia]);
 
-  const onViewableItemsChanged = useRef(({ viewableItems }: ViewabilityInfo) => {
+  // The dream at the top is the first one at least half in view, not the last sliver of a
+  // row the reader has nearly scrolled past.
+  const viewabilityConfigCallbackPairs = useMemo(() => [{
+    viewabilityConfig: { itemVisiblePercentThreshold: 50, minimumViewTime: JOURNAL_LIST.MINIMUM_VIEW_TIME },
+    onViewableItemsChanged: ({ viewableItems }: ViewabilityInfo) => {
+      let top: ViewToken<DreamAnalysis> | null = null;
+      for (const token of viewableItems) {
+        if (typeof token.index === 'number' && (top === null || token.index < (top.index ?? 0))) top = token;
+      }
+      topDreamKeyRef.current = top?.item ? getDreamIdentityKey(top.item) : null;
+    },
+  }], []);
+
+  const onViewableItemsChanged = useCallback(({ viewableItems }: ViewabilityInfo) => {
     let min = Number.POSITIVE_INFINITY;
     let max = Number.NEGATIVE_INFINITY;
 
@@ -583,7 +656,7 @@ function JournalListScreen() {
         markPerformance('journal.first_useful_content');
       }
     }
-  }).current;
+  }, []);
 
   const scheduleIdle = useCallback(() => {
     if (scrollIdleTimeoutRef.current) {
@@ -603,13 +676,35 @@ function JournalListScreen() {
     }
   }, [setScrolling]);
 
+  // react-native-web dismisses the keyboard on every scroll event when asked to on drag,
+  // the list's own animated return to the top included: a search typed in a scrolled
+  // journal lost its field after the first letter. On the web the list dismisses it only
+  // when it moves under a wheel or touch of the user's, as a drag does natively; a swipe
+  // of the filter chips or a wheel over a list that cannot move leaves the field alone.
+  const lastUserScrollInputRef = useRef(Number.NEGATIVE_INFINITY);
+  const markUserScrollInput = useCallback(() => {
+    lastUserScrollInputRef.current = performance.now();
+  }, []);
+  const webUserScrollInput = isWeb
+    ? { onWheel: markUserScrollInput, onTouchMove: markUserScrollInput }
+    : null;
+  // Typing is not scrolling: the list's return to the top that a letter starts stays its own.
+  const handleSearchQueryChange = useCallback((text: string) => {
+    lastUserScrollInputRef.current = Number.NEGATIVE_INFINITY;
+    setSearchQuery(text);
+  }, []);
+
   // A fixed header needs only an offset for a future viewport change. FlashList
   // already delivers JS scroll events; avoid a UI worklet for every such frame.
   const handleStaticListScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     staticScrollY.current = event.nativeEvent.contentOffset.y;
     headerScrollY.set(staticScrollY.current);
     listScrollY.set(staticScrollY.current);
-  }, [headerScrollY, listScrollY]);
+    if (isWeb && performance.now() - lastUserScrollInputRef.current < USER_SCROLL_INPUT_MS
+      && typeof Keyboard.dismiss === 'function') {
+      Keyboard.dismiss();
+    }
+  }, [headerScrollY, isWeb, listScrollY]);
 
   const handleListScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -627,12 +722,11 @@ function JournalListScreen() {
   }, [listScrollY]);
 
   const shouldForwardOverlaySearchDrag = useCallback((event: GestureResponderEvent) => {
-    if (searchConsumesLayout) return false;
     const origin = overlaySearchDragOriginRef.current;
     const dx = event.nativeEvent.pageX - origin.pageX;
     const dy = event.nativeEvent.pageY - origin.pageY;
     return Math.abs(dy) > OVERLAY_SEARCH_DRAG_SLOP && Math.abs(dy) >= Math.abs(dx);
-  }, [searchConsumesLayout]);
+  }, []);
 
   const handleOverlaySearchDragGrant = useCallback(() => {
     // Forwarded overlay drags use scrollToOffset, so FlashList
@@ -643,12 +737,11 @@ function JournalListScreen() {
   }, []);
 
   const handleOverlaySearchDragMove = useCallback((event: GestureResponderEvent) => {
-    if (searchConsumesLayout) return;
     const dy = event.nativeEvent.pageY - overlaySearchDragOriginRef.current.pageY;
     const next = Math.max(0, overlaySearchDragOriginRef.current.offset - dy);
     handleScrollBegin();
     flatListRef.current?.scrollToOffset({ offset: next, animated: false });
-  }, [handleScrollBegin, searchConsumesLayout]);
+  }, [handleScrollBegin]);
 
   const handleOverlaySearchDragEnd = useCallback(() => {
     scheduleIdle();
@@ -741,8 +834,9 @@ function JournalListScreen() {
   }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, storyGlowKey]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
-  const hasActiveFilter = !!(
-    searchQuery ||
+  // A search or a filter narrows the list; a sort only orders it. Blank search words narrow nothing.
+  const isNarrowed = !!(
+    deferredSearchQuery.trim() ||
     selectedTheme ||
     selectedDreamType ||
     dateRange.start ||
@@ -751,9 +845,9 @@ function JournalListScreen() {
     showRememberedOnly ||
     showRecurringOnly ||
     analysisStatus ||
-    symbolThread ||
-    hasNonDefaultSort
+    symbolThread
   );
+  const hasActiveFilter = isNarrowed || !!searchQuery || hasNonDefaultSort;
   const hasActiveAdvancedFilter = !!(
     selectedTheme ||
     selectedDreamType ||
@@ -764,6 +858,9 @@ function JournalListScreen() {
     analysisStatus ||
     hasNonDefaultSort
   );
+  useEffect(() => {
+    badgeNarrowedRef.current = isNarrowed;
+  }, [isNarrowed]);
   const canStartRememberedDreamFromEmpty = dreams.length === 0 && !hasActiveFilter;
   const handleStartRememberedDreamFromEmpty = useCallback(() => {
     void trackProductEvent('empty_journal_remembered_cta_clicked', {
@@ -916,6 +1013,7 @@ function JournalListScreen() {
     persistenceState.status === 'loading' ||
     (persistenceState.status === 'error' && persistenceState.operation === 'read') ? null : <EmptyState
       hasActiveFilter={hasActiveFilter}
+      compact={isKeyboardVisible}
       onClearFilters={handleClearFilters}
       onStartRememberedDream={
         canStartRememberedDreamFromEmpty ? handleStartRememberedDreamFromEmpty : undefined
@@ -926,6 +1024,7 @@ function JournalListScreen() {
     handleClearFilters,
     handleStartRememberedDreamFromEmpty,
     hasActiveFilter,
+    isKeyboardVisible,
     persistenceState,
     refreshState,
   ]);
@@ -952,14 +1051,14 @@ function JournalListScreen() {
       testID={TID.Component.SearchBar}
       inputTestID={TID.Input.SearchDreams}
       value={searchQuery}
-      onChangeText={setSearchQuery}
+      onChangeText={handleSearchQueryChange}
       placeholder={t('journal.search_placeholder')}
     />
   );
 
   const listHeader = (
-    <View style={scrollHeader ? { marginHorizontal: -ThemeLayout.spacing.md } : undefined}>
-      {!searchConsumesLayout ? (
+    <View style={isDesktopLayout ? undefined : { marginHorizontal: -ThemeLayout.spacing.md }}>
+      {!isDesktopLayout ? (
         <View testID="journal-search-scroll-slot" style={{ height: mobileSearchHeaderHeight }} />
       ) : null}
       {isDesktopLayout ? <DreamerArtworkWindow scene="journal" /> : null}
@@ -1062,7 +1161,7 @@ function JournalListScreen() {
   }
 
   return (
-    <View className="flex-1 bg-ink" testID={TID.Screen.Journal}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1 bg-ink" testID={TID.Screen.Journal}>
 
       {isDesktopLayout ? listHeader : (
         <Animated.View
@@ -1070,43 +1169,41 @@ function JournalListScreen() {
           className="pb-2"
           onLayout={(event) => {
             const nextHeight = event.nativeEvent.layout.height;
-            setMeasuredHeader((current) => current.key === headerMeasureKey && current.height === nextHeight
-              ? current : { key: headerMeasureKey, height: nextHeight });
+            // Hidden behind another route (on the web), the chrome measures zero: keep its
+            // real height so the list is not laid out again, twice, around the visit.
+            if (nextHeight <= 0) return;
+            setMeasuredHeaderHeight(nextHeight);
           }}
           // Overlay chrome is taller than the uncovered list box on short
           // landscape. box-none lets FlashList receive drags that miss the
           // SearchBar. Vertical drags that start on the controls are forwarded
           // to the list so the bar can collapse, while taps still reach the
           // input and clear button.
-          pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
+          pointerEvents="box-none"
           style={[{
-            ...(searchConsumesLayout
-              ? null
-              : {
-                  position: 'absolute' as const,
-                  top: 0,
-                  start: 0,
-                  end: 0,
-                  zIndex: 2,
-                }),
+            position: 'absolute' as const,
+            top: 0,
+            start: 0,
+            end: 0,
+            zIndex: 2,
           }, searchCollapseStyle]}
         >
           <View
-            pointerEvents={searchConsumesLayout ? 'auto' : 'box-none'}
+            pointerEvents="box-none"
             testID="journal-search-controls"
-            onTouchStart={searchConsumesLayout ? undefined : handleOverlaySearchTouchStart}
-            onStartShouldSetResponderCapture={searchConsumesLayout ? undefined : () => false}
-            onMoveShouldSetResponderCapture={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
-            onMoveShouldSetResponder={searchConsumesLayout ? undefined : shouldForwardOverlaySearchDrag}
-            onResponderGrant={searchConsumesLayout ? undefined : handleOverlaySearchDragGrant}
-            onResponderMove={searchConsumesLayout ? undefined : handleOverlaySearchDragMove}
-            onResponderRelease={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
-            onResponderTerminate={searchConsumesLayout ? undefined : handleOverlaySearchDragEnd}
+            onTouchStart={handleOverlaySearchTouchStart}
+            onStartShouldSetResponderCapture={() => false}
+            onMoveShouldSetResponderCapture={shouldForwardOverlaySearchDrag}
+            onMoveShouldSetResponder={shouldForwardOverlaySearchDrag}
+            onResponderGrant={handleOverlaySearchDragGrant}
+            onResponderMove={handleOverlaySearchDragMove}
+            onResponderRelease={handleOverlaySearchDragEnd}
+            onResponderTerminate={handleOverlaySearchDragEnd}
           >
             <NoctaliaScreenHeader
               scene="journal"
               // On phones the header floats over the list: its painting grows down on a pull.
-              pinned={!searchConsumesLayout}
+              pinned
               titleKey="nav.journal"
               variant="tab"
               // The title rests lower in the painting, like Today and Explore.
@@ -1149,15 +1246,16 @@ function JournalListScreen() {
         contentContainerStyle={listContentDesktopStyle}
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
-        viewabilityConfig={viewabilityConfigRef.current}
+        viewabilityConfig={viewabilityConfig}
         onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
         onScrollBeginDrag={handleScrollBegin}
         onScrollEndDrag={scheduleIdle}
         onMomentumScrollBegin={handleScrollBegin}
         onMomentumScrollEnd={scheduleIdle}
       />
     ) : (
-      <View style={{ flex: 1, marginBottom: overlayNavClearance }}>
+      <View style={{ flex: 1 }}>
       <AnimatedDreamList
         onLoad={onListLoaded}
         testID={TID.List.Dreams}
@@ -1169,24 +1267,26 @@ function JournalListScreen() {
         onEndReachedThreshold={0.5}
         ListFooterComponent={listFooter}
         keyExtractor={keyExtractor}
-        renderItem={isTabletLayout ? renderDreamItemTablet : renderDreamItem}
+        renderItem={listColumns > 1 ? renderDreamItemTablet : renderDreamItem}
         extraData={storyGlowKey ?? undefined}
-        numColumns={isTabletLayout ? 2 : 1}
+        numColumns={listColumns}
         // Perf: helps FlashList recycle views by layout type to reduce scroll-time layout work.
         getItemType={getDreamItemType}
         contentContainerStyle={listContentStyle}
         // Keep layout styles on the wrapper: Reanimated supplies style arrays,
         // while FlashList's web container spreads its style as an object.
         ListHeaderComponent={listHeader}
-        onScroll={isWeb || searchConsumesLayout ? handleStaticListScroll : handleListScroll}
+        onScroll={isWeb ? handleStaticListScroll : handleListScroll}
         scrollEventThrottle={16}
         keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
+        keyboardDismissMode={isWeb ? 'none' : 'on-drag'}
+        {...webUserScrollInput}
         contentInsetAdjustmentBehavior="never"
         ListEmptyComponent={renderEmptyState}
         showsVerticalScrollIndicator={false}
-        viewabilityConfig={viewabilityConfigRef.current}
+        viewabilityConfig={viewabilityConfig}
         onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
         onScrollBeginDrag={handleScrollBegin}
         onScrollEndDrag={scheduleIdle}
         onMomentumScrollBegin={handleScrollBegin}
@@ -1217,7 +1317,10 @@ function JournalListScreen() {
       sortOrder={sortOrder}
       onSortOrderChange={setSortOrder}
     />
-    </View>
+    {sharedDream ? (
+      <DreamShareComposer dream={sharedDream} visible={shareTarget?.open ?? false} onClose={closeDreamShare} />
+    ) : null}
+    </KeyboardAvoidingView>
   );
 }
 

@@ -5,6 +5,7 @@ export type AnalysisJobStatus = 'queued' | 'running' | 'succeeded' | 'failed';
 export type AnalysisJobRequestPayload = {
   lang?: string;
   replaceExistingImage?: boolean;
+  transcript_sha256?: string;
 };
 
 export type AnalysisJobResultPayload = {

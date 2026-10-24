@@ -3,10 +3,13 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const { Client } = require('pg');
 
 const DEFAULT_MANIFEST_PATH = path.resolve(__dirname, '..', 'supabase', 'db-contract.manifest.json');
-const DEFAULT_LOCAL_DB_URL = 'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
+const REPO_ROOT = path.resolve(__dirname, '..');
+// The local stack has no fixed port (`[experimental] stack = true`): --local asks the pinned CLI.
+const LOCAL_STATUS_COMMAND = 'supabase status --env --output-format json';
 
 function parseArgs(argv) {
   const options = {
@@ -61,20 +64,46 @@ Connection resolution:
   1. --db-url
   2. SUPABASE_DB_URL
   3. DATABASE_URL
-  4. --local -> ${DEFAULT_LOCAL_DB_URL}
+  4. --local -> SUPABASE_LOCAL_DB_URL, else DB_URL from \`${LOCAL_STATUS_COMMAND}\` (running local stack)
 
 Examples:
   npm run db:contract:check -- --local
   SUPABASE_DB_URL=postgresql://... npm run db:contract:check
-  npm run db:contract:check -- --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres
+  npm run db:contract:check -- --db-url <DB_URL printed by supabase status --env>
 `.trim());
 }
 
-function resolveDbUrl(options, env) {
+function parseStatusEnv(text) {
+  const raw = String(text ?? '').trim();
+  try {
+    const parsed = JSON.parse(raw);
+    return typeof parsed?.DB_URL === 'string' && parsed.DB_URL ? parsed.DB_URL : null;
+  } catch {
+    // Older or text output: DB_URL='...' (or double-quoted, or bare) on its own line.
+    const match = /^DB_URL=(?:'([^'\n]*)'|"([^"\n]*)"|(\S+))\s*$/m.exec(raw);
+    return match ? match[1] ?? match[2] ?? match[3] : null;
+  }
+}
+
+function readLocalStackDbUrl(env = process.env, spawn = spawnSync) {
+  const cli = path.join(REPO_ROOT, 'node_modules/.bin/supabase');
+  const result = spawn(cli, ['status', '--env', '--output-format', 'json'], {
+    cwd: REPO_ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000,
+    env: { ...env, SUPABASE_EXPERIMENTAL_STACK: '1' },
+  });
+  const dbUrl = result.status === 0 ? parseStatusEnv(result.stdout) : null;
+  if (!dbUrl) {
+    // Never guess a port: a stale default could reach another project's database.
+    throw new Error(`--local needs a running local stack (\`${LOCAL_STATUS_COMMAND}\` gave no DB_URL) or SUPABASE_LOCAL_DB_URL`);
+  }
+  return dbUrl;
+}
+
+function resolveDbUrl(options, env, readLocal = readLocalStackDbUrl) {
   if (options.dbUrl) return options.dbUrl;
   if (env.SUPABASE_DB_URL) return env.SUPABASE_DB_URL;
   if (env.DATABASE_URL) return env.DATABASE_URL;
-  if (options.local) return env.SUPABASE_LOCAL_DB_URL || DEFAULT_LOCAL_DB_URL;
+  if (options.local) return env.SUPABASE_LOCAL_DB_URL || readLocal(env);
   return null;
 }
 
@@ -403,13 +432,14 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
   const fingerprint = `db-contract-analysis-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const requestId = '3f73ab45-9a14-4db9-94a3-d24724457d9e';
   const secondRequestId = '0d38885f-52b1-4c20-a95d-fb8fb6078f3d';
+  const transcriptHash = 'a'.repeat(64);
 
   await client.query('BEGIN');
   try {
     const firstClaim = await queryFunctionJsonResult(
       client,
-      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      [fingerprint, requestId, 1]
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, requestId, 1, transcriptHash]
     );
     if (requireBoolean(firstClaim.allowed, 'first guest analysis claim allowed') !== true) {
       throw new Error('claim_guest_analysis_quota() must allow the first request');
@@ -423,11 +453,12 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
 
     const duplicateClaim = await queryFunctionJsonResult(
       client,
-      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      [fingerprint, requestId, 1]
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, requestId, 1, transcriptHash]
     );
-    if (requireBoolean(duplicateClaim.allowed, 'duplicate guest analysis claim allowed') !== true) {
-      throw new Error('the same guest analysis request must remain retryable');
+    if (requireBoolean(duplicateClaim.allowed, 'duplicate guest analysis claim allowed') !== false
+        || duplicateClaim.code !== 'ANALYSIS_ALREADY_CLAIMED') {
+      throw new Error('the same guest analysis request must not buy provider work twice');
     }
     if (requireFiniteNumber(duplicateClaim.new_count, 'duplicate guest analysis claim count') !== 1) {
       throw new Error('the same guest analysis request must not increment quota twice');
@@ -436,10 +467,21 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
       throw new Error('the repeated guest analysis request must be identified as duplicate');
     }
 
+    const changedTranscript = await queryFunctionJsonResult(
+      client,
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, requestId, 1, 'b'.repeat(64)]
+    );
+    if (requireBoolean(changedTranscript.allowed, 'changed-transcript guest analysis claim allowed') !== false
+        || changedTranscript.code !== 'ANALYSIS_TRANSCRIPT_MISMATCH'
+        || requireFiniteNumber(changedTranscript.new_count, 'changed-transcript guest analysis claim count') !== 1) {
+      throw new Error('a changed transcript must not reuse the prior guest analysis claim');
+    }
+
     const secondClaim = await queryFunctionJsonResult(
       client,
-      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer) as result',
-      [fingerprint, secondRequestId, 1]
+      'select public.claim_guest_analysis_quota($1::text, $2::uuid, $3::integer, $4::text) as result',
+      [fingerprint, secondRequestId, 1, transcriptHash]
     );
     if (requireBoolean(secondClaim.allowed, 'second guest analysis claim allowed') !== false) {
       throw new Error('a different request must still respect the exhausted quota');
@@ -450,7 +492,7 @@ async function runGuestAnalysisIdempotencyBehaviorCheck(client) {
 
     return {
       ok: true,
-      details: 'guest analysis quota is claimed exactly once per request UUID',
+      details: 'guest analysis receipts reject changed transcripts and repeated provider work',
     };
   } catch (error) {
     return {
@@ -765,7 +807,9 @@ async function runChecks(options) {
           ? 'SUPABASE_DB_URL'
           : process.env.DATABASE_URL
             ? 'DATABASE_URL'
-            : '--local default',
+            : process.env.SUPABASE_LOCAL_DB_URL
+              ? 'SUPABASE_LOCAL_DB_URL'
+              : LOCAL_STATUS_COMMAND,
       database: sanitizeDbUrl(dbUrl),
       checkCount: checks.length,
       failures,
@@ -826,10 +870,12 @@ if (require.main === module) {
 }
 
 module.exports = {
-  DEFAULT_LOCAL_DB_URL,
+  LOCAL_STATUS_COMMAND,
   DEFAULT_MANIFEST_PATH,
   loadManifest,
   parseArgs,
+  parseStatusEnv,
+  readLocalStackDbUrl,
   resolveDbUrl,
   runChecks,
   runBehaviorChecks,

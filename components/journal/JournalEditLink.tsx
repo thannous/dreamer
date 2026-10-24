@@ -9,22 +9,20 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 
 /**
- * The dream page's one way to edit it, set on the line of its date, beside what it edits.
- * It keeps to the height of that line, reaching further only for the finger. Without
- * `onEdit` it is only printed, as on a page being turned to.
+ * The dream page's one way to edit it, set among the page's last actions, beside delete.
+ * Without `onEdit` it is only printed, as on a page being turned to.
  */
-export function JournalEditLink({ onEdit, disabled = false, lineHeight }: {
+export function JournalEditLink({ onEdit, disabled = false }: {
   onEdit?: () => void;
   disabled?: boolean;
-  lineHeight: number;
 }) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const accent = useMemo(() => getNoctaliaDesignTokens(colors, mode).accent.text, [colors, mode]);
   const label = (
     <>
-      <IconSymbol name="pencil" size={13} color={accent} />
-      <Text allowFontScaling={false} style={{ lineHeight }} className="font-serif-italic text-[14px] text-champagne-on">
+      <IconSymbol name="pencil" size={16} color={accent} />
+      <Text className="font-serif-italic text-[15px] text-champagne-on">
         {t('journal.detail.edit_page')}
       </Text>
     </>
@@ -32,11 +30,11 @@ export function JournalEditLink({ onEdit, disabled = false, lineHeight }: {
   return onEdit ? (
     <PressableScale onPress={onEdit} disabled={disabled} testID={TID.Button.EditDream} accessibilityRole="button"
       accessibilityLabel={t('journal.detail.edit_page_accessibility')} accessibilityState={{ disabled }}
-      hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-      className={`flex-row items-center gap-1.5 ${disabled ? 'opacity-60' : ''}`}>
+      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      className={`min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 px-3 ${disabled ? 'opacity-70' : ''}`}>
       {label}
     </PressableScale>
   ) : (
-    <View className="flex-row items-center gap-1.5">{label}</View>
+    <View className="min-h-[44px] min-w-[44px] flex-row items-center justify-center gap-1.5 px-3">{label}</View>
   );
 }

@@ -11,27 +11,28 @@ import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
 import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
 import { Lora_700Bold } from '@expo-google-fonts/lora/700Bold';
 import { Lora_700Bold_Italic } from '@expo-google-fonts/lora/700Bold_Italic';
-import { SpaceGrotesk_400Regular } from '@expo-google-fonts/space-grotesk/400Regular';
-import { SpaceGrotesk_500Medium } from '@expo-google-fonts/space-grotesk/500Medium';
-import { SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk/700Bold';
+import { Outfit_400Regular } from '@expo-google-fonts/outfit/400Regular';
+import { Outfit_500Medium } from '@expo-google-fonts/outfit/500Medium';
+import { Outfit_700Bold } from '@expo-google-fonts/outfit/700Bold';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router/react-navigation';
 import { useFonts } from 'expo-font';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Linking, LogBox, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 
-import StartupSplashScreen, {
-  STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
-} from '@/components/StartupSplashScreen';
+import StartupSplashScreen from '@/components/StartupSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteScreenErrorFallback } from '@/components/ScreenErrorBoundary';
 import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { AnalysisFlightIndicator } from '@/components/analysis/AnalysisFlightIndicator';
 import { EngagementRemindersHost } from '@/components/reminders/EngagementRemindersHost';
+import { BadgeLedgerHost } from '@/components/badges/BadgeLedgerHost';
+import { GuideReadingHost } from '@/components/guides/GuideReadingHost';
+import { HomeWidgetsHost } from '@/components/widgets/HomeWidgetsHost';
 import { NotificationDreamImportHost } from '@/components/reminders/NotificationDreamImportHost';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
@@ -46,7 +47,6 @@ import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useAuthReturnIntent } from '@/hooks/useAuthReturnIntent';
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
@@ -80,7 +80,6 @@ import { scheduleAfterStartupPaint } from '@/lib/startupPaint';
 import { QuickSettingsProvider } from '@/components/settings/QuickSettingsProvider';
 import type { LanguagePreference } from '@/lib/types';
 import { scheduleProductBootstrap } from '@/lib/productBootstrap';
-import { setAiConsentPromptRequired } from '@/lib/aiConsent';
 import { captureDreamFromNotificationResponse, clearDreamCaptureResponse } from '@/services/notificationDreamInbox';
 import { registerDreamCaptureBackgroundTask } from '@/services/notificationDreamTask';
 import { configureNotificationHandler } from '@/services/notificationService';
@@ -248,8 +247,6 @@ function RootLayoutNav({
 }) {
   const { mode } = useTheme();
   const { user, returningGuestBlocked, loading: authLoading } = useAuth();
-  // The AI consent prompt is for signed-in users only.
-  setAiConsentPromptRequired(Boolean(user));
   const {
     state: onboardingState,
     loading: onboardingLoading,
@@ -655,7 +652,9 @@ function RootLayoutNav({
         currentPath?.startsWith('/dream-guide/') ||
         currentPath?.startsWith('/ritual/') ||
         currentPath?.startsWith('/sleep-sounds') ||
-        currentPath?.startsWith('/weekly-recap');
+        currentPath?.startsWith('/weekly-recap') ||
+        currentPath?.startsWith('/moon-letter') ||
+        currentPath?.startsWith('/collection');
 
       if (__DEV__) {
         console.log('[RootLayoutNav] navigateForForeground', {
@@ -893,6 +892,22 @@ function RootLayoutNav({
     user,
   ]);
 
+  return <RootNavigator mode={mode} nonCriticalStartupEnabled={nonCriticalStartupEnabled} />;
+}
+
+/**
+ * The providers and navigators under the root. Kept apart from RootLayoutNav, which
+ * re-renders on every route change (pathname and search params) and cannot be compiled
+ * by React Compiler: inline there, this tree was rebuilt on each navigation and every
+ * mounted tab, header and provider below it rendered again. It depends on two values.
+ */
+const RootNavigator = memo(function RootNavigator({
+  mode,
+  nonCriticalStartupEnabled,
+}: {
+  mode: ReturnType<typeof useTheme>['mode'];
+  nonCriticalStartupEnabled: boolean;
+}) {
   return (
     <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
       <KeyboardProviderComponent>
@@ -939,7 +954,8 @@ function RootLayoutNav({
             <Stack.Screen name="sleep-sounds" options={{ headerShown: false }} />
             <Stack.Screen name="paywall" options={{ headerShown: false }} />
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
-            <Stack.Screen name="dev/voice-live-spike" options={{ headerShown: false }} />
+            <Stack.Screen name="moon-letter" options={{ headerShown: false }} />
+            <Stack.Screen name="collection" options={{ headerShown: false }} />
             </Stack.Protected>
             {/* Lucid screens live under routes/lucid only (Lucid's own router root). */}
             {isLucidTrainer ? <Stack.Screen name="lucid" options={{ headerShown: false }} /> : null}
@@ -947,7 +963,7 @@ function RootLayoutNav({
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><NotificationDreamImportHost /><AnalysisFlightIndicator /></> : null}
+          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}
         </JournalRuntime>
@@ -960,7 +976,7 @@ function RootLayoutNav({
       </KeyboardProviderComponent>
     </NavigationThemeProvider>
   );
-}
+});
 
 function JournalRuntime({ children }: React.PropsWithChildren) {
   return isLucidTrainer ? <>{children}</> : <DreamsProvider>{children}</DreamsProvider>;
@@ -975,9 +991,9 @@ function JournalRuntime({ children }: React.PropsWithChildren) {
 function RootLayout() {
   const [fontsStartedAt] = useState(() => globalThis.performance?.now?.() ?? Date.now());
   const [fontsLoaded, fontError] = useFonts({
-    SpaceGrotesk_400Regular,
-    SpaceGrotesk_500Medium,
-    SpaceGrotesk_700Bold,
+    Outfit_400Regular,
+    Outfit_500Medium,
+    Outfit_700Bold,
     Lora_400Regular,
     Lora_400Regular_Italic,
     Lora_700Bold,
@@ -988,7 +1004,6 @@ function RootLayout() {
     Fraunces_700Bold,
   });
   const [showCustomSplash, setShowCustomSplash] = useState(true);
-  const [splashDelayElapsed, setSplashDelayElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
   // Every platform waits for the first screen's first frame: the still splash leaves
@@ -998,11 +1013,8 @@ function RootLayout() {
   const splashTimedOut = useSplashFailsafe(showCustomSplash);
   const shouldShowCustomSplash = showCustomSplash;
   const fontsSettled = fontsLoaded || Boolean(fontError) || splashTimedOut;
-  const prefersReducedMotion = usePrefersReducedMotion();
-  const minimumSplashElapsed =
-    prefersReducedMotion || splashTimedOut || splashDelayElapsed;
   const startupSplashPrerequisitesReady =
-    minimumSplashElapsed && languageBootstrapped && startupDestinationCommitted;
+    languageBootstrapped && startupDestinationCommitted;
   const shouldFadeSplash =
     startupSplashPrerequisitesReady && startupDestinationPainted;
   const locales = useLocales();
@@ -1113,17 +1125,6 @@ function RootLayout() {
   }, [fontsSettled]);
 
   useEffect(() => {
-    if (!fontsSettled) return;
-    if (prefersReducedMotion || splashTimedOut) return;
-
-    const timer = setTimeout(
-      () => setSplashDelayElapsed(true),
-      STARTUP_SPLASH_MINIMUM_VISIBLE_MS
-    );
-    return () => clearTimeout(timer);
-  }, [fontsSettled, prefersReducedMotion, splashTimedOut]);
-
-  useEffect(() => {
     if (!startupSplashPrerequisitesReady || startupDestinationPainted) {
       return;
     }
@@ -1134,13 +1135,18 @@ function RootLayout() {
     });
   }, [startupDestinationPainted, startupSplashPrerequisitesReady]);
 
-  // Not gated by the splash's deliberate minimum, so Observe sees a start faster
-  // than it, and a slower one is not hidden inside it.
-  const startupDestinationReady = languageBootstrapped && startupDestinationCommitted;
+  // Measure the visible destination, after the cover has actually unmounted and
+  // its replacement has painted. Route readiness alone can still be hidden.
+  const startupInteractiveMarked = useRef(false);
   useEffect(() => {
-    if (!startupDestinationReady) return;
-    return scheduleAfterStartupPaint(markStartupInteractive);
-  }, [startupDestinationReady]);
+    if (showCustomSplash || startupInteractiveMarked.current) return;
+    return scheduleAfterStartupPaint(() => {
+      if (startupInteractiveMarked.current) return;
+      startupInteractiveMarked.current = true;
+      markPerformance('startup.interactive');
+      markStartupInteractive();
+    });
+  }, [showCustomSplash]);
 
   useEffect(() => {
     if (!shouldFadeSplash) return;
@@ -1165,7 +1171,6 @@ function RootLayout() {
   }, [startupDestinationCommitted]);
 
   const handleSplashFinished = useCallback(() => {
-    markPerformance('startup.interactive');
     setShowCustomSplash(false);
   }, []);
 

@@ -122,11 +122,8 @@ const streamingTurn = () => {
   const committed: unknown[] = [];
   const context = buildContext({ dreamId: '42', message: 'Est-ce une dépression ?', clientRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e', stream: true, lang: 'fr' });
   context.supabase = {
-    rpc: async (name: string, params: Record<string, unknown>) => {
-      if (name === 'complete_authenticated_chat_turn') {
-        committed.push(params.p_model_message);
-        return { data: { completed: true }, error: null };
-      }
+    rpc: async (name: string) => {
+      assertEquals(name, 'begin_authenticated_chat_turn');
       return {
         data: {
           allowed: true, completed: false, attemptCount: 1,
@@ -141,8 +138,75 @@ const streamingTurn = () => {
       };
     },
   } as unknown as ApiContext['supabase'];
-  return { context, committed };
+  const createAdminClient = ((url: string, key: string) => {
+    assertEquals(url, context.supabaseUrl);
+    assertEquals(key, context.supabaseServiceRoleKey);
+    return {
+      rpc: async (name: string, params: Record<string, unknown>) => {
+        assertEquals(name, 'complete_authenticated_chat_turn');
+        assertEquals(params.p_user_id, context.user.id);
+        committed.push(params.p_model_message);
+        return { data: { completed: true }, error: null };
+      },
+    };
+  }) as any;
+  return { context, committed, createAdminClient };
 };
+
+Deno.test('authenticated chat requires a service completion client before starting a turn', async () => {
+  const context = buildContext({
+    dreamId: '42',
+    message: 'What could this symbol mean?',
+    clientRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+  });
+  context.supabaseServiceRoleKey = null;
+  let beganTurn = false;
+  context.supabase = { rpc: async () => { beganTurn = true; return { data: null, error: null }; } };
+
+  const response = await handleChat(context, {
+    admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }),
+  });
+
+  assertEquals(response.status, 503);
+  assertEquals(beganTurn, false);
+});
+
+Deno.test('authenticated chat releases a failed turn through the service client only', async () => {
+  const previousKey = Deno.env.get('GEMINI_API_KEY');
+  Deno.env.delete('GEMINI_API_KEY');
+  try {
+    const { context } = streamingTurn();
+    const released: { name: string; args: Record<string, unknown> }[] = [];
+    const response = await handleChat(context, {
+      admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }),
+      createAdminClient: ((url: string, key: string) => {
+        assertEquals(url, context.supabaseUrl);
+        assertEquals(key, context.supabaseServiceRoleKey);
+        return {
+          rpc: async (name: string, args: Record<string, unknown>) => {
+            released.push({ name, args });
+            return { data: true, error: null };
+          },
+        };
+      }) as any,
+    });
+
+    assertEquals(response.status, 500);
+    assertEquals(released, [{
+      name: 'fail_authenticated_chat_turn',
+      args: {
+        p_user_id: context.user!.id,
+        p_dream_id: 42,
+        p_request_id: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+        p_attempt_count: 1,
+        p_error_code: 'CHAT_REQUEST_FAILED',
+      },
+    }]);
+  } finally {
+    if (previousKey == null) Deno.env.delete('GEMINI_API_KEY');
+    else Deno.env.set('GEMINI_API_KEY', previousKey);
+  }
+});
 
 const withChatKeys = async (run: () => Promise<void>) => {
   const originalFetch = globalThis.fetch;
@@ -174,8 +238,8 @@ Deno.test('with an Anthropic key, chat streams Claude Haiku at medium effort fro
     assertEquals(JSON.stringify(body.messages).includes('private reasoning'), false);
     return claudeStream('Un rêve ne peut pas répondre à cela.');
   };
-  const { context, committed } = streamingTurn();
-  const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }) });
+  const { context, committed, createAdminClient } = streamingTurn();
+  const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }), createAdminClient });
   const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
   assertEquals(hosts, ['api.anthropic.com']);
   assertEquals(events[0], { delta: 'Un rêve ne peut pas répondre à cela.' });
@@ -197,8 +261,8 @@ Deno.test('a chat stream that fails before its first Claude text falls back to G
       { event_type: 'interaction.completed', interaction: { status: 'completed' } },
     ]);
   };
-  const { context } = streamingTurn();
-  const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }) });
+  const { context, createAdminClient } = streamingTurn();
+  const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }), createAdminClient });
   const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
   assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
   assertEquals(events[0], { delta: 'Réponse Gemini.' });

@@ -718,11 +718,13 @@ const normalizeObservedPath = (pathname: string): string =>
 // `noctalia://weekly-recap` launch fall through to `/recording`.
 const STATIC_NATIVE_ROUTES = new Set([
   'add-dream',
+  'collection',
   'dream-guides',
   'explore',
   'journal',
   'lucid',
   'modal',
+  'moon-letter',
   'onboarding',
   'paywall',
   'recording',

@@ -52,7 +52,6 @@ Le compteur cumulatif local décide si un nouveau rêve peut être enregistré :
 
 - `app/recording.tsx` affiche le nombre de sauvegardes restantes et garde le brouillon avec un accès au compte si `addDream()` refuse une sixième sauvegarde.
 - `hooks/useDreamJournal.ts` (`addDream()` guest) réserve une place sous lock avant l’écriture ; une nouvelle ligne n’apparaît dans le journal qu’après une écriture durable.
-- `hooks/useDreamSaving.ts` traite aussi l’erreur de limite pour les parcours qui utilisent ce hook.
 
 ### Concurrence (double tap / double submit)
 

@@ -234,7 +234,7 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
         <View testID="trends.nights.calendar">
           <View className="flex-row" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
             {weekdayHeader.map((letter, index) => (
-              <Text key={index} allowFontScaling={false} className="text-center text-[11px] leading-[16px] font-sans-medium uppercase text-ivory-muted"
+              <Text key={index} allowFontScaling={false} className="text-center text-overline leading-[16px] font-sans-medium uppercase text-ivory-muted"
                 style={{ width: `${100 / 7}%` }}>
                 {letter}
               </Text>
@@ -269,14 +269,14 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
                   )}
                 </View>
                 <View className="min-w-0 flex-1 gap-[2px]">
-                  <Text className="text-[12px] leading-[16px] font-sans text-ivory-muted" numberOfLines={1}>
+                  <Text className="text-caption font-sans text-ivory-muted" numberOfLines={1}>
                     {[capitalize(nightDate(selected)), theme].filter(Boolean).join(' · ')}
                   </Text>
-                  <Text className="text-[15px] leading-[21px] font-sans-medium text-ivory" numberOfLines={2}>{title}</Text>
+                  <Text className="text-body leading-[22px] font-sans-medium text-ivory" numberOfLines={2}>{title}</Text>
                 </View>
                 {waiting ? (
                   <View className="rounded-full border border-champagne-soft px-2 py-[2px]">
-                    <Text className="text-[11px] leading-[15px] font-sans-medium text-champagne-on">{t('trends.nights.to_analyze')}</Text>
+                    <Text className="text-caption font-sans-medium text-champagne-on">{t('trends.nights.to_analyze')}</Text>
                   </View>
                 ) : null}
                 <IconSymbol name="chevron.right" size={16} color={ink} />
@@ -291,8 +291,8 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
           {stats.map((stat, index) => (
             <View key={stat.key} testID={`trends.nights.stat.${stat.key}`}
               className={`min-w-[96px] flex-1 gap-[2px] ${index > 0 ? 'border-l border-line pl-3' : ''}`}>
-              <Text className="text-[19px] leading-[25px] font-display-semibold text-ivory">{stat.value}</Text>
-              <Text className="text-[12px] leading-[16px] font-sans text-ivory-muted">{stat.label}</Text>
+              <Text className="text-h3 font-display-semibold text-ivory">{stat.value}</Text>
+              <Text className="text-caption font-sans text-ivory-muted">{stat.label}</Text>
             </View>
           ))}
         </View>
@@ -300,11 +300,11 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
 
       {nudge ? (
         <View className="card flex-row items-center gap-3 px-4 py-3" testID="trends.nights.nudge">
-          <Text className="min-w-0 flex-1 text-[14px] leading-[20px] font-sans text-ivory">{nudge}</Text>
+          <Text className="min-w-0 flex-1 text-body-sm font-sans text-ivory">{nudge}</Text>
           <PressableScale testID="trends.nights.capture" onPress={onCapture} haptic="light" accessibilityRole="button"
             accessibilityLabel={t('trends.nudge.cta_label')}
             className="min-h-[44px] flex-row items-center gap-1 rounded-full bg-champagne px-4">
-            <Text className="text-[14px] font-sans-bold text-on-champagne">{t('trends.nudge.cta')}</Text>
+            <Text className="text-body-sm font-sans-bold text-on-champagne">{t('trends.nudge.cta')}</Text>
             <IconSymbol name="arrow.right" size={14} color={onAccent} />
           </PressableScale>
         </View>

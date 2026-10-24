@@ -1,10 +1,11 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import type { DreamerScene } from '@/constants/dreamerArtwork';
-import { ThemeLayout } from '@/constants/journalTheme';
+import { DarkTheme, ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import React, { type ReactNode, memo, useState } from 'react';
@@ -15,15 +16,18 @@ import {
   StyleSheet,
   Text,
   View,
-  useWindowDimensions,
   type TextStyle,
   type ViewStyle,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated from 'react-native-reanimated';
 import { useHeaderFadeStyle } from '@/components/ui/headerStretch';
+import { TypeScale } from '@/constants/typeScale';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
+
+// A dream's own image is painted once for both themes: what sits on it keeps the night's ink.
+const NIGHT = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
 export interface NoctaliaHeaderAction {
   icon: IconName;
@@ -52,8 +56,6 @@ interface NoctaliaScreenHeaderProps {
    * one row, the page title below, the night sky behind it in the dark theme.
    */
   variant?: 'standard' | 'editorial' | 'tab';
-  /** Secondary line under the title (`tab` variant only). */
-  subtitle?: string;
   /** Paint the night sky behind the `tab` header. Off when the screen draws its own artwork. */
   backdrop?: boolean;
   /** The header floats over its scrolling content instead of scrolling with it. */
@@ -63,6 +65,15 @@ interface NoctaliaScreenHeaderProps {
    * its foot, whether the header paints it or the screen does. Compact with very large text.
    */
   immersive?: boolean;
+  /** `immersive` only: a taller opening than the top third, for a screen that paints a bigger image. */
+  immersiveHeight?: number;
+  /**
+   * `tab` only: the screen paints an image the theme never changes (the day's dream), so the
+   * wordmark and actions keep the night's light ink whatever the theme.
+   */
+  overArtwork?: boolean;
+  /** `tab` only: the screen's own headline in place of the page title. */
+  titleSlot?: ReactNode;
   includeTopInset?: boolean;
   actions?: NoctaliaHeaderAction[];
   chips?: NoctaliaHeaderChip[];
@@ -81,15 +92,17 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
   chips = [],
   slot,
   inlineSlot,
-  subtitle,
   backdrop = true,
   pinned = false,
   immersive = false,
+  immersiveHeight,
+  overArtwork = false,
+  titleSlot,
 }: NoctaliaScreenHeaderProps) {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width, height: windowHeight, fontScale } = useWindowDimensions();
+  const { width, height: windowHeight, fontScale } = useContentWindow();
   const isNarrow = width < 480;
   // Beside the desktop sidebar the wordmark is already on screen.
   const showBrand = !(Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT);
@@ -122,14 +135,6 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 14,
   } as const;
-  // Copy needs a steady ground even over the brightest part of a painting.
-  const paintedTextGround = {
-    alignSelf: 'flex-start',
-    maxWidth: '100%',
-    backgroundColor: noctalia.surface.translucent,
-    borderRadius: 4,
-    paddingHorizontal: 4,
-  } as const;
 
   // Floating over its list, only the controls catch touches: a drag anywhere else on the
   // header reaches the list beneath and scrolls it natively, momentum included.
@@ -140,8 +145,12 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     // Same gutter as the Today hero; only the narrowest phones tighten it.
     const horizontalPadding = width <= 360 ? ThemeLayout.spacing.md : ThemeLayout.spacing.lg;
     const stageHeight = immersive && fontScale < 1.5
-      ? Math.round(Math.min(420, windowHeight * 0.33)) - (includeTopInset ? 0 : insets.top)
+      ? Math.round(immersiveHeight ?? Math.min(420, windowHeight * 0.33)) - (includeTopInset ? 0 : insets.top)
       : undefined;
+    const chrome = overArtwork ? NIGHT : noctalia;
+    const chromeTextShadow = overArtwork
+      ? { ...paintedTextShadow, textShadowColor: `${NIGHT.screen.background}CC` }
+      : paintedTextShadow;
     return (
       <Animated.View
         pointerEvents={passThrough}
@@ -161,12 +170,12 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         <View pointerEvents={passThrough} style={[styles.tabBrandRow, { paddingHorizontal: horizontalPadding }]}>
           {showBrand ? (
             <View pointerEvents={pinned ? 'none' : undefined} style={styles.tabBrand} accessible accessibilityLabel="Noctalia">
-              <IconSymbol name="moon.stars.fill" size={22} color={noctalia.accent.text} />
+              <IconSymbol name="moon.stars.fill" size={22} color={chrome.accent.text} />
               <Text
                 allowFontScaling={false}
                 numberOfLines={1}
-                style={[styles.tabBrandText, paintedTextShadow, paintedTextGround, {
-                  color: noctalia.text.primary,
+                style={[styles.tabBrandText, chromeTextShadow, {
+                  color: chrome.text.primary,
                   fontSize: styles.tabBrandText.fontSize * brandFontScale,
                   lineHeight: styles.tabBrandText.lineHeight * brandFontScale,
                 }]}
@@ -185,8 +194,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                     styles.tabIconButton,
                     {
                       // A dark scrim and a hairline keep the button legible over any painting.
-                      backgroundColor: action.active ? noctalia.action.primary : `${noctalia.screen.background}B8`,
-                      borderColor: action.active ? noctalia.action.primaryBorder : noctalia.text.tertiary,
+                      backgroundColor: action.active ? chrome.action.primary : `${chrome.screen.background}B8`,
+                      borderColor: action.active ? chrome.action.primaryBorder : chrome.text.tertiary,
                     },
                     pressed && styles.pressed,
                   ]}
@@ -198,7 +207,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
                   <IconSymbol
                     name={action.icon}
                     size={32}
-                    color={action.active ? noctalia.action.primaryText : noctalia.text.primary}
+                    color={action.active ? chrome.action.primaryText : chrome.text.primary}
                   />
                 </Pressable>
               ))}
@@ -209,25 +218,22 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
         {stageHeight ? <View pointerEvents={passThrough} style={styles.stageSpace} /> : null}
         <View pointerEvents={pinned ? 'none' : undefined} style={{ paddingHorizontal: horizontalPadding }}
           onLayout={stageHeight ? (event) => setTitleTop(event.nativeEvent.layout.y) : undefined}>
-          <Text
-            accessibilityRole="header"
-            allowFontScaling={false}
-            style={[styles.tabTitle, paintedTextShadow, paintedTextGround, {
-              color: noctalia.text.primary,
-              fontSize: styles.tabTitle.fontSize * tabTitleScale,
-              lineHeight: styles.tabTitle.lineHeight * tabTitleScale,
-            }]}
-            numberOfLines={tabTitleScale >= 1.3 ? undefined : 1}
-            adjustsFontSizeToFit={tabTitleScale < 1.3}
-            minimumFontScale={0.8}
-          >
-            {t(titleKey)}
-          </Text>
-          {subtitle ? (
-            <Text style={[styles.tabSubtitle, paintedTextShadow, paintedTextGround, { color: noctalia.text.secondary }]} maxFontSizeMultiplier={1.6}>
-              {subtitle}
+          {titleSlot ?? (
+            <Text
+              accessibilityRole="header"
+              allowFontScaling={false}
+              style={[styles.tabTitle, paintedTextShadow, {
+                color: noctalia.text.primary,
+                fontSize: styles.tabTitle.fontSize * tabTitleScale,
+                lineHeight: styles.tabTitle.lineHeight * tabTitleScale,
+              }]}
+              numberOfLines={tabTitleScale >= 1.3 ? undefined : 1}
+              adjustsFontSizeToFit={tabTitleScale < 1.3}
+              minimumFontScale={0.8}
+            >
+              {t(titleKey)}
             </Text>
-          ) : null}
+          )}
         </View>
         {inlineSlot ? <View pointerEvents={passThrough} style={{ paddingHorizontal: horizontalPadding }}>{inlineSlot}</View> : null}
         {slot ? <View pointerEvents={passThrough} style={styles.slot}>{slot}</View> : null}
@@ -247,7 +253,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
             : { flex: 0, flexBasis: 'auto', width: '100%', paddingRight: stackActions ? 0 : actions.length * 52 }),
         ]}>
           {showBrand ? <Text
-            style={[styles.brand, isProminent && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, scene && paintedTextShadow, scene && paintedTextGround, {
+            style={[styles.brand, isProminent && styles.quietBrand, variant === 'editorial' && styles.editorialBrand, scene && paintedTextShadow, {
               color: noctalia.text.primary,
               fontSize: brandTypography.fontSize * brandFontScale,
               lineHeight: brandTypography.lineHeight * brandFontScale,
@@ -262,7 +268,7 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
           <Text
             accessibilityRole={isProminent || variant === 'editorial' ? 'header' : undefined}
             allowFontScaling={false}
-            style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, scene && paintedTextShadow, scene && paintedTextGround, {
+            style={[styles.subtitle, isProminent && styles.prominentTitle, variant === 'editorial' && styles.editorialTitle, scene && paintedTextShadow, {
               color: isProminent || variant === 'editorial' ? noctalia.text.primary : noctalia.text.secondary,
               fontSize: titleTypography.fontSize * titleFontScale,
               lineHeight: titleTypography.lineHeight * titleFontScale,
@@ -388,7 +394,7 @@ const styles = StyleSheet.create({
   tabBrandText: {
     flexShrink: 1,
     fontFamily: Fonts.fraunces.medium,
-    fontSize: 18,
+    fontSize: TypeScale.h3.fontSize,
     lineHeight: 24,
   },
   tabIconButton: {
@@ -401,18 +407,12 @@ const styles = StyleSheet.create({
   },
   tabTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 38,
-    lineHeight: 46,
-  },
-  tabSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 2,
+    fontSize: TypeScale.hero.fontSize,
+    lineHeight: TypeScale.hero.lineHeight,
   },
   editorialContainer: { borderBottomWidth: 0 },
-  editorialBrand: { fontSize: 18, lineHeight: 24, marginBottom: 8 },
-  editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 28, lineHeight: 36, opacity: 1 },
+  editorialBrand: { fontSize: TypeScale.h3.fontSize, lineHeight: 24, marginBottom: 8 },
+  editorialTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h1.fontSize, lineHeight: 36, opacity: 1 },
   editorialActions: { alignSelf: 'flex-start' },
   container: {
     gap: ThemeLayout.spacing.md,
@@ -420,10 +420,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   prominentContainer: { borderBottomWidth: 0 },
-  quietBrand: { fontSize: 18, lineHeight: 24 },
+  quietBrand: { fontSize: TypeScale.h3.fontSize, lineHeight: 24 },
   prominentTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 28,
+    fontSize: TypeScale.h1.fontSize,
     lineHeight: 36,
     opacity: 1,
   },
@@ -452,13 +452,13 @@ const styles = StyleSheet.create({
   },
   brand: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 24,
-    lineHeight: 30,
+    fontSize: TypeScale.h2.fontSize,
+    lineHeight: TypeScale.h2.lineHeight,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
-    lineHeight: 21,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   headerActions: {
     flexDirection: 'row',
@@ -518,8 +518,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   chipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     flexGrow: 0,
     flexShrink: 0,

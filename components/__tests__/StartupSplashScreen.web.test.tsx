@@ -2,18 +2,12 @@ import React from 'react';
 import { cleanup, render } from '@testing-library/react-native-legacy';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 
-import StartupSplashScreen, {
-  STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
-} from '../StartupSplashScreen.web';
+import StartupSplashScreen from '../StartupSplashScreen.web';
 
 // Web only: iOS and Android hold the native splash (StartupSplashScreen.tsx).
-// `startup.interactive` is marked by `onDone`: once per launch.
+// The root marks startup interactive after this cover is removed and painted.
 describe('Startup splash', () => {
   afterEach(cleanup);
-
-  it('holds a still splash for no more than the static budget', () => {
-    expect(STARTUP_SPLASH_MINIMUM_VISIBLE_MS).toBeLessThanOrEqual(150);
-  });
 
   it('finishes exactly once when the first screen is ready', () => {
     const onDone = jest.fn();

@@ -37,7 +37,9 @@ export function createJournalRecordStore<T extends object>({ database, keyOf, en
         revision INTEGER NOT NULL, present INTEGER NOT NULL, record_count INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS journal_records (
         scope TEXT NOT NULL, identity TEXT NOT NULL, position INTEGER NOT NULL,
-        value TEXT NOT NULL, PRIMARY KEY(scope, identity));`);
+        value TEXT NOT NULL, PRIMARY KEY(scope, identity));
+      CREATE INDEX IF NOT EXISTS journal_records_scope_position
+        ON journal_records(scope, position);`);
     return db;
   }).catch(error => { ready = undefined; throw error; });
   const check = (values: T[]) => {

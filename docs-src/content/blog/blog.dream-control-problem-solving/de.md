@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "traumkontrolle-problemloesung",
   "title": "Träume steuern zur Problemlösung | Noctalia",
-  "description": "Träume steuern zur Problemlösung: Was die Northwestern-Studie von 2026 wirklich gezeigt hat, wo ihre Grenzen liegen und wie Sie es zu Hause testen.",
+  "description": "Träume steuern zur Problemlösung: Was die Northwestern-Studie von 2026 wirklich gezeigt hat, wo ihre Grenzen liegen und wie du es zu Hause testest.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -29,9 +29,9 @@
   "nextPath": "/de/blog/zeitumstellung-schlaf-traeume",
   "preloadImage": "/img/blog/dream-control-problem-solving.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Träume steuern zur Problemlösung: Was die Northwestern-Studie wirklich zeigt\",\n    \"description\": \"Träume steuern zur Problemlösung: Was die Northwestern-Studie von 2026 wirklich gezeigt hat, wo ihre Grenzen liegen und wie Sie es zu Hause testen.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-control-problem-solving.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-14\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1940,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Träume steuern zur Problemlösung: Was die Northwestern-Studie wirklich zeigt\",\n    \"description\": \"Träume steuern zur Problemlösung: Was die Northwestern-Studie von 2026 wirklich gezeigt hat, wo ihre Grenzen liegen und wie du es zu Hause testest.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/dream-control-problem-solving.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Gründer & Publikationsleiter\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2026-03-14\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 1940,\n    \"timeRequired\": \"PT9M\",\n    \"url\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"WebPage\",\n  \"@id\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\",\n  \"url\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\",\n  \"name\": \"Träume steuern zur Problemlösung | Noctalia\",\n  \"inLanguage\": \"de\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann man den Inhalt seiner Träume wirklich steuern?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Teilweise. Klänge im REM-Schlaf können ein Thema häufiger in Träumen auftauchen lassen, wie die Northwestern-Studie (2026) mit Rätseln beobachtet hat. Vollständige Kontrolle ist selten, selbst bei Klarträumern.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Hat die Northwestern-Studie die Lösungsrate verdoppelt?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nicht in der Gesamtgruppe: Etwa 30 % der beschallten Rätsel wurden gelöst, gegenüber 22 % der übrigen, ein Unterschied, den die Autoren nicht für verlässlich halten. Eine Verbesserung zeigte sich nur bei Teilnehmenden, deren Träume den Signalen folgten, in einer nachträglichen Analyse einer kleinen Stichprobe.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was ist der Unterschied zwischen TMR und Klarträumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"TMR nutzt ein äußeres Signal wie einen Klang, um im Schlaf eine Erinnerung zu reaktivieren, ohne dass Sie wissen, dass Sie träumen. Beim Klarträumen merken Sie im Traum, dass Sie träumen. Die Studie von 2026 kombinierte beides.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann ich diese Technik zu Hause anwenden?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In vereinfachter Form, ja: Schreiben Sie Ihre Frage vor dem Schlafen auf, verknüpfen Sie sie bei Bedarf mit einem kurzen Klang und notieren Sie Ihre Träume gleich nach dem Aufwachen. Halten Sie nächtliche Klänge kaum hörbar und hören Sie auf, wenn sie Sie wecken. Erwarten Sie keine Laborergebnisse: Ein Traumtagebuch zeigt Ihnen, was wirklich passiert.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann man den Inhalt seiner Träume wirklich steuern?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Teilweise. Klänge im REM-Schlaf können ein Thema häufiger in Träumen auftauchen lassen, wie die Northwestern-Studie (2026) mit Rätseln beobachtet hat. Vollständige Kontrolle ist selten, selbst bei Klarträumern.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Hat die Northwestern-Studie die Lösungsrate verdoppelt?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nicht in der Gesamtgruppe: Etwa 30 % der beschallten Rätsel wurden gelöst, gegenüber 22 % der übrigen, ein Unterschied, den die Autoren nicht für verlässlich halten. Eine Verbesserung zeigte sich nur bei Teilnehmenden, deren Träume den Signalen folgten, in einer nachträglichen Analyse einer kleinen Stichprobe.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was ist der Unterschied zwischen TMR und Klarträumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"TMR nutzt ein äußeres Signal wie einen Klang, um im Schlaf eine Erinnerung zu reaktivieren, ohne dass du weißt, dass du träumst. Beim Klarträumen merkst du im Traum, dass du träumst. Die Studie von 2026 kombinierte beides.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann ich diese Technik zu Hause anwenden?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"In vereinfachter Form, ja: Schreib deine Frage vor dem Schlafen auf, verknüpf sie bei Bedarf mit einem kurzen Klang und notiere deine Träume gleich nach dem Aufwachen. Halte nächtliche Klänge kaum hörbar und hör auf, wenn sie dich wecken. Erwarte keine Laborergebnisse: Ein Traumtagebuch zeigt dir, was wirklich passiert.\"\n            }\n        }\n    ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Traumkontrolle\",\n      \"item\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -69,7 +69,7 @@
 Träume steuern zur Problemlösung: Was die Northwestern-Studie wirklich zeigt
 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-Sie gehen mit einem Problem ins Bett, das sich nicht lösen lässt, und am Morgen sieht es anders aus, manchmal liegt die Antwort plötzlich auf der Hand. Im Februar 2026 wollte ein Team der Northwestern University wissen, ob sich das gezielt anstoßen lässt: Es spielte im REM-Schlaf einen Klang ab, der mit einem ungelösten Rätsel verknüpft war, und brachte das Rätsel so in die Träume. Hat das beim Lösen geholfen? Teilweise, und weniger, als die Schlagzeilen behaupteten. Hier lesen Sie, was die Studie zeigt, was nicht, und was Sie selbst ausprobieren können.
+Du gehst mit einem Problem ins Bett, das sich nicht lösen lässt, und am Morgen sieht es anders aus, manchmal liegt die Antwort plötzlich auf der Hand. Im Februar 2026 wollte ein Team der Northwestern University wissen, ob sich das gezielt anstoßen lässt: Es spielte im REM-Schlaf einen Klang ab, der mit einem ungelösten Rätsel verknüpft war, und brachte das Rätsel so in die Träume. Hat das beim Lösen geholfen? Teilweise, und weniger, als die Schlagzeilen behaupteten. Hier liest du, was die Studie zeigt, was nicht, und was du selbst ausprobieren kannst.
 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -101,7 +101,7 @@ Sie gehen mit einem Problem ins Bett, das sich nicht lösen lässt, und am Morge
 <li><a class="toc-link block" href="#tmr">2. Wie gelangt ein Klang in einen Traum?</a></li>
 <li><a class="toc-link block" href="#two-way">3. Kann man mit Träumenden sprechen?</a></li>
 <li><a class="toc-link block" href="#history">4. Kekulé, McCartney: Was taugen die berühmten Geschichten?</a></li>
-<li><a class="toc-link block" href="#practice">5. So probieren Sie es zu Hause aus</a></li>
+<li><a class="toc-link block" href="#practice">5. So probierst du es zu Hause aus</a></li>
 <li><a class="toc-link block" href="#limits">6. Was die Forschung noch nicht zeigt</a></li>
 </ol>
 </nav>
@@ -122,7 +122,7 @@ Am deutlichsten ist das Ergebnis bei den Träumen selbst. Die „beschallten“ 
 Hier waren die Schlagzeilen zu schnell. In der Gesamtgruppe wurden am nächsten Morgen etwa 30 % der beschallten Rätsel gelöst, gegenüber 22 % der übrigen: ein Unterschied, den die Autoren nicht für verlässlich halten. Bei den 12 Teilnehmenden, deren Träume den Signalen am deutlichsten folgten, wurden die beschallten Rätsel häufiger gelöst.
 </p>
 <p>
-Das ist ermutigend, stammt aber aus einer nachträglichen Analyse einer kleinen Gruppe. Ein Hinweis, der wiederholt werden muss, kein Beweis dafür, dass Träume Ihre Problemlösung <strong>verdoppeln</strong>.
+Das ist ermutigend, stammt aber aus einer nachträglichen Analyse einer kleinen Gruppe. Ein Hinweis, der wiederholt werden muss, kein Beweis dafür, dass Träume deine Problemlösung <strong>verdoppeln</strong>.
 </p>
 
 <h2 id="tmr">Wie gelangt ein Klang in einen Traum?</h2>
@@ -168,8 +168,8 @@ Was das Labor beiträgt, ist kein Wunder, sondern eine Methode: beschallte und n
 <i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halten Sie den Traum fest, bevor das Problem Sie einholt</h4>
-<p class="text-sm text-gray-400 mb-4">Erzählen Sie Ihren Traum in Noctalia direkt nach dem Aufwachen laut oder tippen Sie ihn ein. Er wird transkribiert und in Ihrem Tagebuch gespeichert. So können Sie mehrere Nächte nebeneinander lesen und sehen, ob Ihr Problem wiederkehrt.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Halte den Traum fest, bevor das Problem dich einholt</h4>
+<p class="text-sm text-gray-400 mb-4">Erzähl deinen Traum in Noctalia direkt nach dem Aufwachen laut oder tipp ihn ein. Er wird transkribiert und in deinem Tagebuch gespeichert. So kannst du mehrere Nächte nebeneinander lesen und sehen, ob dein Problem wiederkehrt.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
 So funktioniert das Traumtagebuch per Sprache <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -178,23 +178,23 @@ So funktioniert das Traumtagebuch per Sprache <i class="w-4 h-4" data-lucide="ar
 </aside>
 
 <div class="prose max-w-none text-gray-300">
-<h2 id="practice">So probieren Sie es zu Hause aus</h2>
+<h2 id="practice">So probierst du es zu Hause aus</h2>
 <p>
-Ohne Labor können Sie den REM-Schlaf nicht erkennen und nicht wissen, wann ein Klang Sie erreicht. Diese Schritte übernehmen das Prinzip aus der Forschung, ohne deren Ergebnisse zu versprechen.
+Ohne Labor kannst du den REM-Schlaf nicht erkennen und nicht wissen, wann ein Klang dich erreicht. Diese Schritte übernehmen das Prinzip aus der Forschung, ohne deren Ergebnisse zu versprechen.
 </p>
 <ul>
-<li><strong>Wählen Sie ein echtes, konkretes Problem.</strong> „Wie fange ich das erste Kapitel an?“ funktioniert besser als „meine Karriere“. Die Studie von 2026 nutzte Rätsel mit einer einzigen Lösung; offene Probleme sind kaum untersucht.</li>
-<li><strong>Schreiben Sie die Frage vor dem Schlafen auf.</strong> Ein einziger Satz. Lesen Sie ihn noch einmal, stellen Sie sich die Situation eine Minute lang vor und lassen Sie dann los. Das ist klassische Inkubation.</li>
-<li><strong>Fügen Sie bei Bedarf einen Klang hinzu.</strong> Spielen Sie einen kurzen, ungewöhnlichen Klang (ein Glockenspiel, ein paar Töne), während Sie abends über das Problem nachdenken. Wenn Sie ihn nachts wiederholen, dann kaum hörbar, und lassen Sie es, falls er Sie weckt: Zerstückelter Schlaf kostet mehr, als er bringt.</li>
-<li><strong>Notieren Sie alles nach dem Aufwachen, noch vor dem Handy.</strong> Die Szene, das Gefühl, jede Verbindung zum Problem, auch eine lose. Unser Ratgeber, wie Sie <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">sich an Ihre Träume erinnern</a>, erklärt, warum die ersten Minuten zählen.</li>
-<li><strong>Prüfen Sie die Idee bei Tageslicht.</strong> Ein Traum kann einen Blickwinkel bieten, keine Garantie. Prüfen Sie ihn im Wachzustand.</li>
+<li><strong>Wähle ein echtes, konkretes Problem.</strong> „Wie fange ich das erste Kapitel an?“ funktioniert besser als „meine Karriere“. Die Studie von 2026 nutzte Rätsel mit einer einzigen Lösung; offene Probleme sind kaum untersucht.</li>
+<li><strong>Schreib die Frage vor dem Schlafen auf.</strong> Ein einziger Satz. Lies ihn noch einmal, stell dir die Situation eine Minute lang vor und lass dann los. Das ist klassische Inkubation.</li>
+<li><strong>Füge bei Bedarf einen Klang hinzu.</strong> Spiel einen kurzen, ungewöhnlichen Klang (ein Glockenspiel, ein paar Töne), während du abends über das Problem nachdenkst. Wenn du ihn nachts wiederholst, dann kaum hörbar, und lass es, falls er dich weckt: Zerstückelter Schlaf kostet mehr, als er bringt.</li>
+<li><strong>Notiere alles nach dem Aufwachen, noch vor dem Handy.</strong> Die Szene, das Gefühl, jede Verbindung zum Problem, auch eine lose. Unser Ratgeber, wie du <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">dich an deine Träume erinnerst</a>, erklärt, warum die ersten Minuten zählen.</li>
+<li><strong>Prüfe die Idee bei Tageslicht.</strong> Ein Traum kann einen Blickwinkel bieten, keine Garantie. Prüfe ihn im Wachzustand.</li>
 </ul>
 <p>
-Taucht eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/tuer">Tür</a>, ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/schluessel">Schlüssel</a>, eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/treppe">Treppe</a> oder ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/spiegel">Spiegel</a> auf, lesen Sie das nicht als verschlüsselte Antwort. Notieren Sie lieber, was Sie damit gemacht haben: Ging die Tür auf, sind Sie hinauf- oder hinabgestiegen? Solche Details sagen mehr darüber, wie Sie das Problem angehen, als jede Symbolliste.
+Taucht eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/tuer">Tür</a>, ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/schluessel">Schlüssel</a>, eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/treppe">Treppe</a> oder ein <a class="text-dream-salmon hover:underline" href="../traumsymbole/spiegel">Spiegel</a> auf, lies das nicht als verschlüsselte Antwort. Notiere lieber, was du damit gemacht hast: Ging die Tür auf, bist du hinauf- oder hinabgestiegen? Solche Details sagen mehr darüber, wie du das Problem angehst, als jede Symbolliste.
 </p>
 <h3 id="journal-example">Ein Beispiel aus dem Traumtagebuch</h3>
 <p>
-<strong>Fiktives Beispiel:</strong> So notieren Sie eine Inkubationsnacht, ohne den Zusammenhang zu erzwingen.
+<strong>Fiktives Beispiel:</strong> So notierst du eine Inkubationsnacht, ohne den Zusammenhang zu erzwingen.
 </p>
 <ul>
 <li><strong>Frage vom Vorabend:</strong> „Wie sage ich meinem Team, dass das Projekt in Verzug ist?“</li>
@@ -204,7 +204,7 @@ Taucht eine <a class="text-dream-salmon hover:underline" href="../traumsymbole/t
 <li><strong>Frage zum Aufheben:</strong> „Was wäre, wenn ich den Zwischenstand zeige, statt zu warten, bis alles fertig ist?“</li>
 </ul>
 <p>
-Eine Nacht beweist nichts. Halten Sie über mehrere Nächte die Frage, ein eventuelles Signal, den Traum und das, was Sie am nächsten Tag ausprobiert haben, fest. Geht es um Gesundheit, Arbeit oder Beziehungen, prüfen Sie, wie Ihr Tagebuch diese Einträge speichert: Unser Artikel zum <a class="text-dream-salmon hover:underline" href="ki-traumtagebuch-datenschutz">Datenschutz bei KI-Traumtagebüchern</a> zeigt, worauf Sie achten sollten.
+Eine Nacht beweist nichts. Halte über mehrere Nächte die Frage, ein eventuelles Signal, den Traum und das, was du am nächsten Tag ausprobiert hast, fest. Geht es um Gesundheit, Arbeit oder Beziehungen, prüfe, wie dein Tagebuch diese Einträge speichert: Unser Artikel zum <a class="text-dream-salmon hover:underline" href="ki-traumtagebuch-datenschutz">Datenschutz bei KI-Traumtagebüchern</a> zeigt, worauf du achten solltest.
 </p>
 
 <h2 id="limits">Was die Forschung noch nicht zeigt</h2>
@@ -221,7 +221,7 @@ Eine Nacht beweist nichts. Halten Sie über mehrere Nächte die Frage, ein event
 <strong>Ungenaues Timing zu Hause.</strong> Schlaftracker schätzen Schlafphasen; sie messen sie nicht wie eine Aufzeichnung im Schlaflabor.
 </p>
 <p>
-<strong>Der Schlaf geht vor.</strong> Machen Sie Ihre Nächte nicht zu Arbeitssitzungen. Wenn ein Problem Sie wach hält, Sie seit Wochen schlecht schlafen oder verstört aufwachen, sprechen Sie mit einer Ärztin oder einem Arzt, bevor Sie Traumtechniken ausprobieren.
+<strong>Der Schlaf geht vor.</strong> Mach deine Nächte nicht zu Arbeitssitzungen. Wenn ein Problem dich wach hält, du seit Wochen schlecht schläfst oder verstört aufwachst, sprich mit einer Ärztin oder einem Arzt, bevor du Traumtechniken ausprobierst.
 </p>
 <p>
 Die Traumforschung bewegt sich von „Was träumen wir?“ zu „Können wir lenken, was wir träumen?“. Die ersten Antworten sind spannend, und noch bescheiden.
@@ -234,7 +234,7 @@ Die Traumforschung bewegt sich von „Was träumen wir?“ zu „Können wir len
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Ein Problem, mehrere Nächte, ein Ort zum Nachlesen</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-Bewahren Sie Ihre Träume in Noctalia auf, per Sprache oder schriftlich, zusammen mit dem, was Sie gefühlt haben. Nebeneinander gelesen zeigen sie, ob ein Problem wiederkehrt und wie es sich verändert.
+Bewahre deine Träume in Noctalia auf, per Sprache oder schriftlich, zusammen mit dem, was du gefühlt hast. Nebeneinander gelesen zeigen sie, ob ein Problem wiederkehrt und wie es sich verändert.
 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
 Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -268,7 +268,7 @@ Was ist der Unterschied zwischen TMR und Klarträumen?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-TMR nutzt ein äußeres Signal wie einen Klang, um im Schlaf eine Erinnerung zu reaktivieren, ohne dass Sie wissen, dass Sie träumen. Beim <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klarträumen</a> merken Sie im Traum, dass Sie träumen. Die Studie von 2026 kombinierte beides.
+TMR nutzt ein äußeres Signal wie einen Klang, um im Schlaf eine Erinnerung zu reaktivieren, ohne dass du weißt, dass du träumst. Beim <a class="text-dream-salmon hover:underline" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">Klarträumen</a> merkst du im Traum, dass du träumst. Die Studie von 2026 kombinierte beides.
 </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -277,7 +277,7 @@ Kann ich diese Technik zu Hause anwenden?
 <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-In vereinfachter Form, ja: Schreiben Sie Ihre Frage vor dem Schlafen auf, verknüpfen Sie sie bei Bedarf mit einem kurzen Klang und notieren Sie Ihre Träume gleich nach dem Aufwachen. Halten Sie nächtliche Klänge kaum hörbar und hören Sie auf, wenn sie Sie wecken. Erwarten Sie keine Laborergebnisse: Ein <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">Traumtagebuch</a> zeigt Ihnen, was wirklich passiert.
+In vereinfachter Form, ja: Schreib deine Frage vor dem Schlafen auf, verknüpf sie bei Bedarf mit einem kurzen Klang und notiere deine Träume gleich nach dem Aufwachen. Halte nächtliche Klänge kaum hörbar und hör auf, wenn sie dich wecken. Erwarte keine Laborergebnisse: Ein <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">Traumtagebuch</a> zeigt dir, was wirklich passiert.
 </p>
 </details>
 </div>
@@ -300,7 +300,7 @@ In vereinfachter Form, ja: Schreiben Sie Ihre Frage vor dem Schlafen auf, verkn�
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Verwandte Symbole
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Vertiefen Sie die Symbole aus diesem Artikel:</p>
+<p class="text-sm text-purple-300/60 mb-4">Vertiefe die Symbole aus diesem Artikel:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/schluessel">Traumdeutung Schlüssel</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../traumsymbole/tuer">Traumdeutung Tür</a>
@@ -316,13 +316,13 @@ In vereinfachter Form, ja: Schreiben Sie Ihre Frage vor dem Schlafen auf, verkn�
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">KI und Schlafanalyse: Wie künstliche Intelligenz Ihre Träume entschlüsselt</div>
+<div class="font-serif text-lg text-dream-cream mt-1">KI und Schlafanalyse: Wie künstliche Intelligenz deine Träume entschlüsselt</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="zeitumstellung-schlaf-traeume">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">N&auml;chster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel Ihre Tr&auml;ume st&ouml;rt</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel deine Tr&auml;ume st&ouml;rt</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -339,17 +339,17 @@ In vereinfachter Form, ja: Schreiben Sie Ihre Frage vor dem Schlafen auf, verkn�
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Luzides Träumen für Anfänger: Ein vollständiger Leitfaden</h3>
-<p class="text-sm text-gray-400">Lernen Sie, in Ihren Träumen bewusst zu werden und sie mit bewährten Techniken zu steuern.</p>
+<p class="text-sm text-gray-400">Lerne, in deinen Träumen bewusst zu werden und sie mit bewährten Techniken zu steuern.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-kreativitaet">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und Kreativität: Wie Ihr schlafendes Gehirn Probleme löst</h3>
-<p class="text-sm text-gray-400">Was die Schlafforschung über Träume und Problemlösen sagt und wie Sie eine Idee notieren, bevor sie verblasst.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und Kreativität: Wie dein schlafendes Gehirn Probleme löst</h3>
+<p class="text-sm text-gray-400">Was die Schlafforschung über Träume und Problemlösen sagt und wie du eine Idee notierst, bevor sie verblasst.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Leitfaden zur Trauminkubation: Ihre Träume programmieren</h3>
-<p class="text-sm text-gray-400">Praktische Techniken, um Ihren Trauminhalt auf ein bestimmtes Thema oder Problem zu lenken.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Leitfaden zur Trauminkubation: Deine Träume programmieren</h3>
+<p class="text-sm text-gray-400">Praktische Techniken, um deinen Trauminhalt auf ein bestimmtes Thema oder Problem zu lenken.</p>
 </a>
 </div>
 </section>
@@ -359,6 +359,6 @@ In vereinfachter Form, ja: Schreiben Sie Ihre Frage vor dem Schlafen auf, verkn�
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an eine qualifizierte medizinische Fachkraft.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient ausschließlich zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an eine qualifizierte medizinische Fachkraft.
 </p>
 </aside>

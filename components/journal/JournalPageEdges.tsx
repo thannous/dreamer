@@ -1,10 +1,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useId, useMemo } from 'react';
-import { Platform, View, useWindowDimensions } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, G, LinearGradient as Gradient, Mask, Path, Rect, Stop } from 'react-native-svg';
 
 import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 
 /** The block of leaves still to turn; the capture seal lands the journal's own paper's edge where it starts. */
@@ -82,25 +83,33 @@ function blockPath(width: number, height: number, corner: number): string {
  * page's own: on the left the paper runs into the binding's crease, on the right lies the
  * block of leaves still to turn, its edges alternately in shadow and catching the light.
  * The block follows the screen's rounded corners and fades as it turns them. Decorative,
- * still, and kept to the margins so the reading keeps its full width.
+ * still, and kept to the margins so the reading keeps its full width. The left-hand page of
+ * two facing pages has them the other way round (`side="left"`): its crease at the binding
+ * on its right, and the leaves already turned on its left.
  */
-export function JournalPageEdges() {
-  const { width, height } = useWindowDimensions();
+export function JournalPageEdges({ side = 'right' }: { side?: 'left' | 'right' }) {
+  const { width, height } = useContentWindow();
   const insets = useSafeAreaInsets();
   const { mode } = useTheme();
   const leaves = useMemo(() => getNoctaliaPalette(mode).journalLeaves, [mode]);
   const id = useId().replace(/[^a-zA-Z0-9]/g, '');
   const corner = displayCornerRadius(insets.top);
   const turned = corner > 0 ? (corner * 0.4) / height : 0;
+  // The paths occupy only the right margin. A full-width SVG creates a full-screen
+  // bitmap on Android for every mounted preview, even though the rest is transparent.
+  const edgeWidth = Math.min(width, Math.ceil(Math.max(corner, BLOCK) + 1));
+  const edgeLeft = width - edgeWidth;
 
   return (
     <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
-      accessibilityElementsHidden className="absolute inset-0">
+      accessibilityElementsHidden className="absolute inset-0"
+      style={side === 'left' ? { transform: [{ scaleX: -1 }] } : undefined}>
       <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[leaves.binding, `${leaves.binding}00`]}
         style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: BINDING, opacity: 0.7 }} />
       <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} colors={[`${leaves.inner}00`, leaves.inner]}
         style={{ position: 'absolute', right: BLOCK, top: corner * 0.5, bottom: corner * 0.5, width: SHADE, opacity: 0.6 }} />
-      <Svg width={width} height={height} style={{ position: 'absolute', left: 0, top: 0 }}>
+      <Svg width={edgeWidth} height={height} viewBox={`${edgeLeft} 0 ${edgeWidth} ${height}`}
+        style={{ position: 'absolute', right: 0, top: 0 }}>
         <Defs>
           <Gradient id={`across${id}`} x1={width - BLOCK} y1="0" x2={width} y2="0" gradientUnits="userSpaceOnUse">
             <Stop offset="0" stopColor={leaves.inner} />
@@ -113,8 +122,8 @@ export function JournalPageEdges() {
             <Stop offset={1 - turned} stopColor="#FFFFFF" stopOpacity={1} />
             <Stop offset="1" stopColor="#FFFFFF" stopOpacity={0} />
           </Gradient>
-          <Mask id={`fade${id}`} x="0" y="0" width={width} height={height} maskUnits="userSpaceOnUse">
-            <Rect x="0" y="0" width={width} height={height} fill={`url(#along${id})`} />
+          <Mask id={`fade${id}`} x={edgeLeft} y="0" width={edgeWidth} height={height} maskUnits="userSpaceOnUse">
+            <Rect x={edgeLeft} y="0" width={edgeWidth} height={height} fill={`url(#along${id})`} />
           </Mask>
         </Defs>
         <G mask={`url(#fade${id})`}>

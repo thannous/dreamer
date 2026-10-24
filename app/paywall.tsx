@@ -2,7 +2,7 @@ import { SubscriptionExpiryNotice } from '@/components/subscription/Subscription
 import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-router';
 import { usePreventRemove } from 'expo-router/react-navigation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, BackHandler, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, BackHandler, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -17,6 +17,10 @@ import { getLegalLink, type LegalLinkKind } from '@/constants/legalLinks';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
+import { QUOTAS } from '@/constants/limits';
+import { useDreamsData } from '@/context/DreamsContext';
+import { formatQuotaResetDate } from '@/lib/quotaReset';
+import { resolveDreamRoute } from '@/lib/dreamRoute';
 import { getSavedDreamReturnRoute, requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -26,7 +30,6 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { markStoreReviewPaywallSeen } from '@/lib/storeReview';
-import { createScopedLogger } from '@/lib/logger';
 import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
 import {
   calculateAnnualDiscount,
@@ -36,10 +39,10 @@ import {
 import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVariants';
 import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
-const log = createScopedLogger('[Paywall]');
 const PAYWALL_MAX_WIDTH = 720;
 const PAYWALL_PAINTING_HEIGHT = 170;
 /** Each store only names itself; the web keeps the line that covers both. */
@@ -55,16 +58,23 @@ const STORE_NOTICE_KEY = Platform.select({
  */
 const CTA_TRANSITION = ['backgroundColor', 'borderColor'] as const;
 
+/** What a free account gets against Plus, the numbers every variant's copy can quote. */
+const QUOTA_COPY = {
+  analyses: QUOTAS.free.analysis ?? 0,
+  freeExchanges: QUOTAS.free.messagesPerDream ?? 0,
+};
+
 function PaywallScreen() {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t, translationRevision, currentLang } = useTranslation();
-  const { formatDate, formatNumber, formatTime } = useLocaleFormatting();
+  const { formatDate, formatNumber, formatTime, locale } = useLocaleFormatting();
   const params = useLocalSearchParams<AnalysisPaywallParams & { trigger?: string }>();
   const { user } = useAuth();
-  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, user?.id), [params, user?.id]);
+  const userId = user?.id;
+  const savedDreamReturnRoute = useMemo(() => getSavedDreamReturnRoute(params, userId), [params, userId]);
   const exitDispatchedRef = useRef(false);
   const [exitDestination, setExitDestination] = useState<Href | null>(null);
   const navigateToDream = useCallback((destination: Href) => setExitDestination(destination), []);
@@ -86,7 +96,7 @@ function PaywallScreen() {
   const operationInFlightRef = useRef(false);
   const [operationPending, setOperationPending] = useState(false);
   const [confirmationPendingFor, setConfirmationPendingFor] = useState<string | null>(null);
-  const awaitingServerAccess = Boolean(activationPending || (user?.id && confirmationPendingFor === user.id));
+  const awaitingServerAccess = Boolean(activationPending || (userId && confirmationPendingFor === userId));
   const busy = processing || operationPending;
   const { quotaStatus } = useQuota();
   const insets = useSafeAreaInsets();
@@ -94,7 +104,7 @@ function PaywallScreen() {
   const annualDiscount = useMemo(() => calculateAnnualDiscount(packages), [packages]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string; mode: 'success' | 'info' } | null>(null);
-  const [showErrorSheet, setShowErrorSheet] = useState(false);
+  const showErrorSheet = Boolean(error);
   const viewedAnalyticsKeyRef = useRef<string | null>(null);
   const purchaseOutcomeRef = useRef<'none' | 'completed' | 'restored'>('none');
   const dismissedTrackedRef = useRef(false);
@@ -112,16 +122,22 @@ function PaywallScreen() {
   const routeTrigger = getPaywallTrigger(params.trigger);
   const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
   const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
-    && params.dreamOwnerId === user?.id;
+    && params.dreamOwnerId === userId;
+  // From the start of a prepared analysis: the analysis is already written, not to be made.
+  const isPreparedOffer = isDreamAnalysisOffer && params.prepared === '1';
   const paywallVariant = useMemo(() => getPaywallVariant(paywallTrigger), [paywallTrigger]);
-
-  useEffect(() => {
-    log.debug('error state changed', error?.message);
-    if (error) {
-      log.debug('showing error bottom sheet');
-      setShowErrorSheet(true);
-    }
-  }, [error]);
+  const { dreams } = useDreamsData();
+  // The saved-dream offer shows the person's own first words: the dream is what they pay to read.
+  const offeredDreamText = useMemo(() => {
+    if (!isDreamAnalysisOffer) return '';
+    const dream = resolveDreamRoute(dreams, {
+      id: params.dreamId,
+      remoteId: params.dreamRemoteId,
+      clientRequestId: params.dreamClientRequestId,
+    });
+    return (dream?.transcript || dream?.title || '').trim();
+  }, [dreams, isDreamAnalysisOffer, params.dreamId, params.dreamRemoteId, params.dreamClientRequestId]);
+  const resetDate = formatQuotaResetDate(locale);
 
   // Keeps rating requests away from the paywall and the minutes after it.
   useEffect(() => {
@@ -230,7 +246,7 @@ function PaywallScreen() {
   }, [currentLang]);
 
   const confirmAccessAndResume = useCallback(async (result: Awaited<ReturnType<typeof purchase>> | null) => {
-    setConfirmationPendingFor(user?.id ?? null);
+    setConfirmationPendingFor(userId ?? null);
     let confirmed = result;
     if (!confirmed?.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') {
       try {
@@ -240,18 +256,17 @@ function PaywallScreen() {
         // The pending state owns this recovery; a generic error sheet would
         // obscure its retry button after a successful store transaction.
         clearError();
-        setShowErrorSheet(false);
         return false;
       }
     }
     if (!confirmed.serverConfirmed || !confirmed.isActive || confirmed.tier !== 'plus') return false;
     setConfirmationPendingFor(null);
-    const returnRoute = requestAnalysisReturnRoute(params, user?.id);
+    const returnRoute = requestAnalysisReturnRoute(params, userId);
     if (returnRoute) {
       navigateToDream(returnRoute);
     }
     return true;
-  }, [clearError, navigateToDream, params, refreshSubscription, user?.id]);
+  }, [clearError, navigateToDream, params, refreshSubscription, userId]);
 
   const handleRetryActivation = useCallback(async () => {
     if (operationInFlightRef.current || processing) return;
@@ -289,7 +304,7 @@ function PaywallScreen() {
         tier: nextStatus?.tier ?? 'plus',
       });
       if (!nextStatus?.isActive && !nextStatus?.storeActive) {
-        setConfirmationPendingFor(user?.id ?? null);
+        setConfirmationPendingFor(userId ?? null);
         return;
       }
       if (!await confirmAccessAndResume(nextStatus)) return;
@@ -304,7 +319,7 @@ function PaywallScreen() {
       operationInFlightRef.current = false;
       setOperationPending(false);
     }
-  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, user?.id]);
+  }, [analyticsTier, canPurchase, confirmAccessAndResume, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, t, userId]);
 
   const handleRestore = useCallback(async () => {
     if (processing || requiresAuth || awaitingServerAccess || operationInFlightRef.current) return;
@@ -343,7 +358,6 @@ function PaywallScreen() {
   }, []);
 
   const handleCloseErrorSheet = useCallback(() => {
-    setShowErrorSheet(false);
     clearError();
   }, [clearError]);
 
@@ -361,12 +375,13 @@ function PaywallScreen() {
     ? t('subscription.paywall.activation_pending.title')
     : isActive
     ? t(`subscription.paywall.header.${activeTierKey}` as const)
+    : isPreparedOffer ? t('subscription.paywall.prepared.title')
     : isDreamAnalysisOffer ? t('recording.saved_analysis.title')
       : translateWithFallback(paywallVariant.headerTitleKey);
   const headerSubtitle = isActive && !awaitingServerAccess
     ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
     : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.message')
-      : translateWithFallback(paywallVariant.headerSubtitleKey);
+      : t(paywallVariant.headerSubtitleKey, { ...QUOTA_COPY, date: resetDate });
 
   const formattedExpiryDate = useMemo(() => {
     const expiryDate = subscriptionStatus?.expiryDate;
@@ -395,12 +410,9 @@ function PaywallScreen() {
       if (isDreamAnalysisOffer) {
         return [t('subscription.paywall.saved_dream.analysis'), t('subscription.paywall.saved_dream.illustration')];
       }
-      if (!isActive) {
-        return paywallVariant.featureKeys.map((key) => translateWithFallback(key));
-      }
       return PLUS_PAYWALL_FEATURE_KEYS.map((key) => t(key));
     },
-    [isActive, isDreamAnalysisOffer, paywallVariant.featureKeys, t, translateWithFallback, translationRevision]
+    [isDreamAnalysisOffer, t, translationRevision]
   );
 
   const packageOptions = useMemo(
@@ -414,30 +426,39 @@ function PaywallScreen() {
         .map((pkg) => {
           const optionKey = pkg.interval === 'monthly' ? 'monthly' : 'annual';
           const isAnnual = pkg.interval === 'annual';
-          const comparablePrice = isAnnual
+          const billedInterval = translateWithFallback(`subscription.paywall.option.interval.${optionKey}`);
+          const monthlyEquivalent = isAnnual
             ? formatNumber(calculateMonthlyEquivalent(pkg), {
                 style: 'currency',
                 currency: pkg.currency,
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })
-            : pkg.priceFormatted;
+            : '';
+          // App Store rule: the amount billed is the largest price on a card. Android and the web
+          // have no such rule and keep the annual monthly equivalent large (owner decision 2026-10-19).
+          const leadsWithEquivalent = isAnnual && Platform.OS !== 'ios';
           return {
             id: pkg.id,
             title: translateWithFallback(
               `subscription.paywall.option.title.${optionKey}`,
               pkg.title
             ),
-            price: comparablePrice,
-            intervalLabel: translateWithFallback('subscription.paywall.option.interval.monthly'),
+            price: leadsWithEquivalent ? monthlyEquivalent : pkg.priceFormatted,
+            intervalLabel: leadsWithEquivalent
+              ? translateWithFallback('subscription.paywall.option.interval.monthly')
+              : billedInterval,
             billingDetail: pkg.freeTrialDays
               ? t('subscription.paywall.option.billing.trial', {
                   days: pkg.freeTrialDays,
                   price: pkg.priceFormatted,
+                  interval: billedInterval,
                 })
-              : isAnnual
+              : leadsWithEquivalent
                 ? t('subscription.paywall.option.billing.annual', { price: pkg.priceFormatted })
-                : t('subscription.paywall.option.billing.monthly'),
+                : isAnnual
+                  ? t('subscription.paywall.option.billing.annual_equivalent', { price: monthlyEquivalent })
+                  : t('subscription.paywall.option.billing.monthly'),
             badge:
               pkg.freeTrialDays
                 ? t('subscription.paywall.option.badge.trial', { days: pkg.freeTrialDays })
@@ -457,46 +478,46 @@ function PaywallScreen() {
   const comparisonRows = useMemo(
     () => {
       void translationRevision;
+      // Recording is unlimited on both sides, so it is said once under the table
+      // instead of taking a row: each row here is a real difference.
       return [
-        {
-          key: 'recording',
-          icon: 'book.closed.fill' as const,
-          label: t('subscription.paywall.comparison.recording'),
-          free: t('subscription.paywall.comparison.unlimited_recording'),
-          plus: t('subscription.paywall.comparison.unlimited_recording'),
-          showFreeInfinity: true,
-          showPlusInfinity: true,
-        },
         {
           key: 'analysis',
           icon: 'brain' as const,
           label: t('subscription.paywall.comparison.analysis'),
-          free: t('subscription.paywall.comparison.limited'),
+          free: t('subscription.paywall.comparison.free_analyses', { count: QUOTA_COPY.analyses }),
           plus: t('subscription.paywall.comparison.unlimited'),
-          showFreeInfinity: false,
           showPlusInfinity: true,
+        },
+        {
+          // Each free analysis brings its illustration; Plus illustrates every dream.
+          key: 'illustrations',
+          icon: 'paintpalette' as const,
+          label: t('subscription.paywall.comparison.illustrations'),
+          free: t('subscription.paywall.comparison.free_analyses', { count: QUOTA_COPY.analyses }),
+          plus: t('subscription.paywall.comparison.all_dreams'),
+          showPlusInfinity: false,
         },
         {
           key: 'exploration',
           icon: 'bubble.left.and.bubble.right' as const,
-          label: t('subscription.paywall.comparison.exploration'),
-          free: t('subscription.paywall.comparison.limited'),
-          plus: t('subscription.paywall.comparison.unlimited'),
-          showFreeInfinity: false,
+          label: t('subscription.paywall.comparison.exchanges'),
+          free: formatNumber(QUOTA_COPY.freeExchanges),
+          // Plus sells exchanges as unlimited; the note under the table names the abuse safeguards.
+          plus: t('subscription.paywall.comparison.unlimited_exchanges'),
           showPlusInfinity: true,
         },
         {
           key: 'synthesis',
           icon: 'sparkles' as const,
-          label: t('subscription.paywall.comparison.synthesis'),
-          free: t('subscription.paywall.comparison.essential'),
-          plus: t('subscription.paywall.comparison.deep'),
-          showFreeInfinity: false,
+          label: t('subscription.paywall.comparison.synthesis_360'),
+          free: t('subscription.paywall.comparison.none'),
+          plus: t('subscription.paywall.comparison.included'),
           showPlusInfinity: false,
         },
       ];
     },
-    [t, translationRevision]
+    [formatNumber, t, translationRevision]
   );
 
   if (isDeviceUpgraded) {
@@ -522,7 +543,7 @@ function PaywallScreen() {
           </View>
         </ScreenContainer>
 
-        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+        <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scroll}
           contentContainerStyle={styles.scrollContent}
           contentInsetAdjustmentBehavior="automatic"
@@ -530,10 +551,10 @@ function PaywallScreen() {
           <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
             <View style={styles.upgradedMessageContainer}>
               <Text style={[styles.upgradedTitle, { color: noctalia.text.primary }]}>
-                {translateWithFallback(paywallVariant.cardTitleKey)}
+                {t('subscription.paywall.variant.returning_device.card_title')}
               </Text>
               <Text style={[styles.upgradedSubtitle, { color: noctalia.text.secondary }]}>
-                {translateWithFallback(paywallVariant.cardSubtitleKey)}
+                {t('subscription.paywall.variant.returning_device.card_subtitle')}
               </Text>
 
               <PressableScale
@@ -566,7 +587,7 @@ function PaywallScreen() {
               </Pressable>
             </View>
           </ScreenContainer>
-        </ScrollView>
+        </HeaderScrollView>
       </View>
     );
   }
@@ -590,7 +611,7 @@ function PaywallScreen() {
           </Pressable>
         </ScreenContainer>
       </View>
-      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+      <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -624,6 +645,20 @@ function PaywallScreen() {
             <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>{headerTitle}</Text>
             <Text style={[styles.headerSubtitle, { color: noctalia.text.secondary }]}>{headerSubtitle}</Text>
 
+            {offeredDreamText && !isActive ? (
+              <View
+                style={[styles.dreamExcerpt, { backgroundColor: noctalia.surface.base, borderColor: noctalia.surface.borderStrong }]}
+                testID={TID.Text.PaywallDreamExcerpt}
+              >
+                <Text style={[styles.dreamExcerptLabel, { color: noctalia.accent.text }]}>
+                  {t(isPreparedOffer ? 'subscription.paywall.prepared.label' : 'subscription.paywall.saved_dream.waiting')}
+                </Text>
+                <Text numberOfLines={3} style={[styles.dreamExcerptText, { color: noctalia.text.primary }]}>
+                  {offeredDreamText}
+                </Text>
+              </View>
+            ) : null}
+
             {!isDreamAnalysisOffer ? <SubscriptionExpiryNotice status={subscriptionStatus} loading={loading} /> : null}
 
             {isActive && !awaitingServerAccess && formattedExpiryDate ? (
@@ -649,6 +684,7 @@ function PaywallScreen() {
 
           <Reveal index={1}>
           {!isActive && !isDreamAnalysisOffer ? (
+            <>
             <View
               style={[
                 styles.comparisonTable,
@@ -683,31 +719,15 @@ function PaywallScreen() {
                   accessibilityLabel={`${row.label}. ${t('subscription.paywall.comparison.free')}: ${row.free}. ${t('subscription.paywall.comparison.plus')}: ${row.plus}.`}
                 >
                   <View style={styles.comparisonFeatureCell}>
-                    <View style={[styles.comparisonIcon, { backgroundColor: noctalia.surface.soft }]}>
-                      <IconSymbol name={row.icon} size={15} color={noctalia.accent.text} />
-                    </View>
+                    <IconSymbol name={row.icon} size={17} color={noctalia.accent.text} />
                     <Text style={[styles.comparisonFeatureText, { color: noctalia.text.primary }]}>
                       {row.label}
                     </Text>
                   </View>
                   <View style={styles.comparisonFreeCell}>
-                    <View style={styles.comparisonFreeValue}>
-                      {row.showFreeInfinity ? (
-                        <Text style={[styles.comparisonInfinity, { color: noctalia.accent.text }]}>∞</Text>
-                      ) : null}
-                      <Text
-                        style={[
-                          styles.comparisonFreeText,
-                          {
-                            color: row.showFreeInfinity
-                              ? noctalia.text.primary
-                              : noctalia.text.secondary,
-                          },
-                        ]}
-                      >
-                        {row.free}
-                      </Text>
-                    </View>
+                    <Text style={[styles.comparisonFreeText, { color: noctalia.text.secondary }]}>
+                      {row.free}
+                    </Text>
                   </View>
                   <View style={[styles.comparisonPlusCell, { backgroundColor: noctalia.surface.active }]}>
                     <View style={styles.comparisonPlusValue}>
@@ -722,6 +742,11 @@ function PaywallScreen() {
                 </View>
               ))}
             </View>
+            <Text style={[styles.comparisonNote, { color: noctalia.text.secondary }]}>
+              {t('subscription.paywall.comparison.recording_note')}{' '}
+              {t('subscription.paywall.comparison.fair_use_note')}
+            </Text>
+            </>
           ) : (
             <View style={styles.benefitList}>
               {visibleSubscriptionFeatures.map((feature, index) => (
@@ -837,6 +862,7 @@ function PaywallScreen() {
                       ? t('subscription.paywall.button.primary.auth')
                       : selectedTrialDays
                         ? t('subscription.paywall.button.primary.trial', { days: selectedTrialDays })
+                        : isPreparedOffer ? t('subscription.paywall.prepared.cta')
                         : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.cta')
                           : translateWithFallback(paywallVariant.primaryLabelKey)}
                   </Text>
@@ -852,7 +878,20 @@ function PaywallScreen() {
                 {t('subscription.paywall.trial_footnote', {
                   days: selectedTrialDays,
                   price: selectedPackage.priceFormatted,
+                  interval: translateWithFallback(
+                    `subscription.paywall.option.interval.${selectedPackage.interval === 'monthly' ? 'monthly' : 'annual'}`
+                  ),
                 })}
+              </Text>
+            ) : null}
+
+            {/* A guest is asked to sign in before paying: say why, right under the button. */}
+            {!isActive && requiresAuth ? (
+              <Text
+                style={[styles.authReason, { color: noctalia.text.secondary }]}
+                testID={TID.Text.PaywallAuthReason}
+              >
+                {t('subscription.paywall.notice.auth')}
               </Text>
             ) : null}
 
@@ -868,15 +907,24 @@ function PaywallScreen() {
                 </Text>
               </Pressable>
             ) : null}
+            {!isActive && isDreamAnalysisOffer ? (
+              <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
+                {t('subscription.paywall.saved_dream.reset', { date: resetDate })}
+              </Text>
+            ) : null}
 
           </Reveal>
 
           <Reveal index={4}>
+          {/* Renewal terms are part of the offer, so everyone reads them, guests included. A
+              subscriber who turned renewal off reads that state above instead. */}
+          {!isActive || subscriptionStatus?.willRenew === true ? (
+            <Text style={[styles.notice, { color: noctalia.text.secondary }]} testID={TID.Text.PaywallStoreNotice}>
+              {t(STORE_NOTICE_KEY)}
+            </Text>
+          ) : null}
           {!requiresAuth ? (
             <>
-              <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
-                {t(STORE_NOTICE_KEY)}
-              </Text>
               {/* A utility, not an offer: it sits with the fine print, still a full 44pt target. */}
               <Pressable
                 style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
@@ -892,11 +940,12 @@ function PaywallScreen() {
             </>
           ) : null}
 
+          {/* Reviewers and readers tap these on a phone: each keeps a full 44pt target. */}
           <View style={styles.legalLinks}>
             <Pressable
               accessibilityRole="link"
               onPress={() => handleOpenLegalLink('termsOfUse')}
-              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              style={({ pressed }) => [styles.legalLinkTarget, pressed && styles.legalLinkPressed]}
               testID={TID.Button.PaywallTermsOfUse}
             >
               <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
@@ -907,7 +956,7 @@ function PaywallScreen() {
             <Pressable
               accessibilityRole="link"
               onPress={() => handleOpenLegalLink('privacyPolicy')}
-              style={({ pressed }) => [pressed && styles.legalLinkPressed]}
+              style={({ pressed }) => [styles.legalLinkTarget, pressed && styles.legalLinkPressed]}
               testID={TID.Button.PaywallPrivacyPolicy}
             >
               <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
@@ -917,7 +966,7 @@ function PaywallScreen() {
           </View>
           </Reveal>
         </ScreenContainer>
-      </ScrollView>
+      </HeaderScrollView>
 
       {toast ? (
         <Toast
@@ -973,17 +1022,42 @@ const styles = StyleSheet.create({
     minHeight: 44 + ThemeLayout.spacing.sm,
   },
   headerTitle: {
-    fontSize: 28,
-    lineHeight: 31,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
+    letterSpacing: -0.2,
+    fontFamily: Fonts.fraunces.semiBold,
     textAlign: 'center',
   },
   headerSubtitle: {
-    fontSize: 15,
-    lineHeight: 21,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    marginTop: 6,
+    // A short measure keeps the subtitle a centred block, not a ragged paragraph.
+    maxWidth: 340,
+    alignSelf: 'center',
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
+    fontFamily: Fonts.outfit.regular,
+    marginTop: ThemeLayout.spacing.sm,
     textAlign: 'center',
+  },
+  dreamExcerpt: {
+    marginTop: ThemeLayout.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.md,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderRadius: ThemeLayout.borderRadius.lg,
+    gap: 6,
+  },
+  dreamExcerptLabel: {
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
+    textTransform: 'uppercase',
+    fontFamily: Fonts.outfit.bold,
+  },
+  dreamExcerptText: {
+    // The dream in the journal's own voice: Lora, as the person wrote it.
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
+    fontFamily: Fonts.lora.regularItalic,
   },
   kickerRow: {
     minHeight: 24,
@@ -994,15 +1068,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   kickerText: {
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 2.2,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   expiryDate: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: 8,
   },
   closeButton: {
@@ -1021,8 +1095,8 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   closeLabel: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   loadingRow: {
     flexDirection: 'row',
@@ -1031,8 +1105,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   loadingLabel: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   scroll: {
     flex: 1,
@@ -1048,42 +1122,46 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   comparisonHeaderRow: {
-    minHeight: 48,
+    minHeight: 40,
     flexDirection: 'row',
   },
   comparisonRow: {
-    minHeight: 62,
+    minHeight: 54,
     flexDirection: 'row',
-    borderTopWidth: 1,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   comparisonFeatureCell: {
-    flex: 1.35,
+    flex: 1.4,
     minWidth: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 9,
+    paddingLeft: 14,
+    paddingRight: 6,
+    paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 7,
+    gap: 10,
   },
   comparisonFreeCell: {
-    flex: 0.72,
+    flex: 0.8,
     minWidth: 0,
-    paddingHorizontal: 5,
-    paddingVertical: 9,
+    paddingHorizontal: 4,
+    paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   comparisonPlusCell: {
-    flex: 1.05,
+    flex: 0.95,
     minWidth: 0,
-    paddingHorizontal: 7,
-    paddingVertical: 9,
+    paddingHorizontal: 6,
+    paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   comparisonHeaderText: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
+    textTransform: 'uppercase',
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
   },
   comparisonPlusHeader: {
@@ -1093,36 +1171,24 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   comparisonPlusHeaderText: {
-    fontSize: 14,
-    letterSpacing: 0.8,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
-    fontFamily: Fonts.spaceGrotesk.bold,
-  },
-  comparisonIcon: {
-    width: 27,
-    height: 27,
-    borderRadius: ThemeLayout.borderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
+    fontFamily: Fonts.outfit.bold,
   },
   comparisonFeatureText: {
     flex: 1,
     minWidth: 0,
-    fontSize: 12,
-    lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.medium,
   },
   comparisonFreeText: {
-    fontSize: 11,
-    lineHeight: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
-  },
-  comparisonFreeValue: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 3,
   },
   comparisonPlusValue: {
     flexDirection: 'row',
@@ -1131,15 +1197,23 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   comparisonInfinity: {
-    fontSize: 20,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.bold,
   },
   comparisonPlusText: {
     flexShrink: 1,
-    fontSize: 12,
-    lineHeight: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: 18,
+    fontFamily: Fonts.outfit.bold,
+    textAlign: 'center',
+  },
+  comparisonNote: {
+    marginTop: -ThemeLayout.spacing.xs,
+    marginBottom: ThemeLayout.spacing.md,
+    fontSize: TypeScale.caption.fontSize,
+    lineHeight: TypeScale.caption.lineHeight,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   pricingGrid: {
@@ -1176,17 +1250,17 @@ const styles = StyleSheet.create({
   },
   benefitText: {
     flexShrink: 1,
-    fontSize: 15,
-    lineHeight: 22,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
+    fontFamily: Fonts.outfit.regular,
   },
   benefitTextUnlimited: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
   },
   benefitInfinity: {
-    fontSize: 19,
-    lineHeight: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: TypeScale.h3.lineHeight,
+    fontFamily: Fonts.outfit.bold,
   },
   primaryButton: {
     borderRadius: ThemeLayout.borderRadius.full,
@@ -1198,12 +1272,18 @@ const styles = StyleSheet.create({
   trialFootnote: {
     marginTop: 8,
     textAlign: 'center',
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
   },
+  authReason: {
+    textAlign: 'center',
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
+    fontFamily: Fonts.outfit.regular,
+  },
   primaryLabel: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -1214,14 +1294,14 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   secondaryLabel: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
   },
   notice: {
     marginTop: 8,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   restoreButton: {
@@ -1239,21 +1319,25 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   legalLink: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
     textDecorationLine: 'underline',
+  },
+  legalLinkTarget: {
+    minHeight: 44,
+    justifyContent: 'center',
   },
   legalLinkPressed: {
     opacity: 0.75,
   },
   legalSeparator: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.caption.fontSize,
   },
   emptyText: {
     marginTop: ThemeLayout.spacing.md,
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
   },
   upgradedMessageContainer: {
@@ -1263,14 +1347,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
   },
   upgradedTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h2.fontSize,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.md,
     textAlign: 'center',
   },
   upgradedSubtitle: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.lg,
     lineHeight: 20,

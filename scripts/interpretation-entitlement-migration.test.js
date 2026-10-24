@@ -5,15 +5,6 @@ const fs = require('fs');
 const path = require('path');
 
 const migrationsDir = path.resolve(__dirname, '..', 'supabase', 'migrations');
-const quotaRoutePath = path.resolve(
-  __dirname,
-  '..',
-  'supabase',
-  'functions',
-  'api',
-  'routes',
-  'quota.ts'
-);
 const migrationName = fs.readdirSync(migrationsDir).find((name) =>
   name.endsWith('_unify_interpretation_entitlements_and_device_risk.sql')
 );
@@ -58,14 +49,6 @@ describe('interpretation entitlement and device risk database contract', () => {
     expect(sql).toContain("'risk_score'");
     expect(sql).toContain("'risk_level'");
     expect(sql).toContain('create or replace function public.register_device_account_link');
-  });
-
-  it('does not treat a platform label as an Apple integrity proof', () => {
-    const route = fs.readFileSync(quotaRoutePath, 'utf8');
-
-    expect(route).toContain("platform === 'android' ? 'play_integrity' : 'unknown'");
-    expect(route).toContain("integrityVerified = platform === 'android'");
-    expect(route).not.toContain("platform === 'ios'\n        ? 'app_attest'");
   });
 
   it('removes the legacy device-only hard block from guest claims', () => {

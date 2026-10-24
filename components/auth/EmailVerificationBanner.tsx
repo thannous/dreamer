@@ -11,6 +11,7 @@ import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { resendVerificationEmail } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
+import { TypeScale } from '@/constants/typeScale';
 
 type Props = {
   isCompact?: boolean;
@@ -24,6 +25,7 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
   const isVerified = Boolean(user?.email_confirmed_at);
+  const email = user?.email;
 
   const statusMessage = useMemo(() => {
     if (status === 'success') {
@@ -38,12 +40,12 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
   const statusColor = status === 'error' ? noctalia.status.danger.text : noctalia.text.secondary;
 
   const handleResend = useCallback(async () => {
-    if (!user?.email || status === 'sending') {
+    if (!email || status === 'sending') {
       return;
     }
     setStatus('sending');
     try {
-      await resendVerificationEmail(user.email);
+      await resendVerificationEmail(email);
       setStatus('success');
     } catch (error) {
       if (__DEV__) {
@@ -51,7 +53,7 @@ const EmailVerificationBanner: React.FC<Props> = ({ isCompact = false }) => {
       }
       setStatus('error');
     }
-  }, [status, user?.email]);
+  }, [email, status]);
 
   if (!user || isVerified) {
     return null;
@@ -117,12 +119,12 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.sm,
   },
   title: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   message: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     marginBottom: ThemeLayout.spacing.sm,
   },
   action: {
@@ -139,12 +141,12 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   actionText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
   },
   statusMessage: {
     marginTop: ThemeLayout.spacing.xs,
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
   },
 });
 

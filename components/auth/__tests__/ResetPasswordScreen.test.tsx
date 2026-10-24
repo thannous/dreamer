@@ -1,21 +1,23 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
 import React from 'react';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-
 import { TID } from '@/lib/testIDs';
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 type RecoveryListener = (event: string, session: unknown) => void;
 
 const mockReplace = jest.fn();
 const mockUpdatePassword = jest.fn();
+const mockUpdatePasswordFromWebRecovery = jest.fn();
+const mockUpdatePasswordFromNativeRecovery = jest.fn();
 const mockUnsubscribe = jest.fn();
 let mockRecoveryListeners: RecoveryListener[] = [];
 let mockCurrentUser: { id: string } | null = null;
 let mockAuthLoading = false;
+let mockWebRecoveryLinkState: 'none' | 'pending' | 'invalid' = 'none';
 
 ((key: string, value: unknown) => {
   Object.defineProperty(globalThis, key, { configurable: true, writable: true, value });
@@ -81,6 +83,10 @@ jest.mock('@/lib/auth', () => ({
     return mockUnsubscribe;
   },
   updatePassword: mockUpdatePassword,
+  updatePasswordFromWebRecovery: mockUpdatePasswordFromWebRecovery,
+  updatePasswordFromNativeRecovery: mockUpdatePasswordFromNativeRecovery,
+  getWebRecoveryLinkState: () => mockWebRecoveryLinkState,
+  webAuthCallbackPromise: Promise.resolve(),
 }));
 
 jest.mock('@/constants/journalTheme', () => ({
@@ -92,10 +98,10 @@ jest.mock('@/constants/journalTheme', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
-      bold: 'SpaceGrotesk-Bold',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
+      bold: 'Outfit-Bold',
     },
   },
 }));
@@ -119,7 +125,10 @@ describe('ResetPasswordScreen', () => {
     mockRecoveryListeners = [];
     mockCurrentUser = null;
     mockAuthLoading = false;
+    mockWebRecoveryLinkState = 'none';
     mockUpdatePassword.mockResolvedValue({ id: 'user-1' });
+    mockUpdatePasswordFromWebRecovery.mockResolvedValue({ id: 'user-1' });
+    mockUpdatePasswordFromNativeRecovery.mockResolvedValue({ id: 'user-1' });
   });
 
   afterEach(() => {
@@ -249,5 +258,79 @@ describe('ResetPasswordScreen', () => {
         'auth.reset_password.same_password'
       );
     });
+  });
+
+  it('requires an account email for an implicit recovery link before changing or activating its session', async () => {
+    mockWebRecoveryLinkState = 'pending';
+    mockCurrentUser = { id: 'other-user' };
+    render(<ResetPasswordScreen />);
+
+    fillPasswords('secret123', 'secret123');
+    const submit = screen.getByTestId(TID.Button.AuthUpdatePassword) as HTMLButtonElement;
+    expect(submit.disabled).toBe(true);
+    expect(mockUpdatePassword).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByTestId(TID.Input.AuthRecoveryEmail), { target: { value: 'user@example.com' } });
+    expect(submit.disabled).toBe(false);
+    fireEvent.click(submit);
+
+    await waitFor(() => expect(mockUpdatePasswordFromWebRecovery).toHaveBeenCalledWith('user@example.com', 'secret123'));
+    expect(mockUpdatePassword).not.toHaveBeenCalled();
+  });
+
+  it('finishes an isolated recovery at explicit sign-in without claiming a session', async () => {
+    mockWebRecoveryLinkState = 'pending';
+    render(<ResetPasswordScreen />);
+    fillPasswords('secret123', 'secret123');
+    fireEvent.change(screen.getByTestId(TID.Input.AuthRecoveryEmail), { target: { value: 'user@example.com' } });
+    fireEvent.click(screen.getByTestId(TID.Button.AuthUpdatePassword));
+
+    await waitFor(() => expect(screen.getByText('auth.reset_password.success_signin_message')).toBeDefined());
+    expect(screen.queryByText('auth.reset_password.success_message')).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.AuthResetContinue));
+    expect(mockReplace).toHaveBeenCalledWith('/settings');
+    expect(mockUpdatePassword).not.toHaveBeenCalled();
+  });
+
+  it('shows a mismatched recovery email error while retaining the form', async () => {
+    mockWebRecoveryLinkState = 'pending';
+    mockUpdatePasswordFromWebRecovery.mockRejectedValue(new Error('recovery_email_mismatch'));
+    render(<ResetPasswordScreen />);
+    fillPasswords('secret123', 'secret123');
+    fireEvent.change(screen.getByTestId(TID.Input.AuthRecoveryEmail), { target: { value: 'guest@example.com' } });
+    fireEvent.click(screen.getByTestId(TID.Button.AuthUpdatePassword));
+
+    await waitFor(() => expect(screen.getByTestId(TID.Text.AuthResetPasswordError).textContent)
+      .toBe('auth.reset_password.email_mismatch'));
+    expect(screen.getByTestId(TID.Input.AuthRecoveryEmail)).toBeDefined();
+    expect(mockUpdatePassword).not.toHaveBeenCalled();
+  });
+
+  it('does not use an existing session for a malformed recovery link', () => {
+    mockWebRecoveryLinkState = 'invalid';
+    mockCurrentUser = { id: 'other-user' };
+    render(<ResetPasswordScreen />);
+
+    expect(screen.getByText('auth.reset_password.expired_title')).toBeDefined();
+    expect(screen.queryByTestId(TID.Input.AuthNewPassword)).toBeNull();
+  });
+
+  it('uses a verified native hash instead of the active account session', async () => {
+    const { Platform } = jest.requireMock('react-native') as typeof import('react-native');
+    const previousOS = Platform.OS;
+    Platform.OS = 'ios';
+    try {
+      mockCurrentUser = { id: 'other-user' };
+      render(<ResetPasswordScreen nativeRecoveryLink={{ state: 'pending', tokenHash: 'one-use-hash' }} />);
+      fillPasswords('secret123', 'secret123');
+      fireEvent.change(screen.getByTestId(TID.Input.AuthRecoveryEmail), { target: { value: 'user@example.com' } });
+      fireEvent.click(screen.getByTestId(TID.Button.AuthUpdatePassword));
+
+      await waitFor(() => expect(mockUpdatePasswordFromNativeRecovery)
+        .toHaveBeenCalledWith('one-use-hash', 'user@example.com', 'secret123'));
+      expect(mockUpdatePassword).not.toHaveBeenCalled();
+    } finally {
+      Platform.OS = previousOS;
+    }
   });
 });

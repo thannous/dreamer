@@ -8,7 +8,7 @@ const { syncAndroidNativeVersion } = require('./sync-android-native-version');
 
 const PROJECT_ID = 'cfd1b275-9dad-40d7-9d9a-147c7bb38415';
 const APP_ID = 'com.tanuki75.noctalia';
-const EAS_VERSION = '21.0.0';
+const EAS_VERSION = '25.1.1';
 
 function usesNoctaliaBuildVersions(env = process.env) {
   return (!env.NOCTALIA_APP_VARIANT || env.NOCTALIA_APP_VARIANT === 'noctalia')

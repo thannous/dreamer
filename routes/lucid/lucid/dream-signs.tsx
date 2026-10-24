@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   empty: {
     paddingVertical: LucidSpace.xl,
     textAlign: 'center',
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },
@@ -258,17 +258,17 @@ const styles = StyleSheet.create({
   signHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: LucidSpace.sm },
   signTitleBlock: { flex: 1, minWidth: 0, gap: 2 },
   signTitle: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.h3[0],
     lineHeight: LucidType.h3[1],
   },
   body: {
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
   label: {
-    fontFamily: 'SpaceGrotesk_700Bold',
+    fontFamily: 'Outfit_700Bold',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textTransform: 'uppercase',
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   },
   sourceText: {
     flex: 1,
-    fontFamily: 'SpaceGrotesk_500Medium',
+    fontFamily: 'Outfit_500Medium',
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
   },
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: LucidRadius.lg,
     paddingHorizontal: LucidSpace.md,
-    fontFamily: 'SpaceGrotesk_400Regular',
+    fontFamily: 'Outfit_400Regular',
     fontSize: LucidType.body[0],
     lineHeight: LucidType.body[1],
   },

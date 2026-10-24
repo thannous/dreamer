@@ -8,13 +8,11 @@ import {
   Platform,
   Text,
   type ViewStyle,
-  useWindowDimensions,
   View,
 } from 'react-native';
 
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { GuestRecordingQaReset } from '@/components/dev/GuestRecordingQaReset';
-import { VoiceLiveSpikeDebugEntry } from '@/components/dev/VoiceLiveSpikeDebugEntry';
 import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
 import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -26,6 +24,7 @@ import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
@@ -88,7 +87,7 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
   const appVersion = getAppVersionString();
   const storeKey = getExpoPublicEnvValue(Platform.OS === 'android'
     ? 'EXPO_PUBLIC_REVENUECAT_ANDROID_KEY'
@@ -99,7 +98,6 @@ export default function SettingsScreen() {
   useClearWebFocus();
 
   const isCompactLayout = width <= 375;
-  const isDesktopLayout = Platform.OS === 'web' && width >= 1024;
   const nativeHostKey = Platform.OS === 'android'
     ? `${Math.round(width)}x${Math.round(height)}`
     : undefined;
@@ -148,7 +146,7 @@ export default function SettingsScreen() {
               size={48}
               color={noctalia.accent.text}
             />
-            <Text className="mt-2 text-center font-display-semibold text-[20px] text-ivory">
+            <Text className="mt-2 text-center font-display-semibold text-h2 text-ivory">
               {t('auth.returning_guest.banner_title')}
             </Text>
             <Text className="text-center font-sans text-body-sm text-ivory-muted">
@@ -160,13 +158,12 @@ export default function SettingsScreen() {
       <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" showSignOut={false} initialAccountSheetOpen={auth === 'signin'} />
       <GuestRecordingQaReset />
       <GuestProdQALab />
-      <VoiceLiveSpikeDebugEntry />
     </View>
   );
 
   const quota = (
     <View className={RN_SLOT_CLASS} testID="settings-quota-rn-content">
-      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" showTitle={section === 'account'} />
+      <QuotaStatusCard onUpgradePress={handleOpenPaywall} presentation="embedded" showTitle={section === 'account'} showFreeUpgrade={section === 'account'} />
       {showSubscriptionQaLab ? <SubscriptionQALab presentation="embedded" /> : null}
     </View>
   );
@@ -207,7 +204,9 @@ export default function SettingsScreen() {
       className="flex-1 bg-ink"
       testID="screen.settings"
     >
-      <View className={isDesktopLayout ? 'w-full max-w-[760px] self-center' : 'w-full'}>
+      {/* A reading width wherever the window is wider, so a row's name and its value stay
+          close: the open iPhone Duo on its side, a tablet, a browser. */}
+      <View className="w-full max-w-[760px] self-center">
       <NoctaliaScreenHeader
         scene="journal"
         titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
@@ -223,7 +222,7 @@ export default function SettingsScreen() {
       {/* 760px is inline: Tailwind extracts class names statically, so it cannot
           come from a constant. */}
       <View
-        className={`w-full flex-1${isDesktopLayout ? ' max-w-[760px] self-center' : ''}`}
+        className="w-full max-w-[760px] flex-1 self-center"
       >
         <SettingsHost
           colorScheme={mode}

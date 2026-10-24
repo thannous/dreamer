@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useMemo, useSyncExternalStore } from 'react';
+import { useState, useEffect, useCallback, useLayoutEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import type { DreamAnalysis, QuotaStatus } from '@/lib/types';
+import { AppState } from 'react-native';
 import { isMockModeEnabled } from '@/lib/env';
 import { getGuestBootstrapState, subscribeGuestBootstrapState } from '@/lib/guestSession';
 import { quotaService } from '@/services/quotaService';
@@ -23,6 +24,44 @@ type NormalizedQuotaTarget = {
 };
 
 const getGuestBootstrapStatus = () => getGuestBootstrapState().status;
+
+const EXPIRY_ALLOWANCE_MS = 24 * 60 * 60 * 1000;
+const MAX_EXPIRY_TIMER_MS = 12 * 60 * 60 * 1000;
+const PAID_QUOTA_STATUS: QuotaStatus = {
+  tier: 'plus',
+  usage: {
+    analysis: UNLIMITED_QUOTA_METRIC,
+    exploration: UNLIMITED_QUOTA_METRIC,
+    messages: UNLIMITED_QUOTA_METRIC,
+    image: UNLIMITED_QUOTA_METRIC,
+  },
+  canAnalyze: true,
+  canExplore: true,
+  canGenerateImage: true,
+};
+
+// The clock is an external input. Subscribe only to this entitlement's boundary;
+// a cached RevenueCat object need not change for its 24h allowance to end.
+function createExpiryStore(deadline: number | null) {
+  const getSnapshot = () => deadline !== null && Date.now() > deadline;
+  return {
+    getSnapshot,
+    subscribe(listener: () => void) {
+      if (deadline === null) return () => {};
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const check = () => {
+        if (timer !== undefined) clearTimeout(timer);
+        listener();
+        if (!getSnapshot()) {
+          timer = setTimeout(check, Math.min(MAX_EXPIRY_TIMER_MS, Math.max(1, deadline - Date.now() + 1)));
+        }
+      };
+      const appState = AppState.addEventListener('change', state => { if (state === 'active') check(); });
+      check();
+      return () => { if (timer !== undefined) clearTimeout(timer); appState.remove(); };
+    },
+  };
+}
 
 function normalizeTarget(input?: QuotaTargetInput): NormalizedQuotaTarget | undefined {
   if (!input) return undefined;
@@ -48,9 +87,9 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     status: subscriptionStatus, loading: subscriptionLoading,
     refreshing: subscriptionRefreshing, refreshSubscription,
   } = useSubscription();
-  const [quotaStatus, setQuotaStatus] = useState<QuotaStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [quotaResult, setQuotaResult] = useState<{ request: object; status: QuotaStatus | null; error: Error | null }>();
+  const [quotaRefreshing, setQuotaRefreshing] = useState(false);
+  const requestVersion = useRef(0);
   const guestBootstrapStatus = useSyncExternalStore(
     subscribeGuestBootstrapState,
     getGuestBootstrapStatus,
@@ -80,72 +119,57 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     [baseTarget]
   );
 
-  // RevenueCat is the source of truth, but we should not downgrade paid users while it loads.
-  // If Supabase already indicates a paid tier, treat it as paid until RevenueCat resolves.
-  const tier = useMemo(() => {
-    if (!user?.id) return 'guest';
+  const expiryTime = subscriptionStatus?.expiryDate ? new Date(subscriptionStatus.expiryDate).getTime() : NaN;
+  const expiryDeadline = user?.id && subscriptionStatus?.tier === 'plus' && subscriptionStatus.willRenew === false && Number.isFinite(expiryTime)
+    ? expiryTime + EXPIRY_ALLOWANCE_MS : null;
+  const expiryStore = useMemo(() => createExpiryStore(expiryDeadline), [expiryDeadline]);
+  const allowanceExpired = useSyncExternalStore(expiryStore.subscribe, expiryStore.getSnapshot, expiryStore.getSnapshot);
 
-    // Fallback conservateur: uniquement si l'expiration est largement passée
-    // et que l'abonnement ne renouvelle pas.
-    if (subscriptionStatus?.expiryDate && subscriptionStatus?.tier === 'plus') {
-      const expiryTime = new Date(subscriptionStatus.expiryDate).getTime();
-      const now = Date.now();
-      const marginMs = 24 * 60 * 60 * 1000;
-      if (expiryTime + marginMs < now && subscriptionStatus.willRenew === false) {
-        if (__DEV__) {
-          console.warn('[useQuota] Subscription expired (24h+ margin, willRenew=false), tier should be free');
-        }
-        return 'free';
-      }
-    }
-
-    const optimisticPaidTier = supabaseTier === 'plus' ? supabaseTier : null;
-
-    return subscriptionStatus?.tier ?? optimisticPaidTier ?? 'free';
-  }, [subscriptionStatus, supabaseTier, user?.id]);
+  // RevenueCat remains authoritative; retain optimistic paid metadata while it loads.
+  const tier = !user?.id ? 'guest' : allowanceExpired ? 'free'
+    : subscriptionStatus?.tier ?? (supabaseTier === 'plus' ? 'plus' : 'free');
   const isPaidTier = tier === 'plus';
   const isGuestBootstrapReady = isMockMode || Boolean(user?.id) || guestBootstrapStatus === 'ready';
   const guestQuotaRefreshKey = user?.id || isMockMode ? undefined : guestBootstrapStatus;
 
-  /**
-   * Fetch quota status
-   * Wait for subscription to load before fetching quota to use RevenueCat tier
-   */
-  const fetchQuotaStatus = useCallback(async () => {
-    // For paid tiers, mirror RevenueCat (source of truth) and short-circuit to unlimited.
-    if (isPaidTier) {
-      setQuotaStatus({
-        tier,
-        usage: {
-          analysis: UNLIMITED_QUOTA_METRIC,
-          exploration: UNLIMITED_QUOTA_METRIC,
-          messages: UNLIMITED_QUOTA_METRIC,
-          image: UNLIMITED_QUOTA_METRIC,
-        },
-        canAnalyze: true,
-        canExplore: true,
-        canGenerateImage: true,
-      });
-      setLoading(false);
-      setError(null);
-      return;
-    }
+  const request = useMemo(() => ({ user, tier, baseTarget, subscriptionLoading, guestQuotaRefreshKey }),
+    [user, tier, baseTarget, subscriptionLoading, guestQuotaRefreshKey]);
+  const currentResult = quotaResult?.request === request ? quotaResult : undefined;
+  // Paid status is derived, so an old free request cannot overwrite unlimited access.
+  const quotaStatus = isPaidTier ? PAID_QUOTA_STATUS : currentResult?.status ?? null;
+  const error = isPaidTier ? null : currentResult?.error ?? null;
+  const loading = !isPaidTier && (quotaRefreshing || !currentResult || subscriptionLoading);
 
-    // Don't fetch until subscription is loaded (avoids relying on the default 'free' tier).
-    if (subscriptionLoading) return;
-
+  const requestQuotaStatus = useCallback(async () => {
+    if (isPaidTier || subscriptionLoading) return;
+    requestVersion.current += 1;
+    const version = requestVersion.current;
     try {
-      setLoading(true);
-      setError(null);
       const status = await quotaService.getQuotaStatus(user, tier, baseTarget);
-      setQuotaStatus(status);
+      if (version === requestVersion.current) setQuotaResult({ request, status, error: null });
     } catch (err) {
+      if (version !== requestVersion.current) return;
       console.error('Error fetching quota status:', err);
-      setError(err as Error);
+      setQuotaResult(previous => ({ request, status: previous?.request === request ? previous.status : null, error: err as Error }));
     } finally {
-      setLoading(false);
+      if (version === requestVersion.current) setQuotaRefreshing(false);
     }
-  }, [user, tier, baseTarget, subscriptionLoading, isPaidTier]);
+  }, [user, tier, baseTarget, subscriptionLoading, isPaidTier, request]);
+
+  // Explicit refetches are events. Mount/context changes derive their pending state
+  // from request identity and only commit state after the service responds.
+  // A caller may hold a refetch from an earlier render (the QA lab refreshes the user,
+  // then refetches): it always runs the latest request, so its result is the current one.
+  const latestRequest = useRef({ skip: isPaidTier || subscriptionLoading, run: requestQuotaStatus });
+  useLayoutEffect(() => {
+    latestRequest.current = { skip: isPaidTier || subscriptionLoading, run: requestQuotaStatus };
+  }, [isPaidTier, subscriptionLoading, requestQuotaStatus]);
+  const fetchQuotaStatus = useCallback(async () => {
+    const { skip, run } = latestRequest.current;
+    if (skip) return;
+    setQuotaRefreshing(true);
+    await run();
+  }, []);
 
   /**
    * Invalidate cache and refetch
@@ -231,8 +255,9 @@ export function useQuota(targetInput?: QuotaTargetInput) {
   // Fetch on mount, when user/dreamId changes, and when guest bootstrap changes.
   // Keeping this in one effect avoids two identical guest requests on mount/sign-out.
   useEffect(() => {
-    void fetchQuotaStatus();
-  }, [fetchQuotaStatus, guestQuotaRefreshKey]);
+    void requestQuotaStatus();
+    return () => { requestVersion.current += 1; };
+  }, [requestQuotaStatus]);
 
   useEffect(() => {
     const unsubscribe = quotaService.subscribe(fetchQuotaStatus);
@@ -251,7 +276,7 @@ export function useQuota(targetInput?: QuotaTargetInput) {
     refreshSubscription,
     quotaStatus,
     // Only wait for RevenueCat when we don't have an optimistic paid tier from Supabase.
-    loading: loading || (subscriptionLoading && !isPaidTier),
+    loading,
     error,
     refetch: fetchQuotaStatus,
     invalidate,

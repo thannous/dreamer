@@ -1,4 +1,3 @@
-import type { ViewInstance } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,6 +11,7 @@ import {
   StyleSheet,
   Text,
   type TextStyle,
+  type ViewInstance,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -32,6 +32,7 @@ import {
   getLastSeenReleaseNotesVersion,
   saveLastSeenReleaseNotesVersion,
 } from '@/services/storageService';
+import { TypeScale } from '@/constants/typeScale';
 
 export const RELEASE_NOTES_VERSION = '3.5.0';
 
@@ -121,7 +122,8 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
     >
       <View
         accessibilityViewIsModal
-        style={styles.overlay}
+        // Clear of the side safe areas too: the iPhone Duo's status bar column, a phone's camera on its side.
+        style={[styles.overlay, { paddingLeft: 20 + insets.left, paddingRight: 20 + insets.right }]}
         testID={TID.Modal.WhatsNew}
       >
         <BlurView
@@ -393,22 +395,22 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   badgeText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
     letterSpacing: 1.3,
     textTransform: 'uppercase',
   },
   title: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 30,
-    lineHeight: 36,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
     textAlign: 'center',
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
-    lineHeight: 21,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
     textAlign: 'center',
     marginTop: 6,
   },
@@ -435,14 +437,14 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   featureTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   featureBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   primaryButton: {
     minHeight: 54,
@@ -456,8 +458,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   primaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
     textAlign: 'center',
   },
@@ -470,8 +472,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   laterText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 19,
   },
   pressed: {

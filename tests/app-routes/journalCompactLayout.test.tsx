@@ -1,7 +1,5 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
 import React from 'react';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
@@ -9,6 +7,8 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getBottomNavigationLayout } from '@/constants/layout';
 import { TID } from '@/lib/testIDs';
 import { searchBarLayout } from '@/components/ui/SearchBar';
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 jest.mock('@/context/AuthContext', () => ({ AuthContext: require('react').createContext(null) }));
 jest.mock('@/services/dreamMediaService', () => ({ resolveDreamMedia: async (dream: any) => ({ imageUrl: dream.imageUrl ?? '', thumbnailUrl: dream.thumbnailUrl }) }));
@@ -52,12 +52,18 @@ const mockReloadDreams = jest.fn(async () => undefined);
 let mockCompleteness: { status: 'incomplete' | 'loading' } | undefined;
 let mockRemotePreviewAllowed = false;
 const mockListScrollToOffset = jest.fn();
+const mockListScrollToIndex = jest.fn();
 const mockKeyboardDismiss = jest.fn();
 let mockPlatform = 'android';
 let mockListProps: Record<string, any> = {};
 let mockHeaderOnLayout: ((event: any) => void) | undefined;
 
-jest.mock('expo-router', () => ({ router: { push: (...args: unknown[]) => mockPush(...args) }, useFocusEffect: () => {}, useLocalSearchParams: () => ({}) }));
+jest.mock('expo-router', () => ({
+  router: { push: (...args: unknown[]) => mockPush(...args) },
+  // This adapter renders the journal as the focused route, including blur cleanup.
+  useFocusEffect: (effect: () => void | (() => void)) => require('react').useEffect(effect, [effect]),
+  useLocalSearchParams: () => ({}),
+}));
 // Model UI-runtime values separately from screen state. Only the animated host
 // subscribes; scrolling does not cause the Journal screen to render in this adapter.
 jest.mock('react-native-reanimated', () => {
@@ -90,6 +96,7 @@ jest.mock('react-native', () => {
     return React.createElement(tag, { 'data-testid': testID, 'aria-label': accessibilityLabel, onClick: onPress }, children);
   };
   return {
+    KeyboardAvoidingView: element('div'),
     Platform: { get OS() { return mockPlatform; }, select: (values: any) => values[mockPlatform] ?? values.default },
     Keyboard: {
       // RN Web 0.21 does not implement isVisible. Leave it unset on web so a
@@ -210,7 +217,13 @@ jest.mock('@/hooks/useLocaleFormatting', () => {
 jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => {} }));
 jest.mock('@/lib/accessibility', () => ({ blurActiveElement: () => {} }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: () => Promise.resolve() }));
-jest.mock('@/lib/imageUtils', () => ({ getDreamThumbnailUri: () => null, preloadImage: () => Promise.resolve() }));
+let mockThumbnailUri: string | null = null;
+const mockPreloadImage = jest.fn(async (_uri: string, _cacheKey?: string) => undefined);
+jest.mock('@/lib/imageUtils', () => ({
+  getDreamThumbnailUri: () => mockThumbnailUri,
+  getDreamThumbnailCacheKey: () => undefined,
+  preloadImage: (uri: string, cacheKey?: string) => mockPreloadImage(uri, cacheKey),
+}));
 jest.mock('@/components/inspiration/AtmosphericBackground', () => ({ AtmosphericBackground: () => null }));
 // The header gets new inline actions on each render of the screen: its renders count the screen's.
 let mockHeaderRenders = 0;
@@ -221,8 +234,18 @@ jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () 
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/guest/UpsellCard', () => ({ UpsellCard: () => <div data-testid="journal-upsell" /> }));
 jest.mock('@/components/journal/DreamCard', () => ({
-  DreamCard: ({ testID, scrollState, dream, onPress }: any) => (
-    <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
+  DreamCard: ({ testID, scrollState, dream, onPress, onShare }: any) => (
+    <>
+      <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
+      <button onClick={() => onShare(dream)}>Share {dream.title}</button>
+    </>
+  ),
+}));
+jest.mock('@/components/journal/DreamShareComposer', () => ({
+  DreamShareComposer: ({ dream, visible, onClose }: any) => (
+    <div data-testid="share-composer" data-dream={dream.title} data-visible={String(visible)}>
+      <button onClick={onClose}>Close the share composer</button>
+    </div>
   ),
 }));
 jest.mock('@/components/journal/JournalFirstPage', () => ({ JournalFirstPage: ({ onStartDream, onSettings }: any) => <div data-testid="journal-first-page"><button onClick={onStartDream}>Start first dream</button><button onClick={onSettings}>Settings</button></div> }));
@@ -274,6 +297,7 @@ jest.mock('@shopify/flash-list', () => {
           nativeEvent: { contentOffset: { y: Math.max(0, args?.offset ?? 0) } },
         });
       },
+      scrollToIndex: async (args: { index: number }) => { mockListScrollToIndex(args); },
     }));
     const Empty = props.ListEmptyComponent;
     return <div
@@ -348,8 +372,14 @@ function renderedListViewportStyle() {
   return JSON.parse(viewport?.getAttribute('data-style') ?? '{}') as { flex?: number; marginBottom?: number };
 }
 
-// On phones the header and search always float over the list and scroll away with it,
-// so the list owns the whole viewport above the navigation (or the keyboard).
+// The list's bottom padding beyond its own spacing: the room it leaves for the glass navigation.
+function listNavigationPadding() {
+  return (flattenStyle(mockListProps.contentContainerStyle).paddingBottom ?? 0) - ThemeLayout.spacing.lg;
+}
+
+// On phones the header and search always float over the list and scroll away with it.
+// The glass navigation floats over the list too: dreams scroll behind it to the screen's
+// foot, and the list's bottom padding clears the bar so the last dream stays reachable.
 function expectReachableListViewport(
   width: number,
   height: number,
@@ -365,8 +395,8 @@ function expectReachableListViewport(
   const listViewport = height - reservedOverlay;
 
   expect(Number(screen.getByTestId(TID.Component.SearchBar).getAttribute('data-min-height'))).toBe(searchMinHeight);
-  expect(marginBottom).toBe(reservedOverlay);
-  expect(extraNavPadding).toBe(0);
+  expect(marginBottom).toBe(0);
+  expect(extraNavPadding).toBe(reservedOverlay);
   expect(listStyle.flex).toBe(1);
   expect(listViewport).toBeGreaterThanOrEqual(120);
 
@@ -438,6 +468,8 @@ function collapseSearchByOverlayGesture(offset: number) {
 }
 
 afterEach(() => {
+  mockThumbnailUri = null;
+  mockPreloadImage.mockClear();
   mockCompleteness = undefined;
   mockRemotePreviewAllowed = false;
   mockReloadDreams.mockClear();
@@ -449,6 +481,7 @@ afterEach(() => {
   mockKeyboardListeners.clear();
   mockRetryPersistence.mockClear();
   mockListScrollToOffset.mockClear();
+  mockListScrollToIndex.mockClear();
   mockKeyboardDismiss.mockClear();
 });
 
@@ -531,7 +564,7 @@ describe('Journal compact large-text layout', () => {
     const view = render(<JournalScreen />);
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
     const list = screen.getByTestId(TID.List.Dreams);
-    const navigationClearance = renderedListViewportStyle().marginBottom;
+    const navigationClearance = listNavigationPadding();
     expect(list.contains(input)).toBe(false);
     expect(list.contains(screen.getByTestId('journal-shared-header'))).toBe(false);
     expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
@@ -547,7 +580,7 @@ describe('Journal compact large-text layout', () => {
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
     expect(document.activeElement).toBe(input);
     expect(input.value).toBe('blue room');
-    expect(renderedListViewportStyle().marginBottom).toBe(0);
+    expect(listNavigationPadding()).toBe(0);
     expectReachableListViewport(437, 490, fontScale, true);
     expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
     expect(mockListProps.keyboardDismissMode).toBe('on-drag');
@@ -556,7 +589,7 @@ describe('Journal compact large-text layout', () => {
     Object.assign(mockWindow, { height: 949 });
     view.rerender(<JournalScreen />);
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
-    expect(renderedListViewportStyle().marginBottom).toBe(navigationClearance);
+    expect(listNavigationPadding()).toBe(navigationClearance);
     expectReachableListViewport(437, 949, fontScale);
     view.unmount();
     expect(mockKeyboardListeners.size).toBe(0);
@@ -641,7 +674,9 @@ describe('Journal compact large-text layout', () => {
     const uncoveredListBox = 320 - reservedOverlay;
 
     expect(reservedOverlay).toBeLessThanOrEqual(128);
-    expect(listStyle.marginBottom).toBe(reservedOverlay);
+    // The cards scroll behind the glass bar; the padding keeps the last one above it.
+    expect(listStyle.marginBottom ?? 0).toBe(0);
+    expect(listNavigationPadding()).toBe(reservedOverlay);
     expect(uncoveredListBox).toBeGreaterThanOrEqual(120);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
     expect(list.contains(dreamCard)).toBe(true);
@@ -888,6 +923,114 @@ describe('Journal compact large-text layout', () => {
   });
 });
 
+describe('Journal on an iPhone Duo', () => {
+  beforeEach(() => {
+    for (let night = 0; night < 8; night += 1) {
+      mockDreams.push({ ...guestDream, id: guestDream.id - night * 86_400_000, title: `Night ${night}` });
+    }
+  });
+
+  const tokens = (indices: number[]) => indices.map((index) => ({ index, item: mockListProps.data[index], key: String(index), isViewable: true }));
+  // The list's two viewability reports: any part in view (for thumbnails), at least half in view.
+  const report = ({ inView, halfInView }: { inView: number[]; halfInView: number[] }) => act(() => {
+    mockListProps.onViewableItemsChanged({ viewableItems: tokens(inView), changed: [] });
+    mockListProps.viewabilityConfigCallbackPairs[0].onViewableItemsChanged({ viewableItems: tokens(halfInView), changed: [] });
+  });
+
+  it.each([
+    [412, 678, 1], // folded, less its status bar column
+    [669, 951, 2], // open
+    [897, 669, 3], // open on its side, less its status bar column
+  ])('lays a %i by %i window out in %i columns', (width: number, height: number, columns: number) => {
+    Object.assign(mockWindow, { width, height });
+    render(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(columns);
+  });
+
+  it('opens the new columns on the dream at the top when the Duo folds', () => {
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    const view = render(<JournalScreen />);
+    act(() => { mockListProps.onLoad(); });
+    // The last sliver of the row of dreams 4 and 5 is still in view; 6 and 7 fill the screen.
+    report({ inView: [4, 5, 6, 7], halfInView: [6, 7] });
+    expect(mockListProps.viewabilityConfigCallbackPairs[0].viewabilityConfig.itemVisiblePercentThreshold).toBe(50);
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(1);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).toHaveBeenCalledTimes(1);
+    expect(mockListScrollToIndex).toHaveBeenCalledWith({
+      index: 6,
+      animated: false,
+      viewOffset: -(MOCK_INSETS.top + ThemeLayout.spacing.sm),
+    });
+
+    // Loaded again in the same columns (a filter on the web), the list stays where it is.
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a journal read from its first dream at the top when the Duo opens', () => {
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    const view = render(<JournalScreen />);
+    report({ inView: [0, 1], halfInView: [0] });
+
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(2);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('does not carry the dream kept through a fold into new search results', () => {
+    Object.assign(mockWindow, { width: 669, height: 951 });
+    const view = render(<JournalScreen />);
+    report({ inView: [4, 5], halfInView: [4, 5] });
+    Object.assign(mockWindow, { width: 412, height: 678 });
+    view.rerender(<JournalScreen />);
+
+    fireEvent.change(screen.getByTestId(TID.Input.SearchDreams), { target: { value: 'Night' } });
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListProps.data.length).toBeGreaterThan(4);
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('keeps the desktop grid where it is when only the window height changes', () => {
+    mockPlatform = 'web';
+    Object.assign(mockWindow, { width: 1280, height: 800 });
+    const view = render(<JournalScreen />);
+    report({ inView: [4, 5, 6], halfInView: [4, 5, 6] });
+
+    // Short enough to regroup a phone list, which the desktop grid does not use.
+    Object.assign(mockWindow, { width: 1280, height: 400 });
+    view.rerender(<JournalScreen />);
+    expect(mockListProps.numColumns).toBe(3);
+    act(() => { mockListProps.onLoad(); });
+    expect(mockListScrollToIndex).not.toHaveBeenCalled();
+  });
+
+  it('keeps three columns on the web while the keyboard covers the open Duo on its side', () => {
+    mockPlatform = 'web';
+    const page = Object.getOwnPropertyDescriptor(document.documentElement, 'clientHeight');
+    Object.defineProperty(document.documentElement, 'clientHeight', { configurable: true, get: () => 669 });
+    try {
+      Object.assign(mockWindow, { width: 897, height: 669 });
+      const view = render(<JournalScreen />);
+      expect(mockListProps.numColumns).toBe(3);
+
+      // The visual viewport, which the web window follows, shrinks above the keyboard.
+      Object.assign(mockWindow, { width: 897, height: 370 });
+      view.rerender(<JournalScreen />);
+      expect(mockListProps.numColumns).toBe(3);
+    } finally {
+      if (page) Object.defineProperty(document.documentElement, 'clientHeight', page);
+      else delete (document.documentElement as { clientHeight?: number }).clientHeight;
+    }
+  });
+});
+
 it('keeps exhaustive retry available after remote previews have finished', () => {
   const { AuthContext } = require('@/context/AuthContext');
   mockCompleteness = { status: 'incomplete' };
@@ -910,6 +1053,59 @@ it('opens the selected card with its stable remote identity when timestamps coll
   } });
 });
 
+
+// Closing the composer used to leave the dreamer on the dream's page, opened behind it.
+it.each(['ios', 'android'])('shares a card over the journal, which the dreamer stays in, on %s', (platform: string) => {
+  mockPlatform = platform;
+  mockDreams.push({ ...guestDream, remoteId: 17, title: 'Other dream' }, { ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
+  render(<JournalScreen />);
+  expect(screen.queryByTestId('share-composer')).toBeNull();
+  fireEvent.click(screen.getByText('Share Selected dream'));
+  const composer = screen.getByTestId('share-composer');
+  expect(composer.getAttribute('data-dream')).toBe('Selected dream');
+  expect(composer.getAttribute('data-visible')).toBe('true');
+  fireEvent.click(screen.getByText('Close the share composer'));
+  expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('false');
+  expect(mockPush).not.toHaveBeenCalled();
+});
+
+it('follows the shared dream through a sync that names it, and lets it go once closed or deleted', () => {
+  jest.useFakeTimers();
+  try {
+    mockDreams.push({ ...guestDream, clientRequestId: 'unsynced-request', title: 'Selected dream' });
+    const { rerender } = render(<JournalScreen />);
+    fireEvent.click(screen.getByText('Share Selected dream'));
+    // Sync gives the dream its server identity and its painting's name while the sheet is open.
+    mockDreams[0] = { ...mockDreams[0], remoteId: 2501, title: 'Selected dream, named' };
+    rerender(<JournalScreen />);
+    expect(screen.getByTestId('share-composer').getAttribute('data-dream')).toBe('Selected dream, named');
+    fireEvent.click(screen.getByText('Close the share composer'));
+    expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('false');
+    act(() => { jest.advanceTimersByTime(600); });
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+    fireEvent.click(screen.getByText(/^Share Selected dream/));
+    expect(screen.getByTestId('share-composer').getAttribute('data-visible')).toBe('true');
+    const shared = mockDreams[0];
+    mockDreams.length = 0;
+    rerender(<JournalScreen />);
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+    // Back with its account, the dream does not reopen the composer on its own.
+    mockDreams.push(shared);
+    rerender(<JournalScreen />);
+    expect(screen.queryByTestId('share-composer')).toBeNull();
+  } finally { jest.useRealTimers(); }
+});
+
+it('opens the dream with its share asked for from a card share on the web', () => {
+  mockPlatform = 'web';
+  mockDreams.push({ ...guestDream, remoteId: 2501, clientRequestId: 'last-request', title: 'Selected dream' });
+  render(<JournalScreen />);
+  fireEvent.click(screen.getByText('Share Selected dream'));
+  expect(screen.queryByTestId('share-composer')).toBeNull();
+  expect(mockPush).toHaveBeenCalledWith({ pathname: '/journal/[id]', params: {
+    id: String(guestDream.id), remoteId: '2501', clientRequestId: 'last-request', share: '1',
+  } });
+});
 
 it('carries stable identity from a cold remote preview into the detail route', async () => {
   const { AuthContext } = require('@/context/AuthContext');
@@ -939,4 +1135,25 @@ describe('Journal first page', () => {
     render(<JournalScreen />);
     expect(screen.queryByTestId('journal-first-page')).toBeNull();
   });
+});
+
+
+// A native disk/signing promise can finish after the finger starts scrolling.
+// UI journeys cannot deterministically hold that native promise at this boundary.
+it('defers thumbnail decoding when a pending resolver finishes during a drag and resumes when idle', async () => {
+  mockDreams.push(guestDream);
+  mockThumbnailUri = 'https://example.test/dream-thumb.webp';
+  mockResolveWithDiskCache.mockClear();
+  let finishResolve!: (value: { imageUrl: string; thumbnailUrl: string }) => void;
+  mockResolveWithDiskCache.mockImplementationOnce(() => new Promise((resolve) => { finishResolve = resolve; }));
+  render(<JournalScreen />);
+  await waitFor(() => expect(mockResolveWithDiskCache).toHaveBeenCalledTimes(1));
+  act(() => {
+    mockListProps.onViewableItemsChanged({ viewableItems: [{ index: 0, item: guestDream }], changed: [] });
+    mockListProps.onScrollBeginDrag();
+  });
+  await act(async () => { finishResolve({ imageUrl: '', thumbnailUrl: mockThumbnailUri! }); });
+  expect(mockPreloadImage).not.toHaveBeenCalled();
+  act(() => { mockListProps.onMomentumScrollEnd(); });
+  await waitFor(() => expect(mockPreloadImage).toHaveBeenCalledWith(mockThumbnailUri, undefined));
 });

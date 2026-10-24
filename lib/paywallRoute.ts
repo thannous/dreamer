@@ -10,15 +10,22 @@ export type AnalysisPaywallParams = {
   dreamClientRequestId?: string;
   dreamOwnerId?: string;
   afterSave?: string;
+  /** '1' when the offer opens an analysis already prepared for a free account. */
+  prepared?: string;
 };
 
-export function buildAnalysisPaywallHref(dream: DreamAnalysis, ownerId: string, options?: { afterSave?: boolean }): Href {
+export function buildAnalysisPaywallHref(
+  dream: DreamAnalysis,
+  ownerId: string,
+  options?: { afterSave?: boolean; prepared?: boolean },
+): Href {
   const route = getDreamRouteParams(dream);
   return {
     pathname: '/paywall',
     params: {
       trigger: 'analysis_cta',
       ...(options?.afterSave ? { afterSave: '1' } : {}),
+      ...(options?.prepared ? { prepared: '1' } : {}),
       dreamId: route.id,
       dreamRemoteId: route.remoteId,
       dreamClientRequestId: route.clientRequestId,

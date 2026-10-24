@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, type ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
@@ -17,13 +17,17 @@ const BACK_SIZE = 42;
  * The top of a journal page: the way back to the journal, the round arrow the app's other
  * pages use. It belongs to the page and scrolls away with it. Without `onBack` it is only
  * drawn, as on a page being turned to. A `label` is printed across it in spaced capitals,
- * as a book prints its title at the head of each page; it is decorative.
+ * as a book prints its title at the head of each page; it is decorative. An `aside`, such
+ * as the full moon's seal, sits at the line's other end. The right-hand page of two facing
+ * pages prints its head without the way back (`arrow={false}`), which its left page carries.
  */
-export function JournalRunningHead({ onBack, testID, backTestID, label }: {
+export function JournalRunningHead({ onBack, testID, backTestID, label, aside, arrow: withArrow = true }: {
   onBack?: () => void;
   testID?: string;
   backTestID?: string;
   label?: string;
+  aside?: ReactNode;
+  arrow?: boolean;
 }) {
   const { t } = useTranslation();
   const { colors, mode, shadows } = useTheme();
@@ -46,7 +50,7 @@ export function JournalRunningHead({ onBack, testID, backTestID, label }: {
           </Text>
         </View>
       ) : null}
-      {onBack ? (
+      {!withArrow ? null : onBack ? (
         <PressableScale onPress={onBack} testID={backTestID} accessibilityRole="button"
           accessibilityLabel={t('journal.back_button')} hitSlop={{ top: 2, bottom: 2, left: 2, right: 2 }}
           className="items-center justify-center" style={button}>
@@ -55,6 +59,7 @@ export function JournalRunningHead({ onBack, testID, backTestID, label }: {
       ) : (
         <View className="items-center justify-center" style={button}>{arrow}</View>
       )}
+      {aside ? <View className="ml-auto">{aside}</View> : null}
     </View>
   );
 }

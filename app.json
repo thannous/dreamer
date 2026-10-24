@@ -2,7 +2,7 @@
   "expo": {
     "name": "Noctalia",
     "slug": "noctalia",
-    "version": "3.6.0",
+    "version": "3.7.0",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
@@ -10,6 +10,9 @@
       "supportsTablet": false,
       "requireFullScreen": false,
       "bundleIdentifier": "com.tanuki75.noctalia",
+      "entitlements": {
+        "com.apple.developer.devicecheck.appattest-environment": "development"
+      },
       "usesAppleSignIn": true,
       "config": {
         "usesNonExemptEncryption": false
@@ -20,8 +23,8 @@
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
-        "NSCameraUsageDescription": "Allow Noctalia to use the camera when you choose to add a reference image to a dream.",
-        "NSPhotoLibraryUsageDescription": "Allow Noctalia to select a reference image for your dream.",
+        "NSCameraUsageDescription": "Noctalia does not use the camera. A picture you give a dream comes from your photo library.",
+        "NSPhotoLibraryUsageDescription": "Allow Noctalia to use a photo from your library as the picture of a dream.",
         "NSHealthShareUsageDescription": "When you choose to connect Apple Health in Lucid Trainer, Noctalia reads your past sleep records to show personal trends.",
         "NSHealthUpdateUsageDescription": "Noctalia does not add or change data in Apple Health. Its optional sleep history feature only reads records you choose to connect.",
         "CADisableMinimumFrameDurationOnPhone": true,
@@ -142,11 +145,52 @@
       "react-native-edge-to-edge",
       "expo-image",
       "expo-sharing",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      "expo-app-intents",
+      "./plugins/withAppIntentsLocalizations",
+      [
+        "expo-widgets",
+        {
+          "widgets": [
+            {
+              "name": "DreamCapture",
+              "displayName": "Tell my dream",
+              "description": "Opens the capture screen in one tap, from the Lock Screen or the Home Screen.",
+              "ios": {
+                "supportedFamilies": [
+                  "accessoryCircular",
+                  "accessoryRectangular",
+                  "accessoryInline",
+                  "systemSmall"
+                ],
+                "initialLayout": "widgets/DreamCaptureWidget.tsx"
+              }
+            },
+            {
+              "name": "LastDream",
+              "displayName": "Last painted dream",
+              "description": "Your latest dream's painting. Tap it to reopen the dream.",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium"
+                ],
+                "contentMarginsDisabled": true,
+                "initialLayout": "widgets/LastDreamWidget.tsx"
+              }
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "inlineModules": {
+        "watchedDirectories": [
+          "app-intents"
+        ]
+      }
     },
     "extra": {
       "router": {},

@@ -18,8 +18,13 @@ const mockTrackProductEvent = jest.fn().mockResolvedValue(undefined);
 const mockTransition = jest.fn();
 const mockUseOnboarding = jest.fn();
 let mockAuthReturn: { destination: string; createdAt: number } | null = null;
+let mockWindowWidth = 390;
 const previousExpoOS = process.env.EXPO_OS;
 process.env.EXPO_OS = 'android';
+// The feature sheets are on by default; these cases cover the path without the
+// lazily loaded stories, which the web E2E passes qualify with the sheets on.
+const previousFeatureSheets = process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED;
+process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED = 'false';
 
 // `sync` mirrors a settled app: interaction tasks drain as they are scheduled.
 // `manual` reproduces a task that is scheduled before the screen starts leaving
@@ -212,7 +217,7 @@ jest.doMock('react-native', () => {
     Text: createElement('span'),
     View: createElement('div'),
     findNodeHandle: () => 1,
-    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => ({ width: mockWindowWidth, height: 844, scale: 1, fontScale: 1 }),
   };
 });
 
@@ -290,12 +295,20 @@ jest.doMock('@/lib/productAnalytics', () => ({
 const { default: OnboardingScreen } = require('@/app/onboarding');
 
 describe('Onboarding screen', () => {
-  afterEach(() => { mockAuthReturn = null; });
+  afterEach(() => {
+    mockAuthReturn = null;
+    mockWindowWidth = 390;
+  });
   afterAll(() => {
     if (previousExpoOS === undefined) {
       delete process.env.EXPO_OS;
     } else {
       process.env.EXPO_OS = previousExpoOS;
+    }
+    if (previousFeatureSheets === undefined) {
+      delete process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED;
+    } else {
+      process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED = previousFeatureSheets;
     }
   });
 
@@ -481,6 +494,20 @@ describe('Onboarding screen', () => {
     expect(
       screen.getByTestId(TID.Component.OnboardingPath).getAttribute('aria-hidden')
     ).toBe('false');
+  });
+
+  it('shows the step counter beside the wordmark on a phone', () => {
+    renderOnboarding();
+
+    expect(screen.getByText('01 / 02')).toBeTruthy();
+  });
+
+  it('keeps the step marks clear of the wordmark in Split View on the open iPhone Duo', () => {
+    mockWindowWidth = 330;
+    renderOnboarding();
+
+    expect(screen.queryByText('01 / 02')).toBeNull();
+    expect(screen.getByLabelText('onboarding.progress')).toBeTruthy();
   });
 
   it('lets the user continue this session when persisting a skip fails', async () => {

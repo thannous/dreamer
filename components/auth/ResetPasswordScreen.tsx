@@ -5,7 +5,6 @@ import {
   ActivityIndicator,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -23,11 +22,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isLucidTrainer } from '@/lib/appVariant';
-import { onPasswordRecovery, updatePassword } from '@/lib/auth';
-import { PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
+import { getWebRecoveryLinkState, onPasswordRecovery, updatePassword, updatePasswordFromNativeRecovery, updatePasswordFromWebRecovery, webAuthCallbackPromise } from '@/lib/auth';
+import { isValidEmail, PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
+import type { NativeRecoveryLink } from '@/lib/nativeRecoveryLink';
 import { TID } from '@/lib/testIDs';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 type Phase = 'checking' | 'ready' | 'success' | 'expired';
 
@@ -35,6 +36,9 @@ const CONTINUE_DESTINATION = isLucidTrainer ? '/lucid' : '/recording';
 const SIGN_IN_DESTINATION = isLucidTrainer ? '/lucid/account' : '/settings';
 
 const getUpdateErrorKey = (error: unknown): string => {
+  if (error instanceof Error && error.message === 'recovery_email_mismatch') {
+    return 'auth.reset_password.email_mismatch';
+  }
   if (isAuthApiError(error) && error.code === 'same_password') {
     return 'auth.reset_password.same_password';
   }
@@ -44,12 +48,11 @@ const getUpdateErrorKey = (error: unknown): string => {
 /**
  * Landing screen for the password-recovery email link.
  *
- * On web, supabase-js consumes the recovery tokens from the URL fragment when the
- * client initialises and emits `PASSWORD_RECOVERY`; the resulting session also
- * surfaces through `useAuth()`. Either signal unlocks the form. When neither
- * arrives (expired or already-used link) the screen offers a way back to sign-in.
+ * Web token-hash and same-browser PKCE recovery links require account-email
+ * confirmation and complete in isolated sessions. Native sessions use their
+ * existing recovery events.
  */
-const ResetPasswordScreen: React.FC = () => {
+const ResetPasswordScreen: React.FC<{ nativeRecoveryLink?: NativeRecoveryLink }> = ({ nativeRecoveryLink }) => {
   // This screen's own scroll, published to its header painting and title.
   const onHeaderScroll = useHeaderScroll();
   const { colors, mode } = useTheme();
@@ -57,17 +60,26 @@ const ResetPasswordScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
+  const [webRecoveryLinkState, setWebRecoveryLinkState] = useState(getWebRecoveryLinkState);
+  const recoveryLinkState = Platform.OS === 'web'
+    ? webRecoveryLinkState : nativeRecoveryLink?.state ?? 'none';
 
   const [recoveryDetected, setRecoveryDetected] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [touched, setTouched] = useState({ password: false, confirm: false });
   const [submitting, setSubmitting] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [isolatedRecoveryCompleted, setIsolatedRecoveryCompleted] = useState(false);
   const [errorKey, setErrorKey] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+    void webAuthCallbackPromise.then(() => {
+      if (mounted) setWebRecoveryLinkState(getWebRecoveryLinkState());
+    });
     const unsubscribe = onPasswordRecovery((event, session) => {
       if (
         event === 'PASSWORD_RECOVERY' ||
@@ -76,15 +88,19 @@ const ResetPasswordScreen: React.FC = () => {
         setRecoveryDetected(true);
       }
     });
-    return unsubscribe;
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, []);
 
-  const hasSession = recoveryDetected || Boolean(user);
+  const hasSession = recoveryLinkState === 'pending' ||
+    (recoveryLinkState === 'none' && (recoveryDetected || Boolean(user)));
   const phase: Phase = completed
     ? 'success'
     : hasSession
       ? 'ready'
-      : authLoading
+      : recoveryLinkState === 'checking' || (recoveryLinkState === 'none' && authLoading)
         ? 'checking'
         : 'expired';
 
@@ -92,7 +108,8 @@ const ResetPasswordScreen: React.FC = () => {
   const passwordsMatch = password === confirmPassword;
   const showPasswordError = touched.password && password.length > 0 && !passwordValid;
   const showMismatchError = touched.confirm && confirmPassword.length > 0 && !passwordsMatch;
-  const submitDisabled = submitting || !passwordValid || !passwordsMatch;
+  const submitDisabled = submitting || !passwordValid || !passwordsMatch ||
+    (recoveryLinkState === 'pending' && !isValidEmail(email));
 
   const handleSubmit = async () => {
     setTouched({ password: true, confirm: true });
@@ -100,7 +117,19 @@ const ResetPasswordScreen: React.FC = () => {
     setSubmitting(true);
     setErrorKey(null);
     try {
-      await updatePassword(password);
+      if (recoveryLinkState === 'pending') {
+        if (Platform.OS === 'web') {
+          await updatePasswordFromWebRecovery(email, password);
+        } else if (nativeRecoveryLink?.state === 'pending') {
+          await updatePasswordFromNativeRecovery(nativeRecoveryLink.tokenHash, email, password);
+        } else {
+          throw new Error('Password recovery link is invalid.');
+        }
+        setIsolatedRecoveryCompleted(true);
+      } else {
+        await updatePassword(password);
+      }
+      setEmail('');
       setPassword('');
       setConfirmPassword('');
       setCompleted(true);
@@ -115,7 +144,7 @@ const ResetPasswordScreen: React.FC = () => {
   };
 
   const handleContinue = () => {
-    router.replace(CONTINUE_DESTINATION);
+    router.replace(isolatedRecoveryCompleted ? SIGN_IN_DESTINATION : CONTINUE_DESTINATION);
   };
 
   const handleBackToSignIn = () => {
@@ -215,9 +244,13 @@ const ResetPasswordScreen: React.FC = () => {
           {t('auth.reset_password.success_title')}
         </Text>
         <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
-          {t('auth.reset_password.success_message')}
+          {t(isolatedRecoveryCompleted
+            ? 'auth.reset_password.success_signin_message'
+            : 'auth.reset_password.success_message')}
         </Text>
-        {renderPrimaryButton(t('auth.reset_password.continue'), handleContinue, {
+        {renderPrimaryButton(t(isolatedRecoveryCompleted
+          ? 'auth.reset_password.back_to_signin'
+          : 'auth.reset_password.continue'), handleContinue, {
           testID: TID.Button.AuthResetContinue,
         })}
       </>
@@ -231,6 +264,28 @@ const ResetPasswordScreen: React.FC = () => {
         <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
           {t('auth.reset_password.subtitle')}
         </Text>
+
+        {recoveryLinkState === 'pending' ? (
+          <>
+            <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
+              {t('auth.reset_password.confirm_email')}
+            </Text>
+            <TextInput
+              testID={TID.Input.AuthRecoveryEmail}
+              style={inputStyle}
+              placeholder={t('auth.reset_password.email')}
+              placeholderTextColor={noctalia.text.secondary}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoComplete="email"
+              textContentType="emailAddress"
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!submitting}
+            />
+          </>
+        ) : null}
 
         <View style={styles.inputWithToggle}>
           <TextInput
@@ -327,7 +382,7 @@ const ResetPasswordScreen: React.FC = () => {
       style={[styles.container, { backgroundColor: noctalia.screen.background }]}
       testID={TID.Screen.ResetPassword}
     >
-      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+      <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scroll}
         contentContainerStyle={[
           styles.scrollContent,
@@ -348,7 +403,7 @@ const ResetPasswordScreen: React.FC = () => {
         >
           {content}
         </View>
-      </ScrollView>
+      </HeaderScrollView>
     </View>
   );
 };
@@ -385,14 +440,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   title: {
-    fontFamily: isLucidTrainer ? 'Fraunces_600SemiBold' : Fonts.spaceGrotesk.bold,
+    fontFamily: isLucidTrainer ? 'Fraunces_600SemiBold' : Fonts.outfit.bold,
     fontSize: isLucidTrainer ? 34 : 22,
     lineHeight: isLucidTrainer ? 40 : 28,
     marginBottom: ThemeLayout.spacing.xs,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
     marginBottom: ThemeLayout.spacing.md,
   },
@@ -402,8 +457,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
     marginBottom: 10,
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.regular,
     width: '100%',
   },
   inputWithToggle: {
@@ -423,12 +478,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   errorText: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: ThemeLayout.spacing.xs,
   },
   submitError: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     marginTop: ThemeLayout.spacing.xs,
   },
   primaryButton: {
@@ -442,8 +497,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   primaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   secondaryButton: {
     alignItems: 'center',
@@ -456,8 +511,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   secondaryButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   buttonPressed: {
     opacity: 0.8,

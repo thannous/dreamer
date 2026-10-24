@@ -11,7 +11,7 @@ import { webEngine, webLocale } from './web-engine';
 // Keep the matcher library out of the test module bundler, as in SkillCodex's
 // existing baseline adapter. Resolve this isolated package's pinned version.
 const matchers: typeof import('playwright/test') = createRequire(import.meta.url)('playwright/test');
-// Match the15-second assertion timeout of playwright.config.ts exactly.
+// Keep the migrated journeys’ 15-second assertion deadline.
 export const expect = matchers.expect.configure({ timeout: 15_000 });
 
 export type ParityInfo = {
@@ -46,6 +46,16 @@ export async function answerSeal(page: Page, answer: 'now' | 'later') {
 export async function expectIllustrationOnPlate(page: Page) {
   await page.getByTestId('component.dreamDetail.savedMoment').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+}
+/**
+ * Waits until the capture draft holding `text` is kept where a reload reads it back. The web
+ * journeys run the mock services with persistence, which keep the draft in localStorage under
+ * their own prefix. The screen no longer announces the saved draft.
+ */
+export async function expectCaptureDraftSaved(page: Page, text: string) {
+  await expect.poll(() => page.evaluate(() => (
+    localStorage.getItem('noctalia_mock_dogfood_v1:gemini_dream_journal_recording_transcript')
+  )), { message: 'capture draft kept for a reload' }).toContain(text);
 }
 type Body = (fixtures: Fixtures, info: ParityInfo) => Promise<void>;
 type Hook = (fixtures: Fixtures) => Promise<void>;
@@ -85,7 +95,7 @@ export function createParityTest(initial: Options = {}) {
       ownedBrowsers.set(page, browser);
       page.setDefaultTimeout(30_000);
       // Historical journeys predate the one-time AI permission dialog; give it up front.
-      await page.context().addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v1', 'granted'));
+      await page.context().addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
       // The engine resolves app URLs itself; its raw page has no baseURL.
       // Preserve the historical relative goto contract on this attempt only.
       const goto = page.goto;

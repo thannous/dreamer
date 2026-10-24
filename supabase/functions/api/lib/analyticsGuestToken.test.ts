@@ -20,8 +20,23 @@ Deno.test('analytics guest token is purpose-bound and contains no quota/device i
     assertEquals(await verifyAnalyticsGuestToken(iosSession.token), true);
     const iosPayloadPart = iosSession.token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
     const iosPayload = JSON.parse(atob(iosPayloadPart.padEnd(Math.ceil(iosPayloadPart.length / 4) * 4, '=')));
+    assertEquals(payload.v, 1);
     assertEquals(iosPayload.platform, 'ios');
+    assertEquals(iosPayload.v, 2);
     assertEquals(/fingerprint|device[_-]?id|user_id|email/i.test(JSON.stringify(iosPayload)), false);
+
+    // A correctly signed token from the previous proofless iOS issuer must
+    // fail even before its normal 15-minute expiration.
+    const [header] = iosSession.token.split('.');
+    const legacyPayload = btoa(JSON.stringify({ ...iosPayload, v: 1 }))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    const signedData = `${header}.${legacyPayload}`;
+    const key = await crypto.subtle.importKey('raw',
+      new TextEncoder().encode('product-analytics:analytics-test-secret-with-sufficient-entropy'),
+      { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const signature = btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(signedData)))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    assertEquals(await verifyAnalyticsGuestToken(`${signedData}.${signature}`), false);
   } finally {
     if (previous == null) Deno.env.delete('GUEST_SESSION_SECRET');
     else Deno.env.set('GUEST_SESSION_SECRET', previous);

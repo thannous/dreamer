@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -28,7 +28,7 @@ import {
 } from '@/lib/inspirationRituals';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
 import { isSleepSoundsAvailable } from '@/lib/sleepSoundsFeature';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import {
   getLocalDateKey,
@@ -38,6 +38,7 @@ import {
   saveRitualPreference,
   saveRitualStepProgress,
 } from '@/services/storageService';
+import { TypeScale } from '@/constants/typeScale';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -291,7 +292,7 @@ function RitualDetailScreen() {
   const iconName = RITUAL_ICONS[ritual.id] ?? 'moon.stars.fill';
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
 
         {/* Floating Back Button */}
@@ -308,7 +309,7 @@ function RitualDetailScreen() {
         >
           <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
         </Pressable>
-        <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+        <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
           style={styles.scrollView}
           contentInsetAdjustmentBehavior="never"
           contentContainerStyle={{ paddingTop: insets.top, paddingBottom: insets.bottom + 40 }}
@@ -499,7 +500,7 @@ function RitualDetailScreen() {
             </View>
           </GlassCard>
           </View>
-        </ScrollView>
+        </HeaderScrollView>
       </View>
     </ScrollPerfProvider>
   );
@@ -541,13 +542,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 28,
+    fontSize: TypeScale.h1.fontSize,
     textAlign: 'center',
   },
   description: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
@@ -566,8 +567,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   progressText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   sleepSoundCard: {
     borderRadius: 24,
@@ -596,19 +597,19 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   lucidTrainerTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   lucidTrainerBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   lucidTrainerAction: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 13,
-    lineHeight: 18,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   sleepSoundButton: {
     minHeight: 94,
@@ -629,14 +630,14 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   sleepSoundTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
   },
   sleepSoundBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   stepsCard: {
     borderRadius: 24,
@@ -669,12 +670,12 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   stepTitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.body.fontSize,
   },
   stepBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
 });

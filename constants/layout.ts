@@ -1,9 +1,60 @@
 import { Platform, type ViewStyle } from 'react-native';
 
 export const LAYOUT_MAX_WIDTH = 1200;
-export const TAB_BAR_MAX_WIDTH = 960;
+/** Five destinations stay a hand's reach apart on a large display or a phone on its side. */
+export const TAB_BAR_MAX_WIDTH = 640;
 export const TABLET_BREAKPOINT = 600;
 export const DESKTOP_BREAKPOINT = 1024;
+
+/**
+ * Window classes come from the space the app has, never from the device: one iPhone Duo
+ * is a compact phone folded (about 466 × 678 points) and a large display open (about
+ * 669 × 951, or 951 × 669 on its side), and Split View can make either a narrow column.
+ */
+export const LARGE_WINDOW_MIN_WIDTH = TABLET_BREAKPOINT;
+/** A large window this wide lays its grids out in more columns: the open Duo on its side. */
+export const EXPANDED_WINDOW_MIN_WIDTH = 840;
+/** A phone on its side is as wide but too short for the taller cards of an expanded grid. */
+export const EXPANDED_WINDOW_MIN_HEIGHT = 480;
+
+export type WindowClass = 'compact' | 'large' | 'expanded';
+
+export function getWindowClass(width: number, height: number): WindowClass {
+  if (width < LARGE_WINDOW_MIN_WIDTH) return 'compact';
+  return width >= EXPANDED_WINDOW_MIN_WIDTH && height >= EXPANDED_WINDOW_MIN_HEIGHT ? 'expanded' : 'large';
+}
+
+/** Each page's margin at the binding of two facing pages: text and controls keep clear of the fold. */
+export const SPREAD_GUTTER = 28;
+/** The narrowest page two facing pages are laid out with. */
+export const SPREAD_PAGE_MIN_WIDTH = 320;
+
+/** Two facing pages: the binding (`spine`) and the whole width, in the screen's content frame. */
+export type JournalSpread = { spine: number; width: number };
+
+/**
+ * A dream opens as a book's two facing pages where an expanded window has room for both:
+ * the open iPhone Duo on its side, held as a book. Folded, open upright, in Split View or
+ * on a phone on its side the window is narrower and the dream keeps its single page. The
+ * binding lies on the window's middle, where the open Duo folds (an expanded window fills
+ * the open display), given in the content's frame, which starts after the left side safe
+ * area; each page keeps a reading width. The web keeps its single page beside its shell.
+ */
+export function getJournalSpread({ width, height, windowWidth, leftInset, web }: {
+  /** The content's width: the window less its side safe areas. */
+  width: number;
+  height: number;
+  windowWidth: number;
+  /** The left side safe area, where the content starts in the window. */
+  leftInset: number;
+  web: boolean;
+}): JournalSpread | null {
+  if (web || getWindowClass(width, height) !== 'expanded') return null;
+  const fold = windowWidth / 2 - leftInset;
+  const spine = Math.round(Math.min(width - SPREAD_PAGE_MIN_WIDTH, Math.max(SPREAD_PAGE_MIN_WIDTH, fold)));
+  return { spine, width };
+}
+
 /** Reading width of desktop tab pages beside the sidebar. */
 export const DESKTOP_CONTENT_MAX_WIDTH = 960;
 export const TAB_BAR_HEIGHT = 86;
@@ -39,8 +90,13 @@ export function getBottomNavigationLayout(
   const horizontalLayout = getTabBarHorizontalLayout(width);
   const contentWidth = Math.max(0, width - horizontalLayout.start * 2 - (narrow ? 8 : 16) - 2);
   const itemWidth = contentWidth / 5;
-  const labelFontSize = compact || width < TABLET_BREAKPOINT ? 11 : 12;
+  // Phones read 12-point labels; only narrow and short landscape bars drop to 11.
+  const labelFontSize = compact || narrow ? 11 : 12;
   const labelLineHeight = 16;
+  // Android cannot shrink a label to fit without making it tiny, so it uses the short
+  // names wherever the full ones may not fit at 12 points: below 384 dp or with larger text.
+  const compactLabels = largeText || narrow
+    || (Platform.OS === 'android' && (width < 384 || requestedFontScale > 1));
   // Keep navigation compact while the dream itself follows the user's text size.
   // Translated short labels stay on one line; accessible tab names remain complete.
   const labelLines = 1;
@@ -62,6 +118,7 @@ export function getBottomNavigationLayout(
     narrow,
     stackedLabels,
     largeText,
+    compactLabels,
     fontScale: safeFontScale,
     itemWidth,
     contentWidth,

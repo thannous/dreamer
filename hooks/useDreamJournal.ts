@@ -1,5 +1,5 @@
 import { markPerformance, performanceTraceId } from '../lib/performanceTrace';
-import { retainedImageJobError } from '@/lib/dreamSnapshotMerge';
+import { mergeServerDreamWithLocalState } from '@/lib/journalQueueTransitions';
 import { type DreamTarget, matchesDreamTarget, resolveDreamTarget, getDreamIdentityKey } from '../lib/dreamIdentity';
 /**
  * useDreamJournal - Main hook for dream journal operations
@@ -26,6 +26,7 @@ import {
 import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
 import { keepsDreamName } from '@/lib/dreamNaming';
 import { DreamPersistenceError, requireReadableDreams } from '@/lib/dreamStorageRead';
+import { IncompleteJournalAckError } from '@/lib/journalErrors';
 import {
   getAnalysisJobPollDelay,
   MAX_ANALYSIS_JOB_POLL_ATTEMPTS,
@@ -87,7 +88,6 @@ import {
 } from '@/services/quota/GuestDreamCounter';
 import { markMockAnalysis, markMockImage } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
-import { getIllustrationResolution } from '@/services/illustrationPreferences';
 import {
   getPendingImageJobs,
   getSavedDreams,
@@ -109,32 +109,6 @@ const isActiveImageJobStatus = (
 
 const waitForPollDelay = (delayMs: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, delayMs));
-
-const mergeRemoteDreamWithClientState = (
-  remoteDream: DreamAnalysis,
-  localDream: DreamAnalysis
-): DreamAnalysis =>
-  setDreamSyncState(
-    {
-      ...remoteDream,
-      id: localDream.id,
-      captureOriginalTranscript: localDream.captureOriginalTranscript,
-      memory: remoteDream.memory ?? localDream.memory,
-      imageUpdatedAt: localDream.imageUpdatedAt ?? remoteDream.imageUpdatedAt,
-      imageSource: localDream.imageSource ?? remoteDream.imageSource,
-      imageJobId: localDream.imageJobId,
-      imageJobStatus: localDream.imageJobStatus,
-      imageJobRequestId: localDream.imageJobRequestId,
-      imageJobErrorCode: retainedImageJobError(remoteDream, localDream),
-      imageJobErrorMessage: localDream.imageJobErrorMessage,
-    },
-    'clean',
-    {
-      lastSyncedAt: Date.now(),
-      lastSyncError: undefined,
-      conflictRemoteDream: undefined,
-    }
-  );
 
 export const useDreamJournal = () => {
   const { user } = useAuth();
@@ -194,6 +168,7 @@ export const useDreamJournal = () => {
     dreamsRef,
     persistLocalDreams,
     persistRemoteDreams,
+    persistMigrationResolution,
     pendingMutations,
     pendingMutationsLoaded,
     pendingMutationsScope,
@@ -443,19 +418,16 @@ export const useDreamJournal = () => {
         prompt?: string;
         transcript?: string;
         previousImageUrl?: string;
-        imageSize?: '1K' | '2K' | '4K';
       }
     ) => {
       const latestDream = resolveCurrentDream(dream);
       const clientRequestId = request.clientRequestId ?? generateUUID();
-      const imageSize = tier === 'plus' ? request.imageSize ?? await getIllustrationResolution(user?.id) : '1K';
       const job = await submitImageGenerationJob({
         clientRequestId,
         dreamId: latestDream.remoteId,
         prompt: request.prompt,
         transcript: request.transcript,
         previousImageUrl: request.previousImageUrl,
-        ...(imageSize !== '1K' ? { imageSize } : {}),
       });
 
       const currentDream = resolveCurrentDream(latestDream);
@@ -470,7 +442,7 @@ export const useDreamJournal = () => {
         job,
       };
     },
-    [registerPendingImageJob, resolveCurrentDream, tier, user?.id]
+    [registerPendingImageJob, resolveCurrentDream]
   );
 
   const waitForAnalysisJob = useCallback(async (jobId: string) => {
@@ -749,6 +721,19 @@ export const useDreamJournal = () => {
           return;
         }
 
+        if (candidate.migrationRecovery) {
+          const latest = resolveCurrentDream(baseDream);
+          candidate = { ...candidate, migrationRecovery: { ...candidate.migrationRecovery,
+            localChanges: candidate.migrationRecovery.localChanges || hasRemoteChanges,
+          } };
+          const retained = getDreamSyncState(latest) === 'conflict'
+            ? setDreamSyncState(candidate, 'conflict', { lastSyncError: latest.lastSyncError, conflictRemoteDream: latest.conflictRemoteDream })
+            : setDreamSyncState(candidate, 'pending');
+          await persistMigrationResolution(latest, retained);
+          if (hasNetwork && getDreamSyncState(retained) !== 'conflict') await reloadDreams();
+          return;
+        }
+
         const queueAndPersist = async (pendingVersion: DreamAnalysis) => {
           await queueOfflineOperation(
             buildQueuedMutation('update', pendingVersion),
@@ -779,7 +764,7 @@ export const useDreamJournal = () => {
         for (let attempt = 0; attempt < 2; attempt += 1) {
           try {
             const saved = await updateDreamInSupabase({ ...candidate, remoteId });
-            const merged = mergeRemoteDreamWithClientState(saved, candidate);
+            const merged = mergeServerDreamWithLocalState(saved, candidate);
             await persistRemoteDreams((prev) => applyCandidate(prev, merged));
             return;
           } catch (error) {
@@ -790,7 +775,7 @@ export const useDreamJournal = () => {
               !hasDreamUpdateIntentConflict(baseDream, error.remoteDream, intent);
 
             if (canSafelyRebase && isConflictError(error) && error.remoteDream) {
-              const latestRemote = mergeRemoteDreamWithClientState(
+              const latestRemote = mergeServerDreamWithLocalState(
                 error.remoteDream,
                 resolveCurrentDream(candidate)
               );
@@ -812,7 +797,14 @@ export const useDreamJournal = () => {
               throw quotaError;
             }
             logger.warn('Falling back to offline dream update', error);
-            const pendingVersion = setDreamSyncState({ ...candidate, remoteId }, 'pending', {
+            // The direct online write can already have advanced the server revision
+            // while its old schema omitted notes. Queue the same local writing against
+            // that acknowledged revision, with buildQueuedMutation's fresh receipt.
+            const incompleteAck = error instanceof IncompleteJournalAckError && error.identity.remoteId === remoteId
+              ? error.identity : undefined;
+            const pendingVersion = setDreamSyncState({ ...candidate, remoteId,
+              ...(incompleteAck ? { revisionId: incompleteAck.revisionId } : {}),
+            }, 'pending', {
               lastSyncError: undefined,
               conflictRemoteDream: undefined,
             });
@@ -830,6 +822,8 @@ export const useDreamJournal = () => {
       markDreamConflict,
       persistLocalDreams,
       persistRemoteDreams,
+      persistMigrationResolution,
+      reloadDreams,
       queueOfflineOperation,
       resolveRemoteId,
       resolveCurrentDream,
@@ -924,6 +918,17 @@ export const useDreamJournal = () => {
 
       if (!existing) throw new Error('Dream identity is ambiguous or missing');
 
+      if (existing.migrationRecovery) {
+        const deleting = setDreamSyncState({ ...existing, migrationRecovery: {
+          ...existing.migrationRecovery, operation: 'delete' as const,
+          mutationId: generateMutationId(), receiptId: generateMutationId(),
+        } }, 'pending');
+        await persistMigrationResolution(existing, deleting);
+        await reloadDreams();
+        await clearPendingImageJobsForDream(target);
+        return;
+      }
+
       const remoteId = resolveRemoteId(target);
       if (!remoteId) {
         if (!existing) throw new Error('Dream identity is ambiguous or missing');
@@ -968,7 +973,7 @@ export const useDreamJournal = () => {
         await queueAndPersist();
       }
     },
-    [buildQueuedMutation, canUseRemoteSync, clearPendingImageJobsForDream, clearQueuedMutationsForDream, dreamsRef, hasNetwork, markDreamConflict, persistLocalDreams, persistRemoteDreams, queueOfflineOperation, resolveRemoteId]
+    [buildQueuedMutation, canUseRemoteSync, clearPendingImageJobsForDream, clearQueuedMutationsForDream, dreamsRef, hasNetwork, markDreamConflict, persistLocalDreams, persistRemoteDreams, persistMigrationResolution, reloadDreams, queueOfflineOperation, resolveRemoteId]
   );
 
   /**
@@ -1065,6 +1070,9 @@ export const useDreamJournal = () => {
       };
 
       if (status.status === 'succeeded' && status.resultPayload?.imageUrl) {
+        markPerformance('image.result_observed', {
+          trace: performanceTraceId(`image:${currentDream.clientRequestId ?? currentDream.id}`),
+        });
         const nextDream: DreamAnalysis = {
           ...currentDream,
           imageUrl: status.resultPayload.imageUrl,
@@ -1085,7 +1093,7 @@ export const useDreamJournal = () => {
             // succeeded. Refresh that server-owned revision instead of sending a
             // redundant stale update that would create a revision conflict.
             const remoteDream = await fetchDreamFromSupabase(currentDream.remoteId, user?.id);
-            const refreshedDream = mergeRemoteDreamWithClientState(remoteDream, nextDream);
+            const refreshedDream = mergeServerDreamWithLocalState(remoteDream, nextDream);
             await persistRemoteDreams((prev) => upsertDream(prev, refreshedDream));
             await finalizeTerminalImageJob(true);
             return;
@@ -1145,6 +1153,8 @@ export const useDreamJournal = () => {
     ]
   );
 
+  // Hydrate persisted jobs once the journal is ready; publish recovered image
+  // state through the same guarded storage operations as other journal updates.
   useEffect(() => {
     if (!loaded) {
       return;
@@ -1194,6 +1204,93 @@ export const useDreamJournal = () => {
     };
   }, [hasNetwork, isAppActive, loaded, pendingImageJobsVersion, reconcileImageJob]);
 
+  // A durable analysis can finish while the process is gone. Reattach to its
+  // persisted result without admitting another job or writing server state.
+  useEffect(() => {
+    if (!loaded || !canUseRemoteSync || !isAnalysisJobsEnabled() || !user ||
+      !hasNetwork || !isAppActive || !pendingMutationsLoaded || pendingMutationsScope !== userScope) {
+      return;
+    }
+
+    const epoch = analysisEpochRef.current;
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let attempt = 0;
+    const isCurrent = () => !cancelled && isAppActiveRef.current && analysisScopeRef.current === userScope &&
+      analysisEpochRef.current === epoch;
+    const isObservable = (dream: DreamAnalysis) => dream.remoteId != null &&
+      dream.analysisStatus === 'pending' &&
+      isResumableAnalysisRequest(dream) &&
+      activeAnalysis?.dreamId !== dream.id && getDreamSyncState(dream) === 'clean' &&
+      !livePendingMutationsRef.current.some(mutation =>
+        matchesDreamTarget(getMutationDreamTarget(mutation), dream));
+
+    const poll = async () => {
+      const pending = dreamsRef.current.filter(isObservable);
+      for (const pendingDream of pending) {
+        if (!isCurrent()) return;
+        try {
+          const remoteDream = await fetchDreamFromSupabase(pendingDream.remoteId!, user.id);
+          if (!isCurrent()) return;
+          if (remoteDream.remoteId !== pendingDream.remoteId ||
+            remoteDream.analysisRequestId !== pendingDream.analysisRequestId ||
+            remoteDream.transcript !== pendingDream.transcript ||
+            (remoteDream.analysisStatus !== 'done' && remoteDream.analysisStatus !== 'failed') ||
+            (remoteDream.analysisStatus === 'done' && !remoteDream.isAnalyzed)) {
+            continue;
+          }
+          const latest = resolveDreamTarget(dreamsRef.current, pendingDream);
+          if (!latest || !isObservable(latest) || !areDreamsEqualForLocalState(latest, pendingDream)) continue;
+          const recoveryBase = latest;
+          let recoveredSnapshot: DreamAnalysis | undefined;
+          await persistRemoteDreams((previous) => {
+            const current = resolveDreamTarget(previous, pendingDream);
+            // A response must not overwrite a newer local edit, retry, deletion,
+            // or another account, even if that edit finished syncing meanwhile.
+            if (!isCurrent() || !current || !isObservable(current) ||
+              !areDreamsEqualForLocalState(current, recoveryBase)) return previous;
+            const merged = mergeServerDreamWithLocalState(remoteDream, current);
+            const recovered = remoteDream.analysisStatus === 'done'
+              ? stampDreamAnalysisTranscript(merged, merged.transcript)
+              : merged;
+            recoveredSnapshot = recovered;
+            return upsertDream(previous, recovered);
+          });
+          // Publishing the recovered dream may clean up this effect. Account
+          // and dream identity still guard the outcome after the cache write.
+          const published = resolveDreamTarget(dreamsRef.current, pendingDream);
+          const reservedRequestId = analysisRequestIdsRef.current.get(getDreamIdentityKey(pendingDream));
+          if (recoveredSnapshot && published && areDreamsEqualForLocalState(published, recoveredSnapshot) &&
+            (!reservedRequestId || reservedRequestId === pendingDream.analysisRequestId) &&
+            analysisScopeRef.current === userScope && analysisEpochRef.current === epoch) {
+            analysisStatusOverridesRef.current.delete(getDreamIdentityKey(pendingDream));
+            analysisRequestIdsRef.current.delete(getDreamIdentityKey(pendingDream));
+            quotaService.invalidate(user);
+            setLastAnalysisOutcome({
+              dreamId: pendingDream.id,
+              status: remoteDream.analysisStatus,
+              completedAt: Date.now(),
+            });
+          }
+        } catch (error) {
+          if (isCurrent()) logger.warn('[useDreamJournal] Failed to refresh pending analysis', error);
+        }
+      }
+      attempt += 1;
+      if (isCurrent() && attempt < MAX_ANALYSIS_JOB_POLL_ATTEMPTS &&
+        dreamsRef.current.some(isObservable)) {
+        timeoutId = setTimeout(() => { void poll(); }, getAnalysisJobPollDelay(attempt - 1));
+      }
+    };
+
+    void poll();
+    return () => {
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [activeAnalysis, canUseRemoteSync, dreams, dreamsRef, hasNetwork, isAppActive, loaded,
+    livePendingMutationsRef, pendingMutationsLoaded, pendingMutationsScope, persistRemoteDreams, user, userScope]);
+
   /**
    * Queue async image generation for an existing dream
    */
@@ -1237,6 +1334,13 @@ export const useDreamJournal = () => {
     async (target: DreamTarget) => {
       const dream = resolveDreamTarget(dreamsRef.current, target);
       if (!dream) throw new Error('Dream identity is ambiguous or missing');
+      if (dream.migrationRecovery) {
+        if (getDreamSyncState(dream) === 'conflict') return;
+        // Resume the owner-attributed guest receipt instead of creating a second
+        // queue writer for the same unfinished migration.
+        await reloadDreams();
+        return;
+      }
 
       let retried = await retryDreamMutations(target);
       const resetDream = setDreamSyncState(dream, 'pending', {
@@ -1279,6 +1383,7 @@ export const useDreamJournal = () => {
       resolveRemoteId,
       retryDreamMutations,
       syncPendingMutations,
+      reloadDreams,
     ]
   );
 
@@ -1301,8 +1406,9 @@ export const useDreamJournal = () => {
       let remoteConflictDream: DreamAnalysis | undefined;
       try {
         if (!user?.id) return;
-        remoteConflictDream = (dream.remoteId != null
-          ? await fetchDreamFromSupabase(dream.remoteId, user.id)
+        const remoteId = dream.remoteId ?? dream.migrationRecovery?.remoteId;
+        remoteConflictDream = (remoteId != null
+          ? await fetchDreamFromSupabase(remoteId, user.id)
           : dream.clientRequestId
             ? await fetchDreamByClientRequestId(dream.clientRequestId, user.id)
             : null) ?? undefined;
@@ -1319,8 +1425,29 @@ export const useDreamJournal = () => {
         return;
       }
 
+      if (dream.migrationRecovery) {
+        const recovery = dream.migrationRecovery;
+        if (remoteConflictDream.remoteId !== recovery.remoteId || !remoteConflictDream.revisionId) {
+          throw new Error('The server dream identity could not be confirmed');
+        }
+        const resolved = resolution === 'use_server'
+          ? mergeServerDreamWithLocalState(remoteConflictDream, dream)
+          : setDreamSyncState({
+              ...dream,
+              migrationRecovery: {
+                ...recovery,
+                mutationId: generateMutationId(),
+                receiptId: generateMutationId(),
+                revisionId: remoteConflictDream.revisionId,
+              },
+            }, 'pending', { lastSyncError: undefined, conflictRemoteDream: undefined });
+        await persistMigrationResolution(dream, resolved);
+        await reloadDreams();
+        return;
+      }
+
       if (resolution === 'use_server') {
-        const resolved = mergeRemoteDreamWithClientState(remoteConflictDream, dream);
+        const resolved = mergeServerDreamWithLocalState(remoteConflictDream, dream);
         await clearQueuedMutationsForDream(target);
         await persistRemoteDreams((prev) => upsertDream(prev, resolved));
         return;
@@ -1356,6 +1483,8 @@ export const useDreamJournal = () => {
       hasNetwork,
       markDreamConflict,
       persistRemoteDreams,
+      persistMigrationResolution,
+      reloadDreams,
       queueOfflineOperation,
       syncPendingMutations,
       user,
@@ -1442,7 +1571,7 @@ export const useDreamJournal = () => {
           await syncPendingMutations({ target: dream });
           assertAnalysisScope();
           const current = resolveCurrentDream(dream);
-          if (getDreamSyncState(current) === 'conflict' ||
+          if (current.migrationRecovery || getDreamSyncState(current) === 'conflict' ||
             livePendingMutationsRef.current.some(mutation => matchesDreamTarget(getMutationDreamTarget(mutation), current))) {
             throw new Error('Dream changes must be synchronized before analysis');
           }
@@ -1460,8 +1589,8 @@ export const useDreamJournal = () => {
         assertAnalysisScope();
         await syncPendingMutations({ target: currentDreamState });
         assertAnalysisScope();
-        if (canUseRemoteSync && livePendingMutationsRef.current.some(mutation =>
-          matchesDreamTarget(getMutationDreamTarget(mutation), currentDreamState))) {
+        if (canUseRemoteSync && (resolveCurrentDream(currentDreamState).migrationRecovery || livePendingMutationsRef.current.some(mutation =>
+          matchesDreamTarget(getMutationDreamTarget(mutation), currentDreamState)))) {
           throw new Error('Dream changes must be synchronized before analysis');
         }
         markPerformance('analysis.target_synced', { trace: analysisTrace });
@@ -1510,17 +1639,13 @@ export const useDreamJournal = () => {
       setActiveAnalysis({ dreamId });
       try {
         if (useServerAnalysisJob) {
-          const requestedImageSize = shouldReplaceImage && tier === 'plus'
-            ? await getIllustrationResolution(user?.id) : '1K';
           assertAnalysisScope();
           markPerformance('analysis.http_started', { trace: analysisTrace });
           const command = await submitDreamAnalysisJob({
             dreamId: syncedDream.remoteId!,
             analysisRequestId: requestId,
             lang: options?.lang,
-            // HD is admitted through the image endpoint with its explicit size;
-            // never let the legacy analysis bundle also generate a standard image.
-            replaceExistingImage: shouldReplaceImage && requestedImageSize === '1K',
+            replaceExistingImage: shouldReplaceImage,
           });
           serverJobAccepted = true;
           markPerformance('analysis.job_accepted', { trace: analysisTrace });
@@ -1536,22 +1661,9 @@ export const useDreamJournal = () => {
             throw new Error(status.errorMessage || 'Dream analysis failed');
           }
 
-          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
           let latestDream = resolveCurrentDream(syncedDream);
           const imageJob = status.resultPayload?.imageJob;
-          if (shouldReplaceImage && requestedImageSize !== '1K') {
-            emitProgress(AnalysisStep.GENERATING_IMAGE);
-            try {
-              const submitted = await submitImageJobForDream(latestDream, {
-                clientRequestId: requestId, transcript: latestDream.transcript,
-                previousImageUrl: latestDream.imageUrl || undefined, imageSize: requestedImageSize,
-              });
-              latestDream = submitted.dream;
-            } catch {
-              latestDream = { ...latestDream, imageGenerationFailed: !latestDream.imageUrl, imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED' };
-              await persistDreamClientState(latestDream);
-            }
-          } else if (
+          if (
             shouldReplaceImage
             && imageJob
             && (imageJob.status === 'queued' || imageJob.status === 'running')
@@ -1574,7 +1686,10 @@ export const useDreamJournal = () => {
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
           assertAnalysisScope();
-          const mergedDream = mergeRemoteDreamWithClientState(remoteDream, latestDream);
+          // Only the read result may mark it done: a failed read keeps it pending
+          // for an image registered before a retry or recovery.
+          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
+          const mergedDream = mergeServerDreamWithLocalState(remoteDream, latestDream);
           const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
           await updateDream(stampedDream);
           await syncPendingMutations({ target: stampedDream });
@@ -1712,6 +1827,15 @@ export const useDreamJournal = () => {
       } catch (error) {
         assertAnalysisScope();
         const quotaError = coerceQuotaError(error, tier);
+        const responseBody = error && typeof error === 'object' && 'body' in error
+          ? error.body : null;
+        const nonReusableRequest = error && typeof error === 'object'
+          && 'status' in error && error.status === 409
+          && responseBody && typeof responseBody === 'object'
+          && 'code' in responseBody
+          && (responseBody.code === 'ANALYSIS_ALREADY_CLAIMED'
+            || responseBody.code === 'ANALYSIS_TRANSCRIPT_MISMATCH'
+            || responseBody.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED');
         setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         if (serverJobAccepted) {
           if (serverJobTerminalFailure) {
@@ -1732,7 +1856,14 @@ export const useDreamJournal = () => {
         const failedDream: DreamAnalysis = {
           ...latestDream,
           analysisStatus: 'failed',
+          // A spent or transcript-mismatched receipt cannot fund another
+          // provider call. A later explicit retry needs a fresh quota claim.
+          ...(nonReusableRequest ? { analysisRequestId: undefined } : {}),
         };
+        if (nonReusableRequest) {
+          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+          quotaService.invalidate(user);
+        }
         try {
           await updateDream(failedDream);
         } catch {

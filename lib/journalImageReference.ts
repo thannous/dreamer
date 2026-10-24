@@ -32,6 +32,15 @@ export const extractStoragePathFromUrl = (url: string): string | null => {
   }
 };
 
+// Uploaded dream images get a square 320 px thumbnail stored beside them under this suffix.
+export const SQUARE_THUMBNAIL_SUFFIX = '-thumb';
+
+/** A thumbnail squeezed to a square: wrong for a frame that shows the whole painting. */
+export const isSquareDreamThumbnail = (value?: string | null): boolean => {
+  const path = value ? extractStoragePathFromUrl(value) : null;
+  return Boolean(path && /-thumb\.[a-z0-9]+$/i.test(path));
+};
+
 export const toStoredImageReference = (value?: string | null): string => {
   if (!value) return '';
   const path = extractStoragePathFromUrl(value);

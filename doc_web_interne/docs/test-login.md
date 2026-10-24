@@ -17,7 +17,8 @@ driving the login screen. dreamer is the reference for the other repos.
   and the guarded Expo start `scripts/start-branch-e2e.mjs`. None has run against a
   real branch yet. There is no mobile journey for now (see [Mobile](#mobile)).
 - The only other non-production backend is the disposable local stack of
-  `npm run test:e2e:backend` (Docker, `127.0.0.1:56321`); it is unchanged.
+  `npm run test:e2e:backend` (native Supabase runtime on loopback, no Docker); it is
+  unchanged by test-login.
 
 ## Guard (`scripts/test-supabase-guard.mjs`)
 
@@ -79,7 +80,7 @@ p_tier, p_is_active, ...)` (migrations `20260316140000`, `20260316154500`),
 callable with the service role, writes the subscription state that the quota
 triggers and the app read (`app_metadata` tier, `plus` or `free`). RevenueCat
 webhooks call the same path in production. The local backend fixture
-(`e2e/backend/fixtures.ts`) already makes its Plus account this way with
+(`tools/e2e/backend-fixtures.ts`) already makes its Plus account this way with
 `p_tier: 'plus', p_is_active: true, p_source: 'local-e2e-fixture'`. The seed does
 the same on the branch.
 
@@ -151,12 +152,13 @@ before any request and print no key, password or token.
    legacy JWT keys also as `Authorization: Bearer`
    ([API keys, Known limitations](https://supabase.com/docs/guides/api/api-keys)).
 
-## Web (Playwright)
+## Web (TesterArmy)
 
-`npm run test:e2e:branch` runs `playwright.branch.config.ts`, opt-in and separate
-from the mock suite (`playwright.config.ts`) and the local backend suite, which do
-not change. Its `auth-setup` project runs `npm run test:auth-setup`; the
-`chromium-branch` project depends on it. The web server is
+`npm run test:e2e:branch` runs the guarded TesterArmy `branch-web` target,
+opt-in and separate from the mock and disposable local backend targets. The
+runner calls `npm run test:auth-setup` before its SDK run, then
+`tools/e2e/tests/branch.web.e2e.ts` restores each guarded session.
+The web server is
 `scripts/start-branch-e2e.mjs`: it takes the target from the guard and starts Expo
 with that URL, the branch publishable key, the branch functions URL
 (`https://<ref>.functions.supabase.co/api`), `EXPO_PUBLIC_SUPABASE_FUNCTION_JWT` set to
@@ -183,21 +185,16 @@ this checkout; journeys that call functions (analysis, chat) need owner step 4b
 first, else they test stale functions. Edge Functions want
 a JWT: use the branch legacy anon JWT as `E2E_SUPABASE_ANON_KEY` for journeys
 that call them (the guard checks its `ref` claim names the branch); with a
-publishable key, function calls may answer 401. Reports record `dirty` like the
-other Playwright configs. Reuse in a spec:
-
-```ts
-import { test, expect } from './fixtures'; // e2e/branch/fixtures.ts
-test.use({ account: 'premium' }); // starts signed in from .auth/premium.json
-```
+publishable key, function calls may answer 401. Reports identify the source revision, dirty state, target and exact rerun command.
 
 The fixture fails a test if any request reaches the production project: HTTP
-through `context.route` and Realtime WebSockets (`wss://<prod-ref>.supabase.co`)
-through `context.routeWebSocket`; both are aborted before they leave. Traces are
-off (they would record tokens). `e2e/branch/session.spec.ts` checks both accounts
-open signed in. The TesterArmy engine (`tools/e2e`) keeps its mocked services; it
-can load the same `.auth/<account>.json` later if a real-backend TesterArmy journey
-is wanted.
+through `context.route` and Realtime WebSockets through `context.routeWebSocket`;
+both are aborted before they leave. Tokens are loaded through the raw public
+browser surface, without placing their values in SDK step arguments. Only SDK
+Markdown steps are retained; no HTTP payload trace or model is enabled.
+`tools/e2e/tests/branch.web.e2e.ts` checks both accounts open signed in. The
+committed target allowlist is still empty: no hosted execution is qualified, and
+this target remains excluded from `test:testerarmy:all`.
 
 ## Mobile
 

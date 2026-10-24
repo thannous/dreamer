@@ -1,5 +1,10 @@
 /* @jest-environment jsdom */
 
+import React from 'react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { TID } from '@/lib/testIDs';
+
 jest.mock('@/lib/storeReview', () => ({
   canOpenStoreReviewPage: () => false,
   markStoreReviewPaywallSeen: jest.fn(),
@@ -9,15 +14,11 @@ jest.mock('@/lib/storeReview', () => ({
 }));
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
-import React from 'react';
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
-
-import { TID } from '@/lib/testIDs';
-
 let mockParams: Record<string, string> = { trigger: 'settings' };
 let mockUser = { id: 'user-1' };
 jest.doMock('@/context/AuthContext', () => ({ useAuth: () => ({ user: mockUser }) }));
+let mockDreams: { id: number; title: string; transcript: string; clientRequestId?: string }[] = [];
+jest.doMock('@/context/DreamsContext', () => ({ useDreamsData: () => ({ dreams: mockDreams }) }));
 
 let mockHardwareBack: (() => boolean) | undefined;
 const mockPreventRemove = jest.fn((_prevent: boolean, _callback: () => void) => undefined);
@@ -132,18 +133,26 @@ jest.doMock('@/components/Toast', () => ({
 
 jest.doMock('@/components/subscription/PricingOption', () => ({
   PricingOption: ({
+    billingDetail,
     id,
+    intervalLabel,
     onPress,
+    price,
     testID,
     title,
   }: {
+    billingDetail?: string;
     id: string;
+    intervalLabel: string;
     onPress?: (id: string) => void;
+    price: string;
     testID?: string;
     title: string;
   }) => (
     <button data-testid={testID} onClick={() => onPress?.(id)}>
       {title}
+      <span data-testid={`${testID}.price`}>{`${price} ${intervalLabel}`}</span>
+      <span data-testid={`${testID}.detail`}>{billingDetail}</span>
     </button>
   ),
 }));
@@ -195,6 +204,7 @@ jest.doMock('@/hooks/useClearWebFocus', () => ({
 
 jest.doMock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
+    locale: 'fr-FR',
     formatDate: () => '1 janvier 2026',
     formatNumber: (value: number) => String(value),
     formatTime: () => '10:30',
@@ -284,6 +294,24 @@ describe('Paywall screen', () => {
   afterEach(() => {
     cleanup();
     jest.clearAllMocks();
+    mockDreams = [];
+  });
+
+  it('compares the free plan and Plus with real numbers, recording and abuse safeguards said once under the table', () => {
+    mockParams = { trigger: 'settings_quota' };
+    render(<PaywallScreen />);
+
+    for (const key of ['exchanges', 'unlimited_exchanges', 'illustrations', 'all_dreams', 'synthesis_360', 'none', 'included']) {
+      expect(screen.getByText(`subscription.paywall.comparison.${key}`)).toBeTruthy();
+    }
+    // The free plan's 3 analyses a month each bring their illustration.
+    expect(screen.getAllByText('subscription.paywall.comparison.free_analyses')).toHaveLength(2);
+    expect(screen.getByText('10')).toBeTruthy();
+    // Plus exchanges are sold as unlimited: the 100-message safety ceiling is never quoted as a number.
+    expect(screen.queryByText('100')).toBeNull();
+    expect(screen.getByText(/subscription\.paywall\.comparison\.recording_note.*subscription\.paywall\.comparison\.fair_use_note/)).toBeTruthy();
+    expect(screen.queryByText('subscription.paywall.comparison.recording')).toBeNull();
+    expect(screen.queryByTestId(TID.Text.PaywallDreamExcerpt)).toBeNull();
   });
 
   it('goes back when the paywall was opened from an existing route', () => {
@@ -341,10 +369,35 @@ describe('Paywall screen', () => {
     );
   });
 
+  it('opens a prepared analysis as ready to read, not as a dream to analyze', () => {
+    mockParams = { trigger: 'analysis_cta', prepared: '1', dreamId: '42', dreamOwnerId: 'user-1' };
+    mockDreams = [{ id: 42, title: '', transcript: 'Une gare immense où les trains partent vers la mer.' }];
+    render(<PaywallScreen />);
+    expect(screen.getByText('subscription.paywall.prepared.title')).toBeTruthy();
+    expect(screen.queryByText('recording.saved_analysis.title')).toBeNull();
+    expect(screen.getByText('subscription.paywall.prepared.label')).toBeTruthy();
+    expect(screen.getByTestId(TID.Text.PaywallDreamExcerpt).textContent).toContain('Une gare immense');
+    expect(screen.getByTestId(TID.Button.PaywallPurchase).textContent).toBe('subscription.paywall.prepared.cta');
+  });
+
+  it('shows the offered dream\'s own words when two dreams share a timestamp', () => {
+    mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamClientRequestId: 'capture-b', dreamOwnerId: 'user-1' };
+    mockDreams = [
+      { id: 42, title: '', transcript: 'Un phare dans la brume.', clientRequestId: 'capture-a' },
+      { id: 42, title: '', transcript: 'Une gare immense où les trains partent vers la mer.', clientRequestId: 'capture-b' },
+    ];
+    render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.Text.PaywallDreamExcerpt).textContent).toContain('Une gare immense');
+  });
+
   it('shows the saved dream, analysis, illustration, plans and purchase together without a comparison step', () => {
     mockParams = { trigger: 'analysis_cta', dreamId: '42', dreamOwnerId: 'user-1' };
+    mockDreams = [{ id: 42, title: '', transcript: 'Une gare immense où les trains partent vers la mer.' }];
     render(<PaywallScreen />);
     expect(screen.getByText('recording.saved_analysis.title')).toBeTruthy();
+    // The person's own first words, and an honest line on when free analyses come back.
+    expect(screen.getByTestId(TID.Text.PaywallDreamExcerpt).textContent).toContain('Une gare immense');
+    expect(screen.getByText('subscription.paywall.saved_dream.reset')).toBeTruthy();
     expect(screen.getByText('subscription.paywall.saved_dream.analysis')).toBeTruthy();
     expect(screen.getByText('subscription.paywall.saved_dream.illustration')).toBeTruthy();
     expect(screen.getByTestId(TID.Button.PaywallSelectMonthly)).toBeTruthy();
@@ -525,6 +578,53 @@ describe('Paywall screen', () => {
     });
   });
 
+  it('does not tell a subscriber who turned renewal off that Plus renews automatically', () => {
+    const subscriber = (willRenew: boolean) => ({
+      ...mockUseSubscription(),
+      status: { tier: 'plus', isActive: true, expiryDate: '2026-12-01T00:00:00.000Z', willRenew },
+      isActive: true,
+    });
+    mockUseSubscription.mockReturnValue(subscriber(false));
+    render(<PaywallScreen />);
+    expect(screen.queryByTestId(TID.Text.PaywallStoreNotice)).toBeNull();
+    cleanup();
+
+    mockUseSubscription.mockReturnValue(subscriber(true));
+    render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.Text.PaywallStoreNotice)).toBeTruthy();
+  });
+
+  it('leads the annual card with the billed price on iOS and with the monthly equivalent elsewhere', () => {
+    const platform = (require('react-native') as { Platform: { OS: string } }).Platform;
+    const annualCard = () => ({
+      price: screen.getByTestId(`${TID.Button.PaywallSelectAnnual}.price`).textContent,
+      detail: screen.getByTestId(`${TID.Button.PaywallSelectAnnual}.detail`).textContent,
+    });
+    try {
+      platform.OS = 'ios';
+      render(<PaywallScreen />);
+      expect(annualCard()).toEqual({
+        price: '39,99 € subscription.paywall.option.interval.annual',
+        detail: 'subscription.paywall.option.billing.annual_equivalent',
+      });
+
+      for (const os of ['android', 'web']) {
+        cleanup();
+        platform.OS = os;
+        render(<PaywallScreen />);
+        expect(annualCard()).toEqual({
+          price: '3.3325 subscription.paywall.option.interval.monthly',
+          detail: 'subscription.paywall.option.billing.annual',
+        });
+        expect(screen.getByTestId(`${TID.Button.PaywallSelectMonthly}.price`).textContent).toBe(
+          '4,99 € subscription.paywall.option.interval.monthly'
+        );
+      }
+    } finally {
+      platform.OS = 'web';
+    }
+  });
+
   it('sends a guest to the account section and remembers to come back to the paywall', () => {
     mockUseSubscription.mockReturnValue({
       status: { tier: 'free', isActive: false, expiryDate: null },
@@ -595,6 +695,18 @@ describe('Paywall screen', () => {
     expect(screen.getByTestId(TID.BottomSheet.PaywallError).textContent).toBe(
       'subscription.paywall.error.message'
     );
+  });
+
+  // A provider error can clear after a retry without a user dismissing the sheet.
+  // Mock browser journeys do not inject this exact billing-provider transition.
+  it('closes the error sheet when the subscription provider clears its error', () => {
+    const subscription = mockUseSubscription();
+    mockUseSubscription.mockReturnValue({ ...subscription, error: new Error('store unavailable') });
+    const view = render(<PaywallScreen />);
+    expect(screen.getByTestId(TID.BottomSheet.PaywallError)).toBeDefined();
+    mockUseSubscription.mockReturnValue({ ...subscription, error: null });
+    view.rerender(<PaywallScreen />);
+    expect(screen.queryByTestId(TID.BottomSheet.PaywallError)).toBeNull();
   });
 
   it('exposes Terms of Use and Privacy Policy links that open getLegalLink destinations', () => {

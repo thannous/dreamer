@@ -1,4 +1,4 @@
-import { CHAT_SYSTEM_PREAMBLES, MAX_RECENT_CHAT_MESSAGES } from '../../services/chatContext.ts';
+import { CHAT_SYSTEM_PREAMBLES } from '../../services/chatContext.ts';
 /** Six bounded synthetic streaming requests through the production Gemini adapter. */
 import { requestGeminiStream, extractModelParts, type GeminiPart } from '../../services/gemini.ts';
 import { REFLECTION_POLICY } from '../../services/dreamAnalysis.ts';

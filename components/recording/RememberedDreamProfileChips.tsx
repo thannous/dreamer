@@ -254,12 +254,12 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   optionalBadgeText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 10,
-    lineHeight: 14,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: 12,
+    lineHeight: 16,
   },
   toggleDescription: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 12,
     lineHeight: 17,
   },
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     paddingTop: 14,
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 14,
     lineHeight: 19,
   },
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   groupLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 12,
   },
   chipRow: {
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
   },
   chipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 13,
     textAlign: 'center',
   },

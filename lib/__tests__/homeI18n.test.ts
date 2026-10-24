@@ -1,3 +1,4 @@
+import { getTranslator, loadTranslations } from '@/lib/i18n';
 import de from '@/lib/i18n/de';
 import en from '@/lib/i18n/en';
 import es from '@/lib/i18n/es';
@@ -7,7 +8,16 @@ import pt from '@/lib/i18n/pt';
 
 const homeTodayKeys = [
   'home.today.dream_eyebrow',
+  'home.today.dream_excerpt',
   'home.today.resources',
+  'home.week.title',
+  'home.week.night_empty',
+  'home.discover.symbol_of_day',
+  'inspiration.reading.recurring_label',
+  'inspiration.reading.recurring_count',
+  'inspiration.reading.recurring_none',
+  'inspiration.reading.recurring_needs_analysis',
+  'inspiration.reading.recap_cta',
   'home.today.loading.title',
   'home.today.loading.body',
   'home.today.draft_resume.title',
@@ -45,5 +55,12 @@ describe('home today i18n', () => {
         expect(translations[key].trim()).not.toBe('');
       }
     }
+  });
+
+  it('quotes the dream as written, dollar signs included', async () => {
+    await loadTranslations('en');
+    // String.replace would read "$&" as the matched placeholder and "$$" as one "$".
+    expect(getTranslator('en')('home.today.dream_excerpt', { text: 'I paid $$ for $& a key' }))
+      .toBe('“I paid $$ for $& a key”');
   });
 });

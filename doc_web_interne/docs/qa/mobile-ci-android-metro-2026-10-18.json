@@ -1,0 +1,1207 @@
+{
+  "schemaVersion": 1,
+  "metro": {
+    "windows": {
+      "platform": "win32",
+      "cpus": 32,
+      "records": [
+        {
+          "variant": "before",
+          "source": "74cf4a32890da25f9da1c3c17c1097043bf4642f",
+          "elapsedMs": 102447,
+          "firstWebBundleMs": 12399,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792352861016-26000-501612dd-0716-4f0d-bf01-a3353e4a0b01",
+          "reportSha256": "7897c8d8fe7fba6d86b1e2d940745c640ffd46ec442d260697e639eb566890e3"
+        },
+        {
+          "variant": "after",
+          "source": "74cf4a32890da25f9da1c3c17c1097043bf4642f",
+          "elapsedMs": 73098,
+          "firstWebBundleMs": 1559,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792352964947-25392-b55f1ac3-eac2-46dc-a732-40b073f75e8a",
+          "reportSha256": "7ced4e1bf67996e848000fa0096ce5de421a83b7546ceb6a12f4c6b2aa8e9640"
+        },
+        {
+          "variant": "before",
+          "source": "74cf4a32890da25f9da1c3c17c1097043bf4642f",
+          "elapsedMs": 71930,
+          "firstWebBundleMs": 13209,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792353039523-51236-3e15fd97-1d6a-4d2c-8437-11f50b2635ec",
+          "reportSha256": "6d12d8c1e57cb9225401af6aac823ab526d5c31390d2f0a031a282103aa7730e"
+        },
+        {
+          "variant": "after",
+          "source": "74cf4a32890da25f9da1c3c17c1097043bf4642f",
+          "elapsedMs": 69854,
+          "firstWebBundleMs": 1518,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792353113064-53180-d83a6571-6567-4972-a9d9-1b2be8338c2b",
+          "reportSha256": "a92a2caddcdcda38484b636c899cc92d6ad9f45e879df20a6aedc3e255a0341c"
+        },
+        {
+          "variant": "before",
+          "source": "74cf4a32890da25f9da1c3c17c1097043bf4642f",
+          "elapsedMs": 83309,
+          "firstWebBundleMs": 12391,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792353184811-54408-78edd1bd-7961-4345-9726-7e4bd8842672",
+          "reportSha256": "e153945c43e9cbd6f06b031f4b746e8a2167642491d6cd1c028bf9e7f6f92aa6"
+        },
+        {
+          "variant": "after",
+          "source": "74cf4a32890da25f9da1c3c17c1097043bf4642f",
+          "elapsedMs": 61447,
+          "firstWebBundleMs": 2622,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792353270071-12404-b7f53d23-25f5-431c-a327-57a6c1406a84",
+          "reportSha256": "c944dfa07df63816742d0567dc1cc84afc0e846e58931fc8ea6a3dca7f881048"
+        }
+      ]
+    },
+    "linux": {
+      "platform": "linux",
+      "cpus": 24,
+      "records": [
+        {
+          "variant": "before",
+          "source": "19ba5fde71740b111d97c34f59ad8c56c554a2a1",
+          "elapsedMs": 71428,
+          "firstWebBundleMs": 6316,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792352677071-2048202-a097b319-5179-437f-9080-c4a56f32aa8a",
+          "reportSha256": "7e2cb6677691f6743e006635f07af949e91959e115f9903d768874d6397d90ae"
+        },
+        {
+          "variant": "after",
+          "source": "19ba5fde71740b111d97c34f59ad8c56c554a2a1",
+          "elapsedMs": 61963,
+          "firstWebBundleMs": 1423,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792352748521-2055089-46bd8d1a-9792-45a8-b250-3aa8b83a5c4c",
+          "reportSha256": "e3df8de3df12b6d3c0554498f6062919825cabe290331babbaf56e380dad18cc"
+        },
+        {
+          "variant": "before",
+          "source": "19ba5fde71740b111d97c34f59ad8c56c554a2a1",
+          "elapsedMs": 79988,
+          "firstWebBundleMs": 9300,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792352810571-2059705-4ecb61dd-3a12-44b9-8548-d2685a04e99c",
+          "reportSha256": "c85cd74c83485a93a9f7eb257fd995db49bf322af970c2439ec0a1574adc2638"
+        },
+        {
+          "variant": "after",
+          "source": "19ba5fde71740b111d97c34f59ad8c56c554a2a1",
+          "elapsedMs": 59917,
+          "firstWebBundleMs": 1996,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792352890578-2064446-a08ae513-05c4-4b8d-8912-f7fcc0eb9c88",
+          "reportSha256": "f0b005217565189e48c43093bfe0bacfe0d2d274704e515599bca3f175a9de46"
+        },
+        {
+          "variant": "before",
+          "source": "19ba5fde71740b111d97c34f59ad8c56c554a2a1",
+          "elapsedMs": 83848,
+          "firstWebBundleMs": 7966,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792352950539-2066921-9576f9d2-b737-4169-bd5b-222453aa4887",
+          "reportSha256": "16f41b2bf9d5848698a5e5c5572d1d8ff05a698507ea8688c38850d97f8595ec"
+        },
+        {
+          "variant": "after",
+          "source": "19ba5fde71740b111d97c34f59ad8c56c554a2a1",
+          "elapsedMs": 60465,
+          "firstWebBundleMs": 1785,
+          "passed": 6,
+          "summary": {
+            "discovered": 6,
+            "selected": 6,
+            "executed": 6,
+            "passed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "flaky": 0,
+            "skipped": 0
+          },
+          "idsSha256": "8b54defcc0bc42780c44924437763694b4b9aedce809f26d2b56636359ada3c4",
+          "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63",
+          "report": "1792353034429-2072357-026183fb-6010-46a8-a220-c6ca8f9c4a58",
+          "reportSha256": "6a1494dd4c287403aeae5a13c61cdc1b39c468465842577181bc1938a2a76aa6"
+        }
+      ]
+    }
+  },
+  "context": {
+    "sdkReplay": "off",
+    "workers": 1,
+    "retries": 0,
+    "osAssertions": "same test ids and ordered API/status steps",
+    "note": "Local shared-host measurements; not hosted CI, EAS, Android UI or iOS proof",
+    "androidMeasurement": "One paired JS-edit comparison per OS after toolchain/dependency preparation; three JS freshness controls, one asset-only control and one native-profile invalidation control.",
+    "codeAfterMeasurement": "Clean linked-project compatibility, direct managed app PID ownership and exact session-label exclusions have separate focused, lifecycle and cross-invocation checks. Final PR proof identifies the delivered head.",
+    "commonCases": {
+      "jestAndroid": 64,
+      "testerArmyGuards": 44,
+      "hostSkips": 0
+    },
+    "evidenceBoundary": "Local build/browser evidence; no device, ARM64, hosted CI, EAS or iOS qualification.",
+    "crossInvocation": {
+      "source": "8bc5b32e0",
+      "windows": {
+        "matches": true
+      },
+      "linux": {
+        "matches": true
+      },
+      "assertion": "Two independent invocations preserve the effective build context; unknown build variables still invalidate it."
+    },
+    "patchFormatting": {
+      "assertion": "The trimmed unified diff applies with patch-package and produces byte-identical Kotlin to the measured native fixture.",
+      "kotlinSha256": "ce45548868e53f456087ef0d320f8b4d872da31792d64faa930a8b73d49a8a99"
+    }
+  },
+  "android": {
+    "toolchain": {
+      "node": "24.19.0",
+      "java": "Temurin 17.0.20.1+1",
+      "ndk": "27.1.12297006",
+      "cmake": "3.22.1",
+      "ninja": "1.13.2",
+      "abi": "x86_64",
+      "gradleMaxWorkers": 4,
+      "windowsNinjaArchiveSha256": "07fc8261b42b20e71d1720b39068c2e14ffcee6396b76fb7a795fb460b78dc65",
+      "linuxNinjaArchiveSha256": "5749cbc4e668273514150a80e387a957f933c6ed3f5f11e03fb30955e2bbead6"
+    },
+    "windows": {
+      "builds": [
+        {
+          "label": "modern-ninja-edit-1-iteration",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "win32",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 88842,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "97da0dc1f471276b10eaac8a0d9d4ca65bf0a91c883e4c680c81cdabfe9075f6",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "c18fb6154622ac0b2c0f3f2e427a83262367c6a985e790ff427dc9d60d9610cf",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-1"
+          ],
+          "apk": "modern-ninja-edit-1-iteration.apk",
+          "apkSha256": "50fa0de648cdb59e8ba5f1255692c2b391e0f5b67a17337979c061b0dee69913",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 27 executed, 1211 up-to-date"
+        },
+        {
+          "label": "modern-ninja-edit-1-clean",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "win32",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa"
+          ],
+          "elapsedMs": 485564,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "97da0dc1f471276b10eaac8a0d9d4ca65bf0a91c883e4c680c81cdabfe9075f6",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "c18fb6154622ac0b2c0f3f2e427a83262367c6a985e790ff427dc9d60d9610cf",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-1"
+          ],
+          "apk": "modern-ninja-edit-1-clean.apk",
+          "apkSha256": "6092e0f3c2c7b5155c7ca0673724aff108673545518234a0325a962621dc175f",
+          "entries": 1267,
+          "gradleTasks": "1242 actionable tasks: 1205 executed, 37 up-to-date"
+        },
+        {
+          "label": "modern-ninja-edit-2-iteration",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "win32",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 77456,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "65a60bc2979be6ac7b449f31620ad113ab6775815263ce0ff0bb5c2a96e3a1c1",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "c18fb6154622ac0b2c0f3f2e427a83262367c6a985e790ff427dc9d60d9610cf",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-2"
+          ],
+          "apk": "modern-ninja-edit-2-iteration.apk",
+          "apkSha256": "da5f86ac59402cad91d4bd461703bbd21a3d63cc08914d0ab00c3a63eccf7eab",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 27 executed, 1211 up-to-date"
+        },
+        {
+          "label": "modern-ninja-edit-3-iteration",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "win32",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 76012,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "e629e98250957f859215d6103dfed67b1a1b47cf9dddd97317293a45b7bb0842",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "c18fb6154622ac0b2c0f3f2e427a83262367c6a985e790ff427dc9d60d9610cf",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-3"
+          ],
+          "apk": "modern-ninja-edit-3-iteration.apk",
+          "apkSha256": "442b31922d46c7bf549f65c61ec6432e7cc00d7a79c32b7d9f9319df5e6250c6",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 27 executed, 1211 up-to-date"
+        },
+        {
+          "label": "modern-ninja-asset-only-change",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "win32",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 234890,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "e629e98250957f859215d6103dfed67b1a1b47cf9dddd97317293a45b7bb0842",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "61632c05335d69ef8ebcf965ee78c9ee47da3ff2ac5d0b981fb662435dde28fc"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "c18fb6154622ac0b2c0f3f2e427a83262367c6a985e790ff427dc9d60d9610cf",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-3"
+          ],
+          "apk": "modern-ninja-asset-only-change.apk",
+          "apkSha256": "6e65a2079e4fefb4f19860072c2f1e7aebc79d372dc326ca6f008c75beb00daa",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 36 executed, 1202 up-to-date"
+        },
+        {
+          "label": "modern-ninja-native-profileable-change",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "win32",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental",
+            "--profileable"
+          ],
+          "elapsedMs": 497518,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "e629e98250957f859215d6103dfed67b1a1b47cf9dddd97317293a45b7bb0842",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "61632c05335d69ef8ebcf965ee78c9ee47da3ff2ac5d0b981fb662435dde28fc"
+          },
+          "iterationDecision": [
+            "[android-iteration] clean: native regeneration required or no passed matching build"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "2559e11fab425d91bf87cb123d8aae9a7fa1c97e1b254f602603753d20808ae9",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-3"
+          ],
+          "apk": "modern-ninja-native-profileable-change.apk",
+          "apkSha256": "6b1bbaad7f6896158f0c42e54ed15b6072e1e9ade84f4971f1e5b0c33db87f28",
+          "entries": 1267,
+          "gradleTasks": "812 actionable tasks: 775 executed, 37 up-to-date"
+        }
+      ],
+      "comparison": {
+        "edit": 1,
+        "warmMs": 88842,
+        "coldMs": 485564,
+        "differences": [
+          "assets/app.manifest"
+        ],
+        "entries": 1267
+      },
+      "assertions": {
+        "fixtureSourcesIdentical": true,
+        "fixtureStable": true,
+        "nativeContextIdentical": true,
+        "signaturesVerified": true,
+        "sameCertificate": true,
+        "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+        "samePayloadExceptUpdateManifest": true,
+        "entries": 1267,
+        "updateManifestChangedFields": [
+          "id",
+          "commitTime"
+        ]
+      },
+      "nativeInvalidation": {
+        "package": "com.tanuki75.noctalia.qa",
+        "version": "3.6.0",
+        "build": "83",
+        "profileable": true,
+        "debuggable": false,
+        "abis": [
+          "x86_64"
+        ],
+        "apkSha256": "6b1bbaad7f6896158f0c42e54ed15b6072e1e9ade84f4971f1e5b0c33db87f28"
+      }
+    },
+    "linux": {
+      "builds": [
+        {
+          "label": "modern-ninja-edit-1-iteration",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "linux",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 66249,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "97da0dc1f471276b10eaac8a0d9d4ca65bf0a91c883e4c680c81cdabfe9075f6",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "5cd3e19424b043b612614940b46c23f5cd04552dc9a799b80d4bbf652b4bdea0",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-1"
+          ],
+          "apk": "modern-ninja-edit-1-iteration.apk",
+          "apkSha256": "1ab469d6dc08b1c31105dac6348e2075db849a59ac483e9904fc129d59eec57e",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 27 executed, 1211 up-to-date"
+        },
+        {
+          "label": "modern-ninja-edit-1-clean",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "linux",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa"
+          ],
+          "elapsedMs": 278879,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "97da0dc1f471276b10eaac8a0d9d4ca65bf0a91c883e4c680c81cdabfe9075f6",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "5cd3e19424b043b612614940b46c23f5cd04552dc9a799b80d4bbf652b4bdea0",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-1"
+          ],
+          "apk": "modern-ninja-edit-1-clean.apk",
+          "apkSha256": "31e1443384d8e3b846536a10136687244b4eb1c60d19b83318725ee6011e74ab",
+          "entries": 1267,
+          "gradleTasks": "1242 actionable tasks: 1205 executed, 37 up-to-date"
+        },
+        {
+          "label": "modern-ninja-edit-2-iteration",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "linux",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 51801,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "65a60bc2979be6ac7b449f31620ad113ab6775815263ce0ff0bb5c2a96e3a1c1",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "5cd3e19424b043b612614940b46c23f5cd04552dc9a799b80d4bbf652b4bdea0",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-2"
+          ],
+          "apk": "modern-ninja-edit-2-iteration.apk",
+          "apkSha256": "c130c76ca80f9fcf4a6d3a2d6044cab795fb40f234694c6b8701dc536e87206c",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 27 executed, 1211 up-to-date"
+        },
+        {
+          "label": "modern-ninja-edit-3-iteration",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "linux",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 49374,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "e629e98250957f859215d6103dfed67b1a1b47cf9dddd97317293a45b7bb0842",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "7ed00e7c9cdf16ab7e2fd2361fe45d4f0b61263cd60aae398b27b7ee08108827"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "5cd3e19424b043b612614940b46c23f5cd04552dc9a799b80d4bbf652b4bdea0",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-3"
+          ],
+          "apk": "modern-ninja-edit-3-iteration.apk",
+          "apkSha256": "6a3933a2fa0f363806ee77d471b279dbcae0f965bbbc3f7c96d1d94c61714db9",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 27 executed, 1211 up-to-date"
+        },
+        {
+          "label": "modern-ninja-asset-only-change",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "linux",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental"
+          ],
+          "elapsedMs": 133602,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "e629e98250957f859215d6103dfed67b1a1b47cf9dddd97317293a45b7bb0842",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "61632c05335d69ef8ebcf965ee78c9ee47da3ff2ac5d0b981fb662435dde28fc"
+          },
+          "iterationDecision": [
+            "[android-iteration] incremental: same native/profile/environment inputs"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "5cd3e19424b043b612614940b46c23f5cd04552dc9a799b80d4bbf652b4bdea0",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-3"
+          ],
+          "apk": "modern-ninja-asset-only-change.apk",
+          "apkSha256": "8b6422ecfe2a062c9be76969e5ec4b10c5160f08f966c96491318c5b77d53afd",
+          "entries": 1267,
+          "gradleTasks": "1238 actionable tasks: 36 executed, 1202 up-to-date"
+        },
+        {
+          "label": "modern-ninja-native-profileable-change",
+          "source": "5509cfa90e04fc12ba3f005ba470ef4908320411",
+          "platform": "linux",
+          "node": "v24.19.0",
+          "command": [
+            "node",
+            "scripts/build-android-release-local.js",
+            "--abi",
+            "x86_64",
+            "--side-by-side-qa",
+            "--incremental",
+            "--profileable"
+          ],
+          "elapsedMs": 302689,
+          "status": 0,
+          "fixtureStable": true,
+          "fixtureHashes": {
+            "index.ts": "e629e98250957f859215d6103dfed67b1a1b47cf9dddd97317293a45b7bb0842",
+            "node_modules/@expo-google-fonts/lora/400Regular/Lora_400Regular.ttf": "61632c05335d69ef8ebcf965ee78c9ee47da3ff2ac5d0b981fb662435dde28fc"
+          },
+          "iterationDecision": [
+            "[android-iteration] clean: native regeneration required or no passed matching build"
+          ],
+          "buildState": {
+            "schemaVersion": 1,
+            "context": "c93cbf001adef36203df2a14c187be4e989cdeac81f3a1efbe99f504b6a73c26",
+            "status": "passed"
+          },
+          "markers": [
+            "noctalia-iteration-benchmark-3"
+          ],
+          "apk": "modern-ninja-native-profileable-change.apk",
+          "apkSha256": "d07655ebdeff64392d499463c0a0f751d1143955e1dc0f35127f0de67b45b07d",
+          "entries": 1267,
+          "gradleTasks": "812 actionable tasks: 775 executed, 37 up-to-date"
+        }
+      ],
+      "comparison": {
+        "edit": 1,
+        "warmMs": 66249,
+        "coldMs": 278879,
+        "differences": [
+          "assets/app.manifest"
+        ],
+        "entries": 1267
+      },
+      "assertions": {
+        "fixtureSourcesIdentical": true,
+        "fixtureStable": true,
+        "nativeContextIdentical": true,
+        "signaturesVerified": true,
+        "sameCertificate": true,
+        "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+        "samePayloadExceptUpdateManifest": true,
+        "entries": 1267,
+        "updateManifestChangedFields": [
+          "id",
+          "commitTime"
+        ]
+      },
+      "nativeInvalidation": {
+        "package": "com.tanuki75.noctalia.qa",
+        "version": "3.6.0",
+        "build": "83",
+        "profileable": true,
+        "debuggable": false,
+        "abis": [
+          "x86_64"
+        ],
+        "apkSha256": "d07655ebdeff64392d499463c0a0f751d1143955e1dc0f35127f0de67b45b07d"
+      }
+    }
+  },
+  "lifecycle": {
+    "windows": [
+      {
+        "product": "dreamer",
+        "sample": 1,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357487401-75016-12adecd1-4481-4962-b1e7-a1cc734c0a1c",
+        "summary": {
+          "discovered": 125,
+          "selected": 2,
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "daf887baf371062a5f56f415e8e9609dc128e6afffa1768665f6092ab8ef8994"
+      },
+      {
+        "sample": 1,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357005504-37072-6a3273f1-a966-486c-a54c-ae6f391959eb",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "sample": 2,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357078055-60236-43aeb96d-343f-446c-927f-ac3a9c31ae9c",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "product": "meditation",
+        "sample": 1,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357534622-46496-bcd7fc7c-772b-41a2-bc3e-3894633d5132",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      },
+      {
+        "product": "meditation",
+        "sample": 2,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357567248-73584-da31b9a3-bdf1-4851-b60c-4188a2b9c9cd",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      }
+    ],
+    "linux": [
+      {
+        "product": "dreamer",
+        "sample": 1,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357459599-2379177-fca864bc-48f4-4146-a5d1-5ac44d3a6f33",
+        "summary": {
+          "discovered": 125,
+          "selected": 2,
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "daf887baf371062a5f56f415e8e9609dc128e6afffa1768665f6092ab8ef8994"
+      },
+      {
+        "sample": 1,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357013160-2373735-dbb52aff-1712-4440-9d43-8c18b8d0c8e2",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "sample": 2,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357077969-2375394-70d71d2d-3232-44bd-8a58-ea0cece93613",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "product": "meditation",
+        "sample": 1,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357503503-2379505-e6d33e62-4196-4b95-b64b-e2bc894e4daa",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      },
+      {
+        "product": "meditation",
+        "sample": 2,
+        "source": "7073544153f2a6adca06d28037e9ef59c54806c2",
+        "report": "1792357524281-2379838-f2f84b0a-cb24-46f9-8756-355d896780b4",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      }
+    ]
+  },
+  "integratedLifecycle": {
+    "windows": [
+      {
+        "product": "dreamer",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359265725-68284-fee1fcc2-73b2-4e8c-ae86-47eb11289b6b",
+        "summary": {
+          "discovered": 125,
+          "selected": 2,
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "daf887baf371062a5f56f415e8e9609dc128e6afffa1768665f6092ab8ef8994"
+      },
+      {
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359229057-64472-f019f772-185f-4ae7-8651-3b2ac07dc0e6",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359319321-65300-aa0217ea-7422-4117-9c6f-cdc0a31a29b8",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "product": "meditation",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359325296-51176-bf70b69a-d3ab-4c57-9421-b22f65e099d4",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      },
+      {
+        "product": "meditation",
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359364813-46528-d0fb930d-a498-46f5-9fdc-8d3a659ca6d4",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      }
+    ],
+    "linux": [
+      {
+        "product": "dreamer",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359360296-2440983-40630c7b-614a-461d-96df-d36a2b268fb6",
+        "summary": {
+          "discovered": 125,
+          "selected": 2,
+          "executed": 2,
+          "passed": 2,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "daf887baf371062a5f56f415e8e9609dc128e6afffa1768665f6092ab8ef8994"
+      },
+      {
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359227688-2431517-17a9a18a-8510-49b5-958d-383bdbc778a6",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359300516-2437718-a146e998-9b5d-4de1-9dcf-fac64cf7e93e",
+        "summary": {
+          "discovered": 6,
+          "selected": 6,
+          "executed": 6,
+          "passed": 6,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "product": "lucid",
+        "stepsSha256": "08950f3d348983285dedde4eebd25ed56da692f0ab0374949632ec58366e9f63"
+      },
+      {
+        "product": "meditation",
+        "sample": 1,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359401562-2441847-80ccca58-b06c-4011-ba34-dae5f1b4ee29",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      },
+      {
+        "product": "meditation",
+        "sample": 2,
+        "source": "451f0943f496c2b7f7fe9a611eeda7e760f96fbf",
+        "report": "1792359421782-2442716-772b6f9a-8e1b-44eb-ae50-10aeca7f81c5",
+        "summary": {
+          "discovered": 1,
+          "selected": 1,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        },
+        "portClosed": true,
+        "externalCleanup": false,
+        "stepsSha256": "efeeaf9c832c35e1d3bfe953fd8c55dcd235b44a393997a642b86e58814cb088"
+      }
+    ]
+  }
+}

@@ -18,6 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import { getAccessToken } from '../lib/auth';
 import { getDreamIdentityKey, matchesDreamTarget } from '../lib/dreamIdentity';
 import { DreamPersistenceError } from '../lib/dreamStorageRead';
+import { IncompleteJournalAckError } from '../lib/journalErrors';
 import type { JournalCursor } from '../lib/journalReadContracts';
 import { logger } from '../lib/logger';
 import { reportSyncQueueMetrics } from '../lib/syncObservability';
@@ -25,10 +26,14 @@ import type { DreamAnalysis, DreamListReadResult, DreamMutation } from '../lib/t
 import {
   applyPendingMutations,
   areDreamsEqualForLocalState,
+  getDreamSyncState,
+  isConflictError,
   type DreamListUpdater,
   normalizeDreamList,
   resolveDreamListUpdater,
+  removeDream,
   sortDreams,
+  setDreamSyncState,
   upsertDream,
 } from '../lib/dreamUtils';
 import {
@@ -46,6 +51,7 @@ import {
 } from '../services/storageService';
 import {
   createDreamInSupabase,
+  deleteDreamFromSupabase,
   fetchDreamFullPage,
 } from '../services/supabaseDreamService';
 
@@ -110,6 +116,8 @@ export type UseDreamPersistenceResult = {
   persistLocalDreams: (dreams: DreamAnalysis[], options?: LocalDreamWriteOptions) => Promise<void>;
   /** Persist dreams to remote cache (authenticated mode) */
   persistRemoteDreams: (updater: DreamListUpdater) => Promise<void>;
+  /** Persist an explicit conflict choice in the owner-attributed guest migration. */
+  persistMigrationResolution: (dream: DreamAnalysis, resolved: DreamAnalysis) => Promise<void>;
   /** Reload dreams from storage/server */
   reloadDreams: () => Promise<void>;
   /** Retry the last failed read or write for the active scope. */
@@ -194,6 +202,30 @@ const hasClaimedMigrationRemainder = (
   retained: DreamAnalysis[],
   claimedIds: ReadonlySet<DreamAnalysis['id']>
 ): boolean => retained.some((dream) => claimedIds.has(dream.id));
+
+const retainFailedMigration = (dream: DreamAnalysis, error: unknown): DreamAnalysis => {
+  if (error instanceof IncompleteJournalAckError && error.migrationRecovery) {
+    return setDreamSyncState({ ...dream, migrationRecovery: error.migrationRecovery }, 'pending');
+  }
+  if (dream.migrationRecovery && isConflictError(error)) {
+    // A conflicted deletion restores the local version for an explicit choice.
+    return setDreamSyncState({ ...dream, migrationRecovery: { ...dream.migrationRecovery, operation: undefined } }, 'conflict', {
+      lastSyncError: error.message,
+      conflictRemoteDream: error.remoteDream,
+    });
+  }
+  return dream;
+};
+
+const migrateDream = async (dream: DreamAnalysis, userId: string): Promise<DreamAnalysis | null> => {
+  const recovery = dream.migrationRecovery;
+  if (recovery?.operation === 'delete') {
+    if (recovery.userId !== userId) throw new Error('Dream migration belongs to another account');
+    await deleteDreamFromSupabase(recovery.remoteId, recovery.revisionId, recovery);
+    return null;
+  }
+  return createDreamInSupabase(dream, userId);
+};
 
 const EMPTY_DREAMS_REF: React.RefObject<DreamAnalysis[]> = { current: [] };
 
@@ -611,6 +643,31 @@ export function useDreamPersistence({
     [canUseRemoteSync, enqueueWrite, publishedScopeKey, userScope]
   );
 
+  const persistMigrationResolution = useCallback(async (dream: DreamAnalysis, resolved: DreamAnalysis) => {
+    if (!canUseRemoteSync || !userId || dream.migrationRecovery?.userId !== userId) {
+      throw new Error('Dream migration belongs to another account');
+    }
+    const ownerScopeKey = `remote:${userScope}`;
+    await runWithGuestMigrationClaim(userId, undefined, async () => {
+      const owner = await getGuestDreamMigrationOwner();
+      if (owner && owner.userId !== userId) throw new Error('Dream migration belongs to another account');
+      const local = await getSavedDreams();
+      if (local.status === 'error') throw new DreamPersistenceError('read', 'device');
+      const snapshot = local.status === 'loaded'
+        ? local.value.filter(candidate => owner?.dreamIds.includes(candidate.id) && matchesDreamTarget(candidate, dream)) : [];
+      // A cache-only recovery must remain eligible after a previously completed migration.
+      if (resolved.migrationRecovery) await setDreamsMigrationSynced(userId, false);
+      // The account copy is durable before changing or removing the guest copy.
+      await persistRemoteDreams(prev => upsertDream(prev, resolved));
+      const remaining = resolved.migrationRecovery
+        ? snapshot.map(candidate => ({ ...resolved, id: candidate.id, clientRequestId: candidate.clientRequestId })) : [];
+      const retained = await persistLocalMigrationResult(ownerScopeKey, snapshot, remaining);
+      const hasRemainder = hasClaimedMigrationRemainder(retained, new Set(owner?.dreamIds ?? []));
+      if (owner && !hasRemainder) await setGuestDreamMigrationOwner(null);
+      return { value: undefined, release: !hasRemainder };
+    });
+  }, [canUseRemoteSync, userId, userScope, persistRemoteDreams, persistLocalMigrationResult]);
+
   /**
    * Migrate guest dreams to Supabase when user logs in
    */
@@ -678,12 +735,19 @@ export function useDreamPersistence({
           remaining.push(...unsynced.slice(index));
           break;
         }
+        if (dream.migrationRecovery && getDreamSyncState(dream) === 'conflict') {
+          remaining.push(dream);
+          await persistRemoteDreams(prev => upsertDream(prev, dream));
+          continue;
+        }
         const clientRequestId =
           dream.clientRequestId ?? (typeof dream.id === 'number' ? `dream-${dream.id}` : undefined);
         const dreamToSync = clientRequestId ? { ...dream, clientRequestId } : dream;
         try {
-          const synced = await createDreamInSupabase(dreamToSync, userId);
-          if (dream.captureOriginalTranscript) {
+          const synced = await migrateDream(dreamToSync, userId);
+          if (synced === null) {
+            await persistRemoteDreams(prev => removeDream(prev, dream));
+          } else if (dream.captureOriginalTranscript || dream.migrationRecovery) {
             // Preserve the local source durably in the owning account before guest cleanup.
             await persistRemoteDreams((prev) => upsertDream(prev, {
               ...synced, captureOriginalTranscript: dream.captureOriginalTranscript,
@@ -691,8 +755,13 @@ export function useDreamPersistence({
           }
         } catch (error) {
           logger.warn('Guest dream migration failed for dream', dream.id, error);
-          // Keep snapshot identity; the deterministic request ID is rebuilt on retry.
-          remaining.push(dream);
+          // Keep the guest copy unpromoted until its notes are acknowledged. The
+          // owner claim and this durable receipt survive restarts/network failures.
+          const retained = retainFailedMigration(dream, error);
+          remaining.push(retained);
+          if (retained.migrationRecovery) {
+            await persistRemoteDreams(prev => upsertDream(prev, retained));
+          }
         }
       }
 
@@ -782,6 +851,16 @@ export function useDreamPersistence({
         userScope,
       });
 
+      // Notes already owned by the durable queue must not acquire a second
+      // migration writer with another receipt/revision.
+      const queuedNoteDreams = pendingMutationsFromStorage
+        .filter(mutation => mutation.operation === 'create' && mutation.payload.dream?.personalNotes !== undefined)
+        .map(mutation => mutation.payload.dream!);
+      const queueOwnsNotes = (dream: DreamAnalysis) => queuedNoteDreams.some(queued => matchesDreamTarget(queued, dream));
+      const deferMigration = (dream: DreamAnalysis) => queueOwnsNotes(dream) ||
+        Boolean(dream.migrationRecovery && getDreamSyncState(dream) === 'conflict');
+      const deferredClaimedDreams = claimedDreams.filter(deferMigration);
+      const hasDeferredRecovery = cachedRemoteDreams.some(dream => dream.migrationRecovery && deferMigration(dream));
       const candidates: DreamAnalysis[] = [
         ...pendingMutationsFromStorage
           .filter((mutation) => mutation.operation === 'create' && mutation.payload.dream)
@@ -789,18 +868,18 @@ export function useDreamPersistence({
           .filter((dream) => !dream.remoteId),
         ...cachedRemoteDreams.filter((dream) => !dream.remoteId),
         ...claimedDreams.filter((dream) => !dream.remoteId),
-      ];
+      ].filter(dream => !deferMigration(dream));
 
-      // Deduplicate by clientRequestId (or fallback to local id)
       const seen = new Set<string>();
       const unsynced = candidates.filter((dream) => {
-        const key = dream.clientRequestId ?? `id-${dream.id}`;
+        const key = getMigrationDreamKey(dream);
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       });
 
       if (unsynced.length === 0) {
+        if (deferredClaimedDreams.length || hasDeferredRecovery) return { value: undefined, release: false };
         if (claimedDreams.length > 0) {
           const retained = await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
           const hasClaimedRemainder = hasClaimedMigrationRemainder(retained, claimedIds);
@@ -818,6 +897,7 @@ export function useDreamPersistence({
 
       // Sync each dream one by one
       let hadFailures = false;
+      let retainedClaimedDreams = claimedDreams;
       for (const dream of unsynced) {
         if (!isMigrationCurrent()) return { value: undefined, release: false };
         try {
@@ -828,31 +908,46 @@ export function useDreamPersistence({
 
           // createDreamInSupabase does upsert on (user_id, client_request_id)
           // If dream exists on server, fetches just remoteId without creating duplicate
-          const synced = await createDreamInSupabase(dreamToSync, userId);
+          const synced = await migrateDream(dreamToSync, userId);
 
           // IMPORTANT: synced.id may differ from dream.id (reconstructed from server's created_at)
           // upsertDream matches by id OR remoteId, so will correctly update the dream
           if (!isMigrationCurrent()) return { value: undefined, release: false };
           const sequenceBeforeMigrationWrite = migrationScope.sequence;
-          const migrationWrite = persistRemoteDreams((prev) => upsertDream(prev, dream.captureOriginalTranscript ? { ...synced, captureOriginalTranscript: dream.captureOriginalTranscript } : synced));
+          const migrationWrite = persistRemoteDreams((prev) => synced !== null
+            ? upsertDream(prev, dream.captureOriginalTranscript ? { ...synced, captureOriginalTranscript: dream.captureOriginalTranscript } : synced)
+            : removeDream(prev, dream));
           expectedWriteSequence += migrationScope.sequence - sequenceBeforeMigrationWrite;
           await migrationWrite;
 
-          logger.debug(`Migrated dream ${dream.id} → remoteId ${synced.remoteId}`);
+          logger.debug(`Migrated dream ${dream.id} → remoteId ${synced?.remoteId ?? 'deleted'}`);
         } catch (error) {
           logger.warn('Migration failed for dream', dream.id, error);
           hadFailures = true;
+          const retained = retainFailedMigration(dream, error);
+          if (retained !== dream && retained.migrationRecovery && isMigrationCurrent()) {
+            const sequenceBeforeRecoveryWrite = migrationScope.sequence;
+            const recoveryWrite = persistRemoteDreams(prev => upsertDream(prev, retained));
+            expectedWriteSequence += migrationScope.sequence - sequenceBeforeRecoveryWrite;
+            await recoveryWrite;
+            retainedClaimedDreams = retainedClaimedDreams.map(claimed =>
+              matchesDreamTarget(claimed, dream) ? { ...retained, id: claimed.id, clientRequestId: claimed.clientRequestId } : claimed);
+          }
           // Continue with others (don't block entire migration)
         }
       }
 
       if (!isMigrationCurrent()) return { value: undefined, release: false };
+      if (hadFailures && retainedClaimedDreams !== claimedDreams) {
+        await persistLocalMigrationResult(ownerScopeKey, claimedDreams, retainedClaimedDreams);
+      }
       if (!hadFailures) {
+        if (hasDeferredRecovery && claimedDreams.length === 0) return { value: undefined, release: false };
         if (claimedDreams.length > 0) {
-          const retained = await persistLocalMigrationResult(ownerScopeKey, claimedDreams, []);
+          const retained = await persistLocalMigrationResult(ownerScopeKey, claimedDreams, deferredClaimedDreams);
           const hasClaimedRemainder = hasClaimedMigrationRemainder(retained, claimedIds);
           if (!hasClaimedRemainder) await setGuestDreamMigrationOwner(null);
-          if (!isMigrationCurrent()) return { value: undefined, release: false };
+          if (!isMigrationCurrent() || deferredClaimedDreams.length || hasDeferredRecovery) return { value: undefined, release: false };
           await setDreamsMigrationSynced(userId, true);
           return { value: undefined, release: !hasClaimedRemainder };
         }
@@ -1084,7 +1179,11 @@ export function useDreamPersistence({
         setRefreshState({ status: 'idle' });
         setRemoteSnapshot({ userScope, dreams: remoteDreams });
         const normalizedRemote = normalizeDreamList(retainCaptureSources(remoteDreams, dreamsRef.current));
-        const sortedRemote = sortDreams(normalizedRemote);
+        // A failed migration has a separate local receipt, not a synced remoteId.
+        // Keep its writing visible while auth reload reads the legacy server row.
+        const withMigrationRecoveries = dreamsRef.current.filter(dream => dream.migrationRecovery)
+          .reduce((rows, dream) => upsertDream(rows.filter(row => row.remoteId !== dream.migrationRecovery!.remoteId), dream), normalizedRemote);
+        const sortedRemote = sortDreams(withMigrationRecoveries);
         const nextDreams = pendingMutations.length
           ? normalizeDreamList(applyPendingMutations(sortedRemote, pendingMutations))
           : sortedRemote;
@@ -1263,6 +1362,8 @@ export function useDreamPersistence({
     userScope,
   ]);
 
+  // Load the external storage for this scope, including its observable loading/error
+  // state. Keep cancellation and scope checks around every asynchronous publication.
   // Initial load effect
   useEffect(() => {
     const mounted = { current: true };
@@ -1298,6 +1399,7 @@ export function useDreamPersistence({
     dreamsRef: snapshotMatchesActiveScope ? dreamsRef : EMPTY_DREAMS_REF,
     persistLocalDreams,
     persistRemoteDreams,
+    persistMigrationResolution,
     reloadDreams,
     retryPersistence,
   };

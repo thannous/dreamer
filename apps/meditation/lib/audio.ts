@@ -6,7 +6,6 @@
 export const SEEK_STEP_SEC = 15;
 
 export const PLAYBACK_RATES = [0.75, 1, 1.25] as const;
-export type PlaybackRate = (typeof PLAYBACK_RATES)[number];
 
 /** Fade-out choices, in minutes. `null` means "run to the end of the session". */
 export const FADE_TIMERS = [5, 10, 15, 30] as const;

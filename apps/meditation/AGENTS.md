@@ -17,7 +17,8 @@ d'univers restent distincts ; aucune modification ne doit réactiver impliciteme
 un abonnement ou déduire un droit commercial du compte d'une autre app.
 
 **Pas de compte, pas de backend applicatif.** Tout l'état est local
-(AsyncStorage). Les pistes audio distantes viennent d'un bucket statique.
+(AsyncStorage). Les séances actuelles utilisent les boucles audio embarquées
+de `content/worldSounds.ts`, via `services/audioService`.
 
 ## Commandes
 
@@ -81,7 +82,7 @@ npm run lint       # eslint
 10. **Animations de layout : contournement actuel d'un défaut observé.** Les
     versions précédentes de Reanimated laissaient `FadeInDown`/`Layout` à une
     opacité partielle. Utiliser actuellement `SharedValue` + `withTiming`, comme
-    le souffle et le silence progressif. Ce choix ne fige pas les versions ou
+    le souffle. Ce choix ne fige pas les versions ou
     possibilités futures : un pilote local sur la version installée peut lever
     le contournement si le cas réel, l'accessibilité et les interactions passent.
     Une commande parfois invisible reste un défaut à corriger.

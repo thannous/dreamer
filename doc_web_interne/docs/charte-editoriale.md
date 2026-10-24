@@ -72,7 +72,10 @@ Ils sonnent traduits, publicitaires ou générés automatiquement.
 - Français : espace insécable avant `: ; ? !`, guillemets « », tiret demi-cadratin ou virgule
   à la place du trait d'union isolé « - ».
 - Guillemets par langue : “ ” (EN), « » (ES, IT), „ “ (DE).
-- Adresse au lecteur : vous (FR), you (EN), tú (ES), tu (IT), Sie (DE). Ne pas mélanger.
+- Adresse au lecteur : vous (FR), you (EN), tú (ES), tu (IT), du (DE). Ne pas mélanger.
+  L'allemand suit le registre de l'app et de l'accueil (décision de Thanh, 23 octobre 2026) ;
+  guides, fiches symboles, articles et pages sont convertis, sans changer slugs ni URL.
+  Les citations (exemples de journal, questions de chercheurs) gardent leur forme d'origine.
 
 ## Gabarits par format
 

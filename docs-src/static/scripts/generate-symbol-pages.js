@@ -16,16 +16,20 @@
  *   node scripts/generate-symbol-pages.js --dry-run     # Preview without writing
  */
 
+const crypto = require('crypto');
 const fs = require('fs');
 const { conversionLinkAttributes } = require('../../scripts/lib/docs-components/conversion-link');
 const path = require('path');
 const { createRenderContext } = require('../../scripts/lib/docs-components/context');
-const { getWebAppUrl, loadLocales } = require('../../scripts/lib/docs-site-config');
+const { getAndroidStoreUrl, getCollectionLanguages, getLanguageTag, getWebAppUrl, loadLocales, siteConfig } = require('../../scripts/lib/docs-site-config');
+const { aliasWebLocales, catalogKey } = require('../../scripts/lib/symbol-locales');
 const { renderFooter: renderSharedFooter } = require('../../scripts/lib/docs-components/footer');
 const { renderNavigation } = require('../../scripts/lib/docs-components/navigation');
 const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
 const { inlineLucideIcons } = require('../../scripts/lib/lucide-inline');
 const { canonicalOrganization } = require('../../scripts/lib/canonical-organization');
+// Texture boxes and sizes, shared with the app's copy of the atlas.
+const { ATLAS_SIX_IMAGES, atlasSixBox, atlasSixLayerSrc } = require('../../scripts/lib/atlas-motion');
 const { renderAhrefsAnalyticsScript } = require('../../scripts/lib/ahrefs-analytics');
 const { renderResponsivePicture } = require('../../scripts/lib/image-seo-assets');
 const { getPageIllustration } = require('../../scripts/lib/page-illustrations');
@@ -194,14 +198,10 @@ const CONFIG = {
   i18nFile: 'symbol-i18n.json',
   extendedFile: 'dream-symbols-extended.json',
   extendedTier3File: 'dream-symbols-extended-tier3.json',
-  languages: ['en', 'fr', 'es', 'de', 'it'],
-  symbolsPath: {
-    en: 'symbols',
-    fr: 'symboles',
-    es: 'simbolos',
-    de: 'traumsymbole',
-    it: 'simboli'
-  },
+  // The symbol collection's languages and paths (docs-src/config/site.config.json). Web locales
+  // read their catalog block through scripts/lib/symbol-locales.js (pt-br reads pt).
+  languages: getCollectionLanguages('symbols'),
+  symbolsPath: siteConfig.symbolsPath,
   datePublished: '2025-01-21',
   // Explicit editorial source date; release gates require this to move with
   // substantive catalog changes instead of inferring freshness from Git.
@@ -239,6 +239,12 @@ const SYMBOL_SHEET_LABELS = {
     meaning: 'Significato',
     variations: 'Varianti',
     questions: 'Domande'
+  },
+  'pt-br': {
+    jumpNav: 'Seções do símbolo',
+    meaning: 'Sentido',
+    variations: 'Variações',
+    questions: 'Perguntas'
   }
 };
 
@@ -248,6 +254,7 @@ const SYMBOL_IMAGE_ALT_TEMPLATES = {
   es: (name) => `Ilustración onírica que representa el símbolo ${name}`,
   fr: (name) => `Illustration onirique représentant le symbole ${name}`,
   it: (name) => `Illustrazione onirica che rappresenta il simbolo ${name}`,
+  'pt-br': (name) => `Ilustração onírica que representa o símbolo ${name}`,
 };
 
 const SYMBOL_IMAGE_CAPTION_TEMPLATES = {
@@ -256,6 +263,7 @@ const SYMBOL_IMAGE_CAPTION_TEMPLATES = {
   es: (name) => `Representación visual del símbolo onírico ${name}.`,
   fr: (name) => `Représentation visuelle du symbole onirique ${name}.`,
   it: (name) => `Rappresentazione visiva del simbolo onirico ${name}.`,
+  'pt-br': (name) => `Representação visual do símbolo onírico ${name}.`,
 };
 
 function resolveSymbolIllustration(symbolId, explicitIllustration, symbolData, lang) {
@@ -328,14 +336,10 @@ function getSymbolCtaUrl(lang) {
     es: '/es/app-interpretacion-suenos-ia',
     de: '/de/ki-traumdeutung-app',
     it: '/it/app-interpretazione-sogni-ai',
+    'pt-br': '/pt-br/app-interpretacao-de-sonhos-ia',
   };
 
   return paths[lang] || paths.en;
-}
-
-function getAndroidStoreUrl(lang) {
-  const base = SHARED_SITE_CONFIG.storeLinks?.androidBase || 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia';
-  return `${base}&hl=${lang}`;
 }
 
 const SYMBOL_CONVERSION_COPY = {
@@ -344,6 +348,7 @@ const SYMBOL_CONVERSION_COPY = {
   es: { store: 'Descargar Noctalia en Google Play', details: 'Ver cómo Noctalia añade tu contexto' },
   de: { store: 'Noctalia bei Google Play herunterladen', details: 'So bezieht Noctalia deinen Kontext ein' },
   it: { store: 'Scarica Noctalia su Google Play', details: 'Scopri come Noctalia usa il tuo contesto' },
+  'pt-br': { store: 'Baixar o Noctalia no Google Play', details: 'Veja como o Noctalia considera o seu contexto' },
 };
 
 // `content` identifies the page family entry (canonical symbol id, or a
@@ -508,7 +513,7 @@ function loadOptionalCurationPages() {
   const curationPath = path.join(CONFIG.dataDir, 'curation-pages.json');
   if (!fs.existsSync(curationPath)) return [];
   const data = JSON.parse(fs.readFileSync(curationPath, 'utf8'));
-  return Array.isArray(data?.pages) ? data.pages : [];
+  return Array.isArray(data?.pages) ? data.pages.map(aliasCurationPage) : [];
 }
 
 const OPTIONAL_CURATION_PAGES = loadOptionalCurationPages();
@@ -545,6 +550,12 @@ function loadData() {
     extendedTier3 = JSON.parse(fs.readFileSync(extendedTier3Path, 'utf8'));
   }
 
+  // Web locales read their catalog block (pt-br reads pt), in memory only.
+  (symbols.symbols || []).forEach(aliasWebLocales);
+  Object.values(symbols.categories || {}).forEach(aliasWebLocales);
+  Object.values(extendedPrimary.symbols || {}).forEach(aliasWebLocales);
+  Object.values(extendedTier3 || {}).forEach(aliasWebLocales);
+
   return {
     symbols,
     i18n,
@@ -555,17 +566,24 @@ function loadData() {
   };
 }
 
+// A curation page (docs-src/static/data/curation-pages.json) with its web-locale aliases.
+function aliasCurationPage(page) {
+  aliasWebLocales(page);
+  aliasWebLocales(page?.slugs);
+  return page;
+}
+
 // Get category name for a symbol
 function getCategoryName(symbol, i18n, lang) {
   const categories = {
-    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura' },
-    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali' },
-    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo' },
-    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi' },
-    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti' },
-    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni' },
-    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone' },
-    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste' }
+    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura', 'pt-br': 'Natureza' },
+    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali', 'pt-br': 'Animais' },
+    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo', 'pt-br': 'Corpo' },
+    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi', 'pt-br': 'Lugares' },
+    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti', 'pt-br': 'Objetos' },
+    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni', 'pt-br': 'Ações' },
+    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone', 'pt-br': 'Pessoas' },
+    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste', 'pt-br': 'Celeste' }
   };
   return categories[symbol.category]?.[lang] || symbol.category;
 }
@@ -847,22 +865,22 @@ function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CU
     </footer>`;
 }
 
-// Living-painting pilot of the French tiger page (mist, lantern glow, scroll
-// depth). The folder is named after the script's sha256, so the immutable
-// /js/* cache never serves a stale copy; its layers load relative to the
-// script. On a phone held upright the hero takes 75svh and shows a dedicated
-// portrait painting; the landscape image, SEO and cards stay shared.
+// The tiger's own living-painting files, in the V4 folder: its portrait painting and the two
+// textures (mist, lantern glow) its paintings move with the packs' engine (see TIGER_ATLAS_ASSETS).
+// The former pilot scripts stay published for pages still cached, but no page loads them. On a phone
+// held upright the hero takes 75svh and shows the dedicated portrait painting; the landscape image,
+// SEO and cards stay shared.
 const TIGER_LIVING = {
-  dir: '/js/tiger-living/22c79c696a2f',
+  assets: '/js/tiger-living/22c79c696a2f/assets',
   media: '(max-width: 767px) and (orientation: portrait)',
   portrait: { name: 'tiger-mobile-v4', width: 984, height: 1599, widths: [480, 984] },
 };
 
 function tigerLivingSourcesHtml() {
-  const { dir, media, portrait } = TIGER_LIVING;
+  const { assets, media, portrait } = TIGER_LIVING;
   return ['avif', 'webp'].map((format) => {
     const srcset = portrait.widths
-      .map((width) => `${dir}/assets/${portrait.name}-${width}w.${format} ${width}w`)
+      .map((width) => `${assets}/${portrait.name}-${width}w.${format} ${width}w`)
       .join(', ');
     return `
                         <source media="${media}" type="image/${format}" srcset="${srcset}" sizes="100vw" width="${portrait.width}" height="${portrait.height}">`;
@@ -870,17 +888,17 @@ function tigerLivingSourcesHtml() {
 }
 
 // Before any script runs: the portrait hero has its final height, so the
-// painting and the title never jump.
-function tigerLivingStyleHtml() {
+// painting and the title never jump. On a phone held upright every symbol's hero takes 75svh from
+// the top: a pack shows its own portrait painting, the other pages crop their 16:9 painting around
+// `portraitPosition`. A page without any painting keeps a short hero for its title.
+function livingStyleHtml(portraitPosition, atlasCss) {
   return `
     <style>
-        /* The prefix reads before the name: "Signification : Tigre". */
-        .symbol-hero--living .symbol-heading { display: flex; flex-direction: column-reverse; }
-        .symbol-hero--living .symbol-h1-prefix { margin: 0 0 0.9rem; }
         @media ${TIGER_LIVING.media} {
-            .symbol-hero--living { aspect-ratio: auto; height: 75vh; height: 75svh; }
-            .symbol-hero--living .symbol-hero-media img { object-fit: cover; object-position: 50% 35%; }
-        }${TIGER_ATLAS_CSS}
+            .symbol-hero { aspect-ratio: auto; height: 75vh; height: 75svh; }
+            .symbol-hero .symbol-hero-media img { object-fit: cover; object-position: ${portraitPosition}; }
+        }
+        .symbol-hero.symbol-hero--bare { aspect-ratio: auto; height: auto; min-height: clamp(18rem, 42vh, 28rem); }${atlasCss}
     </style>`;
 }
 
@@ -892,29 +910,17 @@ function tigerLivingStyleHtml() {
 // beside the opening mirrors the section titles. Every text comes from the
 // symbol's data: a scene shows the opening question of its variation card and the
 // sentence after it, and the build fails if a card, its question, the caveat or
-// an image file disappears.
+// an image file disappears. The words of every language (copy, caveat, journal lead,
+// each scene's card, label and anchor) come from docs-src/config/symbol-atlas-locales.json.
 const TIGER_ATLAS_IMAGES = '/img/symbols/atlas-tiger-v1';
 const TIGER_ATLAS = {
-  navLabel: 'Dans cette fiche',
-  // The fictional journal example is left out: the page explains the symbol.
-  journalLead: 'Exemple fictif de journal :',
-  caveat: 'Ce sont des pistes à confronter à votre vie actuelle',
   scenes: {
-    id: 'scenes',
-    title: 'Scènes courantes',
-    hint: 'Choisissez celle qui ressemble le plus à votre rêve.',
-    legend: 'Choisir une scène',
-    reading: 'Lecture de la scène choisie',
-    source: 'Lire la variante',
-    chosen: 'Votre scène',
     choices: [
-      { id: 'poursuite', label: 'Il me poursuit', variation: 'Un tigre qui attaque ou vous poursuit', image: 'pursuit' },
-      { id: 'calme', label: 'Il est calme', variation: 'Un tigre calme ou apprivoisé', image: 'calm' },
-      { id: 'cage', label: 'Il est en cage', variation: 'Un tigre en cage ou un petit tigre', image: 'cage' },
+      { id: 'poursuite', image: 'pursuit' },
+      { id: 'calme', image: 'calm' },
+      { id: 'cage', image: 'cage' },
     ],
   },
-  continuationTitle: 'Lecture détaillée',
-  keepKicker: 'Continuer dans Noctalia',
   // Fingerprinted files from docs-src/static/img/symbols/atlas-tiger-v1 (assets-manifest.json).
   images: {
     pursuit: { width: 320, height: 180, avif: { 320: 'tiger-pursuit-320-f1ce09fe543d.avif', 640: 'tiger-pursuit-640-112fb4ac41a6.avif' }, webp: { 320: 'tiger-pursuit-320-05b0f7866689.webp', 640: 'tiger-pursuit-640-54f668afdf3d.webp' } },
@@ -927,6 +933,65 @@ const TIGER_ATLAS = {
   // phones and narrower screens never fetch it.
   decorMedia: '(min-width: 1440px)',
   decorSizes: 'min(52rem, 50vw)',
+  // Its two effects on every painting, in the packs' motion format (symbol-atlas-pilots.json): the
+  // lantern glow (layer) breathes on the lantern, or on the moon of the pursuit, and the mist (accent)
+  // drifts over the valley, clear of the tiger. Points are fractions of each painting.
+  motion: {
+    parallax: 0.5,
+    hero: {
+      landscape: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.2, at: [0.1825, 0.1811] }, motion: 'pulse', dur: 2.4, op: [0.5, 1] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.45, at: [0.8, 0.6] }, motion: 'drift', move: [0.08, 0], dur: 11, op: [0.5, 0.65] },
+      ],
+      portrait: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.3, at: [0.248, 0.2364] }, motion: 'pulse', dur: 2.4, op: [0.5, 1] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.6, at: [0.85, 0.48] }, motion: 'drift', move: [0.06, 0], dur: 7, op: [0.55, 0.7] },
+      ],
+    },
+    plate: [
+      { texture: 'layer', place: { fit: 'width', zoom: 0.16, at: [0.826, 0.242] }, motion: 'pulse', dur: 2.4, op: [0.5, 1] },
+      { texture: 'accent', place: { fit: 'width', zoom: 0.45, at: [0.3, 0.6] }, motion: 'drift', move: [0.08, 0], dur: 10, op: [0.5, 0.7] },
+    ],
+    thumb: [
+      { texture: 'layer', place: { fit: 'width', zoom: 0.22, at: [0.19, 0.211] }, motion: 'pulse', dur: 2.6, op: [0.45, 1] },
+      { texture: 'accent', place: { fit: 'width', zoom: 0.5, at: [0.82, 0.58] }, motion: 'drift', move: [0.1, 0], dur: 8, op: [0.45, 0.75] },
+    ],
+    scenes: {
+      poursuite: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.22, at: [0.803, 0.194] }, motion: 'pulse', dur: 2.6, op: [0.2, 0.55] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.5, at: [0.85, 0.5] }, motion: 'drift', move: [0.1, 0], dur: 8, op: [0.45, 0.75] },
+      ],
+      cage: [
+        { texture: 'layer', place: { fit: 'width', zoom: 0.2, at: [0.156, 0.241] }, motion: 'pulse', dur: 2.6, op: [0.45, 1] },
+        { texture: 'accent', place: { fit: 'width', zoom: 0.4, at: [0.88, 0.5] }, motion: 'drift', move: [0.1, 0], dur: 8, op: [0.45, 0.75] },
+      ],
+    },
+  },
+};
+
+// The tiger's paintings and textures in the packs' asset format, each from where it already is: the
+// atlas paintings above, the portrait painting and the two textures of the V4 folder (the mist also at
+// 800px wide, the size the engine picks). Its landscape hero is the page's own illustration.
+function tigerAtlasAsset({ width, height, avif, webp }) {
+  const urls = (files) => Object.fromEntries(Object.entries(files).map(([size, file]) => {
+    const relative = path.join('static', TIGER_ATLAS_IMAGES, file);
+    if (!fs.existsSync(path.join(DOCS_SRC_DIR, relative))) throw new Error(`Tiger atlas: missing image docs-src/${relative}`);
+    return [size, `${TIGER_ATLAS_IMAGES}/${file}`];
+  }));
+  return { width, height, avif: urls(avif), webp: urls(webp) };
+}
+const TIGER_ATLAS_ASSETS = {
+  portrait: { width: TIGER_LIVING.portrait.width, height: TIGER_LIVING.portrait.height },
+  plate: tigerAtlasAsset(TIGER_ATLAS.images.decor),
+  ...Object.fromEntries(TIGER_ATLAS.scenes.choices.map((choice) => [`scene-${choice.id}`, tigerAtlasAsset(TIGER_ATLAS.images[choice.image])])),
+  layer: { width: 384, height: 384, webp: { 384: `${TIGER_LIVING.assets}/lantern-glow.webp` } },
+  accent: { width: 1600, height: 533, webp: { 800: `${TIGER_LIVING.assets}/mist-mobile.webp`, 1600: `${TIGER_LIVING.assets}/mist.webp` } },
+};
+// The start of the file names of each painting, which tells the engine which painting the browser shows.
+const TIGER_ATLAS_MATCH = {
+  portrait: `${TIGER_LIVING.assets}/${TIGER_LIVING.portrait.name}-`,
+  plate: `${TIGER_ATLAS_IMAGES}/tiger-atlas-vignette-`,
+  ...Object.fromEntries(TIGER_ATLAS.scenes.choices.map((choice) => [`scene-${choice.id}`, `${TIGER_ATLAS_IMAGES}/tiger-${choice.image}-`])),
 };
 
 function plainText(html) {
@@ -952,34 +1017,9 @@ function frenchSpaces(text) {
 // The whole sentence of `text` that starts with `prefix`.
 function sentenceStarting(text, prefix, where) {
   const start = looseSpaces(text).indexOf(prefix);
-  if (start === -1) throw new Error(`Tiger atlas: "${prefix}" no longer appears in ${where}`);
+  if (start === -1) throw new Error(`Atlas: "${prefix}" no longer appears in ${where}`);
   const end = text.slice(start).search(/[.?!](\s|$)/);
   return text.slice(start, end === -1 ? undefined : start + end + 1);
-}
-
-function tigerAtlasSrcset(files) {
-  return Object.entries(files).map(([width, file]) => {
-    const relative = path.join('static', TIGER_ATLAS_IMAGES, file);
-    if (!fs.existsSync(path.join(DOCS_SRC_DIR, relative))) throw new Error(`Tiger atlas: missing image docs-src/${relative}`);
-    return `${TIGER_ATLAS_IMAGES}/${file} ${width}w`;
-  }).join(', ');
-}
-
-function renderTigerAtlasScenePicture(image) {
-  return `<picture class="atlas-scene-thumb">
-                                        <source type="image/avif" srcset="${tigerAtlasSrcset(image.avif)}" sizes="${TIGER_ATLAS.sceneSizes}">
-                                        <img src="${TIGER_ATLAS_IMAGES}/${image.webp[320]}" srcset="${tigerAtlasSrcset(image.webp)}" sizes="${TIGER_ATLAS.sceneSizes}" alt="" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">
-                                    </picture>`;
-}
-
-function renderTigerAtlasDecor() {
-  const image = TIGER_ATLAS.images.decor;
-  const { decorMedia: media, decorSizes: sizes } = TIGER_ATLAS;
-  return `<picture class="atlas-decor" aria-hidden="true">
-                        <source media="${media}" type="image/avif" srcset="${tigerAtlasSrcset(image.avif)}" sizes="${sizes}">
-                        <source media="${media}" type="image/webp" srcset="${tigerAtlasSrcset(image.webp)}" sizes="${sizes}">
-                        <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">
-                    </picture>`;
 }
 
 // The existing final CTA links (same URLs, tracking and copy), laid out for a
@@ -997,42 +1037,75 @@ function renderTigerAtlasActions(lang, content, pagePath, placement) {
                         <p class="symbol-webapp-note atlas-note" data-web-app-cta>${escapeHtml(sharedLocale.webAppNote)}</p>`;
 }
 
-function renderTigerAtlasArticle(c) {
-  const atlas = TIGER_ATLAS;
-  const paragraphs = c.interpretationHtml.match(/<p>[\s\S]*?<\/p>/g) || [];
-  if (paragraphs.join('').replace(/\s+/g, '') !== c.interpretationHtml.replace(/\s+/g, '')) {
-    throw new Error('Tiger atlas: the interpretation is no longer a plain list of paragraphs');
+// The tiger reading: its paintings, drawn and moved like a pack's, its scene labels, the opening
+// question and next sentence of each scene's card, the journal example left out.
+const TIGER_ATLAS_PAGE = {
+  ...TIGER_ATLAS,
+  name: 'Tiger',
+  omitJournal: true,
+  sceneText: 'excerpt',
+  scenePicture: (role, expanded) => renderAtlasSixScenePicture(role, TIGER_ATLAS_ASSETS[role], expanded),
+  decorHtml: () => renderAtlasSixPlate(TIGER_ATLAS_ASSETS.plate),
+};
+
+// Every symbol page, in every language, is this one article. What a symbol has decides what it shows:
+// an atlas pack (`atlas.scenes`, `atlas.decorHtml`) adds the scenes and the side illustration; the
+// other pages keep their own sections only (no empty section, index entry or control), and their
+// questions take the place of the illustration beside the meaning.
+function renderAtlasArticle(c, atlas) {
+  const { anchors, quotes: [open, close] } = atlas;
+  // French punctuation keeps its spaces; the other languages print their titles as written.
+  const spaced = (title) => (atlas.lang === 'fr' ? frenchSpaces(title) : title);
+  const interpretation = String(c.interpretationHtml || '').trim();
+  const paragraphs = interpretation.match(/<p>[\s\S]*?<\/p>/g) || [];
+  const plainParagraphs = paragraphs.join('').replace(/\s+/g, '') === interpretation.replace(/\s+/g, '');
+  if (atlas.scenes && !plainParagraphs) {
+    throw new Error(`${atlas.name} atlas: the interpretation is no longer a plain list of paragraphs`);
   }
   // The opening keeps the first paragraph; the others, complete, make the detailed reading.
-  const [opening, ...continuation] = paragraphs.filter((p) => !looseSpaces(plainText(p)).startsWith(atlas.journalLead));
-  if (!opening || continuation.length === 0) throw new Error('Tiger atlas: the interpretation needs an opening and a continuation');
-  const caveat = sentenceStarting(plainText(c.interpretationHtml), atlas.caveat, 'the interpretation');
+  const [opening, ...continuation] = !interpretation ? []
+    : !plainParagraphs ? [interpretation]
+    : atlas.omitJournal
+      ? paragraphs.filter((p) => !looseSpaces(plainText(p)).startsWith(atlas.journalLead))
+      : paragraphs;
+  if (atlas.scenes && (!opening || continuation.length === 0)) throw new Error(`${atlas.name} atlas: the interpretation needs an opening and a continuation`);
+  const caveat = atlas.caveat ? sentenceStarting(plainText(interpretation), atlas.caveat, 'the interpretation') : '';
 
-  const scenes = atlas.scenes.choices.map((choice, index) => {
+  const scenes = (atlas.scenes?.choices || []).map((choice, index) => {
     const variation = c.variations.find((v) => looseSpaces(plainText(v.context)) === choice.variation);
-    if (!variation) throw new Error(`Tiger atlas: variation "${choice.variation}" is missing`);
-    const meaning = plainText(variation.meaning);
-    const question = meaning.slice(0, meaning.indexOf('?') + 1);
-    const rest = meaning.slice(question.length).trim();
-    if (!question || !rest) throw new Error(`Tiger atlas: variation "${choice.variation}" no longer opens with a question`);
-    return { ...choice, checked: index === 0, card: c.variations.indexOf(variation), question, excerpt: sentenceStarting(rest, looseSpaces(rest.slice(0, 12)), `variation "${choice.variation}"`) };
+    if (!variation) throw new Error(`${atlas.name} atlas: variation "${choice.variation}" is missing`);
+    const meaning = plainText(sanitizeEmDashes(variation.meaning));
+    const scene = { ...choice, label: choice.label || choice.variation, checked: index === 0, card: c.variations.indexOf(variation) };
+    if (atlas.sceneText === 'excerpt') {
+      const question = meaning.slice(0, meaning.indexOf('?') + 1);
+      const rest = meaning.slice(question.length).trim();
+      if (!question || !rest) throw new Error(`${atlas.name} atlas: variation "${choice.variation}" no longer opens with a question`);
+      return { ...scene, question, excerpt: sentenceStarting(rest, looseSpaces(rest.slice(0, 12)), `variation "${choice.variation}"`) };
+    }
+    // The whole published card: its opening question apart when it has one, every sentence kept.
+    const first = meaning.search(/[.?!](\s|$)/);
+    const question = first !== -1 && meaning[first] === '?' ? meaning.slice(0, first + 1) : '';
+    return { ...scene, question, excerpt: meaning.slice(question.length).trim() };
   });
   const sceneChoicesHtml = scenes.map((scene) => `
                                 <input class="atlas-scene-input" type="radio" name="atlas-scene" id="atlas-scene-${scene.id}" value="${scene.id}" aria-controls="atlas-scene-results"${scene.checked ? ' checked' : ''}>
-                                <label class="atlas-scene" for="atlas-scene-${scene.id}">
-                                    ${renderTigerAtlasScenePicture(atlas.images[scene.image])}
+                                <label class="atlas-scene${scene.image ? '' : ' atlas-scene--text'}" for="atlas-scene-${scene.id}">${scene.image ? `
+                                    ${atlas.scenePicture(scene.image)}` : ''}
                                     <span class="atlas-scene-text">
-                                        <span class="atlas-scene-label">${escapeHtml(scene.label)}</span>
-                                        <span class="atlas-scene-variation">${escapeHtml(scene.variation)}</span>
+                                        <span class="atlas-scene-label">${escapeHtml(scene.label)}</span>${scene.label !== scene.variation ? `
+                                        <span class="atlas-scene-variation">${escapeHtml(scene.variation)}</span>` : ''}
                                     </span>
                                     <span class="atlas-scene-mark" aria-hidden="true"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
                                 </label>`).join('');
   const sceneResultsHtml = scenes.map((scene) => `
-                        <div class="atlas-scene-result" data-scene="${scene.id}">
-                            <p class="atlas-kicker atlas-scene-chosen">${escapeHtml(atlas.scenes.chosen)}\u00a0: ${escapeHtml(scene.label)}</p>
-                            <p class="atlas-scene-question"><i data-lucide="quote" class="w-5 h-5"></i>${escapeHtml(scene.question)}</p>
+                        <div class="atlas-scene-result" data-scene="${scene.id}">${scene.image ? `
+                            ${atlas.scenePicture(scene.image, true)}` : ''}
+                            <div class="atlas-scene-reading">
+                            <p class="atlas-kicker atlas-scene-chosen">${escapeHtml(atlas.scenes.chosen)}${escapeHtml(atlas.chosenSeparator)}${escapeHtml(scene.label)}</p>${scene.question ? `
+                            <p class="atlas-scene-question"><i data-lucide="quote" class="w-5 h-5"></i>${escapeHtml(scene.question)}</p>` : ''}
                             <p class="atlas-scene-excerpt">${escapeHtml(scene.excerpt)}</p>
-                            <a class="atlas-link" href="#variante-${scene.id}">${escapeHtml(atlas.scenes.source)} «\u00a0${escapeHtml(scene.variation)}\u00a0»</a>
+                            <a class="atlas-link" href="#${anchors.variation}-${scene.anchor}">${escapeHtml(atlas.scenes.source)} ${escapeHtml(open)}${escapeHtml(scene.variation)}${escapeHtml(close)}</a>
+                            </div>
                         </div>`).join('');
 
   // Each scene's source link lands on its own variation card.
@@ -1040,31 +1113,47 @@ function renderTigerAtlasArticle(c) {
   const variationsHtml = c.variationsHtml.replace(/<div class="variation-card">/g, () => {
     card += 1;
     const scene = scenes.find((s) => s.card === card);
-    return scene ? `<div class="variation-card" id="variante-${scene.id}">` : '<div class="variation-card">';
+    return scene ? `<div class="variation-card" id="${anchors.variation}-${scene.anchor}">` : '<div class="variation-card">';
   });
-  if (card !== c.variations.length - 1) throw new Error('Tiger atlas: the variation cards no longer match the variations');
+  if (card !== c.variations.length - 1) throw new Error(`${atlas.name} atlas: the variation cards no longer match the variations`);
 
-  // Every section opens with one h2; the index beside the opening lists the same titles.
+  // Every section opens with one h2; the index beside the opening lists the same titles. A section
+  // without its data (no interpretation, variation or FAQ in this language, no related page) is left
+  // out, with its index entry.
+  const hasFaq = Boolean(c.faqCardsHtml.trim());
+  const hasRelated = Boolean(c.relatedSymbolsHtml.trim());
+  const hasFurther = hasRelated || Boolean(c.relatedReadingCard);
   const sections = {
-    meaning: frenchSpaces(c.t.section_interpretation),
-    scenes: escapeHtml(atlas.scenes.title),
+    ...(opening ? { meaning: spaced(c.t.section_interpretation) } : {}),
+    ...(scenes.length ? { scenes: escapeHtml(atlas.scenes.title) } : {}),
     questions: c.t.section_ask_yourself,
-    lecture: escapeHtml(atlas.continuationTitle),
-    variations: c.t.section_variations,
-    faq: c.t.section_faq,
-    'plus-loin': c.t.section_learn_more,
+    ...(continuation.length ? { [anchors.reading]: escapeHtml(atlas.continuationTitle) } : {}),
+    ...(c.variations.length ? { variations: c.t.section_variations } : {}),
+    ...(hasFaq ? { faq: c.t.section_faq } : {}),
+    ...(hasFurther ? { [anchors.further]: c.t.section_learn_more } : {}),
   };
   const heading = (id) => `<h2 class="symbol-h2" id="atlas-${id}-title">${sections[id]}</h2>`;
-  const keep = (id, placement) => `<aside class="atlas-keep" id="${id}" aria-labelledby="${id}-title">
+  // The app after the meaning speaks the symbol's own invitation when the catalog has one.
+  const keep = (id, placement) => {
+    const soft = placement === 'inline' ? c.softCta : null;
+    return `<aside class="atlas-keep" id="${id}" aria-labelledby="${id}-title">
                 <div>
-                    <p class="atlas-kicker"><i data-lucide="feather" class="w-5 h-5"></i>${escapeHtml(atlas.keepKicker)}</p>
-                    <h2 class="atlas-keep-title" id="${id}-title">${c.t.cta_title}</h2>
-                    <p class="atlas-keep-text">${c.t.cta_description}</p>
+                    <p class="atlas-kicker"><i data-lucide="feather" class="w-5 h-5"></i>${escapeHtml(soft?.kicker || atlas.keepKicker)}</p>
+                    <h2 class="atlas-keep-title" id="${id}-title">${soft ? escapeHtml(soft.title) : c.t.cta_title}</h2>
+                    <p class="atlas-keep-text">${soft ? escapeHtml(soft.text) : c.t.cta_description}</p>
                 </div>
                 <div>
-                    ${c.conversionActions(placement)}
+                    ${soft ? c.softCtaActions() : c.conversionActions(placement)}
                 </div>
             </aside>`;
+  };
+  const decorHtml = atlas.decorHtml();
+  const questionsHtml = `<!-- Ask Yourself -->
+            <section id="questions" class="symbol-questions symbol-section atlas-questions" aria-labelledby="atlas-questions-title">
+                ${heading('questions')}
+                <ul>${c.askYourselfHtml}
+                </ul>
+            </section>`;
 
   return `<article class="atlas">
             <div class="atlas-top">
@@ -1075,23 +1164,23 @@ function renderTigerAtlasArticle(c) {
                     </ol>
                 </nav>
 
-                <div class="atlas-plate">
+                <div class="atlas-plate${decorHtml ? '' : ' atlas-plate--text'}">
                     <div class="atlas-reading">
                         <p class="symbol-summary atlas-lead">${escapeHtml(c.symbolData.shortDescription)}</p>
 
                         <nav class="symbol-jump-nav" aria-label="${escapeHtml(c.sheetLabels.jumpNav)}" style="grid-template-columns: repeat(${c.jumpCount}, minmax(0, 1fr));">${c.jumpNavHtml}
-                        </nav>
+                        </nav>${opening ? `
                         <!-- Main Interpretation -->
                         <section id="meaning" class="symbol-meaning atlas-meaning" aria-labelledby="atlas-meaning-title">
                             ${heading('meaning')}
                             <div class="prose prose-invert prose-purple max-w-none leading-relaxed space-y-4">
                                 ${opening}
                             </div>
-                        </section>
+                        </section>` : ''}
                     </div>
-                    ${renderTigerAtlasDecor()}
+                    ${decorHtml || questionsHtml}
                     <!-- The app, right after the meaning -->
-                    ${keep('continuer-noctalia', 'inline')}
+                    ${keep(anchors.keepInline, 'inline')}${scenes.length ? `
                     <!-- The scene list, and the chosen scene's reading beside it (under it on a phone) -->
                     <section class="atlas-scenes" id="${atlas.scenes.id}" aria-labelledby="atlas-scenes-title">
                         ${heading('scenes')}
@@ -1100,56 +1189,51 @@ function renderTigerAtlasArticle(c) {
                             <fieldset class="atlas-scene-list">
                                 <legend class="atlas-sr">${escapeHtml(atlas.scenes.legend)}</legend>${sceneChoicesHtml}
                             </fieldset>
-                            <section class="atlas-reflection" id="reflexion" aria-label="${escapeHtml(atlas.scenes.reading)}">
+                            <section class="atlas-reflection" id="${anchors.reflection}" aria-label="${escapeHtml(atlas.scenes.reading)}">
                                 <div class="atlas-scene-results" id="atlas-scene-results" aria-live="polite">${sceneResultsHtml}
-                                </div>
-                                <p class="atlas-caveat">${escapeHtml(caveat)}</p>
+                                </div>${caveat ? `
+                                <p class="atlas-caveat">${escapeHtml(caveat)}</p>` : ''}
                             </section>
                         </div>
-                    </section>
+                    </section>` : ''}
                 </div>
             </div>
 
-            <!-- Ask Yourself -->
-            <section id="questions" class="symbol-questions symbol-section atlas-questions" aria-labelledby="atlas-questions-title">
-                ${heading('questions')}
-                <ul>${c.askYourselfHtml}
-                </ul>
-            </section>
+            ${decorHtml ? questionsHtml : ''}${continuation.length ? `
 
             <!-- Rest of the interpretation -->
-            <section id="lecture" class="symbol-meaning symbol-section atlas-continuation" aria-labelledby="atlas-lecture-title">
-                ${heading('lecture')}
+            <section id="${anchors.reading}" class="symbol-meaning symbol-section atlas-continuation" aria-labelledby="atlas-${anchors.reading}-title">
+                ${heading(anchors.reading)}
                 <div class="prose prose-invert prose-purple max-w-none leading-relaxed">
                     ${continuation.join('\n                    ')}
                 </div>
-            </section>
+            </section>` : ''}${c.variations.length ? `
 
             <!-- Variations -->
             <section id="variations" class="symbol-variations symbol-section" aria-labelledby="atlas-variations-title">
                 ${heading('variations')}
                 <div class="atlas-variation-grid">${variationsHtml}
                 </div>
-            </section>
+            </section>` : ''}
 
-            <section id="faq" class="symbol-faq symbol-section" aria-labelledby="atlas-faq-title">
+            ${hasFaq ? `<section id="faq" class="symbol-faq symbol-section" aria-labelledby="atlas-faq-title">
                 ${heading('faq')}
                 <div class="atlas-faq-grid">${c.faqCardsHtml}
                 </div>
-            </section>
+            </section>` : ''}${hasFurther ? `
 
             <!-- Related symbols and reading -->
-            <section id="plus-loin" class="symbol-section atlas-further" aria-labelledby="atlas-plus-loin-title">
-                ${heading('plus-loin')}
-                <div class="symbol-related atlas-related" id="associes">
+            <section id="${anchors.further}" class="symbol-section atlas-further" aria-labelledby="atlas-${anchors.further}-title">
+                ${heading(anchors.further)}${hasRelated ? `
+                <div class="symbol-related atlas-related" id="${anchors.related}">
                     <h3 class="atlas-kicker"><i data-lucide="orbit" class="w-5 h-5"></i>${c.t.section_related_symbols}</h3>
                     <div class="atlas-related-links">${c.relatedSymbolsHtml}
                     </div>
-                </div>${c.relatedReadingCard ? c.relatedReadingCard.replace(/<h3>([\s\S]*?)<\/h3>/, (match, title) => `<h3>${frenchSpaces(title)}</h3>`) : ''}
-            </section>
+                </div>` : ''}${c.relatedReadingCard ? c.relatedReadingCard.replace(/<h3>([\s\S]*?)<\/h3>/, (match, title) => `<h3>${spaced(title)}</h3>`) : ''}
+            </section>` : ''}
 
             <!-- CTA Section: the app again, once the symbol is explained -->
-            ${keep('garder-noctalia', 'final')}
+            ${keep(anchors.keepFinal, 'final')}
 
             <!-- Back to Dictionary -->
             <div class="mt-10 atlas-back">
@@ -1165,21 +1249,35 @@ function renderTigerAtlasArticle(c) {
                     const top = Math.round(nav.getBoundingClientRect().height);
                     new IntersectionObserver(([entry]) => nav.classList.toggle('atlas-nav-solid', !entry.isIntersecting), { rootMargin: '-' + top + 'px 0px 0px 0px' }).observe(hero);
                 })();
-                // A clicked or tapped scene brings its reading into view, just enough to show it whole
-                // (on a phone it sits below the cards); the arrow keys change the scene without moving the page.
+                // Reveal the selected painting below the choices on small screens. A tall result
+                // starts below the fixed navigation; arrow keys change scenes without scrolling.
                 (() => {
                     const results = document.getElementById('atlas-scene-results');
                     if (!results) return;
                     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
                     document.querySelectorAll('.atlas-scene').forEach((label) => label.addEventListener('click', () => {
-                        requestAnimationFrame(() => results.scrollIntoView({ block: 'nearest', behavior: reduced.matches ? 'instant' : 'smooth' }));
+                        requestAnimationFrame(() => {
+                            const top = parseFloat(getComputedStyle(results).scrollMarginTop) || 0;
+                            const bounds = results.getBoundingClientRect();
+                            const fits = bounds.height <= window.innerHeight - top - 24;
+                            results.scrollIntoView({ block: fits ? 'nearest' : 'start', behavior: reduced.matches ? 'instant' : 'smooth' });
+                        });
                     }));
                 })();
             </script>
         </article>`;
 }
 
-const TIGER_ATLAS_CSS = `
+// The scene ids only name the selector that shows the chosen scene's reading; a page without scenes
+// passes none.
+function atlasCss(sceneIds) {
+  const [first] = sceneIds;
+  const shown = sceneIds.map((id) => `.atlas:has(#atlas-scene-${id}:checked) .atlas-scene-result[data-scene="${id}"]`).join(',\n        ');
+  const sceneResults = first ? `
+        .atlas-scene-result[data-scene="${first}"] { display: var(--atlas-scene-display, block); }
+        .atlas:has(.atlas-scene-input:checked) .atlas-scene-result { display: none; }
+        ${shown} { display: var(--atlas-scene-display, block); }` : '';
+  return `
         /* Atlas composition (French tiger pilot), read like a dictionary entry. Phones keep one column. */
         .symbol-page-main > article.atlas { max-width: none; }
         .atlas { --atlas-rail: 12.5rem; --atlas-gap: clamp(1.75rem, 3vw, 4.5rem); }
@@ -1226,7 +1324,8 @@ const TIGER_ATLAS_CSS = `
             transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.16s ease-out;
         }
         .atlas-scene:active { transform: scale(0.99); }
-        .atlas-scene-thumb, .atlas-scene-thumb img { display: block; width: 100%; height: 100%; }
+        /* Preserve the landscape painting and its effects when a scene label wraps. */
+        .atlas-scene-thumb, .atlas-scene-thumb img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
         .atlas-scene-thumb img { aspect-ratio: 16 / 9; object-fit: cover; }
         .atlas-scene-text { display: grid; gap: 0.2rem; padding: 0.75rem 0; min-width: 0; }
         .atlas-scene-label { font-family: 'Fraunces', ui-serif, Georgia, serif; font-size: 1.1rem; color: var(--cream); }
@@ -1248,12 +1347,11 @@ const TIGER_ATLAS_CSS = `
         .atlas-scene-input:checked + .atlas-scene { border-color: var(--salmon); background: rgba(28, 18, 40, 0.88); }
         .atlas-scene-input:checked + .atlas-scene .atlas-scene-mark { background: var(--salmon); border-color: var(--salmon); color: #0a0512; }
         .atlas-scene-input:focus-visible + .atlas-scene { outline: 2px solid var(--salmon); outline-offset: 3px; }
-        .atlas-scene-result { display: none; }
-        .atlas-scene-result[data-scene="poursuite"] { display: block; }
-        .atlas:has(.atlas-scene-input:checked) .atlas-scene-result { display: none; }
-        .atlas:has(#atlas-scene-poursuite:checked) .atlas-scene-result[data-scene="poursuite"],
-        .atlas:has(#atlas-scene-calme:checked) .atlas-scene-result[data-scene="calme"],
-        .atlas:has(#atlas-scene-cage:checked) .atlas-scene-result[data-scene="cage"] { display: block; }
+        .atlas-scene-result { display: none; }${sceneResults}
+        .atlas-scene-art { display: block; position: relative; overflow: hidden; width: 100%; max-width: 40rem; aspect-ratio: 16 / 9; background: rgba(10, 5, 18, 0.92); }
+        .atlas-scene-art > img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+        .atlas-scene-art + .atlas-scene-reading { padding-top: clamp(1.25rem, 2vw, 2rem); }
+        .atlas-scene-reading { max-width: 46rem; }
         .atlas-scene-question {
             position: relative;
             padding-left: 2rem;
@@ -1268,7 +1366,7 @@ const TIGER_ATLAS_CSS = `
         .atlas-scene-question::after { content: ''; display: block; width: 1.5rem; height: 1px; margin: 1.1rem 0; background: var(--cream-64); }
         .atlas-scene-excerpt { padding-left: 2rem; font-size: 0.95rem; line-height: 1.65; color: var(--cream-64); margin-bottom: 0.35rem; }
         .atlas-scene-result .atlas-link { margin-left: 2rem; }
-        .atlas-scene-results { scroll-margin-bottom: 1.5rem; }
+        .atlas-scene-results { scroll-margin-top: 10rem; scroll-margin-bottom: 1.5rem; }
         .atlas-reflection .atlas-caveat { padding-left: 2rem; }
         .atlas-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 0.85rem; color: var(--salmon); text-decoration: underline; text-decoration-color: rgba(234, 212, 180, 0.35); text-underline-offset: 3px; }
         .atlas-caveat { margin-top: 0.75rem; font-size: 0.8rem; font-style: italic; color: var(--cream-64); }
@@ -1276,7 +1374,7 @@ const TIGER_ATLAS_CSS = `
         .atlas .variation-card:target { border-top-color: var(--salmon); }
         .atlas .variation-card:target h3 { color: var(--salmon); }
 
-        .atlas-reflection { max-width: 44rem; scroll-margin-top: 7rem; }
+        .atlas-reflection { min-width: 0; scroll-margin-top: 7rem; }
 
         /* Questions to ask: side by side when they fit, one per line otherwise. */
         .atlas-questions { margin-top: clamp(3rem, 6vw, 4.5rem); }
@@ -1297,6 +1395,8 @@ const TIGER_ATLAS_CSS = `
         .atlas-keep-text { font-size: 0.95rem; line-height: 1.65; color: var(--cream-64); max-width: 34rem; }
         .atlas-plate > .atlas-keep { margin-top: clamp(2.5rem, 5vw, 3.5rem); border-bottom: 0; }
         .atlas-plate > .atlas-keep + .atlas-scenes { margin-top: 0; }
+        /* Without a side illustration, the questions follow the meaning in the plate. */
+        .atlas-plate > .atlas-questions { margin-top: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 0; }
         .atlas-actions { display: grid; justify-items: start; gap: 0.6rem; }
         .atlas-primary {
             display: inline-flex;
@@ -1344,13 +1444,11 @@ const TIGER_ATLAS_CSS = `
             .atlas-variation-grid, .atlas-faq-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             /* No section bar here: the meaning keeps its distance from the summary. */
             .atlas-meaning { margin-top: clamp(1.75rem, 2.5vw, 2.25rem); }
-            /* The list on the left, the chosen scene's reading on its right. */
-            .atlas-scenes-body { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); }
             .atlas-further { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--atlas-gap); align-items: start; }
             .atlas-further > .symbol-h2 { grid-column: 1 / -1; }
             .atlas-related { margin-bottom: 0; }
             .atlas-keep { grid-template-columns: minmax(0, 36rem) auto; justify-content: start; align-items: center; column-gap: var(--atlas-gap); }
-            .symbol-hero--living .symbol-hero-overlay { width: min(90vw, 2304px); padding-inline: 0; }
+            .symbol-hero .symbol-hero-overlay { width: min(90vw, 2304px); padding-inline: 0; }
         }
         @media (min-width: 1024px) {
             .atlas .atlas-lead.symbol-summary { font-size: clamp(1.2rem, 1.4vw, 1.45rem) !important; line-height: 1.45 !important; }
@@ -1361,10 +1459,21 @@ const TIGER_ATLAS_CSS = `
             .atlas-reading { grid-column: 1; grid-row: 1; }
             .atlas-plate > .atlas-keep { grid-column: 1 / -1; grid-row: 2; }
             .atlas-scenes { grid-column: 1 / -1; grid-row: 3; }
-            .atlas-scenes-body { grid-template-columns: minmax(0, 25rem) minmax(0, 1fr); }
+            /* Give the selected painting most of the width; keep its choices within reach. */
+            .atlas-scenes-body { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); column-gap: var(--atlas-gap); }
+            .atlas-scene-list { position: sticky; top: 8rem; }
+            .atlas-scene-results { scroll-margin-top: 8rem; }
+            .atlas-plate--text > .atlas-questions { grid-column: 1 / -1; grid-row: 2; }
+            .atlas-plate--text > .atlas-keep { grid-row: 3; }
         }
         @media (min-width: 1200px) {
             .atlas-scene { grid-template-columns: 8.5rem minmax(0, 1fr) auto; }
+        }
+        @media (min-width: 1800px) {
+            /* Keep the served 640px painting crisp, with its reading alongside on wide screens. */
+            .atlas-scenes { --atlas-scene-display: grid; }
+            .atlas-scene-result { grid-template-columns: minmax(0, 40rem) minmax(18rem, 1fr); gap: 2rem; align-items: start; }
+            .atlas-scene-art + .atlas-scene-reading { padding-top: 0; }
         }
         @media (min-width: 1200px) {
             .atlas-top { display: grid; grid-template-columns: var(--atlas-rail) minmax(0, 1fr); column-gap: var(--atlas-gap); }
@@ -1403,18 +1512,412 @@ const TIGER_ATLAS_CSS = `
             .atlas-variation-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .atlas-continuation .prose { columns: 2 22rem; column-gap: var(--atlas-gap); }
             .atlas-continuation .prose p { break-inside: avoid; }
-            .symbol-hero--living .symbol-hero-overlay { padding-left: calc(12.5rem + clamp(1.75rem, 3vw, 4.5rem)); }
+            .symbol-hero .symbol-hero-overlay { padding-left: calc(12.5rem + clamp(1.75rem, 3vw, 4.5rem)); }
         }
         .atlas-decor img { display: block; width: 100%; height: auto; }
         /* From 1440px the illustration sits in the opening, beside the meaning. */
         @media (min-width: 1440px) {
             .atlas-decor { display: block; grid-column: 2; grid-row: 1; justify-self: center; align-self: center; width: min(52rem, 100%); pointer-events: none; }
+            /* A page without a pack: at the width where a pack shows its side illustration, its questions sit beside the meaning. */
+            .atlas-plate--text > .atlas-questions { grid-column: 2; grid-row: 1; align-self: start; margin-top: 0; padding-top: 0; border-top: 0; }
+            .atlas-plate--text > .atlas-keep { grid-row: 2; }
         }
         @media (min-width: 1800px) {
             /* Up to QHD, wide rows hold one paragraph or answer per column. */
             .atlas-continuation .prose { columns: 3 22rem; }
             .atlas-faq-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
         }`;
+}
+
+// The frames of the moving side illustration and thumbnails, on the tiger as on every pack.
+const ATLAS_LIVING_FRAMES_CSS = `
+        /* A thumbnail's two effects never leave its frame, so never reach its label. */
+        .atlas-scene-thumb { position: relative; overflow: hidden; }
+        .atlas-decor--living picture { display: block; }`;
+const TIGER_ATLAS_CSS = atlasCss(TIGER_ATLAS.scenes.choices.map((choice) => choice.id)) + ATLAS_LIVING_FRAMES_CSS;
+const TEXT_ATLAS_CSS = atlasCss([]);
+
+// First batch after the tiger: six French pages read as the same atlas, with the
+// tiger's grounds, type and UI colours; each differs by its paintings, their framing
+// and their motion. An explicit allowlist, not a template for the whole dictionary.
+// As on the tiger, each page has three images besides its hero: a cut-out side
+// illustration beside the meaning (from 1440px) and three scene thumbnails, each
+// painting the published variation card it names; the reading beside the list shows
+// that card whole. Every painting comes from docs-src/config/symbol-atlas-six-assets.json
+// (hero, portrait, plate, scene-<id>, and two transparent textures, layer and accent);
+// the former illustration stays the page's canonical image for SEO and the other
+// languages. Every text comes from the data; the build fails if a variation, a caveat
+// sentence or an asset file disappears.
+// Motion: every painting carries two distinct raster effects, channel a (layer) and
+// channel b (accent); boxes are fractions of the painting shown (see js/symbol-living).
+const SYMBOL_LIVING_DIR = '/js/symbol-living/eb0635253f69';
+const ATLAS_SIX_ASSETS_PATH = path.join(DOCS_SRC_DIR, 'config', 'symbol-atlas-six-assets.json');
+const ATLAS_SIX_PORTRAIT_MEDIA = TIGER_LIVING.media;
+// The six pages, an explicit allowlist read from docs-src/config/symbol-atlas-pilots.json: per
+// symbol, its French slug, its caveat sentence (or null), its three scenes (each naming a published
+// variation card) and the motion of each painting: hero landscape and portrait, side illustration
+// (plate) and thumbnails, each with exactly two effects, one per texture (layer, accent). The build
+// stops at the first entry that leaves this contract; nothing is skipped.
+const ATLAS_PILOTS_PATH = path.join(DOCS_SRC_DIR, 'config', 'symbol-atlas-pilots.json');
+const ATLAS_SIX_ROLES = ['hero', 'portrait', 'plate', 'layer', 'accent'];
+const ATLAS_SIX_BLENDS = ['screen', 'multiply'];
+
+function loadAtlasPilots() {
+  const pilots = JSON.parse(fs.readFileSync(ATLAS_PILOTS_PATH, 'utf8'));
+  const file = path.relative(ROOT_DIR, ATLAS_PILOTS_PATH);
+  const fail = (at, message) => { throw new Error(`Atlas pilots (${file}) ${at}: ${message}`); };
+  const object = (value, at, keys, required = keys) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) fail(at, 'expected an object');
+    for (const key of Object.keys(value)) if (!keys.includes(key)) fail(at, `unknown key "${key}"`);
+    for (const key of required) if (!Object.hasOwn(value, key)) fail(at, `missing "${key}"`);
+    return value;
+  };
+  const number = (value, at, min, max) => {
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) fail(at, `expected a number from ${min} to ${max}`);
+  };
+  const pair = (value, at, min, max) => {
+    if (!Array.isArray(value) || value.length !== 2) fail(at, 'expected two numbers');
+    value.forEach((item, index) => number(item, `${at}[${index}]`, min, max));
+  };
+  const text = (value, at) => {
+    if (typeof value !== 'string' || !value.trim()) fail(at, 'expected a non-empty string');
+  };
+  const unique = (values, at) => {
+    if (new Set(values).size !== values.length) fail(at, 'must be distinct');
+  };
+
+  const catalog = JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'dream-symbols.json'), 'utf8'));
+  object(pilots, 'root', Object.keys(pilots), []);
+  for (const [id, pilot] of Object.entries(pilots)) {
+    const symbol = (catalog.symbols || []).find((item) => item.id === id);
+    if (!symbol) fail(id, 'is not a symbol of data/dream-symbols.json');
+    object(pilot, id, ['slug', 'caveat', 'scenes', 'portraitPosition', 'motion']);
+    if (pilot.slug !== symbol.fr?.slug) fail(`${id}.slug`, `is "${pilot.slug}", the French slug is "${symbol.fr?.slug}"`);
+    if (pilot.caveat !== null) text(pilot.caveat, `${id}.caveat`);
+
+    if (!Array.isArray(pilot.scenes) || pilot.scenes.length !== 3) fail(`${id}.scenes`, 'expected exactly three scenes');
+    pilot.scenes.forEach((scene, index) => {
+      const at = `${id}.scenes[${index}]`;
+      object(scene, at, ['id', 'variation']);
+      if (typeof scene.id !== 'string' || !/^[a-z0-9-]+$/.test(scene.id)) fail(`${at}.id`, 'expected lowercase letters, digits and hyphens');
+      text(scene.variation, `${at}.variation`);
+    });
+    unique(pilot.scenes.map((scene) => scene.id), `${id}.scenes ids`);
+    unique(pilot.scenes.map((scene) => scene.variation), `${id}.scenes variations`);
+    if (typeof pilot.portraitPosition !== 'string' || !/^\d+(\.\d+)?% \d+(\.\d+)?%$/.test(pilot.portraitPosition)) fail(`${id}.portraitPosition`, 'expected "<x>% <y>%"');
+
+    const motion = object(pilot.motion, `${id}.motion`, ['parallax', 'hero', 'plate', 'thumb', 'scenes'], ['parallax', 'hero', 'plate', 'thumb']);
+    number(motion.parallax, `${id}.motion.parallax`, 0, 1);
+    object(motion.hero, `${id}.motion.hero`, ['landscape', 'portrait']);
+    const sceneMotion = Object.hasOwn(motion, 'scenes')
+      ? object(motion.scenes, `${id}.motion.scenes`, pilot.scenes.map((scene) => scene.id), [])
+      : {};
+    const surfaces = [['hero.landscape', motion.hero.landscape], ['hero.portrait', motion.hero.portrait], ['plate', motion.plate], ['thumb', motion.thumb],
+      ...Object.entries(sceneMotion).map(([scene, effects]) => [`scenes.${scene}`, effects])];
+    for (const [name, effects] of surfaces) {
+      const at = `${id}.motion.${name}`;
+      if (!Array.isArray(effects) || effects.length !== 2 || effects.map((effect) => effect?.texture).sort().join() !== 'accent,layer') {
+        fail(at, 'expected exactly two effects, one on each texture (layer, accent)');
+      }
+      effects.forEach((effect, index) => {
+        const where = `${at}[${index}]`;
+        object(effect, where, ['texture', 'place', 'motion', 'move', 'dur', 'op', 'copies', 'depth', 'blend'], ['texture', 'place', 'motion', 'dur', 'op']);
+        const place = object(effect.place, `${where}.place`, ['fit', 'zoom', 'x', 'y', 'at'], ['fit']);
+        if (!['width', 'cover'].includes(place.fit)) fail(`${where}.place.fit`, 'expected width or cover');
+        if (Object.hasOwn(place, 'zoom')) number(place.zoom, `${where}.place.zoom`, 0.1, 4);
+        for (const axis of ['x', 'y']) if (Object.hasOwn(place, axis)) number(place[axis], `${where}.place.${axis}`, 0, 1);
+        if (Object.hasOwn(place, 'at')) {
+          pair(place.at, `${where}.place.at`, 0, 1);
+          if (Object.hasOwn(place, 'x') || Object.hasOwn(place, 'y')) fail(`${where}.place`, 'at cannot be combined with x or y');
+        }
+        if (!['drift', 'flow', 'pulse'].includes(effect.motion)) fail(`${where}.motion`, 'expected drift, flow or pulse');
+        if (effect.motion === 'pulse') {
+          if (Object.hasOwn(effect, 'move')) fail(`${where}.move`, 'a pulse does not move');
+        } else {
+          pair(effect.move, `${where}.move`, -1, 1);
+        }
+        if (Object.hasOwn(effect, 'copies') && (effect.motion !== 'flow' || !Number.isInteger(effect.copies) || effect.copies < 1 || effect.copies > 4)) {
+          fail(`${where}.copies`, 'a whole number from 1 to 4, for a flow only');
+        }
+        number(effect.dur, `${where}.dur`, 0.5, 60);
+        pair(effect.op, `${where}.op`, 0, 1);
+        if (effect.op[0] > effect.op[1]) fail(`${where}.op`, 'expected [min, max]');
+        if (Object.hasOwn(effect, 'depth')) pair(effect.depth, `${where}.depth`, -1, 1);
+        if (Object.hasOwn(effect, 'blend') && !ATLAS_SIX_BLENDS.includes(effect.blend)) fail(`${where}.blend`, `expected one of ${ATLAS_SIX_BLENDS.join(', ')}`);
+      });
+    }
+  }
+  return pilots;
+}
+const SYMBOL_ATLAS_SIX = loadAtlasPilots();
+
+// The symbols without a pack crop their 16:9 painting for a phone's 75svh hero, centred unless
+// docs-src/config/symbol-hero-portrait.json names the point to keep in view ("<x>% <y>%", the CSS
+// object-position), for a subject painted off-centre. A pack frames its own portrait painting.
+const SYMBOL_HERO_PORTRAIT_PATH = path.join(DOCS_SRC_DIR, 'config', 'symbol-hero-portrait.json');
+function loadSymbolHeroPortrait() {
+  const positions = JSON.parse(fs.readFileSync(SYMBOL_HERO_PORTRAIT_PATH, 'utf8'));
+  const file = path.relative(ROOT_DIR, SYMBOL_HERO_PORTRAIT_PATH);
+  const catalog = JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'dream-symbols.json'), 'utf8'));
+  for (const [id, position] of Object.entries(positions)) {
+    if (!(catalog.symbols || []).some((item) => item.id === id)) throw new Error(`Hero framing (${file}) ${id}: not a symbol of data/dream-symbols.json`);
+    if (id === 'tiger' || Object.hasOwn(SYMBOL_ATLAS_SIX, id)) throw new Error(`Hero framing (${file}) ${id}: an atlas pack frames its own portrait painting`);
+    const match = typeof position === 'string' && position.match(/^(\d+(?:\.\d+)?)% (\d+(?:\.\d+)?)%$/);
+    if (!match || match.slice(1).some((value) => Number(value) > 100)) throw new Error(`Hero framing (${file}) ${id}: expected "<x>% <y>%", each from 0% to 100%`);
+  }
+  return positions;
+}
+const SYMBOL_HERO_PORTRAIT = loadSymbolHeroPortrait();
+
+// The atlas in every language, read from docs-src/config/symbol-atlas-locales.json: the shared copy
+// of each site language (titles, hint, kicker, quotation marks, section anchors) and, per equipped
+// symbol (the tiger and the pilots) and language, its caveat sentence (or null), the tiger's journal
+// lead and each scene's exact published card (its context in that language), label and anchor. A
+// symbol without a language keeps the classic page in that language. French must agree with the
+// pilots config. The build stops at the first entry that leaves this contract.
+const ATLAS_LOCALES_PATH = path.join(DOCS_SRC_DIR, 'config', 'symbol-atlas-locales.json');
+const ATLAS_FIXED_IDS = ['meaning', 'scenes', 'questions', 'variations', 'faq'];
+
+function loadAtlasLocales() {
+  const config = JSON.parse(fs.readFileSync(ATLAS_LOCALES_PATH, 'utf8'));
+  const file = path.relative(ROOT_DIR, ATLAS_LOCALES_PATH);
+  const fail = (at, message) => { throw new Error(`Atlas locales (${file}) ${at}: ${message}`); };
+  const object = (value, at, keys, required = keys) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) fail(at, 'expected an object');
+    for (const key of Object.keys(value)) if (!keys.includes(key)) fail(at, `unknown key "${key}"`);
+    for (const key of required) if (!Object.hasOwn(value, key)) fail(at, `missing "${key}"`);
+    return value;
+  };
+  const text = (value, at) => {
+    if (typeof value !== 'string' || !value.trim()) fail(at, 'expected a non-empty string');
+  };
+  const anchor = (value, at) => {
+    if (typeof value !== 'string' || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)) fail(at, 'expected lowercase letters, digits and single hyphens');
+  };
+  const distinct = (values, at) => {
+    if (new Set(values).size !== values.length) fail(at, 'must be distinct');
+  };
+
+  object(config, 'root', ['copy', 'symbols']);
+  object(config.copy, 'copy', CONFIG.languages);
+  for (const lang of CONFIG.languages) {
+    const at = `copy.${lang}`;
+    const copy = object(config.copy[lang], at, ['navLabel', 'scenes', 'continuationTitle', 'keepKicker', 'quotes', 'chosenSeparator', 'anchors']);
+    for (const key of ['navLabel', 'continuationTitle', 'keepKicker']) text(copy[key], `${at}.${key}`);
+    const scenes = object(copy.scenes, `${at}.scenes`, ['title', 'hint', 'legend', 'reading', 'source', 'chosen']);
+    for (const [key, value] of Object.entries(scenes)) text(value, `${at}.scenes.${key}`);
+    if (!Array.isArray(copy.quotes) || copy.quotes.length !== 2 || copy.quotes.some((mark) => typeof mark !== 'string' || !mark.trim())) fail(`${at}.quotes`, 'expected an opening and a closing mark');
+    if (typeof copy.chosenSeparator !== 'string' || !copy.chosenSeparator.trim()) fail(`${at}.chosenSeparator`, 'expected a separator');
+    const anchors = object(copy.anchors, `${at}.anchors`, ['keepInline', 'keepFinal', 'reflection', 'reading', 'further', 'related', 'variation']);
+    for (const [key, value] of Object.entries(anchors)) anchor(value, `${at}.anchors.${key}`);
+    distinct([...Object.values(anchors), ...ATLAS_FIXED_IDS], `${at}.anchors (and the fixed ids ${ATLAS_FIXED_IDS.join(', ')})`);
+  }
+
+  const equipped = { tiger: TIGER_ATLAS.scenes.choices.map((choice) => choice.id) };
+  for (const [id, pilot] of Object.entries(SYMBOL_ATLAS_SIX)) equipped[id] = pilot.scenes.map((scene) => scene.id);
+  object(config.symbols, 'symbols', Object.keys(equipped), []);
+  for (const [id, sceneIds] of Object.entries(equipped)) {
+    const byLang = config.symbols[id];
+    if (!byLang) {
+      if (id !== 'tiger') fail(id, 'every pilot needs its French entry');
+      continue;
+    }
+    object(byLang, id, CONFIG.languages, Object.hasOwn(SYMBOL_ATLAS_SIX, id) ? ['fr'] : []);
+    for (const [lang, entry] of Object.entries(byLang)) {
+      const at = `${id}.${lang}`;
+      object(entry, at, id === 'tiger' ? ['caveat', 'journalLead', 'scenes'] : ['caveat', 'scenes']);
+      if (entry.caveat !== null) text(entry.caveat, `${at}.caveat`);
+      if (id === 'tiger') text(entry.journalLead, `${at}.journalLead`);
+      object(entry.scenes, `${at}.scenes`, sceneIds);
+      for (const sceneId of sceneIds) {
+        const scene = object(entry.scenes[sceneId], `${at}.scenes.${sceneId}`, ['variation', 'anchor', 'label'], id === 'tiger' ? ['variation', 'anchor', 'label'] : ['variation', 'anchor']);
+        text(scene.variation, `${at}.scenes.${sceneId}.variation`);
+        anchor(scene.anchor, `${at}.scenes.${sceneId}.anchor`);
+        if (Object.hasOwn(scene, 'label')) text(scene.label, `${at}.scenes.${sceneId}.label`);
+      }
+      distinct(sceneIds.map((sceneId) => entry.scenes[sceneId].anchor), `${at}.scenes anchors`);
+      distinct(sceneIds.map((sceneId) => entry.scenes[sceneId].variation), `${at}.scenes variations`);
+      const pilot = lang === 'fr' && SYMBOL_ATLAS_SIX[id];
+      if (pilot) {
+        if (entry.caveat !== pilot.caveat) fail(`${at}.caveat`, `differs from ${path.relative(ROOT_DIR, ATLAS_PILOTS_PATH)}`);
+        for (const scene of pilot.scenes) {
+          if (entry.scenes[scene.id].variation !== scene.variation) fail(`${at}.scenes.${scene.id}.variation`, `differs from ${path.relative(ROOT_DIR, ATLAS_PILOTS_PATH)}`);
+        }
+      }
+    }
+  }
+  return config;
+}
+const SYMBOL_ATLAS_LOCALES = loadAtlasLocales();
+
+// The atlas of one page in one language (its copy, caveat, journal lead and scenes), or null when
+// the symbol has none there: that page stays the classic one, in its own language.
+function atlasLocaleFor(symbolId, lang) {
+  const locale = SYMBOL_ATLAS_LOCALES.symbols[symbolId]?.[lang];
+  if (!locale) return null;
+  const { scenes, ...copy } = SYMBOL_ATLAS_LOCALES.copy[lang];
+  return { lang, ...copy, scenes: { id: 'scenes', ...scenes }, caveat: locale.caveat, journalLead: locale.journalLead, sceneLocales: locale.scenes };
+}
+
+// The same article for a symbol without a pack in that language: the language's copy (index label,
+// detailed reading, app kicker, anchors), no scenes, caveat or side illustration.
+function atlasTextFor(symbolId, lang) {
+  const { scenes, ...copy } = SYMBOL_ATLAS_LOCALES.copy[lang];
+  return { lang, ...copy, name: `Symbol ${symbolId}`, scenes: null, caveat: null, omitJournal: false, decorHtml: () => '' };
+}
+
+// The asset contract: per allowlisted symbol id, all eight of hero (landscape), portrait,
+// plate (the cut-out side illustration), scene-<id> for each of its three scenes, and the
+// two transparent full-frame textures layer and accent, each
+// { width, height, avif?: { width: url }, webp: { width: url } }.
+// Files live in docs-src/static/img/symbols/atlas-six-v2/<id>/, named
+// <role>-<width>-<first 12 hex of the file's sha256>.<format> (the /img/* cache is
+// immutable), never wider than the native width.
+function loadAtlasSixAssets() {
+  const fail = (message) => { throw new Error(`Atlas assets (${path.relative(ROOT_DIR, ATLAS_SIX_ASSETS_PATH)}): ${message}`); };
+  if (!fs.existsSync(ATLAS_SIX_ASSETS_PATH)) fail('missing; every page of symbol-atlas-pilots.json needs its paintings');
+  const manifest = JSON.parse(fs.readFileSync(ATLAS_SIX_ASSETS_PATH, 'utf8'));
+  for (const [id, roles] of Object.entries(manifest)) {
+    if (!Object.hasOwn(SYMBOL_ATLAS_SIX, id)) fail(`"${id}" is not one of ${Object.keys(SYMBOL_ATLAS_SIX).join(', ')}`);
+    for (const [role, asset] of Object.entries(roles)) {
+      const roles = [...ATLAS_SIX_ROLES, ...SYMBOL_ATLAS_SIX[id].scenes.map((scene) => `scene-${scene.id}`)];
+      if (!roles.includes(role)) fail(`${id}: unknown role "${role}" (expected one of ${roles.join(', ')})`);
+      if (!(Number.isInteger(asset.width) && asset.width > 0 && Number.isInteger(asset.height) && asset.height > 0)) fail(`${id}.${role}: width and height are required`);
+      if (!asset.webp || Object.keys(asset.webp).length === 0) fail(`${id}.${role}: webp sources are required`);
+      if (asset.avif && Object.keys(asset.avif).join() !== Object.keys(asset.webp).join()) fail(`${id}.${role}: avif and webp must offer the same widths`);
+      for (const format of ['avif', 'webp']) {
+        for (const [key, url] of Object.entries(asset[format] || {})) {
+          const width = Number(key);
+          if (!Number.isInteger(width) || width <= 0 || width > asset.width) fail(`${id}.${role}: ${format} width ${key} is not within the native ${asset.width}px`);
+          const name = new RegExp(`^${ATLAS_SIX_IMAGES}/${id}/${role}-${width}-([0-9a-f]{12})\\.${format}$`).exec(url);
+          if (!name) fail(`${id}.${role}: ${url} is not ${ATLAS_SIX_IMAGES}/${id}/${role}-${width}-<hash>.${format}`);
+          const file = path.join(DOCS_SRC_DIR, 'static', url);
+          if (!fs.existsSync(file)) fail(`${id}.${role}: missing docs-src/static${url}`);
+          const hash = crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 12);
+          if (hash !== name[1]) fail(`${id}.${role}: ${url} holds content ${hash}; rename it so the immutable cache never serves a stale file`);
+        }
+      }
+    }
+  }
+  // Every allowlisted page needs its eight paintings and textures: an incomplete one stops the build.
+  for (const [id, pilot] of Object.entries(SYMBOL_ATLAS_SIX)) {
+    const missing = [...ATLAS_SIX_ROLES, ...pilot.scenes.map((scene) => `scene-${scene.id}`)].filter((role) => !manifest[id]?.[role]);
+    if (missing.length > 0) fail(`${id}: missing ${missing.join(', ')}`);
+  }
+  return manifest;
+}
+const ATLAS_SIX_ASSETS = loadAtlasSixAssets();
+
+// The shared motion script is served from a folder named after its hash (immutable /js/* cache).
+function checkSymbolLivingScript() {
+  const file = path.join(DOCS_SRC_DIR, 'static', SYMBOL_LIVING_DIR, 'symbol-living.js');
+  const hash = crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 12);
+  if (!SYMBOL_LIVING_DIR.endsWith(`/${hash}`)) throw new Error(`symbol-living.js hashes to ${hash}: move it to /js/symbol-living/${hash}/ and update SYMBOL_LIVING_DIR`);
+}
+
+function atlasSixSrcset(files) {
+  return Object.entries(files)
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .map(([width, url]) => `${url} ${width}w`)
+    .join(', ');
+}
+
+function atlasSixSourcesHtml(assets, heroSizes) {
+  const sources = [];
+  for (const [asset, media, sizes] of [[assets.portrait, ATLAS_SIX_PORTRAIT_MEDIA, '100vw'], [assets.hero, null, heroSizes]]) {
+    if (!asset) continue;
+    for (const format of ['avif', 'webp']) {
+      if (!asset[format]) continue;
+      sources.push(`
+                        <source${media ? ` media="${media}"` : ''} type="image/${format}" srcset="${atlasSixSrcset(asset[format])}" sizes="${sizes}" width="${asset.width}" height="${asset.height}">`);
+    }
+  }
+  return sources.join('');
+}
+
+// The cut-out side illustration, beside the meaning from 1440px: no source matches
+// below, so phones and narrower screens never fetch it. Its wrapper holds its motion.
+function renderAtlasSixPlate(asset) {
+  const { decorMedia: media, decorSizes: sizes } = TIGER_ATLAS;
+  return `<div class="atlas-decor atlas-decor--living" data-living-surface="plate">
+                        <picture aria-hidden="true">${['avif', 'webp'].filter((format) => asset[format]).map((format) => `
+                            <source media="${media}" type="image/${format}" srcset="${atlasSixSrcset(asset[format])}" sizes="${sizes}">`).join('')}
+                            <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="${asset.width}" height="${asset.height}" loading="lazy" decoding="async">
+                        </picture>
+                    </div>`;
+}
+
+// Use the same landscape painting for the choice and its immersive reading, with
+// independent responsive sizes and motion surfaces so each can stop off screen.
+function renderAtlasSixScenePicture(role, asset, expanded = false) {
+  const smallest = Object.keys(asset.webp).map(Number).sort((a, b) => a - b)[0];
+  const sizes = expanded
+    ? '(min-width: 768px) 40rem, calc(100vw - 3rem)'
+    : TIGER_ATLAS.sceneSizes;
+  return `<picture class="${expanded ? 'atlas-scene-art' : 'atlas-scene-thumb'}" data-living-surface="${role}${expanded ? '-expanded' : ''}">${asset.avif ? `
+                                        <source type="image/avif" srcset="${atlasSixSrcset(asset.avif)}" sizes="${sizes}">` : ''}
+                                        <img src="${asset.webp[smallest]}" srcset="${atlasSixSrcset(asset.webp)}" sizes="${sizes}" alt="" width="${asset.width}" height="${asset.height}" loading="lazy" decoding="async">
+                                    </picture>`;
+}
+
+// Motion config read by js/symbol-living: one surface per painting (hero, plate, each
+// thumbnail), each with its two channels; the hero's scene follows the painting the
+// browser shows, told by the start of its file names (`match(role)`). Both textures load once,
+// at 960px, and serve every surface. Without a texture the page gets no motion script.
+function atlasSixLivingConfig({ motion, scenes: pilotScenes }, assets, match) {
+  const src = {
+    layer: assets.layer && atlasSixLayerSrc(assets.layer, 960),
+    accent: assets.accent && atlasSixLayerSrc(assets.accent, 960),
+  };
+  const layers = (list, painting) => list
+    .filter((layer) => src[layer.texture])
+    .map(({ texture, place, ...layer }) => ({ channel: texture === 'layer' ? 'a' : 'b', src: src[texture], box: atlasSixBox(place, painting, assets[texture]), ...layer }));
+  const surfaces = [];
+  if (assets.hero) {
+    const scenes = { landscape: { match: match('hero'), layers: layers(motion.hero.landscape, assets.hero) } };
+    if (assets.portrait) scenes.portrait = { match: match('portrait'), layers: layers(motion.hero.portrait, assets.portrait) };
+    surfaces.push({ name: 'hero', selector: '.symbol-hero', img: '.symbol-hero-media img', figure: '.symbol-hero-figure', depth: motion.parallax, eager: true, scenes });
+  }
+  if (assets.plate) {
+    surfaces.push({ name: 'plate', selector: '[data-living-surface="plate"]', img: 'img', mask: true, scenes: { plate: { match: match('plate'), layers: layers(motion.plate, assets.plate) } } });
+  }
+  pilotScenes.forEach((scene, index) => {
+    const role = `scene-${scene.id}`;
+    if (!assets[role]) return;
+    // Thumbnails share the default effects and phase; a local light can follow its subject in each scene.
+    for (const name of [role, `${role}-expanded`]) {
+      surfaces.push({ name, selector: `[data-living-surface="${name}"]`, img: 'img', clip: true, phase: index / pilotScenes.length, scenes: { [role]: { match: match(role), layers: layers(motion.scenes?.[scene.id] ?? motion.thumb, assets[role]) } } });
+    }
+  });
+  const live = surfaces.filter((surface) => Object.values(surface.scenes).some((scene) => scene.layers.length > 0));
+  if (live.length === 0) return null;
+  // No toggles: the pages carry no pause control (owner decision), so the shared module mounts none;
+  // reduced motion, a hidden tab and a painting off screen still stop the effects.
+  return { surfaces: live };
+}
+
+// The tiger's grounds, type and UI colours; only the scene selectors, the thumbnails'
+// frames, the side illustration's wrapper and the scenes' anchor differ.
+function atlasSixCss(id) {
+  return atlasCss(SYMBOL_ATLAS_SIX[id].scenes.map((scene) => scene.id)) + `
+        /* Keep the composited hero edge on the page ground, including fractional preview scales. */
+        .symbol-hero--living {
+            -webkit-mask-image: linear-gradient(#000 calc(100% - 4px), transparent);
+            mask-image: linear-gradient(#000 calc(100% - 4px), transparent);
+        }
+        .symbol-hero--living::after {
+            inset: -1px;
+            background: linear-gradient(180deg, rgba(8, 3, 15, 0.45) 0%, rgba(8, 3, 15, 0.05) 32%,
+                rgba(8, 3, 15, 0.10) 55%, rgba(9, 4, 19, 0.82) 88%, #0a0514 98%, #0a0514 100%);
+        }
+        /* A scene without its thumbnail yet: the published variation title is the label. */
+        .atlas-scene.atlas-scene--text { grid-template-columns: minmax(0, 1fr) auto; padding: 0 1rem 0 1.25rem; min-height: 4rem; }${ATLAS_LIVING_FRAMES_CSS}
+        @media (max-width: 767px) {
+            /* Reached by #scenes, the title line lands where a variation card lands (12rem),
+               below the fixed navbar and section bar. */
+            .atlas-scenes { scroll-margin-top: 9.75rem; }
+        }`;
+}
 
 // Generate HTML page for a symbol
 function generatePage(symbol, allSymbols, i18n, extended, lang) {
@@ -1461,10 +1964,33 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const softCta = symbolData.softCta && symbolData.softCta.href
     ? symbolData.softCta
     : null;
-  const livingPainting = symbol.id === 'tiger' && lang === 'fr';
-  const livingPaintingScriptHtml = livingPainting
-    ? `\n    <script src="${TIGER_LIVING.dir}/tiger-living-painting.js" defer></script>`
-    : '';
+  // The same paintings, engines and profiles serve every language with its own words.
+  const atlasLocale = atlasLocaleFor(symbol.id, lang);
+  const livingPainting = symbol.id === 'tiger' && Boolean(atlasLocale);
+  const atlasSix = atlasLocale && Object.hasOwn(SYMBOL_ATLAS_SIX, symbol.id) ? SYMBOL_ATLAS_SIX[symbol.id] : null;
+  if (atlasSix && lang === 'fr' && symbolData.slug !== atlasSix.slug) throw new Error(`Atlas ${symbol.id}: the French slug is ${symbolData.slug}, not ${atlasSix.slug}`);
+  const atlasSixAssets = atlasSix ? ATLAS_SIX_ASSETS[symbol.id] || {} : null;
+  const livingPage = livingPainting || Boolean(atlasSix);
+  const heroPortraitPosition = livingPainting ? '50% 35%' : atlasSix ? atlasSix.portraitPosition : SYMBOL_HERO_PORTRAIT[symbol.id] || '50% 50%';
+  let livingPaintingScriptHtml = '';
+  // The tiger moves its own paintings on the same engine; its landscape hero is the page's illustration.
+  const tigerHeroMatch = livingPainting && responsiveIllustration ? responsiveIllustration.src.match(/^(.*-)[0-9]+w\.\w+$/)?.[1] : null;
+  if (livingPainting && responsiveIllustration && !tigerHeroMatch) throw new Error(`Tiger atlas: the hero ${responsiveIllustration.src} is not named <name>-<width>w.<format>`);
+  const livingConfig = atlasSix
+    ? atlasSixLivingConfig(atlasSix, atlasSixAssets, (role) => `${ATLAS_SIX_IMAGES}/${symbol.id}/${role}-`)
+    : tigerHeroMatch
+      ? atlasSixLivingConfig(
+        { motion: TIGER_ATLAS.motion, scenes: TIGER_ATLAS.scenes.choices },
+        { ...TIGER_ATLAS_ASSETS, hero: { width: responsiveIllustration.width, height: responsiveIllustration.height } },
+        (role) => (role === 'hero' ? tigerHeroMatch : TIGER_ATLAS_MATCH[role]),
+      )
+      : null;
+  if (livingConfig) {
+    checkSymbolLivingScript();
+    livingPaintingScriptHtml = `
+    <script type="application/json" id="symbol-living-config">${JSON.stringify(livingConfig).replace(/</g, '\\u003c')}</script>
+    <script src="${SYMBOL_LIVING_DIR}/symbol-living.js" defer></script>`;
+  }
 
   // Generate variations HTML
   const variationsHtml = variations.map(v => `
@@ -1473,27 +1999,17 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                         <p>${escapeHtml(sanitizeEmDashes(v.meaning))}</p>
                     </div>`).join('\n');
 
-  const interpretationSectionHtml = hasInterpretation ? `            <!-- Main Interpretation -->
-            <section id="meaning" class="symbol-meaning symbol-section">
-                <h2 class="symbol-h2">${t.section_interpretation}</h2>
-                <div class="prose prose-invert prose-purple max-w-none leading-relaxed space-y-4">
-                    ${fullInterpretation}
-                </div>
-            </section>` : '';
-
-  const variationsSectionHtml = hasVariations ? `            <!-- Variations -->
-            <section id="variations" class="symbol-variations symbol-section">
-                <h2 class="symbol-h2">${t.section_variations}</h2>
-                <div>${variationsHtml}
-                </div>
-            </section>` : '';
-
+  // On a phone held upright a page without a pack crops its painting to the 75svh hero: it is drawn
+  // 75vh times its ratio wide, wider than the screen, and its sources are picked for that width.
+  const staticHeroSizes = !livingPage && responsiveIllustration
+    ? `${TIGER_LIVING.media} ${Math.ceil(75 * responsiveIllustration.width / responsiveIllustration.height)}vh, ${heroImageSizes}`
+    : heroImageSizes;
   const heroPictureHtml = illustration && responsiveIllustration ? `
-                    <picture class="symbol-hero-media">${livingPainting ? tigerLivingSourcesHtml() : ''}${responsiveIllustration.avifSrcset ? `
-                        <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="${heroImageSizes}">` : ''}
+                    <picture class="symbol-hero-media">${livingPainting ? tigerLivingSourcesHtml() : atlasSix ? atlasSixSourcesHtml(atlasSixAssets, heroImageSizes) : ''}${responsiveIllustration.avifSrcset ? `
+                        <source type="image/avif" srcset="${escapeHtml(responsiveIllustration.avifSrcset)}" sizes="${staticHeroSizes}">` : ''}
                         <img src="${escapeHtml(responsiveIllustration.src)}"
                              ${responsiveIllustration.srcset ? `srcset="${escapeHtml(responsiveIllustration.srcset)}"` : ''}
-                             sizes="${heroImageSizes}"
+                             sizes="${staticHeroSizes}"
                              alt="${escapeHtml(preferredImageAlt)}"
                              fetchpriority="high"
                              decoding="async"
@@ -1535,32 +2051,16 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
                 </a>`;
   }
 
-  const relatedArticleHtml = relatedReadingCard ? `
-            <!-- Related Reading -->
-            <section class="symbol-reading symbol-section">
-                <h2 class="symbol-h2">${t.section_learn_more}</h2>${relatedReadingCard}
-            </section>` : '';
-
-  const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq.slice(0, symbol.id === 'spider' && lang === 'it' ? 5 : 4) : [];
+  // Every published answer (the house has seven).
+  const symbolFaq = Array.isArray(symbolData.faq) ? symbolData.faq : [];
 
   const conversionPath = `/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}`;
-  const softCtaHtml = softCta ? `
-            <!-- Soft App CTA -->
-            <aside class="symbol-soft-cta">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-5">
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold uppercase tracking-[0.12em] text-dream-salmon mb-2">${escapeHtml(softCta.kicker || 'Noctalia')}</p>
-                        <h2 class="text-xl md:text-2xl text-dream-cream mb-3">${escapeHtml(softCta.title)}</h2>
-                        <p class="text-sm md:text-base leading-relaxed">${escapeHtml(softCta.text)}</p>
-                    </div>
-                    ${softCta.webButton ? '<div class="flex flex-col gap-3 shrink-0">' : ''}
-                    <a${conversionLinkAttributes(conversionPath, 'inline', 'play')} href="${escapeHtml(softCta.href)}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-dream-salmon text-dream-dark font-bold hover:bg-dream-salmon/90 transition-colors">
-                        ${escapeHtml(softCta.button || t.cta_button)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>${softCta.webButton ? `
-                    <a${conversionLinkAttributes(conversionPath, 'inline', 'web')} href="${escapeHtml(getWebAppUrl(lang, { medium: 'symbol_page', content: symbol.id }))}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full glass-button text-dream-cream font-bold transition-colors" rel="noopener">${escapeHtml(softCta.webButton)}</a>
-                    </div>` : ''}
-                </div>
-            </aside>` : '';
+  // The symbol's own invitation (same links and tracking as before), for the app after the meaning.
+  // Its browser button follows the sitewide pause of the browser journal, like the other ones.
+  const softCtaActions = () => `<div class="atlas-actions">
+                            <a${conversionLinkAttributes(conversionPath, 'inline', 'play')} href="${escapeHtml(softCta.href)}" class="atlas-primary"><i data-lucide="arrow-right" class="w-5 h-5"></i>${escapeHtml(softCta.button || t.cta_button)}</a>${softCta.webButton ? `
+                            <a${conversionLinkAttributes(conversionPath, 'inline', 'web')} href="${escapeHtml(getWebAppUrl(lang, { medium: 'symbol_page', content: symbol.id }))}" class="symbol-webapp-cta atlas-secondary" rel="noopener"><i data-lucide="arrow-up-right" class="w-4 h-4"></i>${escapeHtml(softCta.webButton)}</a>` : ''}
+                        </div>`;
   const visibleHeadline = `${t.h1_prefix} ${symbolData.name}`.trim();
   const sheetLabels = getSymbolSheetLabels(lang);
   const jumpItems = [
@@ -1583,9 +2083,9 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
       enabled: true
     }
   ].filter(item => item.enabled);
-  // The atlas sets the questions before the variations: its bar follows the page,
-  // which the active-link scan below expects.
-  if (livingPainting) jumpItems.sort((a, b) => Number(a.href === 'variations') - Number(b.href === 'variations'));
+  // The questions come before the variations: the bar follows the page, which the active-link
+  // scan below expects.
+  jumpItems.sort((a, b) => Number(a.href === 'variations') - Number(b.href === 'variations'));
   const jumpNavHtml = jumpItems.map((item, index) => `
                     <a href="#${item.href}" class="symbol-jump-link ${index === 0 ? 'is-active' : ''}">
                         <i data-lucide="${item.icon}" class="w-5 h-5"></i>
@@ -1621,7 +2121,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     datePublished: CONFIG.datePublished,
     dateModified: modifiedDate,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}` },
-    inLanguage: lang
+    inLanguage: getLanguageTag(lang)
   };
 
   const breadcrumbListJsonLd = {
@@ -1650,12 +2150,6 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
       acceptedAnswer: { '@type': 'Answer', text: sanitizeEmDashes(item.answer) }
     }))
   } : null;
-  const faqSectionHtml = faqItems.length > 0 ? `
-            <section class="symbol-faq symbol-section">
-                <h2 class="symbol-h2">${t.section_faq}</h2>
-                <div>${faqCardsHtml}
-                </div>
-            </section>` : '';
 
   // Language dropdown items
   const langItems = {
@@ -1679,14 +2173,14 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   // Generate hreflang links
   const hreflangLinks = CONFIG.languages
     .filter(l => hreflang[l])
-    .map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`)
+    .map(l => `    <link rel="alternate" hreflang="${getLanguageTag(l)}" href="${hreflang[l]}">`)
     .join('\n');
   const currentPaths = Object.fromEntries(
     CONFIG.languages.map(l => [l, `/${l}/${CONFIG.symbolsPath[l]}/${symbol[l]?.slug || symbolData.slug}`])
   );
-  const atlasArticleHtml = livingPainting ? renderTigerAtlasArticle({
+  const atlasArticleHtml = renderAtlasArticle({
     lang, t, symbolData, sheetLabels,
-    interpretationHtml: fullInterpretation,
+    interpretationHtml: hasInterpretation ? fullInterpretation : '',
     variations,
     variationsHtml,
     askYourselfHtml,
@@ -1695,12 +2189,26 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     relatedReadingCard,
     jumpNavHtml,
     jumpCount: jumpItems.length,
+    softCta,
+    softCtaActions,
     conversionActions: (placement) => renderTigerAtlasActions(lang, symbol.id, currentPaths[lang], placement),
-  }) : '';
+  }, livingPainting ? {
+    ...TIGER_ATLAS_PAGE,
+    ...atlasLocale,
+    scenes: { ...atlasLocale.scenes, choices: TIGER_ATLAS.scenes.choices.map((choice) => ({ ...choice, ...atlasLocale.sceneLocales[choice.id], image: `scene-${choice.id}` })) },
+  } : atlasSix ? {
+    ...atlasLocale,
+    name: `Atlas ${symbol.id}`,
+    scenes: { ...atlasLocale.scenes, choices: atlasSix.scenes.map((scene) => ({ id: scene.id, ...atlasLocale.sceneLocales[scene.id], image: atlasSixAssets[`scene-${scene.id}`] ? `scene-${scene.id}` : undefined })) },
+    sceneText: 'full',
+    omitJournal: false,
+    scenePicture: (role, expanded) => renderAtlasSixScenePicture(role, atlasSixAssets[role], expanded),
+    decorHtml: () => (atlasSixAssets.plate ? renderAtlasSixPlate(atlasSixAssets.plate) : ''),
+  } : atlasTextFor(symbol.id, lang));
 
   // Generate the full HTML
   return `<!DOCTYPE html>
-<html lang="${lang}" class="scroll-smooth">
+<html lang="${getLanguageTag(lang)}" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -1728,7 +2236,7 @@ ${renderAhrefsAnalyticsScript()}
     <meta property="og:image:height" content="${preferredImageHeight}">
     <meta property="og:image:alt" content="${escapeHtml(preferredImageAlt)}">
     <meta property="og:locale" content="${t.locale}">
-${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
+${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${siteConfig.localeCodes[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
     <meta property="article:modified_time" content="${modifiedDate}">
     <meta property="article:author" content="Noctalia">
@@ -1904,17 +2412,6 @@ ${renderSharedComponentStyles()}
             text-wrap: balance;
             text-shadow: 0 3px 28px rgba(8, 3, 15, 0.78);
         }
-        .symbol-h1-prefix {
-            display: block;
-            font-family: 'Outfit', ui-sans-serif, system-ui, sans-serif;
-            font-size: clamp(0.7rem, 1vw, 0.8rem);
-            font-weight: 500;
-            letter-spacing: 0.24em;
-            text-transform: uppercase;
-            color: var(--salmon);
-            margin-top: 1.1rem;
-            text-shadow: 0 2px 16px rgba(8, 3, 15, 0.8);
-        }
         .symbol-hero-caption {
             position: absolute;
             width: 1px;
@@ -2046,13 +2543,6 @@ ${renderSharedComponentStyles()}
             max-width: 42rem;
         }
 
-        /* Related symbols: index list */
-        .symbol-related-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            column-gap: 2.5rem;
-            border-bottom: 1px solid var(--line);
-        }
         .symbol-link {
             display: flex;
             align-items: baseline;
@@ -2113,51 +2603,6 @@ ${renderSharedComponentStyles()}
         .symbol-reading-card:hover .symbol-reading-cta { color: var(--cream-88); }
         .symbol-reading-card:hover .symbol-reading-cta::after { transform: translateX(4px); color: var(--salmon); }
 
-        /* Soft app CTA */
-        .symbol-soft-cta {
-            border: 1px solid rgba(234, 212, 180, 0.22);
-            border-radius: 0.75rem;
-            background:
-                radial-gradient(30rem 14rem at 12% 0%, rgba(234, 212, 180, 0.09), transparent 65%),
-                rgba(255, 247, 237, 0.02);
-            padding: clamp(1.5rem, 3vw, 2.25rem);
-            margin-bottom: clamp(3rem, 6vw, 4.5rem);
-        }
-        .symbol-soft-cta h2 {
-            font-family: 'Fraunces', ui-serif, Georgia, serif;
-            font-weight: 550;
-            letter-spacing: -0.01em;
-        }
-        .symbol-soft-cta p { color: var(--cream-64); }
-        .symbol-soft-cta a { flex-shrink: 0; transition: transform 0.2s ease, background 0.25s ease; }
-        .symbol-soft-cta a:hover { transform: translateY(-1px); }
-        .symbol-soft-cta a:active { transform: translateY(0) scale(0.98); }
-
-        /* Final CTA */
-        .symbol-final-cta {
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--line);
-            border-radius: 1rem;
-            background:
-                radial-gradient(36rem 16rem at 50% -20%, rgba(234, 212, 180, 0.12), transparent 70%),
-                rgba(255, 247, 237, 0.02);
-            padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 4vw, 3rem);
-            text-align: center;
-        }
-        .symbol-final-cta h3 {
-            font-family: 'Fraunces', ui-serif, Georgia, serif;
-            font-weight: 560;
-            font-size: clamp(1.6rem, 3vw, 2.25rem);
-            letter-spacing: -0.015em;
-            color: var(--cream);
-            margin-bottom: 0.85rem;
-            text-wrap: balance;
-        }
-        .symbol-final-cta p { color: var(--cream-64); }
-        .symbol-final-cta a { transition: transform 0.2s ease, background 0.25s ease, border-color 0.25s ease; }
-        .symbol-final-cta a:active { transform: scale(0.98); }
-
         .symbol-back-link {
             display: inline-flex;
             align-items: center;
@@ -2194,7 +2639,6 @@ ${renderSharedComponentStyles()}
                 line-height: 0.98 !important;
                 letter-spacing: -0.01em !important;
             }
-            .symbol-h1-prefix { margin-top: 0.85rem; }
             .symbol-summary {
                 font-size: 1.15rem !important;
                 line-height: 1.55 !important;
@@ -2249,14 +2693,9 @@ ${renderSharedComponentStyles()}
             body.symbol-jump-fixed .symbol-jump-nav + section {
                 margin-top: 6rem !important;
             }
-            .symbol-soft-cta a { width: 100%; }
-            .symbol-related-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                column-gap: 1.5rem;
-            }
             .variation-card { padding-left: 2.5rem; }
         }
-    </style>${livingPainting ? tigerLivingStyleHtml() : ''}
+    </style>${livingStyleHtml(heroPortraitPosition, livingPainting ? TIGER_ATLAS_CSS : atlasSix ? atlasSixCss(symbol.id) : TEXT_ATLAS_CSS)}
 
     <!-- Schema.org DefinedTerm -->
 ${renderJsonLd(definedTermJsonLd)}
@@ -2278,7 +2717,7 @@ ${renderPseoNav(lang, currentPaths, 'dictionary')}
 
     <main class="symbol-page-main pb-20">
             <!-- Header -->
-            <header class="symbol-hero${livingPainting ? ' symbol-hero--living' : ''}" data-image-seo-hero="true">
+            <header class="symbol-hero${livingPage ? ' symbol-hero--living' : ''}${heroPictureHtml ? '' : ' symbol-hero--bare'}" data-image-seo-hero="true">
                 <figure class="symbol-hero-figure" data-image-seo-role="symbol-hero" data-image-asset-id="symbol.${escapeHtml(symbol.id)}">
 ${heroPictureHtml}
                     ${illustration?.caption ? `<figcaption class="symbol-hero-caption">${escapeHtml(illustration.caption)}</figcaption>` : ''}
@@ -2302,56 +2741,13 @@ ${heroPictureHtml}
                         </div>
 
                         <h1 class="symbol-heading font-serif text-3xl md:text-6xl mb-0 leading-[0.96]">
-                            <span>${escapeHtml(symbolData.name)}</span> <span class="symbol-h1-prefix" data-page-intent="quick-symbol-reference">${escapeHtml(t.h1_prefix)}</span>
+                            <span data-page-intent="quick-symbol-reference">${escapeHtml(symbolData.name)}</span>
                         </h1>
                     </div>
                 </div>
             </header>
 
-        ${livingPainting ? atlasArticleHtml : `<article class="max-w-3xl mx-auto">
-            <p class="symbol-summary text-lg leading-relaxed">
-                ${escapeHtml(symbolData.shortDescription)}
-            </p>
-
-            <nav class="symbol-jump-nav" aria-label="${escapeHtml(sheetLabels.jumpNav)}" style="grid-template-columns: repeat(${jumpItems.length}, minmax(0, 1fr));">${jumpNavHtml}
-            </nav>
-
-${interpretationSectionHtml}
-
-${variationsSectionHtml}
-
-            <!-- Ask Yourself -->
-            <section id="questions" class="symbol-questions symbol-section">
-                <h2 class="symbol-h2">${t.section_ask_yourself}</h2>
-                <ul>${askYourselfHtml}
-                </ul>
-            </section>
-
-${softCtaHtml}
-${faqSectionHtml}
-
-            <!-- Related Symbols -->
-            ${relatedSymbols.length > 0 ? `<section class="symbol-related symbol-section">
-                <h2 class="symbol-h2">${t.section_related_symbols}</h2>
-                <div class="symbol-related-grid">${relatedSymbolsHtml}
-                </div>
-            </section>` : ''}
-${relatedArticleHtml}
-            <!-- CTA Section -->
-            <aside class="symbol-final-cta">
-                <h3>${t.cta_title}</h3>
-                <p class="mb-6 max-w-lg mx-auto">
-                    ${t.cta_description}
-                </p>
-                ${renderSymbolConversionActions(lang, symbol.id, currentPaths[lang])}
-            </aside>
-
-            <!-- Back to Dictionary -->
-            <div class="mt-10 text-center">
-                <a href="/${lang}/guides/${t.dictionary_slug}" class="symbol-back-link">${t.back_to_dictionary}</a>
-            </div>
-
-        </article>`}
+        ${atlasArticleHtml}
     </main>
 
 ${renderPseoFooter(lang, currentPaths, 'dictionary')}
@@ -2550,14 +2946,14 @@ function main() {
 // Get category name for a given category ID
 function getCategoryNameById(categoryId, lang) {
   const categories = {
-    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura' },
-    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali' },
-    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo' },
-    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi' },
-    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti' },
-    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni' },
-    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone' },
-    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste' }
+    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura', 'pt-br': 'Natureza' },
+    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali', 'pt-br': 'Animais' },
+    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo', 'pt-br': 'Corpo' },
+    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi', 'pt-br': 'Lugares' },
+    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti', 'pt-br': 'Objetos' },
+    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni', 'pt-br': 'Ações' },
+    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone', 'pt-br': 'Pessoas' },
+    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste', 'pt-br': 'Celeste' }
   };
   return categories[categoryId]?.[lang] || categoryId;
 }
@@ -2623,7 +3019,8 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
     fr: 'Comment utiliser cette catégorie',
     es: 'Cómo usar esta categoría',
     de: 'So nutzt du diese Kategorie',
-    it: 'Come usare questa categoria'
+    it: 'Come usare questa categoria',
+    'pt-br': 'Como usar esta categoria'
   };
 
   const howToParagraphs = {
@@ -2646,6 +3043,10 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
     it: [
       `Questa categoria raccoglie simboli che spesso condividono temi collegati. Parti da come ti sei sentito nel sogno e poi guarda i dettagli del simbolo.`,
       `Se noti più simboli di tipo ${categoryName.toLowerCase()} in poco tempo, può aiutare cercare una situazione comune nella tua vita da sveglio.`
+    ],
+    'pt-br': [
+      `Esta categoria reúne símbolos que costumam compartilhar temas parecidos. Comece por como o sonho fez você se sentir e depois olhe os detalhes do símbolo.`,
+      `Se você notar vários símbolos de ${categoryName.toLowerCase()} em pouco tempo, pode ajudar procurar uma situação em comum na sua vida desperta.`
     ]
   };
 
@@ -2654,7 +3055,8 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
     fr: ["Notez l'émotion principale.", 'Repérez ce qui change dans le rêve.', 'Choisissez un symbole et reliez-le à un moment récent.'],
     es: ['Anota la emoción principal.', 'Fíjate en qué cambia durante el sueño.', 'Elige un símbolo y conéctalo con un momento reciente.'],
     de: ['Notiere die wichtigste Emotion.', 'Achte darauf, was sich im Traum verändert.', 'Wähle ein Symbol und verbinde es mit einem aktuellen Moment.'],
-    it: ["Scrivi l'emozione principale.", 'Nota cosa cambia durante il sogno.', 'Scegli un simbolo e collegalo a un momento recente.']
+    it: ["Scrivi l'emozione principale.", 'Nota cosa cambia durante il sogno.', 'Scegli un simbolo e collegalo a un momento recente.'],
+    'pt-br': ['Anote a emoção principal.', 'Repare no que muda durante o sonho.', 'Escolha um símbolo e ligue-o a um momento recente.']
   };
 
   const categoryHowToHtml = `
@@ -2736,7 +3138,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
     name: metaTitle,
     description: metaDescription,
     url: `https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${categorySlug}`,
-    inLanguage: lang,
+    inLanguage: getLanguageTag(lang),
     isPartOf: {
       '@type': 'WebSite',
       name: 'Noctalia',
@@ -2787,7 +3189,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
 
   // Generate the full HTML
   return `<!DOCTYPE html>
-<html lang="${lang}" class="scroll-smooth">
+<html lang="${getLanguageTag(lang)}" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -2796,7 +3198,7 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
     <title>${escapeHtml(metaTitle)} | Noctalia</title>
     <meta name="description" content="${escapeHtml(metaDescription)}">
     <link rel="canonical" href="https://noctalia.app/${lang}/${CONFIG.symbolsPath[lang]}/${categorySlug}">
-${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`).join('\n')}
+${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" hreflang="${getLanguageTag(l)}" href="${hreflang[l]}">`).join('\n')}
     <link rel="alternate" hreflang="x-default" href="${hreflang.en}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
@@ -2814,7 +3216,7 @@ ${renderAhrefsAnalyticsScript()}
     <meta property="og:image:height" content="${preferredImageHeight}">
     <meta property="og:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
-${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
+${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${siteConfig.localeCodes[l]}">`).join('\n')}
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 
     <!-- Twitter -->
@@ -3265,7 +3667,9 @@ function loadCurationData() {
     console.error('Missing data/curation-pages.json');
     process.exit(1);
   }
-  return JSON.parse(fs.readFileSync(curationPath, 'utf8'));
+  const data = JSON.parse(fs.readFileSync(curationPath, 'utf8'));
+  (data?.pages || []).forEach(aliasCurationPage);
+  return data;
 }
 
 function validateCurationDataOrExit(curationData, allSymbols) {
@@ -3428,11 +3832,11 @@ function generateCurationPage(page, allSymbols, i18n, lang) {
     datePublished: CONFIG.datePublished,
     dateModified: CONFIG.dateModified,
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://noctalia.app/${lang}/guides/${slug}` },
-    inLanguage: lang
+    inLanguage: getLanguageTag(lang)
   };
 
   return `<!DOCTYPE html>
-<html lang="${lang}" class="scroll-smooth">
+<html lang="${getLanguageTag(lang)}" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -3441,7 +3845,7 @@ function generateCurationPage(page, allSymbols, i18n, lang) {
     <title>${escapeHtml(metaTitle)} | Noctalia</title>
     <meta name="description" content="${escapeHtml(pageData.metaDescription)}">
     <link rel="canonical" href="https://noctalia.app/${lang}/guides/${slug}">
-${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" hreflang="${l}" href="${hreflang[l]}">`).join('\n')}
+${CONFIG.languages.filter(l => hreflang[l]).map(l => `    <link rel="alternate" hreflang="${getLanguageTag(l)}" href="${hreflang[l]}">`).join('\n')}
     <link rel="alternate" hreflang="x-default" href="${hreflang.en}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
@@ -3459,7 +3863,7 @@ ${renderAhrefsAnalyticsScript()}
     <meta property="og:image:height" content="${preferredImageHeight}">
     <meta property="og:image:alt" content="${escapeHtml(pageIllustration?.ref.alt || metaTitle)}">
     <meta property="og:locale" content="${t.locale}">
-${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${{ en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' }[l]}">`).join('\n')}
+${CONFIG.languages.filter(l => l !== lang).map(l => `    <meta property="og:locale:alternate" content="${siteConfig.localeCodes[l]}">`).join('\n')}
     <meta property="article:published_time" content="${CONFIG.datePublished}">
     <meta property="article:modified_time" content="${CONFIG.dateModified}">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">

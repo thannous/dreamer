@@ -1,5 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
+import { PREVIEW_OBJECT_PREFIX } from '../lib/analysisPreview.ts';
 import { revokeAppleTokens } from '../lib/appleTokenRevoke.ts';
 import { corsHeaders } from '../lib/constants.ts';
 import type { ApiContext } from '../types.ts';
@@ -27,8 +28,9 @@ const defaultAdminClientFactory: AdminClientFactory = (url, serviceRoleKey) =>
 
 /**
  * Removes every Storage object owned by the user. Generated dream images are
- * uploaded under the `<userId>/` prefix (see services/storage.ts), so a
- * prefix-scoped listing covers all of them.
+ * uploaded under the `<userId>/` prefix (see services/storage.ts), and the
+ * paintings of prepared analyses under `previews/<userId>/`
+ * (services/previewIllustration.ts), so two prefix-scoped listings cover all of them.
  */
 async function deleteUserStorageObjects(
   // SupabaseClient generics vary by jsr version; ApiContext already treats clients as `any`.
@@ -36,7 +38,13 @@ async function deleteUserStorageObjects(
   bucket: string,
   userId: string
 ): Promise<boolean> {
-  const prefix = `${userId}/`;
+  for (const prefix of [`${userId}/`, `${PREVIEW_OBJECT_PREFIX}/${userId}/`]) {
+    if (!await deleteStorageObjectsUnder(adminClient, bucket, prefix)) return false;
+  }
+  return true;
+}
+
+async function deleteStorageObjectsUnder(adminClient: any, bucket: string, prefix: string): Promise<boolean> {
   for (let page = 0; page < STORAGE_LIST_MAX_PAGES; page += 1) {
     const { data, error } = await adminClient.storage.from(bucket).list(prefix, {
       limit: STORAGE_LIST_PAGE_SIZE,
@@ -59,13 +67,8 @@ async function deleteUserStorageObjects(
   return false;
 }
 
-function userHasAppleIdentity(user: { identities?: Array<{ provider?: string }> | null } | null): boolean {
+function userHasAppleIdentity(user: { identities?: { provider?: string }[] | null } | null): boolean {
   return Boolean(user?.identities?.some((identity) => identity.provider === 'apple'));
-}
-
-function appleRefreshTokenFromUser(user: { app_metadata?: { apple_refresh_token?: unknown } } | null): string | null {
-  const token = user?.app_metadata?.apple_refresh_token;
-  return typeof token === 'string' && token.length > 0 ? token : null;
 }
 
 export async function handleDeleteAccount(
@@ -116,13 +119,16 @@ export async function handleDeleteAccount(
   }
   if (userHasAppleIdentity(authUserData.user)) {
     try {
-      await revokeAppleUserTokens({
-        refreshToken: appleRefreshTokenFromUser(authUserData.user),
+      const { data: refreshToken, error } = await adminClient.rpc('read_apple_refresh_token', {
+        p_user_id: userId,
       });
-    } catch (error) {
-      console.warn('[api] /account: Apple token revoke failed', {
-        message: error instanceof Error ? error.message : 'unknown',
-      });
+      if (error || typeof refreshToken !== 'string' || !refreshToken) {
+        throw new Error('Private Apple credential unavailable');
+      }
+      await revokeAppleUserTokens({ refreshToken });
+    } catch {
+      // Never log provider or database errors that could echo a credential.
+      console.warn('[api] /account: Apple token revoke failed');
       return jsonResponse({ error: 'Apple token revocation failed' }, 503);
     }
   }
@@ -131,7 +137,8 @@ export async function handleDeleteAccount(
   //    ON DELETE CASCADE FK to auth.users: dreams (20251222115718_remote_schema.sql),
   //    dream_chat_turns / dream_chat_messages (20260722134500), ai_jobs (20260316120000),
   //    dream_sync_receipts (20260316130000), subscription_state / subscription_events
-  //    (20260316140000) and device_account_links (20260722151231).
+  //    (20260316140000), device_account_links (20260722151231) and private Apple
+  //    refresh tokens (20261020001047).
   const { error: deleteError } = await adminClient.auth.admin.deleteUser(userId);
   if (deleteError) {
     console.error('[api] /account: auth user deletion failed', {

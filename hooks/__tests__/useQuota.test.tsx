@@ -5,6 +5,7 @@ import { act, renderHook, waitFor as testingWaitFor } from '@testing-library/rea
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { QuotaStatus } from '../../lib/types';
+import { AppState, type AppStateStatus } from 'react-native';
 
 const waitFor = <T,>(callback: () => T | Promise<T>) =>
   testingWaitFor(callback, { interval: 1 });
@@ -398,6 +399,25 @@ describe('useQuota', () => {
       expect(mockGetQuotaStatus).toHaveBeenCalledTimes(initialCallCount + 1);
     });
 
+    it('settles a refetch held from before the user refreshed', async () => {
+      // The subscription QA lab refreshes the user, then calls the refetch it captured
+      // before that refresh: the quota must still load for the refreshed user.
+      mockUser = { id: 'free-user', version: 1 };
+      const { result, rerender } = renderHook(() => useQuota());
+      await settleQuotaStatus(result);
+      const heldRefetch = result.current.refetch;
+
+      mockUser = { id: 'free-user', version: 2 };
+      rerender();
+      await act(async () => {
+        await heldRefetch();
+      });
+      await settleQuotaStatus(result);
+
+      expect(result.current.quotaStatus).not.toBeNull();
+      expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(mockUser, 'free', undefined);
+    });
+
     it('invalidates cache and refetches', async () => {
       const { result } = renderHook(() => useQuota());
 
@@ -692,5 +712,88 @@ describe('useQuota', () => {
       expect(result.current.canAnalyzeNow).toBe(false);
       expect(result.current.canGenerateImageNow).toBe(true);
     });
+  });
+});
+
+// Real Store journeys cannot freeze RevenueCat/cache failures and advance 24 hours.
+// These controls assert quota outcomes without accounts, payments or network access.
+describe('non-renewing quota expiry', () => {
+  const hour = 60 * 60 * 1000;
+  const start = Date.parse('2026-10-19T00:00:00Z');
+  let resume: ((state: AppStateStatus) => void) | undefined;
+  let appStateSpy: ReturnType<typeof jest.spyOn>;
+  beforeEach(() => {
+    jest.useFakeTimers(); jest.setSystemTime(start);
+    mockUser = { id: 'quota-expiry', app_metadata: { tier: 'plus' } };
+    mockSubscriptionLoading = false;
+    mockSubscriptionStatus = { tier: 'plus', isActive: true, expiryDate: new Date(start + 60000).toISOString(), willRenew: false };
+    mockGetQuotaStatus.mockResolvedValue(buildQuotaStatus({ tier: 'free', canAnalyze: false, canExplore: false }));
+    mockCanAnalyzeDream.mockResolvedValue(false);
+    mockGetQuotaStatus.mockClear();
+    appStateSpy = jest.spyOn(AppState, 'addEventListener').mockImplementation((_event: 'change', listener: (state: AppStateStatus) => void) => {
+      resume = listener; return { remove: () => { resume = undefined; } };
+    });
+  });
+  afterEach(() => { appStateSpy.mockRestore(); jest.useRealTimers(); });
+
+  it('leaves the strict24h allowance without a changed RevenueCat object or available refresh', async () => {
+    const { result, unmount } = renderHook(() => useQuota());
+    expect(result.current.tier).toBe('plus');
+    await act(async () => { jest.advanceTimersByTime(60000 + 24 * hour); });
+    expect(result.current.tier).toBe('plus');
+    await act(async () => { jest.advanceTimersByTime(1); });
+    expect(result.current.tier).toBe('free');
+    expect(result.current.canAnalyzeNow).toBe(false);
+    expect(result.current.canGenerateImageNow).toBe(false);
+    await expect(result.current.canAnalyze()).resolves.toBe(false);
+    expect(mockGetQuotaStatus).toHaveBeenLastCalledWith(mockUser, 'free', undefined);
+    unmount();
+  });
+
+  it('rechecks the same expiry when resuming after timers were suspended', async () => {
+    const { result, unmount } = renderHook(() => useQuota());
+    jest.setSystemTime(start + 25 * hour);
+    await act(async () => { resume?.('active'); });
+    expect(result.current.tier).toBe('free');
+    expect(result.current.canGenerateImageNow).toBe(false);
+    unmount();
+  });
+
+  it.each([true, undefined])('retains paid access when willRenew=%s rather than explicitly false', async (willRenew: boolean | undefined) => {
+    mockSubscriptionStatus = { ...mockSubscriptionStatus, expiryDate: new Date(start - 25 * hour).toISOString(), willRenew };
+    mockSubscriptionLoading = true;
+    const { result, unmount } = renderHook(() => useQuota());
+    await act(async () => { jest.advanceTimersByTime(25 * hour); });
+    expect(result.current.tier).toBe('plus');
+    expect(result.current.loading).toBe(false);
+    expect(result.current.canGenerateImageNow).toBe(true);
+    expect(mockGetQuotaStatus).not.toHaveBeenCalled();
+    unmount();
+  });
+
+  it('replaces the old deadline after renewal and stops work after unmount', async () => {
+    const { result, rerender, unmount } = renderHook(() => useQuota());
+    mockSubscriptionStatus = { ...mockSubscriptionStatus, expiryDate: new Date(start + 7 * 24 * hour).toISOString() };
+    rerender();
+    await act(async () => { jest.advanceTimersByTime(25 * hour); });
+    expect(result.current.tier).toBe('plus');
+    unmount();
+    await act(async () => { jest.advanceTimersByTime(8 * 24 * hour); });
+    expect(mockGetQuotaStatus).not.toHaveBeenCalled();
+  });
+
+  it('does not let an earlier free request overwrite paid quotas after a tier change', async () => {
+    let resolveOld!: (value: QuotaStatus) => void;
+    mockSubscriptionStatus = { tier: 'free', isActive: false };
+    mockUser = { id: 'free-before-purchase' };
+    mockGetQuotaStatus.mockReturnValueOnce(new Promise<QuotaStatus>(resolve => { resolveOld = resolve; }));
+    const { result, rerender, unmount } = renderHook(() => useQuota());
+    mockSubscriptionStatus = { tier: 'plus', isActive: true };
+    rerender();
+    await act(async () => { resolveOld(buildQuotaStatus({ tier: 'free', canAnalyze: false, canExplore: false })); });
+    expect(result.current.quotaStatus?.tier).toBe('plus');
+    expect(result.current.canAnalyzeNow).toBe(true);
+    expect(result.current.canExploreNow).toBe(true);
+    unmount();
   });
 });

@@ -1,10 +1,21 @@
 /* @jest-environment jsdom */
 
-jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
+
+jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
+
+// These route tests cover content and navigation. Account ownership, storage and
+// explicit completion are exercised by the guide-progress E2E journeys/store tests;
+// loading AuthContext here would initialize unrelated native asset and auth services.
+jest.mock('@/hooks/useGuideReading', () => ({
+  useGuideReading: () => ({ scope: 'guest', ready: true, entries: {}, saving: false, error: false }),
+}));
+jest.mock('@/services/guideReadingStore', () => ({
+  updateGuideReading: jest.fn(),
+  retryGuideReading: jest.fn(),
+}));
 
 afterEach(() => {
   cleanup();
@@ -18,10 +29,18 @@ let mockGuideId = 'most-common-dream-symbols';
 
 jest.mock('expo-image', () => ({ Image: () => null }));
 
-jest.mock('expo-router', () => ({
-  router: { push: mockPush, back: mockBack },
-  useLocalSearchParams: () => ({ id: mockGuideId }),
-}));
+jest.mock('expo-router', () => {
+  const { Children, cloneElement } = jest.requireActual('react') as typeof import('react');
+  // Like the real Link with `asChild`, it hands the press to its one child.
+  const Link = ({ href, children }: { href: unknown; children: React.ReactElement<{ onPress?: () => void }> }) =>
+    cloneElement(Children.only(children), { onPress: () => mockPush(href) });
+  Link.AppleZoom = ({ children }: { children: React.ReactNode }) => children;
+  return {
+    Link,
+    router: { push: mockPush, back: mockBack },
+    useLocalSearchParams: () => ({ id: mockGuideId }),
+  };
+});
 
 jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
 
@@ -81,7 +100,7 @@ jest.mock('expo-linear-gradient', () => ({
 const { default: DreamGuideDetailScreen } = require('@/app/dream-guide/[id]');
 
 describe('dream guide routes', () => {
-  // Directory rendering and navigation are covered by e2e/web/dream-guides.spec.ts.
+  // Directory rendering and navigation are covered by tools/e2e/tests/dreamer-dream-guides.web.e2e.ts.
   it('renders a general guide as native practical steps', () => {
     mockGuideId = 'remember-dreams';
     render(<DreamGuideDetailScreen />);

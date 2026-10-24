@@ -1,6 +1,17 @@
 # TesterArmy E2E
 
 Default framework for new journeys since the owner's 2026-10-05 instruction.
+All active E2E entry points use this runner since 2026-10-21; the duplicated
+Playwright test runners are retired. The complete web campaign is
+`mise exec -- npm run test:testerarmy:all`: four Dreamer locale/feature contexts
+and their coverage union, Lucid, Meditation, the built site, four personas through
+the saved ChatGPT Pro login and the owned local backend. It requires that login
+and fails without actual model calls; no API-key fallback is configured. Use
+`npm run test:testerarmy:login` only if a saved login is missing. Native runs retain
+their separate identified Release/device requirements. See the
+[journey guide](../../e2e/README.md) and
+[migration record](../../doc_web_interne/docs/qa/full-testerarmy-20261021.md).
+
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
 from the application's Playwright version. The locked runtime is `e2e` 0.21.2,
@@ -10,7 +21,7 @@ holds the same four versions; the runner refuses another installed version and
 a report from another runner or engine. The engine peer ranges accept e2e 0.21.2.
 Web 0.15.2 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
 1.64.0 too and both share one Chromium build.
-Node 24.19.0 is pinned by the root mise file and satisfies e2e 0.21's
+Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
@@ -131,28 +142,136 @@ fails the run; it does not fall back to launching another browser.
 The web products start separate local servers on ports 8096–8099; root app
 services are mocked and external requests are blocked in app tests. Meditation
 web proves routing/storage on the web only, not native audio or purchases.
-Each Expo web start clears its Metro bundle cache; Dreamer and Lucid also set
-both variant markers explicitly. Switching products must not reuse the previous
-product's embedded Expo configuration. Environment profiles and runner guards
-still apply.
-Meditation probes Metro's `/status` endpoint during startup so repeated short
-health requests do not restart static route compilation on a cold Linux runner.
-Its test still opens the app and checks onboarding, persisted state and every tab.
+Dreamer and Lucid retain Metro transforms by default and set both variant markers
+explicitly. `E2E_KEEP_METRO_CACHE=0` requests a cold diagnostic; `1` explicitly
+retains the cache. Other values fail. The Metro fingerprint isolates public,
+native/router and effective RevenueCat resolver inputs. SDK replay remains off:
+every selected journey and assertion still executes. Meditation keeps its cold
+start until it has equivalent profile fingerprinting.
+All Expo products probe Metro's `/status` endpoint during startup so repeated
+short health requests do not restart static route compilation. Each journey
+still opens the app and checks its actual UI and state.
 Meditation web has a 180-second test and lifecycle budget: the public `app.open()`
 and `app.restart()` methods use `config.timeout`, capped by the remaining test
 budget. A per-test timeout alone does not raise that lifecycle limit. Other
 products and native targets keep 120 seconds; action/assertion limits and retries
 remain unchanged.
-For the opt-in onboarding story, use
+The app shows the onboarding story unless
+`EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false`. The config forwards an
+explicit value to the app command: `true` only when the run sets it, as in
 `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true mise exec -- node tools/e2e/run.mjs dreamer web run --trace`.
-The config forwards this opt-in to the app command; without it, the story test
-is explicitly skipped and does not constitute qualification of that feature.
+Without it, the story test is explicitly skipped and does not constitute
+qualification of the shipped onboarding.
 Dreamer also verifies that Quick Settings actually selects French and both
 themes while preserving the Capture draft and language after reload. This
 guards the web click regression from using a native gesture pressable there.
 The journey opens the real Settings control, checks that preferences are
 actionable, and requires closed drawers to expose no accessible radio controls.
 It exercises the panel at 390 and 1280 pixels.
+
+## Feature personas (opt-in pilot)
+
+Dreamer's personas describe different needs, not only languages. Their English
+goals run against the French real UI on web, iOS Simulator and Android emulator,
+using the existing synthetic mock accounts:
+
+| Persona | Account fixture | Goal and exact outcome |
+| --- | --- | --- |
+| Camille, just awake | New | Keep notes for later; reopen the one entry and recover the exact editable story without a reading or paywall. |
+| Alex, regular journaler | Existing free | Find a cloud-garden dream, add it to favourites, reopen it through that filter with its story intact. The fixture starts unfavourited. |
+| Samira, reflecting | Plus | Check the dream's title in the conversation, send one exact question, receive a simulated reply, then find the same dream, question and reply on revisit. |
+| Lucas, exhausted free quota | Existing free | Keep a dream, inspect the Plus offer, decline it and retain the story; verify free allowance and zero mock purchase/restore calls. |
+
+Definitions live in [dreamer-personas.ts](dreamer-personas.ts); journeys in
+[web journeys](tests/dreamer-personas.web.e2e.ts) and
+[native journeys](tests/dreamer-personas.mobile.e2e.ts). Deterministic
+setup chooses the account through the mock UI. Each `agent.act()` discovers one
+functional outcome through visible controls, immediately followed by exact
+assertions. Model-reported success alone never passes a test. Exact text entry,
+setup and persistence checks use SDK locators without model calls.
+
+Use an existing ChatGPT Plus/Pro subscription through the SDK's supported login,
+after the account owner has chosen that access. No API key or paid gateway is
+enabled by installing the dependencies. Authentication stays outside Git:
+
+```sh
+cd tools/e2e
+mise exec -- npx e2e login openai
+mise exec -- npx e2e models openai
+```
+
+From the repository root, collect without login/model calls, pilot one persona,
+then run the four only after the pilot works:
+
+```sh
+E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- list --tag personas
+E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --tag persona-morning
+E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --tag personas
+```
+
+The default model is `gpt-6.1-sol`; `E2E_PERSONA_MODEL` selects another model id
+served by the same login. The owner selected Sol for this campaign. Each goal allows at most 16 actions, 12 model calls
+and 32,000 input tokens per request. Each test has a 240-second timeout; retries
+and replay stay off. Use one worker. The full suite has seven agent goals.
+It is not a human usability study or a performance/framerate measurement.
+
+Without `E2E_PERSONAS=1`, no persona test is registered and ordinary regressions
+retain their zero-model-call contract. Personas refuse other products and multiple
+workers. Web requires `fr-FR`, isolates each browser context and blocks traffic
+outside the local origin. Native setup selects French through visible settings;
+`run.mjs` requires an identified `mock-persistent` Release on an owned virtual
+device before setup may clear its synthetic data. Never point the campaign at a
+personal account or real dream journal.
+
+The canonical runner retains each test's trace, screenshot, exact source and
+input identity, model usage, persona name and rerun environment in its unique
+`.e2e/dreamer-{web,ios,android}/` directory. Qualification accepts model calls only for this
+explicit campaign, checks the declared persona and actual model calls, and retains
+all existing assertion, artifact and cleanup checks. A missing login or an
+unexecuted journey is not a pass. Qualify a persona campaign with its `run`;
+`collect` is reserved for the historical four-locale regression campaign and
+does not aggregate persona runs. RTL, real service behaviour, physical-device
+performance and Store behaviour remain outside this campaign. See the [SDK's subscription guide](https://e2e.tester.army/docs/subscriptions)
+for access options; Claude uses an Anthropic API key rather than the Claude Code
+session.
+
+### Native personas with Sol
+
+The [2026-10-20 native campaign](../../doc_web_interne/docs/qa/dreamer-native-personas-20261020.md)
+records four passing personas on each platform, the exact builds and rerun commands.
+
+First prepare an isolated native project and create its `mock-persistent`
+`release.json` with the [native Release runner](#native-release-provenance-and-diagnostic-handoff).
+Compile with mock persistence/audio enabled, the standard QA fixtures
+(`EXPO_PUBLIC_MOCK_SHOWCASE` unset), and OTA disabled. Reuse an unchanged native
+Release after test-only changes: the runner checks both app and native input
+hashes, and records build-source and test-source revisions separately.
+
+Collection below makes no model call and needs no device or receipt. For a run,
+set an exact available Simulator UDID or dedicated emulator serial plus its AVD
+name, and resolve the receipt to that platform's immutable build output:
+
+```sh
+E2E_PERSONAS=1 mise exec -- npm run test:testerarmy:mobile -- dreamer ios list --tag personas
+E2E_PERSONAS=1 mise exec -- npm run test:testerarmy:mobile -- dreamer android list --tag personas
+
+E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
+  E2E_DEVICE=SIMULATOR_UDID E2E_RELEASE_RECEIPT=IOS_BUILD_RUN/release.json \
+  mise exec -- npm run test:testerarmy:mobile -- dreamer ios run --install-release --tag persona-morning
+E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
+  E2E_DEVICE=emulator-5554 E2E_AVD_NAME=Noctalia_Personas_QA \
+  E2E_RELEASE_RECEIPT=ANDROID_BUILD_RUN/release.json \
+  mise exec -- npm run test:testerarmy:mobile -- dreamer android run --install-release --tag persona-morning
+```
+
+Once the pilot passes, replace `persona-morning` with `personas` to run all four
+on each platform. Do not set `E2E_WORKERS` for native: each invocation owns one
+explicit device and its lock. The first recorded action is `app.open()`, followed
+by a fresh synthetic app state. Native assertions use accessibility locators,
+keyboard dismissal, scroll-to-visible and the native AI consent dialog. Samira
+checks the completed reply and edits an unsent draft after reopening; Lucas checks
+zero purchase and restore calls. The runner retains installed binary identity
+before/after the campaign and SDK cleanup diagnostics.
 
 ## Historical Dreamer UI parity
 
@@ -189,7 +308,7 @@ as passed. Four commands jointly qualify all cases:
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=fr-FR mise exec -- node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=de-DE mise exec -- node tools/e2e/run.mjs dreamer web run --tag locale-de-DE
-EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default'
+EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled when switched off'
 ```
 
 The existing Dreamer CI check runs the same four passes and retains every
@@ -231,6 +350,17 @@ dependencies before the app quality checks. Dreamer and Lucid share the root
 manifest. Meditation has its own manifest and check:
 `npm --prefix apps/meditation run dependencies:check`.
 Run the affected check before a local native build; CI checks both manifests.
+
+## Dreamer native recovery journeys
+
+The [native journey runbook](native-journeys.md) covers real local Auth/storage,
+offline sync, account isolation, analysis/chat recovery and system recognition
+from a QA audio file. It gives identified iOS/Android build and run commands,
+shared-backend locking, owned-app termination between platforms, and the explicit
+limit: file recognition does not qualify physical microphone capture. The
+[campaign evidence](../../doc_web_interne/docs/qa/dreamer-native-missing-journeys-20261022.md)
+identifies fresh runs and justified reuse separately: composite coverage is not a
+fresh 6/6 campaign, and excluded iOS speech remains unqualified.
 
 ## Android release evidence
 
@@ -279,7 +409,7 @@ Example from an isolated checkout with an existing Android project:
 ```sh
 EXPO_NO_DOTENV=1 EXPO_OFFLINE=1 E2E_BUILD_PROFILE=production-apk \
   EXPO_PUBLIC_MOCK_MODE=false EXPO_PUBLIC_MOCK_PERSISTENCE=false \
-  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
+  EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true \
   E2E_BUILD_COMMAND='["./gradlew",":app:assembleRelease","--no-daemon"]' \
   E2E_RELEASE_BINARY=android/app/build/outputs/apk/release/app-release.apk \
   mise exec -- node tools/e2e/run.mjs dreamer android build
@@ -298,7 +428,8 @@ the native cache does not invalidate an earlier rerun. Partial copies never
 produce a successful receipt. Local package and CocoaPods links
 are hashed with their in-checkout destinations; foreign links/cycles are refused.
 Metro's public `cacheVersion` retains its upstream seed and includes a hash of
-all `EXPO_PUBLIC_*` inputs plus the native/router profile selectors. Release
+all `EXPO_PUBLIC_*` inputs plus the native/router profile selectors and effective
+RevenueCat web-stub setting. Release
 exports in CI can disable automatic cache resets; profiles must have separate
 transform keys even when their source files are identical. Inputs are sorted
 without locale rules, and values are never printed. See the official
@@ -339,7 +470,7 @@ Dreamer exact web coverage also exercises guest save/inline mock analysis,
 authenticated save/rename/Journal round-trip, empty-search recovery, transcript
 editing, cancelled and confirmed targeted deletion, favorite removal without
 story loss, exhausted-quota refusal without story loss, exact fixture allowance
-(Free `5 / 3`, Plus unlimited), and account Journal isolation after sign-out.
+(Free `3 / 3`, the five-analysis fixture capped at its limit; Plus unlimited), and account Journal isolation after sign-out.
 These are real browser UI journeys with the historical mock profiles, not
 qualification of backend durability, RLS, native storage or real purchases.
 Run selections after the explicit `run` argument, for example:
@@ -398,6 +529,14 @@ resource cleanup is failed/missing. `resourceCleanup` records that limitation an
 the final verdict remains nonqualifying; no unknown session/recorder is killed.
 `qualification.json` records SDK validation; only final `end.json` exit0 completes
 that invocation. Preserve both when reporting its verdict.
+
+While the SDK runs, the wrapper keeps a 1 s heartbeat. A gap of 30 s or more means
+the whole host stopped running processes (a VM snapshot or pause, heavy memory
+reclaim), so attempt deadlines expired with nothing running. `end.json` lists each
+gap in `hostStalls`, the console prints it, and a failed run also gets the secondary
+error `HOST_STALL`. It never turns a failure into a pass and never fails a pass: rerun
+the campaign on a quiet host and judge that run. A failure that shows no host stall is
+the app's or the test's.
 
 For a browser campaign set one unique `E2E_CAMPAIGN_ID` on every invocation,
 then run `node tools/e2e/run.mjs <product> web collect` locally.

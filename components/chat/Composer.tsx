@@ -1,4 +1,3 @@
-import type { ViewInstance, TextInputInstance } from 'react-native';
 /**
  * Floating Composer - v0-style chat input that floats above content
  * Based on patterns from https://vercel.com/blog/how-we-built-the-v0-ios-app
@@ -41,6 +40,8 @@ import {
   View,
   type LayoutChangeEvent,
   type ViewStyle,
+  type ViewInstance,
+  type TextInputInstance,
 } from 'react-native';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Pressable } from 'react-native-gesture-handler';
@@ -52,6 +53,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TypeScale } from '@/constants/typeScale';
 
 // Try to import KeyboardStickyView if the native module exists.
 // Guard with NativeModules so Expo Go (no native module) doesn't throw during require.
@@ -332,6 +334,11 @@ function Root({
     if (result.error === 'rate_limited') {
       Alert.alert(t('common.error_title'), t('error.rate_limit'));
       return;
+    }
+
+    if (result.error === 'daily_ai_limit') {
+      Alert.alert(t('recording.alert.transcription_failed.title'), t('error.daily_ai_limit'));
+      return base;
     }
 
     if (result.error === 'language_pack_missing') {
@@ -687,8 +694,8 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.regular,
     maxHeight: 100,
     paddingVertical: 8,
   },

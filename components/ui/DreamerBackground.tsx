@@ -1,14 +1,15 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { StyleSheet, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getDreamerArtwork, type DreamerScene } from '@/constants/dreamerArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
-import { usePaintingBreath, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
+import { usePaintingArrival, usePaintingDepthStyle, useHeaderStretchStyle } from './headerStretch';
 
 type Props = {
   scene: DreamerScene;
@@ -29,7 +30,7 @@ type Props = {
 };
 
 /**
- * The painting itself, alive: it breathes slowly and lags behind the page as it scrolls,
+ * The painting itself settles as its screen opens and lags behind the page as it scrolls,
  * so the scene seems to lie deeper than the copy over it.
  */
 function PaintingLayer({ height, frame, children }: {
@@ -38,9 +39,9 @@ function PaintingLayer({ height, frame, children }: {
   children: React.ReactNode;
 }) {
   const depth = usePaintingDepthStyle(height, frame);
-  const breath = usePaintingBreath();
+  const arrival = usePaintingArrival();
   return <Animated.View style={[StyleSheet.absoluteFill, depth]}>
-    <Animated.View style={[StyleSheet.absoluteFill, breath]}>{children}</Animated.View>
+    <Animated.View style={[StyleSheet.absoluteFill, arrival]}>{children}</Animated.View>
   </Animated.View>;
 }
 
@@ -56,7 +57,7 @@ export function DreamerArtworkWindow({ scene, style, bleedTop = 0, maxHeight = 2
   maxHeight?: number;
 }) {
   const { colors, mode } = useTheme();
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const ground = getNoctaliaDesignTokens(colors, mode).screen.background;
   const artworkKey = `${scene}:${mode}`;
   const [failedArtwork, setFailedArtwork] = useState<string | null>(null);

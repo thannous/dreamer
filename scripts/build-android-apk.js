@@ -5,7 +5,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
 const ROOT_DIR = path.resolve(__dirname, '..');
-const EAS_CLI_SPEC = 'eas-cli@21.0.0';
+const EAS_CLI_SPEC = 'eas-cli@25.1.1';
 
 function resolveNpxCommand(platform = process.platform) {
   return platform === 'win32' ? 'npx.cmd' : 'npx';

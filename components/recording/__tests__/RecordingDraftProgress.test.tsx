@@ -45,7 +45,7 @@ jest.mock('@/constants/noctaliaDesign', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: { medium: 'SpaceGrotesk-Medium' },
+    outfit: { medium: 'Outfit-Medium' },
   },
 }));
 
@@ -54,8 +54,9 @@ jest.mock('@/hooks/useTranslation', () => ({
     t: (key: string, params?: Record<string, string | number>) => {
       const values: Record<string, string> = {
         'recording.draft_progress.count': '{count} characters',
+        'recording.draft_progress.count_one': '{count} character',
         'recording.draft_progress.ready': 'Ready to save.',
-        'recording.draft_progress.saved_locally': 'Draft saved on this device',
+        'recording.length.near': '{count} / {max} characters',
       };
       let value = values[key] ?? key;
       if (params) {
@@ -76,7 +77,7 @@ describe('RecordingDraftProgress', () => {
   });
 
   it.each([
-    [' ', '1 characters'],
+    [' ', '1 character'],
     [' \n\t ', '4 characters'],
     [' A blue door ', '13 characters'],
   ])('attaches the stable ID directly to the raw character counter for %j', (value: string, countLabel: string) => {
@@ -102,6 +103,16 @@ describe('RecordingDraftProgress', () => {
     expect(counter.textContent).not.toMatch(/^0 (caractères|characters|caracteres|Zeichen|caratteri)$/);
   });
 
+  it('formats a long count the same way before and after the maximum comes near', () => {
+    const view = render(<RecordingDraftProgress value={'x'.repeat(17999)} />);
+    expect(screen.getByTestId(TID.Component.RecordingDraftProgressCount).textContent).toBe('17,999 characters');
+    view.unmount();
+
+    render(<RecordingDraftProgress value={'x'.repeat(18500)} />);
+    const counter = screen.getByTestId(TID.Component.RecordingDraftProgressCount);
+    expect(counter.textContent).toBe('18,500 / 20,000 characters');
+  });
+
   it('renders the actual localized count for a 601-character draft without a 600 limit', () => {
     render(<RecordingDraftProgress value={'x'.repeat(601)} />);
 
@@ -110,14 +121,5 @@ describe('RecordingDraftProgress', () => {
     expect(progress.textContent).toContain('601 characters');
     expect(progress.textContent).not.toContain('601/600');
     expect(progress.textContent).not.toContain('/600');
-  });
-
-  it('shows the saved-locally copy only after persistence is confirmed', () => {
-    const { rerender } = render(<RecordingDraftProgress value="A blue door" />);
-    const progress = screen.getByTestId(TID.Component.RecordingDraftProgress);
-    expect(progress.textContent).not.toContain('Draft saved on this device');
-
-    rerender(<RecordingDraftProgress value="A blue door" persisted />);
-    expect(progress.textContent).toContain('Draft saved on this device');
   });
 });

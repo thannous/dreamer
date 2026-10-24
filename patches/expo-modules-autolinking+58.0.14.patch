@@ -1,0 +1,38 @@
+diff --git a/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt b/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
+index b682023..bde1ee8 100644
+--- a/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
++++ b/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/GenerateInlineModulesTask.kt
+@@ -9,6 +9,7 @@ import org.gradle.api.tasks.OutputDirectory
+ import org.gradle.api.tasks.TaskAction
+ import org.gradle.process.ExecOperations
+ import javax.inject.Inject
++import java.util.Base64
+ 
+ /**
+  * Task that mirrors the Kotlin inline modules and generates the `ExpoInlineModulesList` provider.
+@@ -52,21 +53,22 @@ abstract class GenerateInlineModulesTask : DefaultTask() {
+ 
+   @TaskAction
+   fun generateInlineModules() {
++    // Transport JSON without embedded command-line quotes (Windows ProcessBuilder).
++    val watched = Base64.getEncoder().encodeToString(watchedDirectoriesSerialized.get().toByteArray(Charsets.UTF_8))
+     execOperations.exec { spec ->
+       spec.workingDir(nodeWorkingDir.get().asFile)
+       spec.commandLine(
+         "node",
+         "--no-warnings",
+         "--eval",
+-        "require('expo/bin/autolinking')",
++        "process.argv.push(Buffer.from('$watched','base64').toString('utf8'));require('expo/bin/autolinking')",
+         "expo-modules-autolinking",
+         "mirror-kotlin-inline-modules",
+         "--kotlin-files-mirror-directory",
+         mirrorDirectory.get().asFile.absolutePath,
+         "--inline-modules-list-directory",
+         outputDirectory.get().asFile.absolutePath,
+-        "--watched-directories-serialized",
+-        watchedDirectoriesSerialized.get()
++        "--watched-directories-serialized"
+       )
+     }
+   }

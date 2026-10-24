@@ -18,6 +18,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import type { NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TypeScale } from '@/constants/typeScale';
 
 // Reuse the landing's artwork and Fibonacci sphere, with native image cards.
 const IMAGES = [
@@ -226,12 +227,12 @@ const styles = StyleSheet.create({
   control: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   controlStart: { position: 'absolute', left: 0, top: '50%', marginTop: -22, zIndex: 30 },
   controlEnd: { position: 'absolute', right: 0, top: '50%', marginTop: -22, zIndex: 30 },
-  hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 11, lineHeight: 16, textAlign: 'center' },
+  hint: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 17, textAlign: 'center' },
   gallery: { flexDirection: 'row', gap: 10, alignItems: 'center' },
   galleryImage: { flex: 1, borderRadius: 12, overflow: 'hidden' },
   entry: { alignItems: 'center', gap: 7 },
   entryImage: { borderRadius: 18, overflow: 'hidden' },
-  entryTitle: { fontFamily: Fonts.fraunces.regular, fontSize: 17, lineHeight: 22, textAlign: 'center' },
-  entryText: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 12, lineHeight: 18, textAlign: 'center' },
+  entryTitle: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight, textAlign: 'center' },
+  entryText: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 18, textAlign: 'center' },
   back: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12 },
 });

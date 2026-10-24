@@ -4,20 +4,26 @@
   "private": true,
   "description": "Build dependencies for the Noctalia marketing site",
   "engines": {
-    "node": ">=24.19.0 <25"
+    "node": ">=24.22.1 <25"
   },
   "scripts": {
     "build": "node ../../scripts/docs-build.js",
     "check": "node ../../scripts/docs-check.js",
     "dev": "node ../../scripts/docs-dev.js",
     "build:experience": "node ../../scripts/build-experience.js",
-    "test:testerarmy": "node ../../tools/e2e/run.mjs site web"
+    "test:testerarmy": "node ../../tools/e2e/run.mjs site web",
+    "atlas:pack": "node ../../scripts/atlas-pack.mjs",
+    "atlas:handoff": "node ../../scripts/atlas-handoff.mjs",
+    "atlas:receipt": "node ../../scripts/atlas-qualification-receipt.mjs",
+    "atlas:gallery": "node ../../scripts/atlas-review-gallery.mjs",
+    "atlas:tools:test": "node --test ../../scripts/test-atlas-tools.mjs",
+    "symbols:rollout": "node ../../scripts/symbol-rollout-report.mjs"
   },
   "dependencies": {
     "esbuild": "0.28.1",
-    "image-size": "1.2.1",
+    "image-size": "2.0.4",
     "lenis": "1.3.25",
     "motion": "12.42.2",
-    "sharp": "0.34.5"
+    "sharp": "0.35.5"
   }
 }

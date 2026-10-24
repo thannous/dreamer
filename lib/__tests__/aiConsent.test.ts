@@ -1,12 +1,10 @@
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { hasAiConsent, requestAiConsent, resetAiConsentCacheForTests } from '@/lib/aiConsent';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { requestAiConsent, resetAiConsentCacheForTests, setAiConsentPromptRequired } from '@/lib/aiConsent';
 
 const t = (key: string) => key;
 type Button = { text?: string; onPress?: () => void };
@@ -22,20 +20,34 @@ describe('requestAiConsent', () => {
   beforeEach(async () => {
     jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
     resetAiConsentCacheForTests();
-    // These cases describe a signed-in user, the only one who is prompted.
-    setAiConsentPromptRequired(true);
     await AsyncStorage.clear();
   });
 
   afterEach(() => jest.restoreAllMocks());
 
-  it('does not prompt a guest, whose analysis is a demonstration', async () => {
-    setAiConsentPromptRequired(false);
+  it('withholds silent background work until permission is given', async () => {
+    await expect(hasAiConsent()).resolves.toBe(false);
+    expect(Alert.alert).not.toHaveBeenCalled();
+  });
+
+  it('asks again a user who accepted the earlier text that named no provider', async () => {
+    await AsyncStorage.setItem('noctalia.aiConsent.v1', 'granted');
+    await expect(hasAiConsent()).resolves.toBe(false);
+    const attempt = requestAiConsent(t);
+    await flush();
+    expect(Alert.alert).toHaveBeenCalledTimes(1);
+    answer(0);
+    await attempt;
+  });
+
+  it('never asks again a user who accepted the text naming the providers', async () => {
+    await AsyncStorage.setItem('noctalia.aiConsent.v2', 'granted');
+    await expect(hasAiConsent()).resolves.toBe(true);
     await expect(requestAiConsent(t)).resolves.toBe(true);
     expect(Alert.alert).not.toHaveBeenCalled();
   });
 
-  it('does not send a signed-in dream before permission', async () => {
+  it('does not send a dream before permission', async () => {
     const sendDream = jest.fn();
     const attempt = requestAiConsent(t).then((accepted) => {
       if (accepted) sendDream();

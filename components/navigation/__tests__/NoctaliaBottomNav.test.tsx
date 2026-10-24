@@ -29,6 +29,7 @@ jest.mock('react-native', () => {
       },
     },
     Pressable: ({
+      accessibilityHint,
       accessibilityLabel,
       accessibilityRole,
       accessibilityState,
@@ -39,6 +40,7 @@ jest.mock('react-native', () => {
       testID,
       ...rest
     }: {
+      accessibilityHint?: string;
       accessibilityLabel?: string;
       accessibilityRole?: string;
       accessibilityState?: { selected?: boolean; busy?: boolean };
@@ -49,6 +51,7 @@ jest.mock('react-native', () => {
       testID?: string;
     }) => (
       <button
+        aria-description={accessibilityHint}
         aria-label={accessibilityLabel}
         aria-selected={accessibilityState?.selected ? 'true' : 'false'}
         aria-busy={accessibilityState?.busy ? 'true' : undefined}
@@ -144,12 +147,14 @@ jest.mock('@/constants/noctaliaDesign', () => ({
       background: '#background',
       border: '#border',
       inactive: '#inactive',
+      glass: { tint: '#glass-tint', solid: '#glass-solid', highlight: ['#glass-highlight', '#glass-clear'], rim: '#glass-rim' },
+      activePill: { fill: '#pill-fill', sheen: ['#pill-sheen', '#pill-clear'], rim: '#pill-rim' },
     },
   }),
 }));
 
 jest.mock('@/constants/theme', () => ({
-  Fonts: { spaceGrotesk: { medium: 'SpaceGrotesk-Medium' } },
+  Fonts: { outfit: { medium: 'Outfit-Medium' } },
 }));
 
 jest.mock('@/context/ThemeContext', () => ({
@@ -196,8 +201,9 @@ describe('NoctaliaBottomNav', () => {
 
     const addDreamTab = screen.getByTestId(TID.Tab.AddDream);
     expect(addDreamTab).toBeTruthy();
-    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"start":160');
-    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"end":160');
+    // Bounded to 640 points and centered: five tabs, not a ruler across the window.
+    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"start":320');
+    expect(addDreamTab.parentElement?.parentElement?.getAttribute('data-native-style')).toContain('"end":320');
   });
 
   it('remains hidden on desktop Web', () => {
@@ -226,11 +232,41 @@ describe('NoctaliaBottomNav', () => {
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
       const style = JSON.parse(label.getAttribute('data-native-style') ?? '{}');
-      expect(style.fontSize).toBe(11);
+      // Phone bars read 12-point labels; only narrow and short landscape bars drop to 11.
+      expect(style.fontSize).toBe(12);
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
     });
     const margin = 8;
     expect(barBox(TID.Tab.AddDream)).toMatchObject({ start: margin, end: margin, height: 86 });
+  });
+
+  // Android cannot shrink a label to fit with a floor, so where a full name may overflow
+  // at 12 points it shows the short one instead of cutting the full one with an ellipsis.
+  it.each([
+    { os: 'android' as const, width: 375, fontScale: 1, compact: true },
+    { os: 'android' as const, width: 412, fontScale: 1.15, compact: true },
+    { os: 'android' as const, width: 412, fontScale: 1, compact: false },
+    { os: 'web' as const, width: 375, fontScale: 1.15, compact: false },
+  ])('uses $os short tab names at $width dp and text scale $fontScale: $compact', ({ os, width, fontScale, compact }) => {
+    mockPlatformOS = os;
+    mockWindowWidth = width;
+    mockFontScale = fontScale;
+    render(<NoctaliaBottomNav activeKey="addDream" />);
+
+    const labels = barLabels().map((label) => label.textContent);
+    expect(labels).toContain(compact ? 'nav.home_compact' : 'nav.home');
+    expect(labels).toContain(compact ? 'nav.stats_compact' : 'nav.stats');
+  });
+
+  it('tells screen readers what the selected Capture tab does, and only there', () => {
+    const onCapturePress = jest.fn();
+    const view = render(<NoctaliaBottomNav activeKey="addDream" onCapturePress={onCapturePress} capturePressHint="Couper le micro" />);
+    const capture = screen.getByTestId(TID.Tab.AddDream);
+    expect(capture.getAttribute('aria-description')).toBe('Couper le micro');
+    fireEvent.click(capture);
+    expect(onCapturePress).toHaveBeenCalledTimes(1);
+    view.rerender(<NoctaliaBottomNav activeKey="home" onCapturePress={onCapturePress} capturePressHint="Couper le micro" />);
+    expect(screen.getByTestId(TID.Tab.AddDream).getAttribute('aria-description')).toBeNull();
   });
 
   it('keeps the capture label stable when another tab is active', () => {
@@ -286,8 +322,9 @@ describe('NoctaliaBottomNav', () => {
     expect(box.height).toBe(86);
     expect(barClass).toContain('px-1');
     expect(center.width).toBeCloseTo(58.8, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(center.height).toBeUndefined();
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(center.height).toBe('100%');
     expect(screen.queryByTestId(TID.Tab.Settings)).toBeNull();
     expect(labels).toHaveLength(5);
     labels.forEach((label) => {
@@ -346,7 +383,8 @@ describe('NoctaliaBottomNav', () => {
     const center = centerBox(TID.Tab.AddDream);
     const labels = barLabels();
 
-    expect(center.width).toBeCloseTo(168.6, 2);
+    // A fifth of the bar, now bounded to 640 points on a phone on its side.
+    expect(center.width).toBeCloseTo(122.4, 2);
     expect(labels).toHaveLength(5);
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
   });
@@ -386,9 +424,10 @@ describe('NoctaliaBottomNav', () => {
     expect(box.end).toBe(8);
     expect(barClass).toContain('px-2');
     expect(center.width).toBeCloseTo(71.2, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(center.height).toBeUndefined();
-    expect(centerLabel?.getAttribute('data-native-class')).toContain('text-[12px]');
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(center.height).toBe('100%');
+    expect(centerLabel?.getAttribute('data-native-class')).toContain('text-caption');
     expect(centerLabel?.getAttribute('data-accessible')).toBe('false');
     expect(box.height).toBe(86);
     expect(centerLabel?.getAttribute('data-number-of-lines')).toBe('1');

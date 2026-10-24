@@ -1,8 +1,8 @@
 import { createRequire } from 'node:module';
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, type ParityInfo } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog, type ParityInfo } from '../web-parity-fixtures';
 
-const sharp: typeof import('sharp') = createRequire(import.meta.url)('sharp');
+const sharp: typeof import('sharp').default = createRequire(import.meta.url)('sharp');
 const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR', reducedMotion: 'reduce' });
 
 function luminance(color: number[]) {
@@ -37,7 +37,11 @@ async function readable(page: Page, info: ParityInfo, label: string) {
         if (parent && !parent.closest('script,style,textarea') && /[\p{L}\p{N}]/u.test(text.textContent ?? '')) parents.add(parent);
       }
       const nodes = [...parents, ...document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('textarea,input[type="text"],input[type="search"]')];
-      const samples: { text: string; color: number[]; alpha: number; required: number; rows: number[][] }[] = [];
+      const samples: { text: string; color: number[]; alpha: number; required: number; painted: boolean; rows: number[][] }[] = [];
+      // Owner decision 2026-10-18 (PR #428): the header copy painted straight on the
+      // artwork (NoctaliaScreenHeader's halo, `0px 1px 14px`) and the capture instruction
+      // above the composer keep no local ground, so they are measured but not held to AA.
+      const instruction = document.querySelector('[data-testid="recording-composer"]')?.previousElementSibling ?? null;
       let id = 0;
       for (const node of nodes) {
         const input = node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement;
@@ -99,7 +103,8 @@ async function readable(page: Page, info: ParityInfo, label: string) {
         }
         // Clipped content and copy beneath a toast or navigation are not visible.
         if (rows.length === 0) continue;
-        samples.push({ text: text.trim().slice(0, 80), color: channels.slice(0, 3), alpha: (channels[3] ?? 1) * opacity, required: fontSize >= 24 || (bold && fontSize >= 18.66) ? 3 : 4.5, rows });
+        const painted = style.textShadow.includes('0px 1px 14px') || Boolean(instruction?.contains(node));
+        samples.push({ text: text.trim().slice(0, 80), color: channels.slice(0, 3), alpha: (channels[3] ?? 1) * opacity, required: fontSize >= 24 || (bold && fontSize >= 18.66) ? 3 : 4.5, painted, rows });
         node.dataset.backgroundContrast = String(id++);
         node.dataset.backgroundOriginalStyle = node.getAttribute('style') ?? '';
         node.dataset.backgroundBounds = JSON.stringify([bounds.x, bounds.y, bounds.width, bounds.height]);
@@ -151,12 +156,12 @@ async function readable(page: Page, info: ParityInfo, label: string) {
             measured++;
           }
         }
-        return { text: sample.text, color: sample.color, alpha: sample.alpha, minimum: Number(minimum.toFixed(3)), required: sample.required, measured };
+        return { text: sample.text, color: sample.color, alpha: sample.alpha, minimum: Number(minimum.toFixed(3)), required: sample.required, painted: sample.painted, measured };
       }).filter(result => result.measured > 0);
-      await info.attach(`${label}-contrast`, { contentType: 'application/json', body: JSON.stringify({ method: 'Visible text lines over screenshot pixels with ink hidden; clipped, occluded and disabled copy excluded', attempt, results }, null, 2) });
+      await info.attach(`${label}-contrast`, { contentType: 'application/json', body: JSON.stringify({ method: 'Visible text lines over screenshot pixels with ink hidden; clipped, occluded and disabled copy excluded; painted header copy and the capture instruction recorded, not asserted (owner decision 2026-10-18, PR #428)', attempt, results }, null, 2) });
       try {
         expect(results.length, `${label}: visible text was actually measured`).toBeGreaterThan(0);
-        for (const result of results) expect(result.minimum, `${label}: ${result.text}`).toBeGreaterThanOrEqual(result.required);
+        for (const result of results) if (!result.painted) expect(result.minimum, `${label}: ${result.text}`).toBeGreaterThanOrEqual(result.required);
       } catch (error) {
         await info.attach(`${label}-masked-failure`, { contentType: 'image/png', body: buffer });
         throw error;
@@ -182,6 +187,10 @@ async function readable(page: Page, info: ParityInfo, label: string) {
 async function start(page: Page) {
   await page.goto('/');
   await page.getByTestId('btn.onboarding.intro.next').click();
+  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
@@ -220,7 +229,8 @@ async function artwork(page: Page, scene: string, mode: 'light' | 'dark') {
 
 /** Since the 2026-10-11 Capture redesign the painting reaches the top third behind the
  * title, the mode control and the composer: it is veiled behind copy rather than an
- * unmasked opening, and `readable` keeps every visible text over it at AA. Here the
+ * unmasked opening, and `readable` keeps every visible text over it at AA except the
+ * painted header copy and instruction the owner kept on the halo alone. Here the
  * painting must reach the top edge, lie behind the whole title and still show through its
  * veil: with all text ink hidden, the header differs from the same header without it.
  */

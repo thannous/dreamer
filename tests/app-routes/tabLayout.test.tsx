@@ -205,6 +205,8 @@ jest.doMock('@/constants/noctaliaDesign', () => ({
       background: '#fff',
       border: '#ddd',
       inactive: '#777',
+      glass: { tint: 'rgba(245, 234, 219, 0.2)', solid: 'rgba(245, 234, 219, 0.94)', highlight: ['#fff', 'transparent'], rim: '#ddd' },
+      activePill: { fill: 'rgba(124, 76, 43, 0.08)', sheen: ['#fff', 'transparent'], rim: '#ccc' },
     },
     screen: { background: '#faf8f3' },
     surface: { active: 'rgba(124, 76, 43, 0.08)' },
@@ -213,7 +215,7 @@ jest.doMock('@/constants/noctaliaDesign', () => ({
 
 jest.doMock('@/constants/theme', () => ({
   Fonts: {
-    spaceGrotesk: { bold: 'SpaceGrotesk-Bold', medium: 'SpaceGrotesk-Medium' },
+    outfit: { bold: 'Outfit-Bold', medium: 'Outfit-Medium' },
   },
 }));
 
@@ -339,9 +341,10 @@ describe('TabLayout returning guest navigation', () => {
 
     render(<TabLayout />);
 
+    // Bounded to 640 points and centered: five tabs, not a ruler across the window.
     expect(capturedTabBarStyle).toEqual(expect.objectContaining({
-      end: 160,
-      start: 160,
+      end: 320,
+      start: 320,
     }));
     expect(capturedTabBarStyle).not.toEqual(expect.objectContaining({
       left: expect.anything(),
@@ -377,8 +380,9 @@ describe('TabLayout returning guest navigation', () => {
     expect(labels).toHaveLength(5);
     expect(screen.queryByText('nav.settings')).toBeNull();
     expect(box.width).toBeCloseTo(58.8, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(box.height).toBeUndefined();
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(box.height).toBe('100%');
     labels.forEach((label) => {
       expect(label.getAttribute('data-number-of-lines')).toBe('1');
       expect(label.getAttribute('data-accessible')).toBe('false');
@@ -446,7 +450,8 @@ describe('TabLayout returning guest navigation', () => {
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/)).toBeTruthy();
     expect(screen.getByText(/^nav\.capture_dream(?:_compact)?$/).getAttribute('data-number-of-lines')).toBe('1');
     const box = centerBox('nav.capture_dream_compact');
-    expect(box.width).toBeCloseTo(168.6, 2);
+    // A fifth of the bar, now bounded to 640 points on a phone on its side.
+    expect(box.width).toBeCloseTo(122.4, 2);
   });
 
   it.each([[640, 320], [915, 412]])('keeps Capture centered in one row at %i by %i dp', (width: number, height: number) => {
@@ -519,8 +524,9 @@ describe('TabLayout returning guest navigation', () => {
     }));
     const box = centerBox('nav.capture_dream');
     expect(box.width).toBeCloseTo(71.2, 1);
-    // Capture sits in the bar row like the other tabs; it no longer has a lifted fixed height.
-    expect(box.height).toBeUndefined();
+    // Capture sits in the bar row like the other tabs: every cell fills the bar's height so
+    // the active tab's background can, rather than Capture having a lifted fixed height.
+    expect(box.height).toBe('100%');
     expect(centerLabel.getAttribute('data-number-of-lines')).toBe('1');
     expect(centerLabel.getAttribute('data-accessible')).toBe('false');
   });

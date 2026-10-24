@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "apps": {
     "noctalia": {
-      "version": "3.6.0",
-      "sourceRef": "5615f0469d4fe5831613f49c2acc283d2adaae19",
+      "version": "3.7.0",
+      "sourceRef": "79aeb0c6a6930d47d1fef691bd20627f2aa20511",
       "baseline": "Prepared source snapshot; not a Store publication claim"
     },
     "lucid": {

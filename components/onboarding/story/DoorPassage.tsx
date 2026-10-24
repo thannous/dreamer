@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   Easing, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming,
 } from 'react-native-reanimated';
@@ -10,6 +10,7 @@ import { EASE, EASING } from '@/components/motion/motion';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { StoryNight } from './StoryNight';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 const NIGHT = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
@@ -46,6 +47,23 @@ const SWING = Easing.bezier(0.6, 0, 0.3, 1);
 /** A step taken: it gathers pace until the light takes over. */
 const STEP = Easing.bezier(0.5, 0, 0.8, 0.35);
 
+/** A colour with its alpha, as the `#RRGGBBAA` a CSS gradient takes. */
+const tint = (hex: string, alpha = 1) => `${hex}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`;
+
+/**
+ * The passage's large soft lights, as CSS gradients the GPU paints. As SVG they were
+ * rasterised on the main thread in the door's first frame (≈150 ms on a mid-range
+ * Android, the bloom alone a 2712 px square bitmap). Each radius is a share of its own
+ * box on both axes, as an SVG gradient in its bounding box.
+ */
+const LIGHT = {
+  vignette: `radial-gradient(ellipse 62% 62% at 50% 52%, ${tint(NIGHT.screen.background, 0)} 35%, ${tint(NIGHT.screen.background, 0.92)} 100%)`,
+  glow: `radial-gradient(ellipse 50% 50% at 50% 56%, ${tint(COLOR.light, 0.6)} 0%, ${tint(COLOR.gold, 0.24)} 22%, ${tint(COLOR.amber, 0.06)} 55%, ${tint(COLOR.amber, 0)} 100%)`,
+  // Gone before the sides of its box: no edge can show.
+  rays: `radial-gradient(ellipse 100% 100% at 50% 0%, ${tint(COLOR.light, 0.62)} 0%, ${tint(COLOR.gold, 0.3)} 16%, ${tint(COLOR.amber, 0)} 46%)`,
+  bloom: `radial-gradient(ellipse 50% 50% at 50% 50%, ${COLOR.light} 0%, ${tint(COLOR.warm, 0.85)} 60%, ${tint(COLOR.gold, 0)} 100%)`,
+} as const;
+
 /** Arch with a semicircular head, as an SVG path in a w×h box. */
 const arch = (w: number, h: number, x = 0, y = 0) =>
   `M${x} ${y + h} V${y + w / 2} A${w / 2} ${w / 2} 0 0 1 ${x + w} ${y + w / 2} V${y + h} Z`;
@@ -66,7 +84,7 @@ const MOTES = [
  */
 export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDone: () => void }) {
   const reduced = useReducedMotion();
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
   // The night is already there when the sheet slides away: nothing of the previous step shows through.
   const veil = useSharedValue(1);
   const arrive = useSharedValue(reduced ? 1 : 0);
@@ -174,49 +192,15 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
       <Animated.View style={[StyleSheet.absoluteFill, skyStyle]}>
         <StoryNight tokens={NIGHT} page={{ key: 'door', index: 12 }} />
       </Animated.View>
-      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, vignetteStyle]}>
-        <Svg width="100%" height="100%">
-          <Defs>
-            <RadialGradient id="dpVignette" cx="50%" cy="52%" r="62%">
-              <Stop offset="0.35" stopColor={NIGHT.screen.background} stopOpacity={0} />
-              <Stop offset="1" stopColor={NIGHT.screen.background} stopOpacity={0.92} />
-            </RadialGradient>
-          </Defs>
-          <Rect width="100%" height="100%" fill="url(#dpVignette)" />
-        </Svg>
-      </Animated.View>
+      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.vignette, vignetteStyle]} />
 
       <View pointerEvents="none" style={styles.stage}>
         <Animated.View style={[styles.scene, sceneStyle]}>
           {/* The light behind the door, larger than it: it seems to leak around the stone. */}
-          <Animated.View style={[styles.glow, glowStyle]}>
-            <Svg width="100%" height="100%">
-              <Defs>
-                <RadialGradient id="dpGlow" cx="50%" cy="56%" r="50%">
-                  <Stop offset="0" stopColor={COLOR.light} stopOpacity={0.6} />
-                  <Stop offset="0.22" stopColor={COLOR.gold} stopOpacity={0.24} />
-                  <Stop offset="0.55" stopColor={COLOR.amber} stopOpacity={0.06} />
-                  <Stop offset="1" stopColor={COLOR.amber} stopOpacity={0} />
-                </RadialGradient>
-              </Defs>
-              <Rect width="100%" height="100%" fill="url(#dpGlow)" />
-            </Svg>
-          </Animated.View>
+          <Animated.View style={[styles.glow, glowStyle]} />
 
           {/* The light thrown on the ground in front of the sill: a pool that fades on every side. */}
-          <Animated.View style={[styles.rays, raysStyle]}>
-            <Svg width="100%" height="100%">
-              <Defs>
-                {/* Gone before the sides of its box: no edge can show. */}
-                <RadialGradient id="dpRays" cx="50%" cy="0%" r="100%">
-                  <Stop offset="0" stopColor={COLOR.light} stopOpacity={0.62} />
-                  <Stop offset="0.16" stopColor={COLOR.gold} stopOpacity={0.3} />
-                  <Stop offset="0.46" stopColor={COLOR.amber} stopOpacity={0} />
-                </RadialGradient>
-              </Defs>
-              <Rect width="100%" height="100%" fill="url(#dpRays)" />
-            </Svg>
-          </Animated.View>
+          <Animated.View style={[styles.rays, raysStyle]} />
 
           {/* The arch: thick stone, a gilded rim, a sill. */}
           <Svg width={DOOR.width} height={DOOR.height} style={StyleSheet.absoluteFill}>
@@ -284,18 +268,7 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
       <Animated.View pointerEvents="none" style={[styles.bloom, {
         width: bloomSize, height: bloomSize, borderRadius: bloomSize / 2,
         left: (width - bloomSize) / 2, top: (height - bloomSize) / 2,
-      }, bloomStyle]}>
-        <Svg width="100%" height="100%">
-          <Defs>
-            <RadialGradient id="dpBloom" cx="50%" cy="50%" r="50%">
-              <Stop offset="0" stopColor={COLOR.light} />
-              <Stop offset="0.6" stopColor={COLOR.warm} stopOpacity={0.85} />
-              <Stop offset="1" stopColor={COLOR.gold} stopOpacity={0} />
-            </RadialGradient>
-          </Defs>
-          <Rect width="100%" height="100%" fill="url(#dpBloom)" />
-        </Svg>
-      </Animated.View>
+      }, bloomStyle]} />
       <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: COLOR.warm }, flashStyle]} />
     </Pressable>
   </Animated.View>;
@@ -405,8 +378,15 @@ const styles = StyleSheet.create({
   // The door stands a little below the middle, where the eye rests on a portrait screen.
   stage: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, alignItems: 'center', justifyContent: 'center', paddingTop: 40 },
   scene: { width: DOOR.width, height: DOOR.height },
-  glow: { position: 'absolute', left: -DOOR.width * 0.9, top: -DOOR.height * 0.45, width: DOOR.width * 2.8, height: DOOR.height * 1.9 },
-  rays: { position: 'absolute', left: -DOOR.width * 0.6, top: DOOR.height - 4, width: DOOR.width * 2.2, height: 150, transformOrigin: 'top center' },
+  vignette: { backgroundImage: LIGHT.vignette },
+  glow: {
+    position: 'absolute', left: -DOOR.width * 0.9, top: -DOOR.height * 0.45, width: DOOR.width * 2.8, height: DOOR.height * 1.9,
+    backgroundImage: LIGHT.glow,
+  },
+  rays: {
+    position: 'absolute', left: -DOOR.width * 0.6, top: DOOR.height - 4, width: DOOR.width * 2.2, height: 150, transformOrigin: 'top center',
+    backgroundImage: LIGHT.rays,
+  },
   opening: {
     position: 'absolute', left: DOOR.stone, top: DOOR.stone, width: OPENING.width, height: OPENING.height,
     overflow: 'hidden', borderTopLeftRadius: OPENING.width / 2, borderTopRightRadius: OPENING.width / 2,
@@ -429,5 +409,5 @@ const styles = StyleSheet.create({
     position: 'absolute', right: DOOR.stone, top: DOOR.stone + OPENING.width / 2, width: 2, height: OPENING.height - OPENING.width / 2,
     backgroundColor: COLOR.light, boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: 8, spreadDistance: 1, color: COLOR.gold }],
   },
-  bloom: { position: 'absolute' },
+  bloom: { position: 'absolute', backgroundImage: LIGHT.bloom },
 });

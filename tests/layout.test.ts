@@ -6,15 +6,18 @@ import {
   TAB_BAR_HEIGHT,
   getBottomNavigationLayout,
   getBottomNavigationItemStyle,
+  getJournalSpread,
   getRecordingComposerLayout,
   getTabBarHorizontalLayout,
+  getWindowClass,
   isNarrowBottomNavigation,
+  type WindowClass,
 } from '@/constants/layout';
 
 describe('getBottomNavigationLayout', () => {
   it.each([320, 361, 375, 390, 399, 400, 430, 768])('sizes portrait labels at %i dp without changing narrow classification', (width: number) => {
     const layout = getBottomNavigationLayout(width, 1024);
-    expect(layout.labelFontSize).toBe(width < 600 ? 11 : 12);
+    expect(layout.labelFontSize).toBe(width <= 360 ? 11 : 12);
     expect(layout.narrow).toBe(width <= 360);
     expect(layout.labelLines).toBe(1);
     expect(layout.barHeight).toBe(TAB_BAR_HEIGHT);
@@ -38,7 +41,7 @@ describe('getBottomNavigationLayout', () => {
       narrow: false,
       stackedLabels: false,
       fontScale: 1,
-      labelFontSize: 11,
+      labelFontSize: 12,
       labelLineHeight: 16,
       labelLines: 1,
       labelHeight: 20,
@@ -148,7 +151,60 @@ describe('narrow bottom navigation', () => {
     expect(getTabBarHorizontalLayout(402)).toEqual({ start: 8, end: 8 });
     expect(getTabBarHorizontalLayout(599)).toEqual({ start: 8, end: 8 });
     expect(getTabBarHorizontalLayout(600)).toEqual({ start: 22, end: 22 });
-    expect(getTabBarHorizontalLayout(1280)).toEqual({ start: 160, end: 160 });
+    // The open iPhone Duo on its side, less its status bar column: five tabs, not a ruler.
+    expect(getTabBarHorizontalLayout(897)).toEqual({ start: 128.5, end: 128.5 });
+    expect(getTabBarHorizontalLayout(1280)).toEqual({ start: 320, end: 320 });
+  });
+});
+
+describe('getWindowClass', () => {
+  it.each([
+    [390, 844, 'compact'], // a phone
+    [412, 678, 'compact'], // the folded iPhone Duo, less its status bar column
+    [330, 951, 'compact'], // half of the open Duo in Split View
+    [874, 402, 'large'], // a phone on its side keeps its two columns
+    [624, 466, 'large'], // the folded Duo on its side
+    [669, 951, 'large'], // the open Duo
+    [768, 1024, 'large'], // a tablet
+    [897, 669, 'expanded'], // the open Duo on its side, less its status bar column
+    [1280, 800, 'expanded'],
+    [599, 900, 'compact'],
+    [600, 900, 'large'],
+    [839, 600, 'large'],
+    [840, 480, 'expanded'],
+    [840, 479, 'large'],
+  ] as [number, number, WindowClass][])('classifies a %i × %i window as %s', (width: number, height: number, expected: WindowClass) => {
+    expect(getWindowClass(width, height)).toBe(expected);
+  });
+});
+
+describe('getJournalSpread', () => {
+  const spread = (width: number, height: number, windowWidth: number, leftInset: number, web = false) =>
+    getJournalSpread({ width, height, windowWidth, leftInset, web });
+
+  it('binds the open Duo on its side at its fold, whichever side its status bar column takes', () => {
+    // The column on the left: the left page ends where the display folds.
+    expect(spread(867, 669, 951, 84)).toEqual({ spine: 392, width: 867 });
+    // The column on the right: the left page is half the display.
+    expect(spread(867, 669, 951, 0)).toEqual({ spine: 476, width: 867 });
+  });
+
+  it.each([
+    [412, 678, 496, 84], // the folded Duo
+    [669, 951, 669, 0], // the open Duo upright, its fold across the pages
+    [385, 669, 469, 84], // the left window of Split View on the open Duo
+    [834, 402, 956, 62], // a phone on its side: too short for two pages
+  ])('keeps a single page in a %i × %i window', (width: number, height: number, windowWidth: number, leftInset: number) => {
+    expect(spread(width, height, windowWidth, leftInset)).toBeNull();
+  });
+
+  it('keeps the web on its single page', () => {
+    expect(spread(1280, 800, 1280, 0, true)).toBeNull();
+  });
+
+  it('keeps each page a reading width when the fold lies near an edge', () => {
+    expect(spread(840, 600, 900, 300)).toEqual({ spine: 320, width: 840 });
+    expect(spread(840, 600, 1800, 0)).toEqual({ spine: 520, width: 840 });
   });
 });
 

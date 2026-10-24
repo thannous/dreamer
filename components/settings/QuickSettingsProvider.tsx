@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BackHandler, Keyboard, Platform, Pressable as NativePressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { Drawer } from 'react-native-drawer-layout';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
@@ -46,7 +46,7 @@ function PreferenceChoices<T extends string>({ preference, id, showTitle = true 
     <View className="gap-3">
       {showTitle ? <View className="flex-row items-center gap-3">
         <IconSymbol name={GROUP_ICONS[id]} size={20} color={tokens.text.secondary} />
-        <Text accessibilityRole="header" className="min-w-0 flex-1 font-sans-medium text-[16px] text-ivory">{preference.title}</Text>
+        <Text accessibilityRole="header" className="min-w-0 flex-1 font-sans-medium text-body text-ivory">{preference.title}</Text>
       </View> : null}
       <View className="flex-row flex-wrap gap-2">
         {preference.options.map((option) => (
@@ -60,13 +60,23 @@ function PreferenceChoices<T extends string>({ preference, id, showTitle = true 
             className={`min-h-12 max-w-full flex-row items-center justify-center gap-2 rounded-xl border px-4 py-3 ${option.current ? 'border-champagne-soft bg-champagne' : 'border-line bg-ink-soft'}`}>
             <IconSymbol name={id === 'language' ? 'globe' : OPTION_ICONS[option.value] ?? GROUP_ICONS[id]} size={18}
               color={option.current ? tokens.action.primaryText : tokens.text.secondary} />
-            <Text className={`min-w-0 shrink font-sans-medium text-[14px] ${option.current ? 'text-on-champagne' : 'text-ivory'}`}>{option.label}</Text>
+            <Text className={`min-w-0 shrink font-sans-medium text-body-sm ${option.current ? 'text-on-champagne' : 'text-ivory'}`}>{option.label}</Text>
           </Pressable>
         ))}
       </View>
-      {preference.error ? <Text accessibilityRole="alert" className="font-sans text-[14px] text-ivory">{t('error.unknown')}</Text> : null}
+      {preference.error ? <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('error.unknown')}</Text> : null}
     </View>
   );
+}
+
+// Outside the component: React Compiler cannot compile an optional call chain followed
+// by `||`, and the drawer content is mounted for the whole session.
+function getProfileName(user: ReturnType<typeof useAuth>['user']): string | undefined {
+  const metadata = user?.user_metadata;
+  const named = [metadata?.full_name, metadata?.name, metadata?.display_name]
+    .find((value): value is string => typeof value === 'string' && value.trim().length > 0);
+  if (named) return named.trim();
+  return user?.email?.split('@')[0] || undefined;
 }
 
 export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }: {
@@ -85,10 +95,7 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
   const [showLanguage, setShowLanguage] = useState(false);
   const { user, loading: authLoading } = useAuth();
   const { isActive, loading: subscriptionLoading } = useSubscription();
-  const metadata = user?.user_metadata;
-  const profileName = [metadata?.full_name, metadata?.name, metadata?.display_name]
-    .find((value): value is string => typeof value === 'string' && value.trim().length > 0)?.trim()
-    || user?.email?.split('@')[0]
+  const profileName = getProfileName(user)
     || t(user ? 'settings.quick.profile' : 'settings.account.status.guest');
   const initials = profileName.split(/\s+/).slice(0, 2).map((part) => Array.from(part)[0]).join('').toLocaleUpperCase();
   const plusActive = Boolean(user) && isActive;
@@ -96,9 +103,10 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
   return (
     <ScrollView className="flex-1 bg-ink" testID="quick-settings.drawer" accessibilityViewIsModal
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24, paddingHorizontal: 20, gap: 28 }}>
+      // The drawer opens from the right edge, where the iPhone Duo keeps its status bar column.
+      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24, paddingLeft: 20, paddingRight: 20 + insets.right, gap: 28 }}>
       <View className="flex-row items-center justify-between gap-3">
-        <Text accessibilityRole="header" className="min-w-0 flex-1 font-display text-[24px] leading-[30px] text-ivory">{t('settings.quick.title')}</Text>
+        <Text accessibilityRole="header" className="min-w-0 flex-1 font-display text-h2 leading-[30px] text-ivory">{t('settings.quick.title')}</Text>
         <Pressable onPress={onClose} testID="quick-settings.close" accessibilityRole="button" accessibilityLabel={t('settings.quick.close')}
           hitSlop={8} pressRetentionOffset={PRESS_RETENTION}
           className="h-12 w-12 items-center justify-center rounded-full bg-ink-soft">
@@ -111,12 +119,12 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
           accessibilityState={{ disabled: authLoading }} testID="quick-settings.profile"
           className="min-h-16 flex-row items-center gap-3">
           <View className="h-14 w-14 items-center justify-center rounded-full bg-ink-soft" accessible={false}>
-            {user ? <Text className="font-sans-medium text-[20px] text-ivory">{initials}</Text>
+            {user ? <Text className="font-sans-medium text-h2 text-ivory">{initials}</Text>
               : <IconSymbol name="person.fill" size={24} color={tokens.text.secondary} />}
           </View>
           <View className="min-w-0 flex-1 gap-1">
-            <Text numberOfLines={2} className="font-sans-medium text-[18px] text-ivory">{authLoading ? t('settings.quick.loading') : profileName}</Text>
-            <Text numberOfLines={2} className="font-sans text-[13px] text-ivory-muted">
+            <Text numberOfLines={2} className="font-sans-medium text-h3 text-ivory">{authLoading ? t('settings.quick.loading') : profileName}</Text>
+            <Text numberOfLines={2} className="font-sans text-body-sm text-ivory-muted">
               {user ? (user.email || t('settings.account.status.signed_in')) : t('settings.account.local_hint')}
             </Text>
           </View>
@@ -128,7 +136,7 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
             accessibilityState={{ disabled: authLoading }} testID="quick-settings.signin"
             className="w-full min-h-14 flex-row items-center justify-center gap-3 rounded-xl border border-line bg-ink-soft px-4 py-3">
             <IconSymbol name="person.fill" size={20} color={tokens.text.secondary} />
-            <Text className="font-sans-medium text-[15px] text-ivory">{t('settings.account.button.sign_in')}</Text>
+            <Text className="font-sans-medium text-body text-ivory">{t('settings.account.button.sign_in')}</Text>
           </Pressable>
         ) : null}
         <Pressable onPress={onPlus} disabled={authLoading || subscriptionLoading} accessibilityRole="button"
@@ -137,10 +145,10 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
           className="min-h-16 flex-row items-center gap-3 rounded-2xl border border-champagne-soft bg-champagne px-4 py-4">
           <IconSymbol name="sparkles" size={24} color={tokens.action.primaryText} />
           <View className="min-w-0 flex-1 gap-1">
-            <Text className="font-sans-medium text-[16px] text-on-champagne">
+            <Text className="font-sans-medium text-body text-on-champagne">
               {t(plusActive ? 'subscription.settings.title.plus' : 'settings.quick.upgrade')}
             </Text>
-            <Text className="font-sans text-[13px] text-on-champagne">
+            <Text className="font-sans text-body-sm text-on-champagne">
               {t(plusActive ? 'settings.quick.subscription' : 'settings.quick.plus_details')}
             </Text>
           </View>
@@ -155,8 +163,8 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
           className="min-h-12 flex-row items-center justify-between gap-3">
           <IconSymbol name="globe" size={20} color={tokens.text.secondary} />
           <View className="min-w-0 flex-1 gap-1">
-            <Text className="font-sans-medium text-[16px] text-ivory">{language.title}</Text>
-            <Text className="font-sans text-[14px] text-ivory-muted">{language.currentLabel}</Text>
+            <Text className="font-sans-medium text-body text-ivory">{language.title}</Text>
+            <Text className="font-sans text-body-sm text-ivory-muted">{language.currentLabel}</Text>
           </View>
           <IconSymbol name={showLanguage ? 'chevron.up' : 'chevron.down'} size={18} color={tokens.text.secondary} />
         </Pressable>
@@ -169,7 +177,7 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
         hitSlop={ROW_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
         className="min-h-14 flex-row items-center justify-between gap-3 rounded-xl bg-ink-soft px-4 py-4">
         <IconSymbol name="gear" size={20} color={tokens.text.secondary} />
-        <Text className="min-w-0 flex-1 font-sans-medium text-[16px] text-ivory">{t('settings.quick.all')}</Text>
+        <Text className="min-w-0 flex-1 font-sans-medium text-body text-ivory">{t('settings.quick.all')}</Text>
         <IconSymbol name="chevron.right" size={18} color={tokens.text.primary} />
       </Pressable>
     </ScrollView>
@@ -189,14 +197,21 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const tokens = getNoctaliaDesignTokens(colors, mode);
-  const drawerWidth = Math.min(380, Math.max(280, width - 24));
+  const { right: rightInset } = useSafeAreaInsets();
+  const drawerWidth = Math.min(380 + rightInset, Math.max(280, width - 24));
   const visible = open && origin === pathname && !drawerDisabled;
   const close = useCallback(() => setOpen(false), []);
+  // `show` is the context value: read the route when the drawer opens, so a navigation
+  // does not hand every screen that offers the drawer a new function to render again.
+  const pathnameRef = useRef(pathname);
+  useLayoutEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
   const show = useCallback(() => {
     Keyboard.dismiss();
-    setOrigin(pathname);
+    setOrigin(pathnameRef.current);
     setOpen(true);
-  }, [pathname]);
+  }, []);
   const showSettings = useCallback(() => {
     setOpen(false);
     router.push('/settings');
@@ -232,7 +247,11 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
           {children}
         </View>
         {!drawerDisabled ? (
-          <View className="absolute inset-0" pointerEvents={visible ? 'auto' : 'none'}
+          // The web drawer is positioned beyond the viewport while closed.
+          // Clip its container so focus/scroll cannot reveal inert content or
+          // add a drawer-width strip of horizontal document overflow. Unlike hidden,
+          // clip cannot be scrolled when the browser restores focus during resize.
+          <View className={Platform.OS === 'web' ? 'absolute inset-0 overflow-clip' : 'absolute inset-0'} pointerEvents={visible ? 'auto' : 'none'}
             {...(Platform.OS === 'web' ? { 'aria-hidden': !visible, inert: !visible } : {})}>
             {reducedMotion ? (visible ? (
               <View className="absolute inset-0 flex-row justify-end">

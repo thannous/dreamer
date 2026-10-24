@@ -28,7 +28,7 @@ export function isAnalysisTranscriptHash(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0 && value.length <= ANALYSIS_TRANSCRIPT_HASH_MAX_LENGTH;
 }
 
-const fnv1a32Hex = (input: string): string => {
+export const fnv1a32Hex = (input: string): string => {
   let hash = FNV1A_OFFSET;
   for (let index = 0; index < input.length; index += 1) {
     hash ^= input.charCodeAt(index);

@@ -1,10 +1,10 @@
 import { Image, type ImageSource } from 'expo-image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { EASING } from '@/components/motion/motion';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 /** The illustration's flight from the seal's window to the plate, and its fade once the plate shows under it. */
 const FLIGHT = 1150;
@@ -30,8 +30,11 @@ export function CoverFlight({ source, from, to, height, travel, landed, onArrive
   source: ImageSource;
   /** The seal's window on the screen: its centre and diameter. */
   from: { x: number; y: number; size: number };
-  /** Where the plate will lie on the screen, mostly above it, and how its picture drifts there. */
-  to: { top: number; drift: number };
+  /**
+   * Where the plate will lie on the screen, mostly above it, and how its picture drifts there;
+   * across the page unless it is the left-hand page of two facing pages (`left`, `width`).
+   */
+  to: { top: number; drift: number; left?: number; width?: number };
   /** The plate's height, as the page lays it out at the top. */
   height: number;
   /** How far the plate's picture overhangs it above and below. */
@@ -40,7 +43,9 @@ export function CoverFlight({ source, from, to, height, travel, landed, onArrive
   onArrived: () => void;
   onGone: () => void;
 }) {
-  const { width } = useWindowDimensions();
+  const { width: window } = useContentWindow();
+  const plateLeft = to.left ?? 0;
+  const width = to.width ?? window;
   const [ratio, setRatio] = useState(PORTRAIT);
   const flight = useSharedValue(0);
   const fade = useSharedValue(1);
@@ -65,13 +70,13 @@ export function CoverFlight({ source, from, to, height, travel, landed, onArrive
   // The picture as the plate lays it out (its own size), and the scale it starts at in the window.
   const plate = covering(ratio, width, height + 2 * travel);
   const start = covering(ratio, from.size, from.size).width / plate.width;
-  const end = { x: width / 2, y: to.top + height / 2 + to.drift };
+  const end = { x: plateLeft + width / 2, y: to.top + height / 2 + to.drift };
 
   // The frame: from the round window to the plate, which mostly lies above the screen.
   const frame = useAnimatedStyle(() => {
     const opened = flight.get();
     return {
-      left: (from.x - from.size / 2) * (1 - opened),
+      left: (from.x - from.size / 2) * (1 - opened) + plateLeft * opened,
       top: (from.y - from.size / 2) * (1 - opened) + to.top * opened,
       width: from.size + (width - from.size) * opened,
       height: from.size + (height - from.size) * opened,
@@ -83,7 +88,7 @@ export function CoverFlight({ source, from, to, height, travel, landed, onArrive
   // (by the same ratio each moment), placed within the frame as the frame moves.
   const picture = useAnimatedStyle(() => {
     const opened = flight.get();
-    const frameLeft = (from.x - from.size / 2) * (1 - opened);
+    const frameLeft = (from.x - from.size / 2) * (1 - opened) + plateLeft * opened;
     const frameTop = (from.y - from.size / 2) * (1 - opened) + to.top * opened;
     const centreX = from.x + (end.x - from.x) * opened;
     const centreY = from.y + (end.y - from.y) * opened;

@@ -33,19 +33,6 @@ export type SettingsPreferenceController<T extends string> = {
   select: (value: T) => Promise<void>;
 };
 
-type RecordingGuideActionController = {
-  title: string;
-  description: string;
-  actionLabel: string;
-  actionHint: string;
-  testID: string;
-  loading: false;
-  saving: boolean;
-  error: boolean;
-  restart: () => Promise<void>;
-  replay: () => Promise<void>;
-};
-
 const THEME_VALUES: ThemePreference[] = ['dynamic', 'auto', 'light', 'dark'];
 const LANGUAGE_VALUES: LanguagePreference[] = ['auto', 'en', 'fr', 'es', 'de', 'it', 'pt'];
 const JOURNAL_LAYOUT_VALUES: JournalLayoutPreference[] = ['cards', 'compact'];
@@ -199,28 +186,6 @@ export function useJournalLayoutSettingsPreference(): SettingsPreferenceControll
     error,
     set: select,
     select,
-  };
-}
-
-export function useRecordingGuideAction(): RecordingGuideActionController {
-  const { t } = useTranslation();
-
-  const replay = useCallback(async () => {
-    // The hamburger capture tour is retired. Keep the controller for callers
-    // that still import it, but never reopen a hidden-menu tutorial.
-  }, []);
-
-  return {
-    title: t('settings.onboarding.title'),
-    description: t('settings.onboarding.description'),
-    actionLabel: t('settings.onboarding.restart'),
-    actionHint: t('settings.onboarding.restart_hint'),
-    testID: TID.Button.RecordingOnboardingRestart,
-    loading: false,
-    saving: false,
-    error: false,
-    restart: replay,
-    replay,
   };
 }
 

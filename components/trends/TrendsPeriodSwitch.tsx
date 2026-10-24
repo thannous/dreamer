@@ -37,7 +37,7 @@ export function TrendsPeriodSwitch({ period, onChange, reduced, t }: {
               haptic={selected ? 'none' : 'selection'} accessibilityRole="tab" aria-selected={selected}
               className="min-h-[38px] flex-1 items-center justify-center rounded-full px-2">
               <Text numberOfLines={1}
-                className={`text-[14px] leading-[19px] ${selected ? 'font-sans-bold text-on-champagne' : 'font-sans-medium text-ivory-muted'}`}>
+                className={`text-body-sm leading-[19px] ${selected ? 'font-sans-bold text-on-champagne' : 'font-sans-medium text-ivory-muted'}`}>
                 {t(`trends.period.${option}`)}
               </Text>
             </PressableScale>

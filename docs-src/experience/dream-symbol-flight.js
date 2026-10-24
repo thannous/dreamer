@@ -23,12 +23,22 @@ export function createDreamSymbolFlight(words, first, stars, manageStars = true)
     arrival.setAttribute('aria-hidden', 'true');
     arrival.hidden = true;
     document.body.append(arrival);
-    return { mark, star, ghost, trail, arrival };
+    return { mark, star, picture: star.querySelector('img'), ghost, trail, arrival };
   }).filter(Boolean);
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const update = (progress, visible = true) => {
     const landed = [];
     const p = clamp(progress);
+    const animate = visible && !reduced.matches;
+    // Read every live flight before changing classes, visibility or transforms.
+    // Interleaved reads/writes forced a style/layout flush for each following comet.
+    const positions = flights.map(({ mark, picture }, index) => {
+      const start = 0.5 + index / Math.max(1, flights.length) * 0.24;
+      const t = clamp((p - start) / 0.25);
+      const burst = clamp((p - start - 0.21) / 0.13);
+      if (!animate || ((t <= 0 || t === 1) && (burst <= 0 || burst >= 1))) return null;
+      return { from: mark.getBoundingClientRect(), to: picture.getBoundingClientRect() };
+    });
     words.forEach((word, index) => {
       word.classList.toggle('is-in', p >= (index + 1) / words.length * 0.48);
     });
@@ -43,13 +53,12 @@ export function createDreamSymbolFlight(words, first, stars, manageStars = true)
         star.classList.toggle('is-born', arrived);
         star.classList.toggle('is-glow', arrived);
       }
-      ghost.hidden = !visible || reduced.matches || t <= 0 || arrived;
+      ghost.hidden = !animate || t <= 0 || arrived;
       trail.forEach(dot => { dot.hidden = ghost.hidden; });
       const burst = clamp((p - start - 0.21) / 0.13);
-      arrival.hidden = !visible || reduced.matches || burst <= 0 || burst >= 1;
+      arrival.hidden = !animate || burst <= 0 || burst >= 1;
       if (ghost.hidden && arrival.hidden) return;
-      const from = mark.getBoundingClientRect();
-      const to = star.querySelector('img').getBoundingClientRect();
+      const { from, to } = positions[index];
       const x0 = from.left + from.width / 2;
       const y0 = from.top + from.height / 2;
       const x1 = to.left + to.width / 2;

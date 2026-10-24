@@ -10,7 +10,9 @@ export type SynchronousAiCapability =
   | 'recall_question'
   | 'chat'
   | 'transcribe'
-  | 'generate_image_legacy';
+  | 'generate_image_legacy'
+  | 'moon_letter'
+  | 'analysis_preview';
 
 type AdmissionActorClass = 'GUEST' | 'FREE' | 'PLUS';
 
@@ -44,6 +46,29 @@ const DEFAULTS: Record<SynchronousAiCapability, AdmissionDefaults> = {
   chat: { guest: 12, free: 30, plus: 60, global: 1000 },
   transcribe: { guest: 3, free: 10, plus: 20, global: 200 },
   generate_image_legacy: { guest: 1, free: 2, plus: 8, global: 100 },
+  // Signed-in accounts only, one letter per lunar cycle: room for a failed attempt or two.
+  moon_letter: { guest: 1, free: 2, plus: 2, global: 100 },
+  // Free accounts only, one prepared analysis per week: room for a failed attempt or two.
+  analysis_preview: { guest: 1, free: 2, plus: 1, global: 100 },
+};
+
+/**
+ * Rolling 24-hour anti-abuse budgets per account or guest device (Thanh,
+ * 2026-10-21). Recording calls (transcription, recall questions, categorization)
+ * stay far above a real dreamer's day. /analyzeDream, which guests still use,
+ * counts every request, retries included, so it keeps room above the Plus
+ * ceiling of 10 new analyses; the routes the app no longer calls match it.
+ * Chat keeps only its 10-minute window and per-dream ceiling.
+ */
+export const DAILY_DEFAULTS: Partial<Record<SynchronousAiCapability, number>> = {
+  transcribe: 30,
+  categorize_dream: 30,
+  recall_question: 60,
+  analyze_dream: 20,
+  analyze_dream_full: 10,
+  generate_image_legacy: 10,
+  moon_letter: 4,
+  analysis_preview: 3,
 };
 
 const envPrefix = (capability: SynchronousAiCapability): string =>
@@ -93,6 +118,9 @@ export const resolveSynchronousAiAdmissionPolicy = (
       defaults.global,
       100000
     ),
+    dailyLimit: DAILY_DEFAULTS[capability] === undefined
+      ? null
+      : readPositiveInteger(readEnv, `AI_${prefix}_MAX_PER_DAY`, DAILY_DEFAULTS[capability]!, 10000),
   };
 };
 
@@ -205,6 +233,39 @@ export const admitSynchronousAiRequest = async (
       globalBlocked ? 503 : 429,
       retryAfter
     );
+  }
+
+  if (policy.dailyLimit !== null) {
+    const { data: dailyData, error: dailyError } = await adminClient.rpc('claim_ai_daily_budget', {
+      p_actor_hash: actorHash,
+      p_capability: capability,
+      p_daily_limit: policy.dailyLimit,
+    });
+    const daily = (dailyData ?? null) as AdmissionRpcResult | null;
+    // A missing answer is an outage, not a spent budget: never a 24 h wait for nothing.
+    if (dailyError || typeof daily?.allowed !== 'boolean') {
+      console.warn('[api] AI daily budget claim failed', {
+        capability,
+        code: dailyError?.code ?? null,
+      });
+      return unavailable();
+    }
+    if (!daily.allowed) {
+      // The window is the current hour and the 24 before it: at most 25 hours.
+      const retryAfter = Number.isFinite(daily.retry_after_seconds)
+        ? Math.min(90000, Math.max(1, Math.ceil(daily.retry_after_seconds ?? 1)))
+        : 90000;
+      return jsonResponse(
+        {
+          error: 'Daily AI limit reached',
+          code: 'AI_DAILY_LIMIT',
+          dailyLimit: policy.dailyLimit,
+          retryAfter,
+        },
+        429,
+        retryAfter
+      );
+    }
   }
 
   const qaBudgetResponse = await claimGuestQaPaidCall({

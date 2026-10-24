@@ -1,0 +1,3592 @@
+{
+  "schema": "noctalia.symbol-artwork-qa/1",
+  "date": "2026-10-20",
+  "scope": {
+    "requestedPacks": 40,
+    "rolesPerPack": 8,
+    "freshPacks": 38,
+    "freshNativePngs": 304,
+    "retainedPacks": [
+      "clock",
+      "candle"
+    ],
+    "totalRoles": 320,
+    "symbols": [
+      "light",
+      "lighthouse",
+      "window",
+      "train-station",
+      "wall",
+      "library",
+      "neighbor",
+      "hallway",
+      "city",
+      "street",
+      "tunnel",
+      "maze",
+      "tower",
+      "wind",
+      "fog",
+      "ice",
+      "clouds",
+      "waves",
+      "outer-space",
+      "burglar",
+      "royalty",
+      "crowd",
+      "twins",
+      "dragon",
+      "unicorn",
+      "fox",
+      "fly",
+      "jellyfish",
+      "octopus",
+      "broken-glass",
+      "gift",
+      "bag",
+      "explosion",
+      "searching",
+      "driving",
+      "climbing",
+      "breakup",
+      "stage",
+      "clock",
+      "candle"
+    ],
+    "languages": [
+      "fr",
+      "en",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ]
+  },
+  "generation": {
+    "tool": "OpenAI image_gen built-in",
+    "selection": "agent-selected under the owner art direction; no owner visual approval claimed",
+    "nativeLandscapes": [
+      1672,
+      941
+    ],
+    "nativePortraits": [
+      941,
+      1672
+    ],
+    "nativePlates": [
+      1254,
+      1254
+    ],
+    "upscaling": false,
+    "preservation": "Native PNG, exact prompts, references, provenance and portable pack.json per symbol retained in the source archive. Earlier clock/candle PNG archives are not part of the new archive.",
+    "sourceArchive": {
+      "schema": "noctalia.symbol-source-archive/1",
+      "archive": "noctalia-38-packs-natifs-20261020.zip",
+      "sha256": "2721dd6f8e2e28ea0b83f16c97ce4e64a813e89cc418a45626743c9c7f7eb6a7",
+      "bytes": 662715870,
+      "freshPacks": 38,
+      "selectedNativePngs": 304,
+      "retainedPacks": [
+        "clock",
+        "candle"
+      ],
+      "retainedRoles": 16,
+      "totalRoles": 320,
+      "packs": [
+        {
+          "id": "light",
+          "packSha256": "6a9ff37f46e22cb062837d24feabbdfcea22141b8d62c8e24eb03cfc9d5ea473"
+        },
+        {
+          "id": "lighthouse",
+          "packSha256": "b3470adc2b420e8ae87d74d7532e2b33be8bdbc05d6f932aca392ba04d869716"
+        },
+        {
+          "id": "window",
+          "packSha256": "0c394129f4a14d04020fc6fa0696f3d15b367398e38866a776335a44c25b5358"
+        },
+        {
+          "id": "train-station",
+          "packSha256": "b23330759567e9337e3580def15e01324e011b3b6267743aefb5468459c01b17"
+        },
+        {
+          "id": "wall",
+          "packSha256": "988076b94bf2671d30b6bb604a1ca9ae0d3d128bdd237d48514e6b3ed469bc0e"
+        },
+        {
+          "id": "library",
+          "packSha256": "a2a5da81fb8be1dc94df908f5a1b38e126971547a3a3fb874aa1d3e88a16f2a0"
+        },
+        {
+          "id": "neighbor",
+          "packSha256": "b7e5324e1f2a5889ee19d65d9c91d2c1572865055400aefe7a6f342bad961d4e"
+        },
+        {
+          "id": "hallway",
+          "packSha256": "cd6902e63884030b69a0cadfae0a41d52b005f68a77c97388180a705c32838d2"
+        },
+        {
+          "id": "city",
+          "packSha256": "87c8fd8cf8246e59e909a418ab77d1c7c848b4bd5ce86c205b90e9422d8a6c16"
+        },
+        {
+          "id": "street",
+          "packSha256": "dfae719f4fd4dbd8fbdb1080e641d1f64363706ba7c89940b9b802012206b90f"
+        },
+        {
+          "id": "tunnel",
+          "packSha256": "778f67316bdf25c0e3b7f8e23ce7942b8cc71f90da22ceea3391092171e2e3d9"
+        },
+        {
+          "id": "maze",
+          "packSha256": "9ddc6a7f25553ed6d1ed82600c1a8e4c906e877bf237b7161171f44f811b9e20"
+        },
+        {
+          "id": "tower",
+          "packSha256": "6a9ccfe11381eadeb2a364bb5187e96e812f01254b05d2fbc4f3c665763dfeee"
+        },
+        {
+          "id": "wind",
+          "packSha256": "225f094fc4f472fa4c41937c24bd6413ae3f55c190fd1fe39fec4c642c3c58fe"
+        },
+        {
+          "id": "fog",
+          "packSha256": "d9908f3275fe3a7a531be29fd8c48efd548907931749309201c79cac4865eece"
+        },
+        {
+          "id": "ice",
+          "packSha256": "9a2a9024287f79aada879638e73cfd05f9194a77e2d3adf2e4fae4cc232a4ca8"
+        },
+        {
+          "id": "clouds",
+          "packSha256": "5450cd5916b36a9f2112213c7f9fa93479ce381c0d0a534e650e8e2a6b3e1513"
+        },
+        {
+          "id": "waves",
+          "packSha256": "58d1c5f01a09b9ee2c12858d09593773b64943def29419976152eb82fd5fafda"
+        },
+        {
+          "id": "outer-space",
+          "packSha256": "46cc2053e444dacdfd171c2994d55dfb9383c5a41102a98a1bce21c8ad424af5"
+        },
+        {
+          "id": "burglar",
+          "packSha256": "07bf8ec050fc0849a13205e1b93fbb2829acf8599d5a66c000278b0f723b65c7"
+        },
+        {
+          "id": "royalty",
+          "packSha256": "1d6638ac67902134ae3e4c0e4846a4307654a8b519dda6a2dea4e4adf8fb320c"
+        },
+        {
+          "id": "crowd",
+          "packSha256": "b087cb3a0a5603e263f5c09cd88aee87b8cd42c680ab8ea091f383b824ce0394"
+        },
+        {
+          "id": "twins",
+          "packSha256": "4436ea46c5f45d374826e6a93f8d300de36bb3568556f9971a66a7d89a21f88b"
+        },
+        {
+          "id": "dragon",
+          "packSha256": "d9b2ed02a7e60f67d5185cb6d08caccd12ddabfae0947de70a5dbc44a7c44b54"
+        },
+        {
+          "id": "unicorn",
+          "packSha256": "19c5245859d5b39d3ca953aa5bc3889aba89bfbca27032c536b9b26541ee6027"
+        },
+        {
+          "id": "fox",
+          "packSha256": "512f28fec28484884c961ba19e100c29d9534225fafa3ba6952a6cf47a96f8e4"
+        },
+        {
+          "id": "fly",
+          "packSha256": "77edbcc35c9fc5b5d3a37b5181fe3e04208d4f6b21529d1763a7e1120bdaca18"
+        },
+        {
+          "id": "jellyfish",
+          "packSha256": "32515dc5801bef247bb3767c9ae5f42771e3e8f2600a4d4191aa6bc1bab87c34"
+        },
+        {
+          "id": "octopus",
+          "packSha256": "bcbbb0e9491ff19d72d91393a23e5e5405e47ce9ab080dbde1811f182a4d415f"
+        },
+        {
+          "id": "broken-glass",
+          "packSha256": "b02801a906f066a654d5a54970d8560f03cffed6bbbbbdee472cb96f6f0c2309"
+        },
+        {
+          "id": "gift",
+          "packSha256": "c2834a03517c0f0b1a3ff0504d6f3b1df6a3e5e6ef585cc07aba575b1dc1bd5e"
+        },
+        {
+          "id": "bag",
+          "packSha256": "43c569ece0b83ad5edd52f46eb5a516bab144d33c17e39f65fdcf04b52c40668"
+        },
+        {
+          "id": "explosion",
+          "packSha256": "d8150e3f9ff4bb71aac0486aa52662c904be468c1656ff8c2f592cafbdc52dba"
+        },
+        {
+          "id": "searching",
+          "packSha256": "78ee48e93368eb1cd0ba52b9a715908db34998b06493dd8fe054cfcc1f9ed12f"
+        },
+        {
+          "id": "driving",
+          "packSha256": "cf887df0bdd9be458cca74b4d96c9e4c46f3e3ce7d33514304e9d9914c98abd4"
+        },
+        {
+          "id": "climbing",
+          "packSha256": "4d01ea81e7f691fbaa664d8b9734a71b9eeda1006518aa1286a5508689c7b10c"
+        },
+        {
+          "id": "breakup",
+          "packSha256": "2721822cda05640278cb4a506f2cf1d56e6e4ed54299a265194564d68a64fd11"
+        },
+        {
+          "id": "stage",
+          "packSha256": "deb4cc84b83c857b6b812768930421c90ea2dd54923318f19d12191f8d0fe29d"
+        }
+      ]
+    }
+  },
+  "integration": {
+    "importer": "scripts/atlas-pack.mjs",
+    "surfaceConfiguration": "docs-src/config/symbol-atlas-pilots.json",
+    "languagesShareImages": true,
+    "paintingsAnimate": false,
+    "effectsPerSurface": 2,
+    "localGlow": "The common placement accepts a bounded centre coordinate and scale below 1; optional per-scene configuration keeps the unicorn glow near each horn. Existing defaults are preserved.",
+    "appManifest": "constants/symbolIllustrations.ts now references the 40 painted covers; its public URLs require a future site publication."
+  },
+  "verification": {
+    "revision": "22c1871989966d0b303739c55b7338d0a58618de",
+    "sourceClean": true,
+    "environment": "local Chromium, generated static site",
+    "command": "E2E_WEB_PORT=8129 E2E_WORKERS=4 mise exec -- npm run test:testerarmy:site -- run --grep 'new symbol packs:'",
+    "runner": "0.21.2",
+    "webEngine": "0.15.2",
+    "summary": {
+      "discovered": 55,
+      "selected": 40,
+      "executed": 40,
+      "passed": 40,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "excludedTests": 15,
+    "artifact": "tools/e2e/.e2e/site-web/1792464474056-26075-06347a13-71e6-4a4e-8f3e-ef85800ef1b9",
+    "receipt": "1792464474056-26075-06347a13-71e6-4a4e-8f3e-ef85800ef1b9.receipt.json",
+    "receiptSha256": "54da8a92804f82834c2db57ac182edad19ca7833f1853b893af158c9618efc96",
+    "viewports": [
+      [
+        2560,
+        1440
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "assertions": [
+      "Correct landscape or recomposed portrait, decoded images and no horizontal overflow in all six languages at both viewports.",
+      "French: three scene choices show their exact published variation; other locales: the initial scene matches its localized card.",
+      "Two distinct decoded and moving alpha effects on the desktop hero, plate and three scenes; mobile hero and three scenes. Effects keep their ratio and remain visible through the plate alpha.",
+      "Base painting has no CSS animation; reduced motion stops the effects. Mobile does not fetch the hidden plate.",
+      "Mobile scene heading is fully inside the viewport below both fixed bars and passes a hit-test before the screenshot."
+    ],
+    "captures": 200,
+    "visualReview": "Agent inspected the 40 real pages via 10 contact sheets, including their hero, portrait, side cutout and scenes. Native sources were also inspected.",
+    "staticChecks": [
+      "docs:build passed",
+      "docs:check passed: 0 errors, 0 warnings, no broken internal links",
+      "E2E TypeScript compilation passed"
+    ],
+    "verifyPr": "The PR verified-commit block records the final head and local verification result."
+  },
+  "review": {
+    "independent": true,
+    "reviewedImplementation": "1ed215e7679e2acbdd9c47960eaa3cc7b7e5f292",
+    "retainedFinding": "P2: earlier mobile scene screenshots could show the hero because the title upper viewport bound was missing.",
+    "correction": "22c1871989966d0b303739c55b7338d0a58618de",
+    "deltaReview": "No remaining blocking finding; all 40 journeys replayed successfully after correction. Earlier screenshot evidence is superseded."
+  },
+  "boundaries": {
+    "ownerVisualApproval": false,
+    "merged": false,
+    "published": false,
+    "nativeDeviceQualified": false,
+    "fullSiteReleaseCampaign": false,
+    "notes": "This qualifies the 40 selected local browser journeys. Native app installation, production URLs and publication were not exercised. No user accounts or personal app data were modified."
+  },
+  "nativePackValidation": [
+    {
+      "id": "light",
+      "packSha256": "6a9ff37f46e22cb062837d24feabbdfcea22141b8d62c8e24eb03cfc9d5ea473",
+      "native": {
+        "hero": {
+          "sha256": "d5178756ced567bd9643d8588c9ce218fb9b0c3b1c0e464e6326c4ebf9f5f99e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "bc42d5dec4b9c1079fd406f7528a3075fe26c79ed8275bdd300cc23eeb10df24",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "d0e57feb050103b1d5dd2c16871c6e94821a98f5247d06404158fd854ef32c89",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.332668,
+            "translucent": 0.667292
+          }
+        },
+        "scene-a-light-switch-that-does-nothing": {
+          "sha256": "b4bdad8d3bb756210c226f0a27d615d6994d3253a98233abf7c0df5d62f1c301",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-light-going-out": {
+          "sha256": "1623bd84e4034f8d3c5685fe73c48c8c1f1aef87a12763f47befe3191c15f379",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-blinding-light": {
+          "sha256": "b697444fd844564d495e611847a7378f68001ac46ccbbd19f48bdc7ea5c063e1",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "b944b52df840cb3587c036819614b71a58d94689aaa3d9a0806d716d5c8bab6e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.645569,
+            "translucent": 0.354431
+          }
+        },
+        "accent": {
+          "sha256": "6a7e38aa06f63d18a82cf652fd8d9a62e38e17b51d0b3ef29f025137cdc10ed9",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.744991,
+            "translucent": 0.255009
+          }
+        }
+      }
+    },
+    {
+      "id": "lighthouse",
+      "packSha256": "b3470adc2b420e8ae87d74d7532e2b33be8bdbc05d6f932aca392ba04d869716",
+      "native": {
+        "hero": {
+          "sha256": "630be13d5af2f5856ace29b991263789c1503e4001b33f44a3e8477c05acf98b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "966119d0e1b26667c1515052198caf141865f01ad35b7a939911221025e9e96a",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "2843c1b6733025cc283f54e5c5092f303e68bee730f6954d45b31c1a126bf64a",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.403869,
+            "translucent": 0.596119
+          }
+        },
+        "scene-a-lighthouse-beam-sweeping-the-night": {
+          "sha256": "d49c5611484bab8d66d6e2d3e8504ba7114394713849e0bf4f805e5de0ad8977",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-lighthouse-that-goes-dark": {
+          "sha256": "cda859c69fa9930c05270aa91a10f7239dd911000ba791ed8be0d14b4c94846f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-seeing-a-lighthouse-from-a-boat-in-a-s": {
+          "sha256": "11224dbd67b4e34df01906dcd4d43e9a98070d447a38ba6cccfae96ccaabe18a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "cb247673deb53e6d642f3a851e4899cd2ad06d8a5adf9accac06507ad39ed6bf",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.706746,
+            "translucent": 0.293254
+          }
+        },
+        "accent": {
+          "sha256": "6f09ad9227e27cbce5638ffede977f923a30ad87849d9ff81650d9a17cb64d0d",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.622958,
+            "translucent": 0.377042
+          }
+        }
+      }
+    },
+    {
+      "id": "window",
+      "packSha256": "0c394129f4a14d04020fc6fa0696f3d15b367398e38866a776335a44c25b5358",
+      "native": {
+        "hero": {
+          "sha256": "461bbceee7facf7f5c324690d3d36691d828494608419523e70f0e7c4fecc1a9",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "a22287f4eb50dca92774f0f6b059356ba30b92d9a01600b8f4c161816b2a3811",
+          "width": 941,
+          "height": 1671,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "4d0f5b25ea4cd69fbb93e92325b92e9db0590c63190539a5db1109ba2097b16b",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.304085,
+            "translucent": 0.695749
+          }
+        },
+        "scene-looking-out-of-a-window": {
+          "sha256": "25c1919270d9b762fe6945a4b0315da06998698cf701c4e6328d7d55f5187797",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-someone-at-the-window": {
+          "sha256": "2de08648e9fd11c0014c4e0acfb674ec87be2bbe1407ceca112bf8f71feea448",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-window-that-will-not-close": {
+          "sha256": "7abab84e7d86d5aabbff84767878603abf71fe3ca678103e5d514b7abe36ed93",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "74993b2126e49af3309aa4eef926f32cbf1393b1da7713d34e2c6fa8129ff3fa",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.538313,
+            "translucent": 0.461687
+          }
+        },
+        "accent": {
+          "sha256": "94660710777626daa0b5519f7a69337949e7f49ce89d26a3366bc4ded8fa8b10",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.701667,
+            "translucent": 0.298333
+          }
+        }
+      }
+    },
+    {
+      "id": "train-station",
+      "packSha256": "b23330759567e9337e3580def15e01324e011b3b6267743aefb5468459c01b17",
+      "native": {
+        "hero": {
+          "sha256": "a6727964d087ed47cb6fa4bc176f9ed4bee6777e45b863befbc6c1d54df7e7f1",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "c960ea58cc15dd7f2953a7a1e83c17fcf767a315058654e933f0226da8df4230",
+          "width": 940,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "17d3ce10f1dd955451204e948838e59f64fce1ab0cf2b7397de91736dd1e5b6f",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.313259,
+            "translucent": 0.686712
+          }
+        },
+        "scene-missing-the-train": {
+          "sha256": "6e62e7dec1094e1d47e5d7773e3082de83fe58b0befcefd339573a2449383107",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-waiting-on-a-platform": {
+          "sha256": "f850bab2496a1a7a029bce5c3d629b7dc84246b54c17982ee24c685d78aba26d",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-the-wrong-platform-or-the-wrong-train": {
+          "sha256": "ab195d73907188efb9f0af57d4cc4143a16569c452b6b9d57d39805a1c961fc0",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "54f0bf1d7d6e71c2c4d8d173926940bdaf1aa381c78ac33072dbbadec10cd726",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.594048,
+            "translucent": 0.405952
+          }
+        },
+        "accent": {
+          "sha256": "68d213c63ff74d4c7f522a111b90fe08ae8eb1efe074f63ebdae8deb2e02fa3d",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.425256,
+            "translucent": 0.574744
+          }
+        }
+      }
+    },
+    {
+      "id": "wall",
+      "packSha256": "988076b94bf2671d30b6bb604a1ca9ae0d3d128bdd237d48514e6b3ed469bc0e",
+      "native": {
+        "hero": {
+          "sha256": "c53009133138ca817f8899319ab47d95c79f100bba7e243795786f3b86d70075",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "3f4439cafd64405c8bed835d94e1a6a38c5c927fd8ae0c281317c2cb7fb2fca7",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "83f495bc09922a1af6c4cf21e67e42241ab162fff8d650f67cc071ca78d9b9a9",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.305466,
+            "translucent": 0.694395
+          }
+        },
+        "scene-a-wall-blocking-your-way": {
+          "sha256": "7689c2c96379cc20fcdbfff9042726071dd576376214bb324d26a6b5de248fcf",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-climbing-over-a-wall": {
+          "sha256": "21e889536d9a26481f316fb71eb67bec2eb6f5c5dd4122730498f68288f6a75f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-crumbling-or-collapsing-wall": {
+          "sha256": "35896d9d3d336819aeb9fff7e8ed7adcfcc2bbad4175f3b9860fb8d1459c0f3d",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "728b96c6e242cf10c6417f02e5e4b8b6bd8d4d97c674d6b47fd225a7f41f2c4f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.495988,
+            "translucent": 0.504012
+          }
+        },
+        "accent": {
+          "sha256": "c55df9c5ae955528f5783ae79774422d1bce9fff84e4a35bdb5f14c56a236255",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.893899,
+            "translucent": 0.106063
+          }
+        }
+      }
+    },
+    {
+      "id": "library",
+      "packSha256": "a2a5da81fb8be1dc94df908f5a1b38e126971547a3a3fb874aa1d3e88a16f2a0",
+      "native": {
+        "hero": {
+          "sha256": "cd4339df167062041d911be1cee33a5d3ad663031c7a2c155f58a10b2a4dea9e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "e3f4ff63355a3066a4d2b7b58ea0269cf0e62fb11f2f2ab1bec0a1a4e9f480f1",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "72d93e0755df3cb444f9e266d40adab43a42110ef0b17e3829fc9c28272d553e",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.362925,
+            "translucent": 0.637019
+          }
+        },
+        "scene-searching-for-a-book-you-cannot-find": {
+          "sha256": "051f310f1a523317362239dbe260a6b2e66a5ed1653669ebff1af624ce6ac061",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-endless-library": {
+          "sha256": "39c543108007341736b01e5f24f09d23c77bcdbad314f1daeb3225e63898bbbd",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-silent-library-at-night": {
+          "sha256": "14adc00d94b73788303e313e9b9f68cb8ba642ca0993b90d880dd12936389696",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "901e7229f7026bbd60129625f37c6e631e3c1847c9ed53202b19fb6df91e6bc0",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.273121,
+            "translucent": 0.726879
+          }
+        },
+        "accent": {
+          "sha256": "70209a6f19a093baec4d864d4e468555156173eab84f2fced504c27677bc3aac",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.795033,
+            "translucent": 0.204967
+          }
+        }
+      }
+    },
+    {
+      "id": "neighbor",
+      "packSha256": "b7e5324e1f2a5889ee19d65d9c91d2c1572865055400aefe7a6f342bad961d4e",
+      "native": {
+        "hero": {
+          "sha256": "794d20586c0618ee8b5e26848f46a88ad742f48b3891a6965a818809d3b92f50",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "20569c6f69b3f35f64699fa338eba3726dcffcda49d8035e1c150d3a89b97a17",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "cb2fa7c0905f9fe1797584b0e44c1ba5046a862d5d3dde1baa0162469ebff1c1",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.363096,
+            "translucent": 0.636846
+          }
+        },
+        "scene-an-argument-with-a-neighbor": {
+          "sha256": "74685d395ec35511db6636ae2158902a05dc67b08f0d8db2eefda74682d2639c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-neighbor-coming-into-your-home": {
+          "sha256": "0351cbddb3990e4e67b679ce1cf675037342488a0b9a4545f2ea1ce88b50ccf9",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-friendly-or-helpful-neighbor": {
+          "sha256": "24795f3f04ee9746c156bb36acca5c2accde3e465f85713bcb1242794f682dc1",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "7d05d454e263dbdbb013a449f1dbb66682b88febc6a4eeefd9853a73da7e70e1",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.722297,
+            "translucent": 0.277703
+          }
+        },
+        "accent": {
+          "sha256": "33b02ea4851fd746cca0e1af4ebc2dbed1e982477dbbc8bc8339c4e24cc90a55",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.455825,
+            "translucent": 0.544175
+          }
+        }
+      }
+    },
+    {
+      "id": "hallway",
+      "packSha256": "cd6902e63884030b69a0cadfae0a41d52b005f68a77c97388180a705c32838d2",
+      "native": {
+        "hero": {
+          "sha256": "05be92625d9d76c943e4e694c9a4bdbffbc773259d20973e3b96c64030ae5b17",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "aad354bca34761c56632b71762a2ac17d2d6d61a104d8c24e88e0ab10d9ba502",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "60ca7c61856ced3713a2408d74bd190677f2daeb5549c561b61b63dcd26fbe67",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.350542,
+            "translucent": 0.649393
+          }
+        },
+        "scene-an-endless-hallway": {
+          "sha256": "28538dd64daa2efe1c24299ff411541f36b3482cdb43e260a7d7b494f7e4e7d5",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-doors-on-both-sides": {
+          "sha256": "04b187d0ae2550066f7819dcb57a5683061cec4a84ab45cbb6ddb883c675486c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-dark-hallway-at-night": {
+          "sha256": "232f1ffb203ad1bd7d1e77dc62bf038d7aa9f5665b9bc2253561511780f19d7f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "da029b18ffbbe85dce05353e1a7aa76b8853e9d87a50b043d1f47484ca5afeca",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.654347,
+            "translucent": 0.345653
+          }
+        },
+        "accent": {
+          "sha256": "22c742f106ee7e83d3dca9782ef75dcdcc1dccf3965e3162edc0067cb82863aa",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.56676,
+            "translucent": 0.43324
+          }
+        }
+      }
+    },
+    {
+      "id": "city",
+      "packSha256": "87c8fd8cf8246e59e909a418ab77d1c7c848b4bd5ce86c205b90e9422d8a6c16",
+      "native": {
+        "hero": {
+          "sha256": "40b68d47b3b083f315dd82057fc4c1cb01cde4d8e640ea1e4995fa7cad0e530c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "8ffa706d67e1cafb79555bb478ac4a33a0adf4379da426785e8cae0b122aee9e",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "af45ecdd8dce667e6ea11cd78ace3cd67e1df358aee5474b529f138eef33a7ec",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.365624,
+            "translucent": 0.634205
+          }
+        },
+        "scene-an-unknown-city": {
+          "sha256": "fd81cd5ed6a2a5a4ae064d43b0276633e89f23408614cd2c119c046bd23c1f7b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-lost-in-a-city": {
+          "sha256": "652912ba1d51a71c2c66de5c1f329f48ca66d84085cadee23a9531426145484e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-city-at-night": {
+          "sha256": "88c65dd31ca0a98602838e4ffa1d188afddb3f94cb0c1609a9678ec8d2da542b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "3df2bc54713b774ec404b3a87bdb185421306cfc583f4603997ecfb47fbebb05",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.442565,
+            "translucent": 0.557435
+          }
+        },
+        "accent": {
+          "sha256": "73c9f42a0f8aab4a1aae5890b777778d4a08f2e0fbde1476e156e3cc00fa579d",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.963243,
+            "translucent": 0.036757
+          }
+        }
+      }
+    },
+    {
+      "id": "street",
+      "packSha256": "dfae719f4fd4dbd8fbdb1080e641d1f64363706ba7c89940b9b802012206b90f",
+      "native": {
+        "hero": {
+          "sha256": "0f9a898857da3c42d6cda4bfd3e474b9909b533328b4031b2e74dcbb5ee25092",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "81986dad5e4486dfa668b13030ca1dda178535c8f7cf385bea11cbff077ca6cf",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "a42439c71599c89217e20dec14d1d99b08dddb668306b5b1a0644e2b6b78baa4",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.33677,
+            "translucent": 0.663142
+          }
+        },
+        "scene-an-empty-street-at-night": {
+          "sha256": "f1de4d4695ef984c7b872c0322448f018ea4ca1e7cab988794a2fc54fac4a38d",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-busy-crowded-street": {
+          "sha256": "ef135e29aa0d8b766b7187972816f33c4ba2788580fb0a33e66f1eae39189dc6",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-the-street-where-you-grew-up": {
+          "sha256": "8ffeb4f93a97cf0af603007b757e6a8d860ff503679fbb2c5ce20e99b71ad1a1",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "afc1123994ed3df87c859b9b554085b3f13a702edfbf6b203a0e5ddd4fdd3852",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.967574,
+            "translucent": 0.032426
+          }
+        },
+        "accent": {
+          "sha256": "ac207b2a3d84212162ee9d580426bf50a055eb558fa407a8fdcd73908c885bc9",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.578667,
+            "translucent": 0.421333
+          }
+        }
+      }
+    },
+    {
+      "id": "tunnel",
+      "packSha256": "778f67316bdf25c0e3b7f8e23ce7942b8cc71f90da22ceea3391092171e2e3d9",
+      "native": {
+        "hero": {
+          "sha256": "ab69b70491b2040f8ed7580bf6d073fa606a4a5e1be6679f090504c29bfdf8cf",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "a5cd5d32f14ee2f7c1f5f1fb3e91db1087d3721e6f68a399edca1ad4fec5efc4",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e5093e7222c6a5fd606ba2d5350947f313e9e6633cb3a15ba5e5509cd3bfafec",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.368225,
+            "translucent": 0.631671
+          }
+        },
+        "scene-a-dark-tunnel": {
+          "sha256": "1edfe0a185f5e850cbfb4eb29391524ce8bf3aed1b3d80253053b6a69b62ccac",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-light-at-the-end-of-the-tunnel": {
+          "sha256": "e9957d9d9112983864ddf57ab4eaf08553a4525639f0a8eecf9e669f3e9a2e20",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-tunnel-that-narrows": {
+          "sha256": "3043f23fe3a3b8fc40c1c386e3087d887f64b6f319cb49c59f3158603140766e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "761ffef1ef59fc14882d69a98301d7d8bda525868c5db65ca412a15c24d2665b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.492158,
+            "translucent": 0.507842
+          }
+        },
+        "accent": {
+          "sha256": "a7866543a97c0b2d399f4ed12de1a1236d695564908a54c85bdd87e2fdb1784d",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.965279,
+            "translucent": 0.034721
+          }
+        }
+      }
+    },
+    {
+      "id": "maze",
+      "packSha256": "9ddc6a7f25553ed6d1ed82600c1a8e4c906e877bf237b7161171f44f811b9e20",
+      "native": {
+        "hero": {
+          "sha256": "b10bcd79a7c9406ec0faf276a487d48a50ee425c4b7e348a83d78d5b36f4e2f5",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "9208857d604a7b27a08abcfb58d610ce37df96bcdea61647c62cabc4260dc457",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "f26b0d339b3bc83c5b40a687414748cd16d9b5ba75c9c5e4dbbcb9354a1e7c70",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.340247,
+            "translucent": 0.659668
+          }
+        },
+        "scene-lost-in-a-maze-with-no-way-out": {
+          "sha256": "f2bd3de474fa9641cefb5692755977ab4a75cd3392d7426e2cd43121950383f5",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-hedge-maze-or-garden-maze": {
+          "sha256": "d17c570d291b971d5f687df2d4e107c28cdd34452f1193282714876e4321b129",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-maze-of-corridors-or-rooms": {
+          "sha256": "e0e99e3965e3aa5d33dac69b3abee46db01e3a53e9923105ce7bdbe583a71803",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "91f87c02a69ae136a189af7db463314cd7cc967586fe88dd742a6e663d0653d8",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.902368,
+            "translucent": 0.097623
+          }
+        },
+        "accent": {
+          "sha256": "2325babfdd9b2ea8c65dee51c97cd1bb777e41fbb7831640e49d2563e982b25b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.526867,
+            "translucent": 0.473133
+          }
+        }
+      }
+    },
+    {
+      "id": "tower",
+      "packSha256": "6a9ccfe11381eadeb2a364bb5187e96e812f01254b05d2fbc4f3c665763dfeee",
+      "native": {
+        "hero": {
+          "sha256": "69084ae80b1c138e3e72844142832be4da7d2e827f706330c9447b73f551881b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "6ba5f38f7bf473015c506a1381f182ef0d135201f3fcd634d5e063fbaa84d03e",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "c924ca6ba32fa195ffeb7972e4956e261a3a0e01dc102a542d38a80dd64200c9",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.421058,
+            "translucent": 0.578895
+          }
+        },
+        "scene-climbing-a-tower-or-endless-stairs": {
+          "sha256": "e200ed75031d79faca4e2feae11be72dbf9d9f0c4ee85063b291374fd42522fa",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-stuck-at-the-top-of-a-tower": {
+          "sha256": "7a03a3811cd774abd039a4b1760f89e97eeea90a1bf3d2437c38f7e50ccdc3e3",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-tower-collapsing-or-leaning": {
+          "sha256": "822ff4e0bee763f54192afeed9db1e0faea2f05419995e7cafe126852561263a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "268d2f114e546f09373c270d68f3f5d89c9244ad5021c9249971f5e2bcd56a9c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.991184,
+            "translucent": 0.008816
+          }
+        },
+        "accent": {
+          "sha256": "a62ac1ac4ca8983fc28e44742677b3ca093a05c4fcb3d1c49835860f57b5f8dc",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.551063,
+            "translucent": 0.448937
+          }
+        }
+      }
+    },
+    {
+      "id": "wind",
+      "packSha256": "225f094fc4f472fa4c41937c24bd6413ae3f55c190fd1fe39fec4c642c3c58fe",
+      "native": {
+        "hero": {
+          "sha256": "4df8d4742944f6a53a8fec6457721d82b8146215d55e445b8808417f3fe8d936",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "8210284e8fb4f7686bf81466bb495233ab195d3f5da51ce4d0bbab2634b33e27",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "643f975225f63058b6cb78b4bb772045fbba0c0100dc6b6296db3e29b8032c86",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.463888,
+            "translucent": 0.536104
+          }
+        },
+        "scene-a-strong-wind-pushing-you-back": {
+          "sha256": "8b6e815d53583a4d2b0ea042b6dd8887d887d076f27c868d14b5729744a83d62",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-lifted-by-the-wind": {
+          "sha256": "322198fb2e165e5bae8ba53682d2d9b9614370401f624d5518cc6137c15dc7d7",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-wind-blowing-through-the-house": {
+          "sha256": "851f447fd2187aa6e27f07b40cebc05e68a9242c8eb3c70c60fa6005b6e2b571",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "a231a40b0e050e2a50868b085d23f5c81b3e04c9dd98f455f216e85d5581ef9e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.706258,
+            "translucent": 0.293712
+          }
+        },
+        "accent": {
+          "sha256": "8d49b1484a1167630b91238c97840508fc946fccd14131339a368f47c8a42f70",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.570752,
+            "translucent": 0.429248
+          }
+        }
+      }
+    },
+    {
+      "id": "fog",
+      "packSha256": "d9908f3275fe3a7a531be29fd8c48efd548907931749309201c79cac4865eece",
+      "native": {
+        "hero": {
+          "sha256": "988eed828c3ce4e5c483b5f9bf19a817ec788e1b8dc8a1d6d79355317254c784",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "c679c7eb0080921821feed7722c0767bab578f0bf4a4005724dec45b0a120b96",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "c795b4fb4e4161903cab30e79d0666dc8fc79a1e4afb75d489d52c507c7fd36e",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.382546,
+            "translucent": 0.617428
+          }
+        },
+        "scene-driving-in-fog": {
+          "sha256": "7ef03221bd32b466d887ce26368e11001a1ab474998e4bd779cab97c80b78a89",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-lost-in-fog": {
+          "sha256": "7a96077b864b231e90090691d43742f1b4e0cd4f89b9c5defad9a44811fa0122",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-someone-appearing-out-of-the-fog": {
+          "sha256": "106dbaa784c2b04fb8dcaac145dcd7bfa2cb5277c4cfba29a51c01cf0b96aebc",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "c22bd8742e412743fcb88792244bfbcdd7b2b943f703f4060f296ca22f28ad13",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.464254,
+            "translucent": 0.535746
+          }
+        },
+        "accent": {
+          "sha256": "24ebab61f0f26b4e182180ddb5abec93411e8006aa4d60cf092c85dbc6bb57a8",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.49206,
+            "translucent": 0.50794
+          }
+        }
+      }
+    },
+    {
+      "id": "ice",
+      "packSha256": "9a2a9024287f79aada879638e73cfd05f9194a77e2d3adf2e4fae4cc232a4ca8",
+      "native": {
+        "hero": {
+          "sha256": "0b2a31791d7cd79258d3d611548d90ed75bc2f4f887a0a19ce2daefe7ba299e6",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "d3b1eb72b78545f03e2b54956870421f4b414e4b5cb962f86a2257e6a0174ed1",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "316b6668fa3485fe65132f5df39767c725d4bf3fe4611632eaa6a35a0b1435c5",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.41637,
+            "translucent": 0.583602
+          }
+        },
+        "scene-thin-ice-cracking-under-you": {
+          "sha256": "66e72f88f3718ae8a46c62e441ddb77e390276b2320bb6ff23c116d0cd53f621",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-falling-through-the-ice": {
+          "sha256": "f235f1538b9c6a76975f0f967dec8543c9f0d67922cb6d281c7375a7a521ca96",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-slipping-or-unable-to-stand-on-ice": {
+          "sha256": "544ca3b12e7a055e2d50112afbe3cba25ee01d31ffd1c8ab9242ce336396882b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "0c030a437eeeab5caa36fc2bc3fcaccc358f0bd88e8bb861077fea0e65db9100",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.637437,
+            "translucent": 0.362563
+          }
+        },
+        "accent": {
+          "sha256": "e1fdda7525c9bcc919b931dd4e721060ad5178400b6365dd4f22be2485a30042",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.677438,
+            "translucent": 0.322562
+          }
+        }
+      }
+    },
+    {
+      "id": "clouds",
+      "packSha256": "5450cd5916b36a9f2112213c7f9fa93479ce381c0d0a534e650e8e2a6b3e1513",
+      "native": {
+        "hero": {
+          "sha256": "e5572c06e437fae1b103c7b788e41cf9d5ba1f48cc9c0c3490d202a24e0d19c6",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "07e534d74db71e6d400d2e876631a0c0c201b589707b133ffeb24a281f76140c",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "f57c471aed65b4b5f252603cdcaa19a9d6e3b9f4f952ab99a393c3a6be53bd6c",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.482714,
+            "translucent": 0.517249
+          }
+        },
+        "scene-white-clouds-drifting-in-a-blue-sky": {
+          "sha256": "d072db129f33ee60cc1a2df836bd76a8d909c8997e8f4ff97c9d1f10ec884d29",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-dark-clouds-gathering": {
+          "sha256": "8170fc5c48a4c1c79958ca32a6e8793c6dbc7e6e1f3efed36270dfaa2e28bb8c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-walking-or-lying-on-clouds": {
+          "sha256": "5da8a07f19916800596ad5cbbbf7fc476bc6a204cccef1d1dea07886ef67b2d4",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "3b62c826c9effab96454fe554c4089deafd272a24ad3bc0ffc5bed1e34b3b9e2",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.620705,
+            "translucent": 0.379295
+          }
+        },
+        "accent": {
+          "sha256": "e4a8357ffb96606933b3216924bec11a414b725ec1acdac041f4c7ed2715ca9b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.506326,
+            "translucent": 0.493674
+          }
+        }
+      }
+    },
+    {
+      "id": "waves",
+      "packSha256": "58d1c5f01a09b9ee2c12858d09593773b64943def29419976152eb82fd5fafda",
+      "native": {
+        "hero": {
+          "sha256": "16f9f1a16d54ab966649fb4f3df0cb612fbf5224be0fb5ea250b4d508fd6ab10",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "c96560dce28f7660b942a45cce1405cda42a00ac9e8a91fed9714b73a9bb669e",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e7904fd3d19dac010fdbb40831b71c410cdccf9475af99b4d47d6f0f557507fc",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.377721,
+            "translucent": 0.622246
+          }
+        },
+        "scene-watching-huge-waves-from-the-shore": {
+          "sha256": "a7c66bf8f824d2d73e2cbf73c88e3ebe9eddbf7d9e9ec12e8b83a7beed017617",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-knocked-over-by-a-wave": {
+          "sha256": "93f068e7f547f24080810ae982739e176a14bd7d1c97ed7ae8d5261dcedb2e50",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-wave-about-to-break-over-you": {
+          "sha256": "ae7d4fde3df9cdc9233bd51faad59c6b62c5f421916dd310d1394073309b923a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "a4509bfb8daf4c2343a6ede1b6d139c6dc62656e3cc82ab89e11fac9a8d36b88",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.69859,
+            "translucent": 0.301408
+          }
+        },
+        "accent": {
+          "sha256": "956a28ccaf5086e970efb26681bb400f54ef81b59faa724025c9bcee107a282c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.645409,
+            "translucent": 0.354591
+          }
+        }
+      }
+    },
+    {
+      "id": "outer-space",
+      "packSha256": "46cc2053e444dacdfd171c2994d55dfb9383c5a41102a98a1bce21c8ad424af5",
+      "native": {
+        "hero": {
+          "sha256": "059b1d0f630c7c83e8992f57f7d61e4921bbbed524d5adcac51af37956f8fe00",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "69a7a29159f54e0c35df0c665c3f6a830c4f49c045fa65a38c4dcb924db80ced",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "7210d7a481c72568a9f7f185bf61c21495ea93ab30c60bd46b14b1aee4a2de2f",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.40505,
+            "translucent": 0.594885
+          }
+        },
+        "scene-floating-weightless-in-space": {
+          "sha256": "7c08725aeb9cfaa1f5b49c065234436c6add1b05a539f89183d43606785ee173",
+          "width": 1671,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-travelling-to-another-planet": {
+          "sha256": "40ecae5eb549f4d6bfd85b3cb7d26682038001d1ed85e2a68b2d0e645978800e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-seeing-the-earth-from-far-away": {
+          "sha256": "d70d3f349581bd842ae3b74afa6c0d89fb98b2da32d57de9948d6d6e74010e15",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "86f0258dc362094516a2507970b5158bede8db4fddc39e7485b86ffc33d6c618",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.571176,
+            "translucent": 0.428824
+          }
+        },
+        "accent": {
+          "sha256": "e1e934f6a72b9985e0d7f2e57ea4182de1ac0cbefff185c8147df9ae0ce852d6",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.384058,
+            "translucent": 0.615942
+          }
+        }
+      }
+    },
+    {
+      "id": "burglar",
+      "packSha256": "07bf8ec050fc0849a13205e1b93fbb2829acf8599d5a66c000278b0f723b65c7",
+      "native": {
+        "hero": {
+          "sha256": "0ec73f074d828c6ee0bb09d561ca5c02b17d74a7d359436ae9c1e95b5f7238e1",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "aa13ef5817ed8626b045dbef9fae4c4ebaab398040978272a25e2efe9a8fc933",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "86aaeacf4e4048aa6015b1ad6631c767a43131abe7cddce6920253a4ecc5b212",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.341143,
+            "translucent": 0.6588
+          }
+        },
+        "scene-hearing-a-burglar-in-the-house-at-nigh": {
+          "sha256": "381746abc89d5fd9c0ea60ac6309f649ce1d44a43279c4a751fb89f93c9bc5f3",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-robbed": {
+          "sha256": "269ded5ea799d3fa4000bd96803b82c4fa437fad0356fe154791659709bff75a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-hiding-from-a-burglar": {
+          "sha256": "b967c08d1d1effa2b371eb7490636168dcb76dfb0a39a5ee3e337974a1714949",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "8a2a154430296a2a9afbf52c31203cb3e90a7b6608d7fd6b841db2772089df42",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.603592,
+            "translucent": 0.396408
+          }
+        },
+        "accent": {
+          "sha256": "0aeca8b9654c4eabc1a40f4d9c739b31fb76323fd33e9896945a26ddbbd0a470",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.69019,
+            "translucent": 0.30981
+          }
+        }
+      }
+    },
+    {
+      "id": "royalty",
+      "packSha256": "1d6638ac67902134ae3e4c0e4846a4307654a8b519dda6a2dea4e4adf8fb320c",
+      "native": {
+        "hero": {
+          "sha256": "78bf567dd9c69c14bf52d1b43f89f80e74e76e5d51da4a884244c778160f5eac",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "ff20a47041477e3b837d9e3a3287e2bdca40e4b108373f2ce41e43d6ed1a4a61",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "500b4a5195a38f49d776877a850bf764d7735c0ee797d1309363dc5b899f7e41",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.483539,
+            "translucent": 0.5164
+          }
+        },
+        "scene-meeting-a-king-or-queen": {
+          "sha256": "13d5747a5b9368693866b28d03f79035f38ec659555885be10b4e594fca5bd83",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-crowned-king-or-queen": {
+          "sha256": "804769386131fd50e840e053e280f4efb5fd4579eefe3e1c71be11ee09ffae35",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-king-or-queen-giving-you-an-order": {
+          "sha256": "9714a42a3cdeb923a8b4086b0d6a79f1a6876b3524a222f7309de7862bc51c4f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "c8af790b37319a6abf139da8e4dae6972d648e4558adf1aa99616072108cd147",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.982627,
+            "translucent": 0.017373
+          }
+        },
+        "accent": {
+          "sha256": "9d802523d2581cb5d075e8e02c04a6decae52f09eb6989b24de935f74899aec2",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.64045,
+            "translucent": 0.35955
+          }
+        }
+      }
+    },
+    {
+      "id": "crowd",
+      "packSha256": "b087cb3a0a5603e263f5c09cd88aee87b8cd42c680ab8ea091f383b824ce0394",
+      "native": {
+        "hero": {
+          "sha256": "5380713c2166942180803a1b92b9fac5ce4b55bf955b78e688a306afe45f032f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "62eb15e66d62bf9016e89be35c3ae5c758ca75b1644dbae70b3a9f393d401fe5",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "2c851737cb20da14715bfb33c94763ee5edac50366001c858fe9bd3c0dcd64cb",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.381814,
+            "translucent": 0.617959
+          }
+        },
+        "scene-being-lost-in-a-crowd": {
+          "sha256": "32acc72ddeed69fbbc298aa0f863ba16b41bbe652dcdfaa2d53b5e9a336f529a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-crowd-staring-at-you": {
+          "sha256": "0a9314fd617f89b91cddbc9ee23a46ba10430d851ebeb9cbfa341b3d11ed6079",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-speaking-or-performing-in-front-of-a-c": {
+          "sha256": "3906a563f11faa920bba9d142df7e3aeb0db1ec1daa52cae70db6d04c6e5b377",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "30bb72c0c5af2d40e9abf9f8f66ebca313f81dbe633d95a8f35afe86ee7bc1e4",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.466882,
+            "translucent": 0.533118
+          }
+        },
+        "accent": {
+          "sha256": "6f21c8c5f1179f7a11ae94f686fd0a066c37102842536bad73a436a913b9a2f7",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.307069,
+            "translucent": 0.692931
+          }
+        }
+      }
+    },
+    {
+      "id": "twins",
+      "packSha256": "4436ea46c5f45d374826e6a93f8d300de36bb3568556f9971a66a7d89a21f88b",
+      "native": {
+        "hero": {
+          "sha256": "fc4745b66fc1a555cee484fd15bc190c7f9e07b9d5f0f7624a28d4ecd439a0c6",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "4b305daea1bddbb5b87b5c0b8577fa3a85a16eac17e93baaa95d9d35da9f67be",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "ce0170afd931aff26042e7be20fff276d04b01d554e283945ad943020ac67c30",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.453375,
+            "translucent": 0.546514
+          }
+        },
+        "scene-being-pregnant-with-twins": {
+          "sha256": "732e969012da08556e5cd65a1e4c6d6682046198d169926ff22937d10922f09b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-having-a-twin-you-never-had": {
+          "sha256": "59404b0b0e73ccb9ee5a6ea248009ba0eae492fa08a24b6df64398c43d1e90c0",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-seeing-identical-twins": {
+          "sha256": "c386eac11bda3177877b23544ad3f7689a5b2c8b66eac405f1c0f9111602a80b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "16c921758e5fee7a2cd3d8ac915aa6e5f4e680f19073a67b0ad50aae569607d7",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.567292,
+            "translucent": 0.432708
+          }
+        },
+        "accent": {
+          "sha256": "0bca932eca8931b86d92002d5e1a742b39fa64aa8f3688732860c9ceab39c734",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.729816,
+            "translucent": 0.270184
+          }
+        }
+      }
+    },
+    {
+      "id": "dragon",
+      "packSha256": "d9b2ed02a7e60f67d5185cb6d08caccd12ddabfae0947de70a5dbc44a7c44b54",
+      "native": {
+        "hero": {
+          "sha256": "e144bab4a6b39bc84d3436f39d1c8efbb5aba58367300aea5bbfb18037389ca2",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "2ad9a2190a0902803e9d32e4eaefecf07931487c8e0342a3c44efa169451be59",
+          "width": 941,
+          "height": 1671,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "f347b7e940df7edccc908e539bb27863b7df306991d467f92134ecc009825905",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.479405,
+            "translucent": 0.520581
+          }
+        },
+        "scene-a-dragon-attacking-or-chasing-you": {
+          "sha256": "45fb531b8aa495e55570dc497ac03537b63bd9fdf2af7181aa23e85ed3efccdb",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-fighting-or-slaying-a-dragon": {
+          "sha256": "6f5353fe168ec281d5082143e44105d94df383b39f4814ffe66d9f092dfb3745",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-riding-or-flying-on-a-dragon": {
+          "sha256": "b93045090ce4b0913e3e77e962057d54da5dcc92c0c61d9f527bc6b96db20f75",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "f92edbe9f49756f90af7e4d676771797430feb0e53ce371eb67e4edbbafb9e2f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.676509,
+            "translucent": 0.323491
+          }
+        },
+        "accent": {
+          "sha256": "cf77e7bd4a2ac8ebef10cfdf474eeb54473d4db62815665c46a8d57ac3fc0296",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.979489,
+            "translucent": 0.020511
+          }
+        }
+      }
+    },
+    {
+      "id": "unicorn",
+      "packSha256": "19c5245859d5b39d3ca953aa5bc3889aba89bfbca27032c536b9b26541ee6027",
+      "native": {
+        "hero": {
+          "sha256": "299ae175380aec88798dd86a93d2ead439e04eed7a91c4bcac3fc9c531ba2894",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "ec4be8804f307a7493d5f749b25c72420935b8d3cc9ffec0655cce530a307323",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "0201283fdecf899ed31d8d9fd1e9f83e9b07ba646f9ea3f4cbfc19ff70d3303f",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.323035,
+            "translucent": 0.676934
+          }
+        },
+        "scene-seeing-a-unicorn": {
+          "sha256": "5631b5f6a074bfcb4e027efae8a31aa7cc820df90f800f8f71fd05ee0d50f734",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-riding-a-unicorn": {
+          "sha256": "cd84ab1d806bb786811ed5e641b00232fa25c530c10b0ec8a2d4a49a441ea5ff",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-wounded-black-or-dark-unicorn": {
+          "sha256": "bede0787f401dda9dc339f0face2bfdbb5d825ddebb6efd0207a81dec314f3ef",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "d1bfc87bac1e8b529d19ed0e46c6806fefe585bdd8b06a56a5c83b1f2ed93734",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.647883,
+            "translucent": 0.352117
+          }
+        },
+        "accent": {
+          "sha256": "bf5a91180e6ab21542d1981d5691565f59660902785812a6061876ecc3e41b40",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.959767,
+            "translucent": 0.040233
+          }
+        }
+      }
+    },
+    {
+      "id": "fox",
+      "packSha256": "512f28fec28484884c961ba19e100c29d9534225fafa3ba6952a6cf47a96f8e4",
+      "native": {
+        "hero": {
+          "sha256": "93ea409a5ce9974c22ec732f09f4b823f3adfcab7d0e59117879a29b7ce0e0a9",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "99f185e458af746baa027089471840c35432d2860c32166f7a42d7f702d65bd1",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "9368be4e25640c4c48c7c36086ac00deb1d186b2dde25aeca8804509187dc10f",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.39728,
+            "translucent": 0.602714
+          }
+        },
+        "scene-a-fox-crossing-the-road": {
+          "sha256": "665e8c175cee670b7c3c8b8c9c52c9e71980e0f1c56258339a519fc124458200",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-fox-watching-you": {
+          "sha256": "7659f64628419b72cf83504bd10ceebee991c3656687ff773ad8af93f4b6299c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-fox-biting-or-attacking-you": {
+          "sha256": "a0b11feb998608182827dd543c9ad4b361c2e215db2b02760ae5472bf79b2ee8",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "5518966a155ffc2684e7df789379a89eb5c5f0b8fbfa0721982c880cb41bb0ca",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.728456,
+            "translucent": 0.271544
+          }
+        },
+        "accent": {
+          "sha256": "5add8a42afc6ad542927695d8a7bb2aeb0ec7dad30a89895d07b2da2ff584b7f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.605946,
+            "translucent": 0.394054
+          }
+        }
+      }
+    },
+    {
+      "id": "fly",
+      "packSha256": "77edbcc35c9fc5b5d3a37b5181fe3e04208d4f6b21529d1763a7e1120bdaca18",
+      "native": {
+        "hero": {
+          "sha256": "3aad5d77e306f8ea152afbe72146d67243bb4a1e0d43372036fc24371be41373",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "da93efe98c8c3731f32db4808622977f60aa49afdc6919d9ef38ce285a25989d",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "2ec61f698078ac13f3787bdd965675990b4a9da9a4c5053a57d427cb79f52b17",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.388489,
+            "translucent": 0.611381
+          }
+        },
+        "scene-a-swarm-of-flies": {
+          "sha256": "9c47e1a58e53e9c286498536dd49ce9d2926714ea3f2c5e6c4a2cda6d9c1c1a6",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-killing-a-fly": {
+          "sha256": "4596fc1f6cc322c55851d50ab311a64858cb9bb415dd74e7efd430617bb2b42a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-flies-on-food": {
+          "sha256": "ba2a42dec670810aea4d726ece122ef75a03976181d467522fc951328f609967",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "0c0d6ada73e051d85f3cbb57b5750df0ffcbc9c240d1a81c63bd891919087a5e",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.509326,
+            "translucent": 0.490674
+          }
+        },
+        "accent": {
+          "sha256": "d5d9e255d54fce52db0a7d04670c04b0a9281e1042a33a972a0bd8605e827101",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.695011,
+            "translucent": 0.304989
+          }
+        }
+      }
+    },
+    {
+      "id": "jellyfish",
+      "packSha256": "32515dc5801bef247bb3767c9ae5f42771e3e8f2600a4d4191aa6bc1bab87c34",
+      "native": {
+        "hero": {
+          "sha256": "db230de84f489be1112efc9feae689c9654c8e380b09b5b8aa927f595fc39c03",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "8d0c8065d7e883833c34d778b08c1a2929b9cee37065daadce500b98eb20ac2b",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "c87a70bc3e868498f7a29def34153ce267ecd4511e048d81134d109d4a7301bb",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.413608,
+            "translucent": 0.586313
+          }
+        },
+        "scene-being-stung-by-a-jellyfish": {
+          "sha256": "cfa458e23f9e86b24af29411e6ecdb963481870a125f909a6349d83bfd58f3f1",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-swimming-among-many-jellyfish": {
+          "sha256": "94ff47b48b4c947546ad17a003abf33a3dfdd79164a4f5d9a92c3ccf8d933c8b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-glowing-jellyfish-in-the-dark": {
+          "sha256": "a15d9ef80f0c046cb993b31f7247a74d2c13fd1a723366dc05795a5217bf19eb",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "415aa2b6e23a803aa9f2f48803928bb6645dd6b083e5546c7673c312d05a8138",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.992066,
+            "translucent": 0.007934
+          }
+        },
+        "accent": {
+          "sha256": "62644d8f635ce42fec258387f208060d5da156e87d07d1af96488e0c918f64f7",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.643837,
+            "translucent": 0.356163
+          }
+        }
+      }
+    },
+    {
+      "id": "octopus",
+      "packSha256": "bcbbb0e9491ff19d72d91393a23e5e5405e47ce9ab080dbde1811f182a4d415f",
+      "native": {
+        "hero": {
+          "sha256": "f6af7ddcfe8393b465bd742699ce8e21756eb281e44728d4978cad26d22fe9ff",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "11a2d4f12bd93d2732efacc17849c97693e105516bf746348f59a9ab701d1ac1",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "22de92e9024c2e0423f238cfba7aa8236f90c03dac9955d399fff8be082ce621",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.461816,
+            "translucent": 0.538079
+          }
+        },
+        "scene-tentacles-wrapping-around-you": {
+          "sha256": "c709eed7d8a257ad5aa04d6e0a17c41447353f37f86bf6a359fc8571e25b3b83",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-octopus-watching-you": {
+          "sha256": "37a5374bd18adc9354a347b355b1c1a5b478ce68e41f5bcc9e89eb1345ad6451",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-cloud-of-ink": {
+          "sha256": "acbaa93f0f13003b0959b38508da31aa1c0bd973b671c90ac8aebc6bd4f51968",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "656a583d1fda77971b1a75edbacebcf1a6a95702934f370088868769437b9b22",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.482568,
+            "translucent": 0.517432
+          }
+        },
+        "accent": {
+          "sha256": "500211ab642da4cf3e658440627c6439e0bcbec4d777d57ad320c5ab03c61d87",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.737659,
+            "translucent": 0.262341
+          }
+        }
+      }
+    },
+    {
+      "id": "broken-glass",
+      "packSha256": "b02801a906f066a654d5a54970d8560f03cffed6bbbbbdee472cb96f6f0c2309",
+      "native": {
+        "hero": {
+          "sha256": "67c8f9580ab20a34eacd8aff801ce822dfb8b57e8435668ff9fec931fffaeb6c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "e033492af4ca72f67acd327b666f7cb2b374f26e0abf167a273bb81399d0f77a",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "c6595e318dbf5192c34855277125802e5e3b25b12c9cf9e62ba3591e22bb9151",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.410265,
+            "translucent": 0.589684
+          }
+        },
+        "scene-walking-on-broken-glass": {
+          "sha256": "31f56728da2a2a3256d05bed1f23f5a3611a911b166d79eae0f6155b08ea8f78",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-breaking-a-glass-yourself": {
+          "sha256": "47a7a871658fcdf74ff87145b3edebaf1eb20bfa0dd36df70037526e8d900b38",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-glass-in-your-mouth": {
+          "sha256": "3df4564a7d590df95ccb01822af623595a6c35311ffd22906b5a94de65cd164f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "f3f33aa14ff6069fab08bc8fb7397acc290056d1ef15c4b912de07efd9e89a31",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.620263,
+            "translucent": 0.379737
+          }
+        },
+        "accent": {
+          "sha256": "1ca5548b87a25873d32018380259e347302fd8a65248a975dacccb1bc9445335",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.690981,
+            "translucent": 0.309018
+          }
+        }
+      }
+    },
+    {
+      "id": "gift",
+      "packSha256": "c2834a03517c0f0b1a3ff0504d6f3b1df6a3e5e6ef585cc07aba575b1dc1bd5e",
+      "native": {
+        "hero": {
+          "sha256": "8c289c46718503fff4ae72fb51213947af1dfd1ebf785d84415e1dda38e7ae0f",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "5f45848abfa3603c3635c3b1cb501da9f80e42338100c1f35a5ef41b14b5e62d",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "df83ae318504dc10f5fb99575616f0a6de0eea6fdc73d7a025c24297586380ca",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.524652,
+            "translucent": 0.475233
+          }
+        },
+        "scene-receiving-an-unexpected-gift": {
+          "sha256": "5ffcfd3a9b372cea1e94beaf590a33692fd22e48943c19d39bdf4c8f95964410",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-opening-an-empty-box": {
+          "sha256": "1487be0749696e6229b7861896dd83cdb9a993e4dd6f20023ba63b57ded7f480",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-gift-from-someone-who-has-died": {
+          "sha256": "7cd41d688298cccc0c4d89a58f1c1c8d4a8e22539fd076f093c23a365227f237",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "9ab237dc20ca90657f8d9be538a683020d1f2ffe28eff1fa67373e59a505ee42",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.559699,
+            "translucent": 0.440301
+          }
+        },
+        "accent": {
+          "sha256": "e0b9714f9148506b6a03c37989bb195dde3349077e3ffcce2e8c589d377894df",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.597978,
+            "translucent": 0.402022
+          }
+        }
+      }
+    },
+    {
+      "id": "bag",
+      "packSha256": "43c569ece0b83ad5edd52f46eb5a516bab144d33c17e39f65fdcf04b52c40668",
+      "native": {
+        "hero": {
+          "sha256": "abc9be27d07044bb4914e0211c4a8bc56cd6e4a6143f30c4d26914b016494b38",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "7496b860746b7cc4037b9e281fe3283ea47e7badce3e49ed818bad298cb9c8fe",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "da1e1bc34c506727ad6f56301394ca93b0a9c2265da29557f565a64139051a07",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.334337,
+            "translucent": 0.665587
+          }
+        },
+        "scene-losing-your-bag": {
+          "sha256": "9aaa816831c707c63b165b7cddf7be2a0c4e2b242823386fa5b5848b2c4ea88b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-stolen-bag": {
+          "sha256": "1274a6b326fa314fa4fd2c945b466ebf639c0cddc40c427a55c8879d3b920ad8",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-bag-that-is-too-heavy": {
+          "sha256": "7c1c3261b247d1c6428b86fe8e034bc4fb386ffa5cac8c4b1a506ce63ab6db69",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "5442c61a166c2f4592f350aab3336ad00b744324d92f067710d4a82d1c13ccc4",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.649463,
+            "translucent": 0.350537
+          }
+        },
+        "accent": {
+          "sha256": "9f8f4f2f30f045fe0a916a622a360927a9b3c5ac5e1797536a920d161f594dc7",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.561101,
+            "translucent": 0.438899
+          }
+        }
+      }
+    },
+    {
+      "id": "explosion",
+      "packSha256": "d8150e3f9ff4bb71aac0486aa52662c904be468c1656ff8c2f592cafbdc52dba",
+      "native": {
+        "hero": {
+          "sha256": "611753a6ca01f55194b7ec552373c4f11f696ab3ee9e927439bc400f4b26a303",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "158276c1151616ca9c869a8f450387962f31067174dd3c68e1abea21fce284f4",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "9405dc080f60a900cbd5c51bc1273fcf9fb364cbf6e7e269f5262e23c3c37e28",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.391172,
+            "translucent": 0.608646
+          }
+        },
+        "scene-a-sudden-explosion-out-of-nowhere": {
+          "sha256": "fd9c94388d40a0b87c9b2e13fd749ef6bcc64959d2df03373f9fd9f00ad153fe",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-bomb-you-have-to-defuse": {
+          "sha256": "18611c6eaf596eed34cdcfcce5624bea482a4a00955c87ba52688e7e07cb6272",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-explosion-in-the-house": {
+          "sha256": "07d2be1dbc48e98ffde80f0c504934a15d31a816e7006d9c3773ec2330b8eaba",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "09ce3728dcfe8f9982607e90eaccab6442a3da01654e201f95d6d6ef63d3423c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.495964,
+            "translucent": 0.504036
+          }
+        },
+        "accent": {
+          "sha256": "800c933ba32be5bc3d2582b3d80c99ec9f7e2a7dfe38b54767bd6e29f07533cc",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.574221,
+            "translucent": 0.425779
+          }
+        }
+      }
+    },
+    {
+      "id": "searching",
+      "packSha256": "78ee48e93368eb1cd0ba52b9a715908db34998b06493dd8fe054cfcc1f9ed12f",
+      "native": {
+        "hero": {
+          "sha256": "b4f826f9d8245ca8d9126d418f8ccc27894076dc3c8069853d8b4cca943b19fa",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "ada82d7146bb34f2b97321bdc57135c03d3d491a0fac6855fa1adf555de7cff6",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "57da844c409222fc69fe97f137e701d3a12a688d51421adafe0da8881f50a3d5",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.345403,
+            "translucent": 0.654518
+          }
+        },
+        "scene-looking-for-your-keys-or-your-phone": {
+          "sha256": "255804a2ee67b467af90896cb95620d9df05de5e9809a5a09ea19fdcf87138cb",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-looking-for-your-car-in-a-car-park": {
+          "sha256": "844f65c60c767b8205938082937bef69025750bf44bfa3eb95fca22a07afa6ba",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-searching-and-never-finding": {
+          "sha256": "950daa5688881b7222747bda89894995c17ceb19af7815ed06f63246cae3eb57",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "d2dfa7b5d626562533ed057a1b32db05f08efb947bc6207b94cd7c2237d77745",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.281822,
+            "translucent": 0.718178
+          }
+        },
+        "accent": {
+          "sha256": "081a1399cee0bdc26e444b915dd8ba69a1e592cbf725080cb4f63642b78dffe7",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.675952,
+            "translucent": 0.324048
+          }
+        }
+      }
+    },
+    {
+      "id": "driving",
+      "packSha256": "cf887df0bdd9be458cca74b4d96c9e4c46f3e3ce7d33514304e9d9914c98abd4",
+      "native": {
+        "hero": {
+          "sha256": "4071a7c6019c44c9338a652fd814498707ef8987a57e7be0b89d6b9f5d88cedf",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "6e6162de7d401fb9d34fc2bbd5fb26e25115c08fa4d194eb8672240ab11f7005",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "6b7878045696f7dc8a1fe518def639fe7c841711ade16c8c9a3f123f6ffca772",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.334661,
+            "translucent": 0.665167
+          }
+        },
+        "scene-brakes-that-stop-working": {
+          "sha256": "523f13647bccc6d14c4e915fa03956dc138355328e4117c0953ad102bdd88a10",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-driving-without-a-licence-or-without-k": {
+          "sha256": "c938eb3bd528ecafeb50d92d4606fc38958521df5a0d75f3c07cad83ea8bfc30",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-someone-else-grabbing-the-wheel": {
+          "sha256": "f4a14ea58b6abbaaf6a91d6d6033ab4aa38c0be1620582f1682711c342f0b362",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "c4819b922249a83d9da433389079e155c5f3a5244363d1a95687a7b70fe03de0",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.375787,
+            "translucent": 0.624213
+          }
+        },
+        "accent": {
+          "sha256": "48dd066a4fc57174235efb771699f3d5d71e31dc063fb4d3bc48ec761d5c7eb4",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.573519,
+            "translucent": 0.426481
+          }
+        }
+      }
+    },
+    {
+      "id": "climbing",
+      "packSha256": "4d01ea81e7f691fbaa664d8b9734a71b9eeda1006518aa1286a5508689c7b10c",
+      "native": {
+        "hero": {
+          "sha256": "d0837c8d6a18f07ac2aeb456bce13e3f6160999b0347f6d433dfdbb24ec8b071",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "e7d40cce9fdeb8a405400b02b8bbc09aaf6a33664606fb8bf4776138b2513eae",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "8d274a2874633735b80505f92bf0c5a114151984ba757bef1bdefc6178835b83",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.333461,
+            "translucent": 0.666433
+          }
+        },
+        "scene-climbing-a-mountain": {
+          "sha256": "33d407d2b3fa4ab982501a77bf6bec37eba5a7e5b60f9f3c56e7d9ed010f1cde",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-climbing-a-ladder": {
+          "sha256": "0c6ad61dc00d236f5cc26f661253e17aaa57a870dbf51f73cec21f132426ecc4",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-never-reaching-the-top": {
+          "sha256": "a2bfe870d07d66e40122e2aa4282e0bfa306ec8c4c54748b17474b1c4b1d951a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "5c065f5c189dae93613f8bcec9a7f437bef1c6f6079231989650d19fba518236",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.625842,
+            "translucent": 0.374158
+          }
+        },
+        "accent": {
+          "sha256": "721f76525b5263e500c84ba0efe4593a08409de0e088f96e50604f1a793488e2",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.627244,
+            "translucent": 0.372756
+          }
+        }
+      }
+    },
+    {
+      "id": "breakup",
+      "packSha256": "2721822cda05640278cb4a506f2cf1d56e6e4ed54299a265194564d68a64fd11",
+      "native": {
+        "hero": {
+          "sha256": "162d21bbb7f648d8439f660edf79427a47f14a4cfa4d4e2a3e567d42ee5ff4e3",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "8343b614c8702373854625604252f7907704ee6bbc78a5f034bf452c52c98c72",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "60f5f881dd0aa0e52f4756b032cd69aca805bd57a396053fd7001b86a9520781",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.336203,
+            "translucent": 0.663722
+          }
+        },
+        "scene-being-left-by-your-current-partner": {
+          "sha256": "1790ddcc6ae14dd164e541e8854354213b6b4c3f2d612328cf671f11e9f3c3b4",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-breaking-up-with-your-partner": {
+          "sha256": "086346e14b6e595cc0559400e81e915dd0175d76dcf3cae449bce243042de41c",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-ex-breaking-up-with-you-again": {
+          "sha256": "e7f65b6d37afad09ee12ee5cf75e737ca9b5d7f272796f891762ab080eb4ee3b",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "d78e07a9c4e6d87b487c98fd13172088c90d65b5c7d91cdc856ce6791f57e8be",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.635504,
+            "translucent": 0.364496
+          }
+        },
+        "accent": {
+          "sha256": "5ae54ae620ba48710d3796eaf4ba966760bc0fa63878c5443711904d89417029",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.709661,
+            "translucent": 0.290339
+          }
+        }
+      }
+    },
+    {
+      "id": "stage",
+      "packSha256": "deb4cc84b83c857b6b812768930421c90ea2dd54923318f19d12191f8d0fe29d",
+      "native": {
+        "hero": {
+          "sha256": "b27a14b74de1839c33ad5c3cfd5e4a619b7070d20fc7314c467fd9b0feabf21a",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "b5d868bfe5f08b54cda72334750b46b00a57193dfc0e0dba32d0fa5aa632ccd4",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "ebb508a58132eef182c54140283bb72263a84a69a2fb18515addfb945533d5c5",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.363964,
+            "translucent": 0.635996
+          }
+        },
+        "scene-forgetting-your-lines-on-stage": {
+          "sha256": "e6f638e65a3151ab46066a08aacd528b79e0a40068a3641723c7cb07bb063cc4",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-stage-fright-before-going-on": {
+          "sha256": "3716183f1bb2d48a22f4c86c6c4dc61687b8e278162e0d4ebf3986a3ac55ef92",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-performing-without-rehearsing": {
+          "sha256": "832296ac03c193b880a74915a21052282855d704af8ae97423c057f8de0609b7",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "26dfb97fc4e658d565d50637d14624dc7758886bce9e320d25d229eb83619d64",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.669827,
+            "translucent": 0.330173
+          }
+        },
+        "accent": {
+          "sha256": "5190f4dcad1ed21484e25d455ee16780ce58b2f128f11755ba78e07e2ae40633",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.608612,
+            "translucent": 0.391388
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,25 +1,25 @@
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, router, useLocalSearchParams } from "expo-router";
+import { Link, Stack, router, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DreamerArtworkWindow } from "@/components/ui/DreamerBackground";
 import { CategoryHeader } from "@/components/symbols/CategoryHeader";
 import { LetterHeader } from "@/components/symbols/LetterHeader";
+import { SymbolArtwork } from "@/components/symbols/SymbolArtwork";
 import { SymbolCard } from "@/components/symbols/SymbolCard";
+import { SymbolLink } from "@/components/symbols/SymbolLink";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { SearchBar } from "@/components/ui/SearchBar";
 import { DarkTheme, ThemeLayout } from "@/constants/journalTheme";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
-import { getSymbolIllustration } from "@/constants/symbolIllustrations";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderFlatList, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import type {
   DreamSymbol,
@@ -34,6 +34,7 @@ import {
   getSymbolsByCategory,
   searchSymbols,
 } from "@/services/symbolDictionaryService";
+import { TypeScale } from '@/constants/typeScale';
 
 type BrowseMode = "theme" | "alphabetical";
 
@@ -144,27 +145,30 @@ function SymbolDictionaryScreen() {
     [availableLetters],
   );
 
-  useEffect(() => {
-    if (browseMode !== "alphabetical") return;
-    if (selectedLetter && !availableLetters.includes(selectedLetter)) {
-      setSelectedLetter(null);
-    }
-  }, [browseMode, selectedLetter, availableLetters]);
+  // Clear an unavailable selection before committing the filtered list. Keeping
+  // the old letter behind a derived fallback would resurrect it after search.
+  if (browseMode === "alphabetical" && selectedLetter && !availableLetterSet.has(selectedLetter)) {
+    setSelectedLetter(null);
+  }
+
+  // Sorted once per list and language, not again on each letter: names are normalized
+  // once per symbol and compared by a single collator (same order as localeCompare
+  // with these options, which builds a collator on every comparison).
+  const alphabeticalSymbols = useMemo(() => {
+    if (browseMode !== "alphabetical" || filteredSymbols.length === 0) return [];
+    const collator = new Intl.Collator(lang, { sensitivity: "base" });
+    return filteredSymbols
+      .map((symbol) => ({ symbol, key: normalizeValue(getSymbolName(symbol, lang)) }))
+      .sort((a, b) => collator.compare(a.key, b.key))
+      .map(({ symbol }) => symbol);
+  }, [browseMode, filteredSymbols, lang]);
 
   const sections: Section[] = useMemo(() => {
     if (browseMode === "alphabetical") {
-      if (filteredSymbols.length === 0) return [];
-
-      const sorted = [...filteredSymbols].sort((a, b) =>
-        normalizeValue(getSymbolName(a, lang)).localeCompare(
-          normalizeValue(getSymbolName(b, lang)),
-          lang,
-          { sensitivity: "base" },
-        ),
-      );
+      if (alphabeticalSymbols.length === 0) return [];
 
       const grouped = new Map<string, DreamSymbol[]>();
-      for (const symbol of sorted) {
+      for (const symbol of alphabeticalSymbols) {
         const letter = getSymbolLetter(getSymbolName(symbol, lang));
         if (selectedLetter && letter !== selectedLetter) {
           continue;
@@ -218,7 +222,7 @@ function SymbolDictionaryScreen() {
       category: c,
       data: getSymbolsByCategory(c),
     }));
-  }, [browseMode, deferredSearchQuery, selectedCategory, lang, categories, selectedLetter, filteredSymbols]);
+  }, [alphabeticalSymbols, browseMode, deferredSearchQuery, selectedCategory, lang, categories, selectedLetter, filteredSymbols]);
 
   const listData: Row[] = useMemo(() => {
     const rows: Row[] = [];
@@ -249,17 +253,11 @@ function SymbolDictionaryScreen() {
     return rows;
   }, [sections]);
 
-  const handleSymbolPress = useCallback((id: string) => {
-    const detailSource = source === "onboarding"
-      ? "onboarding"
-      : deferredSearchQuery
-        ? "search"
-        : "dictionary";
-    router.push({
-      pathname: "/symbol-detail/[id]",
-      params: { id, source: detailSource },
-    });
-  }, [deferredSearchQuery, source]);
+  const detailSource = source === "onboarding"
+    ? "onboarding"
+    : deferredSearchQuery
+      ? "search"
+      : "dictionary";
 
   const renderListRow = useCallback(
     (item: Row) => {
@@ -279,12 +277,12 @@ function SymbolDictionaryScreen() {
         <SymbolCard
           symbol={item.symbol}
           language={lang}
-          onPress={handleSymbolPress}
+          source={detailSource}
           variant="row"
         />
       );
     },
-    [lang, guideCopy, handleSymbolPress],
+    [lang, guideCopy, detailSource],
   );
 
   const renderEmptyComponent = useCallback(
@@ -378,19 +376,22 @@ function SymbolDictionaryScreen() {
         >
           {popularSymbols.map((symbol) => {
             const content = symbol[lang] ?? symbol.en;
-            const illustration = getSymbolIllustration(symbol.id, 'poster');
             return (
-              <Pressable
+              <SymbolLink
                 key={symbol.id}
-                onPress={() => handleSymbolPress(symbol.id)}
-                accessibilityRole="button"
+                symbolId={symbol.id}
+                source={detailSource}
                 accessibilityLabel={content.name}
                 testID={`symbol.popular.${symbol.id}`}
-                style={({ pressed }) => [styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }, pressed && styles.posterPressed]}
+                surfaceStyle={[styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}
+                pressedStyle={styles.posterPressed}
               >
-                {illustration ? (
-                  <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} />
-                ) : null}
+                {/* The painting alone grows into the sheet; the name stays on the poster. */}
+                <Link.AppleZoom>
+                  <View style={StyleSheet.absoluteFill}>
+                    <SymbolArtwork symbolId={symbol.id} size="poster" />
+                  </View>
+                </Link.AppleZoom>
                 <LinearGradient
                   pointerEvents="none"
                   colors={["rgba(9,4,19,0)", "rgba(9,4,19,0.86)"]}
@@ -398,7 +399,7 @@ function SymbolDictionaryScreen() {
                   style={StyleSheet.absoluteFill}
                 />
                 <Text numberOfLines={2} style={styles.posterName}>{content.name}</Text>
-              </Pressable>
+              </SymbolLink>
             );
           })}
         </ScrollView>
@@ -477,7 +478,7 @@ function SymbolDictionaryScreen() {
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID="screen.symbolDictionary">
       <Stack.Screen options={{ headerShown: false, title: t("symbols.dictionary_title") }} />
 
-      <FlatList<Row>
+      <HeaderFlatList
         testID="symbol-list"
         style={styles.list}
         contentContainerStyle={{ paddingBottom: insets.bottom + ThemeLayout.spacing.xl }}
@@ -488,8 +489,8 @@ function SymbolDictionaryScreen() {
         onScroll={onHeaderScroll}
         scrollEventThrottle={16}
         data={listData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => renderListRow(item)}
+        keyExtractor={(item: unknown) => (item as Row).id}
+        renderItem={({ item }: { item: unknown }) => renderListRow(item as Row)}
         ListHeaderComponent={listHeader}
         ListEmptyComponent={renderEmptyComponent()}
         initialNumToRender={12}
@@ -507,30 +508,30 @@ const styles = StyleSheet.create({
   listHeader: { paddingHorizontal: 20, gap: 8, paddingBottom: 4 },
   headerRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 8, rowGap: 4, marginBottom: 8 },
   backButton: { width: 44, minHeight: 44, alignItems: "center", justifyContent: "center", marginLeft: -12 },
-  headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: 34, lineHeight: 40, letterSpacing: -0.3 },
+  headerTitle: { flex: 1, flexBasis: 140, minWidth: 0, fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.display.fontSize, lineHeight: 40, letterSpacing: -0.3 },
   guidesLink: { minHeight: 44, justifyContent: "center", maxWidth: "100%", paddingHorizontal: 12, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth },
-  guidesText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, flexShrink: 1 },
+  guidesText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, flexShrink: 1 },
   popularBlock: { marginTop: 10, marginBottom: 6 },
   eyebrowRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 12 },
   eyebrowRule: { width: 22, height: 1 },
-  eyebrow: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16, letterSpacing: 2, textTransform: "uppercase" },
+  eyebrow: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, letterSpacing: 2, textTransform: "uppercase" },
   popularScroller: { marginHorizontal: -20 },
   popularLinks: { gap: 12, paddingHorizontal: 20 },
   poster: { width: 128, height: 168, borderRadius: 16, borderCurve: "continuous", borderWidth: StyleSheet.hairlineWidth, overflow: "hidden", justifyContent: "flex-end", padding: 12 },
   posterPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
-  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: 17, lineHeight: 21, color: ART_TEXT },
+  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight, color: ART_TEXT },
   modeSwitch: { flexDirection: "row", borderBottomWidth: StyleSheet.hairlineWidth },
   modeOption: { flex: 1, minWidth: 0, minHeight: 44, paddingVertical: 10, paddingHorizontal: 12, alignItems: "center", justifyContent: "center" },
-  modeText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22, textAlign: "center" },
+  modeText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: "center" },
   modeUnderline: { position: "absolute", bottom: 0, height: 3, width: 44, borderRadius: 2 },
   filterRow: { gap: 4, paddingVertical: 4 },
   letterOption: { minWidth: 44, minHeight: 44, paddingHorizontal: 10, paddingVertical: 10, borderRadius: 22, alignItems: "center", justifyContent: "center" },
   categoryOption: { minHeight: 44, paddingHorizontal: 10, paddingVertical: 10, borderBottomWidth: 2, alignItems: "center", justifyContent: "center" },
-  filterText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 15, lineHeight: 22 },
+  filterText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   unavailable: { opacity: 0.35 },
   pressed: { opacity: 0.78 },
   emptyState: { alignItems: "center", paddingHorizontal: 20, paddingVertical: 48, gap: 12 },
-  emptyText: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, textAlign: "center" },
+  emptyText: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: "center" },
 });
 
 export default withHeaderScroll(SymbolDictionaryScreen);

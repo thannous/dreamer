@@ -2,8 +2,11 @@ import { Platform } from 'react-native';
 
 import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
 
+import { getNativeQaSpeechAudioSource } from '@/services/nativeQaSpeechAudio';
+
 import { APP_TRANSCRIPTION_LOCALES } from '@/lib/locale';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
+import { publishVoiceLevel, VOICE_LEVEL_SILENT } from '@/lib/voiceLevel';
 import {
   LOCALE_INTROSPECTION_MIN_API,
   resolveSpeechCapability,
@@ -333,6 +336,19 @@ export function __setCachedSpeechModuleForTests(
   cachedSpeechModule = module;
 }
 
+/**
+ * Whether no dictation holds the microphone. A module never loaded has run no session;
+ * a state that cannot be read counts as busy, so nothing reconfigures audio under it.
+ */
+export async function isSpeechRecognitionIdle(): Promise<boolean> {
+  if (!cachedSpeechModule) return true;
+  try {
+    return (await cachedSpeechModule.getStateAsync()) === 'inactive';
+  } catch {
+    return false;
+  }
+}
+
 export async function getSpeechLocaleAvailability(languageCode: string): Promise<SpeechLocaleAvailability | null> {
   const speechModule = await loadSpeechRecognitionModule();
   if (!speechModule) return null;
@@ -624,6 +640,8 @@ export async function startNativeSpeechSession(
 
     if (options?.signal?.aborted) return null;
 
+    const qaAudioSource = await getNativeQaSpeechAudioSource();
+    if (options?.signal?.aborted) return null;
     const supportsRecording = speechModule.supportsRecording?.() ?? false;
     if (__DEV__) {
       const service = speechModule.getDefaultRecognitionService?.();
@@ -742,6 +760,12 @@ export async function startNativeSpeechSession(
       options?.onListeningChange?.(false);
     });
 
+    // Loudness for the listening orb only; it carries no audio or text.
+    const volumeSub = speechModule.addListener('volumechange', (event: { value: number }) => {
+      if (sessionId !== globalSessionCounter || ended || stopRequested) return;
+      publishVoiceLevel(event.value);
+    });
+
     const errorSub = speechModule.addListener('error', (event) => {
       // Ignore events from old sessions
       if (sessionId !== globalSessionCounter) {
@@ -779,6 +803,8 @@ export async function startNativeSpeechSession(
       try { endSub.remove(); } catch {}
       try { audioEndSub.remove(); } catch {}
       try { errorSub.remove(); } catch {}
+      try { volumeSub?.remove(); } catch {}
+      publishVoiceLevel(VOICE_LEVEL_SILENT);
 
       if (__DEV__) {
         console.log('[nativeSpeech] cleanup complete', { sessionId });
@@ -796,6 +822,8 @@ export async function startNativeSpeechSession(
         continuous: Platform.OS === 'web' || Platform.OS === 'ios',
         requiresOnDeviceRecognition,
         androidRecognitionServicePackage,
+        ...(qaAudioSource ? { audioSource: qaAudioSource } : {}),
+        volumeChangeEventOptions: { enabled: true, intervalMillis: 80 },
         recordingOptions: supportsRecording
           ? {
               persist: true,

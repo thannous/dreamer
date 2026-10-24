@@ -1,29 +1,35 @@
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { router, useFocusEffect, useIsFocused } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Platform,
   Pressable,
-  ScrollView,
   Text,
   View,
-  useWindowDimensions,
 } from "react-native";
 import { ScreenContainer } from "@/components/ScreenContainer";
+import { HomeAnniversaryCard } from "@/components/home/HomeAnniversaryCard";
+import { HomeDiscoverTiles } from "@/components/home/HomeDiscoverTiles";
+import { HomeFullMoonRow } from "@/components/home/HomeFullMoonRow";
+import { HomeMoonLetterRow } from "@/components/home/HomeMoonLetterRow";
+import { HomeRecurringCard } from "@/components/home/HomeRecurringCard";
+import { HomeWeekConstellation } from "@/components/home/HomeWeekConstellation";
+import { HomeWeekNights } from "@/components/home/HomeWeekNights";
 import { TodayHero } from "@/components/home/TodayHero";
-import { PersonalReadingCard } from "@/components/inspiration/PersonalReadingCard";
 import { FreeAnalysesNudge, getFreeAnalysesNudge } from "@/components/quota/FreeAnalysesNudge";
+import { MonthEndAnalysesCard } from "@/components/quota/MonthEndAnalysesCard";
 import { useNotificationSettingsController } from "@/components/settings/useNotificationSettingsController";
+import { pickDreamRediscovery } from '@/lib/dreamRediscovery';
 import { buildPersonalReading } from "@/lib/personalReading";
-import { PressableScale } from "@/components/motion";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ThemeLayout } from "@/constants/journalTheme";
 import {
   DESKTOP_BREAKPOINT,
   getBottomNavigationLayout,
 } from "@/constants/layout";
-import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from "@/constants/noctaliaDesign";
+import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
+import { useContentWindow } from "@/context/ContentWindowContext";
 import { useDreamsData } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
@@ -34,10 +40,10 @@ import { useClearWebFocus } from "@/hooks/useClearWebFocus";
 import { useScrollIdle } from "@/hooks/useScrollIdle";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
-import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
-import type { DreamGuideLanguage } from "@/lib/dreamGuideTypes";
+import { pickDreamAnniversary } from "@/lib/dreamAnniversary";
 import { isDreamAnalyzed, isDreamExplored } from "@/lib/dreamUsage";
-import { getSleepSoundCopy } from "@/lib/sleepSoundCopy";
+import { getMonthEndAnalyses } from "@/lib/monthEndAnalyses";
+import { getMoonLetterInvite } from "@/lib/moonLetter";
 import { isSleepSoundsAvailable } from "@/lib/sleepSoundsFeature";
 import {
   RITUALS,
@@ -47,16 +53,63 @@ import {
   getLocalDateKey,
   shouldResetDailyProgress,
 } from "@/lib/ritualProgressUtils";
-import { TID } from "@/lib/testIDs";
 import { resolveTodayState, type TodayState } from "@/lib/todayState";
 import { getRitualPreference, getRitualStepProgress, getSavedTranscript, saveRitualStepProgress } from "@/services/storageService";
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
-type IconName = Parameters<typeof IconSymbol>[0]["name"];
-type TranslateFn = ReturnType<typeof useTranslation>["t"];
-
 const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
+
+// Storage reads of the Today screen live outside it: React Compiler does not compile a
+// component whose try/catch holds a conditional expression, and Home re-renders on focus.
+async function readDraftSaved(): Promise<boolean | null> {
+  try {
+    const savedTranscript = await getSavedTranscript();
+    return savedTranscript.trim().length > 0;
+  } catch (error) {
+    if (__DEV__) {
+      console.error(
+        "[InspirationScreen] Failed to read saved transcript",
+        error,
+      );
+    }
+    return null;
+  }
+}
+
+async function loadRitualState() {
+  const todayKey = getLocalDateKey(new Date(Date.now()));
+  const [storedProgress, preferredRitualId] = await Promise.all([
+    getRitualStepProgress(),
+    getRitualPreference(),
+  ]);
+
+  let nextProgressDate = todayKey;
+  if (storedProgress && storedProgress.date === todayKey) {
+    nextProgressDate = storedProgress.date;
+  } else {
+    try {
+      await saveRitualStepProgress({ date: todayKey, steps: {} });
+    } catch (error) {
+      if (__DEV__) {
+        console.error(
+          "[InspirationScreen] Failed to reset stale ritual progress",
+          error,
+        );
+      }
+    }
+  }
+
+  const preferredRitual = preferredRitualId
+    ? RITUALS.find((ritual) => ritual.id === preferredRitualId)
+    : undefined;
+  const nextSelectedRitualId: RitualId = preferredRitual?.id ?? "starter";
+
+  return {
+    nextProgressDate,
+    nextSelectedRitualId,
+  };
+}
 
 /**
  * Inspiration / rituals screen.
@@ -69,19 +122,15 @@ function InspirationScreen() {
   const { colors, mode } = useTheme();
   const openQuickSettings = useQuickSettings();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { t, currentLang } = useTranslation();
-  const guideCopy = useMemo(
-    () => getDreamGuideCopy((currentLang ?? "en") as DreamGuideLanguage),
-    [currentLang],
-  );
-  const { width, height, fontScale } = useWindowDimensions();
+  const { t } = useTranslation();
+  const { width, height, fontScale } = useContentWindow();
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();
   const { user } = useAuth();
   const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
   const freeAnalysesNudge = getFreeAnalysesNudge({
-    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage,
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 1,
   });
   useClearWebFocus();
   // Note: guestLimitReached was removed - quota is now enforced on analysis, not recording
@@ -100,17 +149,25 @@ function InspirationScreen() {
     : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
       + navigationLayout.minimumBottomInset
       + ThemeLayout.spacing.lg;
-  const handleOpenSymbols = useCallback(() => {
-    router.push("/symbol-dictionary" as any);
-  }, []);
-  const handleOpenGuides = useCallback(() => {
-    router.push("/dream-guides" as any);
-  }, []);
-
   const personalReading = useMemo(
     () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams, now) : null),
     [dreams, dreamsLoaded, now]
   );
+  // The dream noted on this date a month or a year ago: today only.
+  const anniversary = useMemo(
+    () => (dreamsLoaded ? pickDreamAnniversary(dreams, now) : null),
+    [dreams, dreamsLoaded, now]
+  );
+  const rediscovery = useMemo(() => dreamsLoaded && !anniversary ? pickDreamRediscovery(dreams, now) : null, [dreams, dreamsLoaded, anniversary, now]);
+  // The morning after a full moon and the two days after, for an account: this cycle's letter.
+  const moonLetterInvite = useMemo(
+    () => (dreamsLoaded && user ? getMoonLetterInvite(dreams, now) : null),
+    [dreams, dreamsLoaded, now, user]
+  );
+  // In the month's last days, the included analyses left and a dream still to read take the nudge's place.
+  const monthEndAnalyses = useMemo(() => (dreamsLoaded ? getMonthEndAnalyses({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, dreams, now,
+  }) : null), [dreams, dreamsLoaded, now, quotaError, quotaLoading, tier, usage, user]);
   const notificationSettings = useNotificationSettingsController();
   const nextReminderText =
     !notificationSettings.unsupported && notificationSettings.notificationsEnabled && notificationSettings.hasPermissions
@@ -158,10 +215,6 @@ function InspirationScreen() {
   }, [homeFocused, now, todayState]);
 
   const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
-  const sleepCopy = useMemo(
-    () => getSleepSoundCopy(currentLang ?? "en"),
-    [currentLang],
-  );
 
   const handleTodayCta = useCallback(() => {
     if (!todayState) return;
@@ -183,10 +236,6 @@ function InspirationScreen() {
         return;
     }
   }, [todayState]);
-  const handleOpenSleepSounds = useCallback(() => {
-    router.push("/sleep-sounds" as any);
-  }, []);
-
   const syncTodayClock = useCallback((nextNow = Date.now()) => {
     setNow((current) => {
       const currentKey = getLocalDateKey(new Date(current));
@@ -223,18 +272,9 @@ function InspirationScreen() {
   }, [progressDate]);
 
   const refreshTodayDraft = useCallback(async (isActive?: () => boolean) => {
-    try {
-      const savedTranscript = await getSavedTranscript();
-      if (isActive && !isActive()) return;
-      setHasDraft(savedTranscript.trim().length > 0);
-    } catch (error) {
-      if (__DEV__) {
-        console.error(
-          "[InspirationScreen] Failed to read saved transcript",
-          error,
-        );
-      }
-    }
+    const draftSaved = await readDraftSaved();
+    if (draftSaved === null || (isActive && !isActive())) return;
+    setHasDraft(draftSaved);
   }, []);
 
   const refreshTodayForOpenScreen = useCallback(() => {
@@ -246,40 +286,6 @@ function InspirationScreen() {
     refreshTodayForOpenScreen();
     void refreshTodayDraft();
   }, [refreshTodayDraft, refreshTodayForOpenScreen]);
-
-  const loadRitualState = useCallback(async () => {
-    const todayKey = getLocalDateKey(new Date(Date.now()));
-    const [storedProgress, preferredRitualId] = await Promise.all([
-      getRitualStepProgress(),
-      getRitualPreference(),
-    ]);
-
-    let nextProgressDate = todayKey;
-    if (storedProgress && storedProgress.date === todayKey) {
-      nextProgressDate = storedProgress.date;
-    } else {
-      try {
-        await saveRitualStepProgress({ date: todayKey, steps: {} });
-      } catch (error) {
-        if (__DEV__) {
-          console.error(
-            "[InspirationScreen] Failed to reset stale ritual progress",
-            error,
-          );
-        }
-      }
-    }
-
-    const preferredRitual = preferredRitualId
-      ? RITUALS.find((ritual) => ritual.id === preferredRitualId)
-      : undefined;
-    const nextSelectedRitualId: RitualId = preferredRitual?.id ?? "starter";
-
-    return {
-      nextProgressDate,
-      nextSelectedRitualId,
-    };
-  }, []);
 
   // Reload progress from storage on focus (picks up changes from ritual detail page)
   useFocusEffect(
@@ -308,7 +314,7 @@ function InspirationScreen() {
       return () => {
         isActive = false;
       };
-    }, [loadRitualState, refreshTodayDraft, refreshTodayForOpenScreen]),
+    }, [refreshTodayDraft, refreshTodayForOpenScreen]),
   );
 
   // Check when returning to foreground
@@ -324,9 +330,9 @@ function InspirationScreen() {
   }, [refreshTodayForOpenScreen]);
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View testID="screen.home" className="flex-1 bg-ink">
-        <ScrollView
+        <HeaderScrollView
           className="flex-1"
           onScroll={onHeaderScroll}
           scrollEventThrottle={16}
@@ -342,139 +348,39 @@ function InspirationScreen() {
             <TodayHero state={todayState} dream={featuredDream} now={now}
               onPressCta={handleTodayCta} onOpenSettings={openQuickSettings} />
             <View className="px-6">
-              {personalReading ? (
-                <PersonalReadingCard reading={personalReading} nextReminderText={nextReminderText}
-                  animateOnMount={false} compact />
-              ) : null}
-              {freeAnalysesNudge ? <FreeAnalysesNudge nudge={freeAnalysesNudge} /> : null}
+              {dreamsLoaded ? <HomeFullMoonRow dreams={dreams} now={now} /> : null}
+              {moonLetterInvite ? <HomeMoonLetterRow invite={moonLetterInvite} /> : null}
+              {anniversary ? <HomeAnniversaryCard anniversary={anniversary} /> : rediscovery ? <HomeAnniversaryCard anniversary={{ dream: rediscovery, span: 'rediscovery' }} /> : null}
+              {personalReading ? <>
+                <HomeWeekNights dreams={dreams} now={now} />
+                <HomeWeekConstellation dreams={dreams} now={now} />
+                <HomeRecurringCard dreams={dreams} reading={personalReading} now={now} />
+              </> : null}
+              {monthEndAnalyses ? <MonthEndAnalysesCard offer={monthEndAnalyses} now={now} />
+                : freeAnalysesNudge ? <FreeAnalysesNudge nudge={freeAnalysesNudge} /> : null}
               {!notificationSettings.unsupported ? <Pressable
                 onPress={() => router.push('/settings')}
                 accessibilityRole="button" accessibilityLabel={nextReminderText ?? t('home.today.add_reminder')}
                 testID="btn.home.reminder"
                 className="min-h-[60px] flex-row items-center gap-3 border-t border-line py-4 active:opacity-70">
                 <View className="w-10 items-center"><IconSymbol name="bell" size={23} color={noctalia.accent.text} /></View>
-                <Text className="min-w-0 flex-1 font-sans text-[15px] leading-[22px] text-ivory-muted">
+                <Text className="min-w-0 flex-1 font-sans text-body leading-[22px] text-ivory-muted">
                   {nextReminderText ?? t('home.today.add_reminder')}
                 </Text>
                 <IconSymbol name="chevron.right" size={18} color={noctalia.text.tertiary} />
               </Pressable> : null}
               <View className="pb-6 pt-8">
-                <HomeResourcesRow
-                  t={t}
-                  noctalia={noctalia}
-                  selectedRitualId={selectedRitualId}
-                  sleepSoundsAvailable={sleepSoundsAvailable}
-                  symbolsLabel={t("symbols.home_card_title")}
-                  guidesLabel={guideCopy.screenTitle}
-                  ritualLabel={t("inspiration.ritual.title")}
-                  sleepLabel={sleepCopy.screenTitle}
-                  onOpenSymbols={handleOpenSymbols}
-                  onOpenGuides={handleOpenGuides}
-                  onOpenSleepSounds={handleOpenSleepSounds}
-                />
+                <HomeDiscoverTiles now={now} selectedRitualId={selectedRitualId}
+                  sleepSoundsAvailable={sleepSoundsAvailable} />
               </View>
             </View>
           </ScreenContainer>
-        </ScrollView>
+        </HeaderScrollView>
 
       </View>
     </ScrollPerfProvider>
   );
 }
-
-type HomeResourcesRowProps = {
-  t: TranslateFn;
-  noctalia: NoctaliaDesignTokens;
-  selectedRitualId: RitualId;
-  sleepSoundsAvailable: boolean;
-  symbolsLabel: string;
-  guidesLabel: string;
-  ritualLabel: string;
-  sleepLabel: string;
-  onOpenSymbols: () => void;
-  onOpenGuides: () => void;
-  onOpenSleepSounds: () => void;
-};
-
-const HomeResourcesRow = memo(function HomeResourcesRow({
-  t,
-  noctalia,
-  selectedRitualId,
-  sleepSoundsAvailable,
-  symbolsLabel,
-  guidesLabel,
-  ritualLabel,
-  sleepLabel,
-  onOpenSymbols,
-  onOpenGuides,
-  onOpenSleepSounds,
-}: HomeResourcesRowProps) {
-  const items = [
-    {
-      key: 'symbols',
-      icon: 'book.closed.fill' as IconName,
-      label: symbolsLabel,
-      onPress: onOpenSymbols,
-      testID: TID.Button.HomeResourcesSymbols,
-    },
-    {
-      key: 'guides',
-      icon: 'sparkles' as IconName,
-      label: guidesLabel,
-      onPress: onOpenGuides,
-      testID: TID.Button.HomeResourcesGuides,
-    },
-    {
-      key: 'ritual',
-      icon: 'moon.stars.fill' as IconName,
-      label: ritualLabel,
-      onPress: () => router.push(`/ritual/${selectedRitualId}` as any),
-      testID: TID.Button.HomeResourcesRitual,
-    },
-    ...(sleepSoundsAvailable
-      ? [{
-          key: 'sleep',
-          icon: 'moon.stars.fill' as IconName,
-          label: sleepLabel,
-          onPress: onOpenSleepSounds,
-          testID: TID.Button.HomeSleepSounds,
-        }]
-      : []),
-  ];
-
-  return (
-    <View
-      testID={TID.Component.HomeResources}
-      accessibilityRole="summary"
-      accessibilityLabel={t('home.today.resources')}
-      className="gap-3"
-    >
-      <View className="flex-row items-start gap-3">
-        <View className="mt-[9px] h-px w-[22px] bg-champagne" />
-        <Text className="min-w-0 shrink font-sans-medium text-[12px] leading-[18px] uppercase tracking-[1.6px] text-champagne-on">
-          {t('home.today.resources')}
-        </Text>
-      </View>
-      <View className="flex-row flex-wrap gap-2">
-        {items.map((item) => (
-          <PressableScale
-            key={item.key}
-            onPress={item.onPress}
-            accessibilityRole="button"
-            accessibilityLabel={item.label}
-            testID={item.testID}
-            className="min-h-[44px] min-w-[44px] flex-row items-center gap-2 rounded-full border border-line bg-ink-soft px-3.5 py-2"
-          >
-            <IconSymbol name={item.icon} size={16} color={noctalia.accent.text} />
-            <Text className="font-sans-medium text-[13px] text-ivory" numberOfLines={1}>
-              {item.label}
-            </Text>
-          </PressableScale>
-        ))}
-      </View>
-    </View>
-  );
-});
 
 // QuickAccess section intentionally removed to keep the home
 // focused on guidance, rituals and inspiration rather than navigation.

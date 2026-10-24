@@ -1,10 +1,19 @@
-import type { AuthChangeEvent, Session, User } from '@supabase/supabase-js';
+import { createClient, type AuthChangeEvent, type Session, type User } from '@supabase/supabase-js';
 
 import * as mockAuth from './mockAuth';
 import { PASSWORD_RESET_ROUTE } from './authRoutes';
 import { isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
-import { supabase } from './supabase';
+import {
+  clearPendingWebRecoveryTokenHash,
+  getPendingWebRecoveryTokenHash,
+  getSupabasePublicConfiguration,
+  getWebRecoveryLinkState,
+  hasPendingWebRecoveryPkce,
+  supabase,
+  updatePasswordFromPendingWebRecoveryPkce,
+  webAuthCallbackPromise,
+} from './supabase';
 import type { SubscriptionTier } from './types';
 
 export type { MockProfile } from './mockAuth';
@@ -123,18 +132,7 @@ async function establishGoogleOAuthSession(params: URLSearchParams): Promise<Ses
   const accessToken = params.get('access_token');
   const refreshToken = params.get('refresh_token');
   if (accessToken || refreshToken) {
-    if (!accessToken || !refreshToken) {
-      throw new Error('Google sign-in callback was malformed.');
-    }
-    const { data, error } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    });
-    if (error) throw error;
-    if (!data.session) {
-      throw new Error('Google sign-in did not return a session.');
-    }
-    return data.session;
+    throw new Error('Google sign-in callback must use a code.');
   }
 
   const code = params.get('code');
@@ -325,11 +323,28 @@ export async function signUpWithEmailPassword(email: string, password: string, u
     emailRedirectTo: EMAIL_REDIRECT_WEB,
     data: userLang ? { lang: userLang } : undefined,
   };
-  const { data, error } = await supabase.auth.signUp({
+  const request = {
     email,
     password,
     options: signUpOptions,
-  });
+  };
+  let { data, error } = await supabase.auth.signUp(request);
+  // Keep PKCE confirmation links where e-mail confirmation is enabled. Local
+  // autoconfirm explicitly rejects PKCE, so retry only that known rejection
+  // through a sessionless client for this user-initiated sign-up.
+  if (error && /pkce flow cannot be used when autoconfirm is enabled/i.test(error.message)) {
+    const configuration = getSupabasePublicConfiguration();
+    if (!configuration) throw error;
+    const signUpClient = createClient(configuration.projectUrl, configuration.publicKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false,
+        flowType: 'implicit',
+      },
+    });
+    ({ data, error } = await signUpClient.auth.signUp(request));
+  }
   if (error) throw error;
   await ensureSessionPersistence(data.session ?? null);
   return data.user;
@@ -389,12 +404,76 @@ export async function updatePassword(newPassword: string): Promise<User | null> 
   return data.user ?? null;
 }
 
+export { getWebRecoveryLinkState, webAuthCallbackPromise };
+
+function createIsolatedRecoveryClient(projectUrl: string, publicKey: string) {
+  return createClient(projectUrl, publicKey, {
+    auth: {
+      storageKey: 'noctalia-recovery-isolated',
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      flowType: 'implicit',
+    },
+  });
+}
+
+/**
+ * Complete a recovery token hash through GoTrue without replacing the app's
+ * session. This also supports a link opened in a browser without the PKCE
+ * verifier, once the hosted recovery email template emits a token hash.
+ */
+let verifiedRecovery: {
+  tokenHash: string;
+  client: ReturnType<typeof createIsolatedRecoveryClient>;
+  user: User;
+} | null = null;
+
+export async function updatePasswordFromWebRecovery(email: string, newPassword: string): Promise<User | null> {
+  if (hasPendingWebRecoveryPkce()) {
+    return updatePasswordFromPendingWebRecoveryPkce(email, newPassword);
+  }
+  const pending = getPendingWebRecoveryTokenHash();
+  const configuration = getSupabasePublicConfiguration();
+  if (!pending || !configuration) {
+    throw new Error('Password recovery link is unavailable.');
+  }
+
+  // Keep the verified session only in this client's memory. A mismatched email
+  // can be retried without redeeming the single-use recovery hash again.
+  if (!verifiedRecovery || verifiedRecovery.tokenHash !== pending) {
+    const client = createIsolatedRecoveryClient(configuration.projectUrl, configuration.publicKey);
+    const { data, error } = await client.auth.verifyOtp({ token_hash: pending, type: 'recovery' });
+    if (error) throw error;
+    if (!data.user?.email || !data.session || data.session.user.id !== data.user.id) {
+      throw new Error('Password recovery link is invalid.');
+    }
+    verifiedRecovery = { tokenHash: pending, client, user: data.user };
+  }
+
+  const recovery = verifiedRecovery;
+  if (!recovery) throw new Error('Password recovery link is invalid.');
+  const { client, user } = recovery;
+  if (user.email!.trim().toLowerCase() !== email.trim().toLowerCase()) {
+    throw new Error('recovery_email_mismatch');
+  }
+
+  const { data: updatedData, error: updateError } = await client.auth.updateUser({ password: newPassword });
+  if (updateError) throw updateError;
+  if (updatedData.user?.id !== user.id) {
+    throw new Error('Password recovery account changed.');
+  }
+
+  verifiedRecovery = null;
+  clearPendingWebRecoveryTokenHash();
+  return updatedData.user;
+}
+
 /**
  * Observe auth events relevant to password recovery. When the browser opens a
- * recovery link, supabase-js consumes the URL fragment and emits
- * `PASSWORD_RECOVERY`; a subscriber attached later still receives the session
- * through `INITIAL_SESSION`, so callers may treat any event carrying a session
- * as "allowed to set a new password".
+ * recovery link, PKCE and token-hash exchanges stay in isolated clients.
+ * The reset page also permits an already authenticated account to update its
+ * own password through the app session.
  */
 export function onPasswordRecovery(
   cb: (event: AuthChangeEvent, session: Session | null) => void
@@ -414,8 +493,7 @@ export function onPasswordRecovery(
 /**
  * Sign in with Google using a same-origin OAuth popup.
  * The empty popup is opened synchronously to avoid the Chrome blocker. The
- * opener then initializes exactly one session from the callback: implicit
- * tokens when present, otherwise a PKCE code, without navigating the app tab.
+ * opener exchanges the PKCE code from the callback without navigating the app tab.
  */
 export async function signInWithGoogleWeb(): Promise<void> {
   if (isMockMode) {

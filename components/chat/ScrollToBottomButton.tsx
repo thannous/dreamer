@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { TypeScale } from '@/constants/typeScale';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -67,7 +68,9 @@ export function ScrollToBottomButton() {
       ]}
       onPress={handlePress}
       hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      disabled={!shouldShowButton}
       pointerEvents={shouldShowButton ? 'auto' : 'none'}
+      aria-hidden={!shouldShowButton}
       accessibilityElementsHidden={!shouldShowButton}
       importantForAccessibility={shouldShowButton ? 'auto' : 'no-hide-descendants'}
     >
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   text: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
   },
 });

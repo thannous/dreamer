@@ -1,6 +1,8 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
+import { AI_LANGUAGES } from '../lib/aiLanguage.ts';
+import { PLUS_DAILY_LIMITS } from '../lib/plusDailyLimits.ts';
 import {
   blockedAdmissionResponse,
   handleCreateAnalysisJob,
@@ -25,6 +27,69 @@ Deno.test('analysis quota admission returns a typed upgrade response', async () 
     tier: 'free',
     usage: { analysis: { used: 6, limit: 3 } },
   });
+});
+
+Deno.test('a spent or transcript-mismatched receipt is a conflict, not a retryable rate limit', async () => {
+  for (const code of ['ANALYSIS_ALREADY_CLAIMED', 'ANALYSIS_TRANSCRIPT_MISMATCH']) {
+    const response = blockedAdmissionResponse({ allowed: false, code });
+    assertEquals(response.status, 409);
+    assertEquals(response.headers.get('Retry-After'), null);
+    assertEquals((await response.json()).code, code);
+  }
+});
+
+Deno.test('a Plus account past its daily analyses gets a calm 429 that says when to come back', async () => {
+  const response = blockedAdmissionResponse({
+    allowed: false,
+    code: 'DAILY_ANALYSIS_LIMIT',
+    tier: 'plus',
+    limit: null,
+    daily_limit: 10,
+    new_count: 10,
+    retry_after_seconds: 3600,
+  });
+
+  assertEquals(response.status, 429);
+  assertEquals(response.headers.get('Retry-After'), '3600');
+  assertEquals(response.headers.get('Access-Control-Allow-Origin'), '*');
+  assertEquals(await response.json(), {
+    error: 'Daily fair use limit reached',
+    code: 'DAILY_ANALYSIS_LIMIT',
+    dailyLimit: 10,
+    retryAfter: 3600,
+  });
+});
+
+Deno.test('the API daily analysis ceiling matches the one the database enforces', async () => {
+  const migration = await Deno.readTextFile(
+    new URL('../../../migrations/20261021153000_cap_plus_daily_analyses.sql', import.meta.url)
+  );
+  assertEquals(
+    migration.match(/daily_limit constant integer := (\d+);/)?.[1],
+    String(PLUS_DAILY_LIMITS.analysis)
+  );
+});
+
+Deno.test('queued analysis admission accepts every language the API sends', async () => {
+  // normalizeAiLanguage passes any AI_LANGUAGES entry to the RPC. A language the
+  // latest admission function leaves out fails every analysis job of that
+  // account, as Portuguese did until 20261022040000.
+  const migrations = new URL('../../../migrations/', import.meta.url);
+  const names: string[] = [];
+  for await (const entry of Deno.readDir(migrations)) {
+    if (entry.isFile && entry.name.endsWith('.sql')) names.push(entry.name);
+  }
+  let admitted: string[] | undefined;
+  for (const name of names.sort()) {
+    const sql = await Deno.readTextFile(new URL(name, migrations));
+    const start = sql.search(/create\s+or\s+replace\s+function\s+public\.admit_authenticated_analysis_job\(/i);
+    if (start < 0) continue;
+    const bodyStart = sql.indexOf('$$', start) + 2;
+    const body = sql.slice(bodyStart, sql.indexOf('$$', bodyStart));
+    const list = body.match(/p_lang not in \(([^)]*)\)/)?.[1] ?? '';
+    admitted = [...list.matchAll(/'([a-z]+)'/g)].map(([, lang]) => lang);
+  }
+  assertEquals(admitted?.sort(), [...AI_LANGUAGES].sort());
 });
 
 Deno.test('analysis admission backlog responses carry a Retry-After header with CORS', async () => {

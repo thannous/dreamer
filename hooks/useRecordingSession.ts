@@ -7,9 +7,11 @@ import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, AppState, Linking, Platform } from 'react-native';
 
+import { isAiDailyLimitError } from '@/lib/errors';
 import { createScopedLogger } from '@/lib/logger';
 import { handleRecorderReleaseError, RECORDING_OPTIONS } from '@/lib/recording';
 import { waitForPermissionActivityToSettle } from '@/lib/recordingPermissions';
+import { holdMicrophone } from '@/services/microphoneHold';
 import {
   getSpeechLocaleAvailability,
   isWebSpeechRecognitionAvailable,
@@ -70,6 +72,8 @@ export interface UseRecordingSessionOptions {
   onLanguagePackMissing?: (info: { locale: string; installedLocales: string[] }) => void;
   /** Called when native recognition ends without an explicit stop/abort. */
   onNativeEnd?: () => void;
+  /** Whose server transcription budget this is (an account or the guest); a new one lifts a pause. */
+  transcriptionScope?: string;
 }
 
 export function useRecordingSession({
@@ -79,8 +83,12 @@ export function useRecordingSession({
   onLimitReached,
   onLanguagePackMissing,
   onNativeEnd,
+  transcriptionScope,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
+  // Held from a start's first audio mode change to its stop's last, with or without a
+  // dictation session: the app's cues leave the audio session alone meanwhile.
+  const microphoneRef = useRef<(() => void) | null>(null);
   const [isSpeechListening, setIsSpeechListening] = useState(false);
   const [recordingPermissionState, setRecordingPermissionState] =
     useState<RecordingPermissionState>('unknown');
@@ -89,11 +97,29 @@ export function useRecordingSession({
   const recorderReleasedRef = useRef(false);
   const nativeSessionRef = useRef<NativeSpeechSession | null>(null);
   const isRecordingRef = useRef(false);
+  // At unmount, a live recording hands the microphone back through the screen's forced
+  // stop, once its teardown is over. A hold that nothing takes over goes back a turn later.
+  useEffect(() => () => {
+    const left = microphoneRef.current;
+    if (!left) return;
+    setTimeout(() => {
+      if (microphoneRef.current !== left) return;
+      microphoneRef.current = null;
+      left();
+    }, 0);
+  }, []);
   const recordingTransitionRef = useRef(false);
   const stopPromiseRef = useRef<Promise<RecordingSessionResult> | null>(null);
   const hasAutoStoppedRecordingRef = useRef(false);
   const baseTranscriptRef = useRef('');
   const pendingStartRef = useRef<AbortController | null>(null);
+  // Server transcription after its daily budget refused: not asked again before the budget frees up.
+  const serverTranscriptionBlockedUntilRef = useRef(0);
+  const transcriptionScopeRef = useRef(transcriptionScope);
+  useEffect(() => {
+    transcriptionScopeRef.current = transcriptionScope;
+    serverTranscriptionBlockedUntilRef.current = 0;
+  }, [transcriptionScope]);
 
   const handleRecorderError = useCallback(
     (context: string, error: unknown) => {
@@ -151,6 +177,8 @@ export function useRecordingSession({
       setIsRecording(false);
       setIsSpeechListening(false);
       isRecordingRef.current = false;
+      const microphone = microphoneRef.current;
+      microphoneRef.current = null;
 
       const nativeSession = nativeSessionRef.current;
       nativeSessionRef.current = null;
@@ -180,6 +208,7 @@ export function useRecordingSession({
       } catch (error) {
         log.warn('failed to reset audio mode during', reason, error);
       } finally {
+        microphone?.();
         await deleteRecordedAudio(cleanupUri);
         skipRecorderRef.current = false;
         hasAutoStoppedRecordingRef.current = false;
@@ -189,6 +218,8 @@ export function useRecordingSession({
   );
 
   const stopRecording = useCallback(async (): Promise<RecordingSessionResult> => {
+    // A user pause also cancels a hands-free restart still awaiting native startup.
+    pendingStartRef.current?.abort();
     if (stopPromiseRef.current) {
       return stopPromiseRef.current;
     }
@@ -206,7 +237,10 @@ export function useRecordingSession({
       let nativeError: string | undefined;
       let isLanguagePackMissing = false;
       let isRateLimited = false;
+      let isDailyLimited = false;
       let cleanupUri: string | undefined;
+      const microphone = microphoneRef.current;
+      microphoneRef.current = null;
 
       try {
         setIsRecording(false);
@@ -266,7 +300,13 @@ export function useRecordingSession({
         }
 
         const hasNativeSession = Boolean(nativeResultPromise);
-        if (!transcriptText && cleanupUri && Platform.OS !== 'ios') {
+        const canAskServer = !transcriptText && Boolean(cleanupUri) && Platform.OS !== 'ios';
+        // While the daily budget is spent, the server is not asked and the user hears why.
+        if (canAskServer && Date.now() < serverTranscriptionBlockedUntilRef.current) {
+          isDailyLimited = true;
+        } else if (canAskServer && cleanupUri) {
+          // A refusal for whoever asked: an account signed in meanwhile keeps its own budget.
+          const askedScope = transcriptionScopeRef.current;
           try {
             transcriptText = (await transcribeAudio({
               uri: cleanupUri,
@@ -281,7 +321,18 @@ export function useRecordingSession({
             }
           } catch (error) {
             log.warn('Server STT fallback failed', error);
+            if (isAiDailyLimitError(error) && askedScope === transcriptionScopeRef.current) {
+              isDailyLimited = true;
+              const retryAfter = Number((error as { body?: { retryAfter?: unknown } }).body?.retryAfter);
+              serverTranscriptionBlockedUntilRef.current =
+                Date.now() + (Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 3600) * 1000;
+            }
           }
+        }
+
+        // A missing language pack has its own advice, which helps more than the budget's.
+        if (!transcriptText && isDailyLimited && !isLanguagePackMissing) {
+          return { transcript: '', recordedUri: recordedUri ?? uri, error: 'daily_ai_limit' };
         }
 
         if (!hasNativeSession && !transcriptText) {
@@ -340,6 +391,7 @@ export function useRecordingSession({
         } catch (err) {
           log.warn('Failed to reset audio mode after recording', err);
         }
+        microphone?.();
         await deleteRecordedAudio(cleanupUri);
         hasAutoStoppedRecordingRef.current = false;
         skipRecorderRef.current = false;
@@ -365,6 +417,8 @@ export function useRecordingSession({
         if (controller.signal.aborted) throw new Error('cancelled');
       };
       let audioModeEnabled = false;
+      let started = false;
+      let microphone: (() => void) | null = null;
       setIsSpeechListening(false);
 
       try {
@@ -401,6 +455,7 @@ export function useRecordingSession({
         }
 
         checkCancelled();
+        microphone = holdMicrophone();
         await setAudioModeAsync({
           allowsRecording: true,
           playsInSilentMode: true,
@@ -467,6 +522,9 @@ export function useRecordingSession({
 
         setIsRecording(true);
         isRecordingRef.current = true;
+        microphoneRef.current?.();
+        microphoneRef.current = microphone;
+        started = true;
         return { success: true };
       } catch (err) {
         setIsSpeechListening(false);
@@ -492,7 +550,7 @@ export function useRecordingSession({
             t('recording.alert.speech_permission_required.message'),
             [
               { text: t('common.cancel'), style: 'cancel' },
-              { text: t('reference_image.open_settings'), onPress: () => {
+              { text: t('recording.alert.open_settings'), onPress: () => {
                 void Linking.openSettings().catch((error) => log.warn('Failed to open settings', error));
               } },
             ],
@@ -503,6 +561,7 @@ export function useRecordingSession({
         log.error('Failed to start recording', err);
         return { success: false, error: err instanceof Error ? err.message : 'start_failed' };
       } finally {
+        if (!started) microphone?.();
         pendingStartRef.current = null;
       }
     },

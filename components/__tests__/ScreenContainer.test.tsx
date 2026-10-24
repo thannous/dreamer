@@ -69,3 +69,24 @@ it('preserves child state and mount across wide and narrow bounded layouts', () 
     expect(unmounted).not.toHaveBeenCalled();
   }
 });
+
+it('keeps the page mounted when an iPhone Duo folds and unfolds', () => {
+  const mounted = jest.fn();
+  const unmounted = jest.fn();
+  function StatefulChild() {
+    const [count, setCount] = React.useState(0);
+    React.useEffect(() => { mounted(); return unmounted; }, []);
+    return <button onClick={() => setCount(count + 1)}>Draft {count}</button>;
+  }
+  mockPlatformOS = 'ios';
+  mockWindowWidth = 466;
+  const { rerender } = render(<ScreenContainer maxWidth={760}><StatefulChild /></ScreenContainer>);
+  fireEvent.click(screen.getByText('Draft 0'));
+  for (const width of [669, 466, 951]) {
+    mockWindowWidth = width;
+    rerender(<ScreenContainer maxWidth={760}><StatefulChild /></ScreenContainer>);
+    expect(screen.getByText('Draft 1')).toBeTruthy();
+  }
+  expect(mounted).toHaveBeenCalledTimes(1);
+  expect(unmounted).not.toHaveBeenCalled();
+});

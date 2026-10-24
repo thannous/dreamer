@@ -56,7 +56,8 @@ for (const theme of ['light', 'dark'] as const) {
     for (const [id, name] of [['deceased-person', 'Défunt / Personne décédée'], ['teeth', 'Dents (perdre ses dents)']]) {
       const row = page.getByTestId(`symbol.item.${id}`);
       await completeTitle(row.getByText(name, { exact: true }), row);
-      await expect(row).toHaveRole('button');
+      // A row opens the sheet through its href, so the web reads it as a link (Enter opens it).
+      await expect(row).toHaveRole('link');
     }
     await page.screenshot({ path: info.outputPath(`dictionary-${theme}-390-D.png`) });
     await page.getByTestId('symbol.item.deceased-person').click();
@@ -136,7 +137,7 @@ test('short viewports and doubled browser text keep filters and long results rea
   await screen.evaluate(root => {
     const texts = Array.from(root.querySelectorAll<HTMLElement>('[dir="auto"]'))
       .map(element => ({ element, style: getComputedStyle(element) }))
-      .filter(({ style }) => /Fraunces|SpaceGrotesk/.test(style.fontFamily));
+      .filter(({ style }) => /Fraunces|Outfit/.test(style.fontFamily));
     for (const { element, style } of texts) {
       element.style.fontSize = `${parseFloat(style.fontSize) * 2}px`;
       element.style.lineHeight = `${parseFloat(style.lineHeight) * 2}px`;

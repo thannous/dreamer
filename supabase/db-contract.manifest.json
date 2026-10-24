@@ -32,7 +32,8 @@
         "has_person",
         "has_animal",
         "memory",
-        "analysis_details"
+        "analysis_details",
+        "personal_notes"
       ]
     },
     {
@@ -104,6 +105,7 @@
       "requiredColumns": [
         "fingerprint_hash",
         "analysis_request_id",
+        "transcript_sha256",
         "claimed_at"
       ]
     },
@@ -162,6 +164,82 @@
         "event_count",
         "refreshed_at"
       ]
+    },
+    {
+      "schema": "apple_auth_private",
+      "name": "refresh_tokens",
+      "requiredColumns": [
+        "user_id",
+        "refresh_token",
+        "updated_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "dream_creation_buckets",
+      "requiredColumns": [
+        "user_id",
+        "hour_start",
+        "created_count"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "moon_letters",
+      "requiredColumns": [
+        "user_id",
+        "full_moon_at",
+        "status",
+        "lang",
+        "opening",
+        "body",
+        "dream_count",
+        "dreams_from",
+        "dreams_until",
+        "created_at",
+        "updated_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "analysis_previews",
+      "requiredColumns": [
+        "user_id",
+        "dream_id",
+        "status",
+        "lang",
+        "transcript_sha256",
+        "reading",
+        "image_status",
+        "image_prompt",
+        "image_path",
+        "band_path",
+        "band_url",
+        "image_updated_at",
+        "created_at",
+        "updated_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "badge_ledgers",
+      "requiredColumns": [
+        "user_id",
+        "ledger",
+        "revision",
+        "updated_at"
+      ]
+    },
+    {
+      "schema": "public",
+      "name": "guide_reading_progress",
+      "requiredColumns": [
+        "user_id",
+        "guide_id",
+        "section",
+        "updated_at_ms",
+        "completed_at_ms"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -180,7 +258,19 @@
     {
       "schema": "public",
       "name": "claim_guest_analysis_quota",
-      "identityArguments": "p_fingerprint text, p_analysis_request_id uuid, p_limit integer",
+      "identityArguments": "p_fingerprint text, p_analysis_request_id uuid, p_limit integer, p_transcript_sha256 text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "claim_authenticated_analysis_quota_bound",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_analysis_request_id uuid, p_transcript_sha256 text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "complete_authenticated_chat_turn",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_request_id uuid, p_attempt_count integer, p_model_message jsonb",
       "result": "jsonb"
     },
     {
@@ -248,6 +338,72 @@
       "name": "refresh_product_analytics_daily_aggregates",
       "identityArguments": "",
       "result": "void"
+    },
+    {
+      "schema": "public",
+      "name": "store_apple_refresh_token",
+      "identityArguments": "p_user_id uuid, p_refresh_token text",
+      "result": "void"
+    },
+    {
+      "schema": "public",
+      "name": "read_apple_refresh_token",
+      "identityArguments": "p_user_id uuid",
+      "result": "text"
+    },
+    {
+      "schema": "public",
+      "name": "claim_ai_daily_budget",
+      "identityArguments": "p_actor_hash text, p_capability text, p_daily_limit integer",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "guard_dream_size_and_rate",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "delete_moon_letters_of_deleted_dream",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "clear_analysis_preview_of_deleted_dream",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "spend_analysis_preview_of_analyzed_dream",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "public",
+      "name": "hold_analysis_preview",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_lang text, p_transcript_sha256 text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "save_analysis_preview",
+      "identityArguments": "p_user_id uuid, p_dream_id bigint, p_held_at timestamp with time zone, p_dream_transcript_sha256 text, p_reading jsonb, p_image_prompt text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "sync_badge_ledger",
+      "identityArguments": "p_user_id uuid, p_revision bigint, p_ledger jsonb",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "merge_guide_reading_progress",
+      "identityArguments": "p_user_id uuid, p_guide_id text, p_section integer, p_updated_at_ms bigint, p_completed_at_ms bigint",
+      "result": "SETOF guide_reading_progress"
     }
   ],
   "requiredTriggers": [
@@ -304,6 +460,72 @@
       "definitionIncludes": [
         "BEFORE INSERT OR UPDATE",
         "EXECUTE FUNCTION public.project_dream_precise_theme()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_guard_dream_limits_before",
+      "functionSchema": "public",
+      "functionName": "guard_dream_size_and_rate",
+      "definitionIncludes": [
+        "BEFORE UPDATE ON public.dreams",
+        "EXECUTE FUNCTION public.guard_dream_size_and_rate()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_guard_dream_limits_after",
+      "functionSchema": "public",
+      "functionName": "guard_dream_size_and_rate",
+      "definitionIncludes": [
+        "AFTER INSERT",
+        "EXECUTE FUNCTION public.guard_dream_size_and_rate()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_delete_moon_letters_of_deleted_dream",
+      "functionSchema": "public",
+      "functionName": "delete_moon_letters_of_deleted_dream",
+      "definitionIncludes": [
+        "AFTER DELETE",
+        "EXECUTE FUNCTION public.delete_moon_letters_of_deleted_dream()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_clear_analysis_preview_of_deleted_dream",
+      "functionSchema": "public",
+      "functionName": "clear_analysis_preview_of_deleted_dream",
+      "definitionIncludes": [
+        "AFTER DELETE",
+        "EXECUTE FUNCTION public.clear_analysis_preview_of_deleted_dream()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "dreams",
+      "name": "trg_spend_analysis_preview_of_analyzed_dream",
+      "functionSchema": "public",
+      "functionName": "spend_analysis_preview_of_analyzed_dream",
+      "definitionIncludes": [
+        "AFTER UPDATE OF is_analyzed",
+        "EXECUTE FUNCTION public.spend_analysis_preview_of_analyzed_dream()"
+      ]
+    },
+    {
+      "schema": "auth",
+      "table": "users",
+      "name": "protect_apple_refresh_token_metadata",
+      "functionSchema": "apple_auth_private",
+      "functionName": "capture_legacy_refresh_token",
+      "definitionIncludes": [
+        "BEFORE INSERT OR UPDATE OF raw_app_meta_data",
+        "EXECUTE FUNCTION apple_auth_private.capture_legacy_refresh_token()"
       ]
     }
   ],

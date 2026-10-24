@@ -116,6 +116,38 @@ test('free user searches, sees no match, and recovers the journal', async ({ pag
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
 });
 
+test('a search typed in a scrolled journal keeps its field until the user scrolls', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await selectProfile(page, 'existing');
+  await journal(page);
+  const list = page.getByTestId('list.dreams').filter({ visible: true });
+  await page.mouse.move(195, 640);
+  await page.mouse.wheel(0, 400);
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
+  // Each letter brings the results back to the top; that return must not take the field away.
+  const field = page.getByRole('textbox', { name: 'Search dreams…' });
+  await field.pressSequentially('The Infinite Library', { delay: 40 });
+  await expect(field).toHaveValue('The Infinite Library');
+  await expect(field).toBeFocused();
+  await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
+  await expect(page.getByTestId(/^dream\.item\./)).toContainText('The Infinite Library');
+  // A gesture that does not move the list (a sideways wheel) leaves the field: wait past
+  // the list's dismissal window and the web scroller's end of scroll, then check.
+  const resting = await list.evaluate((node) => node.scrollTop);
+  await page.mouse.move(195, 640);
+  await page.mouse.wheel(120, 0);
+  await page.evaluate(() => new Promise((resolve) => setTimeout(resolve, 400)));
+  expect(await list.evaluate((node) => node.scrollTop)).toBe(resting);
+  await expect(field).toBeFocused();
+  // The user scrolling the whole journal puts the keyboard away, as a drag does natively.
+  await field.fill('');
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBe(0);
+  await page.mouse.move(195, 640);
+  await page.mouse.wheel(0, 400);
+  await expect.poll(() => list.evaluate((node) => node.scrollTop)).toBeGreaterThan(0);
+  await expect(field).not.toBeFocused();
+});
+
 test('free user edits a story, cancels deletion, then deletes only that dream', async ({ page }) => {
   await selectProfile(page, 'existing');
   await journal(page);
@@ -139,7 +171,7 @@ test('free user edits a story, cancels deletion, then deletes only that dream', 
 test('free user can open the Plus offer and return without losing the journal', async ({ page }) => {
   await selectProfile(page, 'existing');
   await openSettings(page);
-  await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  await page.getByTestId('settings-section-subscription').click();
   await expect(page.getByTestId('screen.paywall')).toBeVisible();
   await page.getByTestId('btn.paywall.selectMonthly').click();
   await expect(page.getByTestId('btn.paywall.selectMonthly')).toHaveAttribute('aria-checked', 'true');
@@ -156,11 +188,12 @@ for (const profile of ['existing', 'plus'] as const) {
     await openSettings(page);
     if (profile === 'existing') {
       await expect(page.getByTestId('quota.analysisValue')).toContainText('/ 3');
-      await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+      // One way to Plus in the card: the row, not a second upgrade button.
+      await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
+      await page.getByTestId('settings-section-subscription').click();
       await expect(page.getByTestId('screen.paywall')).toBeVisible();
     } else {
       await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
-      await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
     }
   });
 }
@@ -183,17 +216,21 @@ test('free user adds and removes a favorite through the filtered journal', async
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'Garden in the Clouds');
+  const transcript = page.getByTestId('component.transcriptCard');
+  const originalStory = await transcript.textContent();
+  expect(originalStory).toContain('I was walking through a beautiful garden');
   await page.getByTestId('btn.dream.favorite').click();
   await journal(page);
   await page.getByRole('button', { name: 'Show favorites only', exact: true }).click();
   await openDream(page, 'Garden in the Clouds');
   await page.getByTestId('btn.dream.favorite').click();
   await journal(page);
-  await page.getByRole('button', { name: 'Show favorites only', exact: true }).click();
-  await search(page, 'Garden in the Clouds');
+  // Upstream 02a97ad08 retains the journal: a second Favorites click would clear its filter.
+  await expect(page.getByRole('textbox', { name: 'Search dreams…' })).toHaveValue('Garden in the Clouds');
   await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Show all dreams', exact: true }).click();
   await openDream(page, 'Garden in the Clouds');
+  await expect(transcript).toHaveText(originalStory!);
 });
 
 test('Plus user continues a reflection and sees the conversation on revisit', async ({ page }) => {
@@ -261,7 +298,7 @@ test('reflection offers an optional recap after one angle and updates it after a
   await page.setViewportSize({ width: 390, height: 867 });
   await selectProfile(page, 'plus');
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.inspiration.personalReadingRecap').click();
+  await page.getByTestId('btn.home.week.recap').click();
   await expect(page.getByTestId('screen.weeklyRecap')).toBeVisible();
   await page.getByTestId('btn.weeklyRecap.openDream').click();
   await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
@@ -301,4 +338,31 @@ test('reflection offers an optional recap after one angle and updates it after a
   await expect(recap).toHaveCount(0);
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.screenshot({ path: testInfo.outputPath('reflection-after-exchanges.png'), fullPage: false });
+});
+
+// Preserved during the final runner migration: an exhausted account must not
+// enter chat before the offer, and declining must return to the same reflection.
+test('free reflection opens Plus directly and declining returns to reflection without entering chat', async ({ page }, testInfo) => {
+  await selectProfile(page, 'existing');
+  await journal(page);
+  await openDream(page, 'The Infinite Library');
+  await page.getByTestId('component.dreamDetail.actionCard').click();
+  await page.getByTestId('btn.dreamCategory.symbols').click();
+  await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  const reflection = page.getByTestId('screen.dreamCategories').filter({ visible: true });
+  await expect(reflection).toBeVisible();
+  const destinations: string[] = [];
+  page.on('framenavigated', (frame) => {
+    if (frame === page.mainFrame()) destinations.push(new URL(frame.url()).pathname);
+  });
+  await reflection.getByTestId('btn.exploration360.synthesis').click();
+  await expect(page.getByTestId('screen.paywall')).toBeVisible();
+  expect(destinations).not.toContainEqual(expect.stringMatching(/^\/dream-chat\//));
+  await page.screenshot({ path: testInfo.outputPath('reflection-direct-plus.png') });
+  await page.getByTestId('btn.paywall.close').click();
+  await expect(reflection).toBeVisible();
+  await expect(page).toHaveURL(/\/dream-categories\//);
+  await expect(reflection.getByTestId('btn.exploration360.synthesis')).toBeEnabled();
+  await page.screenshot({ path: testInfo.outputPath('reflection-after-declining-plus.png') });
 });

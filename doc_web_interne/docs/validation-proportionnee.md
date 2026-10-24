@@ -151,10 +151,9 @@ responsable de l'intégration et signaler les nouveaux commits.
    fusion après un push concurrent. Une nouvelle tête nécessite son propre
    verdict.
 
-Les jobs site et Noctalia conservent la même sélection Jest et la même base.
-Lorsque Noctalia exécute déjà cette sélection (ou la suite exhaustive), le job
-site conserve ses build/check et évite uniquement le second passage Jest. Pour
-une PR site seule, ou si Noctalia ne lance pas Jest, le job site le conserve.
+La sélection des contrôles reste celle de `verify-local.config.mjs` ; les anciens
+jobs site/Noctalia ne sont plus exécutés par CircleCI. Le
+[guide local et benchmark](circleci-migration.md) décrit la couverture conservée.
 
 ## Tests asynchrones et contrats de copie
 

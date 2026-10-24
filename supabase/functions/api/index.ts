@@ -3,7 +3,6 @@
 // - POST /api/analyzeDream { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt }
 // - POST /api/categorizeDream { transcript } -> { title, theme, dreamType, hasPerson, hasAnimal }
 // - POST /api/generateImage { prompt } -> { imageUrl | imageBytes }
-// - POST /api/generateImageWithReference { prompt|transcript, referenceImages } -> { imageUrl }
 // - POST /api/analyzeDreamFull { transcript } -> { title, interpretation, shareableQuote, theme, dreamType, imagePrompt, imageBytes }
 // - POST /api/chat { history, message, lang } -> { text }
 // - POST /api/transcribe { contentBase64, encoding, languageCode, sampleRateHertz? } -> { transcript }
@@ -18,10 +17,12 @@ import { handleStoreAppleAuthToken } from './routes/appleAuthToken.ts';
 import { handleChat } from './routes/chat.ts';
 import { handleRecallQuestion } from './routes/recall.ts';
 import { handleFormatRecall } from './routes/formatRecall.ts';
+import { handleMoonLetter } from './routes/moonLetter.ts';
+import { handleAnalysisPreview } from './routes/analysisPreview.ts';
 import { handleAnalyzeDream, handleAnalyzeDreamFull, handleCategorizeDream } from './routes/dreams.ts';
 import { handleCreateImageJob, handleGetImageJobStatus } from './routes/imageJobs.ts';
-import { handleGenerateImage, handleGenerateImageWithReference } from './routes/images.ts';
-import { handleGuestSession } from './routes/guestSession.ts';
+import { handleGenerateImage } from './routes/images.ts';
+import { handleGuestSession, handleIosGuestChallenge } from './routes/guestSession.ts';
 import {
   handleGuestQaEnroll,
   handleGuestQaRevoke,
@@ -40,6 +41,7 @@ import { createApiHandler, type RouteHandler } from './router.ts';
 
 const routes = new Map<string, RouteHandler>([
   ['POST /guest/session', async (ctx) => handleGuestSession(ctx.req)],
+  ['POST /guest/session/challenge', async (ctx) => handleIosGuestChallenge(ctx.req)],
   ['POST /qa/guest-device/status', handleGuestQaStatus],
   ['POST /qa/guest-device/enroll', handleGuestQaEnroll],
   ['POST /qa/guest-device/revoke', handleGuestQaRevoke],
@@ -55,6 +57,8 @@ const routes = new Map<string, RouteHandler>([
   ['DELETE /account', handleDeleteAccount],
   ['POST /chat', handleChat],
   ['POST /recall-question', handleRecallQuestion], ['POST /format-recall', handleFormatRecall],
+  ['POST /moon-letter', handleMoonLetter],
+  ['POST /analysis-preview', handleAnalysisPreview],
   ['POST /transcribe', handleTranscribe],
   ['POST /analyzeDream', handleAnalyzeDream],
   ['POST /analyzeDreamFull', handleAnalyzeDreamFull],
@@ -64,7 +68,6 @@ const routes = new Map<string, RouteHandler>([
   ['POST /image-jobs', handleCreateImageJob],
   ['POST /image-jobs/status', handleGetImageJobStatus],
   ['POST /generateImage', handleGenerateImage],
-  ['POST /generateImageWithReference', handleGenerateImageWithReference],
 ]);
 
 serve(createApiHandler({ routes }));

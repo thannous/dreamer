@@ -54,9 +54,6 @@ export const getSessionPractice = (id: SessionId): SessionPracticeMeta => {
   return practice;
 };
 
-export const catalogueSessionIds = (): CatalogueSessionId[] =>
-  SESSIONS.map((session) => session.id as CatalogueSessionId);
-
 for (const session of SESSIONS) {
   if (!(session.id in SESSION_PRACTICE)) {
     throw new Error(`Missing method metadata for session ${session.id}`);

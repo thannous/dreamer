@@ -1,6 +1,6 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { AppState, Platform, Text, TextInput, View } from 'react-native';
+import { AppState, Platform, Text, TextInput, View, type TextInputInstance } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import { MicButton } from '@/components/recording/MicButton';
@@ -22,6 +22,8 @@ export type DreamRecallAssistantCardProps = {
   offerEligible: boolean;
   /** The user explicitly chose to complete their saved dream with this assistant. */
   startRequested?: boolean;
+  onAnswerFocus?: (input: TextInputInstance) => void;
+  onAnswerLayout?: (input: TextInputInstance) => void;
 };
 
 type RecallActionProps = {
@@ -68,6 +70,8 @@ export function DreamRecallAssistantCard({
   originalPersistedSegmentId,
   offerEligible,
   startRequested = false,
+  onAnswerFocus,
+  onAnswerLayout,
 }: DreamRecallAssistantCardProps) {
   const { t, currentLang } = useTranslation();
   const { colors } = useTheme();
@@ -76,8 +80,10 @@ export function DreamRecallAssistantCard({
   const [voiceSupportLocale, setVoiceSupportLocale] = useState<string | null>(null);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const [isVoiceTransitioning, setIsVoiceTransitioning] = useState(false);
-  const [voiceError, setVoiceError] = useState(false);
+  const [voiceError, setVoiceError] = useState<false | 'voice' | 'daily_limit'>(false);
 
+  const inputRef = useRef<TextInputInstance>(null);
+  const revealRequestedRef = useRef<string | null>(null);
   const answerRef = useRef('');
   const recordingTransitionRef = useRef(false);
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
@@ -111,6 +117,7 @@ export function DreamRecallAssistantCard({
   useEffect(() => {
     if (!startRequested || loading || hydrationStatus !== 'ready' || isBusy || state || startedForDreamRef.current === dreamId) return;
     startedForDreamRef.current = dreamId;
+    revealRequestedRef.current = dreamId;
     void start();
   }, [dreamId, hydrationStatus, isBusy, loading, start, startRequested, state]);
 
@@ -209,11 +216,7 @@ export function DreamRecallAssistantCard({
     const result = await stopSessionRecording();
     if (questionKeyRef.current !== questionKey) return answerRef.current;
     const merged = mergeStoppedTranscript(result.transcript ?? '');
-    if (result.error) {
-      setVoiceError(true);
-    } else {
-      setVoiceError(false);
-    }
+    setVoiceError(!result.error ? false : result.error === 'daily_ai_limit' ? 'daily_limit' : 'voice');
     return merged;
   }, [isPreparingRecording, isRecordingRef, mergeStoppedTranscript, stopSessionRecording]);
 
@@ -299,10 +302,10 @@ export function DreamRecallAssistantCard({
       const response = await startSessionRecording(typed);
       if (response.error === 'cancelled') return;
       if (!response.success) {
-        setVoiceError(true);
+        setVoiceError('voice');
       }
     } catch {
-      setVoiceError(true);
+      setVoiceError('voice');
     } finally {
       setIsPreparingRecording(false);
     }
@@ -400,7 +403,22 @@ export function DreamRecallAssistantCard({
       </View>
     );
   }
-  if (state?.status === 'skipped') return null;
+  const answers = state?.turns.filter((turn) => turn.role === 'answer') ?? [];
+  const savedDetails = answers.length > 0 ? (
+    <View className="gap-3" testID="dreamRecall.savedDetails">
+      <Text accessibilityRole="header" className="font-sans-bold text-body text-ivory">
+        {String(t('dream_recall.session.saved_details'))}
+      </Text>
+      {answers.map((turn) => (
+        <Text key={turn.id} selectable className="font-sans text-body text-ivory">
+          {turn.text}
+        </Text>
+      ))}
+    </View>
+  ) : null;
+  if (state?.status === 'skipped') {
+    return savedDetails ? <View className={cardClass}>{savedDetails}</View> : null;
+  }
 
   if (!state) {
     if (!offerEligible || dismissedOffer) return null;
@@ -421,6 +439,7 @@ export function DreamRecallAssistantCard({
             testID={TID.Button.DreamRecallStart}
             label={String(t('dream_recall.offer.start'))}
             onPress={() => {
+              revealRequestedRef.current = dreamId;
               void start();
             }}
             disabled={actionsDisabled}
@@ -447,6 +466,7 @@ export function DreamRecallAssistantCard({
         <Text className="font-sans text-body-sm text-ivory-muted">
           {String(t('dream_recall.session.completed_body'))}
         </Text>
+        {savedDetails}
       </View>
     );
   }
@@ -455,6 +475,7 @@ export function DreamRecallAssistantCard({
     return (
       <View className={cardClass} testID={TID.Component.DreamRecallAssistantCard}>
         <Text className="font-sans-bold text-[18px] text-ivory">{sessionTitle}</Text>
+        {savedDetails}
         {currentQuestion ? (
           <MarkdownText>{currentQuestion.text}</MarkdownText>
         ) : null}
@@ -468,6 +489,7 @@ export function DreamRecallAssistantCard({
             testID={TID.Button.DreamRecallResume}
             label={String(t('dream_recall.session.resume'))}
             onPress={() => {
+              revealRequestedRef.current = dreamId;
               void resume();
             }}
             disabled={actionsDisabled}
@@ -511,6 +533,7 @@ export function DreamRecallAssistantCard({
         </Text>
       </View>
 
+      {savedDetails}
       {currentQuestion ? (
         <>
           <MarkdownText>{currentQuestion.text}</MarkdownText>
@@ -518,6 +541,14 @@ export function DreamRecallAssistantCard({
             <Text className="font-sans text-caption text-ivory-muted">{inputLabel}</Text>
             <View className="flex-row items-start gap-2">
               <TextInput
+                ref={inputRef}
+                onLayout={() => {
+                  if (revealRequestedRef.current === dreamId && inputRef.current) {
+                    revealRequestedRef.current = null;
+                    onAnswerLayout?.(inputRef.current);
+                  }
+                }}
+                onFocus={() => { if (inputRef.current) onAnswerFocus?.(inputRef.current); }}
                 testID={TID.Input.DreamRecallAnswer}
                 value={answer}
                 onChangeText={(text) => {
@@ -560,6 +591,7 @@ export function DreamRecallAssistantCard({
             testID={TID.Button.DreamRecallStart}
             label={String(t('dream_recall.offer.start'))}
             onPress={() => {
+              revealRequestedRef.current = dreamId;
               void start();
             }}
             disabled={actionsDisabled}
@@ -582,7 +614,7 @@ export function DreamRecallAssistantCard({
 
       {voiceError && currentQuestion ? (
         <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
-          {String(t('dream_recall.session.voice_error'))}
+          {String(t(voiceError === 'daily_limit' ? 'error.daily_ai_limit' : 'dream_recall.session.voice_error'))}
         </Text>
       ) : null}
 

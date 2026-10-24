@@ -14,9 +14,10 @@ import { dreamAuthReturnDestination } from '@/lib/authReturnIntent';
 import { ChatProvider, useKeyboardStateContext } from '@/context/ChatContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
+import { createScrollActivity, ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useChatSendLock } from '@/hooks/useChatSendLock';
+import { useChatCategoryPrompt } from '@/hooks/useChatCategoryPrompt';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
@@ -61,6 +62,7 @@ import {
 } from 'react-native';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { TypeScale } from '@/constants/typeScale';
 
 type CategoryType = DreamChatCategory;
 type SendMessageOptions = {
@@ -198,13 +200,13 @@ function DreamChatContent() {
   const [streamingReply] = useState(createStreamingReplyChannel);
   const [hasStreamingText, setHasStreamingText] = useState(false);
   const showThinkingIndicator = isInteractionLocked && !hasStreamingText;
-  const [isScrolling, setIsScrolling] = useState(false);
+  // Read only by the composer: a drag in the conversation does not render this screen again.
+  const [scrollActivity] = useState(createScrollActivity);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
   const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
   const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
   const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
-  const lastCategorySentKeyRef = useRef<string | null>(null);
   const lastSynthesisSentKeyRef = useRef<string | null>(null);
   const requestAbortRef = useRef<AbortController | null>(null);
 
@@ -275,6 +277,10 @@ function DreamChatContent() {
   const messageCounterLabel = typeof messageLimit === 'number'
     ? t('dream_chat.message_counter', { used: userMessageCount, limit: messageLimit })
     : '';
+  // A free account's ceiling is the end of its included exchanges, not a safety stop.
+  const freeLimitCopy = useMemo(() => ({
+    free: messageLimit ?? QUOTAS.free.messagesPerDream ?? 0,
+  }), [messageLimit]);
 
   const isExistingExploration = useMemo(() => {
     if (!dream) return false;
@@ -288,7 +294,7 @@ function DreamChatContent() {
   const openMessageLimitUpgrade = useCallback(() => {
     router.push(tier === 'guest'
       ? '/settings?section=account&auth=signup'
-      : buildPaywallHref('exploration_limit'));
+      : buildPaywallHref('chat_limit'));
   }, [tier]);
 
   const showMessageLimitAlert = useCallback(() => {
@@ -304,11 +310,11 @@ function DreamChatContent() {
         }]),
     ];
     Alert.alert(
-      t('dream_chat.message_limit.title'),
-      t('dream_chat.limit_warning'),
+      tier === 'free' ? t('dream_chat.limit_free.title', freeLimitCopy) : t('dream_chat.message_limit.title'),
+      tier === 'free' ? t('dream_chat.limit_free.body', freeLimitCopy) : t('dream_chat.limit_warning'),
       actions
     );
-  }, [openMessageLimitUpgrade, t, tier]);
+  }, [freeLimitCopy, openMessageLimitUpgrade, t, tier]);
 
   const runQuotaCheck = useCallback(async () => {
     if (!isMountedRef.current) return;
@@ -352,12 +358,13 @@ function DreamChatContent() {
     }
   }, [dream, canExplore, t]);
 
-  // Check exploration quota on mount
+  // Synchronize the external quota service; keep its loading/error state observable.
   useEffect(() => {
     runQuotaCheck();
   }, [runQuotaCheck]);
 
-  // Initialize chat messages from dream history
+  // Restore this external conversation once per entry/language. Continuously deriving
+  // it from dream updates would overwrite a pending local or streaming message.
   useEffect(() => {
     if (!dream) return;
 
@@ -406,7 +413,6 @@ function DreamChatContent() {
       });
 
       setMessages(normalized);
-      lastCategorySentKeyRef.current = null; // allow new theme prompts when revisiting
 
       if (
         didChange &&
@@ -431,57 +437,9 @@ function DreamChatContent() {
       // Start with initial AI greeting
       const initialMessage = createChatMessage('model', t('dream_chat.initial_greeting', { title: dream.title }));
       setMessages([initialMessage]);
-      lastCategorySentKeyRef.current = null;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dreamIdentity, t]);
-
-  // Send category-specific question if category is provided
-  useEffect(() => {
-    // Wait for quota check to complete before auto-sending
-    if (!hasQuotaCheckClearance) {
-      return;
-    }
-
-    // Don't send if exploration is blocked
-    if (isQuotaGateBlocked) {
-      return;
-    }
-
-    if (!dream || !category || category === 'general' || targetMessageId) {
-      return;
-    }
-
-    // Wait until existing history is loaded into state to avoid dropping messages
-    const hasStoredHistory = Boolean(dream.chatHistory?.length);
-    const messagesReady = messages.length > 0 || !hasStoredHistory;
-    if (!messagesReady) {
-      return;
-    }
-
-    const categoryKey = `${dreamIdentity}:${category}`;
-    if (lastCategorySentKeyRef.current === categoryKey) {
-      return;
-    }
-
-    const question = getCategoryQuestion(category as CategoryType, t);
-
-    if (question) {
-      lastCategorySentKeyRef.current = categoryKey;
-      const timeoutId = setTimeout(() => {
-        const baseMessages = messages.length > 0 ? messages : dream.chatHistory ?? [];
-        sendMessage(question, undefined, {
-          baseMessages,
-          category: category as Exclude<CategoryType, 'general'>,
-        });
-      }, 500);
-
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, dream, dreamIdentity, messages.length, t, hasQuotaCheckClearance, isQuotaGateBlocked, targetMessageId]); // sendMessage has stable dependencies via useCallback
 
   const sendMessage = useCallback(
     async (
@@ -895,12 +853,30 @@ function DreamChatContent() {
       shouldGateOnQuotaCheck,
       streamingReply,
       t,
+      tier,
       tryAcquireSendLock,
       applyServerDreamState,
       updateDream,
       user,
     ]
   );
+
+  const categoryQuestion = category ? getCategoryQuestion(category as CategoryType, t) : '';
+  const sendCategoryQuestion = useCallback(() => {
+    if (!dream || !category || category === 'general') return;
+    void sendMessage(categoryQuestion, undefined, {
+      baseMessages: messages.length > 0 ? messages : dream.chatHistory ?? [],
+      category: category as Exclude<CategoryType, 'general'>,
+    });
+  }, [category, categoryQuestion, dream, messages, sendMessage]);
+
+  useChatCategoryPrompt({
+    scopeKey: `${dreamIdentity}:${language}`,
+    promptKey: categoryQuestion ? `${dreamIdentity}:${category}` : null,
+    enabled: hasQuotaCheckClearance && !isQuotaGateBlocked && Boolean(dream) && !targetMessageId
+      && (messages.length > 0 || !dream?.chatHistory?.length),
+    onSend: sendCategoryQuestion,
+  });
 
   const handleRetryMessage = useCallback(
     (message: ChatMessage) => {
@@ -1190,6 +1166,7 @@ function DreamChatContent() {
         hasSynthesis={exploration360Status.hasSynthesis}
         onSynthesisPress={handleSynthesisPress}
         synthesisDisabled={isInteractionLocked || !hasQuotaCheckClearance || isQuotaGateBlocked}
+        requiresPlus={!canUseExploration360Synthesis(tier)}
         style={styles.exploration360Panel}
       />
       {targetFailedMessage ? (
@@ -1284,7 +1261,7 @@ function DreamChatContent() {
   );
 
   const composerPlaceholder = messageLimitReached
-    ? t('dream_chat.input.limit_placeholder')
+    ? t(tier === 'free' ? 'dream_chat.input.limit_placeholder_free' : 'dream_chat.input.limit_placeholder')
     : t('dream_chat.input.placeholder');
 
   const shouldShowCounter = typeof messageLimit === 'number';
@@ -1298,6 +1275,7 @@ function DreamChatContent() {
       messageCounterLabel={messageCounterLabel}
       messageLimitReached={messageLimitReached}
       messagesRemaining={messagesRemaining}
+      freeLimitCopy={freeLimitCopy}
       t={t}
       tier={tier}
       onUpgrade={openMessageLimitUpgrade}
@@ -1311,7 +1289,7 @@ function DreamChatContent() {
 
   return (
     <ChatProvider isStreaming={isInteractionLocked}>
-      <ScrollPerfProvider isScrolling={isScrolling}>
+      <ScrollPerfProvider activity={scrollActivity}>
         <LinearGradient colors={gradientColors} style={styles.gradient}>
           <Pressable
             onPress={handleBackPress}
@@ -1333,7 +1311,7 @@ function DreamChatContent() {
             contentContainerStyle={styles.messagesContent}
             onRetryMessage={handleRetryMessage}
             retryA11yLabel={t('analysis.retry')}
-            onScrollStateChange={setIsScrolling}
+            onScrollStateChange={scrollActivity.set}
           />
 
           <ChatComposer
@@ -1358,6 +1336,7 @@ type ComposerFooterProps = {
   messageCounterLabel: string;
   messageLimitReached: boolean;
   messagesRemaining: number;
+  freeLimitCopy: { free: number };
   t: (key: string, replacements?: { [k: string]: string | number }) => string;
   tier: string;
   onUpgrade: () => void;
@@ -1377,6 +1356,7 @@ function ComposerFooter({
   messageCounterLabel,
   messageLimitReached,
   messagesRemaining,
+  freeLimitCopy,
   t,
   tier,
   onUpgrade,
@@ -1394,10 +1374,11 @@ function ComposerFooter({
     };
   }, [isKeyboardVisible, visible]);
 
-  const isLowRemaining = messagesRemaining <= 5;
+  // The last two exchanges take the accent, never an alarm: running out is not an error.
+  const isLowRemaining = messagesRemaining <= 2;
   const pillBackground = noctalia.surface.raised;
   const pillBorder = noctalia.surface.border;
-  const counterColor = isLowRemaining ? noctalia.status.danger.text : noctalia.text.primary;
+  const counterColor = isLowRemaining ? noctalia.accent.text : noctalia.text.primary;
 
   return (
     <Animated.View
@@ -1424,7 +1405,41 @@ function ComposerFooter({
         </View>
       )}
 
-      {messageLimitReached && (
+      {messageLimitReached && tier === 'free' && (
+        <View
+          testID={TID.Text.ChatLimitBanner}
+          style={[styles.limitCard, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.borderStrong }]}
+        >
+          <View style={styles.limitCardContent}>
+            <View style={[styles.limitCardIcon, { backgroundColor: noctalia.surface.active }]}>
+              <IconSymbol name="sparkles" size={16} color={noctalia.accent.text} />
+            </View>
+            <View style={styles.limitCardCopy}>
+              <Text style={[styles.limitCardTitle, { color: noctalia.text.primary }]}>
+                {t('dream_chat.limit_free.title', freeLimitCopy)}
+              </Text>
+              <Text style={[styles.limitCardBody, { color: noctalia.text.secondary }]}>
+                {t('dream_chat.limit_free.body', freeLimitCopy)}
+              </Text>
+            </View>
+          </View>
+          <GesturePressable
+            onPress={onUpgrade}
+            testID={TID.Button.ChatLimitUpgrade}
+            accessibilityRole="button"
+            style={[
+              styles.limitCardCta,
+              { backgroundColor: noctalia.action.primary, borderColor: noctalia.action.primaryBorder },
+            ]}
+          >
+            <Text style={[styles.limitCardCtaText, { color: noctalia.action.primaryText }]}>
+              {t('dream_chat.limit_cta_free')}
+            </Text>
+          </GesturePressable>
+        </View>
+      )}
+
+      {messageLimitReached && tier !== 'free' && (
         <View
           testID={TID.Text.ChatLimitBanner}
           style={[
@@ -1446,15 +1461,14 @@ function ComposerFooter({
               <GesturePressable
                 onPress={onUpgrade}
                 testID={TID.Button.ChatLimitUpgrade}
+                accessibilityRole="button"
                 style={[
                   styles.limitCtaButton,
                   { backgroundColor: noctalia.status.danger.icon },
                 ]}
               >
                 <Text style={[styles.limitCtaText, { color: noctalia.action.primaryText }]}>
-                  {tier === 'guest'
-                    ? t('dream_chat.limit_cta_guest')
-                    : t('dream_chat.limit_cta_free')}
+                  {t('dream_chat.limit_cta_guest')}
                 </Text>
               </GesturePressable>
             </View>
@@ -1491,8 +1505,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     // color: set dynamically
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.medium,
     textAlign: 'center',
   },
   quotaCheckContainer: {
@@ -1508,8 +1522,8 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   retryButtonText: {
-    fontSize: 15,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   imageContainer: {
     width: '100%',
@@ -1531,16 +1545,16 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   dreamTitle: {
-    fontSize: 22,
+    fontSize: TypeScale.h2.fontSize,
     fontFamily: Fonts.fraunces.semiBold,
     // color: set dynamically
     lineHeight: 30,
   },
   dreamQuotePreview: {
-    fontSize: 13,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.lora.regularItalic,
     marginTop: 4,
-    lineHeight: 18,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   imagePlaceholder: {
     borderBottomLeftRadius: 0,
@@ -1571,12 +1585,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   retryTargetTitle: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.bold,
     textTransform: 'uppercase',
   },
   retryTargetBody: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.lora.regularItalic,
     lineHeight: 20,
   },
@@ -1591,11 +1605,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   retryTargetButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
   quickCategoriesLabel: {
-    fontSize: 12,
+    fontSize: TypeScale.caption.fontSize,
     fontFamily: Fonts.lora.regularItalic,
     // color: set dynamically
     marginBottom: 10,
@@ -1624,8 +1638,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   quickCategoryText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
     // color: set dynamically
   },
   decoRuleContainer: {
@@ -1639,8 +1653,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   missingDreamBackButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   // Exploration blocked screen
   blockedContainer: {
@@ -1652,13 +1666,13 @@ const styles = StyleSheet.create({
   },
   blockedTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 24,
+    fontSize: TypeScale.h2.fontSize,
     textAlign: 'center',
     marginTop: 16,
   },
   blockedMessage: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 24,
     textAlign: 'center',
     maxWidth: 320,
@@ -1673,8 +1687,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   upgradeButtonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   // Message counter
   messageCounterContainer: {
@@ -1688,8 +1702,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   messageCounter: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
   },
   limitWarningBanner: {
     width: '100%',
@@ -1707,10 +1721,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   limitWarningText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.bodySm.fontSize,
     flex: 1,
-    lineHeight: 18,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   limitCtaButton: {
     paddingHorizontal: 12,
@@ -1719,9 +1733,56 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   limitCtaText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
     fontWeight: '600',
+  },
+  limitCard: {
+    width: '100%',
+    gap: 14,
+    padding: 16,
+    marginBottom: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  limitCardContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  limitCardIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  limitCardCopy: {
+    flex: 1,
+    minWidth: 0,
+    gap: 4,
+  },
+  limitCardTitle: {
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: TypeScale.h3.fontSize,
+    lineHeight: TypeScale.h3.lineHeight,
+  },
+  limitCardBody: {
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
+  },
+  limitCardCta: {
+    minHeight: 44,
+    borderRadius: 999,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  limitCardCtaText: {
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   footerWrapper: {
     width: '100%',

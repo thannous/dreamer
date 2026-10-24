@@ -9,6 +9,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { reportStabilityError } from '@/lib/observe';
 import { ErrorBoundary } from './ErrorBoundary';
+import { TypeScale } from '@/constants/typeScale';
 
 interface ScreenErrorFallbackProps {
   error: Error;
@@ -169,21 +170,21 @@ const styles = StyleSheet.create({
     marginBottom: ThemeLayout.spacing.md,
   },
   title: {
-    fontSize: 22,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h2.fontSize,
+    fontFamily: Fonts.outfit.bold,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.sm,
   },
   message: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: ThemeLayout.spacing.md,
   },
   devError: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
     marginBottom: ThemeLayout.spacing.lg,
     padding: ThemeLayout.spacing.sm,
@@ -207,8 +208,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   buttonText: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
   },
 });
 

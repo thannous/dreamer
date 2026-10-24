@@ -49,6 +49,7 @@ import { isSupabaseConfigured } from '@/lib/supabase';
 import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
 import { AuthBottomSheet as StandardBottomSheet } from '@/components/auth/AuthBottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { TypeScale } from '@/constants/typeScale';
 
 const isMockModeEnabled = isMockModeEnabledEnv();
 const VERIFICATION_POLL_INTERVAL_MS = 15000;
@@ -819,7 +820,7 @@ export const EmailAuthCard: React.FC<Props> = ({
 
       {showSupabaseConfigHint && (
         <Text style={[styles.hint, { color: noctalia.text.secondary }]}>
-          {t('settings.account.hint.configure_supabase')}
+          {t('settings.account.hint.auth_unavailable')}
         </Text>
       )}
     </>
@@ -1328,19 +1329,19 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   statusPillText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 16,
   },
   summaryDescription: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 18,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   summaryEmail: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 15,
-    lineHeight: 20,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   summaryDivider: {
     height: 1,
@@ -1382,14 +1383,14 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.99 }],
   },
   summaryPrimaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 20,
     textAlign: 'center',
   },
   summarySecondaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
     lineHeight: 20,
     textAlign: 'center',
   },
@@ -1404,13 +1405,13 @@ const styles = StyleSheet.create({
     paddingBottom: ThemeLayout.spacing.sm,
   },
   cardTitle: {
-    fontSize: 18,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.h3.fontSize,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   cardDescription: {
-    fontSize: 14,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     marginBottom: ThemeLayout.spacing.md,
     lineHeight: 20,
   },
@@ -1423,8 +1424,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: ThemeLayout.spacing.md,
     paddingVertical: 12,
     marginBottom: 10,
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.regular,
     width: '100%',
   },
   inputWithToggle: {
@@ -1474,21 +1475,21 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   btnText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   btnTextSecondary: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   btnTextCompact: {
-    fontSize: 15,
+    fontSize: TypeScale.body.fontSize,
   },
   hint: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.regular,
     marginTop: ThemeLayout.spacing.sm,
-    lineHeight: 18,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   userInfo: {
     borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
@@ -1499,14 +1500,14 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.sm,
   },
   userLabel: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: 4,
     textTransform: 'uppercase',
   },
   userEmail: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   divider: {
     flexDirection: 'row',
@@ -1522,8 +1523,8 @@ const styles = StyleSheet.create({
     height: 1,
   },
   dividerText: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.medium,
     textTransform: 'uppercase',
   },
   danger: {
@@ -1531,8 +1532,8 @@ const styles = StyleSheet.create({
     marginTop: ThemeLayout.spacing.md,
   },
   errorText: {
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.medium,
     marginBottom: ThemeLayout.spacing.xs,
   },
   mockSection: {
@@ -1544,15 +1545,15 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   mockSectionTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 18,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.h3.fontSize,
     lineHeight: 22,
   },
   mockSectionSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
     marginTop: 4,
-    lineHeight: 18,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   mockButtonsColumn: {
     marginTop: 14,
@@ -1574,14 +1575,14 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   mockButtonTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
-    lineHeight: 18,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   mockButtonSubtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
-    lineHeight: 16,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
     marginTop: 2,
   },
   unverifiedBanner: {
@@ -1594,14 +1595,14 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.sm,
   },
   unverifiedTitle: {
-    fontSize: 16,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontSize: TypeScale.body.fontSize,
+    fontFamily: Fonts.outfit.bold,
     marginBottom: ThemeLayout.spacing.xs,
   },
   unverifiedMessage: {
-    fontSize: 14,
+    fontSize: TypeScale.bodySm.fontSize,
     marginBottom: ThemeLayout.spacing.sm,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
   },
   unverifiedAction: {
     borderRadius: isLucidTrainer ? LucidRadius.lg : ThemeLayout.borderRadius.sm,
@@ -1617,13 +1618,13 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   unverifiedActionText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
   },
   unverifiedStatus: {
     marginTop: ThemeLayout.spacing.xs,
-    fontSize: 12,
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontSize: TypeScale.caption.fontSize,
+    fontFamily: Fonts.outfit.regular,
   },
   forgotPasswordLink: {
     alignSelf: 'flex-start',
@@ -1631,8 +1632,8 @@ const styles = StyleSheet.create({
     paddingVertical: ThemeLayout.spacing.xs,
   },
   forgotPasswordLinkText: {
-    fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontSize: TypeScale.bodySm.fontSize,
+    fontFamily: Fonts.outfit.medium,
     textDecorationLine: 'underline',
   },
   forgotPasswordPanel: {

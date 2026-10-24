@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
-import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import Svg, {
   Circle,
   Defs,
@@ -11,6 +11,7 @@ import Svg, {
 } from 'react-native-svg';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { DreamerBackground } from '@/components/ui/DreamerBackground';
 import type { DreamerScene } from '@/constants/dreamerArtwork';
@@ -29,7 +30,7 @@ interface AtmosphericBackgroundProps {
  * - Soft texture without decorative blobs
  */
 export function AtmosphericBackground({ variant = 'immersive', scene }: AtmosphericBackgroundProps) {
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
   const { mode, colors } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const isWeb = Platform.OS === 'web';

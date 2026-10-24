@@ -2,7 +2,7 @@ import { getDreamRouteParams } from '@/lib/dreamRoute';
 import type { DreamAnalysis } from '@/lib/types';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -12,22 +12,26 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useDreamsData } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
+import { getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
+import { useAuth } from '@/context/AuthContext';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
-import { useSubscription } from '@/hooks/useSubscription';
+import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
+import { isResumableAnalysisRequest } from '@/lib/analysisRequest';
 import { getDreamThemeLabel, getEmotionFamilyLabel } from '@/lib/dreamLabels';
-import { buildPaywallHref } from '@/lib/paywallRoute';
+import { buildAnalysisPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { requestStoreReviewIfDue } from '@/lib/storeReview';
 import { buildWeeklyRecap } from '@/lib/weeklyRecap';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
+import { TypeScale } from '@/constants/typeScale';
 
 /**
  * "Your week in dreams": the Sunday-morning recap opened from the weekly push
- * or from the home screen. Free users see rhythm, theme and symbol; the
- * recurring emotion stays a Plus signal (same gate as the Statistics screen)
- * and doubles as a contextual entry to the paywall.
+ * or from the home screen. Everyone sees rhythm, theme, symbol and emotion, as
+ * in Trends. Plus appears only when the dream left to analyse cannot be read
+ * this month: its button then opens that dream's own offer.
  */
 function WeeklyRecapContent() {
   // This screen's own scroll, published to its header painting and title.
@@ -38,7 +42,11 @@ function WeeklyRecapContent() {
   const insets = useSafeAreaInsets();
   const { formatDate } = useLocaleFormatting();
   const { dreams, loaded } = useDreamsData();
-  const { isActive: isPlus } = useSubscription();
+  const { user } = useAuth();
+  const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
+  const analysesUsedUp = getFreeAnalysesNudge({
+    tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 0,
+  }) !== null;
   const [now] = useState(() => Date.now());
 
   const recap = useMemo(() => buildWeeklyRecap(dreams, now), [dreams, now]);
@@ -87,10 +95,9 @@ function WeeklyRecapContent() {
   const handleOpenDream = useCallback((dream: DreamAnalysis) => {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
   }, []);
-
-  const handleUnlockEmotions = useCallback(() => {
-    router.push(buildPaywallHref('stats_profile'));
-  }, []);
+  const handleAnalyzeWithPlus = useCallback((dream: DreamAnalysis) => {
+    if (user) router.push(buildAnalysisPaywallHref(dream, user.id));
+  }, [user]);
 
   const backButtonTop = insets.top + ThemeLayout.spacing.sm;
   const cardStyle = [
@@ -101,6 +108,9 @@ function WeeklyRecapContent() {
   const themeLabel = recap.topTheme ? getDreamThemeLabel(recap.topTheme.theme, t) : null;
   const emotionLabel = recap.topEmotion ? getEmotionFamilyLabel(recap.topEmotion.family, t) : null;
   const nextDream = recap.dreamToExplore ?? recap.dreamToAnalyze;
+  // A pending or failed request resumes on the dream page without a new analysis.
+  const analyzeWithPlus = !recap.dreamToExplore && analysesUsedUp
+    && !(nextDream && isResumableAnalysisRequest(nextDream));
 
   return (
     <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID={TID.Screen.WeeklyRecap}>
@@ -119,7 +129,7 @@ function WeeklyRecapContent() {
         <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
       </Pressable>
 
-      <ScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
+      <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
         style={styles.scrollView}
         contentInsetAdjustmentBehavior="never"
         contentContainerStyle={{
@@ -203,25 +213,9 @@ function WeeklyRecapContent() {
                 </View>
                 <View style={[styles.signalRow, styles.signalRowLast]}>
                   <Text style={[styles.signalLabel, { color: noctalia.text.secondary }]}>{t('weekly_recap.signals.emotion')}</Text>
-                  {isPlus ? (
-                    <Text style={[styles.signalValue, { color: noctalia.text.primary }]} testID={TID.Text.WeeklyRecapEmotion}>
-                      {emotionLabel ?? t('weekly_recap.signals.none')}
-                    </Text>
-                  ) : (
-                    <Pressable
-                      onPress={handleUnlockEmotions}
-                      accessibilityRole="button"
-                      testID={TID.Button.WeeklyRecapUnlockEmotion}
-                      style={[styles.lockedPill, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}
-                    >
-                      <IconSymbol name="lock.fill" size={12} color={noctalia.accent.text} />
-                      <Text style={[styles.lockedLabel, { color: noctalia.accent.text }]}>
-                        {recap.topEmotion
-                          ? t('weekly_recap.signals.emotion_locked')
-                          : t('weekly_recap.signals.emotion_locked_empty')}
-                      </Text>
-                    </Pressable>
-                  )}
+                  <Text style={[styles.signalValue, { color: noctalia.text.primary }]} testID={TID.Text.WeeklyRecapEmotion}>
+                    {emotionLabel ?? t('weekly_recap.signals.none')}
+                  </Text>
                 </View>
               </View>
 
@@ -240,7 +234,7 @@ function WeeklyRecapContent() {
                     {nextDream.transcript}
                   </Text>
                   <Pressable
-                    onPress={() => handleOpenDream(nextDream)}
+                    onPress={() => (analyzeWithPlus ? handleAnalyzeWithPlus(nextDream) : handleOpenDream(nextDream))}
                     accessibilityRole="button"
                     testID={TID.Button.WeeklyRecapOpenDream}
                     style={({ pressed }) => [
@@ -250,7 +244,8 @@ function WeeklyRecapContent() {
                     ]}
                   >
                     <Text style={[styles.primaryLabel, { color: noctalia.action.primaryText }]}>
-                      {recap.dreamToExplore ? t('weekly_recap.next.explore_cta') : t('weekly_recap.next.analyze_cta')}
+                      {recap.dreamToExplore ? t('weekly_recap.next.explore_cta')
+                        : analyzeWithPlus ? t('weekly_recap.next.analyze_cta_plus') : t('weekly_recap.next.analyze_cta')}
                     </Text>
                   </Pressable>
                 </View>
@@ -275,7 +270,7 @@ function WeeklyRecapContent() {
             </>
           )}
         </View>
-      </ScrollView>
+      </HeaderScrollView>
     </View>
   );
 }
@@ -302,20 +297,20 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   eyebrow: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.caption.fontSize,
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },
   title: {
     fontFamily: Fonts.fraunces.bold,
-    fontSize: 30,
-    lineHeight: 36,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 15,
-    lineHeight: 22,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.body.fontSize,
+    lineHeight: TypeScale.body.lineHeight,
   },
   tiles: {
     flexDirection: 'row',
@@ -330,17 +325,17 @@ const styles = StyleSheet.create({
   },
   tileValue: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 26,
-    lineHeight: 30,
+    fontSize: TypeScale.h1.fontSize,
+    lineHeight: TypeScale.h1.lineHeight,
   },
   tileLabel: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.caption.fontSize,
     textAlign: 'center',
   },
   tileHint: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 11,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.caption.fontSize,
     textAlign: 'center',
   },
   card: {
@@ -355,19 +350,19 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   cardEyebrow: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.caption.fontSize,
     letterSpacing: 1.2,
     textTransform: 'uppercase',
   },
   cardTitle: {
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: TypeScale.h2.fontSize,
+    lineHeight: TypeScale.h2.lineHeight,
   },
   cardBody: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
   signalRow: {
@@ -383,27 +378,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   signalLabel: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 13,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
   },
   signalValue: {
     flexShrink: 1,
     textAlign: 'right',
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
-  },
-  lockedPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 999,
-    borderWidth: 1,
-  },
-  lockedLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   primary: {
     marginTop: 6,
@@ -415,8 +397,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   primaryLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 15,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
   pressed: {
     opacity: 0.85,

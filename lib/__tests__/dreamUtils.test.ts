@@ -51,6 +51,43 @@ const legacyMutation = (mutation: {
 
 describe('dreamUtils', () => {
   describe('dream update intents', () => {
+    // UI E2E cannot deterministically schedule two devices between the same revisions.
+    it('merges independent note additions and keeps unrelated server analysis', () => {
+      const base = buildDream({ personalNotes: [] });
+      const first = { id: '11111111-1111-4111-8111-111111111111', text: 'First', createdAt: 100, updatedAt: 100 };
+      const second = { ...first, id: '22222222-2222-4222-8222-222222222222', text: 'Second' };
+      const intent = createDreamUpdateIntent(base, { ...base, personalNotes: [first] });
+      const remote = { ...base, personalNotes: [second], interpretation: 'Fresh analysis' };
+      expect(hasDreamUpdateIntentConflict(base, remote, intent)).toBe(false);
+      const merged = applyDreamUpdateIntent(remote, intent);
+      expect(merged.personalNotes).toEqual([first, second]);
+      expect(merged.interpretation).toBe('Fresh analysis');
+      expect(merged.transcript).toBe(base.transcript);
+    });
+
+    it('does not silently overwrite a concurrent note edit or resurrect a deleted note', () => {
+      const note = { id: '11111111-1111-4111-8111-111111111111', text: 'First', createdAt: 100, updatedAt: 100 };
+      const base = buildDream({ personalNotes: [note] });
+      const intent = createDreamUpdateIntent(base, { ...base, personalNotes: [{ ...note, text: 'Local edit', updatedAt: 200 }] });
+      for (const notes of [[], [{ ...note, text: 'Remote edit', updatedAt: 300 }]]) {
+        const remote = { ...base, personalNotes: notes };
+        expect(hasDreamUpdateIntentConflict(base, remote, intent)).toBe(true);
+        expect(() => applyDreamUpdateIntent(remote, intent)).toThrow('Personal note changed');
+      }
+      const oldClient = createDreamUpdateIntent(base, { ...base, personalNotes: undefined, title: 'Old client' });
+      expect(applyDreamUpdateIntent(base, oldClient).personalNotes).toEqual([note]);
+    });
+
+    it('refuses an overflowing merged notebook without truncating any writing', () => {
+      const notes = Array.from({ length: 50 }, (_, index) => ({
+        id: `${String(index).padStart(8, '0')}-1111-4111-8111-111111111111`, text: 'Kept', createdAt: 100, updatedAt: 100,
+      }));
+      const base = buildDream({ personalNotes: [] });
+      const intent = createDreamUpdateIntent(base, { ...base, personalNotes: [{ ...notes[0], id: '99999999-1111-4111-8111-111111111111' }] });
+      expect(() => applyDreamUpdateIntent({ ...base, personalNotes: notes }, intent)).toThrow('Invalid personal notes');
+      expect(notes).toHaveLength(50);
+    });
+
     it('rebases only fields changed by the caller onto the latest server state', () => {
       const base = buildDream({
         id: 1,

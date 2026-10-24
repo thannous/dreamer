@@ -78,6 +78,8 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'stop.fill': 'stop',
   'sun.max.fill': 'sunny',
   trash: 'delete',
+  envelope: 'mail-outline',
+  flag: 'outlined-flag',
   xmark: 'close',
   'sparkles': 'auto-awesome',
   'slider.horizontal.3': 'tune',

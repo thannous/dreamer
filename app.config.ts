@@ -12,6 +12,32 @@ export const DREAMER_QA_ANDROID_PACKAGE = 'com.tanuki75.noctalia.qa';
 export const DREAMER_QA_IOS_BUNDLE_IDENTIFIER = 'com.tanuki75.noctalia.qa';
 export const DREAMER_QA_APP_NAME = 'Noctalia QA';
 export const DREAMER_QA_SCHEME = 'noctalia-qa';
+/**
+ * expo-observe refuses to start without an EAS project id, and expo-image starts it on
+ * import, so a QA package without one stopped at launch. It gets an id of its own, not the
+ * store app's, and its reports go to a closed port on the device.
+ */
+export const DREAMER_QA_OBSERVE = Object.freeze({
+  projectId: 'noctalia-qa-local',
+  endpointUrl: 'https://127.0.0.1:9/',
+});
+const APP_ATTEST_ENTITLEMENT = 'com.apple.developer.devicecheck.appattest-environment';
+const APP_STORE_PROFILES = new Set(['release', 'production', 'ai-internal', 'lucid-production']);
+
+function withIosAppAttestEnvironment(baseExpo: ExpoConfig): ExpoConfig {
+  // App Store/TestFlight builds use Apple's production App Attest service.
+  // Internal ad hoc builds (including release-smoke) use development.
+  const environment = APP_STORE_PROFILES.has(process.env.EAS_BUILD_PROFILE ?? '')
+    ? 'production' : 'development';
+  if (baseExpo.ios?.entitlements?.[APP_ATTEST_ENTITLEMENT] === environment) return baseExpo;
+  return {
+    ...baseExpo,
+    ios: {
+      ...baseExpo.ios,
+      entitlements: { ...baseExpo.ios?.entitlements, [APP_ATTEST_ENTITLEMENT]: environment },
+    },
+  };
+}
 
 function isLucidNativeMarker(value: string | undefined): boolean {
   if (value === undefined || value === '' || value === 'noctalia') return false;
@@ -56,7 +82,27 @@ export function resolveDreamerQaBuildEnabled(
   return parseDreamerQaBuildMarker(env[DREAMER_QA_BUILD_ENV]);
 }
 
-export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
+export function createDreamerQaExpoConfig(
+  baseExpo: ExpoConfig,
+  env: Record<string, string | undefined> = process.env
+): ExpoConfig {
+  // This separate QA package must never inherit the production fallback when
+  // its backend overrides are absent. Normal app builds keep their own config.
+  const qaApiUrl = env.EXPO_PUBLIC_API_URL?.trim() || 'https://127.0.0.1:9';
+  const qaSupabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL?.trim() || 'https://127.0.0.1:9';
+  const qaAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY?.trim() || undefined;
+  const nativeQaAudio = env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true';
+  if (nativeQaAudio) {
+    if (env.EAS_BUILD === 'true') throw new Error('[app.config] Native QA audio is local-only; EAS builds are refused.');
+    if (!qaAnonKey) throw new Error('[app.config] Native QA backend requires its local public key.');
+    for (const [key, value] of [
+      ['EXPO_PUBLIC_API_URL', qaApiUrl], ['EXPO_PUBLIC_SUPABASE_URL', qaSupabaseUrl],
+    ]) {
+      const url = new URL(value);
+      if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost', '[::1]', '10.0.2.2'].includes(url.hostname)
+        || url.username || url.password) throw new Error(`[app.config] Native QA audio requires a loopback ${key}.`);
+    }
+  }
   return {
     ...baseExpo,
     name: DREAMER_QA_APP_NAME,
@@ -65,6 +111,9 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       ...baseExpo.ios,
       bundleIdentifier: DREAMER_QA_IOS_BUNDLE_IDENTIFIER,
       associatedDomains: [],
+      infoPlist: { ...baseExpo.ios?.infoPlist, NSAppTransportSecurity: {
+        ...baseExpo.ios?.infoPlist?.NSAppTransportSecurity, NSAllowsLocalNetworking: true,
+      } },
     },
     android: {
       ...baseExpo.android,
@@ -73,9 +122,26 @@ export function createDreamerQaExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     extra: {
       ...baseExpo.extra,
-      eas: undefined,
+      nativeQaAudio,
+      apiUrl: qaApiUrl,
+      supabaseUrl: qaSupabaseUrl,
+      supabaseAnonKey: qaAnonKey,
+      ...(nativeQaAudio ? {
+        supabaseFunctionJwt: qaAnonKey,
+        revenuecatAndroidKey: '', revenuecatIosKey: '', revenuecatWebKey: '',
+      } : {}),
+      eas: {
+        projectId: DREAMER_QA_OBSERVE.projectId,
+        observe: { endpointUrl: DREAMER_QA_OBSERVE.endpointUrl },
+      },
     },
-    updates: undefined,
+    // A local QA Release must execute its embedded, identified JS bundle.
+    updates: { enabled: false },
+    plugins: nativeQaAudio ? baseExpo.plugins?.map(plugin => {
+      if (!Array.isArray(plugin) || plugin[0] !== 'expo-build-properties') return plugin;
+      const options = plugin[1] ?? {};
+      return [plugin[0], { ...options, android: { ...options.android, usesCleartextTraffic: true } }];
+    }) : baseExpo.plugins,
   };
 }
 
@@ -133,7 +199,11 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       name !== 'expo-speech-recognition' &&
       name !== '@react-native-google-signin/google-signin' &&
       name !== './plugins/withDisableNotificationsBootActions' &&
-      name !== './plugins/withAndroidR8Optimization'
+      name !== './plugins/withAndroidR8Optimization' &&
+      name !== 'expo-app-intents' &&
+      name !== './plugins/withAppIntentsLocalizations' &&
+      // The widgets open Dreamer's capture, journal and sleep sounds.
+      name !== 'expo-widgets'
     );
   });
   const lucidGooglePlugins = resolveLucidGooglePlugin();
@@ -155,6 +225,13 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     NSPhotoLibraryUsageDescription: _photoLibraryUsageDescription,
     ...lucidInfoPlist
   } = baseExpo.ios?.infoPlist ?? {};
+  const {
+    [APP_ATTEST_ENTITLEMENT]: _appAttestEnvironment,
+    ...lucidEntitlements
+  } = baseExpo.ios?.entitlements ?? {};
+  // The Siri action "Note a dream" writes to the journal, which Lucid does not have:
+  // its build leaves out the app-target Swift in app-intents/.
+  const { inlineModules: _inlineModules, ...lucidExperiments } = baseExpo.experiments ?? {};
 
   return {
     ...baseExpo,
@@ -169,6 +246,7 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     runtimeVersion: LUCID_APP_VERSION,
     ios: {
       ...baseExpo.ios,
+      entitlements: lucidEntitlements,
       bundleIdentifier: 'com.tanuki75.noctalia.lucid',
       buildNumber: '1',
       associatedDomains: ['applinks:lucid.noctalia.app'],
@@ -266,23 +344,37 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
       revenuecatIosKey: undefined,
       revenuecatWebKey: undefined,
     },
+    experiments: lucidExperiments,
     updates: undefined,
   };
 }
 
 export default function resolveExpoConfig({ config }: ConfigContext): ExpoConfig {
-  const baseExpo = config as ExpoConfig;
+  let baseExpo = config as ExpoConfig;
+  // Measured with Uniwind and React Compiler: faster cold exports, but a slightly
+  // larger Hermes bundle. Keep this experimental transformer a local opt-in;
+  // cloud release profiles retain their validated default.
+  if (process.env.NOCTALIA_METRO_NOXCTURNAL === '1' && process.env.EAS_BUILD !== 'true') {
+    const experiments = { ...baseExpo.experiments, noxcturnalTransformWorker: true };
+    baseExpo = { ...baseExpo, experiments };
+  }
   const qaEnabled = resolveDreamerQaBuildEnabled();
+  if (process.env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true' && !qaEnabled) {
+    throw new Error('[app.config] Native QA audio requires the separate Dreamer QA bundle.');
+  }
   const lucidEnabled = resolveLucidBuildEnabled();
   assertDreamerQaLucidConflict(qaEnabled, lucidEnabled);
 
   if (lucidEnabled) {
-    return createLucidExpoConfig(baseExpo);
+    // Lucid analytics also exchanges an App Attest-backed guest session.
+    // Select the entitlement for Lucid's own build profile after removing the
+    // Journal entitlement inherited from app.json.
+    return withIosAppAttestEnvironment(createLucidExpoConfig(baseExpo));
   }
 
   if (qaEnabled) {
-    return createDreamerQaExpoConfig(baseExpo);
+    return withIosAppAttestEnvironment(createDreamerQaExpoConfig(baseExpo));
   }
 
-  return baseExpo;
+  return withIosAppAttestEnvironment(baseExpo);
 }

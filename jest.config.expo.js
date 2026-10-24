@@ -1,4 +1,7 @@
-const preset = require('jest-expo/jest-preset');
+const preset = { ...require('jest-expo/jest-preset') };
+// This preset also contains a global Jest option, invalid in a projects[] entry.
+// Keep the root default: an empty required selection must still fail.
+delete preset.passWithNoTests;
 const path = require('node:path');
 const expoCore = require.resolve('expo-modules-core', { paths: [path.dirname(require.resolve('expo/package.json'))] });
 

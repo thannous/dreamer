@@ -9,9 +9,24 @@ const mockResetPasswordForEmail = jest.fn();
 const mockUpdateUser = jest.fn();
 const mockGetSession = jest.fn();
 const mockSetSession = jest.fn();
+const mockSignUp = jest.fn();
+const mockImplicitSignUp = jest.fn();
+const mockRecoveryVerifyOtp = jest.fn();
+const mockRecoveryUpdateUser = jest.fn();
+const mockCreateClient = jest.fn(() => ({ auth: {
+  signUp: mockImplicitSignUp,
+  verifyOtp: mockRecoveryVerifyOtp,
+  updateUser: mockRecoveryUpdateUser,
+} }));
+const mockClearPendingWebRecoveryTokenHash = jest.fn();
+let mockPendingWebRecoveryTokenHash: string | null = null;
+let mockPendingWebRecoveryPkce = false;
+const mockUpdatePasswordFromPendingWebRecoveryPkce = jest.fn();
 const mockResetMockTestState = jest.fn();
 let mockModeEnabled = false;
 const mockOnAuthStateChange = jest.fn();
+
+jest.mock('@supabase/supabase-js', () => ({ createClient: mockCreateClient }));
 
 jest.mock('../env', () => ({
   isMockModeEnabled: () => mockModeEnabled,
@@ -36,9 +51,16 @@ jest.mock('../supabase', () => ({
       updateUser: mockUpdateUser,
       getSession: mockGetSession,
       setSession: mockSetSession,
+      signUp: mockSignUp,
       onAuthStateChange: mockOnAuthStateChange,
     },
   },
+  getPendingWebRecoveryTokenHash: () => mockPendingWebRecoveryTokenHash,
+  getSupabasePublicConfiguration: () => ({ projectUrl: 'https://example.supabase.co', publicKey: 'anon' }),
+  getWebRecoveryLinkState: () => mockPendingWebRecoveryTokenHash ? 'pending' : 'none',
+  hasPendingWebRecoveryPkce: () => mockPendingWebRecoveryPkce,
+  updatePasswordFromPendingWebRecoveryPkce: mockUpdatePasswordFromPendingWebRecoveryPkce,
+  clearPendingWebRecoveryTokenHash: mockClearPendingWebRecoveryTokenHash,
 }));
 
 jest.mock('@/services/subscriptionService', () => ({
@@ -121,6 +143,8 @@ describe('web auth helpers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockModeEnabled = false;
+    mockPendingWebRecoveryTokenHash = null;
+    mockPendingWebRecoveryPkce = false;
     mockSignInWithOAuth.mockResolvedValue({
       data: { url: OAUTH_AUTHORIZE_URL },
       error: null,
@@ -142,6 +166,14 @@ describe('web auth helpers', () => {
       },
     });
     mockSetSession.mockResolvedValue({ data: { session: null }, error: null });
+    mockSignUp.mockResolvedValue({ data: { user: { id: 'new-user' }, session: null }, error: null });
+    mockImplicitSignUp.mockResolvedValue({ data: { user: { id: 'new-user' }, session: null }, error: null });
+    mockRecoveryVerifyOtp.mockResolvedValue({ data: {
+      user: { id: 'user-1', email: 'user@example.com' },
+      session: { access_token: 'recovery-access', user: { id: 'user-1' } },
+    }, error: null });
+    mockRecoveryUpdateUser.mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null });
+    mockUpdatePasswordFromPendingWebRecoveryPkce.mockResolvedValue({ id: 'user-1' });
     mockOnAuthStateChange.mockReturnValue({
       data: { subscription: { unsubscribe: jest.fn() } },
     });
@@ -162,6 +194,38 @@ describe('web auth helpers', () => {
 
     expect(typeof auth.isGoogleSignInAvailable).toBe('function');
     expect(auth.isGoogleSignInAvailable()).toBe(true);
+  });
+
+  it('keeps PKCE sign-up and its confirmation link when the server accepts it', async () => {
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const user = await auth.signUpWithEmailPassword('new@example.com', 'password');
+
+    expect(user?.id).toBe('new-user');
+    expect(mockSignUp).toHaveBeenCalledTimes(1);
+    expect(mockCreateClient).not.toHaveBeenCalled();
+    expect(mockSetSession).not.toHaveBeenCalled();
+  });
+
+  it('uses an isolated implicit sign-up only for explicit PKCE autoconfirm rejection', async () => {
+    mockSignUp.mockResolvedValueOnce({ data: { user: null, session: null }, error: new Error('PKCE flow cannot be used when autoconfirm is enabled') });
+    mockImplicitSignUp.mockResolvedValueOnce({ data: { user: { id: 'new-user' }, session: OAUTH_SESSION }, error: null });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const user = await auth.signUpWithEmailPassword('new@example.com', 'password');
+
+    expect(user?.id).toBe('new-user');
+    expect(mockCreateClient).toHaveBeenCalledWith('https://example.supabase.co', 'anon', {
+      auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false, flowType: 'implicit' },
+    });
+    expect(mockImplicitSignUp).toHaveBeenCalledTimes(1);
+    expect(mockSetSession).toHaveBeenCalledWith({ access_token: 'oauth-access', refresh_token: 'oauth-refresh' });
+  });
+
+  it('does not retry a failed sign-up with a different flow for unrelated errors', async () => {
+    mockSignUp.mockResolvedValueOnce({ data: { user: null, session: null }, error: new Error('Rate limited') });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    await expect(auth.signUpWithEmailPassword('new@example.com', 'password')).rejects.toThrow('Rate limited');
+    expect(mockCreateClient).not.toHaveBeenCalled();
   });
 
   // Isolation gap: the iOS dogfood journey cannot catch a missing web-platform
@@ -233,12 +297,8 @@ describe('web auth helpers', () => {
     expect(harness.browserWindow.removeEventListener).toHaveBeenCalled();
   });
 
-  it('initializes a session from the implicit callback fragment', async () => {
+  it('rejects an implicit callback fragment without signing in', async () => {
     const harness = createOAuthPopupHarness();
-    mockSetSession.mockResolvedValueOnce({
-      data: { session: OAUTH_SESSION },
-      error: null,
-    });
     const auth = require('../auth.web') as typeof import('../auth.web');
     const pending = auth.signInWithGoogleWeb();
 
@@ -248,24 +308,16 @@ describe('web auth helpers', () => {
       source: harness.popup,
       data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=oauth-access&refresh_token=oauth-refresh&token_type=bearer`,
     });
-    await pending;
+    await expect(pending).rejects.toThrow('Google sign-in callback must use a code.');
 
-    expect(mockSetSession).toHaveBeenCalledTimes(1);
-    expect(mockSetSession).toHaveBeenCalledWith({
-      access_token: 'oauth-access',
-      refresh_token: 'oauth-refresh',
-    });
+    expect(mockSetSession).not.toHaveBeenCalled();
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
     expect(harness.popup.close).toHaveBeenCalled();
     expect(harness.browserWindow.removeEventListener).toHaveBeenCalled();
   });
 
-  it('prefers implicit tokens over a PKCE code so the session is initialized once', async () => {
+  it('rejects bearer tokens even when a PKCE code is also present', async () => {
     const harness = createOAuthPopupHarness();
-    mockSetSession.mockResolvedValueOnce({
-      data: { session: OAUTH_SESSION },
-      error: null,
-    });
     const auth = require('../auth.web') as typeof import('../auth.web');
     const pending = auth.signInWithGoogleWeb();
 
@@ -275,9 +327,9 @@ describe('web auth helpers', () => {
       source: harness.popup,
       data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code#access_token=oauth-access&refresh_token=oauth-refresh`,
     });
-    await pending;
+    await expect(pending).rejects.toThrow('Google sign-in callback must use a code.');
 
-    expect(mockSetSession).toHaveBeenCalledTimes(1);
+    expect(mockSetSession).not.toHaveBeenCalled();
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
   });
 
@@ -350,44 +402,6 @@ describe('web auth helpers', () => {
     expect(mockSetSession).not.toHaveBeenCalled();
   });
 
-  it('ignores duplicate implicit callback messages after session initialization starts', async () => {
-    const harness = createOAuthPopupHarness();
-    let resolveSetSession:
-      | ((value: { data: { session: typeof OAUTH_SESSION }; error: null }) => void)
-      | undefined;
-    mockSetSession.mockImplementation(
-      () =>
-        new Promise((resolve) => {
-          resolveSetSession = resolve;
-        })
-    );
-    const auth = require('../auth.web') as typeof import('../auth.web');
-    const pending = auth.signInWithGoogleWeb();
-    await flushMicrotasks();
-
-    harness.dispatchMessage({
-      origin: PRODUCTION_ORIGIN,
-      source: harness.popup,
-      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=first-access&refresh_token=first-refresh`,
-    });
-    harness.dispatchMessage({
-      origin: PRODUCTION_ORIGIN,
-      source: harness.popup,
-      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=second-access&refresh_token=second-refresh`,
-    });
-
-    expect(mockSetSession).toHaveBeenCalledTimes(1);
-    expect(mockSetSession).toHaveBeenCalledWith({
-      access_token: 'first-access',
-      refresh_token: 'first-refresh',
-    });
-    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
-
-    resolveSetSession?.({ data: { session: OAUTH_SESSION }, error: null });
-    await pending;
-    expect(mockSetSession).toHaveBeenCalledTimes(1);
-  });
-
   it('ignores a same-origin popup message whose data URL is not the static callback', async () => {
     const harness = createOAuthPopupHarness();
     const auth = require('../auth.web') as typeof import('../auth.web');
@@ -447,7 +461,7 @@ describe('web auth helpers', () => {
       data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=oauth-access`,
     });
 
-    await expect(pending).rejects.toThrow('Google sign-in callback was malformed.');
+    await expect(pending).rejects.toThrow('Google sign-in callback must use a code.');
     expect(mockSetSession).not.toHaveBeenCalled();
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
     expect(harness.popup.close).toHaveBeenCalled();
@@ -465,7 +479,7 @@ describe('web auth helpers', () => {
       data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code#access_token=oauth-access`,
     });
 
-    await expect(pending).rejects.toThrow('Google sign-in callback was malformed.');
+    await expect(pending).rejects.toThrow('Google sign-in callback must use a code.');
     expect(mockSetSession).not.toHaveBeenCalled();
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
     expect(harness.popup.close).toHaveBeenCalled();
@@ -483,29 +497,8 @@ describe('web auth helpers', () => {
       data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code#refresh_token=oauth-refresh`,
     });
 
-    await expect(pending).rejects.toThrow('Google sign-in callback was malformed.');
+    await expect(pending).rejects.toThrow('Google sign-in callback must use a code.');
     expect(mockSetSession).not.toHaveBeenCalled();
-    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
-    expect(harness.popup.close).toHaveBeenCalled();
-  });
-
-  it('fails when implicit setSession returns no session', async () => {
-    const harness = createOAuthPopupHarness();
-    mockSetSession.mockResolvedValueOnce({
-      data: { session: null },
-      error: null,
-    });
-    const auth = require('../auth.web') as typeof import('../auth.web');
-    const pending = auth.signInWithGoogleWeb();
-    await flushMicrotasks();
-
-    harness.dispatchMessage({
-      origin: PRODUCTION_ORIGIN,
-      source: harness.popup,
-      data: `${PRODUCTION_ORIGIN}/auth-callback.html#access_token=oauth-access&refresh_token=oauth-refresh`,
-    });
-
-    await expect(pending).rejects.toThrow('Google sign-in did not return a session.');
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
     expect(harness.popup.close).toHaveBeenCalled();
   });
@@ -670,6 +663,83 @@ describe('web auth helpers', () => {
 
     await expect(auth.updatePassword('new-secret')).rejects.toThrow('weak password');
     expect(mockSetSession).not.toHaveBeenCalled();
+  });
+
+  it('rejects an unverified recovery hash without touching the app session', async () => {
+    mockPendingWebRecoveryTokenHash = 'invalid-hash';
+    mockRecoveryVerifyOtp.mockResolvedValueOnce({ data: { user: null, session: null }, error: new Error('expired link') });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    await expect(auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret'))
+      .rejects.toThrow('expired link');
+
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledWith({ token_hash: 'invalid-hash', type: 'recovery' });
+    expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockUpdateUser).not.toHaveBeenCalled();
+  });
+
+  it('updates a verified PKCE recovery through its isolated client', async () => {
+    mockPendingWebRecoveryPkce = true;
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    const user = await auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret');
+
+    expect(mockUpdatePasswordFromPendingWebRecoveryPkce).toHaveBeenCalledWith('user@example.com', 'new-secret');
+    expect(mockRecoveryVerifyOtp).not.toHaveBeenCalled();
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockUpdateUser).not.toHaveBeenCalled();
+    expect(user?.id).toBe('user-1');
+  });
+
+  it('confirms the recovery account email and permits a retry of a verified one-use hash', async () => {
+    mockPendingWebRecoveryTokenHash = 'recovery-hash-a';
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    await expect(auth.updatePasswordFromWebRecovery('other@example.com', 'new-secret'))
+      .rejects.toThrow('recovery_email_mismatch');
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledTimes(1);
+    expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
+    expect(mockSetSession).not.toHaveBeenCalled();
+
+    const user = await auth.updatePasswordFromWebRecovery(' USER@EXAMPLE.COM ', 'new-secret');
+
+    expect(mockCreateClient).toHaveBeenCalledWith('https://example.supabase.co', 'anon', {
+      auth: expect.objectContaining({
+        persistSession: false, autoRefreshToken: false, detectSessionInUrl: false,
+      }),
+    });
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledTimes(1);
+    expect(mockRecoveryVerifyOtp).toHaveBeenCalledWith({ token_hash: 'recovery-hash-a', type: 'recovery' });
+    expect(mockRecoveryUpdateUser).toHaveBeenCalledWith({ password: 'new-secret' });
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockClearPendingWebRecoveryTokenHash).toHaveBeenCalledTimes(1);
+    expect(user?.id).toBe('user-1');
+  });
+
+  it('rejects a mismatched GoTrue recovery response without replacing an existing session', async () => {
+    mockPendingWebRecoveryTokenHash = 'recovery-hash-b';
+    mockRecoveryVerifyOtp.mockResolvedValueOnce({ data: {
+      user: { id: 'user-1', email: 'user@example.com' },
+      session: { access_token: 'wrong-access', user: { id: 'attacker' } },
+    }, error: null });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    await expect(auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret'))
+      .rejects.toThrow('Password recovery link is invalid.');
+    expect(mockRecoveryUpdateUser).not.toHaveBeenCalled();
+    expect(mockSetSession).not.toHaveBeenCalled();
+  });
+
+  it('leaves the app session unchanged when the isolated password update fails', async () => {
+    mockPendingWebRecoveryTokenHash = 'recovery-hash-c';
+    mockRecoveryUpdateUser.mockResolvedValueOnce({ data: { user: null }, error: new Error('weak password') });
+    const auth = require('../auth.web') as typeof import('../auth.web');
+
+    await expect(auth.updatePasswordFromWebRecovery('user@example.com', 'new-secret'))
+      .rejects.toThrow('weak password');
+    expect(mockSetSession).not.toHaveBeenCalled();
+    expect(mockClearPendingWebRecoveryTokenHash).not.toHaveBeenCalled();
   });
 
   it('forwards recovery auth events and unsubscribes', async () => {

@@ -3,41 +3,43 @@ import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useDreamLengthLabel } from '@/components/recording/DreamLengthCounter';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { formatLocaleNumber } from '@/lib/dateUtils';
+import { getFormattingLocale } from '@/lib/locale';
 import { TID } from '@/lib/testIDs';
 import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 
 type RecordingDraftProgressProps = {
   value: string;
-  persisted?: boolean;
-  compact?: boolean;
-  inlineStatus?: boolean;
 };
 
-export function RecordingDraftProgress({ value, persisted = false, compact = false, inlineStatus = false }: RecordingDraftProgressProps) {
+export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
   const { fontScale } = useWindowDimensions();
   const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
   const hintTypography = { fontSize: 13 * controlFontScale, lineHeight: 16 * controlFontScale };
   const captionTypography = { fontSize: 12 * controlFontScale, lineHeight: 16 * controlFontScale };
-  const { t } = useTranslation();
+  const { t, currentLang } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const progress = useMemo(() => getRecordingDraftProgress(value), [value]);
-  const countLabel = t('recording.draft_progress.count', { count: progress.charCount });
+  // Near a dream's maximum length, the count says how far it is.
+  const nearMaximum = useDreamLengthLabel(progress.charCount);
+  const countLabel = nearMaximum?.text
+    ?? t(progress.charCount === 1 ? 'recording.draft_progress.count_one' : 'recording.draft_progress.count', {
+      count: formatLocaleNumber(progress.charCount, getFormattingLocale(currentLang)),
+    });
   const hint = t(`recording.draft_progress.${progress.state}`);
   const shouldShowHint = progress.state !== 'empty';
-  const savedLabel = persisted ? String(t('recording.draft_progress.saved_locally')) : null;
 
   return (
     <View
       style={styles.container}
       testID={TID.Component.RecordingDraftProgress}
     >
-      {!compact ? <View style={styles.headerRow}>
-        {inlineStatus && savedLabel ? (
-          <Text key={`status-${fontScale}`} allowFontScaling={false} accessibilityLiveRegion="polite" accessibilityHint={hint} style={[styles.hint, hintTypography, { color: noctalia.text.secondary }]}>{savedLabel}</Text>
-        ) : shouldShowHint ? (
+      <View style={styles.headerRow}>
+        {shouldShowHint ? (
           <Text key={`hint-${fontScale}`} allowFontScaling={false} style={[styles.hint, hintTypography, { color: noctalia.text.secondary }]}>
             {hint}
           </Text>
@@ -48,22 +50,13 @@ export function RecordingDraftProgress({ value, persisted = false, compact = fal
             key={`count-${fontScale}`}
             allowFontScaling={false}
             testID={TID.Component.RecordingDraftProgressCount}
+            accessibilityLabel={nearMaximum?.accessibilityLabel}
             style={[styles.count, captionTypography, { color: noctalia.text.secondary }]}
           >
             {countLabel}
           </Text>
         ) : null}
-      </View> : null}
-      {savedLabel && !inlineStatus ? (
-        <Text
-          key={`saved-${fontScale}`}
-          allowFontScaling={false}
-          accessibilityLiveRegion="polite"
-          style={[styles.saved, captionTypography, { color: noctalia.text.secondary }]}
-        >
-          {savedLabel}
-        </Text>
-      ) : null}
+      </View>
     </View>
   );
 }
@@ -83,17 +76,12 @@ const styles = StyleSheet.create({
   },
   hint: {
     flex: 1,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 13,
     lineHeight: 16,
   },
-  saved: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    lineHeight: 16,
-  },
   count: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 12,
     fontVariant: ['tabular-nums'],
   },

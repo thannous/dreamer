@@ -4,11 +4,12 @@ import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
+import { Buffer } from 'node:buffer';
 import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
 import { virtualLinks } from './test-support/virtual-links.mjs';
-import { SDK_PINS, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress } from './qualification.mjs';
+import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const before = { revision: 'a'.repeat(40), files: { 'app/recording.tsx': sha('source') }, outputs: {} };
@@ -117,6 +118,63 @@ test('critical array/boolean and unexpected agent identities are refused', () =>
     r => { r.run.results[0].selected = 1; }, r => { r.run.summary.passed = [1]; },
     r => { r.run.usage.modelTokens = false; }]) { const r = report(); mutate(r); assert.throws(() => verifyReport(r, options())); }
 });
+for (const platform of ['web', 'ios', 'android']) {
+  test(`persona reports on ${platform} require opt-in, the declared agent/model and bounded calls`, () => {
+    // A UI journey cannot reproduce forged provenance, a wrong test file or a
+    // model accidentally enabled in ordinary regressions. Exercise that gap here.
+    const r = report(), target = `dreamer-${platform}`;
+    r.run.targets = [{ id: target, platform,
+      ...(platform === 'web' ? { baseOrigin: 'http://127.0.0.1:8096' } : {}),
+      engine: { name: platform === 'web' ? 'web' : 'mobile', version: SDK_PINS[platform === 'web' ? '@e2e-dev/web' : '@e2e-dev/mobile'] } }];
+    r.run.usage = { modelTokens: 100, maxModelCallsInStep: 1, maxActionStepsInStep: 2 };
+    for (const row of r.run.results) Object.assign(row, {
+      targetId: target, platform, file: `tests/dreamer-personas.${platform === 'web' ? 'web' : 'mobile'}.e2e.ts`,
+      agent: 'morning', tags: ['persona-morning'],
+    });
+    r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { model: 'gpt-6.1-sol', calls: 1 } });
+    const opts = options({ target, platform, origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6.1-sol' });
+    assert.equal(verifyReport(r, opts).passed[0].agent, 'morning');
+    if (platform !== 'web') assert.equal(verifyNativeCleanup(r, opts), true);
+    assert.throws(() => verifyReport(r, { ...opts, personaModel: undefined }), /REPORT_PROVENANCE/);
+    assert.throws(() => verifyReport(r, { ...opts, personaModel: 'another-model' }), /PERSONA_MODEL_UNPROVEN/);
+    for (const mutate of [
+      data => { data.run.usage.maxModelCallsInStep = 13; },
+      data => { data.run.usage.maxActionStepsInStep = 17; },
+      data => { data.run.results[0].agent = 'unexpected'; },
+      data => { data.run.results[0].tags = []; },
+      data => { data.run.results[0].file = `tests/dreamer-personas.${platform === 'web' ? 'mobile' : 'web'}.e2e.ts`; },
+      data => { data.run.results[0].attempts[0].steps.pop(); },
+      data => { data.run.results[0].attempts[0].steps[1].model.calls = 0; },
+      data => { data.run.results[0].attempts[0].steps[1].cache = { mode: 'self-finalized' }; },
+      data => { data.run.results[0].attempts[0].steps.push({ api: 'expect.toBeVisible', status: 'failed' }); },
+      data => { data.run.results[0].attempts[0].steps.shift(); },
+      data => { data.run.results[0].attempts[0].cleanup = 'failed'; },
+    ]) { const changed = structuredClone(r); mutate(changed); assert.throws(() => verifyReport(changed, opts)); }
+    const foreign = structuredClone(r);
+    foreign.run.targets[0].id = `lucid-${platform}`;
+    for (const row of foreign.run.results) row.targetId = `lucid-${platform}`;
+    assert.throws(() => verifyReport(foreign, { ...opts, target: `lucid-${platform}` }), /REPORT_PROVENANCE/);
+    if (platform !== 'web') {
+      const broken = structuredClone(r);
+      broken.run.results[0].attempts[0].secondaryErrors = [{ code: 'ENGINE_FAILURE', phase: 'cleanup' }];
+      assert.throws(() => verifyNativeCleanup(broken, opts), /CLEANUP/);
+      // The observed Android language-sheet setup failure used no model, but
+      // SDK cleanup completed. It must remain a failed application verdict.
+      const setupFailed = structuredClone(r);
+      Object.assign(setupFailed.run, { status: 'failed', exitCode: 1 });
+      setupFailed.run.usage = { modelTokens: 0, maxModelCallsInStep: 0, maxActionStepsInStep: 0 };
+      setupFailed.run.results[0].status = 'failed';
+      Object.assign(setupFailed.run.results[0].attempts[0], { status: 'failed', steps: [{ api: 'app.open', status: 'passed' }] });
+      assert.equal(verifyNativeCleanup(setupFailed, opts), true);
+      assert.throws(() => verifyReport(setupFailed, opts), /PROVENANCE/);
+      setupFailed.run.status = 'passed'; setupFailed.run.exitCode = 0;
+      assert.throws(() => verifyNativeCleanup(setupFailed, opts), /PROVENANCE/);
+      setupFailed.run.status = 'failed'; setupFailed.run.exitCode = 1;
+      setupFailed.run.results[0].attempts[0].cleanup = 'failed';
+      assert.throws(() => verifyNativeCleanup(setupFailed, opts), /CLEANUP/);
+    }
+  });
+}
 test('finding with no requested or declared media and no artifacts directory is valid', () => {
   const dir = mkdtempSync(join(tmpdir(), 'noctalia-report-only-'));
   try { assert.equal(verifyReport(report(), options({ output: dir })).artifacts.length, 0); }
@@ -171,7 +229,7 @@ test('globally passed SDK report refuses every non-passed executed step', () => 
 const metroRoot = fileURLToPath(new URL('../../', import.meta.url));
 function seed(entries) {
   const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('EXPO_PUBLIC_')
-    && !['NOCTALIA_APP_VARIANT', 'NOCTALIA_DREAMER_QA_BUILD', 'EXPO_ROUTER_APP_ROOT', 'EXPO_ROUTER_IMPORT_MODE'].includes(key)));
+    && !['NOCTALIA_APP_VARIANT', 'NOCTALIA_DREAMER_QA_BUILD', 'EXPO_ROUTER_APP_ROOT', 'EXPO_ROUTER_IMPORT_MODE', 'NOCTALIA_DISABLE_RC_WEB_STUB', 'EAS_BUILD'].includes(key)));
   const result = spawnSync(process.execPath, ['-e', "process.stdout.write(JSON.stringify(require('./metro.config.js').cacheVersion))"],
     { cwd: metroRoot, env: { ...env, ...Object.fromEntries(entries) }, encoding: 'utf8' });
   assert.equal(result.status, 0, 'real Metro configuration must load');
@@ -189,7 +247,9 @@ test('real Metro cache isolates compiled profiles while retaining identical inpu
     [['EXPO_PUBLIC_MOCK_MODE', 'false']], [['EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED', 'false']],
     [['EXPO_ROUTER_APP_ROOT', './routes/lucid']], [['EXPO_ROUTER_IMPORT_MODE', 'lazy']],
     [['NOCTALIA_DREAMER_QA_BUILD', '1']],
+    [['NOCTALIA_DISABLE_RC_WEB_STUB', '1']],
   ]) assert.notEqual(seed([...profile, ...changed]), dreamer, 'a changed compiled profile cannot reuse the other profile namespace');
+  assert.equal(seed([...profile, ['NOCTALIA_DISABLE_RC_WEB_STUB', '1'], ['EAS_BUILD', 'true']]), dreamer);
 });
 
 
@@ -230,3 +290,58 @@ test('Circle web SDK liveness emits only elapsed time, stops on close/error and 
   tick(); tick(); assert.equal(errors, 1); assert.equal(cleared, 2);
   assert.equal(preserveStatus(143, ['CI_PROGRESS_WRITE_FAILED']), 143);
 });
+
+// Browser/native assertions cannot exercise the wrapper's pre-SDK output limit.
+test('large real Git diffs retain complete legacy identity and refuse Git failures', async () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'noctalia-large-diff-'));
+  const repository = join(fixture, 'repository');
+  mkdirSync(repository);
+  const env = { ...process.env, GIT_AUTHOR_NAME: 'Public fixture', GIT_AUTHOR_EMAIL: 'fixture@example.invalid',
+    GIT_COMMITTER_NAME: 'Public fixture', GIT_COMMITTER_EMAIL: 'fixture@example.invalid' };
+  const git = (...args) => {
+    const result = spawnSync('git', args, { cwd: repository, env, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+    assert.ifError(result.error); assert.equal(result.status, 0, result.stderr);
+    return result.stdout;
+  };
+  try {
+    git('init', '-q');
+    writeFileSync(join(repository, 'public.txt'), 'public base\n');
+    git('add', 'public.txt');
+    const tree = git('write-tree').trim();
+    git('update-ref', 'HEAD', git('commit-tree', tree, '-m', 'public fixture').trim());
+    assert.equal(await trackedDiffSha256(repository, env), sha(''));
+    const content = 'public unicode café line\n'.repeat(100000);
+    writeFileSync(join(repository, 'public.txt'), content + 'public tail one\n');
+    const previous = spawnSync('git', ['diff', 'HEAD'], { cwd: repository, env, encoding: 'utf8' });
+    assert.equal(previous.error?.code, 'ENOBUFS', 'the fixture must reproduce the former default buffer limit');
+    const full = git('diff', 'HEAD');
+    assert.ok(Buffer.byteLength(full) > 2 * 1024 * 1024);
+    const first = await trackedDiffSha256(repository, env);
+    assert.equal(first, sha(full.trim()));
+    writeFileSync(join(repository, 'public.txt'), content + 'public tail two\n');
+    const changed = await trackedDiffSha256(repository, env);
+    assert.equal(changed, sha(git('diff', 'HEAD').trim()));
+    assert.notEqual(changed, first, 'changes beyond the former capture limit must change identity');
+    await assert.rejects(trackedDiffSha256(fixture, env), /git diff failed \(exit/);
+    const noGit = Object.fromEntries(Object.entries(env).filter(([key]) => key.toUpperCase() !== 'PATH'));
+    await assert.rejects(trackedDiffSha256(repository, { ...noGit, PATH: join(fixture, 'missing-bin') }), { code: 'ENOENT' });
+  } finally { rmSync(fixture, { recursive: true, force: true }); }
+});
+
+// A real VM pause cannot be staged in CI; drive the heartbeat's clocks directly.
+test('the host stall monitor reports a frozen host and never a busy-but-running one', () => {
+  let wall = Date.parse('2026-10-19T22:50:43Z'), mono = 1000, tick, cleared = 0;
+  const stop = startHostStallMonitor({ now: () => wall, monotonic: () => mono,
+    setTimer: (fn, ms) => { tick = fn; assert.equal(ms, 1000); return { unref() {} }; }, clearTimer: () => { cleared++; } });
+  const advance = (ms, { wallOnly = false } = {}) => { wall += ms; if (!wallOnly) mono += ms; tick(); };
+  for (let i = 0; i < 120; i++) advance(1000);
+  advance(1000 + HOST_STALL_MS - 1); // a late tick just under the limit is ordinary scheduling noise
+  advance(279_000); // the 2026-10-19 freeze: both clocks jump
+  advance(1000);
+  advance(95_000, { wallOnly: true }); // a pause the monotonic clock did not count still shows on the wall clock
+  const stalls = stop(); stop();
+  assert.equal(cleared, 1);
+  assert.deepEqual(stalls.map(stall => [stall.wallGapMs, stall.monotonicGapMs]), [[279000, 279000], [95000, 0]]);
+  assert.equal(stalls[0].resumedAt, new Date(Date.parse('2026-10-19T22:50:43Z') + 121_000 + HOST_STALL_MS - 1 + 279_000).toISOString());
+});
+

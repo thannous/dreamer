@@ -34,18 +34,28 @@ async function populatedJournal(page: Page) {
   await page.getByTestId('btn.mockProfile.existing').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.setViewportSize({ width: 390, height: 867 });
+  // The desktop-to-phone resize can still be closing the drawer over the cards.
+  // Observe its nonzero profile row: the scroll container itself can have no
+  // intersection while its closing content still covers the cards.
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
   await openJournal(page);
+  // A closed off-screen drawer must not widen the document: otherwise browser
+  // focus/scroll can bring its inert content back over the journal's painting.
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
 }
 
 async function findDream(page: Page, title: string) {
   await page.getByRole('textbox', { name: 'Search dreams…' }).fill(title);
+  // The entry is already listed before the search applies, and the web list then mounts
+  // its rows again: wait for the search's single result rather than the earlier row.
+  await expect(page.getByTestId(/^dream\.item\.\d+$/).filter({ visible: true })).toHaveCount(1);
   const card = page.getByTestId(/^dream\.item\.\d+$/).filter({ hasText: title, visible: true });
   await expect(card).toHaveCount(1);
   return card;
 }
 
 for (const theme of ['light', 'dark'] as const) {
-  test(`journal keeps compact covers readable with a date margin in ${theme}`, async ({ page, context }, testInfo) => {
+  test(`journal shows each painting whole with its dream on a veil in ${theme}`, async ({ page, context }, testInfo) => {
     await page.clock.setFixedTime(new Date(theme === 'light' ? '2026-10-03T12:00:00+02:00' : '2026-10-03T23:00:00+02:00'));
     // Optional private 9:16 artwork for local visual QA; CI uses the bright image
     // supplied by the offline-services fixture. No external image fetch occurs.
@@ -55,41 +65,112 @@ for (const theme of ['light', 'dark'] as const) {
     await populatedJournal(page);
     const card = await findDream(page, 'The Infinite Library');
     const id = await card.getAttribute('data-testid');
-    const margin = card.getByTestId(`journal.margin.${id}`);
     const cover = card.getByTestId(`journal.cover.${id}`);
     const text = card.getByTestId(`journal.text.${id}`);
     const metadata = card.getByTestId(`journal.metadata.${id}`);
     await expect(metadata).toContainText('Symbolic dream');
     await expect(metadata).toContainText('Mystical');
-    await expect(card).toContainText('Analyzed');
+    // Revised 2026-10-20 (was 'Analyzed'): the owner removed that label from the cards; an
+    // analysed dream is the usual case and names no state.
+    await expect(metadata).not.toContainText('Analyzed');
     await expect(text).toContainText('I found myself in an enormous library');
     // React Native's layout event follows the phone/grid resize. Observe the
     // settled portrait frame rather than its initial width from the previous layout.
+    const screenHeight = await page.evaluate(() => screen.height);
     await expect.poll(async () => {
       const bounds = await cover.boundingBox();
       // A responsive list remount can briefly remove the cover between reads.
       // Keep polling the same geometry contract instead of throwing on null.
-      return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, 620)) : Infinity;
+      return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, Math.round(screenHeight * 0.8))) : Infinity;
     }).toBeLessThanOrEqual(1);
-    const coverBounds = (await cover.boundingBox())!;
-    const textBounds = (await text.boundingBox())!;
-    const marginBounds = (await margin.boundingBox())!;
-    expect(marginBounds.width).toBeGreaterThanOrEqual(88);
-    expect(marginBounds.x + marginBounds.width).toBeLessThanOrEqual(coverBounds.x);
-    expect(textBounds.y).toBeGreaterThanOrEqual(coverBounds.y);
-    expect(textBounds.y + textBounds.height).toBeLessThanOrEqual(coverBounds.y + coverBounds.height);
-    const backing = card.getByTestId(`journal.backing.${id}`);
-    const backingBounds = (await backing.boundingBox())!;
-    const lines = await backing.evaluate(node => Array.from(node.children).map(child => {
-      const style = getComputedStyle(child);
-      return Math.round(child.getBoundingClientRect().height / parseFloat(style.lineHeight));
+    // One snapshot of the card, relative to its painting: the list can still shift it
+    // on the page while the search settles.
+    const layout = await card.evaluate((node, cardId) => {
+      const rect = (testId: string) => node.querySelector(`[data-testid="${testId}"]`)!.getBoundingClientRect();
+      const coverRect = rect(`journal.cover.${cardId}`);
+      const relative = (testId: string) => {
+        const box = rect(testId);
+        return { top: box.top - coverRect.top, bottom: box.bottom - coverRect.top, left: box.left - coverRect.left, width: box.width };
+      };
+      return { width: coverRect.width, height: coverRect.height, text: relative(`journal.text.${cardId}`),
+        date: relative(`journal.date.${cardId}`),
+        actions: [relative(`journal.favorite.${cardId}`), relative(`journal.share.${cardId}`)] };
+    }, id);
+    // The painting spans the list, and the dream's text sits at its foot, inside it.
+    expect(layout.width).toBeGreaterThanOrEqual(390 - 32 - 1);
+    expect(layout.text.top).toBeGreaterThanOrEqual(layout.height / 2);
+    expect(Math.abs(layout.text.bottom - layout.height)).toBeLessThanOrEqual(1);
+    expect(await text.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+    const lines = await text.evaluate(node => [node.children[0],
+      node.querySelector('[data-testid^="journal.preview."]')!].map(child => {
+      return Math.round(child.getBoundingClientRect().height / parseFloat(getComputedStyle(child).lineHeight));
     }));
+    // Revised 2026-10-20 (was the date's line above the title): the owner moved the date to the
+    // icons' line, so the veil holds at most two lines of title and three of the dream.
     expect(lines[0]).toBeLessThanOrEqual(2);
     expect(lines[1]).toBeLessThanOrEqual(3);
-    expect(lines.reduce((total, count) => total + count, 0)).toBeLessThanOrEqual(5);
-    expect(backingBounds.y + backingBounds.height).toBeLessThanOrEqual(textBounds.y + textBounds.height);
-    expect(await backing.evaluate(node => getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-    const badge = card.getByTestId(`journal.badge.${id}.0`);
+    // The heart and share icons sit over the painting's top right.
+    for (const action of layout.actions) {
+      expect(action.width).toBeGreaterThanOrEqual(44);
+      expect(action.top).toBeLessThan(60);
+      expect(action.left).toBeGreaterThan(layout.width / 2);
+    }
+    // The date leads that line, as tall as the icons and clear of the heart.
+    expect(Math.abs(layout.date.top - layout.actions[0].top)).toBeLessThanOrEqual(1);
+    expect(Math.abs(layout.date.bottom - layout.actions[0].bottom)).toBeLessThanOrEqual(1);
+    expect(layout.date.left).toBeLessThan(layout.width / 2);
+    expect(layout.date.left + layout.date.width).toBeLessThanOrEqual(layout.actions[0].left);
+    await expect(card.getByTestId(`journal.date.${id}`)).toHaveText(/^\d{1,2}\D/);
+    // The arrow follows the dream's last line, at the foot of the painting, folded or not.
+    const expand = card.getByTestId(`journal.expand.${id}`);
+    const preview = card.getByTestId(`journal.preview.${id}`);
+    const arrowGap = async () => {
+      const [arrow, last] = [await expand.boundingBox(), await preview.boundingBox()];
+      return arrow && last ? Math.abs(arrow.y + arrow.height - last.y - last.height) : Infinity;
+    };
+    await expect.poll(arrowGap).toBeLessThanOrEqual(2);
+    await expand.click();
+    await expect(expand).toHaveAccessibleName('Show less');
+    await expect.poll(async () => (await preview.boundingBox())!.height).toBeGreaterThan(3 * 22 + 1);
+    await expect.poll(arrowGap).toBeLessThanOrEqual(2);
+    await expand.click();
+    await expect(expand).toHaveAccessibleName('Read the whole dream');
+    await cover.evaluate(async (node) => {
+      await document.fonts.ready;
+      await Promise.all(Array.from(node.querySelectorAll('img')).map((image) => image.decode()));
+      await new Promise(requestAnimationFrame);
+      await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
+    });
+    await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
+    await page.screenshot({ path: testInfo.outputPath(`${theme}-compact.png`) });
+    // Browser-only 200% text stress check: this does not qualify native Dynamic Type.
+    await text.evaluate(node => {
+      for (const child of Array.from(node.querySelectorAll<HTMLElement>('[dir="auto"]'))) {
+        const style = getComputedStyle(child);
+        const fontSize = parseFloat(style.fontSize) * 2;
+        const lineHeight = parseFloat(style.lineHeight) * 2;
+        (child as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
+        (child as HTMLElement).style.setProperty('line-height', `${lineHeight}px`, 'important');
+      }
+    });
+    // The card grows with its text, and the arrow follows the last line to its new place.
+    await expect.poll(arrowGap).toBeLessThanOrEqual(2);
+    await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
+    await page.screenshot({ path: testInfo.outputPath(`${theme}-browser-text-200.png`) });
+    await card.click();
+    await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
+    await openJournal(page);
+
+    // Revised 2026-10-20 (was the 'Deepened' label): the owner removed it from the cards too.
+    const explored = await findDream(page, 'Ocean of Stars');
+    const exploredId = await explored.getAttribute('data-testid');
+    await expect(explored.getByTestId(`journal.metadata.${exploredId}`)).toContainText('Symbolic dream');
+    await expect(explored.getByTestId(`journal.metadata.${exploredId}`)).not.toContainText('Deepened');
+    // A state label keeps its icon on its own line, here a dream still being analysed.
+    const pending = await findDream(page, 'The Forgotten Classroom');
+    const pendingId = await pending.getAttribute('data-testid');
+    await expect(pending.getByTestId(`journal.metadata.${pendingId}`)).toContainText('Analyzing');
+    const badge = pending.getByTestId(`journal.badge.${pendingId}.0`);
     const badgeChildren = await badge.evaluate(node => Array.from(node.children).map(child => {
       const rect = child.getBoundingClientRect();
       return { x: rect.x, y: rect.y, height: rect.height };
@@ -98,40 +179,32 @@ for (const theme of ['light', 'dark'] as const) {
     expect(badgeChildren[0].x).toBeLessThan(badgeChildren[1].x);
     expect(Math.abs(badgeChildren[0].y + badgeChildren[0].height / 2
       - badgeChildren[1].y - badgeChildren[1].height / 2)).toBeLessThan(2);
-    await cover.evaluate(async (node) => {
-      await document.fonts.ready;
-      await Promise.all(Array.from(node.querySelectorAll('img')).map((image) => image.decode()));
-      await new Promise(requestAnimationFrame);
-      await Promise.all(node.getAnimations({ subtree: true }).map((animation) => animation.finished));
-    });
-    await page.screenshot({ path: testInfo.outputPath(`${theme}-compact.png`) });
-    // Browser-only 200% text stress check: this does not qualify native Dynamic Type.
-    await backing.evaluate(node => {
-      for (const child of Array.from(node.children)) {
-        const style = getComputedStyle(child);
-        const fontSize = parseFloat(style.fontSize) * 2;
-        const lineHeight = parseFloat(style.lineHeight) * 2;
-        (child as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
-        (child as HTMLElement).style.setProperty('line-height', `${lineHeight}px`, 'important');
-      }
-    });
-    await expect.poll(async () => {
-      const coverRect = await cover.boundingBox();
-      const textRect = await text.boundingBox();
-      return Boolean(coverRect && textRect && textRect.y + textRect.height <= coverRect.y + coverRect.height + 1);
-    }).toBe(true);
-    await page.screenshot({ path: testInfo.outputPath(`${theme}-browser-text-200.png`) });
-    await card.click();
-    await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
-    await openJournal(page);
 
     const noImage = await findDream(page, 'Garden in the Clouds');
     const noImageId = await noImage.getAttribute('data-testid');
-    await expect(noImage.getByTestId(`journal.cover.${noImageId}`)).toHaveCount(0);
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Lucid Dream');
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Recurring');
     await expect(noImage.getByTestId(`journal.metadata.${noImageId}`)).toContainText('Memory');
     await expect(noImage).toContainText('I was walking through a beautiful garden');
+    // Revised 2026-10-20 (was a compact card with a 60 pt seal at its top left): the owner asked
+    // for one card size, so a dream without a painting keeps the painting's frame and its seal
+    // stands in it, centred between the icons and the dream's text.
+    const noImageCover = noImage.getByTestId(`journal.cover.${noImageId}`);
+    await expect(noImage.getByTestId(`journal.seal.${noImageId}`)).toBeVisible();
+    await expect.poll(async () => {
+      const bounds = await noImageCover.boundingBox();
+      return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, Math.round(screenHeight * 0.8))) : Infinity;
+    }).toBeLessThanOrEqual(1);
+    const sealPlace = await noImage.evaluate((node, cardId) => {
+      const box = (testId: string) => node.querySelector(`[data-testid="${testId}.${cardId}"]`)!.getBoundingClientRect();
+      const [cover, seal, share, text] = [box('journal.cover'), box('journal.seal'), box('journal.share'), box('journal.text')];
+      return {
+        centred: Math.abs(seal.left + seal.width / 2 - cover.left - cover.width / 2) <= 1,
+        clearOfIcons: seal.top > share.bottom, aboveText: seal.bottom < text.top,
+        textAtFoot: Math.abs(text.bottom - cover.bottom) <= 1,
+      };
+    }, noImageId);
+    expect(sealPlace).toEqual({ centred: true, clearOfIcons: true, aboveText: true, textAtFoot: true });
     await page.screenshot({ path: testInfo.outputPath(`${theme}-text-only.png`) });
     for (const viewport of [{ width: 768, height: 1024 }, { width: 1440, height: 1000 }, { width: 320, height: 640 }]) {
       await page.setViewportSize(viewport);
@@ -143,7 +216,29 @@ for (const theme of ['light', 'dark'] as const) {
         return node.isConnected && rect.width > 0 && rect.x >= 0
           && rect.right <= innerWidth && rect.width <= innerWidth / columns;
       }).catch(() => false)).toBe(true);
+      // However narrow the card, its seal stays below the icons and above the dream's text, and
+      // its date stays clear of the heart.
+      await expect.poll(async () => noImage.evaluate((node) => {
+        const box = (prefix: string) => node.querySelector(`[data-testid^="${prefix}"]`)!.getBoundingClientRect();
+        const [seal, share, text, date, favorite] = [box('journal.seal.'), box('journal.share.'), box('journal.text.'),
+          box('journal.date.'), box('journal.favorite.')];
+        return seal.top >= share.bottom && seal.bottom <= text.top && date.right <= favorite.left && date.bottom <= seal.top;
+      }).catch(() => false)).toBe(true);
       await page.screenshot({ path: testInfo.outputPath(`${theme}-${viewport.width}-text-only.png`) });
+    }
+    // The tablet and desktop grids narrow the painted card after its first frame:
+    // the arrow still sits beside the dream's last line.
+    const painted = await findDream(page, 'The Infinite Library');
+    const paintedId = await painted.getAttribute('data-testid');
+    const paintedArrowGap = async () => {
+      const [arrow, last] = [await painted.getByTestId(`journal.expand.${paintedId}`).boundingBox().catch(() => null),
+        await painted.getByTestId(`journal.preview.${paintedId}`).boundingBox().catch(() => null)];
+      return arrow && last ? Math.abs(arrow.y + arrow.height - last.y - last.height) : Infinity;
+    };
+    for (const viewport of [{ width: 1440, height: 1000 }, { width: 768, height: 1024 }]) {
+      await page.setViewportSize(viewport);
+      await expect.poll(paintedArrowGap).toBeLessThanOrEqual(2);
+      await page.screenshot({ path: testInfo.outputPath(`${theme}-${viewport.width}-painted.png`) });
     }
   });
 }
@@ -187,17 +282,23 @@ test('failed thumbnail falls back to the full illustration', async ({ page, cont
   await page.screenshot({ path: testInfo.outputPath('thumbnail-full-fallback.png') });
 });
 
-test('failed illustration leaves a compact readable entry that still opens', async ({ page, context }, testInfo) => {
+test('failed illustration leaves the seal in the painting frame and still opens', async ({ page, context }, testInfo) => {
   // Both the thumbnail and the full illustration of the bundled cat art fail.
   await context.route(/cat(\.[^/]*)?\.webp/, route => route.abort());
   await populatedJournal(page);
   const card = await findDream(page, 'The Infinite Library');
   const id = await card.getAttribute('data-testid');
-  await expect(card.getByTestId(`journal.cover.${id}`)).toHaveCount(0);
   await expect(card).toContainText('I found myself in an enormous library');
-  // Revised 2026-10-11 (was < 260): the date margin now stacks the favourite and share
-  // buttons (owner request), so it sets the entry's height. Still far below a 9:16 cover.
-  expect((await card.boundingBox())!.height).toBeLessThan(340);
+  // Revised 2026-10-20 (was a compact entry under 300 px with no frame): the owner asked for one
+  // card size, so once every source has failed the dream's seal takes the painting's place and
+  // the card keeps the painting's frame.
+  await expect(card.getByTestId(`journal.seal.${id}`)).toBeVisible();
+  const cover = card.getByTestId(`journal.cover.${id}`);
+  const screenHeight = await page.evaluate(() => screen.height);
+  await expect.poll(async () => {
+    const bounds = await cover.boundingBox();
+    return bounds ? Math.abs(bounds.height - Math.min(bounds.width * 16 / 9, Math.round(screenHeight * 0.8))) : Infinity;
+  }).toBeLessThanOrEqual(1);
   await page.screenshot({ path: testInfo.outputPath('failed-illustration-text-fallback.png') });
   await card.click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText('Books were floating around me');
@@ -213,7 +314,19 @@ test.describe('French quick filters', () => {
     const scroll = page.getByTestId('journal-filter-scroll');
     const overflowHint = page.getByTestId('journal-filter-overflow');
     const filters = ['btn.filterAll', 'btn.filterFavorites', 'btn.filterToDeepen'];
-    const bounds = await Promise.all(filters.map(id => page.getByTestId(id).boundingBox()));
+    const chipBounds = () => Promise.all(filters.map(id => page.getByTestId(id).boundingBox()));
+    // The journal lays out again after a resize. Wait for the row to rest in one line below
+    // the floating header: taps still reach chips the header covers, so clicks prove nothing.
+    const header = page.getByTestId('journal-search-chrome').filter({ visible: true });
+    const rowPlacement = async () => {
+      const [row, chrome] = await Promise.all([chipBounds(), header.boundingBox()]);
+      if (!chrome || row.some(bound => !bound)) return 'measuring';
+      const rowCenters = row.map(bound => bound!.y + bound!.height / 2);
+      if (Math.max(...rowCenters) - Math.min(...rowCenters) > 2) return 'row moving';
+      return Math.min(...row.map(bound => bound!.y)) >= chrome.y + chrome.height ? 'below header' : 'under header';
+    };
+    await expect.poll(rowPlacement).toBe('below header');
+    const bounds = await chipBounds();
     expect(bounds.every(bound => bound && bound.height >= 44)).toBe(true);
     const centers = bounds.map(bound => bound!.y + bound!.height / 2);
     expect(Math.max(...centers) - Math.min(...centers)).toBeLessThanOrEqual(2);
@@ -228,7 +341,7 @@ test.describe('French quick filters', () => {
       // Browser-only enlargement; native Dynamic Type remains independently qualified.
       await scroll.evaluate(node => {
         for (const text of Array.from(node.querySelectorAll<HTMLElement>('[dir="auto"]'))) {
-          if (!/SpaceGrotesk/.test(getComputedStyle(text).fontFamily)) continue;
+          if (!/Outfit/.test(getComputedStyle(text).fontFamily)) continue;
           text.dataset.previousFontSize = text.style.fontSize;
           text.style.fontSize = `${parseFloat(getComputedStyle(text).fontSize) * 2}px`;
         }
@@ -256,6 +369,9 @@ test.describe('French quick filters', () => {
     await expect(page.getByTestId('modal.advancedFilters')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByTestId('modal.advancedFilters')).not.toBeVisible();
+    // The first read can come before the screen renders at the new width; after these
+    // taps it has, so the row must still rest below the header.
+    expect(await rowPlacement()).toBe('below header');
     await page.screenshot({ path: testInfo.outputPath(`filters-${width}.png`) });
   }
 });

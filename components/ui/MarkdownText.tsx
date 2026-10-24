@@ -6,6 +6,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { createMarkdownStyles } from '@/constants/markdownStyles';
 import { sanitizeMarkdown, isAllowedMarkdownUrl, shouldRenderMarkdown } from '@/lib/markdownSecurity';
+import { TypeScale } from '@/constants/typeScale';
 
 interface MarkdownTextProps extends Pick<ViewProps, 'testID' | 'accessibilityLiveRegion'> {
   children: string;
@@ -71,7 +72,9 @@ const NATIVE_MD4C_FLAGS = { latexMath: false } as const;
 // Callers can pass fresh inline styles. Compare their effective values so
 // unrelated parent updates do not rerender unchanged Markdown blocks.
 function concreteStyle(style: StyleProp<TextStyle> | StyleProp<ViewStyle> | undefined): Record<string, unknown> {
-  return (StyleSheet.flatten(style) ?? {}) as Record<string, unknown>;
+  // RN 0.88's generated flatten signature is narrower than its public style
+  // aliases (notably transitionDuration). The runtime accepts both aliases.
+  return (StyleSheet.flatten(style as Parameters<typeof StyleSheet.flatten>[0]) ?? {}) as Record<string, unknown>;
 }
 
 function stylesEqual(
@@ -127,7 +130,7 @@ export const MarkdownText = React.memo(function MarkdownText({
     void Linking.canOpenURL(url).then((allowed) => allowed ? Linking.openURL(url) : undefined)
       .catch(() => { /* A link failure must not interrupt reading or expose its URL in logs. */ });
   }, []);
-  const fallback = <Text selectable={selectable} style={[{ color: palette.textPrimary, fontSize: 16, lineHeight: 24 }, style]}>{children}</Text>;
+  const fallback = <Text selectable={selectable} style={[{ color: palette.textPrimary, fontSize: TypeScale.body.fontSize, lineHeight: 24 }, style]}>{children}</Text>;
   return (
     <View {...rest} style={[{ alignSelf: 'stretch' }, containerStyle]}>
       {markdown === null ? fallback : (

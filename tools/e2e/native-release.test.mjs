@@ -1,11 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary } from './native-release.mjs';
+import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary, releaseMetadata } from './native-release.mjs';
 import { virtualLinks } from './test-support/virtual-links.mjs';
 const sha = 'a'.repeat(64);
+test('iteration APK commands never qualify as Release on either path syntax', () => {
+  for (const wrapper of ['/repo/android/gradlew', 'C:\\repo\\android\\gradlew.bat']) {
+    validateBuildCommand([wrapper, ':app:assembleRelease'], 'android');
+    assert.throws(() => validateBuildCommand([wrapper, ':app:assembleDebug'], 'android'));
+    assert.throws(() => validateBuildCommand([wrapper, ':app:assembleRelease', '--incremental'], 'android'));
+  }
+  for (const [node, script] of [['/bin/node', '/repo/scripts/build-android-release-local.js'],
+    ['C:\\node\\node.exe', 'C:\\repo\\scripts\\build-android-release-local.js']]) {
+    validateBuildCommand([node, script, '--reuse-native-project'], 'android');
+    assert.throws(() => validateBuildCommand([node, script, '--reuse-native-project', '--incremental'], 'android'));
+    assert.throws(() => validateBuildCommand([node, script, '--incremental'], 'android'));
+  }
+});
 const receipt = () => ({ schemaVersion: 1, kind: 'noctalia-native-release', product: 'dreamer', platform: 'android',
   bundle: 'com.tanuki75.noctalia', configuration: 'Release', buildExitCode: 0, source: { revision: 'a'.repeat(40), inputDigest: sha },
   nativeInputDigest: sha, binary: { path: '/public/fixture.apk', sha256: sha, version: '3.4.5', build: '83' },
@@ -59,6 +72,8 @@ test('Pods links are fingerprinted with their local targets; foreign links and c
     writeFileSync(join(root, 'ios', 'Podfile.lock'), 'public pod lock'); writeFileSync(join(root, 'node_modules', 'public', 'header.h'), 'public header');
     links.link('../../../node_modules/public/header.h', join(root, 'ios', 'Pods', 'Headers', 'header.h'));
     const relativeLinkDigest = nativeInputs(root, 'dreamer', 'ios').digest;
+    // Canonical and aliased checkout roots must see the same link and target bytes.
+    assert.equal(nativeInputs(realpathSync(root), 'dreamer', 'ios').digest, relativeLinkDigest);
     // The relative path resolves inside the owned checkout, just like installed CocoaPods headers.
     links.unlink(join(root, 'ios', 'Pods', 'Headers', 'header.h'));
     links.link(join(root, 'node_modules', 'public', 'header.h'), join(root, 'ios', 'Pods', 'Headers', 'header.h'));
@@ -80,6 +95,38 @@ test('read receipts obey the same bounded/profile rules as their canonical build
   }
 });
 
+// A UI journey cannot prove a receipt refuses a hosted origin or forged mode.
+// Keep that trust boundary independent of the happy-path native evidence.
+test('local backend receipts require real modes, a disposable identity and strict loopback origin', () => {
+  const local = () => ({ ...receipt(), bundle: 'com.tanuki75.noctalia.qa', profile: {
+    name: 'local-backend', mock: false, persistence: false, audioMock: false, featureSheets: false,
+    categorizationDelayMs: 0, nativeQaAudio: true,
+    backend: { origin: 'http://127.0.0.1:31283', stackId: sha, anonKeySha256: sha },
+  } });
+  const localExpected = { ...expected, bundle: 'com.tanuki75.noctalia.qa' };
+  assert.equal(validateReleaseReceipt(local(), localExpected).profile.name, 'local-backend');
+  const alternativePort = local(); alternativePort.profile.backend.origin = 'http://127.0.0.1:32001';
+  validateReleaseReceipt(alternativePort, localExpected);
+  for (const origin of ['https://127.0.0.1:31283', 'http://localhost:31283', 'http://10.0.2.2:31283',
+    'http://example.com:31283', 'http://127.0.0.1:19999', 'http://127.0.0.1:32768',
+    'http://user:pass@127.0.0.1:31283', 'http://127.0.0.1:31283/', 'http://127.0.0.1:31283/api',
+    'http://127.0.0.1:31283?host=example.com', 'http://127.0.0.1:31283#fragment']) {
+    const r = local(); r.profile.backend.origin = origin;
+    assert.throws(() => validateReleaseReceipt(r, localExpected), /RELEASE_PROFILE/);
+  }
+  for (const mutate of [r => { r.profile.mock = true; }, r => { r.profile.persistence = true; },
+    r => { r.profile.audioMock = true; }, r => { r.profile.nativeQaAudio = false; },
+    r => { delete r.profile.nativeQaAudio; }, r => { r.profile.backend.stackId = 'other'; },
+    r => { delete r.profile.backend; }, r => { r.profile.backend.anonKeySha256 = 'other'; }]) {
+    const r = local(); mutate(r);
+    assert.throws(() => validateReleaseReceipt(r, localExpected), /RELEASE_PROFILE/);
+  }
+  const ios = { ...local(), platform: 'ios', buildCommand: ['xcodebuild', '-configuration', 'Release', 'build'] };
+  assert.throws(() => validateReleaseReceipt(ios, { ...localExpected, platform: 'ios' }), /RELEASE_PROFILE/);
+  ios.binary.signed = true;
+  validateReleaseReceipt(ios, { ...localExpected, platform: 'ios' });
+});
+
 test('archived Release bytes survive a later cache rebuild, partial or existing copies never qualify', t => {
   const links = virtualLinks(t);
   const root = mkdtempSync(join(tmpdir(), 'noctalia-binary-archive-'));
@@ -91,5 +138,23 @@ test('archived Release bytes survive a later cache rebuild, partial or existing 
     assert.notEqual(archiveReleaseBinary(original, 'android', join(root, 'third')).sha256, copy.sha256);
     assert.throws(() => archiveReleaseBinary(original, 'android', output), /ARCHIVE|EEXIST/);
     links.link(original, join(root, 'foreign.apk')); assert.throws(() => archiveReleaseBinary(join(root, 'foreign.apk'), 'android', join(root, 'refused')), /SYMLINK/);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+// The real QA APK had ENABLED=true followed by another false metadata flag. The
+// previous regexp mistook the attribute ID's 0x0 prefix for the value and certified OTA=false.
+// UI E2E cannot exercise malformed build metadata without rebuilding every case.
+test('OTA provenance reads the complete boolean belonging to ENABLED only', () => {
+  const root = mkdtempSync(join(tmpdir(), 'noctalia-ota-metadata-'));
+  mkdirSync(join(root, 'build-tools', '37.0.0'), { recursive: true });
+  const node = value => `      E: meta-data (line=148)\n        A: android:name(0x01010003)="expo.modules.updates.ENABLED" (Raw: "expo.modules.updates.ENABLED")\n        A: android:value(0x01010024)=(type 0x12)${value}\n`;
+  const other = '      E: meta-data (line=151)\n        A: android:name(0x01010003)="other.flag"\n        A: android:value(0x01010024)=(type 0x12)0x0\n';
+  const metadata = manifest => releaseMetadata('/qa.apk', 'android', { ANDROID_HOME: root }, (_cmd, args) =>
+    args[1] === 'badging' ? "package: name='com.tanuki75.noctalia' versionCode='83' versionName='3.7.0'" : manifest);
+  try {
+    assert.throws(() => metadata(node('0xffffffff') + other), /OTA_NOT_PINNED/);
+    assert.throws(() => metadata(other), /OTA_NOT_PINNED/);
+    assert.throws(() => metadata(node('0x01') + other), /OTA_NOT_PINNED/);
+    assert.equal(metadata(node('0x0') + other).otaEnabled, false);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

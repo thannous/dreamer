@@ -1,3 +1,7 @@
+import { EASE } from '@/components/motion/motion';
+import { LivingPainting } from '@/components/symbols/LivingPainting';
+import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
+import { readScenes, SymbolScenes } from '@/components/symbols/SymbolScenes';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -6,15 +10,20 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getSymbolIllustration } from '@/constants/symbolIllustrations';
 import { DREAMER_ARTWORK } from '@/constants/dreamerArtwork';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useExtendedSymbolContent } from '@/hooks/useExtendedSymbolContent';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
+import { useSymbolAtlasEntry } from '@/hooks/useSymbolAtlas';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
 import { trackProductEvent } from '@/lib/analytics';
+import { atlasPictureSources } from '@/lib/symbolAtlas';
+import { useBadgeReading } from '@/hooks/useBadgeReading';
 import { TID } from '@/lib/testIDs';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import type { DreamSymbol, SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
 import {
   getCategoryName,
@@ -24,19 +33,22 @@ import {
 } from '@/services/symbolDictionaryService';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { usePaintingBreath } from '@/components/ui/headerStretch';
+import { Link, router, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type LayoutChangeEvent } from 'react-native';
+import { usePaintingArrival } from '@/components/ui/headerStretch';
 import Animated, {
   Extrapolation,
   interpolate,
+  useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { TypeScale } from '@/constants/typeScale';
 
 type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 
@@ -45,6 +57,22 @@ type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 const SKY_FALLBACK = DREAMER_ARTWORK.symbols;
 const TOP_BAR_HEIGHT = 52;
+const BODY_GUTTER = 24;
+// The painted scenes keep a reading size on a wide window.
+const SCENES_MAX_WIDTH = 640;
+
+// Over a living painting the name rises just after the sheet opens, so the painting is
+// seen first. One object, so a render never starts it again.
+const COPY_RISE = {
+  animationName: {
+    from: { opacity: 0, transform: [{ translateY: 14 }] },
+    to: { opacity: 1, transform: [{ translateY: 0 }] },
+  },
+  animationDuration: 700,
+  animationDelay: 320,
+  animationTimingFunction: EASE.out,
+  animationFillMode: 'both',
+} as const;
 
 /** The same colour at zero alpha, so a fade never darkens a light page. */
 const transparentOf = (color: string) =>
@@ -61,7 +89,10 @@ export default function SymbolDetailScreen() {
   const lang: SymbolLanguage = currentLang;
   const scrollPerf = useScrollIdle();
   const insets = useSafeAreaInsets();
-  const { height: windowHeight } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useContentWindow();
+  // Measured, since a wide web window may give the screen less than the window.
+  const [heroWidth, setHeroWidth] = useState(windowWidth);
+  const [bodyWidth, setBodyWidth] = useState(windowWidth);
   const reducedMotion = useReducedMotion();
   const trackedSymbolRef = useRef<string | null>(null);
   const scrollY = useSharedValue(0);
@@ -69,6 +100,17 @@ export default function SymbolDetailScreen() {
   const symbol = useMemo(() => getSymbolById(id!), [id]);
   const { content: extended, status: extendedStatus } = useExtendedSymbolContent(id, lang);
   const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
+  // The symbols the site paints alive open on that painting, held upright for a phone.
+  // The sheet keeps the look it opened with: an atlas that arrives while it is open (a
+  // first launch) shows from the next visit instead of reshaping the page under the reader.
+  const latestLiving = useSymbolAtlasEntry(symbol?.id);
+  const [openedWith] = useState(() => ({ id: symbol?.id, living: latestLiving }));
+  const living = openedWith.id === symbol?.id ? openedWith.living : latestLiving;
+  const variations = extended?.variations;
+  const sceneReadings = useMemo(
+    () => (living && variations ? readScenes(living.entry.scenes, variations, lang) : []),
+    [lang, living, variations],
+  );
 
   useEffect(() => {
     if (!symbol || trackedSymbolRef.current === symbol.id) return;
@@ -90,21 +132,51 @@ export default function SymbolDetailScreen() {
       );
     }
   }, [onboardingState, source, symbol]);
+  // For the collection: an entry read to its end, whichever way it was opened. The end of
+  // the text is compared on the UI thread; React hears of it once, when it comes into view.
+  const symbolId = symbol?.id ?? null;
+  // Only a loaded entry has an end: while its interpretation loads, or offline, the short body
+  // a tall window shows whole is not the entry read.
+  const textLoaded = extendedStatus === 'ready';
+  const hasFullText = Boolean(extended?.fullInterpretation);
+  const textEndY = useSharedValue(Number.POSITIVE_INFINITY);
+  const bodyEnd = useRef(Number.POSITIVE_INFINITY);
+  useEffect(() => {
+    // Without a full interpretation the body keeps the layout it had while loading.
+    if (textLoaded && !hasFullText) textEndY.set(bodyEnd.current);
+  }, [hasFullText, textEndY, textLoaded]);
+  const viewportHeight = useSharedValue(0);
+  const [readToEndOf, setReadToEndOf] = useState<string | null>(null);
+  useBadgeReading(symbolId !== null && readToEndOf === symbolId ? symbolId : null, () => {
+    if (symbolId) recordBadgeEvent({ type: 'symbol_read', symbolId });
+  });
 
   // On the paper theme the night scene needs room to dawn into the page below its copy.
   const heroDusk = mode === 'light' ? 72 : 0;
-  const heroHeight = Math.round(Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
+  // A living painting takes most of the screen: the page opens inside it.
+  const heroHeight = Math.round(living
+    ? Math.max(460, windowHeight * 0.75)
+    : Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
+  const heroFrame = useMemo(() => ({ width: heroWidth, height: heroHeight }), [heroHeight, heroWidth]);
+  const backdropSource = useMemo(
+    // The smallest width is plenty under a 40 point blur.
+    () => (living && symbol ? atlasPictureSources(living.atlas, symbol.id, living.entry.portrait)[0] : undefined),
+    [living, symbol],
+  );
   const collapseAt = heroHeight - insets.top - TOP_BAR_HEIGHT;
 
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.set(event.contentOffset.y);
   });
+  useAnimatedReaction(() => scrollY.get() + viewportHeight.get() >= textEndY.get(), (reached, previous) => {
+    if (reached && !previous && symbolId) scheduleOnRN(setReadToEndOf, symbolId);
+  }, [symbolId]);
 
   // Scroll-derived, so it runs on the UI thread. The artwork drifts at a third of
   // the scroll speed and the page reads as a window onto the sky; reduce motion
   // keeps it pinned to the content.
-  // Like every painting, the hero breathes while the sheet is open.
-  const heroBreath = usePaintingBreath();
+  // Like every painting, the hero settles as the sheet opens.
+  const heroArrival = usePaintingArrival();
   const heroArtStyle = useAnimatedStyle(() => {
     if (reducedMotion) return {};
     const y = scrollY.get();
@@ -142,14 +214,14 @@ export default function SymbolDetailScreen() {
   const background = noctalia.screen.background;
 
   return (
-    <ScrollPerfProvider isScrolling={scrollPerf.isScrolling}>
+    <ScrollPerfProvider activity={scrollPerf.activity}>
       <View style={[styles.screen, { backgroundColor: background }]} testID={TID.Screen.SymbolDetail}>
         {mode === 'dark' ? (
           // The reading column keeps the symbol's night around it instead of
           // falling onto flat black once the hero has scrolled away.
           <View pointerEvents="none" style={StyleSheet.absoluteFill} accessible={false} importantForAccessibility="no-hide-descendants">
             <Image
-              source={illustration ?? SKY_FALLBACK}
+              source={backdropSource ?? illustration ?? SKY_FALLBACK}
               contentFit="cover"
               blurRadius={40}
               style={[StyleSheet.absoluteFill, styles.backdropArt]}
@@ -168,30 +240,49 @@ export default function SymbolDetailScreen() {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={onScroll}
+          onLayout={(event: LayoutChangeEvent) => viewportHeight.set(event.nativeEvent.layout.height)}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
           onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}
         >
-          <View style={[styles.hero, { height: heroHeight }]}>
-            <Animated.View
-              style={[StyleSheet.absoluteFill, heroArtStyle]}
-              accessible={false}
-              importantForAccessibility="no-hide-descendants"
-            >
-              <Animated.View style={[StyleSheet.absoluteFill, heroBreath]}>
-              <Image
-                source={illustration ?? SKY_FALLBACK}
-                // Offline before the first visit, the sheet keeps its night sky.
-                placeholder={illustration ? SKY_FALLBACK : undefined}
-                placeholderContentFit="cover"
-                contentFit="cover"
-                contentPosition={illustration ? 'center' : 'top'}
-                transition={illustration ? 200 : 0}
-                style={StyleSheet.absoluteFill}
-              />
+          <View style={[styles.hero, { height: heroHeight }]} onLayout={(event: LayoutChangeEvent) => setHeroWidth(event.nativeEvent.layout.width)}>
+            {/* Opened from a thumbnail on iOS 18 and later, the sheet grows out of it into
+                this painting, and shrinks back into it on the way back. */}
+            <Link.AppleZoomTarget>
+              <Animated.View
+                style={[StyleSheet.absoluteFill, heroArtStyle]}
+                accessible={false}
+                importantForAccessibility="no-hide-descendants"
+              >
+                <Animated.View style={[StyleSheet.absoluteFill, heroArrival]}>
+                  {living ? (
+                    <LivingPainting
+                      atlas={living.atlas}
+                      symbolId={symbol.id}
+                      picture={living.entry.portrait}
+                      position={living.entry.portrait.position}
+                      layers={living.entry.layers}
+                      frame={heroFrame}
+                      arrive
+                      placeholder={SKY_FALLBACK}
+                      transition={200}
+                    />
+                  ) : (
+                    <Image
+                      source={illustration ?? SKY_FALLBACK}
+                      // Offline before the first visit, the sheet keeps its night sky.
+                      placeholder={illustration ? SKY_FALLBACK : undefined}
+                      placeholderContentFit="cover"
+                      contentFit="cover"
+                      contentPosition={illustration ? 'center' : 'top'}
+                      transition={illustration ? 200 : 0}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
+                </Animated.View>
               </Animated.View>
-            </Animated.View>
+            </Link.AppleZoomTarget>
             <LinearGradient
               pointerEvents="none"
               colors={['rgba(8,3,15,0.55)', 'rgba(8,3,15,0.04)', 'rgba(8,3,15,0.45)', 'rgba(9,4,19,0.92)']}
@@ -207,7 +298,7 @@ export default function SymbolDetailScreen() {
               locations={mode === 'dark' ? undefined : [0, 0.3, 0.58, 0.82, 1]}
               style={[styles.heroFade, heroDusk ? { height: heroDusk + 36 } : null]}
             />
-            <View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null]}>
+            <Animated.View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null, living && !reducedMotion ? COPY_RISE : null]}>
               <View style={[styles.chip, { borderColor: 'rgba(234,212,180,0.45)' }]}>
                 <Text style={[styles.chipText, { color: HERO_TOKENS.accent.text }]}>{categoryName}</Text>
               </View>
@@ -224,10 +315,15 @@ export default function SymbolDetailScreen() {
               >
                 {content.shortDescription}
               </MarkdownText>
-            </View>
+            </Animated.View>
           </View>
 
-          <View style={styles.body}>
+          <View style={styles.body} onLayout={(event: LayoutChangeEvent) => {
+            const { y, width, height } = event.nativeEvent.layout;
+            setBodyWidth(width);
+            bodyEnd.current = y + height;
+            if (textLoaded) textEndY.set(bodyEnd.current);
+          }}>
             {paragraphs.length > 0 ? (
               <Section label={t('symbols.interpretation')} noctalia={noctalia}>
                 {/* The opening paragraph reads as a lead, like the site's summary;
@@ -246,6 +342,18 @@ export default function SymbolDetailScreen() {
                 <Text style={[styles.prose, { color: noctalia.text.secondary }]}>
                   {t('symbols.interpretation_offline')}
                 </Text>
+              </Section>
+            ) : null}
+
+            {living && sceneReadings.length > 0 ? (
+              <Section label={t('symbols.scenes')} noctalia={noctalia}>
+                <SymbolScenes
+                  atlas={living.atlas}
+                  symbolId={symbol.id}
+                  readings={sceneReadings}
+                  width={Math.min(SCENES_MAX_WIDTH, bodyWidth - BODY_GUTTER * 2)}
+                  noctalia={noctalia}
+                />
               </Section>
             ) : null}
 
@@ -298,6 +406,8 @@ export default function SymbolDetailScreen() {
                 </ScrollView>
               </Section>
             ) : null}
+            {/* The entry's last line: reaching it is reading the entry to its end. */}
+            <View testID="symbol.detail.end" />
           </View>
         </Animated.ScrollView>
 
@@ -374,7 +484,6 @@ function VariationRow({ variation, index, noctalia }: {
 
 function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: SymbolLanguage; noctalia: Tokens }) {
   const content = symbol[lang] ?? symbol.en;
-  const illustration = getSymbolIllustration(symbol.id, 'poster');
   // Large text widens the poster so a long single word never breaks mid-word.
   const { fontScale } = useWindowDimensions();
   const posterWidth = Math.round(140 * Math.min(Math.max(fontScale, 1), 1.5));
@@ -390,7 +499,7 @@ function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: 
         pressed && styles.posterPressed,
       ]}
     >
-      {illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
+      <SymbolArtwork symbolId={symbol.id} size="poster" />
       <LinearGradient
         pointerEvents="none"
         colors={['rgba(9,4,19,0)', 'rgba(9,4,19,0.88)']}
@@ -422,7 +531,7 @@ const styles = StyleSheet.create({
     gap: ThemeLayout.spacing.md,
     overflow: 'hidden',
   },
-  emptyText: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 16 },
+  emptyText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize },
   hero: { overflow: 'hidden', justifyContent: 'flex-end', backgroundColor: '#090413' },
   heroFade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 36 },
   heroCopy: { paddingHorizontal: 24, paddingBottom: 30, gap: 14 },
@@ -435,10 +544,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(9,4,19,0.35)',
   },
   chipText: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 11,
-    lineHeight: 14,
-    letterSpacing: 2,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.overline.fontSize,
+    lineHeight: TypeScale.overline.lineHeight,
+    letterSpacing: TypeScale.overline.letterSpacing,
     textTransform: 'uppercase',
   },
   title: {
@@ -450,28 +559,28 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 18,
   },
-  lede: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
-  body: { paddingHorizontal: 24, paddingTop: 8 },
+  lede: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: 27 },
+  body: { paddingHorizontal: BODY_GUTTER, paddingTop: 8 },
   backdropArt: { opacity: 0.75, transform: [{ scale: 1.2 }] },
   section: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 30, marginTop: 34 },
   sectionMark: { width: 28, height: 2, borderRadius: 1, marginBottom: 14 },
-  sectionTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: 25, lineHeight: 30, letterSpacing: -0.2, marginBottom: 18 },
-  proseLead: { fontFamily: Fonts.fraunces.regular, fontSize: 19, lineHeight: 30 },
+  sectionTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h1.fontSize, lineHeight: TypeScale.h1.lineHeight, letterSpacing: -0.2, marginBottom: 18 },
+  proseLead: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
   proseRest: { marginTop: 18 },
-  prose: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 16, lineHeight: 28 },
+  prose: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: 28 },
   variationRow: { flexDirection: 'row', gap: 16, borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 18 },
-  variationNumber: { width: 26, paddingTop: 4, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 12, lineHeight: 16, letterSpacing: 1.6, opacity: 0.8 },
+  variationNumber: { width: 26, paddingTop: 4, fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, letterSpacing: 1.6, opacity: 0.8 },
   variationCopy: { flex: 1, gap: 6 },
-  variationContext: { fontFamily: Fonts.fraunces.semiBold, fontSize: 18, lineHeight: 24 },
-  variationMeaning: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 25 },
+  variationContext: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h3.fontSize, lineHeight: 24 },
+  variationMeaning: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
   askRow: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 16 },
-  askText: { fontFamily: Fonts.fraunces.regular, fontSize: 18, lineHeight: 27 },
+  askText: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: 27 },
   relatedScroller: { marginHorizontal: -24 },
   relatedPosters: { gap: 12, paddingHorizontal: 24 },
   poster: { width: 140, height: 184, borderRadius: 16, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden', justifyContent: 'flex-end', padding: 12, gap: 4 },
   posterPressed: { opacity: 0.85, transform: [{ scale: 0.97 }] },
-  posterCategory: { fontFamily: Fonts.spaceGrotesk.medium, fontSize: 10, lineHeight: 13, letterSpacing: 1.6, textTransform: 'uppercase' },
-  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: 18, lineHeight: 22 },
+  posterCategory: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.overline.fontSize, lineHeight: TypeScale.overline.lineHeight, letterSpacing: TypeScale.overline.letterSpacing, textTransform: 'uppercase' },
+  posterName: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: 22 },
   topBar: {
     position: 'absolute',
     top: 0,
@@ -493,6 +602,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(255,247,237,0.28)',
   },
-  barTitle: { flex: 1, fontFamily: Fonts.fraunces.semiBold, fontSize: 19, lineHeight: 24, paddingRight: 12 },
+  barTitle: { flex: 1, fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight, paddingRight: 12 },
   pressed: { opacity: 0.72 },
 });

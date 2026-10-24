@@ -4,7 +4,7 @@
 // is in AGENTS.md, "Notes dreamer". The engine and its tests are this repository's own
 // copy: each repository pins its own ENGINE_SHA256 (below) and verifies it
 // locally; an engine fix is worth porting to the others, but nothing checks
-// that across repositories. This file is data only (no imports).
+// that across repositories. This file is standalone data; the verifier copies it outside the checkout.
 //
 //   npm run verify:pr       before every push: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
@@ -16,7 +16,7 @@
 //   npm run verify:release:site
 //                           before a noctalia.app publish only: the same run
 //                           without the checks of the `app` target (the web
-//                           app build, its backend journey under Docker and
+//                           app build, its native backend journey and
 //                           the TesterArmy app campaigns), which the static
 //                           site does not ship.
 //
@@ -34,7 +34,7 @@ const DOCS = ['**/*.md', '**/*.mdx', 'doc_web_interne/**', 'marketing/**', 'spec
 // excluded from tsconfig.json) and the lint paths of package.json never read
 // them, and no TypeScript file imports them. The site check and the TesterArmy
 // typecheck cover them. docs-src/static/img and docs-src/static/data stay
-// inputs (app components and e2e/web import them), like data/.
+// inputs (app components and TesterArmy journeys import them), like data/.
 const SITE_ONLY = [
   'docs-src/static/scripts/**',
   'docs-src/static/js/**',
@@ -117,6 +117,7 @@ const DB_CONTRACTS = [
   'scripts/product-analytics-migration.test.js',
   'scripts/product-analytics-schema-parity.test.js',
   '&& npm run test:analysis-authorization:db',
+  '&& node --test scripts/ai-daily-budget-migration.test.cjs scripts/dream-sync-limits-migration.test.cjs',
 ].join(' ');
 
 // Job meditation-quality. The engine links apps/meditation/node_modules from the
@@ -137,14 +138,16 @@ const MEDITATION_DEPS = {
 };
 
 // Job edge-functions (lint runs in `lint`, PGlite in db-contracts).
+// The image worker owns regression tests outside api/; checking its entrypoint
+// alone does not execute its privacy, ownership and retry protections.
 const EDGE_CHECKS = [
   'cd supabase/functions',
   'deno check --frozen api/index.ts analysis-job-worker/index.ts image-job-worker/index.ts revenuecat-webhook/index.ts',
-  'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook',
+  'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook image-job-worker analysis-job-worker',
 ].join(' && ');
 const DENO = {
   command: 'deno --version',
-  hint: 'run it locally where you run verify:pr (Deno 2.7.14: `mise install`); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
+  hint: 'run it locally where you run verify:pr (Deno 2.9.8: `mise install`); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 const TESTERARMY = {
@@ -152,13 +155,19 @@ const TESTERARMY = {
   hint: 'run it locally where you run verify:pr (after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
+// The full campaign and release gate share these four complete coverage contexts.
+export const DREAMER_CAMPAIGN_CONTEXTS = [
+  { locale: 'en-US', featureSheets: true, args: [] },
+  { locale: 'fr-FR', featureSheets: true, args: ['--tag', 'locale-fr-FR'] },
+  { locale: 'de-DE', featureSheets: true, args: ['--tag', 'locale-de-DE'] },
+  { locale: 'en-US', featureSheets: false, args: ['--grep', 'feature sheets stay disabled when switched off'] },
+];
+
 // The four passes of tools/e2e/README.md that jointly qualify every Dreamer case.
-const DREAMER_PASSES = [
-  'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run',
-  'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=fr-FR node tools/e2e/run.mjs dreamer web run --tag locale-fr-FR',
-  'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=de-DE node tools/e2e/run.mjs dreamer web run --tag locale-de-DE',
-  "EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled by default'",
-].join(' && ');
+const shellQuote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
+const DREAMER_PASSES = DREAMER_CAMPAIGN_CONTEXTS.map(({ locale, featureSheets, args }) =>
+  `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=${featureSheets} E2E_WEB_LOCALE=${locale} node tools/e2e/run.mjs dreamer web run${args.length ? ' ' + args.map(shellQuote).join(' ') : ''}`,
+).join(' && ');
 
 // sha256 of this repository's own copy of scripts/verify-local.mjs. The engine
 // tests compare the file with it, so an engine edit is a deliberate change of
@@ -184,6 +193,16 @@ export default {
   // The scripts these checks run: changing them changes what a proof proves,
   // so proof-block flags them for the owner's review like this file.
   deliveryFiles: [
+    // Owner-requested maintenance guards: changes to their policy require review.
+    'scripts/check-repository-hygiene.cjs',
+    'scripts/check-repository-hygiene.test.cjs',
+    'data/repository-hygiene-baseline.json',
+    'scripts/check-lint-warnings.js',
+    'scripts/check-lint-warnings.test.js',
+    // Which new public tables may skip explicit grants: only the closed historical list.
+    'scripts/check-migration-grants.cjs',
+    'scripts/check-migration-grants.test.cjs',
+    'scripts/lint-warnings-baseline.json',
     'scripts/install-git-hooks.js',
     'scripts/run-jest-changed.js',
     // Meditation's Jest module resolution.
@@ -199,6 +218,8 @@ export default {
     'scripts/lib/backend-e2e-local.cjs',
     'tools/e2e/run.mjs',
     'scripts/verify-local-config.test.js',
+    'scripts/dependency-security.test.mjs',
+    'scripts/dependency-security-scope.test.mjs',
     'scripts/pre-push-hook.test.js',
     // The EAS workflows and their config: any edit needs the owner's review
     // (the release gate only catches honest mistakes).
@@ -238,7 +259,7 @@ export default {
     // The Expo runner re-checks a guarded branch run (marker from start-branch-e2e).
     'scripts/expo-safe-runner.js',
     'scripts/expo-safe-runner.test.js',
-    'playwright.branch.config.ts',
+    'tools/e2e/e2e.config.ts',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -249,7 +270,7 @@ export default {
     {
       name: 'verify-local-engine',
       command: 'npm run test:verify-local',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', '.gitattributes'],
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', 'tools/e2e/campaign-contexts.mjs', '.gitattributes'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories.
@@ -292,13 +313,13 @@ export default {
         // The static test scans every script in scripts/.
         'scripts/**',
         // The seed mirrors this fixture's RPC call; the web origin is pinned here.
-        'e2e/backend/fixtures.ts',
+        'tools/e2e/backend-fixtures.ts',
         'supabase/migrations/20260916185856_hd_illustration_monthly_quota.sql',
         'supabase/migrations/20260316130000_add_dream_sync_revisions.sql',
         'supabase/migrations/20260722124500_add_ai_sync_admission_control.sql',
         'supabase/functions/api/services/aiAdmission.ts',
         'supabase/functions/api/services/storage.ts',
-        'playwright.branch.config.ts',
+        'tools/e2e/e2e.config.ts',
         '.gitignore',
         // The production ref is pinned against app.json.
         'app.json',
@@ -307,8 +328,24 @@ export default {
     // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
     {
       name: 'backend-runner-guards',
-      command: 'node --test scripts/lib/backend-e2e-local.test.cjs',
-      inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs'],
+      command: 'node --test scripts/lib/backend-e2e-local.test.cjs scripts/lib/backend-e2e-process.test.cjs scripts/check-native-supabase-runtime.test.cjs',
+      inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs',
+        'scripts/lib/backend-e2e-process.cjs', 'scripts/lib/backend-e2e-process.test.cjs',
+        'scripts/check-native-supabase-runtime.cjs', 'scripts/check-native-supabase-runtime.test.cjs', 'supabase/config.toml'],
+    },
+    // CLI/index failures happen before UI journeys; keep both refusal cases local.
+    // Default whole-tree inputs are intentional: every newly tracked path matters.
+    {
+      name: 'repository-hygiene',
+      command: 'npm run repository:hygiene && npm run test:repository-hygiene',
+    },
+    // A new public table gets no Data API grant (Supabase from 2026-10-30, and
+    // auto_expose_new_tables = false locally): its migration must enable RLS and
+    // grant or revoke it for anon, authenticated and service_role.
+    {
+      name: 'migration-grants',
+      command: 'npm run migrations:grants && npm run test:migration-grants',
+      inputs: ['supabase/migrations/**', 'scripts/check-migration-grants.cjs', 'scripts/check-migration-grants.test.cjs', 'package.json'],
     },
     // Independent read-only checks share one supervised step and machine lock.
     // Route declarations are atomically replaced by generate-shared-route-types.
@@ -328,6 +365,38 @@ export default {
       env: { JEST_CHANGED_SINCE: '' },
     },
     { name: 'db-contracts', command: DB_CONTRACTS },
+    {
+      name: 'dependency-security',
+      command: 'node --test scripts/dependency-security.test.mjs scripts/dependency-security-scope.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'root' },
+      when: ['package.json', 'package-lock.json', '.npmrc', 'tools/braces/', 'tools/image-size-compat/', 'scripts/dependency-security*.mjs'],
+    },
+    // Independent lockfiles must exercise their own installed graph. A patched
+    // root package cannot qualify Meditation, the legacy docs or site tooling.
+    {
+      name: 'dependency-security-meditation', command: 'node --test scripts/dependency-security.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'meditation' },
+      when: ['apps/meditation/package.json', 'apps/meditation/package-lock.json', 'apps/meditation/.npmrc', 'tools/braces/', 'tools/image-size-compat/', 'scripts/dependency-security*.mjs'],
+      requires: MEDITATION_DEPS,
+    },
+    {
+      name: 'dependency-security-documentation', command: 'node --test scripts/dependency-security.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'documentation' },
+      when: ['doc_web_interne/docs/package.json', 'doc_web_interne/docs/package-lock.json', 'doc_web_interne/docs/.npmrc', 'tools/braces/', 'scripts/dependency-security*.mjs'],
+      requires: {
+        command: 'test -d doc_web_interne/docs/node_modules',
+        hint: 'install the standalone documentation dependencies first: (cd doc_web_interne/docs && npm ci)',
+      },
+    },
+    {
+      name: 'dependency-security-site', command: 'node --test scripts/dependency-security.test.mjs',
+      env: { DEPENDENCY_SECURITY_PROJECT: 'site' },
+      when: ['apps/site/package.json', 'apps/site/package-lock.json', 'apps/site/.npmrc', 'scripts/dependency-security*.mjs'],
+      requires: {
+        command: 'test -d apps/site/node_modules',
+        hint: 'install the standalone site dependencies first: (cd apps/site && npm ci)',
+      },
+    },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
     { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
@@ -365,9 +434,13 @@ export default {
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
+      // The probe only answers whether the native Supabase runtime can start here
+      // (pinned CLI 2.119+, Linux amd64/arm64 with glibc 2.35+ or macOS 14+ on Apple
+      // silicon). When it fails the check is unavailable, never passed; when it
+      // succeeds the journeys really run and must pass.
       requires: {
-        command: 'docker info',
-        hint: 'run it locally where you run verify:pr (Docker for the disposable local Supabase, Chromium via `npx playwright install chromium`); if this machine cannot, pass --external e2e-backend="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
+        command: 'node scripts/check-native-supabase-runtime.cjs',
+        hint: 'native Supabase runtime, no Docker: needs Linux glibc>=2.35 (WSL2 on Windows) or macOS 14+ Apple silicon, the pinned CLI from `npm ci` and Chromium (`npm run test:testerarmy:browsers`); if this machine cannot, a machine where the probe passes runs it and passes --external e2e-backend="owner-machine: <host> <note> on <SHA>" (the fixed evidence keyword); until then the proof is incomplete: do not push, report it as a blocker',
       },
     },
     {

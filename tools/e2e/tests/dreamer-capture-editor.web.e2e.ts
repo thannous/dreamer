@@ -1,6 +1,6 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, expectCaptureDraftSaved, withDialog } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const story = 'Je marchais au bord d’un lac. Une maison éclairée apparaissait entre les arbres.\n\nJe reconnaissais cet endroit, sans savoir pourquoi. Tout semblait calme, comme si le temps s’était arrêté.\n\nJe me souviens surtout de la lumière et de cette sensation de douceur.';
@@ -40,10 +40,12 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   const save = page.getByTestId('btn.saveDream');
   const count = page.getByTestId('component.recording.draftProgress.count');
   await expect(save).toBeDisabled();
-  await expect(page.getByText('Décris ton rêve', { exact: true })).toBeVisible();
+  // The writing area is its own invitation: no heading above it, only its placeholder.
+  await expect(page.getByText('Décris ton rêve', { exact: true })).toHaveCount(0);
+  await expect(editor).toHaveAttribute('placeholder', 'Parle-moi de ton rêve…');
   await expect(page.getByTestId('recording-guest-remaining')).toHaveCount(0);
   await editor.fill(story);
-  await expect(page.getByText('Brouillon conservé sur cet appareil', { exact: true })).toBeVisible();
+  await expectCaptureDraftSaved(page, story);
   await expect(count).toHaveText(`${story.length} caractères`);
   await expect(save).toBeEnabled();
 
@@ -109,4 +111,21 @@ test('capture keeps long and fragmentary stories editable with a reachable save 
   }
   await editor.fill('   ');
   await expect(save).toBeDisabled();
+});
+
+test('capture stops a dream at 20,000 characters and its count shows the maximum only near it', async ({ page }, info) => {
+  await startFrenchCapture(page);
+  const editor = page.getByTestId('input.dreamTranscript');
+  const counter = page.getByTestId('component.recording.draftProgress.count');
+  await editor.fill('r'.repeat(17999));
+  await expect(counter).toHaveText(/^17\s999 caractères$/);
+  await editor.fill('r'.repeat(18500));
+  await expect(counter).toHaveText(/^18\s500 \/ 20\s000 caractères$/);
+  await editor.fill('r'.repeat(20000));
+  await editor.press('End');
+  await editor.pressSequentially('encore');
+  await expect(editor).toHaveValue('r'.repeat(20000));
+  await expect(counter).toHaveText(/^20\s000 caractères, le maximum$/);
+  await expect(page.getByTestId('btn.saveDream')).toBeEnabled();
+  await page.screenshot({ path: info.outputPath('capture-length-limit.png') });
 });

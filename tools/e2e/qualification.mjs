@@ -1,11 +1,38 @@
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, relative, sep, resolve, basename } from 'node:path';
 
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
 export const SDK_PINS = { e2e: '0.21.2', '@e2e-dev/web': '0.15.2', '@e2e-dev/mobile': '0.12.3', 'agent-device': '0.21.28' };
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+// Preserve the former UTF-8 stdout.trim() identity without buffering a whole diff.
+// A hash copy marks the last content byte; later whitespace stays provisional.
+export async function trackedDiffSha256(root, env = process.env) {
+  const child = spawn('git', ['diff', 'HEAD'], { cwd: root, env, stdio: ['ignore', 'pipe', 'pipe'] });
+  const closed = new Promise((resolve, reject) => {
+    child.once('error', reject);
+    child.once('close', (code, signal) => {
+      if (code === 0) resolve();
+      else reject(new Error(`git diff failed (${signal ? `signal ${signal}` : `exit ${code}`}).`));
+    });
+  });
+  child.stderr.resume();
+  child.stdout.setEncoding('utf8');
+  const hashed = (async () => {
+    const hash = createHash('sha256');
+    let finalHash = hash.copy(), leading = true;
+    for await (let chunk of child.stdout) {
+      if (leading) { chunk = chunk.trimStart(); leading = chunk.length === 0; }
+      const content = chunk.trimEnd();
+      if (content.length) { hash.update(content); finalHash = hash.copy(); }
+      hash.update(chunk.slice(content.length));
+    }
+    return finalHash.digest('hex');
+  })();
+  const [, result] = await Promise.all([closed, hashed]);
+  return result;
+}
 export function writeOnce(file, value) {
   writeFileSync(file, JSON.stringify(value, null, 2) + '\n', { flag: 'wx' });
 }
@@ -45,7 +72,8 @@ export function directoryFiles(root, prefix, ignored = new Set()) {
 export function sourceSnapshot(root, product, native = false) {
   const git = (...args) => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
   const revision = git('rev-parse', 'HEAD');
-  const paths = execFileSync('git', ['ls-files', '-co', '--exclude-standard', '-z'], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean);
+  // The complete Atlas has more than 1 MiB of tracked path names; retain every input.
+  const paths = execFileSync('git', ['ls-files', '-co', '--exclude-standard', '-z'], { cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }).split('\0').filter(Boolean);
   // This is the output directory of scripts/build-experience.js, not an input.
   // Its bytes are retained and compared separately; sourceClean is never forged.
   const allowedOutputPrefixes = product === 'site' ? ['docs-src/static/js/experience/'] : [];
@@ -93,6 +121,22 @@ function tracePage(output, result) {
 function verifyProvenance(document, options, requirePass = true) {
   const run = document?.run;
   const now = Date.now();
+  // The opt-in feature campaign uses real agent calls. Ordinary regressions
+  // retain their zero-model-call contract on every platform.
+  const personas = options.personaModel !== undefined;
+  const usage = run?.usage;
+  // A setup failure can precede the first model goal. Its completed SDK cleanup
+  // is still provable, while the application verdict continues to require calls.
+  const failedBeforeModel = !requirePass && run?.status === 'failed'
+    && Number.isSafeInteger(run.exitCode) && run.exitCode > 0
+    && usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
+  const validUsage = personas
+    ? ['web', 'ios', 'android'].includes(options.platform) && options.target === `dreamer-${options.platform}`
+      && typeof options.personaModel === 'string' && !!options.personaModel.trim()
+      && (failedBeforeModel || (Number.isSafeInteger(usage?.modelTokens) && usage.modelTokens > 0
+        && Number.isSafeInteger(usage?.maxModelCallsInStep) && usage.maxModelCallsInStep >= 1 && usage.maxModelCallsInStep <= 12))
+      && Number.isSafeInteger(usage?.maxActionStepsInStep) && usage.maxActionStepsInStep >= 0 && usage.maxActionStepsInStep <= 16
+    : usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
   if (document?.schemaVersion !== 'report-1' || !run || typeof run.id !== 'string' || !run.id || run.runner?.version !== SDK_PINS.e2e
     || run.vcs?.commit !== options.revision || (requirePass && (run.exitCode !== 0 || run.status !== 'passed'))
     || run.environment?.runtime !== (options.runtime ?? `node ${process.version}`)
@@ -105,7 +149,7 @@ function verifyProvenance(document, options, requirePass = true) {
     || typeof run.startedAt !== 'string' || typeof run.finishedAt !== 'string'
     || !Number.isFinite(Date.parse(run.startedAt)) || !Number.isFinite(Date.parse(run.finishedAt)) || Date.parse(run.startedAt) < options.startedAt
     || Date.parse(run.startedAt) > now || Date.parse(run.finishedAt) < Date.parse(run.startedAt)
-    || Date.parse(run.finishedAt) > now || run.usage?.modelTokens !== 0 || run.usage?.maxModelCallsInStep !== 0)
+    || Date.parse(run.finishedAt) > now || !validUsage)
     fail('REPORT_PROVENANCE');
   return run;
 }
@@ -129,14 +173,18 @@ export function verifyReport(document, options) {
     if (selected.length !== pairs.length * repeatCount) fail('COLLECTION_INCOMPLETE');
     for (const pair of pairs) for (let repeat = 0; repeat < repeatCount; repeat++) {
       const matches = selected.filter(result => key(result) === key(pair) && result.repeat === repeat);
-      if (matches.length !== 1 || (pair.disposition === 'skip') !== (matches[0].status === 'skipped')) fail('COLLECTION_DISPOSITION');
+      if (matches.length !== 1 || (pair.disposition === 'skip') !== (matches[0].status === 'skipped')
+        || (options.personaModel !== undefined && pair.agent !== matches[0].agent)) fail('COLLECTION_DISPOSITION');
     }
   }
   for (const result of run.results) {
     if (typeof result.testId !== 'string' || !result.testId || result.targetId !== options.target
       || result.platform !== options.platform || !Number.isSafeInteger(result.repeat) || result.repeat < 0
       || typeof result.selected !== 'boolean' || !Array.isArray(result.attempts)
-      || typeof result.agent !== 'string' || result.agent !== (options.agent ?? 'default')) fail('RESULT_IDENTITY');
+      || typeof result.agent !== 'string' || (options.personaModel !== undefined
+        ? result.file !== `tests/dreamer-personas.${options.platform === 'web' ? 'web' : 'mobile'}.e2e.ts` || !['morning', 'archivist', 'explorer', 'free'].includes(result.agent)
+          || !result.tags?.includes(`persona-${result.agent}`)
+        : result.agent !== (options.agent ?? 'default'))) fail('RESULT_IDENTITY');
     const row = { targetId: result.targetId, testId: result.testId, repeat: result.repeat, agent: result.agent };
     const key = JSON.stringify(row);
     if (seen.has(key)) fail('DUPLICATE_RESULT');
@@ -152,6 +200,12 @@ export function verifyReport(document, options) {
         : !attempt.steps.some(step => step.api === 'app.open') || attempt.steps.slice(0, attempt.steps.findIndex(step => step.api === 'app.open')).some(step => !['browser.route', 'browser.setViewport'].includes(step.api)))
       || attempt.steps.some(step => step.status !== 'passed')
       || !Array.isArray(attempt.artifacts)) fail('LIFECYCLE_INCOMPLETE');
+    if (options.personaModel !== undefined) {
+      const goals = attempt.steps.filter(step => step.api === 'agent.act');
+      if (!goals.length || goals.some(step => step.model?.model !== options.personaModel
+        || !Number.isSafeInteger(step.model?.calls) || step.model.calls < 1 || step.model.calls > 12
+        || step.cache?.mode === 'self-finalized')) fail('PERSONA_MODEL_UNPROVEN');
+    }
     if (options.video && !attempt.artifacts.some(a => a.kind === 'video')) fail('MEDIA_VIDEO_MISSING');
     for (const artifact of attempt.artifacts) artifacts.push(artifactBytes(options.output, artifact));
     if (options.trace) artifacts.push(tracePage(options.output, result));
@@ -214,6 +268,31 @@ export function campaignFailureRecord(output, error) {
 
 // Only the canonical caller enables this for its own CircleCI web SDK child.
 // No SDK/app output is forwarded, and a live process is not claimed to make progress.
+// A whole-host stall (VM snapshot or pause, memory reclaim) stops every process at
+// once; on resume the attempt deadline has expired, so the next step fails in ms
+// on a page that is fine (2026-10-19: app.open "took" 4m39s, then a tap failed
+// after 47 ms, at the box's "virtual machine fork" resume). The wrapper is idle
+// on async I/O while the SDK runs, so its 1 s heartbeat only falls 30 s behind
+// when the host itself did not run. Diagnostic only: it never changes a result.
+export const HOST_STALL_MS = 30_000;
+export function startHostStallMonitor({ intervalMs = 1_000, stallMs = HOST_STALL_MS, now = Date.now,
+  monotonic = () => performance.now(), setTimer = setInterval, clearTimer = clearInterval } = {}) {
+  const stalls = [];
+  let lastWall = now(), lastMonotonic = monotonic(), stopped = false;
+  const timer = setTimer(() => {
+    const wall = now(), mono = monotonic();
+    const wallGapMs = Math.round(wall - lastWall), monotonicGapMs = Math.round(mono - lastMonotonic);
+    if (Math.max(wallGapMs, monotonicGapMs) - intervalMs >= stallMs) {
+      stalls.push({ resumedAt: new Date(wall).toISOString(), wallGapMs, monotonicGapMs });
+    }
+    lastWall = wall; lastMonotonic = mono;
+  }, intervalMs);
+  timer?.unref?.();
+  return () => {
+    if (!stopped) { stopped = true; clearTimer(timer); }
+    return stalls.map(stall => ({ ...stall }));
+  };
+}
 export function startSdkProgress(child, { enabled, write, onError = () => {}, now = Date.now, setTimer = setInterval, clearTimer = clearInterval }) {
   if (!enabled) return () => {};
   const start = now(); let stopped = false;

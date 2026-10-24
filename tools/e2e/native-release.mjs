@@ -3,7 +3,15 @@ import { join, resolve, basename, relative, sep } from 'node:path';
 import { digest, directoryFiles, hashFiles, sourceSnapshot } from './qualification.mjs';
 
 const refusal = code => { throw new Error(code); };
-const profiles = new Set(['production-apk', 'mock-persistent', 'lucid-mock', 'meditation-local']);
+const profiles = new Set(['production-apk', 'mock-persistent', 'local-backend', 'lucid-mock', 'meditation-local']);
+function isLocalBackendOrigin(value) {
+  if (typeof value !== 'string') return false;
+  try {
+    const url = new URL(value), port = Number(url.port);
+    return url.protocol === 'http:' && url.hostname === '127.0.0.1' && !url.username && !url.password
+      && port >= 20000 && port <= 32767 && url.origin === value;
+  } catch { return false; }
+}
 export function normalizeAvdName(raw) {
   const lines = raw.trim().split(/\r?\n/).map(line => line.trim());
   if (!lines[0] || lines.length > 2 || (lines.length === 2 && lines[1] !== 'OK')) refusal('AVD_PROTOCOL');
@@ -65,7 +73,9 @@ export function releaseMetadata(path, platform, env, read) {
     const pkg = output.match(/^package: name='([^']+)' versionCode='([^']+)' versionName='([^']+)'/m);
     if (!pkg || output.includes('application-debuggable')) refusal('ANDROID_NOT_RELEASE');
     const manifest = read(join(tools, aapt, 'aapt'), ['dump', 'xmltree', path, 'AndroidManifest.xml']);
-    const ota = manifest.match(/expo\.modules\.updates\.ENABLED[\s\S]*?android:value[^\n]*?(0xffffffff|0x0)/);
+    // Bind the boolean to ENABLED's own metadata element. A later false flag
+    // must never turn an OTA-enabled binary into an allegedly pinned Release.
+    const ota = manifest.match(/A: android:name[^\n]*="expo\.modules\.updates\.ENABLED"[^\n]*\n\s*A: android:value[^\n]*?\(type 0x12\)(0xffffffff|0x0)(?=\s|$)/);
     if (!ota || ota[1] !== '0x0') refusal('OTA_NOT_PINNED');
     return { bundle: pkg[1], version: pkg[3], build: pkg[2], otaEnabled: false, manifestSha256: digest(manifest) };
   }
@@ -79,6 +89,50 @@ export function releaseMetadata(path, platform, env, read) {
   if (signed) read('codesign', ['--verify', '--strict', path]);
   return { bundle: plist.CFBundleIdentifier, version: plist.CFBundleShortVersionString, build: plist.CFBundleVersion,
     otaEnabled: false, signed, executableSha256: digest(readFileSync(executable)), embeddedJsSha256: digest(readFileSync(join(path, 'main.jsbundle'))) };
+}
+/** Inspect the public config inside the actual artifact, never the desired build env. */
+export function verifyLocalBackendBinaryConfig({ binaryPath, platform, profile, read, record = () => {} }) {
+  const backend = profile?.backend;
+  if (profile?.name !== 'local-backend' || !isLocalBackendOrigin(backend?.origin)
+    || !/^[a-f0-9]{64}$/.test(backend?.anonKeySha256 ?? '')) refusal('LOCAL_BACKEND_CONFIG_PROFILE');
+  let raw, configPath, config;
+  try {
+    if (platform === 'android') {
+      configPath = 'assets/app.config';
+      raw = read('unzip', ['-p', binaryPath, configPath]);
+    } else if (platform === 'ios') {
+      // EXConstantsService resolves its resource bundle beside the class bundle:
+      // the main app for static pods, or EXConstants.framework for dynamic pods.
+      const candidates = ['EXConstants.bundle/app.config', 'Frameworks/EXConstants.framework/EXConstants.bundle/app.config']
+        .filter(candidate => existsSync(join(binaryPath, candidate)));
+      if (candidates.length !== 1) throw new Error('Missing or ambiguous config.');
+      configPath = candidates[0];
+      const actual = realpathSync(join(binaryPath, configPath));
+      if (!actual.startsWith(realpathSync(binaryPath) + sep)) throw new Error('Config escaped the binary.');
+      raw = readFileSync(actual, 'utf8');
+    } else throw new Error('Unsupported platform.');
+    config = JSON.parse(raw);
+  } catch {
+    record({ schemaVersion: 1, platform, configurationRead: false });
+    refusal('LOCAL_BACKEND_BINARY_CONFIG_UNREADABLE');
+  }
+  const extra = config?.extra;
+  const anonHash = typeof extra?.supabaseAnonKey === 'string' ? digest(extra.supabaseAnonKey) : null;
+  const functionHash = typeof extra?.supabaseFunctionJwt === 'string' ? digest(extra.supabaseFunctionJwt) : null;
+  const proof = {
+    schemaVersion: 1, platform, configPath, configurationRead: true, configurationSha256: digest(raw),
+    backendOriginMatches: extra?.supabaseUrl === backend.origin,
+    apiUrlMatches: extra?.apiUrl === `${backend.origin}/functions/v1/api`,
+    anonKeySha256: anonHash, publicKeyMatches: anonHash === backend.anonKeySha256,
+    functionKeySha256: functionHash, functionKeyMatches: functionHash === backend.anonKeySha256,
+    storeKeysDisabled: ['revenuecatAndroidKey', 'revenuecatIosKey', 'revenuecatWebKey'].every(key => extra?.[key] === ''),
+    qaMarkerMatches: extra?.nativeQaAudio === true && extra?.eas?.projectId === 'noctalia-qa-local',
+  };
+  // Evidence contains only booleans/digests, never the config, public keys or tokens.
+  record(proof);
+  if (!proof.backendOriginMatches || !proof.apiUrlMatches || !proof.publicKeyMatches || !proof.functionKeyMatches
+    || !proof.storeKeysDisabled || !proof.qaMarkerMatches) refusal('LOCAL_BACKEND_BINARY_CONFIG_MISMATCH');
+  return proof;
 }
 export function validateReleaseReceipt(receipt, expected) {
   if (receipt?.schemaVersion !== 1 || receipt.kind !== 'noctalia-native-release'
@@ -94,12 +148,19 @@ export function validateReleaseReceipt(receipt, expected) {
     || ['mock', 'persistence', 'audioMock', 'featureSheets'].some(key => typeof receipt.profile[key] !== 'boolean')
     || !Number.isSafeInteger(receipt.profile.categorizationDelayMs) || receipt.profile.categorizationDelayMs < 0) refusal('RELEASE_PROVENANCE');
   validateBuildCommand(receipt.buildCommand, receipt.platform);
-  if ((receipt.product === 'dreamer' && !['production-apk', 'mock-persistent'].includes(receipt.profile.name))
+  if ((receipt.product === 'dreamer' && !['production-apk', 'mock-persistent', 'local-backend'].includes(receipt.profile.name))
     || (receipt.profile.name === 'production-apk' && receipt.profile.mock)
     || (receipt.profile.categorizationDelayMs !== 0 && (!receipt.profile.mock || !receipt.profile.persistence || receipt.profile.categorizationDelayMs < 20000 || receipt.profile.categorizationDelayMs > 60000))
     || (receipt.product === 'lucid' && receipt.profile.name !== 'lucid-mock')
     || (receipt.product === 'meditation' && receipt.profile.name !== 'meditation-local')
     || (receipt.profile.name === 'mock-persistent' && (!receipt.profile.mock || !receipt.profile.persistence))
+    || (receipt.profile.name === 'local-backend' && (receipt.profile.mock || receipt.profile.audioMock || receipt.profile.persistence
+      || receipt.profile.nativeQaAudio !== true
+      || receipt.bundle !== 'com.tanuki75.noctalia.qa' || !receipt.profile.backend
+      || !isLocalBackendOrigin(receipt.profile.backend.origin)
+      || !/^[a-f0-9]{64}$/.test(receipt.profile.backend.stackId ?? '')
+      || !/^[a-f0-9]{64}$/.test(receipt.profile.backend.anonKeySha256 ?? '')
+      || (receipt.platform === 'ios' && !receipt.binary.signed)))
     || (receipt.platform === 'ios' && receipt.product === 'lucid' && !receipt.binary.signed)) refusal('RELEASE_PROFILE');
   return receipt;
 }
@@ -131,10 +192,11 @@ export function verifyInstalledRelease({ receipt, device, output, read }) {
 }
 export function validateBuildCommand(command, platform) {
   if (!Array.isArray(command) || !command.length || command.some(value => typeof value !== 'string' || !value)) refusal('BUILD_COMMAND');
-  const name = basename(command[0]);
+  if (command.includes('--incremental')) refusal('BUILD_COMMAND_NOT_CANONICAL_RELEASE');
+  const name = basename(command[0].replaceAll('\\', '/')).replace(/\.(?:exe|bat)$/i, '');
   if (platform === 'ios' && name === 'xcodebuild' && command.filter(value => value === '-configuration').length === 1 && command[command.indexOf('-configuration') + 1] === 'Release' && command.includes('build')) return;
   if (platform === 'android' && name === 'gradlew' && command.includes(':app:assembleRelease') && !command.some(value => /assembleDebug|bundleDebug|test|install/i.test(value))) return;
-  if (platform === 'android' && name === 'node' && command[1]?.endsWith('/scripts/build-android-release-local.js')
+  if (platform === 'android' && name === 'node' && command[1]?.replaceAll('\\', '/').endsWith('/scripts/build-android-release-local.js')
     && command.includes('--reuse-native-project')) return;
   refusal('BUILD_COMMAND_NOT_CANONICAL_RELEASE');
 }

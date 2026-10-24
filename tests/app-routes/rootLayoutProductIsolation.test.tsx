@@ -23,6 +23,9 @@ const mockJournal = jest.fn(() => ({ dreams: [], loaded: true, persistenceState:
 const mockMigration = jest.fn().mockResolvedValue(undefined);
 const mockDreamMigration = jest.fn().mockResolvedValue(undefined);
 const mockMark = jest.fn();
+const mockMarkStartupInteractive = jest.fn();
+let mockSplashDone = false;
+let mockFinishSplash: (() => void) | undefined;
 let mockNotificationListener: ((response: any) => void) | undefined;
 const mockCaptureDream = jest.fn().mockResolvedValue(true);
 const mockReplace = jest.fn();
@@ -30,8 +33,6 @@ const mockGuestSession = jest.fn();
 const mockNavigation = { isReady: () => true, addListener: () => () => undefined };
 const mockChildren = ({ children }: React.PropsWithChildren) => <>{children}</>;
 
-// The root layout only tells the AI consent module who is signed in.
-jest.mock('@/lib/aiConsent', () => ({ setAiConsentPromptRequired: jest.fn() }));
 jest.mock('@/global.css', () => ({}));
 jest.mock('@/lib/runtimeIdentity', () => ({ reportRuntimeIdentity: mockReportRuntimeIdentity }));
 jest.mock('react-native', () => ({
@@ -70,18 +71,26 @@ jest.mock('@/hooks/useSubscriptionInitialize', () => ({ useSubscriptionInitializ
 jest.mock('@/hooks/useAppState', () => ({ useAppState: (callback: () => void) => { mockForeground = callback; } }));
 jest.mock('@/hooks/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => true }));
 jest.mock('@/hooks/useSplashFailsafe', () => ({ useSplashFailsafe: () => false }));
-jest.mock('@/components/StartupSplashScreen', () => ({ __esModule: true, default: () => null, STARTUP_SPLASH_MINIMUM_VISIBLE_MS: 0 }));
+jest.mock('@/components/StartupSplashScreen', () => ({
+  __esModule: true,
+  default: ({ done, onDone }: { done?: boolean; onDone?: () => void }) => {
+    mockSplashDone = Boolean(done);
+    mockFinishSplash = onDone;
+    return <div data-testid="startup-splash" />;
+  },
+}));
 jest.mock('@/components/ErrorBoundary', () => ({ ErrorBoundary: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/ScreenErrorBoundary', () => ({ RouteScreenErrorFallback: () => null }));
 jest.mock('@/lib/observe', () => ({
   applyStabilityReportsPreference: jest.fn(async () => undefined),
-  markStartupInteractive: jest.fn(),
+  markStartupInteractive: () => mockMarkStartupInteractive(),
   wrapObservedRoot: <P,>(Component: P) => Component,
 }));
 jest.mock('@/components/navigation/DesktopShell', () => ({ DesktopShell: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
 jest.mock('@/components/reminders/NotificationDreamImportHost', () => ({ NotificationDreamImportHost: () => <div data-testid="dream-reply-host" /> }));
+jest.mock('@/components/widgets/HomeWidgetsHost', () => ({ HomeWidgetsHost: () => <div data-testid="widgets-host" /> }));
 jest.mock('@/services/notificationDreamInbox', () => ({ captureDreamFromNotificationResponse: (...args: unknown[]) => mockCaptureDream(...args), clearDreamCaptureResponse: jest.fn() }));
 jest.mock('@/services/notificationDreamTask', () => ({ registerDreamCaptureBackgroundTask: jest.fn().mockResolvedValue(undefined) }));
 jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
@@ -120,6 +129,7 @@ async function mountStartup() {
 describe('root product composition (real root and DreamsProvider)', () => {
   beforeEach(() => {
     jest.useFakeTimers(); jest.clearAllMocks();
+    mockSplashDone = false; mockFinishSplash = undefined;
     mockPlatform = 'ios';
     mockReportRuntimeIdentity.mockReset();
     mockGetScheduled.mockResolvedValue([]);
@@ -131,6 +141,29 @@ describe('root product composition (real root and DreamsProvider)', () => {
     require('react-native').Linking.getInitialURL.mockResolvedValue(null);
   });
   afterEach(() => { cleanup(); jest.useRealTimers(); });
+
+  // A visual E2E cannot inspect the native Observe call or hold the splash after
+  // route readiness. Keep that counterexample here using the real root lifecycle.
+  it('marks interactive once, after the startup cover is removed and a frame has painted', async () => {
+    mockLucid = false; mockUser = null;
+    const view = await mountStartup();
+    expect(mockSplashDone).toBe(true);
+    expect(screen.getByTestId('startup-splash')).toBeTruthy();
+    expect(mockMarkStartupInteractive).not.toHaveBeenCalled();
+
+    act(() => { mockFinishSplash?.(); });
+    expect(screen.queryByTestId('startup-splash')).toBeNull();
+    expect(mockMarkStartupInteractive).not.toHaveBeenCalled();
+    act(() => { jest.advanceTimersByTime(16); });
+    expect(mockMarkStartupInteractive).not.toHaveBeenCalled();
+    act(() => { jest.advanceTimersByTime(16); });
+    expect(mockMarkStartupInteractive).toHaveBeenCalledTimes(1);
+    expect(mockMark).toHaveBeenCalledWith('startup.interactive');
+
+    view.rerender(<RootLayout />);
+    act(() => { jest.advanceTimersByTime(100); });
+    expect(mockMarkStartupInteractive).toHaveBeenCalledTimes(1);
+  });
 
   // Browser E2E cannot deliver native Back/swipe events. Bypass handleClose and
   // exercise the real root's native foreground callback after the return is observed.
@@ -295,6 +328,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(screen.queryByTestId('route:(tabs)')).toBeNull();
     expect(screen.queryByTestId('analysis-host')).toBeNull();
     expect(screen.queryByTestId('reminders-host')).toBeNull();
+    expect(screen.queryByTestId('widgets-host')).toBeNull();
     expect(screen.queryByTestId('speech-host')).toBeNull();
     expect(mockJournal).not.toHaveBeenCalled();
     expect(mockGuestSession).not.toHaveBeenCalled();
@@ -365,6 +399,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     expect(screen.getByTestId('route:journal/[id]')).toBeTruthy();
     expect(screen.getByTestId('analysis-host')).toBeTruthy();
     expect(screen.getByTestId('reminders-host')).toBeTruthy();
+    expect(screen.getByTestId('widgets-host')).toBeTruthy();
     expect(screen.getByTestId('speech-host')).toBeTruthy();
     expect(mockJournal).toHaveBeenCalled();
     expect(mockMark).toHaveBeenCalledWith('startup.route_committed');

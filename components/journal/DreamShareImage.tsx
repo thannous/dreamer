@@ -4,19 +4,32 @@ import { useDreamMedia } from '@/hooks/useDreamMedia';
 import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
-import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
+import { getShareCardStory, type ShareCardOptions } from '@/lib/journal/shareCard';
 import type { DreamAnalysis } from '@/lib/types';
-import { Image } from 'expo-image';
+import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Image as RNImage, StyleSheet, Text, View } from 'react-native';
 
+import { SEAL_EMBLEMS, SEAL_GOLD } from './story/sealEmblems';
+
 interface DreamShareImageProps {
   dream: DreamAnalysis;
-  resolvedMedia?: { imageUrl: string; thumbnailUrl?: string };
+  /** The painting as the screen resolved it; its cache key is the original's. */
+  resolvedMedia?: { imageUrl: string; thumbnailUrl?: string; imageCacheKey?: string };
   onMediaReady?: (source: string, ready: boolean) => void;
+  /** For a preview: the picture shown until the painting is, the one the dream's card holds. */
+  placeholder?: ImageSource | null;
+  /** What the card shows; « Créé par Noctalia Dream » is always on it. */
+  options?: ShareCardOptions;
+  /** The dream's date as the card writes it. */
+  date?: string;
   t: (key: string, params?: any) => string;
 }
+
+const DEFAULT_OPTIONS: ShareCardOptions = { painting: true, title: true, date: false, text: 'quote' };
+/** How long the card waits for its small images (the logo, the emblem) before it is drawn without them. */
+const MARKS_WAIT_MS = 1000;
 
 /**
  * Fixed-size component for generating shareable dream images.
@@ -24,67 +37,121 @@ interface DreamShareImageProps {
  * Instagram 4:5 ratio: 1080x1350px
  */
 export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(function DreamShareImage(
-  { dream, t, resolvedMedia, onMediaReady },
+  { dream, t, resolvedMedia, onMediaReady, placeholder, options = DEFAULT_OPTIONS, date },
   ref
 ) {
   const requestedMedia = useDreamMedia(resolvedMedia ? undefined : dream);
   const media = resolvedMedia ?? requestedMedia;
-  const [settledImage, setSettledImage] = useState<string>();
-  const [failedImage, setFailedImage] = useState<string>();
+  // What became of the picture: shown, or left out because it failed or did not show in time.
+  const [settled, setSettled] = useState<{ source: string; shown: boolean }>();
   const noctalia = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
   // Use imageUrl first, fallback to thumbnailUrl
-  const imageSource = media.imageUrl || media.thumbnailUrl;
+  const imageSource = options.painting ? media.imageUrl || media.thumbnailUrl || '' : '';
+  // The painting comes from the cache the dream's page filled; a thumbnail is never kept there.
+  const imageCacheKey = imageSource && imageSource === media.imageUrl ? media.imageCacheKey : undefined;
+  // While the painting is still being resolved, the preview holds the card's picture.
+  const heldPicture = options.painting && !imageSource ? placeholder : null;
+  const imageSettled = settled?.source === imageSource ? settled : undefined;
+  const hasImage = !!imageSource && imageSettled?.shown !== false;
+  const settle = (shown: boolean) => setSettled((current) =>
+    current?.source === imageSource && current.shown === shown ? current : { source: imageSource, shown });
   useEffect(() => {
-    if (!imageSource || !onMediaReady || settledImage === imageSource) return;
-    const timer = setTimeout(() => onMediaReady(imageSource, false), 10000);
+    if (!imageSource || !onMediaReady || imageSettled) return;
+    const timer = setTimeout(() => setSettled({ source: imageSource, shown: false }), 10000);
     return () => clearTimeout(timer);
-  }, [imageSource, onMediaReady, settledImage]);
-  const hasImage = !!imageSource && failedImage !== imageSource;
+  }, [imageSource, onMediaReady, imageSettled]);
 
-  const dreamTypeLabel = getDreamTypeLabel(dream.dreamType, t);
-  const themeLabel = getDreamThemeLabel(dream.theme, t);
+  // Without its painting the card rests on the night, under the emblem of the dream's seal.
+  const emblem = !hasImage && dream.theme && dream.theme in SEAL_EMBLEMS ? SEAL_EMBLEMS[dream.theme] : null;
+  // The card's logo and the mark it rests on without a painting are images too, loading on
+  // their own; they are waited for, never for long. A ground that comes in late, under a
+  // picture that failed, is waited for anew.
+  const [marks, setMarks] = useState<{ logo?: true; ground?: true; waited?: true; onGround: boolean }>(
+    { onGround: !hasImage });
+  if (marks.onGround !== !hasImage) setMarks({ ...marks, onGround: !hasImage, waited: undefined });
+  const marksDrawn = Boolean(marks.waited || (marks.logo && (hasImage || marks.ground)));
+  useEffect(() => {
+    if (!onMediaReady || marksDrawn) return;
+    const timer = setTimeout(() => setMarks((current) => ({ ...current, waited: true })), MARKS_WAIT_MS);
+    return () => clearTimeout(timer);
+  }, [onMediaReady, marksDrawn]);
+  const markDrawn = (mark: 'logo' | 'ground') => setMarks((current) => (current[mark] ? current : { ...current, [mark]: true }));
+  // The card is ready once drawn as it will be captured: with its picture, or without one it
+  // has none of or could not show.
+  useEffect(() => {
+    if (!onMediaReady || !marksDrawn) return;
+    if (!imageSource) onMediaReady('', false);
+    else if (imageSettled) onMediaReady(imageSource, imageSettled.shown);
+  }, [imageSource, imageSettled, marksDrawn, onMediaReady]);
 
-  // Build metadata string (max 1 line)
-  const metadataParts: string[] = [];
-  if (dreamTypeLabel) metadataParts.push(dreamTypeLabel);
-  if (themeLabel) metadataParts.push(themeLabel);
-  const metadataText = metadataParts.join(' \u2022 ');
+  const dateLine = options.date ? date?.trim() : undefined;
+  const title = options.title ? dream.title?.trim() : undefined;
+  const quote = options.text === 'quote' ? dream.shareableQuote?.trim() : undefined;
+  const story = options.text === 'story' && dream.transcript?.trim() ? getShareCardStory(dream.transcript) : undefined;
 
   return (
     <View ref={ref} style={[styles.container, { backgroundColor: noctalia.screen.background }]} collapsable={false}>
-      {/* Background Image or Fallback */}
       {hasImage ? (
         <Image
-          source={{ uri: imageSource }}
+          source={{ uri: imageSource, cacheKey: imageCacheKey }}
+          placeholder={placeholder ?? undefined}
+          placeholderContentFit="cover"
+          cachePolicy="memory-disk"
           style={styles.backgroundImage}
           contentFit="cover"
-          onDisplay={() => { setSettledImage(imageSource); onMediaReady?.(imageSource, true); }}
-          onError={() => { setSettledImage(imageSource); setFailedImage(imageSource); onMediaReady?.(imageSource, false); }}
+          onDisplay={() => settle(true)}
+          onError={() => settle(false)}
         />
+      ) : heldPicture ? (
+        <Image source={heldPicture} cachePolicy="memory-disk" style={styles.backgroundImage} contentFit="cover" />
       ) : (
-        <View style={[styles.fallbackBackground, { backgroundColor: noctalia.screen.background }]} />
+        <View style={[styles.ground, { backgroundColor: noctalia.screen.background }]}>
+          <LinearGradient
+            colors={['rgba(234,212,180,0.22)', 'rgba(234,212,180,0.07)', 'transparent']}
+            locations={[0, 0.4, 0.75]}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={[styles.medallion, { borderColor: 'rgba(234,212,180,0.4)', backgroundColor: 'rgba(234,212,180,0.04)' }]}>
+            <View style={[styles.medallionInner, { borderColor: 'rgba(234,212,180,0.22)', backgroundColor: 'rgba(234,212,180,0.05)' }]}>
+              <RNImage
+                source={emblem ?? require('@/assets/images/icon-transparent.png')}
+                style={emblem ? [styles.emblem, { tintColor: SEAL_GOLD }] : styles.groundLogo}
+                onLoad={() => markDrawn('ground')}
+                onError={() => markDrawn('ground')}
+              />
+            </View>
+          </View>
+        </View>
       )}
 
-      {/* Gradient Overlay */}
+      {/* The words rest on the painting's darkened foot, deeper under a told story. */}
       <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.8)']}
-        locations={[0, 0.4, 1]}
+        colors={story
+          ? ['transparent', 'rgba(0,0,0,0.55)', 'rgba(0,0,0,0.9)']
+          : ['transparent', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.8)']}
+        locations={story ? [0, 0.3, 1] : [0, 0.4, 1]}
         style={styles.gradientOverlay}
       />
 
-      {/* Text Content */}
       <View style={styles.textContainer}>
-        {/* Title */}
-        <Text style={[styles.title, { color: noctalia.text.primary }]} numberOfLines={2}>
-          {dream.title}
-        </Text>
+        {dateLine ? (
+          <Text style={[styles.date, { color: noctalia.accent.base }]} numberOfLines={1}>
+            {dateLine}
+          </Text>
+        ) : null}
+
+        {title ? (
+          <Text style={[styles.title, { color: noctalia.text.primary }]} numberOfLines={story ? 2 : 3}>
+            {title}
+          </Text>
+        ) : null}
 
         {/* An original poetic line, identified separately from the dream transcript. */}
-        {dream.shareableQuote?.trim() ? (
+        {quote ? (
           <View>
             <Text style={[styles.quote, { color: noctalia.text.secondary }]} numberOfLines={4}>
-              “{dream.shareableQuote.trim()}”
+              “{quote}”
             </Text>
             {isPoeticDreamQuote(dream) ? (
               <Text style={[styles.quoteAttribution, { color: noctalia.text.secondary }]}>
@@ -94,18 +161,20 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
           </View>
         ) : null}
 
-        {/* Metadata */}
-        {metadataText && (
-          <Text style={[styles.metadata, { color: noctalia.text.tertiary }]} numberOfLines={1}>
-            {metadataText}
+        {/* The dream in the dreamer's own words, only when they choose to share it. */}
+        {story ? (
+          <Text style={[styles.story, { color: noctalia.text.secondary }]} numberOfLines={6}>
+            {story}
           </Text>
-        )}
+        ) : null}
 
         <View style={styles.footerContainer}>
           <Text style={[styles.footer, { color: noctalia.text.secondary }]}>{t('journal.detail.share_image.footer')}</Text>
           <RNImage
             source={require('@/assets/images/icon-transparent.png')}
             style={styles.footerLogo}
+            onLoad={() => markDrawn('logo')}
+            onError={() => markDrawn('logo')}
           />
         </View>
       </View>
@@ -125,8 +194,34 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  fallbackBackground: {
+  ground: {
     ...StyleSheet.absoluteFill,
+    alignItems: 'center',
+  },
+  medallion: {
+    marginTop: 150,
+    width: 460,
+    height: 460,
+    borderRadius: 230,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  medallionInner: {
+    width: 368,
+    height: 368,
+    borderRadius: 184,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emblem: {
+    width: 240,
+    height: 240,
+  },
+  groundLogo: {
+    width: 180,
+    height: 180,
   },
   gradientOverlay: {
     ...StyleSheet.absoluteFill,
@@ -140,11 +235,19 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
     paddingTop: 40,
   },
+  date: {
+    fontFamily: Fonts.outfit.medium,
+    fontSize: 26,
+    lineHeight: 34,
+    letterSpacing: 4,
+    marginBottom: 20,
+    textTransform: 'uppercase',
+  },
   title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 72,
-    marginBottom: 24,
-    lineHeight: 84,
+    fontFamily: Fonts.fraunces.semiBold,
+    fontSize: 76,
+    marginBottom: 28,
+    lineHeight: 86,
   },
   quote: {
     fontFamily: Fonts.lora.regularItalic,
@@ -153,16 +256,16 @@ const styles = StyleSheet.create({
     lineHeight: 52,
   },
   quoteAttribution: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 24,
     lineHeight: 32,
     marginBottom: 24,
   },
-  metadata: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 24,
-    marginBottom: 32,
-    textTransform: 'uppercase',
+  story: {
+    fontFamily: Fonts.lora.regular,
+    fontSize: 34,
+    lineHeight: 50,
+    marginBottom: 40,
   },
   footerContainer: {
     flexDirection: 'row',
@@ -171,7 +274,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   footer: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 34,
   },
   footerLogo: {

@@ -3,6 +3,7 @@ import { aiLanguageName, type AiLanguage, localizedForAi } from '../lib/aiLangua
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '../lib/dreamThemes.ts';
 import { CLAUDE_MODELS } from '../lib/models.ts';
+import { PLUS_DAILY_LIMITS, plusDailyLimitResponse } from '../lib/plusDailyLimits.ts';
 import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
 import { requestClaudeJson, runClaudeFirst } from '../services/claude.ts';
 import {
@@ -25,6 +26,7 @@ import {
   parseDreamTextInput,
 } from '../lib/aiRequestPolicy.ts';
 import { boundTranscriptForPrompt } from '../lib/prompts.ts';
+import { hashAnalysisTranscript } from '../lib/analysisTranscriptHash.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
 import { CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, CORE_REFLECTION_POLICY, runDreamAnalysis, normalizeAnalysisDreamType, DREAM_TYPE_POLICY } from '../services/dreamAnalysis.ts';
 
@@ -80,9 +82,11 @@ type AuthenticatedAnalysisQuotaClaim = {
   code?: string;
   tier?: string;
   limit?: number | null;
+  daily_limit?: number | null;
   new_count?: number;
   claimed?: boolean;
   claim_id?: string;
+  retry_after_seconds?: number;
 };
 
 const uuidPattern =
@@ -105,7 +109,7 @@ const toUuid = (value: unknown): string | null => {
   return uuidPattern.test(trimmed) ? trimmed : null;
 };
 
-const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response => {
+export const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response => {
   const used = toCount(claim.new_count);
   const limit = typeof claim.limit === 'number' ? claim.limit : null;
 
@@ -118,6 +122,14 @@ const quotaBlockedResponse = (claim: AuthenticatedAnalysisQuotaClaim): Response 
       }),
       { status: 429, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
+  }
+
+  if (claim.code === 'DAILY_ANALYSIS_LIMIT') {
+    return plusDailyLimitResponse({
+      code: claim.code,
+      dailyLimit: claim.daily_limit ?? PLUS_DAILY_LIMITS.analysis,
+      retryAfterSeconds: claim.retry_after_seconds,
+    });
   }
 
   if (isAuthenticatedAnalysisQuotaRetry(claim)) {
@@ -203,6 +215,7 @@ async function claimAuthenticatedAnalysisQuota({
   supabaseUrl,
   supabaseServiceRoleKey,
   transcript,
+  transcriptSha256,
   userId,
 }: {
   body: AnalyzeDreamBody;
@@ -210,6 +223,7 @@ async function claimAuthenticatedAnalysisQuota({
   supabaseUrl: string;
   supabaseServiceRoleKey?: string | null;
   transcript: string;
+  transcriptSha256: string;
   userId: string;
 }): Promise<{ response?: Response; quotaUsed?: { analysis: number }; tier?: string }> {
   if (!supabaseServiceRoleKey) {
@@ -238,11 +252,12 @@ async function claimAuthenticatedAnalysisQuota({
   }
 
   const { data: quotaResult, error: quotaError } = await adminClient.rpc(
-    'claim_authenticated_analysis_quota',
+    'claim_authenticated_analysis_quota_bound',
     {
       p_user_id: userId,
       p_dream_id: dreamId,
       p_analysis_request_id: analysisRequestId,
+      p_transcript_sha256: transcriptSha256,
     }
   );
 
@@ -254,14 +269,10 @@ async function claimAuthenticatedAnalysisQuota({
   }
 
   const claim = (quotaResult ?? {}) as AuthenticatedAnalysisQuotaClaim;
-  // The quota row already exists for this exact dream/request pair. Treat it
-  // as an idempotent retry: provider work may be repeated after a lost
-  // response, but quota consumption must not be repeated.
+  // A receipt is not a cached provider result. Replaying it would purchase
+  // another reading without another quota claim, so fail closed.
   if (isAuthenticatedAnalysisQuotaRetry(claim)) {
-    return {
-      quotaUsed: claim.new_count === undefined ? undefined : { analysis: toCount(claim.new_count) },
-      tier: claim.tier,
-    };
+    return { response: quotaBlockedResponse(claim) };
   }
   if (!claim.allowed) {
     console.log(`[api] ${route}: authenticated quota blocked before provider work`, {
@@ -291,6 +302,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
     const { transcript, lang, themes, knownSymbols } = parsedInput;
+    const transcriptSha256 = await hashAnalysisTranscript(body.transcript!);
     const { text: promptTranscript, truncated: truncatedForPrompt } = boundTranscriptForPrompt(transcript);
     const fingerprint = guestCheck.fingerprint;
 
@@ -320,7 +332,8 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
         route: '/analyzeDream',
         supabaseUrl,
         supabaseServiceRoleKey,
-        transcript,
+        transcript: body.transcript!,
+        transcriptSha256,
         userId: user.id,
       });
       if (quotaClaim.response) {
@@ -344,11 +357,30 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
         analysisRequestId: toUuid(body.analysisRequestId) ?? toUuid(body.requestId),
         fingerprint,
         limit: guestAnalysisLimit,
+        transcriptSha256,
       });
       if (guestQuota.response) return guestQuota.response;
       const quotaResult = guestQuota.claim;
 
+      if (quotaResult?.duplicate && quotaResult.code === 'ANALYSIS_ALREADY_CLAIMED') {
+        return new Response(JSON.stringify({
+          error: 'Analysis request was already used',
+          code: 'ANALYSIS_ALREADY_CLAIMED',
+        }), {
+          status: 409,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
       if (!quotaResult?.allowed) {
+        if (quotaResult?.code === 'ANALYSIS_TRANSCRIPT_MISMATCH') {
+          return new Response(JSON.stringify({
+            error: 'Analysis request transcript does not match its original claim',
+            code: 'ANALYSIS_TRANSCRIPT_MISMATCH',
+          }), {
+            status: 409,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
         const used = toCount((quotaResult as any)?.new_count);
         const effectiveLimit = typeof (quotaResult as any)?.limit === 'number'
           ? toCount((quotaResult as any).limit)
@@ -411,6 +443,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const invalidRequestId = validateAnalysisRequestId(body);
     if (invalidRequestId) return invalidRequestId;
     const { transcript, lang, themes, knownSymbols } = parsedInput;
+    const transcriptSha256 = await hashAnalysisTranscript(body.transcript!);
     const { text: promptTranscript, truncated: truncatedForPrompt } = boundTranscriptForPrompt(transcript);
 
     const admission = await admitSynchronousAiRequest({
@@ -435,7 +468,8 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       route: '/analyzeDreamFull',
       supabaseUrl,
       supabaseServiceRoleKey,
-      transcript,
+      transcript: body.transcript!,
+      transcriptSha256,
       userId: user!.id,
     });
     if (quotaClaim.response) {

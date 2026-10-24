@@ -152,7 +152,7 @@ const SealSign = memo(function SealSign({ theme, count, chosen, selected, label,
       {count > 0 ? (
         <View className="absolute items-center justify-center rounded-full bg-champagne"
           style={{ minWidth: 18, height: 18, paddingHorizontal: 4, right: -3, top: -3 }}>
-          <Text allowFontScaling={false} className="font-sans-bold text-[10px] leading-[12px] text-on-champagne">
+          <Text allowFontScaling={false} className="font-sans-bold text-[11px] leading-[13px] text-on-champagne">
             {count}
           </Text>
         </View>

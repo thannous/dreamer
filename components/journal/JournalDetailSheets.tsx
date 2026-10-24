@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
-import { ReferenceImagePicker } from '@/components/journal/ReferenceImagePicker';
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import {
   BottomSheetActions,
@@ -11,13 +10,12 @@ import {
   BottomSheetSecondaryAction,
 } from '@/components/ui/BottomSheetActions';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
-import { REFERENCE_IMAGES } from '@/constants/appConfig';
 import { QUOTAS } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import type { ReferenceImage, SubscriptionTier } from '@/lib/types';
+import type { SubscriptionTier } from '@/lib/types';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 /**
@@ -41,8 +39,6 @@ const NOTICE_TONE_CLASS: Record<AnalysisNoticeTone, string> = {
   error: 'bg-danger',
   info: 'bg-ink-soft',
 };
-
-type ReferenceSubjectType = 'person' | 'animal' | null;
 
 type QuotaMode = 'quota' | 'login';
 
@@ -479,60 +475,5 @@ export function ImageErrorSheet({
         <BottomSheetSecondaryAction label={t('common.cancel')} onPress={onClose} />
       </BottomSheetActions>
     </BottomSheet>
-  );
-}
-
-export function ReferenceImageSheet({
-  visible,
-  subjectType,
-  referenceImages,
-  isGenerating,
-  onClose,
-  onPrimary,
-  onSecondary,
-  onImagesSelected,
-}: {
-  visible: boolean;
-  subjectType: ReferenceSubjectType;
-  referenceImages: ReferenceImage[];
-  isGenerating: boolean;
-  onClose: () => void;
-  onPrimary: () => void;
-  onSecondary: () => void;
-  onImagesSelected: (images: ReferenceImage[]) => void;
-}) {
-  const { t } = useTranslation();
-
-  if (!subjectType) {
-    return null;
-  }
-
-  const primaryLabel = referenceImages.length >= REFERENCE_IMAGES.MAX_UPLOADS
-    ? t('reference_image.confirm')
-    : t('subject_proposition.accept');
-
-  return (
-    <StandardBottomSheet
-      visible={visible}
-      onClose={onClose}
-      title={subjectType === 'person'
-        ? t('reference_image.title_person')
-        : t('reference_image.title_animal')}
-      actions={{
-        primaryLabel,
-        onPrimary,
-        primaryDisabled: referenceImages.length === 0 || isGenerating,
-        primaryLoading: isGenerating,
-        secondaryLabel: t('subject_proposition.skip'),
-        onSecondary,
-      }}
-    >
-      <ReferenceImagePicker
-        active={visible}
-        subjectType={subjectType}
-        onImagesSelected={onImagesSelected}
-        maxImages={REFERENCE_IMAGES.MAX_UPLOADS}
-      />
-    </StandardBottomSheet>
   );
 }

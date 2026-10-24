@@ -8,6 +8,12 @@ const { renderAhrefsAnalyticsScript } = require('./lib/ahrefs-analytics');
 const { createRenderContext } = require('./lib/docs-components/context');
 const { renderFooter: renderSharedFooter } = require('./lib/docs-components/footer');
 const { renderNavigation } = require('./lib/docs-components/navigation');
+const {
+  getAndroidStoreUrl,
+  getCollectionLanguages,
+  getLanguageTag,
+  siteConfig,
+} = require('./lib/docs-site-config');
 const { renderViewTransitionHeadStyles } = require('./lib/docs-view-transitions');
 const { materializeGeneratedPage } = require('./lib/generated-page-writer');
 const {
@@ -34,6 +40,7 @@ const {
   getGeneratedSymbolImage,
   loadSymbolImageRegistry,
 } = require('./lib/symbol-image-assets');
+const { aliasWebLocales } = require('./lib/symbol-locales');
 
 const ROOT = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT, 'docs');
@@ -50,6 +57,7 @@ const SYMBOL_IMAGE_ALT_SUFFIX = {
   es: 'ilustración de símbolo onírico',
   fr: 'illustration de symbole onirique',
   it: 'illustrazione di simbolo onirico',
+  'pt-br': 'ilustração de símbolo onírico',
 };
 const DICTIONARY_EDITORIAL_ASSET_ID = 'editorial.dream-symbols-dictionary';
 const DICTIONARY_IMAGE_COPY = {
@@ -72,6 +80,10 @@ const DICTIONARY_IMAGE_COPY = {
   it: {
     alt: 'Un dizionario dei sogni aperto circondato da una chiave, un occhio, un albero, un’onda e una porta',
     caption: 'I simboli onirici diventano più utili quando sono collegati a emozioni, contesto e associazioni personali.',
+  },
+  'pt-br': {
+    alt: 'Um dicionário dos sonhos aberto, cercado por uma chave, um olho, uma árvore, uma onda e uma porta',
+    caption: 'Os símbolos dos sonhos ficam mais úteis quando ligados às emoções, ao contexto e às associações pessoais.',
   },
 };
 let IMAGE_SEO_REGISTRY = null;
@@ -121,17 +133,16 @@ function resolveSymbolCardImage(symbolId, explicitIllustration) {
   }
 }
 
-const SITE_CONFIG = fs.existsSync(path.join(DOCS_SRC_DIR, 'config', 'site.config.json'))
-  ? JSON.parse(fs.readFileSync(path.join(DOCS_SRC_DIR, 'config', 'site.config.json'), 'utf8'))
-  : { seoLinking: { featuredBlogEntries: [], featuredGuideEntries: [], featuredSymbols: [] } };
 const SITE_MANIFEST = fs.existsSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'))
   ? JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'), 'utf8'))
   : { collections: { blog: { entries: {} } } };
 
 // Guide pages (hub, dictionary, curations) only exist in the guide collection
-// languages. Languages with partial site coverage (e.g. pt-br) never get
-// guide pages nor guide hreflang alternates.
-const SUPPORTED_LANGS = SITE_CONFIG.collections?.guides?.languages || ['en', 'fr', 'es', 'de', 'it'];
+// languages, which also bound their hreflang and og:locale alternates.
+const SUPPORTED_LANGS = getCollectionLanguages('guides');
+// A guide language may have no blog (pt-br): its pages then never link to a
+// blog article, rather than linking to one in another language.
+const BLOG_LANGS = new Set(getCollectionLanguages('blog'));
 
 // Localized blog slug → article title (without the "| Noctalia" suffix), so
 // symbol cards can say which related article they link to.
@@ -189,8 +200,9 @@ const COPY = {
   en: { label: 'Dream Guides', title: 'Dream Guides & Symbol Meanings | Noctalia', desc: "Browse Noctalia's dream guides: the dictionary plus themed pages for common, scary, positive, water, people, places, and transformation dreams.", intro: 'Start with the full dream symbols dictionary, then explore themed guides that group related dream patterns and meanings.', dictionary: 'Dream Symbols Dictionary', openDictionary: 'Open dictionary', openGuide: 'Open guide', browseAll: 'Browse all dream guides' },
   fr: { label: 'Guides des rêves', title: 'Guides des rêves et symboles oniriques | Noctalia', desc: 'Explorez les guides des rêves de Noctalia : dictionnaire des symboles, thèmes fréquents, cauchemars, eau, personnes, lieux et transformation.', intro: 'Commencez par le dictionnaire complet des symboles, puis explorez des guides thématiques qui regroupent des motifs oniriques proches.', dictionary: 'Dictionnaire des symboles de rêves', openDictionary: 'Ouvrir le dictionnaire', openGuide: 'Ouvrir le guide', browseAll: 'Parcourir tous les guides des rêves' },
   es: { label: 'Guías de sueños', title: 'Guías de sueños y significados de símbolos | Noctalia', desc: 'Explora las guías de sueños de Noctalia: diccionario de símbolos, sueños frecuentes, pesadillas, agua, personas, lugares y transformación.', intro: 'Empieza por el diccionario completo de símbolos y luego entra en guías temáticas que agrupan patrones y significados relacionados.', dictionary: 'Diccionario de símbolos de sueños', openDictionary: 'Abrir diccionario', openGuide: 'Abrir guía', browseAll: 'Ver todas las guías de sueños' },
-  de: { label: 'Traumratgeber', title: 'Traumratgeber & Traumsymbole | Noctalia', desc: 'Entdecken Sie Noctalias Traumratgeber: Traumsymbole-Lexikon sowie Guides zu häufigen Träumen, Albträumen, Wasser, Personen, Orten und Wandel.', intro: 'Starten Sie mit dem vollständigen Traumsymbole-Lexikon und vertiefen Sie sich dann in thematische Ratgeber zu verwandten Traumthemen.', dictionary: 'Traumsymbole-Lexikon', openDictionary: 'Lexikon öffnen', openGuide: 'Ratgeber öffnen', browseAll: 'Alle Traumratgeber ansehen' },
+  de: { label: 'Traumratgeber', title: 'Traumratgeber & Traumsymbole | Noctalia', desc: 'Entdecke Noctalias Traumratgeber: Traumsymbole-Lexikon sowie Guides zu häufigen Träumen, Albträumen, Wasser, Personen, Orten und Wandel.', intro: 'Starte mit dem vollständigen Traumsymbole-Lexikon und vertiefe dich dann in thematische Ratgeber zu verwandten Traumthemen.', dictionary: 'Traumsymbole-Lexikon', openDictionary: 'Lexikon öffnen', openGuide: 'Ratgeber öffnen', browseAll: 'Alle Traumratgeber ansehen' },
   it: { label: 'Guide ai sogni', title: 'Guide ai sogni e significati dei simboli | Noctalia', desc: 'Esplora le guide ai sogni di Noctalia: dizionario dei simboli e percorsi su sogni comuni, incubi, acqua, persone, luoghi e trasformazione.', intro: 'Inizia dal dizionario completo dei simboli e poi approfondisci con guide tematiche che raggruppano schemi e significati collegati.', dictionary: 'Dizionario dei simboli dei sogni', openDictionary: 'Apri il dizionario', openGuide: 'Apri la guida', browseAll: 'Sfoglia tutte le guide ai sogni' },
+  'pt-br': { label: 'Guias dos sonhos', title: 'Guias dos sonhos e significados dos símbolos | Noctalia', desc: 'Explore os guias dos sonhos do Noctalia: o dicionário de símbolos e guias temáticos sobre sonhos comuns, pesadelos, água, pessoas, lugares e transformação.', intro: 'Comece pelo dicionário completo de símbolos e depois explore guias temáticos que reúnem padrões e significados de sonhos relacionados.', dictionary: 'Dicionário de símbolos dos sonhos', openDictionary: 'Abrir o dicionário', openGuide: 'Abrir o guia', browseAll: 'Ver todos os guias dos sonhos' },
 };
 
 const GUIDE_HUB_UI = {
@@ -202,7 +214,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: 'Choose your entry point',
     chooseIntro: 'Start with the dictionary or explore practical guides by theme.',
     featuredLabel: 'Dream dictionary',
-    dictionarySummary: 'Access our dictionary of 240 dream symbols with meanings and reflection prompts.',
+    dictionarySummary: 'Access our dictionary of {symbolCount} dream symbols with meanings and reflection prompts.',
     dictionaryCta: 'Consult the dictionary',
     trustVerified: 'Verified content',
     trustVerifiedDesc: 'Guides written with sleep and dream research references.',
@@ -226,7 +238,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: "Choisissez votre point d'entrée",
     chooseIntro: 'Commencez par le dictionnaire ou explorez nos guides pratiques par thématique.',
     featuredLabel: 'Dictionnaire des rêves',
-    dictionarySummary: 'Accédez à notre dictionnaire de 240 symboles de rêves avec significations et questions de réflexion.',
+    dictionarySummary: 'Accédez à notre dictionnaire de {symbolCount} symboles de rêves avec significations et questions de réflexion.',
     dictionaryCta: 'Consulter le dictionnaire',
     trustVerified: 'Contenus vérifiés',
     trustVerifiedDesc: 'Guides rédigés avec des références sur le rêve et le sommeil.',
@@ -250,7 +262,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: 'Elige tu punto de entrada',
     chooseIntro: 'Empieza por el diccionario o explora nuestras guías prácticas por tema.',
     featuredLabel: 'Diccionario de sueños',
-    dictionarySummary: 'Accede a nuestro diccionario de 240 símbolos de sueños con significados y preguntas de reflexión.',
+    dictionarySummary: 'Accede a nuestro diccionario de {symbolCount} símbolos de sueños con significados y preguntas de reflexión.',
     dictionaryCta: 'Consultar diccionario',
     trustVerified: 'Contenido verificado',
     trustVerifiedDesc: 'Guías basadas en referencias sobre sueños y sueño.',
@@ -268,13 +280,13 @@ const GUIDE_HUB_UI = {
   },
   de: {
     eyebrow: 'Traumratgeber',
-    heroIntro: 'Praktische Ratgeber, verständliche Wissenschaft und Schlüssel, um Ihre Träume zu verstehen und zu deuten.',
+    heroIntro: 'Praktische Ratgeber, verständliche Wissenschaft und Schlüssel, um deine Träume zu verstehen und zu deuten.',
     primaryCta: 'Ratgeber erkunden',
     secondaryCta: 'Lexikon',
-    chooseTitle: 'Wählen Sie Ihren Einstieg',
-    chooseIntro: 'Starten Sie im Lexikon oder erkunden Sie praktische Ratgeber nach Thema.',
+    chooseTitle: 'Wähle deinen Einstieg',
+    chooseIntro: 'Starte im Lexikon oder erkunde praktische Ratgeber nach Thema.',
     featuredLabel: 'Traumlexikon',
-    dictionarySummary: 'Öffnen Sie unser Lexikon mit 240 Traumsymbolen, Bedeutungen und Reflexionsfragen.',
+    dictionarySummary: 'Öffne unser Lexikon mit {symbolCount} Traumsymbolen, Bedeutungen und Reflexionsfragen.',
     dictionaryCta: 'Lexikon öffnen',
     trustVerified: 'Geprüfte Inhalte',
     trustVerifiedDesc: 'Ratgeber mit Bezügen zu Traum- und Schlafforschung.',
@@ -284,11 +296,11 @@ const GUIDE_HUB_UI = {
     trustAccessibleDesc: 'Klare und praktische Inhalte für jedes Niveau.',
     symbolCount: 'Symbole erklärt',
     pathSymbols: 'Symbole',
-    pathSymbolsDesc: 'Verstehen Sie die häufigsten Traumsymbole.',
+    pathSymbolsDesc: 'Verstehe die häufigsten Traumsymbole.',
     pathNightmares: 'Albträume',
-    pathNightmaresDesc: 'Entschlüsseln Sie nächtliche Ängste und lernen Sie damit umzugehen.',
+    pathNightmaresDesc: 'Entschlüssle nächtliche Ängste und lerne, damit umzugehen.',
     pathLucid: 'Klartraum',
-    pathLucidDesc: 'Lernen Sie, im Traum bewusst zu werden.'
+    pathLucidDesc: 'Lerne, im Traum bewusst zu werden.'
   },
   it: {
     eyebrow: 'Guide ai sogni',
@@ -298,7 +310,7 @@ const GUIDE_HUB_UI = {
     chooseTitle: 'Scegli il tuo punto di partenza',
     chooseIntro: 'Inizia dal dizionario o esplora le guide pratiche per tema.',
     featuredLabel: 'Dizionario dei sogni',
-    dictionarySummary: 'Accedi al dizionario con 240 simboli dei sogni, significati e domande di riflessione.',
+    dictionarySummary: 'Accedi al dizionario con {symbolCount} simboli dei sogni, significati e domande di riflessione.',
     dictionaryCta: 'Consulta il dizionario',
     trustVerified: 'Contenuti verificati',
     trustVerifiedDesc: 'Guide basate su riferimenti su sogni e sonno.',
@@ -313,6 +325,30 @@ const GUIDE_HUB_UI = {
     pathNightmaresDesc: 'Decifra le paure notturne per gestirle meglio.',
     pathLucid: 'Sogno lucido',
     pathLucidDesc: 'Impara a diventare consapevole e orientare i sogni.'
+  },
+  'pt-br': {
+    eyebrow: 'Guias dos sonhos',
+    heroIntro: 'Guias práticos, ciência acessível e chaves para entender, interpretar e trabalhar com os seus sonhos.',
+    primaryCta: 'Explorar os guias',
+    secondaryCta: 'Dicionário',
+    chooseTitle: 'Escolha por onde começar',
+    chooseIntro: 'Comece pelo dicionário ou explore os nossos guias práticos por tema.',
+    featuredLabel: 'Dicionário dos sonhos',
+    dictionarySummary: 'Acesse o nosso dicionário de {symbolCount} símbolos dos sonhos, com significados e perguntas para refletir.',
+    dictionaryCta: 'Consultar o dicionário',
+    trustVerified: 'Conteúdo verificado',
+    trustVerifiedDesc: 'Guias escritos com referências da pesquisa sobre sono e sonhos.',
+    trustUpdated: 'Atualização regular',
+    trustUpdatedDesc: 'Novos guias e pesquisas acrescentados com o tempo.',
+    trustAccessible: 'Acessível a todos',
+    trustAccessibleDesc: 'Conteúdo claro e prático para todos os níveis.',
+    symbolCount: 'símbolos explorados',
+    pathSymbols: 'Símbolos',
+    pathSymbolsDesc: 'Entenda o significado dos símbolos mais comuns nos sonhos.',
+    pathNightmares: 'Pesadelos',
+    pathNightmaresDesc: 'Decifre seus medos noturnos para lidar melhor com eles.',
+    pathLucid: 'Sonho lúcido',
+    pathLucidDesc: 'Aprenda a tomar consciência dos seus sonhos e a orientá-los.'
   }
 };
 
@@ -366,12 +402,12 @@ const GUIDE_HUB_BENTO_COPY = {
     { key: 'spirituality', label: 'Espiritualidad', title: 'Sueños y espiritualidad', desc: 'Explora la dimensión espiritual y simbólica de tus sueños.', tone: 'blue' }
   ],
   de: [
-    { key: 'understand', label: 'Praxisratgeber', title: 'Träume verstehen', desc: 'Die Grundlagen, um die Sprache Ihres Unbewussten zu entschlüsseln.', tone: 'salmon' },
-    { key: 'science', label: 'Wissenschaft', title: 'Schlaf und Träume', desc: 'Was die Wissenschaft über Ihre Nächte und Träume zeigt.', tone: 'violet' },
+    { key: 'understand', label: 'Praxisratgeber', title: 'Träume verstehen', desc: 'Die Grundlagen, um die Sprache deines Unbewussten zu entschlüsseln.', tone: 'salmon' },
+    { key: 'science', label: 'Wissenschaft', title: 'Schlaf und Träume', desc: 'Was die Wissenschaft über deine Nächte und Träume zeigt.', tone: 'violet' },
     { key: 'interpretation', label: 'Deutung', title: 'Deutungsmethoden', desc: 'Konkrete Techniken, um Träume genauer zu analysieren.', tone: 'rose' },
     { key: 'journal', label: 'Praxis', title: 'Traumtagebuch', desc: 'Methoden und Tipps für ein wirksames Traumtagebuch.', tone: 'gold' },
-    { key: 'emotions', label: 'Therapie', title: 'Träume und Gefühle', desc: 'Nutzen Sie Träume als Werkzeug für Erkenntnis und Wandel.', tone: 'green' },
-    { key: 'spirituality', label: 'Spiritualität', title: 'Träume und Spiritualität', desc: 'Erkunden Sie die spirituelle und symbolische Dimension Ihrer Träume.', tone: 'blue' }
+    { key: 'emotions', label: 'Therapie', title: 'Träume und Gefühle', desc: 'Nutze Träume als Werkzeug für Erkenntnis und Wandel.', tone: 'green' },
+    { key: 'spirituality', label: 'Spiritualität', title: 'Träume und Spiritualität', desc: 'Erkunde die spirituelle und symbolische Dimension deiner Träume.', tone: 'blue' }
   ],
   it: [
     { key: 'understand', label: 'Guida pratica', title: 'Comprendere i sogni', desc: "Le basi per decifrare il linguaggio dell'inconscio.", tone: 'salmon' },
@@ -380,6 +416,14 @@ const GUIDE_HUB_BENTO_COPY = {
     { key: 'journal', label: 'Pratica', title: 'Diario dei sogni', desc: 'Metodi e consigli per tenere un diario efficace.', tone: 'gold' },
     { key: 'emotions', label: 'Terapie', title: 'Sogni ed emozioni', desc: 'Usa i sogni come strumento di conoscenza e trasformazione.', tone: 'green' },
     { key: 'spirituality', label: 'Spiritualità', title: 'Sogni e spiritualità', desc: 'Esplora la dimensione spirituale e simbolica dei tuoi sogni.', tone: 'blue' }
+  ],
+  'pt-br': [
+    { key: 'understand', label: 'Guia prático', title: 'Entender seus sonhos', desc: 'Os fundamentos para decifrar a linguagem do seu inconsciente.', tone: 'salmon' },
+    { key: 'science', label: 'Ciência', title: 'O sono e os sonhos', desc: 'O que a ciência revela sobre suas noites e seus sonhos.', tone: 'violet' },
+    { key: 'interpretation', label: 'Interpretação', title: 'Métodos de interpretação', desc: 'Técnicas concretas para analisar seus sonhos com mais precisão.', tone: 'rose' },
+    { key: 'journal', label: 'Prática', title: 'Diário de sonhos', desc: 'Métodos e dicas para manter um diário eficaz.', tone: 'gold' },
+    { key: 'emotions', label: 'Terapias', title: 'Sonhos e emoções', desc: 'Use seus sonhos como ferramenta de autoconhecimento e transformação.', tone: 'green' },
+    { key: 'spirituality', label: 'Espiritualidade', title: 'Sonhos e espiritualidade', desc: 'Explore a dimensão espiritual e simbólica dos seus sonhos.', tone: 'blue' }
   ]
 };
 
@@ -410,12 +454,12 @@ const GUIDE_HUB_DEPTH_COPY = {
     ]
   },
   de: {
-    title: 'So nutzen Sie diese Ratgeber',
+    title: 'So nutzt du diese Ratgeber',
     paragraphs: [
-      'Ein Traumratgeber hilft am meisten, wenn Sie mit dem genauen Bild beginnen, das nach dem Aufwachen geblieben ist: ein Ort, ein Tier, eine Person, ein Gefühl oder eine wiederholte Handlung. Öffnen Sie das Lexikon für ein einzelnes Symbol und nutzen Sie die thematischen Ratgeber, wenn der Traum zu einem größeren Muster gehört, etwa Angst, Wandel, Wasser, Menschen oder vertrauten Orten.',
-      'Lesen Sie jede Deutung als Orientierung, nicht als endgültiges Urteil. Dasselbe Symbol kann je nach Traumgefühl, Ihrer Rolle in der Szene und Ihrer aktuellen Lebenslage Unterschiedliches bedeuten. Wasser kann zum Beispiel emotionale Überforderung, Erneuerung, Erinnerung oder Unsicherheit anzeigen, je nachdem ob Sie schwimmen, untergehen, Wellen beobachten oder einen Fluss überqueren.',
-      'Noch genauer wird die Deutung, wenn Sie den Ratgeber mit einem kurzen Traumtagebuch verbinden. Notieren Sie Datum, Hauptgefühl, stärkstes Bild und eine reale Situation, die zum Traum passen könnte. Muster werden über mehrere Nächte sichtbar, besonders bei wiederkehrenden Träumen, Albträumen oder Träumen, die während Stress, Prüfungen, Trauer, Beziehungswechseln oder kreativer Arbeit auftreten.',
-      'Gehen Sie vom Allgemeinen zum Konkreten: Wählen Sie zuerst ein Thema und öffnen Sie danach die Symbolseite, die zum stärksten Detail passt. So bleibt die Deutung geerdet und Sie vermeiden, jedem Traum dieselbe feste Bedeutung aufzuzwingen. Wenn ein Symbol mehrdeutig bleibt, vergleichen Sie es mit einem zweiten Motiv aus demselben Traum, statt sofort eine einzige Erklärung zu wählen. Das macht die Auswertung stabiler.'
+      'Ein Traumratgeber hilft am meisten, wenn du mit dem genauen Bild beginnst, das nach dem Aufwachen geblieben ist: ein Ort, ein Tier, eine Person, ein Gefühl oder eine wiederholte Handlung. Öffne das Lexikon für ein einzelnes Symbol und nutze die thematischen Ratgeber, wenn der Traum zu einem größeren Muster gehört, etwa Angst, Wandel, Wasser, Menschen oder vertrauten Orten.',
+      'Lies jede Deutung als Orientierung, nicht als endgültiges Urteil. Dasselbe Symbol kann je nach Traumgefühl, deiner Rolle in der Szene und deiner aktuellen Lebenslage Unterschiedliches bedeuten. Wasser kann zum Beispiel emotionale Überforderung, Erneuerung, Erinnerung oder Unsicherheit anzeigen, je nachdem ob du schwimmst, untergehst, Wellen beobachtest oder einen Fluss überquerst.',
+      'Noch genauer wird die Deutung, wenn du den Ratgeber mit einem kurzen Traumtagebuch verbindest. Notiere Datum, Hauptgefühl, stärkstes Bild und eine reale Situation, die zum Traum passen könnte. Muster werden über mehrere Nächte sichtbar, besonders bei wiederkehrenden Träumen, Albträumen oder Träumen, die während Stress, Prüfungen, Trauer, Beziehungswechseln oder kreativer Arbeit auftreten.',
+      'Geh vom Allgemeinen zum Konkreten: Wähle zuerst ein Thema und öffne danach die Symbolseite, die zum stärksten Detail passt. So bleibt die Deutung geerdet und du vermeidest, jedem Traum dieselbe feste Bedeutung aufzuzwingen. Wenn ein Symbol mehrdeutig bleibt, vergleiche es mit einem zweiten Motiv aus demselben Traum, statt sofort eine einzige Erklärung zu wählen. Das macht die Auswertung stabiler.'
     ]
   },
   it: {
@@ -425,12 +469,21 @@ const GUIDE_HUB_DEPTH_COPY = {
       "Leggi ogni interpretazione come una mappa, non come una sentenza. Lo stesso simbolo può cambiare significato in base all'emozione provata, al ruolo che avevi nella scena e a ciò che accade nella vita da sveglio. Sognare acqua, per esempio, può indicare sovraccarico emotivo, rinnovamento, memoria o incertezza a seconda che tu stia nuotando, affondando, guardando onde o attraversando un fiume.",
       'Per una lettura più precisa, confronta la guida con una breve nota nel diario dei sogni. Segna la data, l’emozione principale, l’immagine più forte e una situazione reale che potrebbe risuonare con il sogno. I pattern diventano più chiari su più notti, soprattutto con sogni ricorrenti, incubi o sogni legati a stress, esami, lutti, cambiamenti nelle relazioni o lavoro creativo.'
     ]
+  },
+  'pt-br': {
+    title: 'Como usar estes guias',
+    paragraphs: [
+      'Um guia dos sonhos funciona melhor quando você parte da imagem exata que ficou na memória ao acordar: um lugar, um animal, uma pessoa, uma sensação ou uma ação repetida. Abra o dicionário quando precisar de um símbolo preciso e use os guias temáticos quando o sonho fizer parte de um padrão mais amplo, como medo, transformação, água, pessoas ou lugares conhecidos.',
+      'Leia cada interpretação como um mapa, não como um veredito. O mesmo símbolo pode apontar para sentidos diferentes conforme a emoção que você sentiu no sonho, o papel que teve na cena e o que está acontecendo na sua vida desperta. Sonhar com água, por exemplo, pode sugerir sobrecarga emocional, renovação, memória ou incerteza, dependendo de você estar nadando, se afogando, olhando as ondas ou atravessando um rio.',
+      'Para uma leitura mais precisa, compare o guia com uma nota curta no seu diário de sonhos. Anote a data, a emoção principal, a imagem mais forte e uma situação real que possa ecoar o sonho. Os padrões ficam mais claros ao longo de várias noites, principalmente nos sonhos recorrentes, nos pesadelos ou nos sonhos que aparecem em fases de estresse, provas, luto, mudanças nos relacionamentos ou trabalho criativo.',
+      'Vá do geral para o específico: escolha primeiro um tema e depois abra a página do símbolo que corresponde ao detalhe de que você se lembra com mais clareza. Assim a interpretação fica ancorada no seu sonho e você evita impor um único significado fixo a todos os sonhos.'
+    ]
   }
 };
 
 const CATEGORY_ORDER = ['nature', 'animals', 'body', 'places', 'objects', 'actions', 'people', 'celestial'];
 const CATEGORY_COLORS = { nature: '#4ade80', animals: '#fbbf24', body: '#f87171', places: '#60a5fa', objects: '#c084fc', actions: '#fb923c', people: '#f472b6', celestial: '#818cf8' };
-const SYMBOL_PATHS = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
+const SYMBOL_PATHS = siteConfig.symbolsPath;
 const DICTIONARY_UI_COPY = {
   en: {
     categoriesShort: 'categories',
@@ -532,13 +585,63 @@ const DICTIONARY_UI_COPY = {
     relatedArticleLabel: 'Articolo correlato:',
     relatedGuideLabel: 'Guida correlata:',
   },
+  'pt-br': {
+    categoriesShort: 'categorias',
+    quickBrowseHelp: 'Escolha uma categoria ou use o A-Z para ir direto ao símbolo certo.',
+    clearSearch: 'Limpar a busca',
+    activeSearchLabel: 'Busca ativa',
+    backToTop: 'Voltar ao topo',
+    methodologyLink: 'Como este catálogo é mantido',
+    storeCta: 'Instalar o Noctalia grátis',
+    detailsCta: 'Veja como o Noctalia usa o seu contexto',
+    platformNote: 'Android 13+ · Conta gratuita · Compras opcionais no aplicativo',
+    proofItems: [
+      { icon: 'mic-2', title: 'Voz ou texto', text: 'Registre um sonho em segundos.' },
+      { icon: 'sparkles', title: 'Leitura pessoal', text: 'Símbolos, emoções e contexto juntos.' },
+      { icon: 'infinity', title: 'Registros de sonhos ilimitados', text: 'Com uma conta gratuita.' },
+    ],
+    privacyLink: 'Ler a política de privacidade',
+    viewSymbolCta: 'Ver o símbolo',
+    relatedArticleLabel: 'Artigo relacionado:',
+    relatedGuideLabel: 'Guia relacionado:',
+    alphabetLabel: 'Alfabeto',
+  },
 };
 
 function readJson(fileName) {
   return JSON.parse(fs.readFileSync(path.join(DATA_DIR, fileName), 'utf8'));
 }
 
-// Cached across the 5 language builds — the extended catalog is ~1.6 MB.
+// The copy writes {symbolCount}; the number comes from the catalog, so it never goes stale.
+function withSymbolCount(value, count) {
+  if (typeof value === 'string') return value.replaceAll('{symbolCount}', String(count));
+  if (Array.isArray(value)) return value.map((item) => withSymbolCount(item, count));
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, withSymbolCount(item, count)]));
+  }
+  return value;
+}
+
+// The catalogs key Brazilian Portuguese as `pt`; aliasWebLocales gives each
+// record a read-only `pt-br` alias, so `record[lang]` works for every guide
+// language without copying or reshaping the data.
+function readSymbolCatalog() {
+  const catalog = readJson('dream-symbols.json');
+  for (const symbol of catalog.symbols || []) aliasWebLocales(symbol);
+  for (const category of Object.values(catalog.categories || {})) aliasWebLocales(category);
+  return catalog;
+}
+
+function readCurationPages() {
+  const pages = readJson('curation-pages.json').pages || [];
+  for (const page of pages) {
+    aliasWebLocales(page);
+    aliasWebLocales(page.slugs);
+  }
+  return pages;
+}
+
+// Cached across the language builds — the extended catalog is several MB.
 let EXTENDED_SYMBOLS_CACHE = null;
 function readExtendedSymbols() {
   if (!EXTENDED_SYMBOLS_CACHE) {
@@ -547,6 +650,7 @@ function readExtendedSymbols() {
     } catch {
       EXTENDED_SYMBOLS_CACHE = {};
     }
+    for (const entry of Object.values(EXTENDED_SYMBOLS_CACHE)) aliasWebLocales(entry);
   }
   return EXTENDED_SYMBOLS_CACHE;
 }
@@ -578,11 +682,6 @@ function homeUrl(lang) {
 
 function homePath(lang) {
   return lang === 'en' ? '/' : `/${lang}/`;
-}
-
-function getAndroidStoreUrl(lang) {
-  const base = SITE_CONFIG.storeLinks?.androidBase || 'https://play.google.com/store/apps/details?id=com.tanuki75.noctalia';
-  return `${base}&hl=${lang}`;
 }
 
 function getManagedPagePath(entryId, lang, fallback = homePath(lang)) {
@@ -1133,11 +1232,17 @@ const GUIDE_HUB_MEANINGS_SLUGS = {
   it: 'significati-dei-sogni-interpretazione-e-simboli'
 };
 
+// A blog card exists only where that language has the article: a language
+// without a blog (pt-br) drops the card instead of linking elsewhere.
+function guideHubBlogHref(lang, slugs) {
+  return BLOG_LANGS.has(lang) && slugs[lang] ? `/${lang}/blog/${slugs[lang]}` : null;
+}
+
 function resolveGuideHubCardHref(lang, t, pages, card) {
-  if (card.key === 'science') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.sleepScience[lang]}`;
-  if (card.key === 'journal') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.journal[lang]}`;
-  if (card.key === 'emotions') return `/${lang}/blog/${GUIDE_HUB_BLOG_SLUGS.emotions[lang]}`;
-  if (card.key === 'interpretation') return `/${lang}/blog/${GUIDE_HUB_MEANINGS_SLUGS[lang] || GUIDE_HUB_MEANINGS_SLUGS.en}`;
+  if (card.key === 'science') return guideHubBlogHref(lang, GUIDE_HUB_BLOG_SLUGS.sleepScience);
+  if (card.key === 'journal') return guideHubBlogHref(lang, GUIDE_HUB_BLOG_SLUGS.journal);
+  if (card.key === 'emotions') return guideHubBlogHref(lang, GUIDE_HUB_BLOG_SLUGS.emotions);
+  if (card.key === 'interpretation') return guideHubBlogHref(lang, GUIDE_HUB_MEANINGS_SLUGS);
   if (card.key === 'spirituality') {
     const page = pages.find((candidate) => candidate.id === 'death-transformation-dreams') || pages[5] || pages[0];
     return `/${lang}/guides/${page.slugs[lang]}`;
@@ -1169,6 +1274,7 @@ function cardBackgroundVariant(src) {
 
 function renderHubBentoCard(lang, t, pages, card) {
   const href = resolveGuideHubCardHref(lang, t, pages, card);
+  if (!href) return null;
   return `                <a href="${href}" class="guides-card" data-tone="${card.tone}" style="--guide-image: url('${guideHubCardImage(card)}')">
                     <span>
                         <span class="guides-card-kicker">${escapeHtml(card.label)}</span>
@@ -1194,7 +1300,7 @@ ${copy.paragraphs.map((paragraph) => `                    <p>${escapeHtml(paragr
 
 function generateHubPage(lang, t, pages, version) {
   const copy = COPY[lang];
-  const ui = GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en;
+  const ui = withSymbolCount(GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en, readSymbolCatalog().symbols.length);
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
   const socialTitle = copy.title;
   const socialDescription = copy.desc;
@@ -1212,7 +1318,10 @@ function generateHubPage(lang, t, pages, version) {
         mobileSizes: '100vw',
       })
     : '';
-  const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en).map((card) => renderHubBentoCard(lang, t, pages, card)).join('\n');
+  const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en)
+    .map((card) => renderHubBentoCard(lang, t, pages, card))
+    .filter(Boolean)
+    .join('\n');
   const itemList = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -1222,10 +1331,10 @@ function generateHubPage(lang, t, pages, version) {
       ...pages.map((page, index) => ({ '@type': 'ListItem', position: index + 2, url: `${DOMAIN}/${lang}/guides/${page.slugs[lang]}`, name: page[lang].title })),
     ],
   };
-  const collection = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: copy.label, headline: copy.label, description: copy.desc, url: `${DOMAIN}/${lang}/guides/`, inLanguage: lang, ...(pageIllustration ? { primaryImageOfPage: { '@type': 'ImageObject', url: socialImage, width: socialImageWidth, height: socialImageHeight } } : {}) };
+  const collection = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: copy.label, headline: copy.label, description: copy.desc, url: `${DOMAIN}/${lang}/guides/`, inLanguage: getLanguageTag(lang), ...(pageIllustration ? { primaryImageOfPage: { '@type': 'ImageObject', url: socialImage, width: socialImageWidth, height: socialImageHeight } } : {}) };
   const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: t.home, item: homeUrl(lang) }, { '@type': 'ListItem', position: 2, name: copy.label, item: `${DOMAIN}/${lang}/guides/` }] };
   return `<!DOCTYPE html>
-<html lang="${lang}" class="scroll-smooth">
+<html lang="${getLanguageTag(lang)}" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1233,7 +1342,7 @@ function generateHubPage(lang, t, pages, version) {
     <title>${escapeHtml(copy.title)}</title>
     <meta name="description" content="${escapeHtml(copy.desc)}">
     <link rel="canonical" href="${DOMAIN}/${lang}/guides/">
-${SUPPORTED_LANGS.map((targetLang) => `    <link rel="alternate" hreflang="${targetLang}" href="${DOMAIN}/${targetLang}/guides/">`).join('\n')}
+${SUPPORTED_LANGS.map((targetLang) => `    <link rel="alternate" hreflang="${getLanguageTag(targetLang)}" href="${DOMAIN}/${targetLang}/guides/">`).join('\n')}
     <link rel="alternate" hreflang="x-default" href="${DOMAIN}/en/guides/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="64x64 48x48 32x32 16x16">
@@ -2704,7 +2813,7 @@ function renderAlphaItem(letter, presentLetters, cls, indent, anchorExtra = '') 
     : `${indent}<span class="${cls} is-empty" aria-hidden="true">${letter}</span>`;
 }
 
-const OG_LOCALES = { en: 'en_US', fr: 'fr_FR', es: 'es_ES', de: 'de_DE', it: 'it_IT' };
+const OG_LOCALES = siteConfig.localeCodes;
 const CATEGORY_ICONS = { nature: 'leaf', animals: 'paw-print', body: 'user', places: 'home', objects: 'package', actions: 'zap', people: 'users', celestial: 'star' };
 
 function generateDictionaryPage(lang, t) {
@@ -2712,10 +2821,10 @@ function generateDictionaryPage(lang, t) {
   const uiCopy = DICTIONARY_UI_COPY[lang] || DICTIONARY_UI_COPY.en;
   const version = readVersion();
   const dictContent = readJson('dictionary-content.json');
-  const dc = dictContent[lang];
-  const symbolsData = readJson('dream-symbols.json');
+  const symbolsData = readSymbolCatalog();
+  const dc = withSymbolCount(dictContent[lang], symbolsData.symbols.length);
   const i18n = readJson('symbol-i18n.json');
-  const pages = readJson('curation-pages.json').pages || [];
+  const pages = readCurationPages();
   const symbolPath = SYMBOL_PATHS[lang];
 
   const canonical = `${DOMAIN}/${lang}/guides/${t.dictionary_slug}`;
@@ -2879,7 +2988,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
         : null;
       const relatedGuideSlug = relatedGuidePage?.slugs?.[lang];
       const relatedGuideTitle = normalizePageTitle(relatedGuidePage?.[lang]?.title);
-      const relatedArticle = sym.relatedArticles?.[lang];
+      const relatedArticle = BLOG_LANGS.has(lang) ? sym.relatedArticles?.[lang] : null;
       let relatedArticleHtml = '';
       if (relatedGuideSlug && relatedGuideTitle) {
         relatedArticleHtml = `
@@ -2947,6 +3056,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
     es: { atlas: 'Atlas onírico', guide: 'Busca, filtra y abre el símbolo que coincide con tu sueño.' },
     de: { atlas: 'Traumatlas', guide: 'Suche, filtere und öffne das Symbol, das zu deinem Traum passt.' },
     it: { atlas: 'Atlante onirico', guide: 'Cerca, filtra e apri il simbolo che corrisponde al tuo sogno.' },
+    'pt-br': { atlas: 'Atlas onírico', guide: 'Busque, filtre e abra o símbolo que corresponde ao seu sonho.' },
   }[lang] || {};
 
   // ── Build FAQ HTML ───────────────────────────────────────────────────
@@ -2992,7 +3102,8 @@ ${priorityLinks.map((item) => `                    <a href="${escapeHtml(item.hr
             </section>` : '';
 
   const productDetailsPath = getManagedPagePath('page.ai-dream-interpretation-app', lang);
-  const methodologyPath = getManagedPagePath('page.dream-content-methodology', lang);
+  // No fallback: a language without the methodology page (pt-br) omits the link.
+  const methodologyPath = getManagedPagePath('page.dream-content-methodology', lang, null);
   const privacyPath = getManagedPagePath('legal.privacy', lang);
   const conversionProofsHtml = (uiCopy.proofItems || []).map((item) => `
                     <li class="dictionary-proof-item">
@@ -3018,8 +3129,8 @@ ${priorityLinks.map((item) => `                    <a href="${escapeHtml(item.hr
                 <ul class="dictionary-proof-list">
 ${conversionProofsHtml}
                 </ul>
-                <div class="dictionary-conversion-links">
-                    <a href="${escapeHtml(methodologyPath)}">${escapeHtml(uiCopy.methodologyLink)}</a>
+                <div class="dictionary-conversion-links">${methodologyPath ? `
+                    <a href="${escapeHtml(methodologyPath)}">${escapeHtml(uiCopy.methodologyLink)}</a>` : ''}
                     <a href="${escapeHtml(privacyPath)}">${escapeHtml(uiCopy.privacyLink)}</a>
                 </div>
             </section>`;
@@ -3044,7 +3155,7 @@ ${conversionProofsHtml}
       width: ogImageWidth,
       height: ogImageHeight,
     },
-    inLanguage: lang,
+    inLanguage: getLanguageTag(lang),
     isPartOf: { '@type': 'CollectionPage', name: copy.label, url: guidesUrl },
   };
   const faqPageLd = {
@@ -3068,7 +3179,7 @@ ${conversionProofsHtml}
 
   // ── Build hreflang links ─────────────────────────────────────────────
   const hreflangLinks = SUPPORTED_LANGS.map((targetLang) =>
-    `    <link rel="alternate" hreflang="${targetLang}" href="${DOMAIN}/${targetLang}/guides/${i18n[targetLang].dictionary_slug}">`
+    `    <link rel="alternate" hreflang="${getLanguageTag(targetLang)}" href="${DOMAIN}/${targetLang}/guides/${i18n[targetLang].dictionary_slug}">`
   ).join('\n');
 
   // ── Build OG locale alternates ───────────────────────────────────────
@@ -3079,7 +3190,7 @@ ${conversionProofsHtml}
 
   // ── Assemble full HTML ───────────────────────────────────────────────
   return `<!DOCTYPE html>
-<html lang="${lang}" class="scroll-smooth">
+<html lang="${getLanguageTag(lang)}" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -3465,7 +3576,7 @@ ${renderMobileAlphaHtml(letters, lang)}
             <!-- Browse by Category -->
 ${renderSidebarHtml(lang, t, counts, letters)}
             <section id="categoryGridSection" class="quick-browse-panel glass-panel rounded-3xl">
-                <div class="quick-browse-alpha letter-nav" aria-label="Alphabet">
+                <div class="quick-browse-alpha letter-nav" aria-label="${escapeHtml(uiCopy.alphabetLabel || 'Alphabet')}">
 ${quickBrowseAlphaLinks}
                 </div>
                 <div class="quick-browse-copy">
@@ -3531,14 +3642,14 @@ ${faqHtml}
                 <p class="dictionary-platform-note">${escapeHtml(uiCopy.platformNote)}</p>
             </aside>
 
-            <!-- Related Articles -->
+${relatedHtml ? `            <!-- Related Articles -->
             <section class="dictionary-related-section mt-16 mx-auto">
                 <h2 class="font-serif text-2xl text-dream-cream mb-8">${escapeHtml(dc.related_heading)}</h2>
                 <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
 ${relatedHtml}
                 </div>
             </section>
-
+` : ''}
         </div>
     </main>
 
@@ -3686,6 +3797,7 @@ ${symbolCatEntries}
               lang === 'es' ? 'resultado(s)' :
               lang === 'de' ? 'Treffer' :
               lang === 'it' ? 'risultato/i' :
+              lang === 'pt-br' ? 'resultado(s)' :
               'result(s)'
             )};
 
@@ -3933,11 +4045,12 @@ ${symbolCatEntries}
 function main() {
   const version = readVersion();
   const i18n = readJson('symbol-i18n.json');
-  const pages = readJson('curation-pages.json').pages || [];
+  const pages = readCurationPages();
   let hubs = 0;
   let dictionaries = 0;
   for (const lang of SUPPORTED_LANGS) {
     const hubPath = path.join(DOCS_DIR, lang, 'guides', 'index.html');
+    if (!DRY_RUN) fs.mkdirSync(path.dirname(hubPath), { recursive: true });
     const hubResult = materializeGeneratedPage({
       filePath: hubPath,
       renderedHtml: generateHubPage(lang, i18n[lang], pages, version),

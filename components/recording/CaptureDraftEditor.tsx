@@ -1,11 +1,13 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { DreamLengthCounter } from '@/components/recording/DreamLengthCounter';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import type { CaptureEditableDraft } from '@/lib/captureEditableDraft';
+import { serializeCaptureEditableDraft, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
+import { getDreamTextInputLimit } from '@/lib/dreamTextLimit';
 
 export function CaptureDraftEditor({ draft, disabled, onChange, onClose }: {
   draft: CaptureEditableDraft;
@@ -16,6 +18,8 @@ export function CaptureDraftEditor({ draft, disabled, onChange, onClose }: {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const theme = getNoctaliaDesignTokens(colors, mode);
+  // The sections and their questions make one dream: each section may grow only by what the dream has left.
+  const total = serializeCaptureEditableDraft(draft).length;
   return <View testID="capture-draft-editor">
     <View style={styles.header}>
       <Text accessibilityRole="header" style={[styles.title, { color: theme.text.primary }]}>{t('recording.adjust.title')}</Text>
@@ -35,6 +39,7 @@ export function CaptureDraftEditor({ draft, disabled, onChange, onClose }: {
             style={[styles.input, styles.measurement]}>{(section.text || placeholder) + '\u200b'}</Text>
           <TextInput multiline scrollEnabled={false} textAlignVertical="top" editable={!disabled} autoFocus={false}
             value={section.text} onChangeText={text => onChange(index, text)} placeholder={placeholder}
+            maxLength={section.text.length + getDreamTextInputLimit(total) - total}
             placeholderTextColor={theme.text.secondary} selectionColor={theme.accent.base} underlineColorAndroid="transparent"
             accessibilityLabel={index === 0 ? label : `${t('recording.adjust.answer_label')} ${label}`}
             style={[styles.input, styles.overlay, { color: theme.text.primary }]}
@@ -42,16 +47,17 @@ export function CaptureDraftEditor({ draft, disabled, onChange, onClose }: {
         </View>
       </View>;
     })}
+    <DreamLengthCounter length={total} />
   </View>;
 }
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
-  title: { flex: 1, fontFamily: Fonts.spaceGrotesk.medium, fontSize: 23, lineHeight: 30 },
+  title: { flex: 1, fontFamily: Fonts.outfit.medium, fontSize: 23, lineHeight: 30 },
   close: { minHeight: 48, minWidth: 48, alignItems: 'center', justifyContent: 'center' },
-  hint: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 22, marginBottom: 12 },
+  hint: { fontFamily: Fonts.outfit.regular, fontSize: 15, lineHeight: 22, marginBottom: 12 },
   section: { paddingVertical: 22, gap: 6 },
-  question: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 15, lineHeight: 23 },
+  question: { fontFamily: Fonts.outfit.regular, fontSize: 15, lineHeight: 23 },
   editor: { position: 'relative' },
   input: { fontFamily: Fonts.lora.regular, fontSize: 21, lineHeight: 32, paddingHorizontal: 0, paddingVertical: 6, minHeight: 48, borderWidth: 0, includeFontPadding: false },
   measurement: { opacity: 0 },

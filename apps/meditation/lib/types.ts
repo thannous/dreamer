@@ -10,7 +10,6 @@ export const SHIPPED_LANGUAGES = [
   'it',
   'pt',
 ] as const satisfies readonly AppLanguage[];
-export type ShippedLanguage = (typeof SHIPPED_LANGUAGES)[number];
 
 export type PracticeGoal =
   | 'sleep'

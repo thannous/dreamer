@@ -139,8 +139,20 @@ function ensureLocalizedEntry(pageId, label, manifestIndex, checkedPageIds, erro
     return record;
   }
 
+  // Hubs interconnect the blog languages: every member exists in exactly those, except the
+  // entries of a collection published in more languages (the symbols and guides also exist in
+  // pt-br), which carry those extra locales outside the hub.
   const localeKeys = Object.keys(locales);
-  if (!hasExactlyExpectedLanguages(localeKeys)) {
+  const collectionLanguages = getCollectionLanguages(record.collectionId);
+  const extrasAllowed = localeKeys
+    .filter((lang) => !EXPECTED_LANGUAGES.includes(lang))
+    .every(
+      (lang) =>
+        record.collectionId !== 'blog' &&
+        collectionLanguages.includes(lang) &&
+        SITE_LANGUAGES.includes(lang)
+    );
+  if (!EXPECTED_LANGUAGES.every((lang) => localeKeys.includes(lang)) || !extrasAllowed) {
     errors.push(`pageId "${pageId}" must exist in exactly ${EXPECTED_LANGUAGES.join(', ')}`);
   }
 

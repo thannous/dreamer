@@ -12,6 +12,7 @@ import { buildDraftDream } from '@/lib/dreamUtils';
 import { GuestDreamLimitError } from '@/lib/errors';
 import { canImportNotificationDream, notificationDreamScope } from '@/lib/notificationDreamCapture';
 import { createScopedLogger } from '@/lib/logger';
+import { isSiriDreamCapture } from '@/lib/siriDreamCapture';
 import {
   claimNotificationDreams,
   rememberNotificationDreamScope,
@@ -19,6 +20,7 @@ import {
   removeImportedNotificationDreams,
   subscribeNotificationDreamInbox,
 } from '@/services/notificationDreamInbox';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { registerDreamCaptureBackgroundTask } from '@/services/notificationDreamTask';
 import { ensureDreamCaptureReplyAction } from '@/services/notificationService';
 
@@ -98,13 +100,18 @@ export function useNotificationDreamImport(): void {
           );
           if (!alreadySaved) {
             try {
-              await addDream({
+              const saved = await addDream({
                 ...buildDraftDream(capture.text, {
                   defaultTitle: t('recording.draft.default_title'),
                   now: () => capture.capturedAt,
                 }),
                 clientRequestId: capture.clientRequestId,
               });
+              // Told to Siri: a voice capture. A notification reply may be typed or
+              // dictated by the keyboard, which nothing here can tell.
+              if (isSiriDreamCapture(capture)) {
+                recordBadgeEvent({ type: 'dream_saved', dream: saved, voiced: true, answered: false });
+              }
             } catch (error) {
               // Kept in the inbox (a full guest journal, a storage error): the
               // next launch or return to the app tries again.

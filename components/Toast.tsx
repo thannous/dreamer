@@ -118,7 +118,7 @@ export const Toast: React.FC<ToastProps> = ({
       <Text
         className={
           compact
-            ? 'text-left text-[12px] leading-4 font-sans-medium'
+            ? 'text-left text-caption leading-4 font-sans-medium'
             : 'text-center text-body-sm font-sans-medium'
         }
         style={{ color: textColor }}

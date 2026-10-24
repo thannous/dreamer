@@ -1,5 +1,9 @@
 /* @jest-environment jsdom */
 
+import React from 'react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+
 jest.mock('@/lib/storeReview', () => ({
   canOpenStoreReviewPage: () => false,
   markStoreReviewPaywallSeen: jest.fn(),
@@ -8,10 +12,6 @@ jest.mock('@/lib/storeReview', () => ({
   requestStoreReviewIfDue: jest.fn(async () => false),
 }));
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-
-import React from 'react';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 afterEach(() => {
   cleanup();
@@ -152,10 +152,10 @@ jest.doMock('@/hooks/useTranslation', () => ({
 jest.doMock('@/constants/theme', () => ({
   Fonts: {
     fraunces: { semiBold: 'Fraunces-SemiBold', medium: 'Fraunces-Medium' },
-    spaceGrotesk: {
-      regular: 'SpaceGrotesk-Regular',
-      medium: 'SpaceGrotesk-Medium',
-      bold: 'SpaceGrotesk-Bold',
+    outfit: {
+      regular: 'Outfit-Regular',
+      medium: 'Outfit-Medium',
+      bold: 'Outfit-Bold',
     },
   },
 }));
@@ -179,10 +179,6 @@ jest.doMock('@/components/inspiration/PageHeader', () => ({
 
 jest.doMock('@/components/NoctaliaScreenHeader', () => ({
   NoctaliaScreenHeader: ({ titleKey, actions = [] }: any) => <div>{titleKey}{actions.map((action: any) => <button key={action.testID} data-testid={action.testID} onClick={action.onPress} />)}</div>,
-}));
-
-jest.doMock('@/components/inspiration/SectionHeading', () => ({
-  SectionHeading: () => <div data-testid="section-heading" />,
 }));
 
 jest.doMock('@/components/inspiration/GlassCard', () => ({
@@ -251,7 +247,7 @@ jest.doMock('@/components/quota/QuotaStatusCard', () => ({
     <button data-testid="quota-status-card" onClick={onUpgradePress}>subscription-options</button>,
 }));
 
-// Billing behavior is exercised by e2e/web/billing.spec.ts; this suite isolates the settings host.
+// Billing behavior is exercised by tools/e2e/tests/dreamer-billing.web.e2e.ts; this suite isolates the settings host.
 jest.doMock('@/components/subscription/SubscriptionQALab', () => ({
   SubscriptionQALab: () => null,
 }));
@@ -279,13 +275,6 @@ jest.doMock('@/components/settings/SettingsFieldGroup', () => ({
 
 jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => <span data-testid="icon-symbol" />,
-}));
-
-jest.doMock('@/services/voiceLiveSpikeStorage', () => ({
-  loadDebugEnabled: jest.fn(async () => false),
-  loadFeatureEnabled: jest.fn(async () => false),
-  saveDebugEnabled: jest.fn(async () => undefined),
-  saveFeatureEnabled: jest.fn(async () => undefined),
 }));
 
 jest.doMock('@/services/quota/GuestDreamCounter', () => ({
@@ -404,7 +393,6 @@ describe('Settings screen', () => {
   });
 });
 
-
 it.each([true, false])('returns to the calling screen with a safe direct-link fallback (history=%s)', (hasHistory: boolean) => {
   mockCanGoBack = hasHistory;
   mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
@@ -414,14 +402,12 @@ it.each([true, false])('returns to the calling screen with a safe direct-link fa
   else expect(mockReplace).toHaveBeenCalledWith('/');
 });
 
-
 it('opens the account form for the drawer sign-in entry', () => {
   mockParams = { auth: 'signin' };
   mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
   render(<SettingsScreen />);
   expect(mockInitialAccountSheetOpen).toBe(true);
 });
-
 
 it('includes subscription access in the account without general preferences', () => {
   mockParams = { section: 'account' };

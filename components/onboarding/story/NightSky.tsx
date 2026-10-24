@@ -1,13 +1,14 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useMemo } from 'react';
-import { StyleSheet, View, useWindowDimensions, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { EASE } from '@/components/motion';
 
 import { STORY } from './storyMotion';
+import { useContentWindow } from '@/context/ContentWindowContext';
 
 const ARTWORK_SOURCE = require('@/assets/images/onboarding-reverie-background.webp');
 /** Intrinsic size of the painting and its moon, in source pixels. */
@@ -39,6 +40,8 @@ export type NightSkyProps = {
   leaving: boolean;
   /** Play the arrival (settle, halo, shooting star). False when resuming on a later step. */
   arrival: boolean;
+  /** A sheet is told over the scene: under its veil the stars hold still instead of costing every frame. */
+  covered?: boolean;
 };
 
 /**
@@ -52,9 +55,9 @@ export type NightSkyProps = {
  * nothing travels; the sky fades in, stars hold still and the veil still darkens on
  * commit so the change is explained.
  */
-export const NightSky = memo(function NightSky({ step, leaving, arrival }: NightSkyProps) {
+export const NightSky = memo(function NightSky({ step, leaving, arrival, covered = false }: NightSkyProps) {
   const reduced = useReducedMotion();
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useContentWindow();
 
   // Where the painting lands under `cover` in the overscanned frame. The moon and stars
   // are drawn in the same space so they stay glued to the artwork.
@@ -156,6 +159,7 @@ export const NightSky = memo(function NightSky({ step, leaving, arrival }: Night
                 period={star.period}
                 phase={star.phase}
                 still={reduced}
+                paused={covered}
               />
             );
           })}
@@ -172,8 +176,8 @@ export const NightSky = memo(function NightSky({ step, leaving, arrival }: Night
   );
 });
 
-function Twinkle({ x, y, size, period, phase, still }: {
-  x: number; y: number; size: number; period: number; phase: number; still: boolean;
+function Twinkle({ x, y, size, period, phase, still, paused }: {
+  x: number; y: number; size: number; period: number; phase: number; still: boolean; paused: boolean;
 }) {
   const style = useMemo<CSSStyle<ViewStyle>>(() => (still ? { opacity: 0.7 } : {
     animationName: { from: { opacity: 0.25 }, to: { opacity: 0.95 } },
@@ -182,7 +186,8 @@ function Twinkle({ x, y, size, period, phase, still }: {
     animationIterationCount: 'infinite',
     animationDirection: 'alternate',
     animationTimingFunction: EASE.inOut,
-  }), [period, phase, still]);
+    animationPlayState: paused ? 'paused' : 'running',
+  }), [paused, period, phase, still]);
   return (
     <Animated.View
       style={[

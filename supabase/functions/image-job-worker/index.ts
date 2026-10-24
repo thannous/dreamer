@@ -2,6 +2,11 @@ import { verifyAnalysisImageAuthorization } from '../api/services/analysisAuthor
 import { serve } from 'https://deno.land/std@0.224.0/http/server.ts';
 import { GUEST_LIMITS, corsHeaders } from '../api/lib/constants.ts';
 import { ensureImagePrompt, generateAndStoreImage } from '../api/services/imagePipeline.ts';
+import { linksTo, takePreparedIllustration, type TakenPainting } from '../api/services/previewIllustration.ts';
+import { transcriptSha256 } from '../api/lib/analysisPreview.ts';
+import { AI_REQUEST_LIMITS } from '../api/lib/aiRequestPolicy.ts';
+import { resolveStoredTranscriptForAi } from '../api/lib/prompts.ts';
+import { createStorageHelpers } from '../api/services/storage.ts';
 import { resolveImageModel, type ImageGenerationTier } from '../api/services/geminiImages.ts';
 import { reserveHdImageCredit, finishHdImageCredit } from '../api/services/hdImageQuota.ts';
 import { requireHdIllustrationsEnabled } from '../api/lib/illustrationFlags.ts';
@@ -312,6 +317,50 @@ export const markTerminalFailure = async (
   await persistDreamImageFailure(adminClient, job);
 };
 
+/**
+ * How an image job finds the painting its dream's analysis preview prepared: by the prompt it
+ * carries (the prepared reading's, so the very painting the preview showed a band of), or by
+ * the dream's text when it carries none, for a first illustration only: a dream painted again
+ * from its text asks for a new painting. Only a standard size can be the prepared one.
+ */
+export const preparedPaintingMatch = (
+  job: Pick<ImageJobRow, 'user_id' | 'dream_id'>,
+  request: { prompt: string; previousImageUrl?: string | null; imageSize: string }
+): 'prompt' | 'transcript' | null => {
+  if (!job.user_id || job.dream_id == null || request.imageSize !== '1K') return null;
+  if (request.prompt) return 'prompt';
+  return request.previousImageUrl ? null : 'transcript';
+};
+
+/** The fingerprint of the dream's text as its analysis preview read it; undefined when it cannot be read. */
+/**
+ * Whether a prepared painting's job deletes the dream's former illustration: never when the
+ * former one is this very painting (linked by a job that stopped before its bookkeeping).
+ */
+export const formerIllustrationGoes = (previousImageUrl: string | null | undefined, paintingPath: string): boolean =>
+  Boolean(previousImageUrl) && !linksTo(previousImageUrl, paintingPath);
+
+export const storedTranscriptSha256 = async (
+  adminClient: ReturnType<typeof createAdminClient>,
+  userId: string,
+  dreamId: number
+): Promise<string | undefined> => {
+  // A dream that cannot be read is no answer: the job tries again rather than paint another.
+  const unreadable = () => Object.assign(new Error('Dream unreadable'), { isTransient: true });
+  let data: { transcript?: unknown } | null;
+  try {
+    const read = await adminClient.from('dreams').select('transcript')
+      .eq('id', dreamId).eq('user_id', userId).maybeSingle();
+    if (read.error) throw unreadable();
+    data = read.data;
+  } catch {
+    throw unreadable();
+  }
+  if (!data) return undefined;
+  const transcript = resolveStoredTranscriptForAi(data.transcript, AI_REQUEST_LIMITS.transcriptRequestChars);
+  return transcript.ok ? await transcriptSha256(transcript.storedTranscript) : undefined;
+};
+
 const requeueJob = async (
   adminClient: ReturnType<typeof createAdminClient>,
   job: ImageJobRow,
@@ -463,6 +512,7 @@ const processImageJob = async (input: {
     let claimedQuotaThisRun = false;
     const imageSize = requestPayload.imageSize ?? '1K';
     const highResolution = imageSize === '2K' || imageSize === '4K';
+    let takenPainting: TakenPainting | null = null;
 
     try {
       if (!['1K', '2K', '4K'].includes(imageSize)) {
@@ -488,18 +538,37 @@ const processImageJob = async (input: {
       claimedQuotaThisRun = quotaDecision.claimed === true;
 
       let prompt = String(requestPayload.prompt ?? '').trim();
-      if (!prompt) {
+      // The painting prepared with the dream's analysis preview, from this same prompt (or,
+      // asked with the dream's text only, from this same text), is this illustration: it is
+      // not painted twice.
+      const prepared = preparedPaintingMatch(job, { prompt, previousImageUrl: requestPayload.previousImageUrl, imageSize });
+      // A painting still under way after the wait is waited for again by a later attempt; the
+      // last one paints rather than fail.
+      const retryWhileLive = job.attempt_count < job.max_attempts;
+      takenPainting = prepared === 'transcript'
+        ? await takePreparedIllustration(adminClient, {
+          bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!,
+          transcriptSha256: await storedTranscriptSha256(adminClient, job.user_id!, job.dream_id!),
+          retryWhileLive,
+        })
+        : null;
+      if (!prompt && !takenPainting) {
         startedUpstream = true;
         prompt = await ensureImagePrompt({
           apiKey,
           prompt: requestPayload.prompt,
           transcript: requestPayload.transcript,
         });
+      } else if (prepared === 'prompt') {
+        takenPainting = await takePreparedIllustration(adminClient, {
+          bucket: input.storageBucket, userId: job.user_id!, dreamId: job.dream_id!, prompt, retryWhileLive,
+        });
       }
+      const preparedImageUrl = takenPainting?.url ?? null;
 
       startedUpstream = true;
       const ownerId = job.user_id ?? `guest_${job.guest_fingerprint ?? 'guest'}`;
-      const result = await generateAndStoreImage({
+      const result = preparedImageUrl ? { imageUrl: preparedImageUrl } : await generateAndStoreImage({
         apiKey,
         model: resolveImageModel(imageTierDecision.tier, undefined, imageSize),
         imageSize,
@@ -512,6 +581,18 @@ const processImageJob = async (input: {
       });
 
       await persistDreamImageResult(adminClient, job, result.imageUrl);
+      // The prepared painting replaces the former illustration only once the dream holds it.
+      const formerImageUrl = requestPayload.previousImageUrl;
+      if (takenPainting && formerImageUrl && formerIllustrationGoes(formerImageUrl, takenPainting.path)) {
+        await createStorageHelpers({
+          supabaseUrl: input.supabaseUrl,
+          supabaseServiceRoleKey: input.serviceRoleKey,
+          storageBucket: input.storageBucket,
+          ownerId,
+        }).deleteImageFromStorage(formerImageUrl, ownerId).catch(() => {
+          console.warn('[image-job-worker] former illustration left in storage', { jobId: job.id });
+        });
+      }
       await updateJob(adminClient, job.id, {
         status: 'succeeded',
         request_payload: redactedRequestPayload(job),
@@ -522,6 +603,9 @@ const processImageJob = async (input: {
         error_message: null,
         finished_at: new Date().toISOString(),
       });
+      // Stored with the dream and the job: the prepared painting is this illustration for good.
+      await takenPainting?.settle();
+      takenPainting = null;
       if (highResolution) {
         // A failed bookkeeping update must never regenerate an already stored image.
         // The reservation still counts towards the monthly limit.
@@ -530,6 +614,25 @@ const processImageJob = async (input: {
         });
       }
     } catch (error) {
+      // Not stored: the prepared painting waits for the next attempt instead of being paid again.
+      // Stored already (only the job's bookkeeping failed): the job is done, nothing is painted again.
+      // The painting stays held until the job is marked done: a retry finds it linked.
+      if (takenPainting && await takenPainting.release()) {
+        try {
+          await updateJob(adminClient, job.id, {
+            status: 'succeeded',
+            request_payload: redactedRequestPayload(job),
+            result_payload: { imageUrl: takenPainting.url },
+            error_code: null,
+            error_message: null,
+            finished_at: new Date().toISOString(),
+          });
+          await takenPainting.settle();
+          return;
+        } catch {
+          console.warn('[image-job-worker] prepared illustration bookkeeping pending', { jobId: job.id });
+        }
+      }
       const serialized = serializeImageJobError(error);
       let guestClaimCleared = false;
       if (claimedQuotaThisRun && !startedUpstream) {

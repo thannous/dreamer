@@ -8,7 +8,6 @@ import {
   Pressable,
   ScrollView,
   Text,
-  useWindowDimensions,
   View,
   type TextStyle,
 } from 'react-native';
@@ -20,13 +19,13 @@ import {
 } from '@/components/ui/BottomSheet';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens, type NoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
-import { IllustrationQualityPreference } from './IllustrationQualityPreference';
 import { SettingsSection } from './SettingsSection';
 import { SettingsToggle } from './SettingsToggle';
-import { isHdIllustrationsEnabled } from '@/lib/env';
+import { useSignatureSoundsPreference } from './useSignatureSoundsPreference';
 
 import {
   getDateFromTime,
@@ -36,6 +35,7 @@ import {
   type SettingsPreferenceController,
   useSettingsPreferences,
 } from './useSettingsPreferences';
+import { TypeScale } from '@/constants/typeScale';
 type SettingsFieldGroupProps = {
   account: ReactElement;
   appVersionLabel?: string;
@@ -63,8 +63,8 @@ const TABULAR_NUMS_STYLE: TextStyle = { fontVariant: ['tabular-nums'] };
 const WEB_TIME_PICKER_STYLE = {
   backgroundColor: 'transparent',
   borderWidth: 0,
-  fontFamily: 'SpaceGrotesk_700Bold',
-  fontSize: 28,
+  fontFamily: 'Outfit_700Bold',
+  fontSize: TypeScale.h1.fontSize,
   minHeight: 48,
   textAlign: 'center',
   width: '100%',
@@ -75,16 +75,16 @@ const NO_HIT_SLOP = 0;
 
 const ROW_CLASS = 'min-h-[64px] w-full flex-row items-center gap-3 py-3';
 const RITUAL_ROW_CLASS = ROW_CLASS;
-const ROW_LABEL_CLASS = 'min-w-0 flex-1 font-sans text-[15px] leading-[20px] text-ivory';
-const ROW_VALUE_CLASS = 'max-w-[36%] shrink font-sans text-[15px] leading-[20px] text-right text-ivory-muted';
+const ROW_LABEL_CLASS = 'min-w-0 flex-1 font-sans text-body leading-[20px] text-ivory';
+const ROW_VALUE_CLASS = 'max-w-[36%] shrink font-sans text-body leading-[20px] text-right text-ivory-muted';
 const SHEET_HEADER_CLASS = 'mb-[18px] flex-row items-center gap-3';
 const SHEET_HEADER_ICON_CLASS =
   'h-11 w-11 items-center justify-center rounded-[22px] border border-champagne-soft bg-ink-soft';
-const SHEET_TITLE_CLASS = 'font-display-semibold text-[23px] leading-[28px] text-ivory';
-const SHEET_SUBTITLE_CLASS = 'font-sans text-[13px] leading-[18px] text-ivory-muted';
+const SHEET_TITLE_CLASS = 'font-display-semibold text-h2 leading-[28px] text-ivory';
+const SHEET_SUBTITLE_CLASS = 'font-sans text-body-sm leading-[18px] text-ivory-muted';
 const SHEET_CONTENT_CLASS = 'px-gutter pt-2 pb-6';
 const DONE_BUTTON_CLASS = 'mt-2 items-center rounded-sm bg-champagne py-2';
-const DONE_BUTTON_LABEL_CLASS = 'font-sans-bold text-[16px] text-on-champagne';
+const DONE_BUTTON_LABEL_CLASS = 'font-sans-bold text-body text-on-champagne';
 
 const cx = (...parts: (string | false | null | undefined)[]) => parts.filter(Boolean).join(' ');
 
@@ -208,7 +208,7 @@ function PreferenceSheet<T extends string>({
                 <View className="min-w-0 flex-1 gap-0.5">
                   <Text
                     className={cx(
-                      'text-[15px] leading-[19px] text-ivory',
+                      'text-body leading-[19px] text-ivory',
                       option.current ? 'font-sans-bold' : 'font-sans-medium'
                     )}
                   >
@@ -257,7 +257,7 @@ function PreferenceRow({
   value,
   wideValue = false,
 }: PreferenceRowProps) {
-  const { width, fontScale } = useWindowDimensions();
+  const { width, fontScale } = useContentWindow();
   const stackCopy = width < 375 || fontScale >= 1.3;
   return (
     <PressableScale
@@ -270,8 +270,8 @@ function PreferenceRow({
       <IconSymbol name={icon} size={21} color={noctalia.accent.text} />
       {stackCopy ? (
         <View className="min-w-0 flex-1 gap-1">
-          <Text className="font-sans text-[15px] leading-[20px] text-ivory">{label}</Text>
-          {value ? <Text className="font-sans text-[15px] leading-[20px] text-ivory-muted">{value}</Text> : null}
+          <Text className="font-sans text-body leading-[20px] text-ivory">{label}</Text>
+          {value ? <Text className="font-sans text-body leading-[20px] text-ivory-muted">{value}</Text> : null}
         </View>
       ) : (
         <>
@@ -335,6 +335,7 @@ export function SettingsFieldGroup({
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const { theme, language } = useSettingsPreferences();
   const notifications = useNotificationSettingsController();
+  const sounds = useSignatureSoundsPreference();
   const [themeSheetVisible, setThemeSheetVisible] = useState(false);
   const [languageSheetVisible, setLanguageSheetVisible] = useState(false);
   const [activeTimePicker, setActiveTimePicker] = useState<'weekday' | 'weekend' | null>(null);
@@ -421,9 +422,31 @@ export function SettingsFieldGroup({
                 value={theme.currentLabel}
               />
             ) : null}
+            {/* The web plays no signature sound, so it offers no switch for them. */}
+            {Platform.OS !== 'web' ? (
+              <Pressable
+                accessibilityRole="switch"
+                accessibilityState={{ checked: sounds.enabled }}
+                aria-checked={sounds.enabled}
+                onPress={() => sounds.toggle(!sounds.enabled)}
+                className={`${ROW_CLASS} border-b border-b-line`}
+                testID={TID.Button.SettingsSignatureSoundsToggle}
+              >
+                <IconSymbol name="speaker.wave.2.fill" size={21} color={noctalia.accent.text} />
+                <View className="flex-1 gap-0.5">
+                  <Text className={`${ROW_LABEL_CLASS} flex-[0]`}>
+                    {t('settings.sounds.title')}
+                  </Text>
+                  <Text className="text-caption text-ivory-faint">
+                    {t('settings.sounds.hint')}
+                  </Text>
+                </View>
+                <SettingsToggle onValueChange={sounds.toggle} value={sounds.enabled} />
+              </Pressable>
+            ) : null}
             <PreferenceRow
               icon="globe"
-              isLast={!onReplayOnboarding && !onRateApp && !isHdIllustrationsEnabled()}
+              isLast={!onReplayOnboarding && !onRateApp}
               label={language.title}
               noctalia={noctalia}
               onPress={() => setLanguageSheetVisible(true)}
@@ -433,7 +456,7 @@ export function SettingsFieldGroup({
             {/* Replays the welcome story without changing the saved onboarding. */}
             {onReplayOnboarding ? <PreferenceRow
               icon="arrow.clockwise"
-              isLast={!onRateApp && !isHdIllustrationsEnabled()}
+              isLast={!onRateApp}
               label={t('settings.onboarding_replay')}
               noctalia={noctalia}
               onPress={onReplayOnboarding}
@@ -441,13 +464,12 @@ export function SettingsFieldGroup({
             /> : null}
             {onRateApp ? <PreferenceRow
               icon="star.fill"
-              isLast={!isHdIllustrationsEnabled()}
+              isLast
               label={t('settings.rate_app')}
               noctalia={noctalia}
               onPress={onRateApp}
               testID="settings-rate-app"
             /> : null}
-            <IllustrationQualityPreference />
           </SettingsSection>
 
           {!returningGuestBlocked ? (
@@ -468,7 +490,7 @@ export function SettingsFieldGroup({
                       color={noctalia.status.warning.icon}
                     />
                     <Text
-                      className="flex-1 font-sans-medium text-[13px] leading-[18px] text-warning-on"
+                      className="flex-1 font-sans-medium text-body-sm leading-[18px] text-warning-on"
                       testID="text.settings.notificationsPermissionWarning"
                     >
                       {t('notifications.warning.permissions')}
@@ -622,7 +644,7 @@ export function SettingsFieldGroup({
                 {!notifications.unsupported && reminderEnabled ? (
                   <View className="flex-col items-start gap-0.5 px-4 pt-2.5 pb-3">
                     <Text
-                      className="text-[13px] leading-[18px] text-ivory-faint"
+                      className="text-body-sm leading-[18px] text-ivory-faint"
                       testID="text.settings.nextReminder"
                     >
                       {notifications.nextReminderText}
@@ -633,7 +655,7 @@ export function SettingsFieldGroup({
                       className="px-0 py-1.5"
                       testID="settings-notifications-send-test"
                     >
-                      <Text className="font-semibold text-[14px] text-champagne-on">
+                      <Text className="font-semibold text-body-sm text-champagne-on">
                         {t('notifications.button.test')}
                       </Text>
                     </PressableScale>
@@ -655,10 +677,10 @@ export function SettingsFieldGroup({
                 >
                   <IconSymbol name="sparkles" size={24} color={noctalia.accent.text} />
                   <View className="min-w-0 flex-1 gap-1">
-                    <Text className="font-sans-medium text-[15px] leading-[20px] text-ivory">
+                    <Text className="font-sans-medium text-body leading-[20px] text-ivory">
                       {subscriptionTitle}
                     </Text>
-                    <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted">
+                    <Text className="font-sans text-body-sm leading-[18px] text-ivory-muted">
                       {subscriptionSubtitle}
                     </Text>
                   </View>

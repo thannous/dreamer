@@ -1,0 +1,3336 @@
+{
+  "schema": "noctalia.symbol-artwork-qa/1",
+  "date": "2026-10-20",
+  "lot": "lot-08",
+  "scope": {
+    "requestedPacks": 30,
+    "rolesPerPack": 8,
+    "totalRoles": 240,
+    "freshNativePngs": 210,
+    "retainedPaintedCovers": 30,
+    "symbols": [
+      "death",
+      "chase",
+      "spider",
+      "flood",
+      "exam",
+      "nudity",
+      "deceased-person",
+      "sun",
+      "tree",
+      "lion",
+      "money",
+      "blood",
+      "child",
+      "clothes",
+      "path",
+      "phone",
+      "plane",
+      "night",
+      "mouth",
+      "wedding",
+      "hospital",
+      "running",
+      "school",
+      "pregnancy",
+      "swimming",
+      "crying",
+      "cliff",
+      "lost",
+      "ex-partner",
+      "rainbow"
+    ],
+    "languages": [
+      "fr",
+      "en",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ]
+  },
+  "generation": {
+    "tool": "OpenAI image_gen built-in",
+    "selection": "Agent-selected under the requested art direction; not owner visual approval",
+    "upscaling": false,
+    "preservation": "Native PNGs, exact prompts, reference covers and provenance retained. Rejected versions and the retired forgotten-class school scene remain outside the served selection. Existing covers are reused byte-for-byte; their original generation prompts were unavailable.",
+    "sourceArchive": {
+      "folder": "https://drive.google.com/drive/folders/1XzmtnMeVfBGWkT6XdLs5hGGI_kBjes0p",
+      "archives": [
+        {
+          "id": "death",
+          "fileName": "noctalia-lot-08-death-sources.zip",
+          "bytes": 14412243,
+          "sha256": "b03bb3e524c5fd3978a6d17d29285fcad0d8e91c7a6076bc6859b1f187eb8fbb",
+          "packSha256": "7f128a438fbb8ddeb1485915e538c09f867a3223cc382c4175fceecc4dd282de",
+          "fileId": "1Zzgm8X3IojNmI0mR0Vlj7-tDemFfEk2R",
+          "url": "https://drive.google.com/file/d/1Zzgm8X3IojNmI0mR0Vlj7-tDemFfEk2R/view",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "chase",
+          "fileName": "noctalia-lot-08-chase-sources.zip",
+          "bytes": 15749275,
+          "sha256": "3f9ee9bf38aed41cb5d97e62cab5231c21cec98a2d695eb272959c88070ded3f",
+          "packSha256": "68dd5f394ee48eb317689f751e2c70c6377a60c39126096b3a787a4f63df96f7",
+          "fileId": "1hTNgHW3imwsPfl-H_xrDhwj5Uxth22D1",
+          "url": "https://drive.google.com/file/d/1hTNgHW3imwsPfl-H_xrDhwj5Uxth22D1/view",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "spider",
+          "fileName": "noctalia-lot-08-spider-sources.zip",
+          "bytes": 13808903,
+          "sha256": "362d8dbed10f7f589b931d550cfe90582f2e59f901ae368e2ff9a41b912aef11",
+          "packSha256": "0d696ecc2d7e888939137535975321fbba925ffd36dd263dcddd69b63f234ff7",
+          "fileId": "1AEcJX_4kQX7wB30qNYM8vSzHiJoKHbbt",
+          "url": "https://drive.google.com/file/d/1AEcJX_4kQX7wB30qNYM8vSzHiJoKHbbt/view",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "blood",
+          "fileName": "noctalia-lot-08-blood-sources.zip",
+          "bytes": 10845575,
+          "sha256": "d13bfe6599809e27bc68d692a5d00f2533058b25821c58e72d4c6a13bf86f9da",
+          "packSha256": "4c6da6d8d39750a1596cedb4702b1c59c06f3d97deb7f411f8d2407fea7552a2",
+          "fileId": "1PxsqgUpsIBWT84qvbybSUsBZeoZwgOzI",
+          "url": "https://drive.google.com/file/d/1PxsqgUpsIBWT84qvbybSUsBZeoZwgOzI/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "child",
+          "fileName": "noctalia-lot-08-child-sources.zip",
+          "bytes": 14452363,
+          "sha256": "3eb6be1b3e9fe6bbd7c025e26cf67d21fb733dc67577a9cef4c28814e19992af",
+          "packSha256": "f5d9f6080bf09a5d6258955e3cc03d64bf255edbb41cebdefc66824b327ffe87",
+          "fileId": "11j_vVPr08dalDj45KiVNncqkr08t_z3x",
+          "url": "https://drive.google.com/file/d/11j_vVPr08dalDj45KiVNncqkr08t_z3x/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "clothes",
+          "fileName": "noctalia-lot-08-clothes-sources.zip",
+          "bytes": 14317936,
+          "sha256": "a6889ea68c10e37f7502068dc4839806eb6093cb3e8602df4ead783594ea7021",
+          "packSha256": "8e4d7ea59bdb06840c16931eafbdf9031d8137ab14f9fd32a1850ff61e0cc186",
+          "fileId": "1pupvjs8JWMTM5-aV_7bDj2eoJDJyEdVh",
+          "url": "https://drive.google.com/file/d/1pupvjs8JWMTM5-aV_7bDj2eoJDJyEdVh/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "deceased-person",
+          "fileName": "noctalia-lot-08-deceased-person-sources.zip",
+          "bytes": 13069637,
+          "sha256": "2d4f98320a1b24b2cbb67669b6e6e07b4d9600f2aa16ac3e703fba03b76a5b4a",
+          "packSha256": "d4967cea4800a76c3c849b5499b297717fb476731f6d95f5714b3fc628aa6573",
+          "fileId": "1zvkPB9Wqi0-kCtl1w2rrzgG3srGbiegy",
+          "url": "https://drive.google.com/file/d/1zvkPB9Wqi0-kCtl1w2rrzgG3srGbiegy/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "exam",
+          "fileName": "noctalia-lot-08-exam-sources.zip",
+          "bytes": 10833784,
+          "sha256": "90f1274ade53562dac81c19629a66650c76b4d05c7733c78e99bd17d4d4e329d",
+          "packSha256": "49aaa6831079d51cabaa83e15def699a28861efb890d9a98043183373c8ce69a",
+          "fileId": "1n2z9os4Wq3Yj3iztASgBncJUet3pjIut",
+          "url": "https://drive.google.com/file/d/1n2z9os4Wq3Yj3iztASgBncJUet3pjIut/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "flood",
+          "fileName": "noctalia-lot-08-flood-sources.zip",
+          "bytes": 15682614,
+          "sha256": "ab1c71aee4e2632e81820a63ef235e442ed0cd5052ae386f6b20d07d4b1d1692",
+          "packSha256": "0e5b0c831039b5061924ad11e4ffb44fbe2cffb202a16e201bc7de27aadd1201",
+          "fileId": "1WP5BaTuncVsz1n3MWwf9vP4Rulodkg7P",
+          "url": "https://drive.google.com/file/d/1WP5BaTuncVsz1n3MWwf9vP4Rulodkg7P/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "lion",
+          "fileName": "noctalia-lot-08-lion-sources.zip",
+          "bytes": 14778929,
+          "sha256": "98efd9f4284d178256cf7866f63cae4d398ab217f2bc57bda93d7070df7ba637",
+          "packSha256": "b5314075aaa41d02ec4fdefa61861276e4e046384c0b87f24caf52baed18b50b",
+          "fileId": "1DtOBg10ax10zqm7aAi1kgiFvcHeyPkxB",
+          "url": "https://drive.google.com/file/d/1DtOBg10ax10zqm7aAi1kgiFvcHeyPkxB/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "money",
+          "fileName": "noctalia-lot-08-money-sources.zip",
+          "bytes": 12534456,
+          "sha256": "58dc24558ace11d91bd865de15e1450ee98407426b7f1bb0b3bbd7e72550aac4",
+          "packSha256": "ac71d206fda256e1a425b77922e716c4d5cf16f35731422f6ecf41af71739b5b",
+          "fileId": "1ikpTJ6tcq5-wQ0HaFHYM2YF8Oq4eKILM",
+          "url": "https://drive.google.com/file/d/1ikpTJ6tcq5-wQ0HaFHYM2YF8Oq4eKILM/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "nudity",
+          "fileName": "noctalia-lot-08-nudity-sources.zip",
+          "bytes": 14587882,
+          "sha256": "ce67f86e2b849202029afe05394b07d6e6e39e366ccb4425937460ce5b4c785d",
+          "packSha256": "4e1c87aef37d034739ed465ee88ef268bec258e9366c72c4998914af78c5b239",
+          "fileId": "1yZcRERRq1WlQtjBBlJuMAMhHSwe9Yfmh",
+          "url": "https://drive.google.com/file/d/1yZcRERRq1WlQtjBBlJuMAMhHSwe9Yfmh/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "path",
+          "fileName": "noctalia-lot-08-path-sources.zip",
+          "bytes": 15725287,
+          "sha256": "56f35428d4820152fd2a3076aa04a80b7a16448b26f586af716926367c602edc",
+          "packSha256": "521881c3365273c3910c4fc7efbafc05255ff3f9b02be8b84c6af19676dabbd8",
+          "fileId": "11J4jJHDM7sHf3MEpLK3zdPqTJUnxeK5X",
+          "url": "https://drive.google.com/file/d/11J4jJHDM7sHf3MEpLK3zdPqTJUnxeK5X/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "phone",
+          "fileName": "noctalia-lot-08-phone-sources.zip",
+          "bytes": 10696142,
+          "sha256": "08188e921e51f723d0dcad1211957ea61df4efc8bedd9efc899af39384334108",
+          "packSha256": "4885d09c407edd2a7d63e2a76405d3b108cae4ac1f4cc3e0e0a78b5c85409fcd",
+          "fileId": "1alDr10F__kBH1Cd8L8S3GiQm0Eg7G_5F",
+          "url": "https://drive.google.com/file/d/1alDr10F__kBH1Cd8L8S3GiQm0Eg7G_5F/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "plane",
+          "fileName": "noctalia-lot-08-plane-sources.zip",
+          "bytes": 12743733,
+          "sha256": "4b1639631ba40f475ea21b55e530f1446cca6c28c74fadc285b960f6ef9b539d",
+          "packSha256": "a10dc982d8880498066a44ab052222e355d32d1b1b1611614c576aa0997a025a",
+          "fileId": "1XFUrNUYBmbiXuQ5CMjP0bvpH2UYZ4qNI",
+          "url": "https://drive.google.com/file/d/1XFUrNUYBmbiXuQ5CMjP0bvpH2UYZ4qNI/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "sun",
+          "fileName": "noctalia-lot-08-sun-sources.zip",
+          "bytes": 15620819,
+          "sha256": "5e4e610bda3ed64b68c758f6e611a984004cef8907bd983791b29007146411a9",
+          "packSha256": "ba8aab2b30409ff409bdf1e3958b1abb542c691de2c1df0ff0b067816b830c78",
+          "fileId": "1jVBSS76UbpgYEjXQa_ulE1RVcr2Ywjk7",
+          "url": "https://drive.google.com/file/d/1jVBSS76UbpgYEjXQa_ulE1RVcr2Ywjk7/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "tree",
+          "fileName": "noctalia-lot-08-tree-sources.zip",
+          "bytes": 17146605,
+          "sha256": "485f448f941889f5d6e30b7213257bff7b0c370ea27298568e517153ce19226a",
+          "packSha256": "dae526112cf02d7a386a3b346196a50c5762876d5a404263d0ac27c1120ab6de",
+          "fileId": "1VILeqEcnZTKavCpa5cD6Qxh730i5uVv5",
+          "url": "https://drive.google.com/file/d/1VILeqEcnZTKavCpa5cD6Qxh730i5uVv5/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "hospital",
+          "fileName": "noctalia-lot-08-hospital-sources.zip",
+          "bytes": 12429630,
+          "sha256": "83d09c83ca622f6c9327c04f5bd6dad93b546d12e2df6bd84e65f573c3f07650",
+          "packSha256": "72e5c124f004a87dd3db861399b84bc542b7b198445c85259d8f44ffda5b0b3d",
+          "fileId": "1YUbH3cCRMDYEhnWnfbeDyKqcgzu8bPqK",
+          "url": "https://drive.google.com/file/d/1YUbH3cCRMDYEhnWnfbeDyKqcgzu8bPqK/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "mouth",
+          "fileName": "noctalia-lot-08-mouth-sources.zip",
+          "bytes": 14068818,
+          "sha256": "80eaf45bff922e65ffb6b47bf6b541226dc2b8fd1bfe10e3e57b7a37ba6d00f5",
+          "packSha256": "eb3355199ccab7e5c4b1a6fbf6546382d1fa9f8668b550b59141eab7a59183cf",
+          "fileId": "1DoYW0bx0_gPhHJloz7wi6vHajVrakhGF",
+          "url": "https://drive.google.com/file/d/1DoYW0bx0_gPhHJloz7wi6vHajVrakhGF/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "night",
+          "fileName": "noctalia-lot-08-night-sources.zip",
+          "bytes": 13726244,
+          "sha256": "8cbb39538885d19f3529bab1005b7bb213cb63322828b20ed100130ccb60772b",
+          "packSha256": "c3b763a18ee58ca96cbf758a2d569a3c131218382af8b8624df5f69380021b49",
+          "fileId": "1qqaKqEZSQA75Wxal6jfEq6LR7Yt1HN24",
+          "url": "https://drive.google.com/file/d/1qqaKqEZSQA75Wxal6jfEq6LR7Yt1HN24/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "pregnancy",
+          "fileName": "noctalia-lot-08-pregnancy-sources.zip",
+          "bytes": 13578789,
+          "sha256": "6fe5469dc422c4566442de2b7244e1e788052baf263894a4a43d4d784b2f0be2",
+          "packSha256": "16da54349663875b2e8249df33c0188b2f6a43c3d69edb295e52a411304d7967",
+          "fileId": "1c3KWPQrHTWPqG-o04HTA8SNXkNdP3HjP",
+          "url": "https://drive.google.com/file/d/1c3KWPQrHTWPqG-o04HTA8SNXkNdP3HjP/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "running",
+          "fileName": "noctalia-lot-08-running-sources.zip",
+          "bytes": 17062276,
+          "sha256": "dc8433d04ff96a3e025b1f5bad6b4aa769c94ad21850bded8a2076809f8203bb",
+          "packSha256": "939bbf7d4ca2607a71ea845b844c696e464bacf9265a29d36cca3a5031309ecf",
+          "fileId": "1AeY3PI7SQUzaSlP_Xymh5g5zHY5m34f-",
+          "url": "https://drive.google.com/file/d/1AeY3PI7SQUzaSlP_Xymh5g5zHY5m34f-/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "school",
+          "fileName": "noctalia-lot-08-school-sources.zip",
+          "bytes": 13067458,
+          "sha256": "3d18529a094e0c053294de53df60a84f13037e79d31685dc2d55b27de91b09f8",
+          "packSha256": "bcbfaaab9e4624c7d2c5e64d7e0ecb192f6b79227a5bf4bf5727126335d0950b",
+          "fileId": "1rSw1Y19nwBvp420ImWBOM019YYspVciJ",
+          "url": "https://drive.google.com/file/d/1rSw1Y19nwBvp420ImWBOM019YYspVciJ/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "swimming",
+          "fileName": "noctalia-lot-08-swimming-sources.zip",
+          "bytes": 13372792,
+          "sha256": "5483a6c31a8f9382a4c2b0e5d302d18b7322f0a5c3036ce28e115d69fd2ca5d4",
+          "packSha256": "1dc7eeffd5ebd898767babe6cdf489da6951e1873ab66710a1d131534eb82ea4",
+          "fileId": "1W1F5QzAEhwL0x5bazY5AuZNlbbOyA7S4",
+          "url": "https://drive.google.com/file/d/1W1F5QzAEhwL0x5bazY5AuZNlbbOyA7S4/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "wedding",
+          "fileName": "noctalia-lot-08-wedding-sources.zip",
+          "bytes": 15208173,
+          "sha256": "6bb811f79f6939901f003e352e1ebf1d497a002ad6337494a6eb4ddd48423baf",
+          "packSha256": "eb9b9f1723f263338f15fa0c0e8c37aa586ce925105ebc30950c6ff6873b5dd9",
+          "fileId": "1Ut83oMTFS08SNOTv5TplBlEM_K-0aR2y",
+          "url": "https://drive.google.com/file/d/1Ut83oMTFS08SNOTv5TplBlEM_K-0aR2y/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "cliff",
+          "fileName": "noctalia-lot-08-cliff-sources.zip",
+          "bytes": 15514708,
+          "sha256": "4c76a7fcfd5d5bd29ea8971ba93b054bd812768a1ac136e460c3f6d6936b3562",
+          "packSha256": "d667ab2f753d75d8f7de77062d163a3ee123a480669b475ea07b7453ec23dfb2",
+          "fileId": "1ZKt_g8w7q2SdVv17ZhzqGXyvZMWApkQX",
+          "url": "https://drive.google.com/file/d/1ZKt_g8w7q2SdVv17ZhzqGXyvZMWApkQX/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "crying",
+          "fileName": "noctalia-lot-08-crying-sources.zip",
+          "bytes": 12985057,
+          "sha256": "f924cfe2d01a4e050d77b6e5cd06ba49ee2b8fba656ad081c7b3d1ad57245e78",
+          "packSha256": "e57c66bbcad19d5e0e700cff58a1c51cd84ef3c9caa775c2f59feece84c07f94",
+          "fileId": "1F7UP2R8SikZnxprk9ivQOtkDubEuNeXR",
+          "url": "https://drive.google.com/file/d/1F7UP2R8SikZnxprk9ivQOtkDubEuNeXR/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "ex-partner",
+          "fileName": "noctalia-lot-08-ex-partner-sources.zip",
+          "bytes": 12705568,
+          "sha256": "d3ea51afdea71fd05fb8c4905beceea173ebf1c005d550f2ba8f03d66dfb6b96",
+          "packSha256": "1122705b2c0f0d97f596ac7c2eaa704bb0722afea9f8d4297a56529101d22e3d",
+          "fileId": "1ZVehYHtbivoaFpeBYPB1oNw1sRpGPzW_",
+          "url": "https://drive.google.com/file/d/1ZVehYHtbivoaFpeBYPB1oNw1sRpGPzW_/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "lost",
+          "fileName": "noctalia-lot-08-lost-sources.zip",
+          "bytes": 16346636,
+          "sha256": "1b09102a479086c7a2e9fe1bd1f5f5585373bfa3e1c8655d2061b64e391491b2",
+          "packSha256": "793538708425bfec1600777ce174db3dfabf92074cc68e9e0ef8f3d3374ea8af",
+          "fileId": "1bzEdQ2nRF667NUXrHq0RZefjGg1Q4VS9",
+          "url": "https://drive.google.com/file/d/1bzEdQ2nRF667NUXrHq0RZefjGg1Q4VS9/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        },
+        {
+          "id": "rainbow",
+          "fileName": "noctalia-lot-08-rainbow-sources.zip",
+          "bytes": 14137437,
+          "sha256": "ae933a9c7d912c4b37f30d037049dd27968745df28a1c2d4364e3cece7d2497e",
+          "packSha256": "507d9d1aacadee215ad1ac873b96049cb1034d9df543bf0b93dcbd7c978982b9",
+          "fileId": "1HMkWYE3L4OvZQjFYipDzsJ4eunX6Pwmf",
+          "url": "https://drive.google.com/file/d/1HMkWYE3L4OvZQjFYipDzsJ4eunX6Pwmf/view?usp=drivesdk",
+          "metadataVerified": true,
+          "private": true
+        }
+      ],
+      "totalBytes": 421209769,
+      "verification": "Local archive SHA256 and successful upload/update, followed by Drive ID/size/parent/private metadata checks; no remote content digest or second download claimed."
+    }
+  },
+  "integration": {
+    "importer": "scripts/atlas-pack.mjs",
+    "profiles": "docs-src/config/symbol-atlas-pilots.json",
+    "locales": "docs-src/config/symbol-atlas-locales.json",
+    "sharedEngine": true,
+    "paintingsAnimate": false,
+    "effectsPerSurface": 2,
+    "derivedFiles": 1140,
+    "languagesShareImages": true,
+    "previousPackEntriesUnchanged": true,
+    "masterIntegrated": "76d7e577d",
+    "corrections": [
+      "Hospital ES variants map to their actual scene.",
+      "School uses the unprepared-test variation shared by the six languages; Italian editorial content is retained.",
+      "Scene excerpts use the same em-dash normalization as their published source cards.",
+      "Former portrait fallback framing was removed for chase, exam, mouth and ex-partner."
+    ]
+  },
+  "verification": {
+    "revision": "9184f780a23f21687350020fa3448d58e4e0aadd",
+    "sourceClean": true,
+    "environment": "Local Chromium, generated static site",
+    "command": [
+      "node",
+      "tools/e2e/run.mjs",
+      "site",
+      "web",
+      "run",
+      "--grep",
+      "new symbol packs: (death|chase|spider|flood|exam|nudity|deceased-person|sun|tree|lion|money|blood|child|clothes|path|phone|plane|night|mouth|wedding|hospital|running|school|pregnancy|swimming|crying|cliff|lost|ex-partner|rainbow) renders"
+    ],
+    "runner": "0.21.2",
+    "engine": "0.15.2",
+    "summary": {
+      "discovered": 85,
+      "selected": 30,
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "excludedTests": 55,
+    "artifact": "tools/e2e/.e2e/site-web/1792498137105-10628-33a436f1-1e0c-4b44-be1e-93a49ecc84a6",
+    "receipt": "1792498137105-10628-33a436f1-1e0c-4b44-be1e-93a49ecc84a6.receipt.json",
+    "receiptSha256": "928dc1d72746b5aef67665dbd546ddb54e9102f738c938eb238b09c631fa0a91",
+    "viewports": [
+      [
+        2560,
+        1440
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "assertions": [
+      "All six languages: correct hero/portrait decoded, three scenes present, localized title and no horizontal overflow at both viewports.",
+      "French: actual scene selection and matching published variation text; all three scenes remain reachable, including direct mobile scene anchors below fixed navigation.",
+      "French: two independent decoded and temporally changing effects on hero, plate and all three scenes; no painting animation, no stretched textures, reduced-motion state.",
+      "Mobile uses the dedicated portrait and does not fetch the hidden desktop plate."
+    ],
+    "visualReview": {
+      "schema": "noctalia.render-visual-review/1",
+      "reviewedAt": "2026-10-20T12:20:59.464350+00:00",
+      "reviewer": "Codex implementing agent, with independent review",
+      "run": "1792498137105-10628-33a436f1-1e0c-4b44-be1e-93a49ecc84a6",
+      "revision": "9184f780a23f21687350020fa3448d58e4e0aadd",
+      "screenshotsInspected": 150,
+      "contactSheetsInspected": 6,
+      "result": "No remaining material defect in subject framing, title legibility, transparency, scene/content mapping or visible overlays. Temporal assertions are separately qualified by TesterArmy.",
+      "ownerApproval": false
+    },
+    "build": "passed after master integration",
+    "docsCheck": "passed after master integration",
+    "priorFailedRun": {
+      "artifact": "tools/e2e/.e2e/site-web/1792496833366-4714-ba257c1e-4690-4f0b-a82d-bdbf3977b3f0",
+      "revision": "cbfac9edede824a8e22cef57972b052d6d9bd626",
+      "result": "28 passed, 2 failed",
+      "failures": "Blood and Spider in PT: panel em dash disagrees with card comma. Shared generator normalization fixed before retry.",
+      "reviewCorrections": "Hospital ES mappings swapped; School uses the unprepared-test variant shared by all languages. Italian editorial content retained."
+    }
+  },
+  "limits": [
+    "Filtered 30-symbol browser selection; 55 other journeys excluded. This is not the complete release campaign.",
+    "No native app, physical device, FPS, owner visual approval, merge or publication qualification is claimed.",
+    "Earlier QA/publication receipts are preserved; a shared generator identity change makes those historical proofs stale for this candidate."
+  ],
+  "packs": [
+    {
+      "id": "blood",
+      "packSha256": "4c6da6d8d39750a1596cedb4702b1c59c06f3d97deb7f411f8d2407fea7552a2",
+      "native": {
+        "hero": {
+          "sha256": "ef91a96338ae8d1d0b9a3f8903a6c478399c699c0c0abdff0fd69e2daac5c1ac",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "0357f349f92e13580047b6449aebfb99c623c6d2eda9b8962fd7c78b235916af",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "0cb950593bbb47e87bcbc40f2043077df7107b294a1636fbb4fcdfad4490b237",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.69576,
+            "translucent": 0.304021
+          }
+        },
+        "scene-blood-on-your-hands": {
+          "sha256": "13268555e20981639191bb334d64a90a2d74b1afaa7733263b18b6fc77aac9f8",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-bloodstained-clothes-or-objects": {
+          "sha256": "d926b88a167a5b1b8d0575cdc68ea20856375707ea696da43beb960695ca5664",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-someone-else-s-blood": {
+          "sha256": "d2cb2138b98a19c98ebb13eb3903f0008ac1672fe89b723d1e9474b0c3af23a3",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "a2fc2c008fede8c8bebadb5fa801cd62bb701bcabcc286c7b5050c9238fde739",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.841198,
+            "translucent": 0.158745
+          }
+        },
+        "accent": {
+          "sha256": "079afd6cca27b179a31762f31d0d1f1c623798f9124419ee5734c501dd040187",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.657011,
+            "translucent": 0.342976
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "chase",
+      "packSha256": "68dd5f394ee48eb317689f751e2c70c6377a60c39126096b3a787a4f63df96f7",
+      "native": {
+        "hero": {
+          "sha256": "bf88cfdce14dd6ee424091b93b86c5d347a5bc3781c058922fdd10b16f9d83b3",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "94afe68a3bd60547758183490dc957bba02efe562bdc0ee98e775f52ffdc8009",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "d68d24cc5f4fd738f9eac2781d2a3ce35a31938f827e64aa7ba7c685bf784e51",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.410405,
+            "translucent": 0.589483
+          }
+        },
+        "scene-being-chased-by-a-stranger": {
+          "sha256": "feea2c0d980b3c9b83fff32901cb56d0400888afda41a0ff081cc70dffabe887",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-chased-by-an-animal": {
+          "sha256": "e46a1ca2bca6102d906d155469fbf2353bdff677430d711cf44f2cbbc5e05567",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-chased-by-someone-you-know": {
+          "sha256": "9985464926df3633e34af7fd6764d6a0280af0bd8bf7e3614bf91705af09143f",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "1bada817b3328beb4af455a656a89eec30095b2fd2ce4418c9be8fb270fc2fe4",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.387737,
+            "translucent": 0.612263
+          }
+        },
+        "accent": {
+          "sha256": "988ed70508f2148c1be4ac12debaadb5cb261fa1a180948242a3c96ec01777c3",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.521811,
+            "translucent": 0.478189
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "child",
+      "packSha256": "f5d9f6080bf09a5d6258955e3cc03d64bf255edbb41cebdefc66824b327ffe87",
+      "native": {
+        "hero": {
+          "sha256": "27985c85f835ba426122b40974105326427baab616a5a12d9be603c011692903",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "3be301569e3e2472c578d646b15601937adee098452c551c7ad7717f8d24b601",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "ddca3470521994cfd3531bbf09c01b8f868f05a5c369dcba052c81904053d3cc",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.449757,
+            "translucent": 0.550122
+          }
+        },
+        "scene-a-happy-playing-child": {
+          "sha256": "d174749829de6438f619991f1e56c17be190f19417a524a02d9bb7d9afdfc77d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-crying-or-upset-child": {
+          "sha256": "ea0f3a5bbdbad2f6991fcfc1851c1bed1034abccfe091e05f1818bb3a380be80",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-lost-child": {
+          "sha256": "728ab3d6e131be374021afcc023971465293917fdadb8ba42ca749576ca4759c",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "b137ba2d0e965fe460c54bf2f01e86616a59284fa4e52da944076db3dd046fac",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.965675,
+            "translucent": 0.034311
+          }
+        },
+        "accent": {
+          "sha256": "c8c9efa4f2bfe9e633b158bb9ea3b96a1e29ed7f1878f36d29fb4d4eb86d24af",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.369657,
+            "translucent": 0.630343
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "cliff",
+      "packSha256": "d667ab2f753d75d8f7de77062d163a3ee123a480669b475ea07b7453ec23dfb2",
+      "native": {
+        "hero": {
+          "sha256": "f53a7e0aaf6e43ff43aaa6f19790e1f0184dde26d3caaf88f69aa84d82a57d94",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "98e81921df976ddbff48faa31f794f417cf85d220a5055e6e04ab6cf5636a4bc",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "26a057f8be45dcbef1f285b8f9fa683aa8d59eeee52937e111246171291a8431",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.445589,
+            "translucent": 0.554333
+          }
+        },
+        "scene-standing-at-the-edge": {
+          "sha256": "502e175133e0bccfc741638f5691bc36cb7211bf0c3683f90c5244591147f594",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-falling-off-a-cliff": {
+          "sha256": "3b426c879d4b3fa4525aee702e8df163d183c7a37a27ef1ef5fd22b62147dd1b",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-jumping-on-purpose": {
+          "sha256": "25afc1fba28247fa7c35495a851eaa3854ad421612c962efaef0ad8f0c458a4c",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "20db957d1e1b4c6f3792f261de527f75f93b0ede77722e0aad19bea17198c7b8",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.474121,
+            "translucent": 0.525879
+          }
+        },
+        "accent": {
+          "sha256": "6f6803640688feed31ab5185ea32c7634e913699794b2d41fa7f3f7753b3a9f5",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.44495,
+            "translucent": 0.55505
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "clothes",
+      "packSha256": "8e4d7ea59bdb06840c16931eafbdf9031d8137ab14f9fd32a1850ff61e0cc186",
+      "native": {
+        "hero": {
+          "sha256": "d6335e58b30106ddf798cb7610ac1960033c3675fad292f946325154c7dec372",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "1ee3079216796239b97c93b0ca1a0e8745f089395e64d970f40725a8fb32d116",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "cc21d8682b80005c2c002dcec17dc66f50fafbc864a059d610302cad00ca0152",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.346377,
+            "translucent": 0.65308
+          }
+        },
+        "scene-being-underdressed-in-public": {
+          "sha256": "65cc7ba8bab7edc49262aa231a96334283204c7582a0f1465afae1848a38dcea",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-wearing-someone-else-s-clothes": {
+          "sha256": "64c6e51f38c3f784c0e32f675192f6ab8aaf504318d33ed948f9264921aac3de",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-not-finding-the-right-outfit": {
+          "sha256": "bac62ab924bddb0ec41425b2125158edf2b35ee0d88c1247eb15e5cd04b50c90",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "b95febc912e5ebee8c2b0f8e23326174210e5e1c996d65e0825b439fbf5e3230",
+          "format": "png",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.666052,
+            "translucent": 0.333947
+          }
+        },
+        "accent": {
+          "sha256": "9d045306c62df6ffc6e2b1deb869cd88c092ef769a7737c3a4faacd09f3d24f7",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.58325,
+            "translucent": 0.41675
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "crying",
+      "packSha256": "e57c66bbcad19d5e0e700cff58a1c51cd84ef3c9caa775c2f59feece84c07f94",
+      "native": {
+        "hero": {
+          "sha256": "ddc9ea538db78f23b8aa8a1a320640cdc955a2155e795c493cb60327936bbe09",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "d69d6aab5e780d3c0dc9c0a7975932333980e5fd99f1488e232b0e8942bfcbd0",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "fcfd493ce2474b4f2dfc2648a5c9aef7583eb941e8828a49189a4e5c4756e813",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.335641,
+            "translucent": 0.664215
+          }
+        },
+        "scene-crying-from-sadness-or-grief": {
+          "sha256": "1a29b9b9e0c6b8df5a3f95b6d22f4fbc64d5f6cde9a6c0a7df3854501d801a04",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-tears-of-joy-or-relief": {
+          "sha256": "2ffa5f73a84b14a7be1fa4c3be8cb869464be8a6618a762c2e17499bd12b6cbb",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-crying-in-front-of-others": {
+          "sha256": "4110e63b8a8f993449a683c8da4635ca875a02fa91cb6385903144b49415230d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "b5dfe30bd3d5caddb240e3f43ec9e76a664cafb1569955c3b117ed1be8b0adf1",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.981544,
+            "translucent": 0.018444
+          }
+        },
+        "accent": {
+          "sha256": "eae3da2231cafffc94045a7b74fdd62fb028addaabc75aa2c48f3c8d3755675a",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.483514,
+            "translucent": 0.516486
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "death",
+      "packSha256": "7f128a438fbb8ddeb1485915e538c09f867a3223cc382c4175fceecc4dd282de",
+      "native": {
+        "hero": {
+          "sha256": "9e2d315489bd93d597e039b39fe21a0136df569d2578252508854d63b9ccdacf",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "40f845cdea4221d13948aa3e16f26de747d339a0f318586d92b171dbf99f70b7",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e91e9d8faaa934270f5491f2ccc2a2f05afc9dbc6800146648cf7b2b3b5fa7ea",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.390611,
+            "translucent": 0.609297
+          }
+        },
+        "scene-your-own-death": {
+          "sha256": "cd29a4711fcde510e36f4b429c9b6d8ba6e75528e342952a669f0604de25c82f",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-loved-one-dying": {
+          "sha256": "5088ad57c172bfd04312451f30c09b11ff95f0c3577e2c04ef38b65def66e539",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-stranger-dying": {
+          "sha256": "d55aacece69f4e2d6d8e2d9ecf239692f6516c954ca262435627e09c36b09729",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "59153f19acbd5e88d34e603e1bdc588e20d17a74d47d940ad42501166d577ba2",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.990287,
+            "translucent": 0.009707
+          }
+        },
+        "accent": {
+          "sha256": "3ad80867a808f809dca620eb60f0065a4436dffbff1b0e217b727b13b46d39ce",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.732685,
+            "translucent": 0.267303
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "deceased-person",
+      "packSha256": "d4967cea4800a76c3c849b5499b297717fb476731f6d95f5714b3fc628aa6573",
+      "native": {
+        "hero": {
+          "sha256": "fe345d0e30b27dad8fbe977f70594a1ddf273a26161f69082961e1b09b928dce",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "9ebf57ba9eb1ae2771cd92e66df444fc96fb057652591bf2dd65cfdaa53c27bf",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "2715fc4b7b10ab298cc16ca3ba8318341ef498ddc4067ca5e40204ff0f07a087",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.49848,
+            "translucent": 0.501414
+          }
+        },
+        "scene-a-peaceful-visit": {
+          "sha256": "fd34233f7cbf0973637f08ba77a67e8414d104f11d49351aa9a2b45eabf9c735",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-deceased-person-who-seems-alive": {
+          "sha256": "dbec0231a2ea368a562ddbe9bdb11110dfdd0d1d74870d50ce90411fbad6715e",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-receiving-a-message": {
+          "sha256": "826ed5f38041c59ed6c26b1539d7ea7befb830ccd869b723454f4be446daa0a2",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "f30d2abd24e6f39794076827a37064b6bbf2a753b7eeb3219d9bd8fa433c7ec9",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.961116,
+            "translucent": 0.03884
+          }
+        },
+        "accent": {
+          "sha256": "cf7bd4de6d54ecdb4e26eeaa193e33df9f4b3d16611e37e4bdc1eeb4736fa377",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.306957,
+            "translucent": 0.693043
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "ex-partner",
+      "packSha256": "1122705b2c0f0d97f596ac7c2eaa704bb0722afea9f8d4297a56529101d22e3d",
+      "native": {
+        "hero": {
+          "sha256": "7a66c1aca8798d793c12247e8a7d560021e1bc4e06b1d3edb39e67606d96867e",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "cc5d66b452b4f21f99d48867450bb946a49ca4347bd67af583204dbb16c7d768",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "a25cc4475b438a8d024ba32e9cc2fcf3e828f02c3ae0872ab27813b988efcef1",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.386516,
+            "translucent": 0.613144
+          }
+        },
+        "scene-getting-back-together-with-your-ex": {
+          "sha256": "e6aa1b826a6ea5ab032844bb5ba1cefbdae59884960079ee8777c0a6692cf345",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-your-ex-with-someone-new": {
+          "sha256": "f451063d170e2429ca0fcad4f37fa7442a58b9ddaf04a8427f584a04a95bf356",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-arguing-with-your-ex": {
+          "sha256": "87f86f035d830c88fb5cf7a3a8814650526406f4497638f8a033fd88042e837a",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "db1c921b49b581b9cd2a640f812bc4218817477a93808d34c17353be8ae44a54",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.877868,
+            "translucent": 0.122132
+          }
+        },
+        "accent": {
+          "sha256": "d5f54451dcdaa7db03d6fd37385d13e3d60ad82b5d215ea40008895fa52480e0",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.26719,
+            "translucent": 0.73281
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "exam",
+      "packSha256": "49aaa6831079d51cabaa83e15def699a28861efb890d9a98043183373c8ce69a",
+      "native": {
+        "hero": {
+          "sha256": "24ab7ed5e8b2b1ed8b14b3b4519bb362971998b5e9feb3923732a8c308f0310f",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "35cb41954485118d82c91abc8cf2af23d5ad496281eeaba45fa22997938be9d5",
+          "format": "png",
+          "width": 940,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e26c8d71d36f4b304b537c6b803b305a9baf08790517c2e4c683fb4e6c74201b",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.384362,
+            "translucent": 0.61536
+          }
+        },
+        "scene-being-unprepared-for-an-exam": {
+          "sha256": "62e80e4d3482310d71230bb8ba05b1090b044423db410e0febbdd70ef728c5d7",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-arriving-late-to-an-exam": {
+          "sha256": "2f1a0bc9dd9be0e35c1a0a9bfd6088e1c5fbb2b2093fa4aa5a130e92396d5cf3",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-exam-in-a-subject-you-never-studied": {
+          "sha256": "e6232fafb9569e8ebad0c655eedfafb06d4aad296a6084ea078018d25d1876a5",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "f70e7ff3010d87bebbcb9f21dcf597da07b6dd728ed5047ec1cc7cccf1a9ea05",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.914156,
+            "translucent": 0.085839
+          }
+        },
+        "accent": {
+          "sha256": "1f0f406cc80286de65d054692cc660dcfbee8a9833740e5ff648834fc793751d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.476084,
+            "translucent": 0.523916
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "flood",
+      "packSha256": "0e5b0c831039b5061924ad11e4ffb44fbe2cffb202a16e201bc7de27aadd1201",
+      "native": {
+        "hero": {
+          "sha256": "0b10bb07ae9b33f02f7e63c4f0b5369b127d4499a559b41c20493ad120be951a",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "674e6dd1f738d2aadf3b2058da3a8b9b65b3679ccf022a1f9aa794b47f73c783",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "1ac0aa0db801c4312500c7c3f1de1533fdb332e0041dc92bf87ac90d5c33696f",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.32205,
+            "translucent": 0.677741
+          }
+        },
+        "scene-floodwater-coming-into-your-home": {
+          "sha256": "0ed05401e12dc0a8552cc61cd4c87cdad9d2ddc823cc08804ff770d35e8a8b35",
+          "format": "png",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-swept-away-by-floodwater": {
+          "sha256": "151a9f89fda6650e00b69c066b05f89f7ee7e68aaa8a7f1c81c7e9bda1406b31",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-escaping-a-flood": {
+          "sha256": "dcf6cd77febd99c6ec0497605eb22811245ac1d6e576d37ac1efcbbb4e732b7b",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "1946784b8662e853881f893595bbc9412cb8be9bea64608905b5aad6a3fddbe2",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.602877,
+            "translucent": 0.397123
+          }
+        },
+        "accent": {
+          "sha256": "0e56fd33fd5f83009602968ebfba978e090dfd7a9cd5fb1bc7ba9ea203038a78",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.382026,
+            "translucent": 0.617974
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "hospital",
+      "packSha256": "72e5c124f004a87dd3db861399b84bc542b7b198445c85259d8f44ffda5b0b3d",
+      "native": {
+        "hero": {
+          "sha256": "c9eb973717cad3973cd4a202c3ede95cda9d6b3d3f73f8f60363ad07a5a46898",
+          "format": "jpeg",
+          "width": 1400,
+          "height": 933,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "2fcb309e4f340f75e091c53123cfdf6ae060c51428e58f6d1cc134e95ad2a22d",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "df57290f076624a06d725bad342c4e871069b2ba728ffdcf67030866951006dd",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.392027,
+            "translucent": 0.607914
+          }
+        },
+        "scene-being-in-a-hospital": {
+          "sha256": "d4e7822c0a2b421e45f1572db89402135667129f48aabec6efe718d7deb55c29",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-hospital-with-doctors-or-nurses": {
+          "sha256": "60a25e02d4a7daf18e4103c69dede593bcf3e72745eb8b4792456f4739d137d0",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-hospital-full-of-sick-people": {
+          "sha256": "9f89eaaf1b3d30523d8a101a2c753572c8bbd4ea0f77ef61aaab87c1dd4ee34f",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "a1f93445d40e5edb3584ac99b5998eb261bb7cbe4e8387b87e2b867f51203e62",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.398517,
+            "translucent": 0.601483
+          }
+        },
+        "accent": {
+          "sha256": "0cbcc2c9f8c018e70a58210ccd862402b31c70f34ece56ebf6b64982904da6cb",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.622283,
+            "translucent": 0.377717
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "lion",
+      "packSha256": "b5314075aaa41d02ec4fdefa61861276e4e046384c0b87f24caf52baed18b50b",
+      "native": {
+        "hero": {
+          "sha256": "a3728f9e5e23c8345fb809b12eb00857e775bc216d19dbe5464a504ba34797cd",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "e814dbf9c7ab4cae1de2493c5615f76caf75eac64a3ba12ad8618f3f46eec0c2",
+          "format": "png",
+          "width": 961,
+          "height": 1637,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "201d842a80913f6dc8a5a2d80453226c439ad68373593ec5d13f164b562424fc",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.565918,
+            "translucent": 0.433937
+          }
+        },
+        "scene-a-calm-majestic-lion": {
+          "sha256": "c4c271f9ac85eb218f0cf78541ba0212afa2a2fcc6d55ca159b97926c7c100ef",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-lion-attacking-or-chasing-you": {
+          "sha256": "2572856dca93316424e7b408eca3ec87304ea0c4ffac6e8c1bc757b2cb94978f",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-taming-or-befriending-a-lion": {
+          "sha256": "06bf85f3133e31501d16a6180dd976a72f5249beae9c40f813318abe268a9a0c",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "33fac78c83badcdbd68f9f9740a6b1048f1d66110dcba1fa798e8b08d5a6c75f",
+          "format": "png",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.430134,
+            "translucent": 0.569866
+          }
+        },
+        "accent": {
+          "sha256": "6a192debfd6249652b80a9298793604ea69ac2574ef77b34798d007843eddf36",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.608838,
+            "translucent": 0.391162
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "lost",
+      "packSha256": "793538708425bfec1600777ce174db3dfabf92074cc68e9e0ef8f3d3374ea8af",
+      "native": {
+        "hero": {
+          "sha256": "694c45e1ce3a52142efb4f3c67b39eaa562fee96f21982f8fd06db662e047a5a",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "7748d2da32c99871e04cfb0e19a4f3e22c83aca3c68bede684a3bec29fa154a6",
+          "format": "png",
+          "width": 962,
+          "height": 1635,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "b80a9df8ee6dd72d473e30d6ed4eca603f1bc5049df5e6e17fd779cb52a81c68",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.297175,
+            "translucent": 0.70279
+          }
+        },
+        "scene-lost-in-a-city": {
+          "sha256": "53d98c017a10f4eb5496a0c5179a6387efb1f80ee5db3ece01ba77c913461241",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-can-t-find-your-way-home": {
+          "sha256": "6e624b51da2b01ae509d076d050b2f23f583564539389ff202eafb4fdb1ce7cc",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-lost-in-a-building-or-a-maze": {
+          "sha256": "0ea54e9490ed37d751a428429659a6bf3045696993835e26d3925cc1f8de40e3",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "3ef61c8959039f0302ccaf252a45bb574a74062be8a4743beb62e8008929f1f9",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.955941,
+            "translucent": 0.043976
+          }
+        },
+        "accent": {
+          "sha256": "f018d48eaed5dc75443062be0efadbb99ec99f4b8e08b0a8ef14b2ef78c7e58e",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.475478,
+            "translucent": 0.524522
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "money",
+      "packSha256": "ac71d206fda256e1a425b77922e716c4d5cf16f35731422f6ecf41af71739b5b",
+      "native": {
+        "hero": {
+          "sha256": "1d5007fbd99658638f771fd5079f99bc7204898397fa13e2f5a004e23e54f376",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "b9cc1a3e2cf7506dccbdf2d3fd70289a78e81720406067d2be325402c426b912",
+          "format": "png",
+          "width": 968,
+          "height": 1625,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "0976b7e429dac156b9f634972e0e92bd9e70f1a0792824d94f1d9633579484cc",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.509933,
+            "translucent": 0.489856
+          }
+        },
+        "scene-finding-money": {
+          "sha256": "2da9381a4832a2b4fed10479f30545e510b0e23198fe7c40a2be16991337467a",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-losing-money-or-a-wallet": {
+          "sha256": "a0392fada7d1f7157e88122cdf53f12db37ef9aa53f9e39f9f5d62ddfcc9f836",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-counting-money": {
+          "sha256": "f43d98d8e205f9a71abbf46b327c2619207fe4cc457d9a75cc58c15cadf5e3f9",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "05dff696777051f8a24a784f849ae9870837836acc1caa922bec400b5fc414de",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.624822,
+            "translucent": 0.375178
+          }
+        },
+        "accent": {
+          "sha256": "b0ae778fa468a17e1b250c2ea3feba502b0a55f6799a15f3aa7fc1aa7ec34a1d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.727265,
+            "translucent": 0.272735
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "mouth",
+      "packSha256": "eb3355199ccab7e5c4b1a6fbf6546382d1fa9f8668b550b59141eab7a59183cf",
+      "native": {
+        "hero": {
+          "sha256": "3523c340b4987dee10d94d35419cabd785e7845f2cc371a2b3ff35c18961421b",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "9fccca9a5c1cc1c46b526195d9793408930b51c76eea2d10f76829537a4f17dd",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "a53753a3057bf273cbb969ed2762c23d3267c57983a84338e3eccb2a14a5c960",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.442104,
+            "translucent": 0.557894
+          }
+        },
+        "scene-unable-to-open-your-mouth-or-speak": {
+          "sha256": "7ff271d2594d7212f103e69f7da11f209b840339bb1844c35cf4685597f13bc6",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-something-stuck-in-your-mouth": {
+          "sha256": "94a4786f2327ef371fff0517ceca49b7a08e2b247f58e0b7bb9337cd6d43cdfc",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-mouth-that-will-not-close": {
+          "sha256": "8ab9bc4500a1ae4362874f48d43e5fbc2c799c441b97444b87c3c169b3a45dd8",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "5d01f191e4b57ff4a51f9bc01cdc08e612a082870d6641e1a7905204d7c49d31",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.587727,
+            "translucent": 0.412273
+          }
+        },
+        "accent": {
+          "sha256": "273372bd72ad5cd3eeaba3b7c7cdb1f884fa270bc5bc5f1f091ea7a759528378",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.577606,
+            "translucent": 0.422394
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "night",
+      "packSha256": "c3b763a18ee58ca96cbf758a2d569a3c131218382af8b8624df5f69380021b49",
+      "native": {
+        "hero": {
+          "sha256": "2bb8d99bc86412399b6f8cd908d29c36a16f7a08cc65ab0f51c703237b18d385",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "2f16d93afdc2df88f0572f4f7fe576e8d764ae66cd3abe4f3fc783ff96b30942",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "6018a5139091a012b160f0b45830e3238db3060aaeca80902f860d4206df734e",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.380628,
+            "translucent": 0.619334
+          }
+        },
+        "scene-walking-alone-in-the-dark": {
+          "sha256": "5b96017303b887c864c04f200b999f23e98fc73881419e02c15a88b52ada4da7",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-starry-or-moonlit-night": {
+          "sha256": "acdcc19ddff26c9a0949ce515414a9062d87945f76f91fa1c2fbd7087647943e",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-total-darkness": {
+          "sha256": "32eb33b18d9d2894528df94280da312560290000484d5a59c1b42588e6200c0d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "ca7589209a8bfbb4ffad1b18ab1fde799ede7609c4bcd79efc188f067e70b1d7",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.429552,
+            "translucent": 0.570448
+          }
+        },
+        "accent": {
+          "sha256": "4899d77423a8d2b415020fc1725f8f73499b49dc7412de7bca05ac898e72ccf6",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.452133,
+            "translucent": 0.547867
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "nudity",
+      "packSha256": "4e1c87aef37d034739ed465ee88ef268bec258e9366c72c4998914af78c5b239",
+      "native": {
+        "hero": {
+          "sha256": "447c512729209796765f7a8df149df8e1ed28617ffa1e6ccd92486b0122a973f",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "c0fca175d97979490fdfba399efcca1bf84115d18a8fb64daf300a66efd1dee5",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "fc3763787931b7b2ec1b94a09bd76232e0e3dfe6e5b851437ce7f0e3ce973635",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.464421,
+            "translucent": 0.535479
+          }
+        },
+        "scene-naked-and-embarrassed": {
+          "sha256": "18fa5652fbb0a44606f58bb8d19ea4ae64fbe64efa5096ead794117aaaeb3706",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-naked-but-no-one-notices": {
+          "sha256": "1e6d7540f981b86c85e32ec77cdf556ae5df154e8b04e81045bb2c5214be54ec",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-partly-dressed-or-wearing-the-wrong-clo": {
+          "sha256": "d409d483cd162012e7985fc447e55f537bc7999a059e466f1cb773276dc3d30c",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "8870f4c0e3688ccbaaa65a25d8d1b00f39f320636f27605bc488d604e4135aa7",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.535163,
+            "translucent": 0.464837
+          }
+        },
+        "accent": {
+          "sha256": "577d0189363ac58169a591c7231dba033d16a9e345eb29340d69f06db7985098",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.328295,
+            "translucent": 0.671705
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "path",
+      "packSha256": "521881c3365273c3910c4fc7efbafc05255ff3f9b02be8b84c6af19676dabbd8",
+      "native": {
+        "hero": {
+          "sha256": "b72584510d83a94bf9fb7e5dceb0d743f24982d7b5d39b758e33df6b08703a6f",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "77ded55baf23e020fed64e698800e1e531ac8d30ed75d9baef3e3ed83387616d",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "af1e63fc9d379b3e522647b09e3a678f6098521ee5355b65225958472dd1b986",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.396037,
+            "translucent": 0.603792
+          }
+        },
+        "scene-a-clear-open-path": {
+          "sha256": "d14e3d2de028ee3e8149dd6443123ea5e8fa7e1cf9b6dab18cdd31681e4ba567",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-an-overgrown-or-blocked-path": {
+          "sha256": "e7e43d0aaf4505aa8102d669c1020dda17e0f5df304bfe48d4089455cce8d3be",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-fork-or-crossroads": {
+          "sha256": "1dee67620d355339bdbca49ed54377afd383d3b4d4eeab524b9f368f257daab4",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "80c97284496c478ad0b5609455fd2180f48d33dd7bf17f8d8c19f38223ef8e4b",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.82439,
+            "translucent": 0.17561
+          }
+        },
+        "accent": {
+          "sha256": "8942f507e07bc672c2a7f5e77e874fbef6d941d9a8d039c1f32a3c2aefe8514c",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.580692,
+            "translucent": 0.419308
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "phone",
+      "packSha256": "4885d09c407edd2a7d63e2a76405d3b108cae4ac1f4cc3e0e0a78b5c85409fcd",
+      "native": {
+        "hero": {
+          "sha256": "49e1f9055c903c1d28f04adb31d9bb1273a571d97a44d94d19069015d6706d9d",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "6332c08045db811f32f1a26c55863eb9eac1f7d7b128762aff8af7c9959f4d3b",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "834eacc8fc289b4c4b260efc1cce4f52bd223d5be598ccb477ee33263096d335",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.448556,
+            "translucent": 0.551378
+          }
+        },
+        "scene-a-phone-ringing": {
+          "sha256": "e145c6b9f7157b9e523f572210a2594966467a4206294610bdc8063454481d52",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-not-being-able-to-make-a-call": {
+          "sha256": "51be3052a16ce4f92325b7f6a97a97a32131109122617840fea68331e17f6b3a",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-missing-a-call": {
+          "sha256": "f3e47dcb1214344c89191c98e916489f10f45b16b49ffe40edffe418f2cb80bf",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "66973a969f1660bb9dcd3fe5b731a9bdd18327dc7123a83e2fde4244063d9172",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.631822,
+            "translucent": 0.368178
+          }
+        },
+        "accent": {
+          "sha256": "2bca60927bf0366fc184e7f2e22a91e68f98bfbbd6a5f2f50369c2650ae3cece",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.413569,
+            "translucent": 0.586431
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "plane",
+      "packSha256": "a10dc982d8880498066a44ab052222e355d32d1b1b1611614c576aa0997a025a",
+      "native": {
+        "hero": {
+          "sha256": "89526a81642f9b51860e8d943b4f290fd0f62aca6ce7c3d3f661095b20e795ea",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "1f09b3f1d02049f07eaea8b067f7d1cdd3872f0c57c257a13995b33cf02f3e33",
+          "format": "png",
+          "width": 960,
+          "height": 1638,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "a7b878cb4a7260de8baa9cda142bfc1eaac3e73be7786a717a5ec23c1507e349",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.59697,
+            "translucent": 0.402997
+          }
+        },
+        "scene-smooth-flight": {
+          "sha256": "e895fc3bdbf547b77a2b24d9ad141f3d4c10cadcd74afc81de66b0a4ffe63406",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-turbulence-during-the-flight": {
+          "sha256": "2eb21c903207319a452651d721f1634afa132fa774f69453b226f73b521eec6d",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-plane-crash-or-emergency-landing": {
+          "sha256": "2cadc55a0748d223e65b92f491a2eabc85c294ed41cafecdf4547a85893479af",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "8fc87c381f88aed1d9331b4f89b6d71b0d60af46319305355c1256ed2603f00a",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.310077,
+            "translucent": 0.689923
+          }
+        },
+        "accent": {
+          "sha256": "f59410e496bd751147dbbf4bb0acc85d24dcbc5d7922d3e2b2079384b2300e62",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.630106,
+            "translucent": 0.369894
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "pregnancy",
+      "packSha256": "16da54349663875b2e8249df33c0188b2f6a43c3d69edb295e52a411304d7967",
+      "native": {
+        "hero": {
+          "sha256": "9e3a57bebd134d57d44cf9b6aecf147030f3c134295cfd18e3f2583d5eecfa74",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "279d000f8418d8e8b4022891ea5d87451a05335fbe3e8ac404c5f4235fa2dea9",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e0fe6c60593558c98b45b6ab00ba562906efe000e8177f5710db67c765b1ae5a",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.50574,
+            "translucent": 0.494211
+          }
+        },
+        "scene-finding-out-you-are-pregnant": {
+          "sha256": "edb0fa3043a093bc998ed639c35a72c238d3937223f035cbe7c1c4eb9765fd6e",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-heavily-pregnant": {
+          "sha256": "54fd52e193253aca4901831e15594498401f0c4543db8b35032ae57616ab6cbf",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-someone-else-is-pregnant": {
+          "sha256": "c43e21910c6879632fe6b161c3f795aa121f1f25f2c46195d60ef93102ad9cb7",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "003ac65f5f1787a62a58502df03f0f14f08e3d70ac2c7ce8fbd4d50e34e0c969",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.82649,
+            "translucent": 0.17351
+          }
+        },
+        "accent": {
+          "sha256": "d674efea7d2645d39c1dbd53345d6fb9595a3f5c684b60963d571beb667cf200",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.254399,
+            "translucent": 0.745601
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "rainbow",
+      "packSha256": "507d9d1aacadee215ad1ac873b96049cb1034d9df543bf0b93dcbd7c978982b9",
+      "native": {
+        "hero": {
+          "sha256": "355abde267caf9c77dfc71da8b91472dbda4825fc22332b91a8ffcb8f38e24c8",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "2519373f0f66d3c179a7901b565d67e3baa669424fe93409e8fbcd593d2ba96a",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "0922beac6fb3f8c563eb79734105cb8dd29b7178aa45aa96e8f2169c5196a440",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.483123,
+            "translucent": 0.516792
+          }
+        },
+        "scene-rainbow-after-a-storm": {
+          "sha256": "d6b8a1bcc99807a65a71958ccc9546b0aedab82ec2f554eb3f69d36479c81054",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-double-rainbow": {
+          "sha256": "d050c45b9c57a173370e14803336313d8e4b6bcc8f1db2f1634345acd69e0429",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-a-rainbow-that-fades": {
+          "sha256": "68407b0ba6bb5b5516014826701a479087c236cd89fce46cd9955a5310c95a56",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "8a9d44d0fe28ce317a0c9be882e2edcdbb9b836805d0e6d02b37a0ec9b241165",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.303669,
+            "translucent": 0.696331
+          }
+        },
+        "accent": {
+          "sha256": "27cd8a778e1462968b0659f5db1d11207b694b8212b6baceae17b4e546421eba",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.357382,
+            "translucent": 0.642618
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "running",
+      "packSha256": "939bbf7d4ca2607a71ea845b844c696e464bacf9265a29d36cca3a5031309ecf",
+      "native": {
+        "hero": {
+          "sha256": "22a5a4f9be6af4872a9dd6a992deba88939a4176794b34907b714471f6381ded",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "08166a7bee8a6240c221786a4f4e2135874b4da16f7cdb703e039660114de925",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "e4a44b9666c42e987414a7eabbf8667838512ddc93454fe3fe76480ee6d0761b",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.462803,
+            "translucent": 0.537104
+          }
+        },
+        "scene-running-away-from-danger": {
+          "sha256": "8bd737142bbf502ab2af857a356ec0c2a1ea54f8b8b2caae05db1c3b8e4d9154",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-running-but-moving-slowly": {
+          "sha256": "e25c3663c33cc44aed4f93272ece64d7109ff9e15a35b7eb8b3d1e08a1b466a0",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-running-towards-a-goal": {
+          "sha256": "0060ec1565d7107b069da6ad3cc0522791f9cabbc4346e842670a69f23690172",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "e2f58dff153c3788c66ba5940932ec56f98bae2ef879956c9575d40390cb2014",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.517683,
+            "translucent": 0.482317
+          }
+        },
+        "accent": {
+          "sha256": "5ff86b460cfcf7f1d09567dce129875ee4473074bf033f11c3dcad3afce3bc55",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.504317,
+            "translucent": 0.495683
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "school",
+      "packSha256": "bcbfaaab9e4624c7d2c5e64d7e0ecb192f6b79227a5bf4bf5727126335d0950b",
+      "native": {
+        "hero": {
+          "sha256": "f05fd6b09fffc8836e41ff2e82dc0241197118ab93369ebaba29230184a9b44a",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "5a399d19a6249ce5359e7ab794df05835ca1d21af9fa7eafc3943db68a0c0b3a",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "5967b221621e4e426bd5e09fdff9a1cb13e0e09f150f47c94f6a9a01fe6cceb0",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.308092,
+            "translucent": 0.691821
+          }
+        },
+        "scene-can-t-find-your-classroom": {
+          "sha256": "f87a11c57bd694996cc1fd7f7d8258f5b93bd78c4709f69e0160dc99432ba844",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-unprepared-for-a-test": {
+          "sha256": "b82582167cded72e2a853de326b74c7cc9463f4c9554076669acd2a9d286cbba",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-back-at-school-as-an-adult": {
+          "sha256": "0ded6d3261406a91c347505c85b5c7bf07375e8ed7aac45f9373013e2fd9156f",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "3cf92b7c355bc38bcb663a5b368316703c72c68efe0a42d5a895df87f69d2051",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.671663,
+            "translucent": 0.328337
+          }
+        },
+        "accent": {
+          "sha256": "d5696c70027d5cb6673f4cd717a4108389730a55a1a353312929d66197003f5f",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.345241,
+            "translucent": 0.654759
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "spider",
+      "packSha256": "0d696ecc2d7e888939137535975321fbba925ffd36dd263dcddd69b63f234ff7",
+      "native": {
+        "hero": {
+          "sha256": "54558d058268d24d88ef75913bef67f2abe52632e525611d60a04077b03de57a",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "f6c361f58b73ac9e364cb0342fd09d46b1ece1c671c3859c2485ec23fd07db69",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "966295b639cbfc9afb5e4a8789b4177357d308557feff4b22df7468f25ade1d7",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.399427,
+            "translucent": 0.600508
+          }
+        },
+        "scene-a-spider-spinning-its-web": {
+          "sha256": "8ff9bfb7939721662b8d875060a88d2a24da5ba8f0f6022a6700f050de8584e4",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-caught-in-a-web": {
+          "sha256": "8372f6b2aac6ce22122fc6d98d241909b41643344aba4cd5efea60a79af7f418",
+          "format": "png",
+          "width": 1692,
+          "height": 929,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-bitten-by-a-spider": {
+          "sha256": "6d8c03561d692ee1fa7c96ea4758a2b47d925c6e488de37517a828d79d9698cf",
+          "format": "png",
+          "width": 1693,
+          "height": 929,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "0175ffcd7b61398b316d53edad10b7bb39363985a3e5afdb6e0bbd4eb2c24df1",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.672804,
+            "translucent": 0.327193
+          }
+        },
+        "accent": {
+          "sha256": "de471e2c1c6fe2abaf4f310265be603259dfdf9913f2dd731e7e516339138eeb",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.959389,
+            "translucent": 0.040611
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "sun",
+      "packSha256": "ba8aab2b30409ff409bdf1e3958b1abb542c691de2c1df0ff0b067816b830c78",
+      "native": {
+        "hero": {
+          "sha256": "7a8ef0161225d9992638905e8236860efc63eb91b0eaf1fc9a21c06135271b3e",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "1e7cefc78cee70d0842a679e81ac63501f31a5163561282c7937e420326d3721",
+          "format": "png",
+          "width": 962,
+          "height": 1635,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "ebe6225865013583096238eb9d241e06c9ff777da5032fb82baafa9c304c6434",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.368782,
+            "translucent": 0.631068
+          }
+        },
+        "scene-bright-warm-sun": {
+          "sha256": "23ace8cdb1242942ae8513a76fc3c0f33cbf9919236ddbffc9c1f7461fabc9ac",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-sunrise": {
+          "sha256": "4d7f76749897b38849c1ecaab043259161cba9b0553b61acd65f118155b7f783",
+          "format": "png",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-sunset": {
+          "sha256": "a47eb6a4b601bbd35818acfcd96b5b3868dae29eff536b7ca9b0a6f661c680f9",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "8b4a1a582abe428f921bceb701a8f2903dc9fd74666de266a9235cbfbdfd8c07",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.214808,
+            "translucent": 0.785192
+          }
+        },
+        "accent": {
+          "sha256": "b64578948125c592014353a3cb2e049e94c71fb9a8f9e42d0914ab292d5821ec",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.386788,
+            "translucent": 0.613212
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "swimming",
+      "packSha256": "1dc7eeffd5ebd898767babe6cdf489da6951e1873ab66710a1d131534eb82ea4",
+      "native": {
+        "hero": {
+          "sha256": "6a089afe01923ad5503640620f3141426861adaac4f3515e41338e815f2a6abd",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "1727c920d33528cda638d08e9e74fd475cbf90d3ecd8e1b5f16eee9a8cad84ca",
+          "format": "png",
+          "width": 960,
+          "height": 1637,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "bc0b429d84b3cdb3540c4bc2dde7bb5d3ac983bb3e4f41a111cec108b4a93aaf",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.593319,
+            "translucent": 0.406674
+          }
+        },
+        "scene-swimming-effortlessly": {
+          "sha256": "4e4c96c93f620c2a8b82ab82d326bb92fc961c842c9d9f1e79d66840f43c7d90",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-struggling-to-swim": {
+          "sha256": "94c308b8d222057fa25c1c36dc1e14fda0b52a52de065e2e868fcac4c192fb10",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-swimming-underwater": {
+          "sha256": "a1d8a3af4c4afb6fbf85671b2ee4c29c5f8d7b4845ebf22ec978de955b818c2a",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "f75afabc3285c5da33ebaff63f5bb5045de8f56cd591733dc171bbb97e9707cb",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.490582,
+            "translucent": 0.509418
+          }
+        },
+        "accent": {
+          "sha256": "08c80019271cbaa3be0c59c7af18a9fef557defbabe6a939a386d4f486c6c493",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.529164,
+            "translucent": 0.470836
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "tree",
+      "packSha256": "dae526112cf02d7a386a3b346196a50c5762876d5a404263d0ac27c1120ab6de",
+      "native": {
+        "hero": {
+          "sha256": "c5a65271104d4a5895462b5ca0be9d7f9bdf7475e1e3f6f13cc40d8874762905",
+          "format": "webp",
+          "width": 1400,
+          "height": 768,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "e298b9fb7dcbdc5cbc154c34d8b389b29499574c44c698e2c13725c040f422a1",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "330c0b57d143e786b982a72a7c4a1e9216a5f94bc24e7b870605ac4b1a73857d",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.329876,
+            "translucent": 0.670111
+          }
+        },
+        "scene-large-healthy-tree": {
+          "sha256": "31c43c5e3821984a5627c8a5234638a1367f2210e5caff88fd5176bc15b3e414",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-dead-or-dying-tree": {
+          "sha256": "d0a1efc803782a4eefdc2e568bf40ba35b3bac7eb7cfc172d7d656aa3d578875",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-climbing-a-tree": {
+          "sha256": "f887ea4850d3bd95943fb9ce9318e81cab8d0392a2bc3ed831ecb0cacd628168",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "613585153b4a330acb8c0ad104dd2be18274ee5c4c333cbcd96c4f0b1f010bf4",
+          "format": "png",
+          "width": 1672,
+          "height": 940,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.967444,
+            "translucent": 0.03251
+          }
+        },
+        "accent": {
+          "sha256": "4d8dd9e5610ac6b534b2b84aaee590e442a82e67c3f9fff9037d1c504e31888f",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.37261,
+            "translucent": 0.62739
+          }
+        }
+      },
+      "derivedFiles": 38
+    },
+    {
+      "id": "wedding",
+      "packSha256": "eb9b9f1723f263338f15fa0c0e8c37aa586ce925105ebc30950c6ff6873b5dd9",
+      "native": {
+        "hero": {
+          "sha256": "5dbb9e5e178de74f6908c21021d07ccc764aa08858b033d6dc4be06b4bd78d81",
+          "format": "webp",
+          "width": 1600,
+          "height": 900,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "portrait": {
+          "sha256": "96593680c504080af7f393f23a057f35dd319a5cfe8576f989b52d9129a85da3",
+          "format": "png",
+          "width": 941,
+          "height": 1672,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "plate": {
+          "sha256": "9a03a77a8e73e2b6b16574206af0fa2173688a8b74d96b38bccf50496b8164f6",
+          "format": "png",
+          "width": 1254,
+          "height": 1254,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.285802,
+            "translucent": 0.713844
+          }
+        },
+        "scene-your-own-wedding": {
+          "sha256": "96c76e2b30ada28a78928fae42441427a98a5c59048d65a7061964580026c310",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-someone-else-s-wedding": {
+          "sha256": "5d77e8fa8671b31a22345c29d48bd87b57eb6d5d030749198c13f701fa2e2eb0",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "scene-being-late-for-the-wedding": {
+          "sha256": "e1a04c76311699ee14364033fbf4c3421655630e9eab8d205950923014517c92",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": false,
+            "transparent": 0,
+            "translucent": 0
+          }
+        },
+        "layer": {
+          "sha256": "3b1d05d442bb504a7df4f07882b38bba1f83b608182ca034463aa955aa95213e",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.950678,
+            "translucent": 0.049309
+          }
+        },
+        "accent": {
+          "sha256": "e176b23ec973bf15e257f4c68a128d04ab79d8b5b87e685c40ef99b0481045d4",
+          "format": "png",
+          "width": 1672,
+          "height": 941,
+          "alpha": {
+            "channel": true,
+            "transparent": 0.522796,
+            "translucent": 0.477204
+          }
+        }
+      },
+      "derivedFiles": 38
+    }
+  ]
+}

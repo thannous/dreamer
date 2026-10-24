@@ -1,3 +1,4 @@
+import { parsePersonalNotes } from './dreamPersonalNotes';
 import { type DreamTarget, matchesDreamTarget, resolveDreamTarget } from './dreamIdentity';
 /**
  * Pure utility functions for dream data manipulation
@@ -380,7 +381,9 @@ const DREAM_UPDATE_INTENT_FIELDS = [
 ] as const;
 
 type DreamUpdateIntentField = (typeof DREAM_UPDATE_INTENT_FIELDS)[number];
-export type DreamUpdateIntent = Partial<Pick<DreamAnalysis, DreamUpdateIntentField>>;
+export type DreamUpdateIntent = Partial<Pick<DreamAnalysis, DreamUpdateIntentField>> & {
+  personalNoteChanges?: { id: string; before?: NonNullable<DreamAnalysis['personalNotes']>[number]; after?: NonNullable<DreamAnalysis['personalNotes']>[number] }[];
+};
 
 const areDreamUpdateFieldValuesEqual = (left: unknown, right: unknown): boolean => {
   if (Object.is(left, right)) return true;
@@ -404,16 +407,33 @@ export const createDreamUpdateIntent = (
       Object.assign(intent, { [field]: requested[field] });
     }
   });
+  if (requested.personalNotes !== undefined && !areDreamUpdateFieldValuesEqual(base.personalNotes, requested.personalNotes)) {
+    const before = new Map((base.personalNotes ?? []).map(note => [note.id, note]));
+    const after = new Map(requested.personalNotes.map(note => [note.id, note]));
+    intent.personalNoteChanges = [...new Set([...before.keys(), ...after.keys()])]
+      .filter(id => !areDreamUpdateFieldValuesEqual(before.get(id), after.get(id)))
+      .map(id => ({ id, before: before.get(id), after: after.get(id) }));
+  }
   return intent;
 };
 
 export const applyDreamUpdateIntent = (
   latest: DreamAnalysis,
   intent: DreamUpdateIntent
-): DreamAnalysis => ({
-  ...latest,
-  ...intent,
-});
+): DreamAnalysis => {
+  const { personalNoteChanges, ...fields } = intent;
+  if (!personalNoteChanges) return { ...latest, ...fields };
+  const notes = new Map((latest.personalNotes ?? []).map(note => [note.id, note]));
+  for (const change of personalNoteChanges) {
+    const current = notes.get(change.id);
+    if (!areDreamUpdateFieldValuesEqual(current, change.before) && !areDreamUpdateFieldValuesEqual(current, change.after)) {
+      throw new Error('Personal note changed while editing');
+    }
+    if (change.after) notes.set(change.id, change.after);
+    else notes.delete(change.id);
+  }
+  return { ...latest, ...fields, personalNotes: parsePersonalNotes([...notes.values()].sort((a, b) => a.createdAt - b.createdAt || a.id.localeCompare(b.id))) };
+};
 
 /**
  * Merge newly resolved server identity onto the latest local dream.
@@ -443,7 +463,10 @@ export const hasDreamUpdateIntentConflict = (
   latest: DreamAnalysis,
   intent: DreamUpdateIntent
 ): boolean =>
-  DREAM_REMOTE_UPDATE_FIELDS.some(
+  (intent.personalNoteChanges?.some(change => {
+    const current = latest.personalNotes?.find(note => note.id === change.id);
+    return !areDreamUpdateFieldValuesEqual(current, change.before) && !areDreamUpdateFieldValuesEqual(current, change.after);
+  }) ?? false) || DREAM_REMOTE_UPDATE_FIELDS.some(
     (field) =>
       Object.prototype.hasOwnProperty.call(intent, field) &&
       !areDreamUpdateFieldValuesEqual(base[field], latest[field]) &&
@@ -470,6 +493,7 @@ type DreamRemoteComparable = {
   explorationStartedAt: number | null;
   clientRequestId: string | null;
   memory: DreamMemoryMetadata | undefined;
+  personalNotes: DreamAnalysis['personalNotes'];
   analysisTranscriptHash: string | null;
   symbols: DreamAnalysis['symbols'];
   emotions: DreamAnalysis['emotions'];
@@ -499,6 +523,7 @@ const toRemoteComparable = (dream: DreamAnalysis): DreamRemoteComparable => {
     explorationStartedAt: dream.explorationStartedAt ?? null,
     clientRequestId: dream.clientRequestId ?? null,
     memory: normalizeDreamMemoryMetadata(dream.memory),
+    personalNotes: dream.personalNotes,
     analysisTranscriptHash: dream.analysisTranscriptHash ?? null,
     symbols: dream.symbols,
     emotions: dream.emotions,
@@ -535,6 +560,7 @@ export const areDreamsEqualForRemoteSync = (a: DreamAnalysis, b: DreamAnalysis):
     left.explorationStartedAt !== right.explorationStartedAt ||
     left.clientRequestId !== right.clientRequestId ||
     !areDreamMemoryMetadataEqual(left.memory, right.memory) ||
+    !areDreamUpdateFieldValuesEqual(left.personalNotes, right.personalNotes) ||
     left.analysisTranscriptHash !== right.analysisTranscriptHash ||
     !areDreamUpdateFieldValuesEqual(left.symbols, right.symbols) ||
     !areDreamUpdateFieldValuesEqual(left.emotions, right.emotions) ||
@@ -559,6 +585,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if (left.id !== right.id) return false;
   if ((left.remoteId ?? null) !== (right.remoteId ?? null)) return false;
   if ((left.clientRequestId ?? null) !== (right.clientRequestId ?? null)) return false;
+  if (!areDreamUpdateFieldValuesEqual(left.migrationRecovery, right.migrationRecovery)) return false;
   if (left.transcript !== right.transcript) return false;
   if (left.title !== right.title) return false;
   if (left.interpretation !== right.interpretation) return false;
@@ -596,6 +623,7 @@ export const areDreamsEqualForLocalState = (a: DreamAnalysis, b: DreamAnalysis):
   if ((left.imageJobErrorCode ?? null) !== (right.imageJobErrorCode ?? null)) return false;
   if ((left.imageJobErrorMessage ?? null) !== (right.imageJobErrorMessage ?? null)) return false;
   if (!areDreamMemoryMetadataEqual(left.memory, right.memory)) return false;
+  if (!areDreamUpdateFieldValuesEqual(left.personalNotes, right.personalNotes)) return false;
   if ((left.analysisTranscriptHash ?? null) !== (right.analysisTranscriptHash ?? null)) return false;
 
   const leftChat = Array.isArray(left.chatHistory) ? left.chatHistory : [];
@@ -707,9 +735,6 @@ export const applyPendingMutations = (
     });
   return sortDreams(next);
 };
-
-export const getDreamSyncError = (dream: DreamAnalysis): string | undefined =>
-  dream.lastSyncError?.trim() || undefined;
 
 export const clearDreamConflict = (dream: DreamAnalysis): DreamAnalysis =>
   setDreamSyncState(dream, 'clean', {

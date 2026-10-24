@@ -1,4 +1,4 @@
-// Starts Expo (web via playwright.branch.config.ts, or Metro for a dev client)
+// Starts Expo (web via the TesterArmy branch target, or Metro for a dev client)
 // against the allowlisted test Supabase branch only. The
 // target comes from the guard (production and unlisted refs are refused); the
 // app gets that URL, the branch anon key and the branch functions URL, with
@@ -19,10 +19,8 @@ export const PASSTHROUGH_EXPO_PUBLIC = Object.freeze([
   'EXPO_PUBLIC_ANALYSIS_JOBS_ENABLED',
   'EXPO_PUBLIC_ANALYTICS_DEBUG',
   'EXPO_PUBLIC_DEBUG_CHAT',
-  'EXPO_PUBLIC_HD_ILLUSTRATIONS_ENABLED',
   'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED',
   'EXPO_PUBLIC_PERFORMANCE_TRACING',
-  'EXPO_PUBLIC_REFERENCE_IMAGES_ENABLED',
   'EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED',
 ]);
 

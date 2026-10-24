@@ -82,12 +82,14 @@ jest.mock('react-native', () => {
     ScrollView: ({
       children,
       contentContainerStyle,
+      horizontal,
       style,
     }: {
       children?: React.ReactNode;
       contentContainerStyle?: { paddingBottom?: number };
+      horizontal?: boolean;
       style?: { marginBottom?: number };
-    }) => (
+    }) => horizontal ? <div>{children}</div> : (
       <div data-testid="home-scroll" data-padding-bottom={contentContainerStyle?.paddingBottom} data-margin-bottom={style?.marginBottom}>
         {children}
       </div>
@@ -198,12 +200,14 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
     </header>
   ),
 }));
-jest.mock('@/components/reminders/ReminderOptInCard', () => ({
-  ReminderOptInCard: () => null,
+jest.mock('@/components/home/HomeWeekNights', () => ({
+  HomeWeekNights: () => null,
 }));
-jest.mock('@/components/inspiration/PersonalReadingCard', () => ({
-  PersonalReadingCard: () => null,
+jest.mock('@/components/home/HomeRecurringCard', () => ({
+  HomeRecurringCard: () => null,
 }));
+jest.mock('expo-image', () => ({ Image: () => null }));
+jest.mock('expo-linear-gradient', () => ({ LinearGradient: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-icon={name} />,
 }));
@@ -223,6 +227,7 @@ jest.mock('@/hooks/useScrollIdle', () => ({
   }),
 }));
 jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => undefined }));
+jest.mock('@/hooks/useLocaleFormatting', () => ({ useLocaleFormatting: () => ({ locale: 'fr-FR' }) }));
 jest.mock('@/hooks/useAppState', () => ({
   useAppState: (onForeground?: () => void) => {
     mockForeground = onForeground;
@@ -623,13 +628,21 @@ describe('Home Accueil Aujourd’hui', () => {
     setIntervalSpy.mockRestore();
   });
 
-  it('shows a signed-in free account its remaining analyses and opens the quota offer', async () => {
+  it('leaves the morning screen to the dream while several analyses remain', async () => {
     mockUser = { id: 'user-1' };
     mockQuota = { tier: 'free', loading: false, usage: { analysis: { used: 1, limit: 3, remaining: 2 } } };
     await renderHome([]);
 
+    expect(screen.queryByTestId(TID.Button.FreeAnalysesNudge)).toBeNull();
+  });
+
+  it('shows the last remaining analysis and opens the quota offer', async () => {
+    mockUser = { id: 'user-1' };
+    mockQuota = { tier: 'free', loading: false, usage: { analysis: { used: 2, limit: 3, remaining: 1 } } };
+    await renderHome([]);
+
     const nudge = screen.getByTestId(TID.Button.FreeAnalysesNudge);
-    expect(nudge.textContent).toContain('quota.free_nudge.remaining');
+    expect(nudge.textContent).toContain('quota.free_nudge.remaining_one');
     fireEvent.click(nudge);
     expect(mockPush).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'settings_quota' } });
   });

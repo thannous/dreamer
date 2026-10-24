@@ -99,6 +99,26 @@ describe('MessagesList streamed reply', () => {
     expect(mockListData.slice(streamedFrom)).toEqual([['greeting', 'request-1', 'reply-1']]);
   });
 
+  // A browser journey cannot replace the channel between two fragment callbacks.
+  it('switches channels without displaying or accepting the previous stream', () => {
+    const first = createStreamingReplyChannel();
+    const next = createStreamingReplyChannel();
+    first.publish({ requestId: 'old-request', text: 'Previous conversation fragment' });
+    next.publish({ requestId: 'new-request', text: 'Current conversation fragment' });
+    const view = render(<MessagesList messages={[question]} streamingReply={first} />);
+    expect(screen.getByTestId('row-streaming-reply').textContent).toBe('Previous conversation fragment');
+
+    view.rerender(<MessagesList messages={[question]} streamingReply={next} />);
+    expect(screen.getByTestId('row-streaming-reply').textContent).toBe('Current conversation fragment');
+    expect(view.container.textContent).not.toContain('Previous conversation fragment');
+    act(() => first.publish({ requestId: 'old-request', text: 'Delayed previous fragment' }));
+    expect(view.container.textContent).not.toContain('Delayed previous fragment');
+
+    const empty = createStreamingReplyChannel();
+    view.rerender(<MessagesList messages={[question]} streamingReply={empty} />);
+    expect(screen.queryByTestId('row-streaming-reply')).toBeNull();
+  });
+
   it('still introduces a reply that arrives without streamed text', () => {
     const { channel, setHistory } = setup();
 

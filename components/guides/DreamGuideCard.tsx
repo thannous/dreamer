@@ -7,12 +7,17 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import type { DreamGuide, DreamGuideLanguage } from '@/lib/dreamGuideTypes';
+import type { GuideReadingStatus } from '@/lib/guideReading';
 import { getDreamGuideContent, getDreamGuideIcon } from '@/services/dreamGuideService';
+import { TypeScale } from '@/constants/typeScale';
 
 interface DreamGuideCardProps {
   guide: DreamGuide;
   language: DreamGuideLanguage;
   metaLabel: string;
+  progressLabel?: string;
+  /** Where the reader is in this guide; its label is `progressLabel`. */
+  status?: GuideReadingStatus;
   onPress: (id: string) => void;
   showSeparator?: boolean;
 }
@@ -21,6 +26,8 @@ export const DreamGuideCard = memo(function DreamGuideCard({
   guide,
   language,
   metaLabel,
+  progressLabel,
+  status,
   onPress,
   showSeparator = true,
 }: DreamGuideCardProps) {
@@ -33,7 +40,7 @@ export const DreamGuideCard = memo(function DreamGuideCard({
     <PressableScale
       onPress={handlePress}
       accessibilityRole="button"
-      accessibilityLabel={`${content.title}. ${metaLabel}`}
+      accessibilityLabel={`${content.title}. ${metaLabel}${progressLabel ? `. ${progressLabel}` : ''}`}
       accessibilityHint={content.metaDescription}
       testID={`dream-guide-${guide.id}`}
       // Adjacent reading rows already provide a generous, separate touch target.
@@ -58,7 +65,28 @@ export const DreamGuideCard = memo(function DreamGuideCard({
         <Text style={[styles.description, { color: noctalia.text.secondary }]}>
           {content.metaDescription}
         </Text>
-        <Text style={[styles.metadata, { color: noctalia.accent.text }]}>{metaLabel}</Text>
+        {/* Length and reading state share a line: a finished guide is told apart at a glance. */}
+        <View style={styles.metaRow}>
+          <Text style={[styles.metadata, { color: noctalia.accent.text }]}>{metaLabel}</Text>
+          {progressLabel ? (
+            <View style={styles.status}>
+              {status === 'completed' ? (
+                <View accessible={false}>
+                  <IconSymbol name="checkmark.circle.fill" size={14} color={noctalia.accent.text} />
+                </View>
+              ) : status === 'inProgress' ? (
+                <View accessible={false} style={[styles.dot, { backgroundColor: noctalia.accent.base }]} />
+              ) : null}
+              <Text testID={`guide-progress-${guide.id}`}
+                style={[styles.metadata, {
+                  color: status === 'completed' ? noctalia.accent.text
+                    : status === 'inProgress' ? noctalia.text.primary : noctalia.text.secondary,
+                }]}>
+                {progressLabel}
+              </Text>
+            </View>
+          ) : null}
+        </View>
       </View>
     </PressableScale>
   );
@@ -92,7 +120,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     fontFamily: Fonts.fraunces.semiBold,
-    fontSize: 18,
+    fontSize: TypeScale.h3.fontSize,
     lineHeight: 24,
   },
   chevron: {
@@ -100,13 +128,30 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   description: {
-    fontFamily: Fonts.spaceGrotesk.regular,
-    fontSize: 14,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
     lineHeight: 20,
   },
+  metaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    columnGap: 14,
+    rowGap: 4,
+  },
+  status: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
   metadata: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
+    fontFamily: Fonts.outfit.medium,
+    fontSize: TypeScale.caption.fontSize,
     lineHeight: 17,
   },
 });

@@ -6,10 +6,12 @@ const JOURNAL_ROUTES = new Set([
   'POST /chat', 'POST /transcribe', 'POST /analyzeDream',
   'POST /recall-question',
   'POST /format-recall',
+  'POST /moon-letter',
+  'POST /analysis-preview',
   'POST /analyzeDreamFull', 'POST /categorizeDream',
   'POST /analysis-jobs', 'POST /analysis-jobs/status',
   'POST /image-jobs', 'POST /image-jobs/status',
-  'POST /generateImage', 'POST /generateImageWithReference',
+  'POST /generateImage',
   'POST /quota/status', 'POST /auth/mark-upgrade',
   'POST /subscription/refresh', 'POST /subscription/sync',
 ]);

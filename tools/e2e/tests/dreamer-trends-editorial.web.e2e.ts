@@ -46,8 +46,8 @@ async function selectTheme(page: Page, theme: 'light' | 'dark' | 'auto') {
   await page.getByTestId('btn.header.trends.settings').click();
   await page.getByTestId(`quick-settings.theme.${theme}`).click();
   await page.getByTestId('quick-settings.close').click();
-  // The whole drawer, not its close button: the button leaves the viewport while the drawer still covers half the page.
-  await expect(page.getByTestId('quick-settings.drawer')).not.toBeInViewport();
+  // The profile row has real bounds; the drawer container can have zero height while its content is still sliding.
+  await expect(page.getByTestId('quick-settings.profile')).not.toBeInViewport();
 }
 
 async function expectWithinScreen(page: Page, ids: string[]) {
@@ -209,8 +209,13 @@ test('each door opens the journal on exactly those dreams, and the period change
   await expect(page.getByTestId('trends.nights.month.2026-09')).toContainText('7');
   await expect(page.getByTestId('trends.nights.month.2026-10')).toContainText('1');
   // A type counts analyzed dreams only, so its door leaves out The Broken Mirror, symbolic but unread.
+  // The journal draws only the cards near the screen, and a card shows its whole painting (#480).
+  // In a window tall enough to bring the list's end into view, every card before it is drawn,
+  // so the count below is the door's whole result: a fifth card would be drawn or push the end out.
+  await page.setViewportSize({ width: 390, height: 3400 });
   await page.getByTestId('trends.returns.type.symbolic-dream').click();
   await expect(page.getByTestId('btn.filterDate')).toHaveCount(0);
+  await expect(page.getByText('All available results shown').filter({ visible: true })).toBeInViewport();
   await expect(journalItems(page)).toHaveCount(4);
   await expect(journalItems(page).filter({ hasText: 'The Broken Mirror' })).toHaveCount(0);
 });

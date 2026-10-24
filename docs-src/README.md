@@ -26,6 +26,19 @@ For undated records, `meta.fallbackModifiedAt` preserves their existing date;
 fallback date when editing individual symbols. Catalogs without this optional
 field retain the `meta.lastUpdated` fallback.
 
+## Illustrated symbol pages
+
+Before generating symbol artwork, adding an Atlas entry or changing its motion, read
+[the living illustrations guideline](../doc_web_interne/docs/symbol-atlas-guidelines.md).
+It defines the approved visual direction, source files, per-image motion and review criteria.
+
+## Image storage
+
+Images are versioned by `config/site-media.json`. The build restores the exact
+bytes from the configured CDN when missing; it does not re-encode this snapshot.
+Use `npm run docs:media -- refresh` explicitly when preparing new media, then
+upload and verify before delivery. See the [storage and recovery guide](../doc_web_interne/docs/site-media-storage.md).
+
 ## Daily Maintenance Workflow
 
 ### Preview changes live
@@ -136,8 +149,12 @@ collections can restrict their coverage: `collections.blog`,
 `collections.symbols`, and `collections.guides` each declare their own
 `languages` list, while static pages declare availability per page through the
 `slugs` keys of `docs-src/config/static-pages.json`. Brazilian Portuguese
-(`pt-br`) is the reference example: it covers only the pages listed in
-`static-pages.json`, never the blog, symbol, or guide collections.
+(`pt-br`) is the reference example: it covers the pages listed in
+`static-pages.json`, the symbol dictionary (240 symbols and 8 categories under
+`/pt-br/simbolos/`) and the guides (hub, dictionary and 8 curated guides), but
+never the blog. The symbol catalogs in `data/` are shared with the app and keep
+its key `pt` for this language: read them through `scripts/lib/symbol-locales.js`
+(`catalogKey`, `aliasWebLocales`), never with a second copy of the content.
 
 To add such a language:
 
@@ -167,9 +184,9 @@ language.
 Production of https://noctalia.app is manual. The Pages project `noctalia` is
 connected with the Cloudflare Git integration, which is a dashboard setting.
 This repository has no `wrangler.toml` and no CI job that runs
-`wrangler pages deploy`. Until Enable automatic production branch deployments
-is turned off (see Publishing to production in `AGENTS.md`), a push to `master`
-still builds and publishes the site. Generated HTML is not stored in Git.
+`wrangler pages deploy`. Automatic production deployments and Git previews were confirmed disabled on
+2026-10-22. A push to `master` does not publish the site; use the guarded manual
+commands described in `AGENTS.md`. Generated HTML is not stored in Git.
 When a build does run, Cloudflare checks out the tracked sources, rebuilds
 `docs/`, validates the result, then uploads that generated directory.
 
@@ -323,7 +340,7 @@ then runs `docs:release-check` and uploads an allowlisted directory with
 Right before the upload it fetches and runs every check again, and must
 accept the same `HEAD`, which labels the upload. Run `npm run verify:release:site`
 first, from a clean checkout of the approved `master` SHA: it leaves out the
-app checks (`build:web`, the backend journey under Docker, the TesterArmy app
+app checks (`build:web`, the native backend journey, the TesterArmy app
 campaigns), which the static site does not ship. `docs:deploy:preview`
 is not guarded, but accepts only the exact preview branch `preview` (compared
 byte for byte) and refuses any other value. The token and account
@@ -331,6 +348,12 @@ id stay in the environment (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`).
 If the Cloudflare Pages project or build settings change, update
 `docs-src/config/cloudflare-pages.json` and mirror the same values in the
 Cloudflare dashboard.
+
+External link validation remains enabled during publication. After bounded retries,
+HTTP 502/503/504 from third-party sites are reported with their URL and status as
+non-blocking availability warnings, not as validated links. Broken internal links,
+missing external pages (404/410), and other HTTP failures still block publication.
+This avoids making a release depend on a third-party maintenance window.
 
 ## Source Templates
 

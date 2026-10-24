@@ -5,7 +5,7 @@
   "lang": "de",
   "slug": "traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt",
   "title": "Schlangenträume: Verborgene Warnungen entschlüsselt | Noctalia",
-  "description": "Schlangenträume: Biss, Verfolgung, Häutung oder eine ruhige Schlange? Wovon die Szene erzählen kann, was die Forschung sagt und was Sie notieren sollten.",
+  "description": "Schlangenträume: Biss, Verfolgung, Häutung oder eine ruhige Schlange? Wovon die Szene erzählen kann, was die Forschung sagt und was du notieren solltest.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
   "htmlClass": "scroll-smooth blog-article",
@@ -19,7 +19,7 @@
   "ogImageAlt": "Künstlerische Darstellung einer Schlange, die alte Weisheit oder Transformation darstellt",
   "twitterCard": "summary_large_image",
   "twitterTitle": "Schlangenträume: Verborgene Warnungen entschlüsselt | Noctalia",
-  "twitterDescription": "Schlangenträume: wovon die Szene erzählen kann und was Sie nach dem Aufwachen notieren.",
+  "twitterDescription": "Schlangenträume: wovon die Szene erzählen kann und was du nach dem Aufwachen notierst.",
   "twitterImage": "https://noctalia.app/img/blog/snake-dreams-meaning.webp",
   "twitterImageAlt": "Künstlerische Darstellung einer Schlange, die alte Weisheit oder Transformation darstellt",
   "publishedTime": "2025-12-11",
@@ -29,8 +29,8 @@
   "nextPath": "/de/blog/trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen",
   "preloadImage": "/img/blog/snake-dreams-meaning.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können\",\n    \"description\": \"Schlangenträume: Biss, Verfolgung, Häutung oder eine ruhige Schlange? Wovon die Szene erzählen kann, was die Forschung sagt und was Sie notieren sollten.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/snake-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2322,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, von Schlangen zu träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Eine einzige Bedeutung gibt es nicht. Je nach Szene begleitet die Schlange oft eine noch unbenannte Angst, Misstrauen, Begehren oder eine laufende Veränderung. Was das Tier tat, wie Sie sich fühlten und was Sie gerade erleben, sind die besten Hinweise.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist ein Schlangentraum ein schlechtes Omen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Ein Schlangentraum sagt weder Unglück noch Gefahr noch Verrat voraus. Er inszeniert ein aktuelles Gefühl oder Anliegen, oft mit Bildern, die unsere Kultur mit Schlangen verbindet.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, im Traum von einer Schlange gebissen zu werden?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Der Biss begleitet oft einen kürzlichen Schreck: eine verletzende Bemerkung, eine schlechte Nachricht, einen Streit. Notieren Sie, wo der Biss war und was Sie gefühlt haben. Er beweist keinen Verrat und sagt nichts über Ihre Gesundheit.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Heißt ein Schlangentraum, dass mich jemand verrät?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Der Traum kann ein Misstrauen widerspiegeln, das Sie empfinden, verrät aber nichts über die Absichten anderer. Fällt Ihnen eine Person ein, fragen Sie sich, auf welche Tatsachen sich Ihr Eindruck stützt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Muss ich mir Sorgen machen, wenn diese Träume wiederkehren?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Meist nicht. Werden daraus häufige Albträume, die Ihren Schlaf stören oder Sie tagsüber belasten, sprechen Sie mit Ihrer Ärztin, Ihrem Arzt oder einer schlafmedizinischen Fachperson.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können\",\n    \"description\": \"Schlangenträume: Biss, Verfolgung, Häutung oder eine ruhige Schlange? Wovon die Szene erzählen kann, was die Forschung sagt und was du notieren solltest.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/snake-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2322,\n    \"timeRequired\": \"PT11M\",\n    \"url\": \"https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, von Schlangen zu träumen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Eine einzige Bedeutung gibt es nicht. Je nach Szene begleitet die Schlange oft eine noch unbenannte Angst, Misstrauen, Begehren oder eine laufende Veränderung. Was das Tier tat, wie du dich gefühlt hast und was du gerade erlebst, sind die besten Hinweise.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist ein Schlangentraum ein schlechtes Omen?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Ein Schlangentraum sagt weder Unglück noch Gefahr noch Verrat voraus. Er inszeniert ein aktuelles Gefühl oder Anliegen, oft mit Bildern, die unsere Kultur mit Schlangen verbindet.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Was bedeutet es, im Traum von einer Schlange gebissen zu werden?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Der Biss begleitet oft einen kürzlichen Schreck: eine verletzende Bemerkung, eine schlechte Nachricht, einen Streit. Notiere, wo der Biss war und was du gefühlt hast. Er beweist keinen Verrat und sagt nichts über deine Gesundheit.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Heißt ein Schlangentraum, dass mich jemand verrät?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Der Traum kann ein Misstrauen widerspiegeln, das du empfindest, verrät aber nichts über die Absichten anderer. Fällt dir eine Person ein, frag dich, auf welche Tatsachen sich dein Eindruck stützt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Muss ich mir Sorgen machen, wenn diese Träume wiederkehren?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Meist nicht. Werden daraus häufige Albträume, die deinen Schlaf stören oder dich tagsüber belasten, sprich mit deiner Ärztin, deinem Arzt oder einer schlafmedizinischen Fachperson.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Schlangenträume\",\n            \"item\": \"https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -69,7 +69,7 @@
                     Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Die Schlange war plötzlich da, im Gras oder am Fußende des Betts. Sie kam näher, biss zu oder sah Sie nur an, und Sie sind mit Gänsehaut aufgewacht. Von Schlangen zu träumen ist häufig, und ein solcher Traum sagt nichts voraus. Entscheidend ist, was die Schlange tat und was Sie dabei gefühlt haben. So lesen Sie Ihren Traum.
+                    Die Schlange war plötzlich da, im Gras oder am Fußende des Betts. Sie kam näher, biss zu oder sah dich nur an, und du bist mit Gänsehaut aufgewacht. Von Schlangen zu träumen ist häufig, und ein solcher Traum sagt nichts voraus. Entscheidend ist, was die Schlange tat und was du dabei gefühlt hast. So liest du deinen Traum.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -86,7 +86,7 @@
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
     <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Kurzantwort</h2>
-    <p class="text-purple-100/80 leading-relaxed">Ein Traum von Schlangen hat keine feste Bedeutung und sagt nichts voraus. Je nach Szene begleitet die Schlange oft eine noch unbenannte Angst, Misstrauen, Begehren oder eine laufende Veränderung. Was das Tier tat (beißen, folgen, fliehen, sich häuten, ruhig bleiben) und Ihr Gefühl beim Aufwachen sind die besten Hinweise. Schreiben Sie beides auf, bevor Sie nach einer Bedeutung suchen.</p>
+    <p class="text-purple-100/80 leading-relaxed">Ein Traum von Schlangen hat keine feste Bedeutung und sagt nichts voraus. Je nach Szene begleitet die Schlange oft eine noch unbenannte Angst, Misstrauen, Begehren oder eine laufende Veränderung. Was das Tier tat (beißen, folgen, fliehen, sich häuten, ruhig bleiben) und dein Gefühl beim Aufwachen sind die besten Hinweise. Schreib beides auf, bevor du nach einer Bedeutung suchst.</p>
 </section>
 <!-- Featured Image -->
 <figure class="mb-12 rounded-2xl overflow-hidden">
@@ -99,11 +99,11 @@
                 </h2>
 <ol class="space-y-2 text-sm text-purple-200/70">
 <li><a class="toc-link block" href="#symbolism">1. Warum Schlangen so oft in Träumen auftauchen</a></li>
-<li><a class="toc-link block" href="#types">2. Welche Schlange haben Sie gesehen?</a></li>
+<li><a class="toc-link block" href="#types">2. Welche Schlange hast du gesehen?</a></li>
 <li><a class="toc-link block" href="#scenarios">3. Was hat die Schlange getan?</a></li>
 <li><a class="toc-link block" href="#interpretations">4. Wovon ein Schlangentraum erzählen kann</a></li>
 <li><a class="toc-link block" href="#psychology">5. Was Psychologie und Forschung sagen</a></li>
-<li><a class="toc-link block" href="#action">6. Was Sie nach einem Schlangentraum tun können</a></li>
+<li><a class="toc-link block" href="#action">6. Was du nach einem Schlangentraum tun kannst</a></li>
 </ol>
 </nav>
 <!-- Article Content -->
@@ -116,11 +116,11 @@
                     Schlangen gehören zu den Traumthemen, die die Forschung erfasst. In einer Befragung zu typischen Träumen kanadischer Studierender bildeten Schlangen und Insekten eine gemeinsame Themengruppe, die Frauen häufiger nannten. Von Schlangen zu träumen ist also verbreitet und für sich genommen kein Grund zur Sorge.
                 </p>
 <p>
-                    Die Schlange trägt außerdem eine widersprüchliche Kulturgeschichte: die Versuchung im Paradies, der Äskulapstab als Zeichen der Medizin, die Häutung als Erneuerung, das Gift als Gefahr. Im Deutschen spricht man sogar von einer „falschen Schlange“. Ihr Traum kann auf diese Bilder zurückgreifen, doch Ihre eigene Beziehung zu Schlangen zählt mehr: eine Angst aus der Kindheit, ein Terrarium im Freundeskreis, eine Tierdoku vom Vorabend.
+                    Die Schlange trägt außerdem eine widersprüchliche Kulturgeschichte: die Versuchung im Paradies, der Äskulapstab als Zeichen der Medizin, die Häutung als Erneuerung, das Gift als Gefahr. Im Deutschen spricht man sogar von einer „falschen Schlange“. Dein Traum kann auf diese Bilder zurückgreifen, doch deine eigene Beziehung zu Schlangen zählt mehr: eine Angst aus der Kindheit, ein Terrarium im Freundeskreis, eine Tierdoku vom Vorabend.
                 </p>
-<h2 id="types">Welche Schlange haben Sie gesehen?</h2>
+<h2 id="types">Welche Schlange hast du gesehen?</h2>
 <p>
-                    Bevor Sie nach einer Bedeutung suchen, beschreiben Sie das Tier. Die folgenden Hinweise sind keine Definitionen, sondern Fragen, die Sie mit Ihrem Gefühl abgleichen können.
+                    Bevor du nach einer Bedeutung suchst, beschreibe das Tier. Die folgenden Hinweise sind keine Definitionen, sondern Fragen, die du mit deinem Gefühl abgleichen kannst.
                 </p>
 </div>
 <!-- Snake Types Cards -->
@@ -133,7 +133,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Eine Giftschlange</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Kobra, Viper, Klapperschlange: Die Gefahr ist eindeutig. Die Szene begleitet oft <strong>eine Situation, die Ihnen schadet</strong>, oder Worte, die verletzt haben. Wo sind Sie gerade auf der Hut?
+                        Kobra, Viper, Klapperschlange: Die Gefahr ist eindeutig. Die Szene begleitet oft <strong>eine Situation, die dir schadet</strong>, oder Worte, die verletzt haben. Wo bist du gerade auf der Hut?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -144,7 +144,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Eine große Würgeschlange</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Python oder Boa: kein Biss, sondern wachsender Druck. Das Bild passt oft zu dem <strong>Gefühl, eingeengt zu sein</strong>: ein voller Terminkalender, eine Verpflichtung, eine Beziehung ohne Spielraum. Was lässt Ihnen gerade wenig Luft?
+                        Python oder Boa: kein Biss, sondern wachsender Druck. Das Bild passt oft zu dem <strong>Gefühl, eingeengt zu sein</strong>: ein voller Terminkalender, eine Verpflichtung, eine Beziehung ohne Spielraum. Was lässt dir gerade wenig Luft?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -155,7 +155,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Eine kleine, harmlose Schlange</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Eine Ringelnatter gleitet vorbei, ohne Bedrohung. Sie kann zu einer <strong>kleinen Sorge</strong> passen, die Sie nervt, oder zu bloßer Neugier. Notieren Sie, ob Sie beunruhigt, aufmerksam oder gleichgültig waren.
+                        Eine Ringelnatter gleitet vorbei, ohne Bedrohung. Sie kann zu einer <strong>kleinen Sorge</strong> passen, die dich nervt, oder zu bloßer Neugier. Notiere, ob du beunruhigt, aufmerksam oder gleichgültig warst.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -166,7 +166,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Eine auffällige Farbe</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Schwarz, grün, weiß, rot: Einen allgemein gültigen Farbcode gibt es nicht. Die Farbe zählt vor allem durch das, <strong>was sie bei Ihnen auslöst</strong>. Schreiben Sie sie auf und dazu die erste Assoziation, ohne sie zu erzwingen.
+                        Schwarz, grün, weiß, rot: Einen allgemein gültigen Farbcode gibt es nicht. Die Farbe zählt vor allem durch das, <strong>was sie bei dir auslöst</strong>. Schreib sie auf und dazu die erste Assoziation, ohne sie zu erzwingen.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -177,7 +177,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Eine zweiköpfige Schlange</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Zwei Köpfe, zwei Richtungen. Die Szene kann zu einem <strong>Hin und Her zwischen zwei Entscheidungen</strong> oder zwei Loyalitäten passen. Welche ziehen gerade an Ihnen?
+                        Zwei Köpfe, zwei Richtungen. Die Szene kann zu einem <strong>Hin und Her zwischen zwei Entscheidungen</strong> oder zwei Loyalitäten passen. Welche ziehen gerade an dir?
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -188,7 +188,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Eine sprechende Schlange</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Was sie sagt, stammt von Ihnen, nicht von einem Orakel. Notieren Sie den Satz wörtlich: Oft greift er <strong>einen Gedanken auf, den Sie noch nicht ausgesprochen hatten</strong>. Er ist Material zum Nachdenken, kein Rat, dem Sie folgen müssen.
+                        Was sie sagt, stammt von dir, nicht von einem Orakel. Notiere den Satz wörtlich: Oft greift er <strong>einen Gedanken auf, den du noch nicht ausgesprochen hattest</strong>. Er ist Material zum Nachdenken, kein Rat, dem du folgen musst.
                     </p>
 </div>
 </div>
@@ -199,44 +199,44 @@
                 </p>
 <h3>Von einer Schlange gebissen werden</h3>
 <p>
-                    Diese Szene bleibt am stärksten haften. Notieren Sie, wo der Biss war, ob er wehtat und was Sie danach getan haben. Oft begleitet er <strong>einen kürzlichen Schreck</strong>: eine spitze Bemerkung, eine schlechte Nachricht, einen Streit. Er beweist keinen Verrat und sagt nichts über Ihre Gesundheit. Fragen Sie sich lieber: Was hat mich in den letzten Tagen getroffen?
+                    Diese Szene bleibt am stärksten haften. Notiere, wo der Biss war, ob er wehtat und was du danach getan hast. Oft begleitet er <strong>einen kürzlichen Schreck</strong>: eine spitze Bemerkung, eine schlechte Nachricht, einen Streit. Er beweist keinen Verrat und sagt nichts über deine Gesundheit. Frag dich lieber: Was hat mich in den letzten Tagen getroffen?
                 </p>
 <h3>Von einer Schlange verfolgt werden</h3>
 <p>
-                    Eine Schlange, die in der Nähe vorbeizieht, ist etwas anderes als eine, die Ihnen folgt. Wenn Sie geflohen sind, rückt die Szene in die Nähe von <a class="text-dream-salmon hover:underline" href="../traumsymbole/verfolgung">Verfolgungsträumen</a>: etwas, dem man <strong>lieber nicht ins Auge sieht</strong>. Was haben Sie zuletzt vor sich hergeschoben?
+                    Eine Schlange, die in der Nähe vorbeizieht, ist etwas anderes als eine, die dir folgt. Wenn du geflohen bist, rückt die Szene in die Nähe von <a class="text-dream-salmon hover:underline" href="../traumsymbole/verfolgung">Verfolgungsträumen</a>: etwas, dem man <strong>lieber nicht ins Auge sieht</strong>. Was hast du zuletzt vor dir hergeschoben?
                 </p>
 <h3>Eine Schlange greift jemand anderen an</h3>
 <p>
-                    Das kann <strong>Sorge um diese Person</strong> widerspiegeln oder Ohnmacht angesichts dessen, was sie durchmacht. Welche Rolle hatten Sie: zusehen, eingreifen, Hilfe holen? Leiten Sie daraus keine verborgenen Absichten ab, weder Ihre noch ihre.
+                    Das kann <strong>Sorge um diese Person</strong> widerspiegeln oder Ohnmacht angesichts dessen, was sie durchmacht. Welche Rolle hattest du: zusehen, eingreifen, Hilfe holen? Leite daraus keine verborgenen Absichten ab, weder deine noch ihre.
                 </p>
 <h3>Eine Schlange töten</h3>
 <p>
-                    Diese Handlung begleitet oft den Wunsch, <strong>mit einer Angst oder einem Problem abzuschließen</strong>. Das Gefühl danach ist der beste Hinweis: Erleichterung, Stolz oder Unbehagen? Der Traum bescheinigt nicht, dass die Sache erledigt ist; er zeigt, wie Sie zu ihr stehen.
+                    Diese Handlung begleitet oft den Wunsch, <strong>mit einer Angst oder einem Problem abzuschließen</strong>. Das Gefühl danach ist der beste Hinweis: Erleichterung, Stolz oder Unbehagen? Der Traum bescheinigt nicht, dass die Sache erledigt ist; er zeigt, wie du zu ihr stehst.
                 </p>
 <h3>Eine ruhige oder vertraute Schlange</h3>
 <p>
-                    Sie beobachten sie, berühren sie und haben keine Angst. Das ändert alles. Die Szene kann zu etwas passen, an das Sie sich <strong>nach und nach gewöhnen</strong>, oder zu einer Anziehung. Sie kann auch einfach der ruhige Ton des Traums sein.
+                    Du beobachtest sie, berührst sie und hast keine Angst. Das ändert alles. Die Szene kann zu etwas passen, an das du dich <strong>nach und nach gewöhnst</strong>, oder zu einer Anziehung. Sie kann auch einfach der ruhige Ton des Traums sein.
                 </p>
 <h3>Überall Schlangen oder Schlangen im Haus</h3>
 <p>
-                    Eine Szene voller Schlangen spiegelt oft eine Zeit, in der sich <strong>die Belastungen häufen</strong>. Viele Schlangen bedeuten nicht viele Feinde. In einem <a class="text-dream-salmon hover:underline" href="../traumsymbole/haus">Haus</a> berührt die Szene das Private: Ihr Schlafzimmer, Ihre Familie, Ihren Rückzugsort.
+                    Eine Szene voller Schlangen spiegelt oft eine Zeit, in der sich <strong>die Belastungen häufen</strong>. Viele Schlangen bedeuten nicht viele Feinde. In einem <a class="text-dream-salmon hover:underline" href="../traumsymbole/haus">Haus</a> berührt die Szene das Private: dein Schlafzimmer, deine Familie, deinen Rückzugsort.
                 </p>
 <p>
-                    Manchmal spielen diese Träume in einem dunklen <a class="text-dream-salmon hover:underline" href="../traumsymbole/wald">Wald</a> oder mischen andere gefürchtete Tiere hinein, etwa <a class="text-dream-salmon hover:underline" href="../traumsymbole/spinne">Spinnen</a>. Notieren Sie, was überwog: Ekel, Angst oder das Gefühl, umzingelt zu sein.
+                    Manchmal spielen diese Träume in einem dunklen <a class="text-dream-salmon hover:underline" href="../traumsymbole/wald">Wald</a> oder mischen andere gefürchtete Tiere hinein, etwa <a class="text-dream-salmon hover:underline" href="../traumsymbole/spinne">Spinnen</a>. Notiere, was überwog: Ekel, Angst oder das Gefühl, umzingelt zu sein.
                 </p>
 <h3>Eine Schlange, die sich häutet</h3>
 <p>
-                    Die Häutung ist ein naheliegendes Bild für <strong>Veränderung</strong>. Wenn Sie gerade einen Übergang erleben (einen Umzug, eine neue Rolle, das Ende einer Beziehung), kann der Traum ihn begleiten. Er kündigt ihn nicht an, sondern gibt dem ein Bild, was schon in Bewegung ist.
+                    Die Häutung ist ein naheliegendes Bild für <strong>Veränderung</strong>. Wenn du gerade einen Übergang erlebst (einen Umzug, eine neue Rolle, das Ende einer Beziehung), kann der Traum ihn begleiten. Er kündigt ihn nicht an, sondern gibt dem ein Bild, was schon in Bewegung ist.
                 </p>
 <h3 id="tagebuch-beispiel">Beispiel aus dem Traumtagebuch</h3>
-<p><strong>Fiktives Beispiel:</strong> Es zeigt, wie Sie das Geschehen im Traum von einer möglichen Verbindung zum Alltag trennen.</p>
+<p><strong>Fiktives Beispiel:</strong> Es zeigt, wie du das Geschehen im Traum von einer möglichen Verbindung zum Alltag trennst.</p>
 <ul>
 <li><strong>Traum:</strong> „Unter meinem Schreibtisch im Büro lag eine grüne Schlange. Als ich aufstehen wollte, biss sie mich in den Knöchel.“</li>
 <li><strong>Gefühl:</strong> „Mehr Überraschung als Schmerz. Beim Aufwachen dann ein dumpfer Ärger.“</li>
 <li><strong>Aktueller Kontext:</strong> „Gestern hat ein Kollege meine Arbeit im Meeting vorgestellt, ohne mich zu erwähnen.“</li>
 <li><strong>Offene Frage:</strong> „Kommt die Schlange wieder, wenn ich mich übergangen fühle, oder auch in ruhigen Wochen?“</li>
 </ul>
-<p>Der Traum sagt nicht, dass dieser Kollege eine „falsche Schlange“ ist. Er zeigt, was die Situation in Ihnen ausgelöst hat. Ein einzelner Eintrag beweist nichts: Erst wenn Sie dieselben Punkte über mehrere Nächte notieren, werden Zusammenhänge sichtbar.</p>
+<p>Der Traum sagt nicht, dass dieser Kollege eine „falsche Schlange“ ist. Er zeigt, was die Situation in dir ausgelöst hat. Ein einzelner Eintrag beweist nichts: Erst wenn du dieselben Punkte über mehrere Nächte notierst, werden Zusammenhänge sichtbar.</p>
 <!-- CTA inline -->
 <aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <div class="flex items-start gap-4">
@@ -244,8 +244,8 @@
 <i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
 </div>
 <div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halten Sie Ihren Schlangentraum fest, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Erzählen Sie Ihren Traum in Noctalia gleich nach dem Aufwachen per Sprache oder tippen Sie ihn ein. Er wird transkribiert, in Ihrem Tagebuch gespeichert, und Sie können Ihre Schlangenträume nebeneinander lesen.</p>
+<h4 class="font-serif text-lg text-dream-cream mb-2">Halte deinen Schlangentraum fest, bevor er verblasst</h4>
+<p class="text-sm text-gray-400 mb-4">Erzähl deinen Traum in Noctalia gleich nach dem Aufwachen per Sprache oder tipp ihn ein. Er wird transkribiert, in deinem Tagebuch gespeichert, und du kannst deine Schlangenträume nebeneinander lesen.</p>
 <a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
                                 Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
@@ -254,15 +254,15 @@
 </aside>
 <h2 id="interpretations">Wovon ein Schlangentraum erzählen kann</h2>
 <p>
-                    Kein Traumlexikon kann sicher sagen, warum gerade <em>Sie</em> von einer Schlange geträumt haben. Manche Zusammenhänge tauchen aber häufig auf, wenn man die Szene mit der eigenen Lebenslage vergleicht. Behalten Sie, was passt, und lassen Sie den Rest.
+                    Kein Traumlexikon kann sicher sagen, warum gerade <em>du</em> von einer Schlange geträumt hast. Manche Zusammenhänge tauchen aber häufig auf, wenn man die Szene mit der eigenen Lebenslage vergleicht. Behalte, was passt, und lass den Rest.
                 </p>
 <h3>Eine Angst oder Anspannung ohne Namen</h3>
 <p>
-                    Das ist die häufigste Spur. Eine Schlange, versteckt im Gras, gleicht <strong>etwas, das Sie spüren, aber noch nicht angesehen haben</strong>: eine liegengebliebene Aufgabe, ein aufgeschobenes Gespräch. Der Traum schlägt keinen Alarm; er gibt einem Unbehagen ein Bild, das schon da ist. Was beschäftigt mich, ohne dass ich es ausgesprochen habe?
+                    Das ist die häufigste Spur. Eine Schlange, versteckt im Gras, gleicht <strong>etwas, das du spürst, aber noch nicht angesehen hast</strong>: eine liegengebliebene Aufgabe, ein aufgeschobenes Gespräch. Der Traum schlägt keinen Alarm; er gibt einem Unbehagen ein Bild, das schon da ist. Was beschäftigt mich, ohne dass ich es ausgesprochen habe?
                 </p>
 <h3>Misstrauen gegenüber jemandem</h3>
 <p>
-                    Eine „falsche Schlange“ will niemand sein. Wenn der Traum Sie an eine bestimmte Person denken lässt, notieren Sie das, ebenso die anderen Personen im Traum. Ein Traum ist aber kein Beweis: Er zeigt, <strong>was Sie empfinden</strong>, nicht, was der andere getan hat. Stützt sich mein Misstrauen auf aktuelle Tatsachen?
+                    Eine „falsche Schlange“ will niemand sein. Wenn der Traum dich an eine bestimmte Person denken lässt, notiere das, ebenso die anderen Personen im Traum. Ein Traum ist aber kein Beweis: Er zeigt, <strong>was du empfindest</strong>, nicht, was der andere getan hat. Stützt sich mein Misstrauen auf aktuelle Tatsachen?
                 </p>
 <h3>Eine Veränderung, die im Gang ist</h3>
 <p>
@@ -274,15 +274,15 @@
                 </p>
 <h3>Fürsorge im symbolischen Sinn</h3>
 <p>
-                    Der Äskulapstab erinnert daran, dass die Schlange auch für Heilkunst steht. Wenn Sie gerade für sich oder jemanden sorgen, kann das Bild daraus schöpfen. Eine Krankheit erkennt ein Traum jedoch nicht: <strong>Sorgen um Ihre Gesundheit gehören in eine ärztliche Praxis</strong>, nicht in ein Traumlexikon.
+                    Der Äskulapstab erinnert daran, dass die Schlange auch für Heilkunst steht. Wenn du gerade für dich oder jemanden sorgst, kann das Bild daraus schöpfen. Eine Krankheit erkennt ein Traum jedoch nicht: <strong>Sorgen um deine Gesundheit gehören in eine ärztliche Praxis</strong>, nicht in ein Traumlexikon.
                 </p>
-<h3>Was Sie auf Abstand halten</h3>
+<h3>Was du auf Abstand hältst</h3>
 <p>
-                    In der jungschen Tradition steht die Schlange oft für einen Teil von sich, den man auf Abstand hält: Wut, Ehrgeiz, ein Bedürfnis. Die Szene lädt dann zu der Frage ein, <strong>welche Reaktion Sie zuletzt zurückgehalten haben</strong>, und warum.
+                    In der jungschen Tradition steht die Schlange oft für einen Teil von sich, den man auf Abstand hält: Wut, Ehrgeiz, ein Bedürfnis. Die Szene lädt dann zu der Frage ein, <strong>welche Reaktion du zuletzt zurückgehalten hast</strong>, und warum.
                 </p>
 <h2 id="psychology">Was Psychologie und Forschung sagen</h2>
 <p>
-                    Schlangenträume wurden sehr unterschiedlich gedeutet. Diese Ansätze schließen sich nicht aus, und keiner beweist etwas über Ihren Traum im Einzelnen.
+                    Schlangenträume wurden sehr unterschiedlich gedeutet. Diese Ansätze schließen sich nicht aus, und keiner beweist etwas über deinen Traum im Einzelnen.
                 </p>
 <h3>Die freudsche Lesart</h3>
 <p>
@@ -302,35 +302,35 @@
                 </p>
 <h3>Die Verbindung zum Wachleben</h3>
 <p>
-                    Das US-amerikanische National Institute of Neurological Disorders and Stroke (NINDS) weist darauf hin, dass Tagesereignisse oft in Träume einfließen und Stress beängstigende Träume wahrscheinlicher macht. Auch der Traumforscher G. William Domhoff betont die <strong>Kontinuität zwischen Träumen und den Sorgen des Wachlebens</strong>. Ihre Lebenslage und Ihr Gefühl beim Aufwachen sagen deshalb mehr als die Schlangenart.
+                    Das US-amerikanische National Institute of Neurological Disorders and Stroke (NINDS) weist darauf hin, dass Tagesereignisse oft in Träume einfließen und Stress beängstigende Träume wahrscheinlicher macht. Auch der Traumforscher G. William Domhoff betont die <strong>Kontinuität zwischen Träumen und den Sorgen des Wachlebens</strong>. Deine Lebenslage und dein Gefühl beim Aufwachen sagen deshalb mehr als die Schlangenart.
                 </p>
-<h2 id="action">Was Sie nach einem Schlangentraum tun können</h2>
+<h2 id="action">Was du nach einem Schlangentraum tun kannst</h2>
 <p>
-                    Die meisten Schlangenträume erfordern nichts Besonderes. Wenn einer Sie beschäftigt oder sie wiederkehren, helfen ein paar einfache Schritte.
+                    Die meisten Schlangenträume erfordern nichts Besonderes. Wenn einer dich beschäftigt oder sie wiederkehren, helfen ein paar einfache Schritte.
                 </p>
 <h3>1. Zuerst die Szene aufschreiben</h3>
 <ul>
-<li>Das Tier: Größe, Farbe, Art, falls Sie sie kennen</li>
-<li>Was es tat: reglos, auf der Flucht, Ihnen folgend, beißend</li>
-<li>Der Ort und der Abstand zu Ihnen</li>
-<li>Ihr Gefühl im Traum und beim Aufwachen</li>
-<li>Was Sie gerade beschäftigt, in einem Satz</li>
+<li>Das Tier: Größe, Farbe, Art, falls du sie kennst</li>
+<li>Was es tat: reglos, auf der Flucht, dir folgend, beißend</li>
+<li>Der Ort und der Abstand zu dir</li>
+<li>Dein Gefühl im Traum und beim Aufwachen</li>
+<li>Was dich gerade beschäftigt, in einem Satz</li>
 </ul>
 <h3>2. Beim Gefühl ansetzen, dann auf die letzten Tage schauen</h3>
 <p>
-                    Angst, Ekel, Neugier, Ruhe: Das Gefühl im Traum verbindet sich oft stärker mit dem Wachleben als die Kulisse. Suchen Sie dann, was der Szene in Ihrem aktuellen Leben ähnelt. Fällt Ihnen eine Person ein, behandeln Sie das als Frage an Ihr Empfinden, nicht als Urteil über sie.
+                    Angst, Ekel, Neugier, Ruhe: Das Gefühl im Traum verbindet sich oft stärker mit dem Wachleben als die Kulisse. Such dann, was der Szene in deinem aktuellen Leben ähnelt. Fällt dir eine Person ein, behandle das als Frage an dein Empfinden, nicht als Urteil über sie.
                 </p>
-<h3>3. Ihre Träume über mehrere Nächte lesen</h3>
+<h3>3. Deine Träume über mehrere Nächte lesen</h3>
 <p>
                     Eine einzelne Schlange sagt wenig. Mehrere Schlangenträume, zusammen mit ihrem Kontext gelesen, zeigen manchmal, wann sie wiederkehren: vor einer Frist, nach einem Konflikt, in einer müden Phase.
                 </p>
 <h3>4. Das Ende eines wiederkehrenden Traums umschreiben</h3>
 <p>
-                    Kehrt dieselbe Schlange als Albtraum zurück, stellen Sie sich die Szene abends im Wachzustand mit einem anderen Ausgang vor: Die Schlange gleitet davon, Sie verlassen den Raum, Sie schließen die Tür. Diese Technik ähnelt der Imagery Rehearsal Therapy gegen <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> und braucht nur ein paar Minuten am Tag.
+                    Kehrt dieselbe Schlange als Albtraum zurück, stell dir die Szene abends im Wachzustand mit einem anderen Ausgang vor: Die Schlange gleitet davon, du verlässt den Raum, du schließt die Tür. Diese Technik ähnelt der Imagery Rehearsal Therapy gegen <a class="text-dream-salmon hover:underline" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">Albträume</a> und braucht nur ein paar Minuten am Tag.
                 </p>
-<h3>5. Wissen, wann Sie Hilfe suchen sollten</h3>
+<h3>5. Wissen, wann du Hilfe suchen solltest</h3>
 <p>
-                    Gelegentliche Albträume sind kein Grund zur Sorge. Wenn sie häufig auftreten, Ihren Schlaf stören, Sie vor dem Einschlafen zurückschrecken lassen oder Ihren Alltag belasten, sprechen Sie mit Ihrer Hausärztin, Ihrem Hausarzt oder einer Schlafmedizinerin. Es gibt wirksame Hilfe.
+                    Gelegentliche Albträume sind kein Grund zur Sorge. Wenn sie häufig auftreten, deinen Schlaf stören, dich vor dem Einschlafen zurückschrecken lassen oder deinen Alltag belasten, sprich mit deiner Hausärztin, deinem Hausarzt oder einer Schlafmedizinerin. Es gibt wirksame Hilfe.
                 </p>
 </div>
 <!-- Related Symbols Start -->
@@ -355,7 +355,7 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Eine Schlange ist eine Szene. Mehrere sind eine Spur.</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Bewahren Sie Ihre Schlangenträume in Noctalia auf, zusammen mit Ihrem Gefühl. Wenn Sie sie gemeinsam lesen, sehen Sie, wann sie wiederkehren und was sie begleitet.
+                    Bewahre deine Schlangenträume in Noctalia auf, zusammen mit deinem Gefühl. Wenn du sie gemeinsam liest, siehst du, wann sie wiederkehren und was sie begleitet.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
                     Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -386,7 +386,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Eine einzige Bedeutung gibt es nicht. Je nach Szene begleitet die Schlange oft eine noch unbenannte Angst, Misstrauen, Begehren oder eine laufende Veränderung. Was das Tier tat, wie Sie sich fühlten und was Sie gerade erleben, sind die besten Hinweise.
+                            Eine einzige Bedeutung gibt es nicht. Je nach Szene begleitet die Schlange oft eine noch unbenannte Angst, Misstrauen, Begehren oder eine laufende Veränderung. Was das Tier tat, wie du dich gefühlt hast und was du gerade erlebst, sind die besten Hinweise.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -404,7 +404,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Der Biss begleitet oft einen kürzlichen Schreck: eine verletzende Bemerkung, eine schlechte Nachricht, einen Streit. Notieren Sie, wo der Biss war und was Sie gefühlt haben. Er beweist keinen Verrat und sagt nichts über Ihre Gesundheit.
+                            Der Biss begleitet oft einen kürzlichen Schreck: eine verletzende Bemerkung, eine schlechte Nachricht, einen Streit. Notiere, wo der Biss war und was du gefühlt hast. Er beweist keinen Verrat und sagt nichts über deine Gesundheit.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -413,7 +413,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Nein. Der Traum kann ein Misstrauen widerspiegeln, das Sie empfinden, verrät aber nichts über die Absichten anderer. Fällt Ihnen eine Person ein, fragen Sie sich, auf welche Tatsachen sich Ihr Eindruck stützt.
+                            Nein. Der Traum kann ein Misstrauen widerspiegeln, das du empfindest, verrät aber nichts über die Absichten anderer. Fällt dir eine Person ein, frag dich, auf welche Tatsachen sich dein Eindruck stützt.
                         </p>
 </details>
 <details class="glass-panel rounded-xl p-4 group cursor-pointer">
@@ -422,7 +422,7 @@
                             <i class="w-5 h-5 transition-transform group-open:rotate-180 text-dream-salmon" data-lucide="chevron-down"></i>
 </summary>
 <p class="mt-4 text-sm text-gray-400 leading-relaxed">
-                            Meist nicht. Werden daraus häufige Albträume, die Ihren Schlaf stören oder Sie tagsüber belasten, sprechen Sie mit Ihrer Ärztin, Ihrem Arzt oder einer schlafmedizinischen Fachperson.
+                            Meist nicht. Werden daraus häufige Albträume, die deinen Schlaf stören oder dich tagsüber belasten, sprich mit deiner Ärztin, deinem Arzt oder einer schlafmedizinischen Fachperson.
                         </p>
 </details>
 </div>
@@ -453,7 +453,7 @@
     <a href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Trauminkubation: Wie Sie heute Abend genau das träumen, was Sie wollen</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Trauminkubation: Wie du heute Abend genau das träumst, was du willst</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -470,18 +470,18 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Ihre verborgenen Botschaften verstehen</h3>
-            <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was Sie zwischen den Episoden notieren können und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</h3>
+            <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was du zwischen den Episoden notieren kannst und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
         </a>
         <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
             <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
-            <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die Sie achten können.</p>
+            <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die du achten kannst.</p>
         </a>
         <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum Sie vom Fallen träumen</h3>
-            <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was Sie nach dem Aufwachen notieren können.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum du vom Fallen träumst</h3>
+            <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was du nach dem Aufwachen notieren kannst.</p>
         </a>
   </div>
 </section>
@@ -490,6 +490,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn Sie unter anhaltenden Schlafstörungen oder psychischen Problemen leiden, wenden Sie sich bitte an einen qualifizierten Arzt.
+<strong class="text-dream-cream">Wichtig:</strong> Dieser Artikel dient nur zu Informationszwecken und stellt keine medizinische oder psychologische Beratung dar. Wenn du unter anhaltenden Schlafstörungen oder psychischen Problemen leidest, wende dich bitte an einen qualifizierten Arzt.
                 </p>
 </aside>

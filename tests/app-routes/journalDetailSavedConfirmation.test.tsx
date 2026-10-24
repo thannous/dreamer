@@ -21,6 +21,7 @@ jest.mock('@/lib/storeReview', () => ({
 jest.mock('@/lib/performanceTrace', () => ({
   markPerformance: (...args: unknown[]) => mockMarkPerformance(...args),
   performanceTraceId: () => 1,
+  markPerformanceAfterFrames: () => () => undefined,
 }));
 const mockRenderContext = React.createContext({});
 const render = (ui: React.ReactElement) => renderTree(ui, { wrapper: ({ children }) => (
@@ -66,8 +67,7 @@ const mockToggleFavorite = jest.fn();
 const mockAnalyzeDream = jest.fn();
 const mockDeleteDream = jest.fn();
 const mockSetParams = jest.fn();
-let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string } = { id: '42', saved: '1' };
-let mockReferenceImagesEnabled = false;
+let mockSearchParams: { id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string; share?: string } = { id: '42', saved: '1' };
 const mockCategorizeDream = jest.fn();
 const mockApplyDreamCategorization = jest.fn(async (_dream: unknown, _result: unknown) => undefined);
 let mockDreams: DreamAnalysis[] = [];
@@ -177,6 +177,7 @@ jest.mock('expo-router', () => ({
     canGoBack: () => false,
     push: jest.fn(),
     replace: jest.fn(),
+    dismissTo: jest.fn(),
     setParams: mockSetParams,
   },
   useLocalSearchParams: () => mockSearchParams,
@@ -256,6 +257,8 @@ jest.mock('@/components/inspiration/AtmosphericBackground', () => ({
 
 // The page's paper grain is decorative art; these journeys only need the page.
 jest.mock('@/components/journal/JournalPaper', () => ({ JournalPaper: () => null }));
+// The prepared analysis has its own tests; this page's saved moment never shows it.
+jest.mock('@/components/journal/AnalysisPreviewCard', () => ({ AnalysisPreviewCard: () => null }));
 // Leafing through the journal is a gesture around the page; these journeys only need the page.
 jest.mock('@/components/journal/JournalPageTurner', () => ({
   JournalPageTurner: ({ children, newer, older, onTurn }: {
@@ -265,6 +268,8 @@ jest.mock('@/components/journal/JournalPageTurner', () => ({
     {newer ? <button data-testid="test.page.newer" onClick={() => onTurn(newer)}>Newer</button> : null}
     {older ? <button data-testid="test.page.older" onClick={() => onTurn(older)}>Older</button> : null}
   </>,
+  // A phone's single page: the reading's page is the whole screen.
+  JournalSpreadLeaf: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useJournalPageTurnLock: () => {},
   useJournalPageLaidOut: () => () => {},
   useJournalPageTurnedTo: () => false,
@@ -276,11 +281,12 @@ jest.mock('@/components/inspiration/GlassCard', () => ({
 
 jest.mock('@/components/journal/DreamShareImage', () => ({
   DreamShareImage: require('react').forwardRef(function MockDreamShareImage(
-    { resolvedMedia, onMediaReady }: any,
+    { resolvedMedia, onMediaReady, options }: any,
     ref: React.ForwardedRef<HTMLDivElement>
   ) {
     require('react').useEffect(() => {
-      if (!resolvedMedia?.imageUrl) return;
+      // A card without a picture is ready as soon as it is drawn.
+      if (!resolvedMedia?.imageUrl) { onMediaReady('', false); return; }
       const source = resolvedMedia.imageUrl;
       mockCompositeEvents.push({
         source,
@@ -290,8 +296,20 @@ jest.mock('@/components/journal/DreamShareImage', () => ({
       });
       if (mockCompositeLoads !== null) onMediaReady(resolvedMedia.imageUrl, mockCompositeLoads);
     }, [resolvedMedia?.imageUrl, onMediaReady]);
-    return <div ref={ref} data-testid="share-composite" />;
+    return <div ref={ref} data-testid="share-composite" data-text={options?.text} data-painting={String(options?.painting)} />;
   }),
+}));
+
+// The composer as the screen drives it: what it offers and what the dreamer picks.
+jest.mock('@/components/journal/DreamShareSheet', () => ({
+  DreamShareSheet: ({ visible, onShare, onClose, painting, paintingPending, capturing }: any) => visible ? (
+    <div data-testid="sheet.dreamShare" data-painting={painting} data-painting-pending={String(paintingPending)}
+      data-capturing={String(capturing)}>
+      <button data-testid="btn.dream.shareCard" onClick={() => onShare({ painting: true, title: true, date: true, text: 'quote' })}>Share the card</button>
+      <button onClick={() => onShare({ painting: false, title: true, date: false, text: 'story' })}>Share my story without the illustration</button>
+      <button onClick={onClose}>Close the composer</button>
+    </div>
+  ) : null,
 }));
 
 jest.mock('@/components/journal/ImageRetry', () => ({
@@ -311,7 +329,6 @@ jest.mock('@/components/journal/JournalDetailSheets', () => ({
   ImageErrorSheet: () => null,
   QuotaLimitSheet: ({ visible }: any) => visible ? <div data-testid="quota-limit" /> : null,
   ReanalyzeSheet: () => null,
-  ReferenceImageSheet: () => null,
   ReplaceImageSheet: () => null,
 }));
 
@@ -332,10 +349,6 @@ jest.mock('@/components/journal/DreamRecallAssistantCard', () => ({
         </button>
       </div>
     ) : null,
-}));
-
-jest.mock('@/components/reminders/ReminderOptInCard', () => ({
-  ReminderOptInCard: () => null,
 }));
 
 jest.mock('@/components/ui/icon-symbol', () => ({
@@ -427,6 +440,7 @@ jest.mock('@/hooks/useLocaleFormatting', () => ({
     formatDreamDate: () => '3 sept.',
     formatDreamTime: () => '07:12',
     formatDreamStamp: () => '3 septembre 2026 · 07:12',
+    formatNumber: (value: number) => value.toLocaleString('en-US'),
   }),
 }));
 
@@ -462,9 +476,7 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('@/lib/env', () => ({
-  isHdIllustrationsEnabled: () => true,
   isMockModeEnabled: () => false,
-  isReferenceImagesEnabled: () => mockReferenceImagesEnabled,
 }));
 
 const mockTrackProductEvent = jest.fn();
@@ -474,7 +486,12 @@ jest.mock('@/lib/analytics', () => ({
 
 jest.mock('@/services/geminiService', () => ({
   categorizeDream: (...args: unknown[]) => mockCategorizeDream(...args),
-  generateImageWithReference: jest.fn(),
+}));
+
+const mockOpenContactMail = jest.fn(async (_options: { subject?: string; body?: string }) => undefined);
+jest.mock('@/lib/contact', () => ({
+  CONTACT_EMAIL: 'contact@noctalia.app',
+  openContactMail: (options: { subject?: string; body?: string }) => mockOpenContactMail(options),
 }));
 
 const { default: JournalDetailScreen } = require('@/app/journal/[id]');
@@ -483,7 +500,6 @@ describe('journal detail saved confirmation route', () => {
   beforeEach(() => {
     mockAnnounceForAccessibility.mockClear();
     mockThemeMode = 'dark';
-    mockReferenceImagesEnabled = false;
     mockCategorizeDream.mockReset();
     mockHasAiConsent.mockReset();
     mockHasAiConsent.mockResolvedValue(true);
@@ -663,23 +679,10 @@ describe('journal detail saved confirmation route', () => {
     expect(mockCategorizeDream).not.toHaveBeenCalled();
 
     await act(async () => { finish(); await initial; });
+    // Offered while editing the page, not on the page as read, which keeps its lines.
+    expect(screen.queryByTestId('dream-metadata-retry')).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
     expect(screen.getByTestId('dream-metadata-retry')).toBeTruthy();
-  });
-
-  it('does not restore an old draft title when subject detection finishes after enrichment', async () => {
-    mockReferenceImagesEnabled = true;
-    let finish!: (value: unknown) => void;
-    mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
-    mockDreams = [buildDream({ title: 'Old draft…', hasPerson: undefined, hasAnimal: undefined })];
-    const view = render(<JournalDetailScreen />);
-    await waitFor(() => expect(mockCategorizeDream).toHaveBeenCalledTimes(1));
-
-    mockDreams = [buildDream({ title: 'Generated title', theme: 'calm', hasPerson: true, hasAnimal: false })];
-    view.rerender(<JournalDetailScreen />);
-    await act(async () => { finish({ title: 'Ignored title', hasPerson: true, hasAnimal: false }); });
-
-    expect(mockUpdateDream).not.toHaveBeenCalled();
-    expect(screen.getByText('Generated title')).toBeTruthy();
   });
 
   it('recovers generated metadata on request without spending an analysis or opening quota sheets', async () => {
@@ -691,12 +694,16 @@ describe('journal detail saved confirmation route', () => {
     mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
     const metadata = { title: 'The blue doorway', theme: 'calm', dreamType: 'Symbolic Dream', hasPerson: false, hasAnimal: false };
     mockCategorizeDream.mockImplementationOnce(async () => metadata);
+    mockApplyDreamCategorization.mockImplementationOnce(async (named: any) => ({ ...named, ...metadata }));
     render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
 
     await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
 
     expect(mockCategorizeDream).toHaveBeenCalledWith(transcript, 'fr');
     expect(mockApplyDreamCategorization).toHaveBeenCalledWith(mockDreams[0], metadata);
+    // The fields being edited take the new name, so saving keeps it.
+    expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).toBe('The blue doorway');
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(screen.queryByTestId('quota-limit')).toBeNull();
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
@@ -707,6 +714,7 @@ describe('journal detail saved confirmation route', () => {
     mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
     mockCategorizeDream.mockImplementationOnce(async () => { throw new Error('offline'); });
     render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
 
     await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
 
@@ -722,6 +730,7 @@ describe('journal detail saved confirmation route', () => {
     let finish!: (value: unknown) => void;
     mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
     const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
     fireEvent.click(screen.getByTestId('dream-metadata-retry'));
     mockDreams = [buildDream({ transcript, title: 'My chosen title', theme: undefined })];
     view.rerender(<JournalDetailScreen />);
@@ -729,18 +738,26 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { finish({ title: 'Generated title', theme: 'calm', dreamType: 'Symbolic Dream' }); });
 
     expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
-    expect(screen.getByText('My chosen title')).toBeTruthy();
+    expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).not.toBe('Generated title');
   });
 
   
-  it('does not call categorizeDream for subject backfill while AI consent is missing', async () => {
-    mockReferenceImagesEnabled = true;
-    mockHasAiConsent.mockResolvedValue(false);
-    mockDreams = [buildDream({ title: 'Generated title', theme: 'calm', hasPerson: undefined, hasAnimal: undefined })];
+  it('keeps a title typed in the editor while its name is being found', async () => {
+    const transcript = 'A blue door above the sea.';
+    mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
+    const metadata = { title: 'Generated title', theme: 'calm', dreamType: 'Symbolic Dream', hasPerson: false, hasAnimal: false };
+    let finish!: (value: unknown) => void;
+    mockCategorizeDream.mockReturnValueOnce(new Promise(resolve => { finish = resolve; }));
+    mockApplyDreamCategorization.mockImplementationOnce(async (named: any) => ({ ...named, ...metadata }));
     render(<JournalDetailScreen />);
-    await act(async () => { await Promise.resolve(); await Promise.resolve(); });
-    expect(mockHasAiConsent).toHaveBeenCalled();
-    expect(mockCategorizeDream).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTitle), { target: { value: 'My own name' } });
+
+    await act(async () => { finish(metadata); });
+
+    expect(mockApplyDreamCategorization).toHaveBeenCalled();
+    expect((screen.getByTestId(TID.Input.DreamTitle) as HTMLInputElement).value).toBe('My own name');
   });
 
   it('does not recover metadata when the user declines AI consent', async () => {
@@ -748,6 +765,7 @@ describe('journal detail saved confirmation route', () => {
     const transcript = 'A blue door above the sea.';
     mockDreams = [buildDream({ transcript, title: transcript, theme: undefined })];
     render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
     await act(async () => { fireEvent.click(screen.getByTestId('dream-metadata-retry')); });
     expect(mockRequestAiConsent).toHaveBeenCalled();
     expect(mockCategorizeDream).not.toHaveBeenCalled();
@@ -941,6 +959,22 @@ describe('journal detail saved confirmation route', () => {
     expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
     expect(screen.queryByText('loading.analyzing')).toBeNull();
     expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it('offers a report of generated content only once the dream has some', async () => {
+    mockDreams = [buildDream({ remoteId: 9042 })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Button.DreamReport)).toBeNull();
+
+    mockDreams = [buildDream({ remoteId: 9042, isAnalyzed: true, analysisStatus: 'done', interpretation: 'A reading.', analyzedAt: 1_700_000_000_000 })];
+    view.rerender(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamReport)); });
+
+    expect(mockOpenContactMail).toHaveBeenCalledTimes(1);
+    expect(mockOpenContactMail.mock.calls[0][0]).toMatchObject({
+      subject: 'journal.detail.report.subject',
+      body: 'journal.detail.report.body',
+    });
   });
 
   it('locks edits and deletion while valid purchased access is propagating', async () => {
@@ -1161,6 +1195,33 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.getByRole('alert').textContent).toContain('journal.detail.sync.retry_error');
   });
 
+  it('explains the anti-abuse sync refusals instead of showing their codes', () => {
+    mockDreams = [buildDream({ syncState: 'failed', lastSyncError: 'DAILY_DREAM_LIMIT' })];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.daily_limit_message')).toBeTruthy();
+    expect(screen.queryByText('DAILY_DREAM_LIMIT')).toBeNull();
+    view.unmount();
+
+    mockDreams = [buildDream({ syncState: 'failed', lastSyncError: 'DREAM_TRANSCRIPT_TOO_LONG' })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.too_long_message')).toBeTruthy();
+    expect(screen.queryByText('DREAM_TRANSCRIPT_TOO_LONG')).toBeNull();
+  });
+
+  it('offers share between the seal and the reading, only once the reading is complete', () => {
+    mockDreams = [buildDream()];
+    const view = render(<JournalDetailScreen />);
+    expect(screen.queryByTestId(TID.Button.DreamShareSeal)).toBeNull();
+
+    mockDreams = [buildDream({ analysisStatus: 'done', isAnalyzed: true, interpretation: 'Reflection' })];
+    view.rerender(<JournalDetailScreen />);
+    const share = screen.getByTestId(TID.Button.DreamShareSeal);
+    const reading = screen.getByTestId(TID.Component.DreamDetailReadingZone);
+    expect(share.compareDocumentPosition(reading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect((share as HTMLButtonElement).disabled).toBe(
+      (screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled);
+  });
+
   it('keeps a completed analysis inline on revisit and handles a failed retry', () => {
     mockDreams = [buildDream({ analysisStatus: 'pending' })];
     const view = render(<JournalDetailScreen />);
@@ -1251,16 +1312,15 @@ describe('journal detail saved confirmation route', () => {
     }
   });
 
-  it('keeps illustration retry available after the HD quota is exhausted', () => {
+  it('keeps illustration retry available after a Plus illustration fails', () => {
     mockTier = 'plus';
     mockDreams = [buildDream({
       isAnalyzed: true,
       analysisStatus: 'done',
       imageGenerationFailed: true,
-      imageJobErrorCode: 'HD_IMAGE_QUOTA_EXCEEDED',
+      imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED',
     })];
     render(<JournalDetailScreen />);
-    expect(screen.getByRole('button', { name: 'settings.illustration.preferences' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Retry illustration' })).toBeTruthy();
   });
 
@@ -1291,12 +1351,13 @@ describe('journal detail saved confirmation route', () => {
     }
   });
 
-  it('does not present the default draft type as a classification and makes missing theme actionable', () => {
+  it('does not present the default draft type as a classification and offers a missing theme while editing', () => {
     mockDreams = [buildDream({ theme: undefined })];
     render(<JournalDetailScreen />);
     expect(screen.getByTestId(TID.Component.MetadataCard).textContent).not.toContain('Symbolic Dream');
-    fireEvent.click(screen.getByRole('button', { name: 'journal.detail.theme_placeholder' }));
-    expect(screen.getByTestId(TID.Input.DreamTitle)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'journal.detail.theme_placeholder' })).toBeNull();
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId('chip.theme.calm')).toBeTruthy();
   });
 
   it('edits the name and the story from one control and cancels without writing the dream', () => {
@@ -1318,6 +1379,55 @@ describe('journal detail saved confirmation route', () => {
     expect(mockUpdateDream).toHaveBeenCalledTimes(1);
     expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ title: 'A new name', transcript: 'A new story' }));
     expect(screen.queryByTestId(TID.Component.DreamEditor)).toBeNull();
+  });
+
+  it('stops the story at the maximum length, and lets an older longer story shrink without growing', () => {
+    const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('maxlength')).toBe('20000');
+    expect(screen.queryByTestId('dream-length-counter')).toBeNull();
+    view.unmount();
+
+    mockDreams = [buildDream({ transcript: 'r'.repeat(25000) })];
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('maxlength')).toBe('25000');
+    expect(screen.getByTestId('dream-length-counter')).toBeTruthy();
+  });
+
+  it('keeps a story the server would refuse in the editor and says to shorten it', async () => {
+    const { Alert } = jest.requireMock('react-native') as { Alert: { alert: jest.Mock } };
+    Alert.alert.mockClear();
+    // Not synced yet: the server has no longer story to allow.
+    mockDreams = [buildDream({ transcript: 'r'.repeat(25000) })];
+    const view = render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'r'.repeat(24000) } });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.SaveDreamEdit)); });
+    expect(Alert.alert).toHaveBeenCalledWith('recording.alert.too_long.title', 'recording.alert.too_long.message');
+    expect(mockUpdateDream).not.toHaveBeenCalled();
+    expect(screen.getByTestId(TID.Input.DreamTranscript)).toBeTruthy();
+    view.unmount();
+
+    // Stored before the limit: it may shrink and keep a length over the maximum.
+    Alert.alert.mockClear();
+    mockDreams = [buildDream({ remoteId: 7, transcript: 'r'.repeat(25000) })];
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.EditDream));
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'r'.repeat(24000) } });
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.SaveDreamEdit)); });
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(mockUpdateDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'r'.repeat(24000) }));
+  });
+
+  it('sets the edit link beside delete and takes it away while editing', async () => {
+    render(<JournalDetailScreen />);
+    const edit = screen.getByTestId(TID.Button.EditDream);
+    expect(edit.parentElement).toBe(screen.getByTestId(TID.Button.DreamDelete).parentElement);
+
+    await act(async () => { fireEvent.click(edit); });
+    expect(screen.queryByTestId(TID.Button.EditDream)).toBeNull();
+    expect(screen.getByTestId(TID.Button.DreamDelete)).toBeTruthy();
   });
 
   it('makes unknown analysis access explicit before the click', () => {
@@ -1347,6 +1457,15 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
 
     expect(screen.queryByTestId(TID.Text.RecordingSaveConfirmation)).toBeNull();
+  });
+
+  it('keeps the recall offer once saved=1 is cleared from the route', () => {
+    const view = render(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamRecallOffer)).toBeTruthy();
+
+    mockSearchParams = { id: '42' };
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Component.DreamRecallOffer)).toBeTruthy();
   });
 
   it('prioritizes the requested recall assistant once while preserving the saved dream', () => {
@@ -1381,54 +1500,101 @@ describe('journal detail saved confirmation route', () => {
 });
 
 
-describe('native share media readiness', () => {
+describe('native share card', () => {
+  const shareCardButton = () => screen.getByTestId(TID.Button.DreamShareCard);
   beforeEach(() => { mockCompositeLoads = true; mockCompositeEvents.length = 0; mockShareComposite.mockClear(); mockRetryMedia.mockClear(); require('react-native').Share.share.mockClear(); require('react-native').Alert.alert.mockClear(); });
   afterEach(() => { cleanup(); require('react-native').Platform.OS = 'web'; mockMedia = null; });
-  it('waits for signing, then mounts the composite only on tap and captures after its image loads', async () => {
+  it('opens the composer at once, then mounts the card only on share and captures after its image shows', async () => {
     require('react-native').Platform.OS = 'android';
     mockDreams = [buildDream({ imageUrl: 'supabase-storage://dream-images/A/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: '', loading: true, error: false, retry: mockRetryMedia };
     mockCompositeLoads = null;
     const { rerender } = render(<JournalDetailScreen />);
-    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(true);
-    expect(screen.queryByTestId('share-composite')).toBeNull();
+    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
-    expect(require('react-native').Share.share).not.toHaveBeenCalled();
+    expect(screen.getByTestId(TID.Sheet.DreamShare).getAttribute('data-painting-pending')).toBe('true');
+    // The illustration is still being signed: a card asking for it waits.
+    fireEvent.click(shareCardButton());
+    expect(screen.queryByTestId('share-composite')).toBeNull();
     mockMedia = { imageUrl: 'https://signed/image', loading: false, error: false, retry: mockRetryMedia };
     rerender(<JournalDetailScreen />);
+    expect(screen.getByTestId(TID.Sheet.DreamShare).getAttribute('data-painting')).toBe('https://signed/image');
     expect(screen.queryByTestId('share-composite')).toBeNull();
-    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
-    expect(screen.getByTestId('share-composite')).toBeTruthy();
+    fireEvent.click(shareCardButton());
+    expect(screen.getByTestId('share-composite').getAttribute('data-text')).toBe('quote');
     expect(mockShareImageRef.current).not.toBeNull();
-    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(true);
-    expect(mockShareComposite).not.toHaveBeenCalled();
     await act(async () => { mockCompositeEvents[0].load(); });
     expect(mockShareComposite).not.toHaveBeenCalled();
     await act(async () => { mockCompositeEvents[0].display(); });
     expect(mockShareComposite).toHaveBeenCalledTimes(1);
     expect(screen.queryByTestId('share-composite')).toBeNull();
+    expect(screen.queryByTestId(TID.Sheet.DreamShare)).toBeNull();
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
   });
-  it('retries the same resolved URL after composite image failure and ignores old callbacks', async () => {
+  it('shares the chosen card without the illustration at once, even while it is still being signed', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'supabase-storage://dream-images/A/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: '', loading: true, error: false, retry: mockRetryMedia };
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    await act(async () => { fireEvent.click(screen.getByText('Share my story without the illustration')); });
+    expect(mockCompositeEvents).toHaveLength(0);
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
+    expect(screen.queryByTestId(TID.Sheet.DreamShare)).toBeNull();
+  });
+  it('cancels the share when the dreamer leaves while the card is still being drawn', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
+    mockCompositeLoads = null;
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    fireEvent.click(shareCardButton());
+    expect(screen.getByTestId('share-composite')).toBeTruthy();
+    expect(screen.getByTestId(TID.Sheet.DreamShare).getAttribute('data-capturing')).toBe('false');
+    await act(async () => { fireEvent.click(screen.getByText('Close the composer')); });
+    expect(screen.queryByTestId(TID.Sheet.DreamShare)).toBeNull();
+    expect(screen.queryByTestId('share-composite')).toBeNull();
+    await act(async () => { mockCompositeEvents[0].report('https://cdn/image', true); });
+    expect(mockShareComposite).not.toHaveBeenCalled();
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
+    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
+  });
+  it('closes the composer without sharing anything', () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    fireEvent.click(screen.getByText('Close the composer'));
+    expect(screen.queryByTestId(TID.Sheet.DreamShare)).toBeNull();
+    expect(screen.queryByTestId('share-composite')).toBeNull();
+    expect(mockShareComposite).not.toHaveBeenCalled();
+  });
+  // An illustration that cannot be shown no longer blocks sharing: the card goes without it
+  // (a dream whose painting failed to load could never be shared before).
+  it('shares the card without the illustration it could not show, and ignores old callbacks', async () => {
     require('react-native').Platform.OS = 'android';
     mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
     mockCompositeLoads = false;
     render(<JournalDetailScreen />);
     expect(screen.queryByTestId('share-composite')).toBeNull();
-    expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
-    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamShare)); });
-    expect(mockRetryMedia).toHaveBeenCalledTimes(1);
-    expect(mockShareComposite).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    await act(async () => { fireEvent.click(shareCardButton()); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
     expect(screen.queryByTestId('share-composite')).toBeNull();
     expect((screen.getByTestId(TID.Button.DreamShare) as HTMLButtonElement).disabled).toBe(false);
     mockCompositeLoads = null;
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    fireEvent.click(shareCardButton());
     expect(mockCompositeEvents).toHaveLength(2);
     await act(async () => { mockCompositeEvents[0].report('https://cdn/image', true); });
-    expect(mockShareComposite).not.toHaveBeenCalled();
-    await act(async () => { mockCompositeEvents[1].report('https://cdn/image', true); });
     expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    await act(async () => { mockCompositeEvents[1].report('https://cdn/image', true); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(2);
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
   });
   it('ignores an image callback after the resolved source changes', async () => {
@@ -1438,6 +1604,7 @@ describe('native share media readiness', () => {
     mockCompositeLoads = null;
     const { rerender } = render(<JournalDetailScreen />);
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    fireEvent.click(shareCardButton());
     expect(mockCompositeEvents[0].source).toBe('https://signed/old');
     await act(async () => {
       mockMedia = { imageUrl: 'https://signed/new', loading: false, error: false, retry: mockRetryMedia };
@@ -1447,40 +1614,54 @@ describe('native share media readiness', () => {
     expect(mockShareComposite).not.toHaveBeenCalled();
     expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
     expect(screen.queryByTestId('share-composite')).toBeNull();
-    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    fireEvent.click(shareCardButton());
     expect(mockCompositeEvents[1].source).toBe('https://signed/new');
     await act(async () => { mockCompositeEvents[1].report('https://signed/new', true); });
     expect(mockShareComposite).toHaveBeenCalledTimes(1);
   });
-  it('offers retry on media failure without silently sharing text', () => {
+  it('shares the card without an illustration that cannot be had, never silently as text', async () => {
     require('react-native').Platform.OS = 'android';
     mockDreams = [buildDream({ imageUrl: 'supabase-storage://dream-images/A/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: '', loading: false, error: true, retry: mockRetryMedia };
     render(<JournalDetailScreen />);
     fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
-    expect(mockRetryMedia).toHaveBeenCalled();
+    await act(async () => { fireEvent.click(shareCardButton()); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(require('react-native').Alert.alert).not.toHaveBeenCalled();
     expect(require('react-native').Share.share).not.toHaveBeenCalled();
   });
-  it('does not mount the native composite for web sharing', () => {
+  it('shares a card, not text, for a dream that was never illustrated', async () => {
+    require('react-native').Platform.OS = 'android';
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done' })];
+    mockMedia = { imageUrl: '', loading: false, error: false, retry: mockRetryMedia };
+    render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(screen.getByTestId(TID.Sheet.DreamShare).getAttribute('data-painting')).toBe('');
+    await act(async () => { fireEvent.click(shareCardButton()); });
+    expect(mockShareComposite).toHaveBeenCalledTimes(1);
+    expect(require('react-native').Share.share).not.toHaveBeenCalled();
+  });
+  it('opens the composer from a journal card share request', () => {
+    require('react-native').Platform.OS = 'android';
+    mockSetParams.mockClear();
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done' })];
+    mockSearchParams = { id: '42', share: '1' };
+    try {
+      render(<JournalDetailScreen />);
+      expect(screen.getByTestId(TID.Sheet.DreamShare)).toBeTruthy();
+      expect(mockSetParams).toHaveBeenCalledWith({ share: undefined });
+      expect(mockShareComposite).not.toHaveBeenCalled();
+    } finally { mockSearchParams = { id: '42', saved: '1' }; }
+  });
+  it('neither opens the composer nor mounts the card for web sharing', () => {
     require('react-native').Platform.OS = 'web';
     mockDreams = [buildDream({ imageUrl: 'https://cdn/image', isAnalyzed: true, analysisStatus: 'done' })];
     mockMedia = { imageUrl: 'https://cdn/image', loading: false, error: false, retry: mockRetryMedia };
     render(<JournalDetailScreen />);
+    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
+    expect(screen.queryByTestId(TID.Sheet.DreamShare)).toBeNull();
     expect(screen.queryByTestId('share-composite')).toBeNull();
   });
-});
-
-
-it('preserves intentional native text sharing when the dream has no media', () => {
-  require('react-native').Platform.OS = 'android';
-  require('react-native').Share.share.mockClear();
-  mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done' })];
-  mockMedia = { imageUrl: '', loading: false, error: false, retry: mockRetryMedia };
-  try {
-    render(<JournalDetailScreen />);
-    fireEvent.click(screen.getByTestId(TID.Button.DreamShare));
-    expect(require('react-native').Share.share).toHaveBeenCalled();
-  } finally { cleanup(); require('react-native').Platform.OS = 'web'; mockMedia = null; }
 });
 
 
@@ -1560,15 +1741,15 @@ it('renders a sparse unclassified reflection without empty insight sections', ()
 
 // An invisible preview's performance marker has no visual E2E assertion; retain
 // this isolated counterexample so latency evidence describes only live content.
-it('does not report a decorative analysis as displayed but reports the live reading', () => {
+it('does not report a decorative analysis as committed but reports the live reading', () => {
   const { DecorativeCopy } = require('@/components/journal/DecorativeCopy');
   const { DreamAnalysisContent } = require('@/components/journal/DreamAnalysisContent');
   const dream = buildDream({ analysisRequestId: 'reading-42', isAnalyzed: true,
     analysisStatus: 'done', interpretation: 'A quiet city.' });
   mockMarkPerformance.mockClear();
   const view = render(<DecorativeCopy><DreamAnalysisContent dream={dream} pending={false} /></DecorativeCopy>);
-  expect(mockMarkPerformance).not.toHaveBeenCalledWith('analysis.text_displayed', expect.anything());
+  expect(mockMarkPerformance).not.toHaveBeenCalledWith('analysis.text_committed', expect.anything());
   view.rerender(<DreamAnalysisContent dream={dream} pending={false} />);
-  expect(mockMarkPerformance).toHaveBeenCalledWith('analysis.text_displayed', { trace: 1 });
+  expect(mockMarkPerformance).toHaveBeenCalledWith('analysis.text_committed', { trace: 1, reveal_delay_ms: 0 });
   cleanup();
 });

@@ -721,17 +721,17 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   eyebrow: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 11,
     textTransform: 'uppercase',
   },
   title: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 18,
     marginTop: 2,
   },
   subtitle: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 13,
     lineHeight: 18,
     marginTop: 4,
@@ -751,12 +751,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   statusLabel: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 10,
     textTransform: 'uppercase',
   },
   statusValue: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 13,
     marginTop: 4,
   },
@@ -767,11 +767,11 @@ const styles = StyleSheet.create({
     padding: ThemeLayout.spacing.sm,
   },
   noticeTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 13,
   },
   noticeText: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 12,
     lineHeight: 17,
   },
@@ -779,7 +779,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   actionGroupTitle: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 11,
     textTransform: 'uppercase',
   },
@@ -805,11 +805,11 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   qaButtonLabel: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 13,
   },
   qaButtonHint: {
-    fontFamily: Fonts.spaceGrotesk.regular,
+    fontFamily: Fonts.outfit.regular,
     fontSize: 11,
     marginTop: 2,
   },

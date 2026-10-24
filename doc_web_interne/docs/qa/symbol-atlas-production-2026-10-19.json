@@ -1,0 +1,142 @@
+{
+  "schema": "noctalia.symbol-atlas-production/1",
+  "date": "2026-10-19",
+  "publishedRevision": "83cdd8ceaec5253a91cd0ffd104d09755b46c0fd",
+  "pr": "https://github.com/thannous/dreamer/pull/440",
+  "symbols": [
+    "water",
+    "teeth",
+    "falling",
+    "flying",
+    "snake",
+    "house",
+    "ocean",
+    "dog",
+    "fire",
+    "car",
+    "door",
+    "bird",
+    "bridge",
+    "moon",
+    "forest",
+    "train",
+    "butterfly",
+    "tiger",
+    "clock"
+  ],
+  "languages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "deployment": {
+    "name": "noctalia",
+    "productionDeploymentsEnabled": false,
+    "id": "dd49048f-4739-4f34-9fd4-5dd33ddb378d",
+    "url": "https://dd49048f.noctalia.pages.dev",
+    "environment": "production",
+    "status": "success",
+    "commit": "83cdd8ceaec5253a91cd0ffd104d09755b46c0fd",
+    "branch": "master",
+    "aliases": [
+      "https://noctalia.app"
+    ],
+    "createdOn": "2026-10-19T00:37:57.769308Z"
+  },
+  "authorization": {
+    "source": "Direct user message in the Codex conversation",
+    "request": "ok laisse Claude push sa branche puis récupère les changements et publie les 19 symboles dans les 6 langues sur noctalia.app, vérifie sur mobile et grand écran",
+    "meaning": "Explicit publication go for the 19 symbols in all six languages and both sizes; release approval, not a claim that the user visually inspected every translation."
+  },
+  "release": {
+    "command": "npm run verify:release:site",
+    "result": "passed",
+    "checksRun": 21,
+    "reused": 0,
+    "outOfScope": 0,
+    "proofSha256": "de3207c883e630e5e27ca9e35a8696fc596285055945ae7f4b17e52f746f6366",
+    "browserCampaign": "15/15; exact published master; no SDK retry"
+  },
+  "publicHttp": {
+    "pages": 114,
+    "pagesPassed": 114,
+    "images": 144,
+    "imagesPassed": 144
+  },
+  "publicBrowser": {
+    "distinctSymbols": 19,
+    "viewportCases": 38,
+    "passed": 38,
+    "sizes": [
+      "2560x1440",
+      "390x844"
+    ],
+    "localesObserved": [
+      "de",
+      "en",
+      "es",
+      "fr",
+      "it",
+      "pt-br"
+    ],
+    "checks": [
+      "Visible hero from top behind transparent navbar",
+      "Mobile hero height 633px of 844px",
+      "No horizontal overflow or pause control",
+      "Both active environmental channels change over time",
+      "Scroll moves the illustration",
+      "PT dictionary search with and without accents, three exact results, clear, eight categories"
+    ]
+  },
+  "initialReadinessObservations": {
+    "count": 2,
+    "reason": "Two measurements immediately after desktop-to-mobile resize preceded portrait loading (empty currentSrc). Preserved in the observation log; repeated after data-living-scene=portrait. No product change or SDK retry."
+  },
+  "evidence": {
+    "release-proof.json": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/release-proof.json",
+      "sha256": "de3207c883e630e5e27ca9e35a8696fc596285055945ae7f4b17e52f746f6366"
+    },
+    "release-runs.jsonl": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/release-runs.jsonl",
+      "sha256": "b003d9fefabac0c7f26e18406fc5d89512f4df2f0e6a4a11680df6d2b262536f"
+    },
+    "verify-release-site-wsl.log": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/verify-release-site-wsl.log",
+      "sha256": "2b832b648335222bc6f71181e2ad1c0dd41a2b7a58e4eae2e9af761988ccab94"
+    },
+    "publish-site.log": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/publish-site.log",
+      "sha256": "c039ac72b9f6b0ab1536c8f15b166dceb64502f8567d1e6f86f21f044a245a65"
+    },
+    "cloudflare-deployment-after.json": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/cloudflare-deployment-after.json",
+      "sha256": "d6a52f8d774036ab921f104c15ff34697f8dd3deedc8c56a5cfcee31abf953dd"
+    },
+    "public-http-check.json": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/public-http-check.json",
+      "sha256": "24526d3fc91f7a0578b9ff27c885737ea8e4d9675f7cc84fa4e61d015f5dc5f4"
+    },
+    "public-browser-check.json": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/public-browser-check.json",
+      "sha256": "a393fbe74a198590a27f1f04370a225dd280b0d319d2d0758fab519f40a58619"
+    },
+    "public-scroll-check.json": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/public-scroll-check.json",
+      "sha256": "72880f8199f36ad8d1afb085e25f6eacfebcf893622410d699fc5aaef7449fb7"
+    },
+    "public-dictionary-pt.json": {
+      "path": "output/noctalia-symbols-publish-2026-10-19/public-dictionary-pt.json",
+      "sha256": "082710cde11b8e7af9bc11080cfbed4804b669b0768f2835de651d93815d42a4"
+    }
+  },
+  "claudePush": "Code and 11/11 verification recovered; cloud push refused by GitHub HTTP403. Identical complete remote integration branch was used for PR440. No access settings changed.",
+  "boundaries": [
+    "Post-deploy browser cases cover all 19 symbols at both sizes across six representative locales; HTTP checks cover all 114 translations.",
+    "Desktop/mobile are browser viewports; no physical handset or FPS qualification.",
+    "This follow-up only records evidence and progress; it does not change the published rendering."
+  ]
+}

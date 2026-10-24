@@ -134,6 +134,11 @@ const FRAUNCES_SHIFT = (0.978 - 0.255) / 2;
 /** Fraunces' capital height, per em: how far the initial stands above the line it opens. */
 const FRAUNCES_CAP = 0.7;
 const INITIAL_GAP = 3;
+/**
+ * Each initial's last measured width, and its letter's in the story, by size: a story set
+ * again (a dream page taking over from its likeness) opens on its measured gap at once.
+ */
+const initialWidths = new Map<string, number>();
 
 /**
  * The dreamer's story set as a book's first page: it opens on a raised initial in the
@@ -141,7 +146,7 @@ const INITIAL_GAP = 3;
  * in one selectable block, read and copied as written. A story written with Markdown
  * keeps the Markdown renderer, without the initial.
  */
-export function BookProse({ text }: { text: string }) {
+export function BookProse({ text, testID }: { text: string; testID?: string }) {
   const ink = useInk();
   const { fontScale } = useWindowDimensions();
   const body = useBookBody();
@@ -152,10 +157,14 @@ export function BookProse({ text }: { text: string }) {
   const textScale = Platform.OS === 'web' ? 1 : fontScale;
   const initialScale = Math.min(1.6, Math.max(1, textScale));
   const initialSize = INITIAL.fontSize * initialScale;
-  const [widths, setWidths] = useState({ initial: initialSize * 0.7, letter: PROSE.fontSize * textScale * 0.6 });
+  const measured = { initial: `initial|${initial}|${initialSize}`, letter: `letter|${initial}|${PROSE.fontSize * textScale}` };
+  const [widths, setWidths] = useState(() => ({
+    initial: initialWidths.get(measured.initial) ?? initialSize * 0.7,
+    letter: initialWidths.get(measured.letter) ?? PROSE.fontSize * textScale * 0.6,
+  }));
 
   if (!initial) {
-    return <MarkdownText variant="reading" style={{ ...body, lineHeight: PROSE.lineHeight }}>{text}</MarkdownText>;
+    return <MarkdownText testID={testID} variant="reading" style={{ ...body, lineHeight: PROSE.lineHeight }}>{text}</MarkdownText>;
   }
   const rest = story.slice(initial.length);
   const prose = { ...body, fontSize: PROSE.fontSize, lineHeight: PROSE.lineHeight };
@@ -170,7 +179,7 @@ export function BookProse({ text }: { text: string }) {
     // heightening the line: the text reads exactly as written.
     return (
       <View style={{ paddingTop: rise }}>
-        <Text selectable style={prose}>
+        <Text testID={testID} selectable style={prose}>
           <Text style={{ ...initialInk, lineHeight: 0, marginRight: INITIAL_GAP }}>{initial}</Text>
           {rest}
         </Text>
@@ -179,15 +188,17 @@ export function BookProse({ text }: { text: string }) {
   }
 
   // A native line takes one height for all its text, so the initial is drawn beside the
-  // story, on its first line's baseline. The story keeps its own first letter, unseen and
-  // spaced out to the drawn initial's width, so it is selected, copied and read aloud whole.
+  // story, on its first line's baseline. The story keeps its own first letter, unseen, then
+  // an inline spacer up to the drawn initial's width, so it is selected, copied and read
+  // aloud whole. Letter spacing on that letter did not open the gap on the iPhone: the
+  // drawn J of « J’étais » covered its apostrophe and touched the next letter.
   const initialLine = INITIAL.lineHeight * initialScale;
   const initialBaseline = initialLine / 2 + initialSize * FRAUNCES_SHIFT;
   const measure = (key: 'initial' | 'letter') => ({ nativeEvent: { layout } }: { nativeEvent: { layout: { width: number } } }) => {
+    initialWidths.set(measured[key], layout.width);
     setWidths((previous) => Math.abs(previous[key] - layout.width) < 0.5 ? previous : { ...previous, [key]: layout.width });
   };
-  // The platform scales letter spacing with the text, so it is given before that scale.
-  const spacing = Math.max(0, widths.initial + INITIAL_GAP - widths.letter) / Array.from(initial).length / textScale;
+  const spacer = Math.max(0, widths.initial + INITIAL_GAP - widths.letter);
   const hidden = { accessible: false, importantForAccessibility: 'no-hide-descendants', accessibilityElementsHidden: true, selectable: false } as const;
   return (
     <View style={{ paddingTop: rise }}>
@@ -198,8 +209,10 @@ export function BookProse({ text }: { text: string }) {
       <Text {...hidden} onLayout={measure('letter')} style={{ ...prose, position: 'absolute', left: 0, top: 0, opacity: 0 }}>
         {initial}
       </Text>
-      <Text selectable style={prose}>
-        <Text style={{ color: 'transparent', letterSpacing: spacing }}>{initial}</Text>
+      <Text testID={testID} selectable style={prose}>
+        {/* Android reads a colour of 0, transparent, as none and inks the letter as the story: a clear white is not 0. */}
+        <Text style={{ color: 'rgba(255, 255, 255, 0)' }}>{initial}</Text>
+        <View style={{ width: spacer, height: 1 }} />
         {rest}
       </Text>
     </View>

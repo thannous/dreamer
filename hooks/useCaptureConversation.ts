@@ -88,11 +88,12 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     setQuestion(null);
     setUnavailable(false);
     setDone(false);
-    const askLocally = () => {
+    const askLocally = (failed: boolean) => {
       // A general local question keeps capture usable, without pretending it was personalized.
+      // Only a failed request says help is unavailable: without consent nothing has failed.
       const fallback = getDreamRecallQuestion(previous.current.length, t).text;
       setQuestion(fallback);
-      setUnavailable(true);
+      setUnavailable(failed);
       previous.current.push(fallback);
     };
     try {
@@ -100,7 +101,7 @@ export function useCaptureConversation({ language, t, scope }: Options) {
       // Never prompt here, a dialog would interrupt voice capture.
       if (!(await hasAiConsent())) {
         if (generation.current !== owner) return;
-        askLocally();
+        askLocally(false);
         return;
       }
       if (generation.current !== owner || abort.signal.aborted) return;
@@ -113,7 +114,7 @@ export function useCaptureConversation({ language, t, scope }: Options) {
       return result.done;
     } catch {
       if (generation.current !== owner) return;
-      askLocally();
+      askLocally(true);
     } finally {
       if (generation.current === owner) {
         controller.current = null;

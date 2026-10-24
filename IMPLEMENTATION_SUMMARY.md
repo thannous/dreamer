@@ -1,4 +1,15 @@
+> Historical implementation notes dated 2025-01-08. The original commands and
+> output below describe that snapshot. Use [Mock Mode Quick Start](MOCK_MODE_QUICKSTART.md)
+> and [the mock-data guide](mock-data/README.md) for current runtime and fixture behavior.
+
 # Mock Mode - Implementation Summary
+
+Historical implementation record. The `.env.local` activation and
+`scripts/test-mock-mode.js` diagnostic described below were retired. Current
+profiles load directly into the process through `expo-safe-runner` with Expo
+dotenv disabled; use the [script guide](scripts/README.md) and
+[mock fixture guide](mock-data/README.md). Profile isolation remains covered by
+`scripts/expo-safe-runner.test.js` and the mock web journeys.
 
 ✅ **Status:** Fully implemented and tested
 

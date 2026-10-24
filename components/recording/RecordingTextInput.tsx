@@ -1,13 +1,15 @@
-import type { TextInputInstance } from 'react-native';
 import React, { forwardRef, useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View, useWindowDimensions, type TextInputProps } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps, type TextInputInstance } from 'react-native';
 
+import { ListeningHalo } from '@/components/recording/ListeningHalo';
 import { MicButton, type MicButtonStatus } from '@/components/recording/MicButton';
 import { getRecordingComposerLayout, LARGE_TEXT_FONT_SCALE } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { getDreamTextInputLimit } from '@/lib/dreamTextLimit';
 import { TID } from '@/lib/testIDs';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
@@ -21,7 +23,8 @@ export interface RecordingTextInputProps {
   selection?: TextInputProps['selection'];
   onSelectionChange?: TextInputProps['onSelectionChange'];
   disabled: boolean;
-  lengthWarning: string;
+  /** The text is a whole dream: it stops at the dream's maximum length (the screen's draft count shows it). */
+  limitDreamLength?: boolean;
   instructionText: string;
   switchToVoiceLabel?: string;
   /** False when the device cannot capture speech at all: the mic is hidden, not just disabled. */
@@ -54,7 +57,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
       selection,
       onSelectionChange,
       disabled,
-      lengthWarning,
+      limitDreamLength = false,
       instructionText,
       switchToVoiceLabel,
       voiceSupported = true,
@@ -76,7 +79,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
   ) {
     const { colors, mode } = useTheme();
     const { t } = useTranslation();
-    const { width, height, fontScale } = useWindowDimensions();
+    const { width, height, fontScale } = useContentWindow();
     const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
     const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
     const composerLayout = useMemo(
@@ -136,6 +139,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
           ref={ref}
           value={value}
           onChangeText={onChange}
+          maxLength={limitDreamLength ? getDreamTextInputLimit(value.length) : undefined}
           selection={selection}
           onSelectionChange={onSelectionChange}
           style={[
@@ -183,6 +187,12 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
               { backgroundColor: noctalia.surface.translucent },
             ]}
           >
+            {/* Dictating into the text: the same listening halo as Tell, in the area's foot. */}
+            {!chat && voiceStatus === 'recording' ? (
+              <View pointerEvents="none" style={[styles.inlineListening, compact && styles.inlineListeningCompact]}>
+                <ListeningHalo size="inline" label={t('recording.conversation.listening')} testID="recording-write-listening-status" />
+              </View>
+            ) : null}
             <View style={styles.inlineActions}>
               {footerActions ?? (!isVoiceFirst && voiceSupported ? (
                 <MicButton
@@ -375,7 +385,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
               composerLayout.narrow && styles.instructionTextNarrow,
               compact && styles.instructionTextCompact,
               expanded && styles.instructionTextExpanded,
-              { alignSelf: 'flex-start', backgroundColor: noctalia.surface.translucent, borderRadius: 4, paddingHorizontal: 4 },
               { fontSize: (expanded ? 14 : compact ? 13 : 15) * controlFontScale, lineHeight: (expanded ? 20 : compact ? 18 : 21) * controlFontScale, color: noctalia.text.secondary },
             ]}
           >
@@ -390,13 +399,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
         >
           {isVoiceFirst && voiceSupported ? expressiveVoiceControl : textEditor}
           {isVoiceFirst && voiceSupported ? voiceTranscript : null}
-
-          {lengthWarning ? (
-            <Text style={[styles.lengthWarning, { color: noctalia.accent.text }]}>
-              {lengthWarning}
-            </Text>
-          ) : null}
-
         </View>
       </View>
     );
@@ -405,12 +407,12 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
 
 const styles = StyleSheet.create({
   chatEditor: { borderRadius: 16 },
-  chatInput: { fontFamily: Fonts.spaceGrotesk.regular, fontStyle: 'normal', fontSize: 16, lineHeight: 24, paddingLeft: 14, paddingRight: 116, paddingTop: 20, paddingBottom: 20, maxHeight: 180, borderRadius: 16 },
+  chatInput: { fontFamily: Fonts.outfit.regular, fontStyle: 'normal', fontSize: 16, lineHeight: 24, paddingLeft: 14, paddingRight: 116, paddingTop: 20, paddingBottom: 20, maxHeight: 180, borderRadius: 16 },
   chatActions: { bottom: 8, right: 8, left: 'auto', width: 96, minHeight: 44, paddingRight: 0, paddingBottom: 0 },
   composer: { gap: 16 },
   composerExpanded: { flex: 1, gap: 12, width: '100%', maxWidth: 512, alignSelf: 'center' },
   recordingSectionExpanded: { marginTop: 0, alignItems: 'flex-start' },
-  instructionTextExpanded: { fontFamily: Fonts.spaceGrotesk.regular, fontSize: 14, lineHeight: 20, textAlign: 'left' },
+  instructionTextExpanded: { fontFamily: Fonts.outfit.regular, fontSize: 14, lineHeight: 20, textAlign: 'left' },
   textInputSectionExpanded: { flex: 1 },
   editorExpanded: { flex: 1, borderRadius: 16 },
   textInputExpanded: {
@@ -418,8 +420,6 @@ const styles = StyleSheet.create({
     maxHeight: '100%',
     borderRadius: 16,
     paddingLeft: 20,
-    fontFamily: Fonts.spaceGrotesk.regular,
-    lineHeight: 25,
   },
   inlineActionFooterExpanded: { borderBottomLeftRadius: 15, borderBottomRightRadius: 15 },
   recordingSection: {
@@ -470,9 +470,10 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingBottom: 20,
     paddingLeft: 48,
-    fontSize: 16,
-    lineHeight: 23,
-    fontFamily: Fonts.lora.regularItalic,
+    // The dream reads in the same roman Lora as its page in the journal.
+    fontSize: 17,
+    lineHeight: 26,
+    fontFamily: Fonts.lora.regular,
     textAlignVertical: 'top',
   },
   textMeasurement: { opacity: 0 },
@@ -514,6 +515,17 @@ const styles = StyleSheet.create({
     minHeight: 48,
     paddingBottom: 2,
   },
+  inlineListening: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 2,
+    justifyContent: 'center',
+    paddingBottom: 6,
+  },
+  inlineListeningCompact: {
+    paddingBottom: 2,
+  },
   inlineActions: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -537,11 +549,6 @@ const styles = StyleSheet.create({
   placeholderIconCompact: {
     top: 15,
   },
-  lengthWarning: {
-    fontFamily: Fonts.spaceGrotesk.medium,
-    fontSize: 12,
-    textAlign: 'right',
-  },
   voiceHero: {
     alignItems: 'center',
     gap: 8,
@@ -554,7 +561,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   voicePreviewTitle: {
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 16,
     lineHeight: 22,
   },
@@ -571,7 +578,7 @@ const styles = StyleSheet.create({
   },
   voiceReviewText: {
     flexShrink: 1,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 14,
     lineHeight: 20,
   },
@@ -611,7 +618,7 @@ const styles = StyleSheet.create({
   },
   voiceHintText: {
     flex: 1,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     fontSize: 14,
     lineHeight: 19,
   },
@@ -624,7 +631,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   voiceHintDismissText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontSize: 13,
     lineHeight: 17,
   },
@@ -636,12 +643,12 @@ const styles = StyleSheet.create({
   voiceCaptureStatus: {
     fontSize: 13,
     lineHeight: 18,
-    fontFamily: Fonts.spaceGrotesk.medium,
+    fontFamily: Fonts.outfit.medium,
     textAlign: 'center',
   },
   voiceCaptureDuration: {
     fontSize: 13,
-    fontFamily: Fonts.spaceGrotesk.bold,
+    fontFamily: Fonts.outfit.bold,
     fontVariant: ['tabular-nums'],
   },
 });

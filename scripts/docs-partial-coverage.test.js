@@ -28,10 +28,12 @@ describe('partial-coverage language configuration (pt-br)', () => {
     expect(siteConfig.localeCodes['pt-br']).toBe('pt_BR');
   });
 
-  it('keeps blog, symbols and guides collections on the five full-coverage languages', () => {
-    for (const collectionId of ['blog', 'symbols', 'guides']) {
-      expect(getCollectionLanguages(collectionId)).toEqual(['en', 'fr', 'es', 'de', 'it']);
+  it('keeps the blog on five languages and publishes symbols and guides in pt-br', () => {
+    expect(getCollectionLanguages('blog')).toEqual(['en', 'fr', 'es', 'de', 'it']);
+    for (const collectionId of ['symbols', 'guides']) {
+      expect(getCollectionLanguages(collectionId)).toEqual(['en', 'fr', 'es', 'de', 'it', 'pt-br']);
     }
+    expect(siteConfig.symbolsPath['pt-br']).toBe('simbolos');
     expect(getCollectionLanguages('unknown-collection')).toEqual(siteConfig.languages);
   });
 
@@ -95,15 +97,35 @@ describe('site manifest partial coverage', () => {
     expect(pages['page.features'].locales['pt-br'].path).toBe('/pt-br/funcionalidades');
   });
 
-  it('never exposes pt-br locales in the blog, guides or symbols collections', () => {
-    for (const collectionId of ['blog', 'guides', 'symbols']) {
-      for (const entry of Object.values(manifest.collections[collectionId].entries)) {
-        expect(entry.locales['pt-br']).toBeUndefined();
-        for (const locale of Object.values(entry.locales)) {
-          expect(locale.path || '').not.toMatch(/^\/pt-br\//);
-        }
+  it('never exposes pt-br locales in the blog collection', () => {
+    for (const entry of Object.values(manifest.collections.blog.entries)) {
+      expect(entry.locales['pt-br']).toBeUndefined();
+      for (const locale of Object.values(entry.locales)) {
+        expect(locale.path || '').not.toMatch(/^\/pt-br\//);
       }
     }
+  });
+
+  it('routes pt-br symbols and guides through the catalog pt slugs', () => {
+    const symbols = manifest.collections.symbols.entries;
+    const guides = manifest.collections.guides.entries;
+    expect(symbols['symbol.tiger'].locales['pt-br']).toEqual({
+      slug: 'tigre',
+      path: '/pt-br/simbolos/tigre',
+    });
+    expect(symbols['symbolCategory.animals'].locales['pt-br'].path).toBe('/pt-br/simbolos/animais');
+    expect(guides['guide.index'].locales['pt-br'].path).toBe('/pt-br/guides/');
+    expect(guides['guide.dictionary'].locales['pt-br'].path).toBe(
+      '/pt-br/guides/dicionario-simbolos-sonhos'
+    );
+    expect(guides['guide.most-common-dream-symbols'].locales['pt-br'].path).toBe(
+      '/pt-br/guides/simbolos-sonhos-mais-comuns'
+    );
+    // 240 symbols + 8 categories, and the hub, the dictionary and 8 curated guides.
+    const ptBrEntries = (collection) =>
+      Object.values(collection.entries).filter((entry) => entry.locales['pt-br']).length;
+    expect(ptBrEntries(manifest.collections.symbols)).toBe(248);
+    expect(ptBrEntries(manifest.collections.guides)).toBe(10);
   });
 
   it('lists every site language at the manifest level', () => {
@@ -143,7 +165,7 @@ describe('hreflang and Open Graph rendering for partial coverage', () => {
     expect(html).not.toContain('hreflang="en"');
   });
 
-  it('never emits a pt-BR alternate for five-language collections (blog, symbols, guides)', () => {
+  it('never emits a pt-BR alternate for the five-language blog collection', () => {
     const html = renderAlternateLinks({
       id: 'blog.dream-journal-guide',
       locales: Object.fromEntries(
@@ -197,13 +219,14 @@ describe('navigation and footer visibility for partial coverage', () => {
     return createRenderContext({ manifest, entryId, meta: { lang, layout } });
   }
 
-  it('hides blog, guides and dictionary nav links on pt-br pages', () => {
+  it('hides the blog nav link on pt-br pages and keeps guides and the dictionary', () => {
     const { renderNavigation } = require('./lib/docs-components/navigation');
     const html = renderNavigation(makeContext('page.home', 'pt-br', 'landing'));
 
     expect(html).toContain('id="navbar"');
     expect(html).not.toContain('/pt-br/blog/');
-    expect(html).not.toContain('/pt-br/guides/');
+    expect(html).toContain('href="/pt-br/guides/"');
+    expect(html).toContain('href="/pt-br/guides/dicionario-simbolos-sonhos"');
     expect(html).toContain(`${siteConfig.storeLinks.androidBase}&hl=pt-BR`);
 
     const french = renderNavigation(makeContext('page.home', 'fr', 'landing'));
@@ -255,7 +278,7 @@ describe('navigation and footer visibility for partial coverage', () => {
     expect(blog).not.toContain('/pt-br/');
   });
 
-  it('limits the pt-br footer to available destinations and drops empty columns', () => {
+  it('limits the pt-br footer to available destinations', () => {
     const { renderFooter } = require('./lib/docs-components/footer');
     const html = renderFooter(makeContext('page.home', 'pt-br', 'landing'));
 
@@ -265,9 +288,10 @@ describe('navigation and footer visibility for partial coverage', () => {
     expect(html).toContain('/pt-br/politica-de-privacidade');
     expect(html).toContain('/pt-br/termos-de-uso');
     expect(html).toContain('/pt-br/exclusao-de-conta');
-    // No blog, guide, symbol or unavailable legal links.
+    // No blog or unavailable legal links; guides and symbols exist in pt-br.
     expect(html).not.toContain('/pt-br/blog/');
-    expect(html).not.toContain('/pt-br/guides/');
+    expect(html).toContain('href="/pt-br/guides/dicionario-simbolos-sonhos"');
+    expect(html).toContain('href="/pt-br/simbolos/agua"');
 
     // The legal column lists exactly the three pages available in pt-br
     // (privacy, terms, account-deletion — never legal.notice).
@@ -277,9 +301,8 @@ describe('navigation and footer visibility for partial coverage', () => {
     expect(legalColumn).not.toBeNull();
     expect(legalColumn[1].match(/<li>/g)).toHaveLength(3);
 
-    // Guides and popular-symbols columns are hidden: only Resources, Legal
-    // and Download headings remain (3 instead of 5).
-    expect(html.match(/<h5 class="font-bold mb-4 text-white">/g)).toHaveLength(3);
+    // Resources, Guides, Popular symbols, Legal and Download, as in French.
+    expect(html.match(/<h5 class="font-bold mb-4 text-white">/g)).toHaveLength(5);
 
     const french = renderFooter(makeContext('page.home', 'fr', 'landing'));
     expect(french.match(/<h5 class="font-bold mb-4 text-white">/g)).toHaveLength(5);

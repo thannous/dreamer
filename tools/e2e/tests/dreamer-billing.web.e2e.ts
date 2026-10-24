@@ -21,11 +21,15 @@ async function setupFreeAccount(page: Page) {
   await page.getByTestId('quick-settings.all').click();
   await page.getByTestId('screen.subscription.qaLab.toggle').click();
   await expect(page.getByTestId('text.subscription.qa.mode')).toContainText('Mock services');
-  await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
+  // The quota card caps its displayed count at the limit (iPhone fix, 2026-10-18).
+  // Historical usage stays above the free allowance; display capping grants no access.
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
+  await expect(page.getByText('0 analysis left', { exact: true })).toBeVisible();
 }
 
+// Settings keeps one way to Plus in the subscription card: its Noctalia Plus row.
 async function offer(page: Page) {
-  await page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true }).click();
+  await page.getByTestId('settings-section-subscription').click();
   await expect(page.getByTestId('screen.paywall')).toBeVisible();
   await page.getByTestId('btn.paywall.selectMonthly').click();
 }
@@ -34,7 +38,8 @@ async function assertPlus(page: Page) {
   await expect(page.getByTestId('toast.paywall.success')).toBeVisible();
   await page.getByTestId('btn.paywall.close').click();
   await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
-  await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toHaveCount(0);
+  // A subscriber has nothing to wait for: no renewal date for included analyses.
+  await expect(page.getByText(/Your included analyses renew on/)).toHaveCount(0);
 }
 
 for (const interval of ['Monthly', 'Annual']) {
@@ -57,7 +62,7 @@ test('cancelled mock purchase keeps free access and a later purchase succeeds', 
   await expect(page.getByTestId('bottomSheet.paywall.error')).toBeHidden();
   await expect(page.getByTestId('toast.paywall.success')).toHaveCount(0);
   await page.getByTestId('btn.paywall.close').click();
-  await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
   await offer(page);
   await page.getByTestId('btn.paywall.purchase').click();
   await assertPlus(page);
@@ -72,7 +77,7 @@ test('mock purchase error is recoverable without granting Plus', async ({ page }
   await expect(error).toContainText('No connection right now');
   await page.getByRole('button', { name: 'OK', exact: true }).click();
   await page.getByTestId('btn.paywall.close').click();
-  await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
   await offer(page);
   await page.getByTestId('btn.paywall.purchase').click();
   await assertPlus(page);
@@ -81,7 +86,7 @@ test('mock purchase error is recoverable without granting Plus', async ({ page }
 test('restore activates a previous mock purchase without buying again', async ({ page }) => {
   await setupFreeAccount(page);
   await page.getByTestId('btn.subscription.qa.scenario.restore_available').click();
-  await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
   await offer(page);
   await page.getByTestId('btn.paywall.restore').click();
   await assertPlus(page);
@@ -94,8 +99,9 @@ test('restore with no mock receipt keeps the account free', async ({ page }) => 
   await expect(page.getByTestId('toast.paywall.info')).toContainText('No active subscription');
   await expect(page.getByTestId('toast.paywall.success')).toHaveCount(0);
   await page.getByTestId('btn.paywall.close').click();
-  await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
-  await expect(page.getByRole('button', { name: 'Upgrade to Noctalia Plus', exact: true })).toBeVisible();
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
+  await expect(page.getByText(/Your included analyses renew on [A-Z][a-z]+ \d{1,2}, \d{4}/)).toBeVisible();
+  await expect(page.getByTestId('settings-section-subscription')).toBeVisible();
 });
 
 test('cancelled renewal keeps Plus until expiry, then free limits return without losing dreams', async ({ page }) => {
@@ -106,13 +112,13 @@ test('cancelled renewal keeps Plus until expiry, then free limits return without
   await expect(page.getByTestId('quota.analysisValue')).toContainText('Unlimited');
   await page.getByTestId('btn.subscription.qa.scenario.expired').click();
   await page.getByTestId('btn.subscription.qa.refresh').click();
-  await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
   await expect(page.getByTestId('subscription-expired-notice')).toBeVisible();
   await offer(page);
   await page.getByTestId('btn.paywall.restore').click();
   await expect(page.getByTestId('toast.paywall.info')).toContainText('No active subscription');
   await page.getByTestId('btn.paywall.close').click();
-  await expect(page.getByTestId('quota.analysisValue')).toHaveText('5 / 3');
+  await expect(page.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
   await page.getByTestId('settings.back').click();
   await page.getByTestId('tab.journal').filter({ visible: true }).click();
   await page.getByRole('textbox', { name: 'Search dreams…' }).fill('The Infinite Library');

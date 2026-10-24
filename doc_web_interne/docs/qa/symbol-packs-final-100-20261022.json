@@ -1,0 +1,210 @@
+{
+  "schema": "noctalia.symbol-final100-delivery/1",
+  "date": "2026-10-22",
+  "integrationOwner": "Codex",
+  "requestedPacks": 100,
+  "newPacks": 94,
+  "preservedMasterPacks": [
+    "ring",
+    "bee",
+    "volcano",
+    "waterfall",
+    "turtle",
+    "mask"
+  ],
+  "newNativePngs": 659,
+  "retainedCovers": 93,
+  "selectedNewPackRoles": 752,
+  "requestedRolesTotal": 800,
+  "catalog": {
+    "completePacks": 240,
+    "localePages": 1440,
+    "currentBrowserQualifiedPacks": 240,
+    "matchingOwnerApproval": 0,
+    "matchingPublication": 0
+  },
+  "batches": [
+    {
+      "lot": "lot-11",
+      "newPacks": 29,
+      "newNativePngs": 203,
+      "driveFolder": "https://drive.google.com/drive/folders/1I3ezCQgUTgPD758S_NZRMbQ5x7C7hz__",
+      "verifiedSourceArchives": 29
+    },
+    {
+      "lot": "lot-12",
+      "newPacks": 25,
+      "newNativePngs": 175,
+      "driveFolder": "https://drive.google.com/drive/folders/1Crk7fosaqpCGQvyRTWEOwb0ij9V3_4_m",
+      "verifiedSourceArchives": 25
+    },
+    {
+      "lot": "lot-13",
+      "newPacks": 30,
+      "newNativePngs": 211,
+      "driveFolder": "https://drive.google.com/drive/folders/1ufCuEvPuIMIs8KZiSlji5KNO42ZQTkJI",
+      "verifiedSourceArchives": 30
+    },
+    {
+      "lot": "lot-14",
+      "newPacks": 10,
+      "newNativePngs": 70,
+      "driveFolder": "https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI",
+      "verifiedSourceArchives": 10
+    }
+  ],
+  "backup": {
+    "parent": "https://drive.google.com/drive/folders/1DlN7DcuunoFBLGNmCb2Z3KqLZG0MQmUM",
+    "nativeSourceArchives": 94,
+    "masterDeliveredArchives": 6,
+    "masterDeliveredDerivativeFiles": 228,
+    "allRequestedUsablePacksBackedUp": true,
+    "allRequestedNativeSourcesBackedUp": false,
+    "missingMasterNativeArchive": {
+      "file": "source-library-lot10-v1.zip",
+      "sha256": "52aeeaa3d81587f5f38e332388d22c9ede340cf0ccd9a42a336ade74a0bced69",
+      "localFileFound": false,
+      "driveCopyClaimed": false
+    },
+    "verification": "Local ZIP SHA256 plus successful upload and Drive ID, size, private and parent metadata readback. No remote content digest claimed.",
+    "currentArchiveIndex": {
+      "fileId": "16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu",
+      "url": "https://drive.google.com/file/d/16huw2vqXVUTq-MkbT8YMTqW-RGpfyUnu/view?usp=drivesdk",
+      "bytes": 53989,
+      "sha256": "7bde5168678bf25d7ad5dd07784104091608da905610f8ad03b4eac32cac0c3f",
+      "metadataVerified": true,
+      "private": true
+    }
+  },
+  "verification": {
+    "kind": "Union of recorded clean browser runs; previous per-symbol evidence reused only while its actual inputs still match. Not a fresh full-catalog run on the final tracking commit.",
+    "proofs": [
+      {
+        "path": "doc_web_interne/docs/qa/symbol-packs-atlas-layout-requalification-20261020.json",
+        "sha256": "8660b5038318b9d9f6b1b9dfaf4627f96e6f53620c112a5a0076202f6a0e01f1",
+        "revision": "34209f968444db816f75779cd5b876df002ae9d3",
+        "summary": {
+          "discovered": 201,
+          "selected": 177,
+          "executed": 177,
+          "passed": 177,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": "doc_web_interne/docs/qa/symbol-packs-lot-12-25-20261020.json",
+        "sha256": "fda26dc43fa43be16f4ebdf180e8441c369c47c00d3bbe8c918a9a23e5cfe159",
+        "revision": "b17117db72da867328bfee7e7b5ac7c17acc0aab",
+        "summary": {
+          "discovered": 226,
+          "selected": 25,
+          "executed": 25,
+          "passed": 25,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": "doc_web_interne/docs/qa/symbol-packs-lot-13-30-20261020.json",
+        "sha256": "af2ba4526c1286cd5a9931ed784b56161d963873a9a534de620f460f56c709a2",
+        "revision": "e03821783020a61aeaaa58d22886e2118781efaa",
+        "summary": {
+          "discovered": 256,
+          "selected": 30,
+          "executed": 30,
+          "passed": 30,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        }
+      },
+      {
+        "path": "doc_web_interne/docs/qa/symbol-packs-lot-14-10-20261020.json",
+        "sha256": "316f02111c7b74828a385873c78b5be786cdf38fa641f6a15c9ab228a9b75311",
+        "revision": "3eadba5f121c1017c032929534d269c330aa5abb",
+        "summary": {
+          "discovered": 266,
+          "selected": 10,
+          "executed": 10,
+          "passed": 10,
+          "failed": 0,
+          "interrupted": 0,
+          "flaky": 0,
+          "skipped": 0
+        }
+      }
+    ],
+    "requestedPackScreenshotsInspected": 500,
+    "legacyRegression": {
+      "revision": "3eadba5f121c1017c032929534d269c330aa5abb",
+      "passed": 3,
+      "receipt": "1792622704575-2228-f8f5d2c1-da56-40b1-be86-5360bb542029.receipt.json",
+      "receiptSha256": "b0ed8ca831c783affc20b2febe6625f14e6e8355152e61be75bcdaef65ed391c"
+    },
+    "independentReview": "Reviewed batches and affected common code; no unresolved P1/P2 at delivery.",
+    "nativeApp": false,
+    "physicalDevice": false,
+    "ownerVisualApproval": false,
+    "newProductionPublication": false
+  },
+  "tracking": {
+    "directory": "doc_web_interne/docs/suivi-symboles",
+    "workbook": {
+      "path": "suivi-240-symboles-6-langues.xlsx",
+      "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9"
+    },
+    "csv": {
+      "path": "symbol-rollout.csv",
+      "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17"
+    },
+    "updatedAfterEachBatch": true,
+    "driveCopies": {
+      "authorization": "Explicit user approval in this conversation on 2026-10-22 for the final Excel and CSV only.",
+      "folderId": "1DlN7DcuunoFBLGNmCb2Z3KqLZG0MQmUM",
+      "files": [
+        {
+          "fileId": "1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv",
+          "url": "https://docs.google.com/spreadsheets/d/1TW79LHKvIa8cqX60VV8vI5sP-v43Saiv/edit?usp=drivesdk&ouid=101116459704958679172&rtpof=true&sd=true",
+          "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "bytes": 39315,
+          "sha256": "078acf4b870f7d71decbdeeb767b1495cab4ed5a566235f2d23c0ed6cb0f96b9",
+          "private": true,
+          "metadataVerified": true
+        },
+        {
+          "fileId": "1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau",
+          "url": "https://drive.google.com/file/d/1BQAjbuD2UWPlDfElaJQZ5qcv3ZIe1bau/view?usp=drivesdk",
+          "mimeType": "text/csv",
+          "bytes": 300335,
+          "sha256": "1a302fa1b6a93887ecc0b91b82fcb665f9ab58e660e1017ebe188857970adb17",
+          "private": true,
+          "metadataVerified": true
+        }
+      ],
+      "verification": "Local SHA256, upload success and Drive ID/size/parent/private readback; no remote byte hash."
+    }
+  },
+  "remaining": [
+    "Locate source-library-lot10-v1.zip with the recorded SHA256 to back up the six inherited native source packs. Do not regenerate their accepted paintings."
+  ],
+  "finalIntegration": {
+    "master": "b2460d222752105fdce7f5b8a8fd1704a0757b4f",
+    "contentRevision": "76ad320b81b59372a2d57b91a5b88dd08a3fd0c4",
+    "changedSinceBrowserRuns": "Master dependency security update and Node pin. No paintings, profiles, editorial associations or common motion/layout source changed.",
+    "qualificationReuse": "Earlier clean browser receipts keep their actual runtime and revision. Final verify:pr must use the merged pinned dependencies; this is not a new full-catalog browser run.",
+    "previousMaster": "da747616fede364c2300fd3b2cf501801ccc0276",
+    "additionalMasterScope": "App-only features from master PR537; no site paintings, profiles, variants or motion/layout source changed."
+  },
+  "registryCompaction": {
+    "path": "symbol-rollout-registry-compaction-20261022.json",
+    "sha256": "0ffb380dd8dd8d3f45c3d07af5aebcf6263cf897e3aa5d426ff9dec1c4db2ae8",
+    "recordsPreserved": 15834,
+    "formattingOnly": true
+  }
+}

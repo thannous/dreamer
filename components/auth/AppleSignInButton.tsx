@@ -12,6 +12,7 @@ import { signInWithApple } from '@/lib/auth';
 import { createScopedLogger } from '@/lib/logger';
 import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
 import { TID } from '@/lib/testIDs';
+import { TypeScale } from '@/constants/typeScale';
 
 const log = createScopedLogger('[AppleSignInButton]');
 
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonText: {
-    fontFamily: Fonts.spaceGrotesk.bold,
-    fontSize: 16,
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.body.fontSize,
   },
 });

@@ -1,3 +1,5 @@
+import { applyPendingMutations } from '../../lib/dreamUtils';
+import type { SyncMutationResult } from '../../lib/journalSyncContracts';
 import { DreamPersistenceError } from '../../lib/dreamStorageRead';
 import type { DreamAnalysis, DreamMutation } from '../../lib/types';
 import { createJournalSyncEngine, type JournalSyncDependencies, type JournalSyncOptions } from '../journalSyncEngine';
@@ -18,8 +20,9 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 const flush = async () => { for (let i = 0; i < 20; i++) await Promise.resolve(); };
-const setup = (initialMutations: DreamMutation[] = []) => {
+const setup = (initialMutations: DreamMutation[] = [], batchSync?: JournalSyncDependencies['syncDreamMutationsInSupabase']) => {
   const dependencies = {
+    ...(batchSync ? { syncDreamMutationsInSupabase: batchSync } : {}),
     savePendingDreamMutations: jest.fn<Promise<void>, [DreamMutation[], (string | null)?]>(async () => undefined),
     createDreamInSupabase: jest.fn(async (value: DreamAnalysis) => ({ ...value, remoteId: 10 })),
     updateDreamInSupabase: jest.fn(async (value: DreamAnalysis) => value),
@@ -40,6 +43,69 @@ const setup = (initialMutations: DreamMutation[] = []) => {
 };
 
 describe('injected durable Journal sync engine', () => {
+  // Native offline replay restored the queued edit, then a failed create
+  // response replaced its displayed text. Also control the in-flight edit race.
+  it('keeps the rehydrated edit when replay of its older create fails offline', async () => {
+    const create = { ...mutation(), status: 'failed' as const, retryCount: 1 };
+    const edited = { ...dream(), transcript: 'Dream with the blue door' };
+    const update: DreamMutation = { ...mutation('edit-1'), operation: 'update',
+      clientRequestId: 'edit-receipt', payload: { dream: edited }, createdAt: 2 };
+    const fixture = setup([create, update]);
+    await fixture.persistRemoteDreams(applyPendingMutations([], [create, update]));
+    expect(fixture.getDreams()[0].transcript).toBe(edited.transcript);
+    fixture.dependencies.createDreamInSupabase.mockRejectedValueOnce(new Error('Offline transport'));
+
+    await fixture.commands.syncPendingMutations();
+
+    expect(fixture.getDreams()[0]).toMatchObject({ transcript: edited.transcript, syncState: 'failed' });
+    expect(fixture.commands.pendingMutationsRef.current).toHaveLength(2);
+    expect(fixture.commands.pendingMutationsRef.current[1].payload.dream?.transcript).toBe(edited.transcript);
+    expect(applyPendingMutations(fixture.getDreams(), fixture.commands.pendingMutationsRef.current)[0].transcript)
+      .toBe(edited.transcript);
+    // Reconnection still creates the one identity and replays the retained edit.
+    await fixture.commands.syncPendingMutations();
+    expect(fixture.getDreams()[0]).toMatchObject({ remoteId: 10, transcript: edited.transcript, syncState: 'clean' });
+    expect(fixture.dependencies.createDreamInSupabase).toHaveBeenCalledTimes(2);
+    expect(fixture.dependencies.updateDreamInSupabase).toHaveBeenCalledTimes(1);
+    expect(fixture.commands.pendingMutationsRef.current).toEqual([]);
+  });
+
+  it.each(['throw', 'failed', 'conflict'] as const)(
+    'keeps an edit queued during an older %s response', async (failure) => {
+      const network = deferred();
+      const batch = jest.fn(async (sent: DreamMutation[]): Promise<SyncMutationResult[]> => {
+        await network.promise;
+        if (failure === 'throw') throw new Error('Offline transport');
+        return sent.map(entry => ({
+          mutationId: entry.id, clientRequestId: entry.clientRequestId,
+          operation: entry.operation, status: failure, error: 'Rejected older snapshot',
+          ...(failure === 'conflict' ? { dream: { ...dream(), remoteId: 10, title: 'Server revision' } } : {}),
+        }));
+      });
+      const fixture = setup([mutation()], batch);
+      const replay = fixture.commands.syncPendingMutations();
+      await flush();
+      expect(batch).toHaveBeenCalledTimes(1);
+      const edited = { ...dream(), transcript: 'Newest local edit', title: 'Edited title' };
+      await fixture.commands.queueOfflineOperation({
+        ...mutation('edit-later'), operation: 'update', clientRequestId: 'edit-receipt',
+        payload: { dream: edited }, createdAt: 2,
+      }, () => [edited, dream(2)]);
+      network.resolve();
+      await replay;
+
+      expect(fixture.getDreams()[0]).toMatchObject({
+        transcript: edited.transcript, title: edited.title,
+        syncState: failure === 'conflict' ? 'conflict' : 'failed',
+      });
+      expect(fixture.getDreams()[1]).toEqual(dream(2));
+      expect(fixture.commands.pendingMutationsRef.current[1].payload.dream?.transcript).toBe(edited.transcript);
+      expect(fixture.commands.pendingMutationsRef.current[1].status).toBe('pending');
+      if (failure === 'conflict') {
+        expect(fixture.getDreams()[0].conflictRemoteDream?.title).toBe('Server revision');
+      }
+    });
+
   it('syncs a target while an unrelated in-flight replay is stalled', async () => {
     const { commands, dependencies } = setup([mutation()]);
     const stalled = deferred();

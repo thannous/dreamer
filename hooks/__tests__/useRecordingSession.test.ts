@@ -1,6 +1,6 @@
 /* @jest-environment jsdom */
 
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { AudioModule, setAudioModeAsync, useAudioRecorder } from 'expo-audio';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
@@ -11,6 +11,7 @@ import {
   getSpeechLocaleAvailability,
   startNativeSpeechSession,
 } from '../../services/nativeSpeechRecognition';
+import { isMicrophoneHeld } from '../../services/microphoneHold';
 import { transcribeAudio } from '../../services/speechToText';
 import { useRecordingSession, type RecordingSessionResult } from '../useRecordingSession';
 
@@ -105,7 +106,10 @@ describe('useRecordingSession', () => {
     onLimitReached: jest.fn(),
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // A test that ends while recording unmounts its hook, which gives the microphone back a
+    // turn later (setTimeout 0). Let that turn pass first, so no hold leaks into this test.
+    await new Promise((resolve) => setTimeout(resolve, 0));
     jest.clearAllMocks();
     (Platform as { OS: string }).OS = 'android';
     // Reset default mock implementations
@@ -184,8 +188,10 @@ describe('useRecordingSession', () => {
     expect(result.current.isSpeechListening).toBe(false);
   });
 
-  it.each(['blur', 'unmount'] as const)('cancels pending startup on %s', async (reason: 'blur' | 'unmount') => {
-    (Platform as { OS: string }).OS = 'ios';
+  it.each([
+    ['ios', 'blur'], ['ios', 'unmount'], ['ios', 'pause'], ['android', 'pause'],
+  ] as const)('cancels pending startup on %s %s', async (platform: 'ios' | 'android', reason: 'blur' | 'unmount' | 'pause') => {
+    (Platform as { OS: string }).OS = platform;
     jest.mocked(AudioModule.getRecordingPermissionsAsync).mockResolvedValue({ granted: true } as never);
     let finishStart!: (session: any) => void;
     jest.mocked(startNativeSpeechSession).mockImplementation(() => new Promise((resolve) => { finishStart = resolve; }));
@@ -194,10 +200,13 @@ describe('useRecordingSession', () => {
     let pending!: ReturnType<typeof result.current.startRecording>;
     await act(async () => { pending = result.current.startRecording('My draft'); });
     const options = jest.mocked(startNativeSpeechSession).mock.calls[0][1];
-    await act(async () => { await result.current.forceStopRecording(reason); });
-    expect(options?.signal?.aborted).toBe(true);
+    await act(async () => {
+      if (reason === 'pause') await result.current.stopRecording();
+      else await result.current.forceStopRecording(reason);
+    });
     await act(async () => { finishStart(session); await pending; });
     await expect(pending).resolves.toEqual({ success: false, error: 'cancelled' });
+    expect(options?.signal?.aborted).toBe(true);
     expect(session.abort).toHaveBeenCalled();
     expect(result.current.isRecording).toBe(false);
     expect(Alert.alert).not.toHaveBeenCalled();
@@ -287,6 +296,61 @@ describe('useRecordingSession', () => {
         permissionAlreadyGranted: true,
       })
     );
+  });
+
+  it('holds the microphone from the start’s audio mode to the stop’s, so the app’s cues leave the recording alone', async () => {
+    const heldOnModeChange: boolean[] = [];
+    jest.mocked(setAudioModeAsync).mockImplementation(async () => {
+      heldOnModeChange.push(isMicrophoneHeld());
+    });
+    expect(isMicrophoneHeld()).toBe(false);
+    const { result } = renderHook(() => useRecordingSession(defaultOptions));
+
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+    expect(isMicrophoneHeld()).toBe(true);
+
+    await act(async () => {
+      await result.current.stopRecording();
+    });
+    expect(isMicrophoneHeld()).toBe(false);
+    expect(heldOnModeChange).toEqual([true, true]);
+  });
+
+  it('keeps the microphone held through an unmount until the forced stop has torn down', async () => {
+    const heldOnReset: boolean[] = [];
+    jest.mocked(setAudioModeAsync).mockImplementation(async (mode) => {
+      if ((mode as { allowsRecording?: boolean }).allowsRecording === false) heldOnReset.push(isMicrophoneHeld());
+    });
+    const { result, unmount } = renderHook(() => useRecordingSession(defaultOptions));
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+    const { forceStopRecording } = result.current;
+
+    // The screen's own cleanup, which forces the stop, runs after the hook's.
+    unmount();
+    expect(isMicrophoneHeld()).toBe(true);
+    await act(async () => {
+      await forceStopRecording('unmount');
+    });
+
+    expect(heldOnReset).toEqual([true]);
+    expect(isMicrophoneHeld()).toBe(false);
+  });
+
+  it('gives the microphone back after an unmount that no forced stop follows', async () => {
+    const { result, unmount } = renderHook(() => useRecordingSession(defaultOptions));
+    await act(async () => {
+      await result.current.startRecording('');
+    });
+
+    unmount();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Otherwise the app's cues would stay silent for the rest of the launch.
+    expect(isMicrophoneHeld()).toBe(false);
   });
 
   it('stopRecording should return transcript result', async () => {
@@ -466,6 +530,8 @@ describe('useRecordingSession', () => {
       });
 
       expect(response).toEqual({ success: false, error: 'stt_unavailable' });
+      // A start that gives up hands the microphone back.
+      expect(isMicrophoneHeld()).toBe(false);
       expect(recorder.prepareToRecordAsync).not.toHaveBeenCalled();
       expect(recorder.record).not.toHaveBeenCalled();
       expect(transcribeAudio).not.toHaveBeenCalled();
@@ -530,6 +596,92 @@ describe('useRecordingSession', () => {
       expect(FileSystemLegacy.deleteAsync).toHaveBeenCalledWith('/path/to/server-fallback.amr', {
         idempotent: true,
       });
+    });
+
+    it('says when server transcription has spent its daily budget, then stops asking it', async () => {
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/server-fallback.amr' });
+      jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      jest.mocked(transcribeAudio).mockRejectedValueOnce(Object.assign(new Error('HTTP 429'), {
+        status: 429,
+        body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 },
+      }));
+
+      const { result, rerender } = renderHook(
+        ({ scope }: { scope: string }) => useRecordingSession({ ...defaultOptions, transcriptionScope: scope }),
+        { initialProps: { scope: 'guest' } }
+      );
+      const record = async () => {
+        let response: RecordingSessionResult | undefined;
+        await act(async () => {
+          await result.current.startRecording('');
+        });
+        await act(async () => {
+          response = await result.current.stopRecording();
+        });
+        return response;
+      };
+
+      expect((await record())?.error).toBe('daily_ai_limit');
+      // Paused: the server is not asked, and the user still hears why.
+      expect((await record())?.error).toBe('daily_ai_limit');
+      expect(transcribeAudio).toHaveBeenCalledTimes(1);
+
+      // A guest who signs in has the account's own budget.
+      rerender({ scope: 'user-1' });
+      expect((await record())?.error).toBe('stt_unavailable');
+      expect(transcribeAudio).toHaveBeenCalledTimes(2);
+
+      // The budget comes back after the delay the server gave.
+      jest.mocked(transcribeAudio).mockRejectedValueOnce(Object.assign(new Error('HTTP 429'), {
+        status: 429,
+        body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 },
+      }));
+      expect((await record())?.error).toBe('daily_ai_limit');
+      const now = Date.now();
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(now + 3601 * 1000);
+      try {
+        expect((await record())?.error).toBe('stt_unavailable');
+        expect(transcribeAudio).toHaveBeenCalledTimes(4);
+      } finally {
+        clock.mockRestore();
+      }
+    });
+
+    it('does not pause a newly signed-in account for a guest refusal still on its way', async () => {
+      const recorder = mockCreateMockRecorder({ uri: '/path/to/server-fallback.amr' });
+      jest.mocked(startNativeSpeechSession).mockResolvedValue(null);
+      jest.mocked(useAudioRecorder).mockReturnValue(recorder as never);
+      let refuse!: (error: unknown) => void;
+      jest.mocked(transcribeAudio).mockImplementationOnce(() => new Promise((_resolve, reject) => { refuse = reject; }));
+
+      const { result, rerender } = renderHook(
+        ({ scope }: { scope: string }) => useRecordingSession({ ...defaultOptions, transcriptionScope: scope }),
+        { initialProps: { scope: 'guest' } }
+      );
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      let stopping!: Promise<RecordingSessionResult>;
+      await act(async () => {
+        stopping = result.current.stopRecording();
+      });
+      await waitFor(() => expect(transcribeAudio).toHaveBeenCalledTimes(1));
+      rerender({ scope: 'user-1' });
+      let stale: RecordingSessionResult | undefined;
+      await act(async () => {
+        refuse(Object.assign(new Error('HTTP 429'), { status: 429, body: { code: 'AI_DAILY_LIMIT', retryAfter: 3600 } }));
+        stale = await stopping;
+      });
+      expect(stale?.error).not.toBe('daily_ai_limit');
+
+      await act(async () => {
+        await result.current.startRecording('');
+      });
+      await act(async () => {
+        await result.current.stopRecording();
+      });
+      expect(transcribeAudio).toHaveBeenCalledTimes(2);
     });
 
     it('should return no_speech when native error is "no speech"', async () => {

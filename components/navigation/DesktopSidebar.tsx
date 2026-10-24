@@ -93,7 +93,7 @@ function NavItem({ icon, label, href, isActive, testID }: NavItemProps) {
       <View className="absolute bottom-[10px] left-0 top-[10px] w-[3px] rounded-full" style={isActive ? styles.indicator : undefined} />
       <IconSymbol name={icon} size={21} color={isActive ? NIGHT.accent : NIGHT.muted} />
       <Text
-        className={`min-w-0 flex-1 text-[15px] ${isActive ? 'font-sans-bold' : 'font-sans-medium'}`}
+        className={`min-w-0 flex-1 text-body ${isActive ? 'font-sans-bold' : 'font-sans-medium'}`}
         style={{ color: isActive || isHovered ? NIGHT.title : NIGHT.muted }}
       >
         {label}
@@ -120,7 +120,7 @@ function CaptureAction({ label, isActive, testID }: { label: string; isActive: b
       aria-current={isActive ? 'page' : undefined}
     >
       <IconSymbol name="pencil" size={18} color={NIGHT.onAccent} />
-      <Text className="font-sans-bold text-[15px]" style={{ color: NIGHT.onAccent }}>
+      <Text className="font-sans-bold text-body" style={{ color: NIGHT.onAccent }}>
         {label}
       </Text>
     </Pressable>
@@ -172,10 +172,10 @@ export function DesktopSidebar() {
 
       <View className="flex-1 px-4 pb-5 pt-7">
         <View className="mb-8 px-[10px]">
-          <Text className="font-display-semibold text-[26px] leading-[32px]" style={{ color: NIGHT.title }}>
+          <Text className="font-display-semibold text-h1 leading-[32px]" style={{ color: NIGHT.title }}>
             Noctalia
           </Text>
-          <Text className="mt-[2px] font-sans text-[12px] tracking-[1.2px]" style={{ color: NIGHT.muted }}>
+          <Text className="mt-[2px] font-sans text-caption tracking-[1.2px]" style={{ color: NIGHT.muted }}>
             {t('nav.sidebar_tagline')}
           </Text>
         </View>

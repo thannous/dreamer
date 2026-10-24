@@ -22,6 +22,7 @@ jest.mock('react-native', () => {
     (
       {
         editable = true,
+        maxLength,
         onBlur,
         onChangeText,
         onFocus,
@@ -31,6 +32,7 @@ jest.mock('react-native', () => {
         value,
       }: {
         editable?: boolean;
+        maxLength?: number;
         onBlur?: () => void;
         onChangeText?: (value: string) => void;
         onFocus?: () => void;
@@ -45,6 +47,7 @@ jest.mock('react-native', () => {
         ref={ref}
         data-testid={testID}
         disabled={!editable}
+        data-max-length={maxLength}
         data-native-style={JSON.stringify(flattenStyle(style))}
         placeholder={placeholder}
         value={value}
@@ -181,11 +184,11 @@ jest.mock('@/context/ThemeContext', () => ({
 
 jest.mock('@/constants/theme', () => ({
   Fonts: {
-    lora: { regularItalic: 'Lora-Italic' },
-    spaceGrotesk: {
-      bold: 'SpaceGrotesk-Bold',
-      medium: 'SpaceGrotesk-Medium',
-      regular: 'SpaceGrotesk-Regular',
+    lora: { regular: 'Lora-Regular', regularItalic: 'Lora-Italic' },
+    outfit: {
+      bold: 'Outfit-Bold',
+      medium: 'Outfit-Medium',
+      regular: 'Outfit-Regular',
     },
   },
 }));
@@ -237,6 +240,25 @@ describe('RecordingTextInput', () => {
     mockFontScale = 1;
   });
 
+  it('stops a whole dream at its maximum length without ever cutting a longer text', () => {
+    const props = {
+      onChange: jest.fn(),
+      disabled: false,
+      instructionText: '',
+      onSwitchToVoice: jest.fn(),
+    };
+    const { rerender } = render(<RecordingTextInput {...props} value="A short dream" limitDreamLength />);
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-max-length')).toBe('20000');
+
+    // A long dictation already in the text is never cut, it only stops growing.
+    rerender(<RecordingTextInput {...props} value={'r'.repeat(21000)} limitDreamLength />);
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-max-length')).toBe('21000');
+
+    // An answer in the conversation is not a whole dream.
+    rerender(<RecordingTextInput {...props} value={'r'.repeat(19000)} />);
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-max-length')).toBeNull();
+  });
+
   it('offers an inline microphone in write mode without starting automatically', () => {
     const onSwitchToVoice = jest.fn();
 
@@ -245,7 +267,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Write what you remember"
         onSwitchToVoice={onSwitchToVoice}
       />
@@ -268,7 +289,6 @@ describe('RecordingTextInput', () => {
         value="A blue room"
         onChange={onChange}
         disabled={false}
-        lengthWarning=""
         instructionText="Write what you remember"
         onSwitchToVoice={jest.fn()}
         onClear={onClear}
@@ -295,7 +315,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Tell a remembered dream"
         onSwitchToVoice={jest.fn()}
         onOpenDetails={onOpenDetails}
@@ -310,7 +329,6 @@ describe('RecordingTextInput', () => {
         value="A room under the sea"
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Tell a remembered dream"
         onSwitchToVoice={jest.fn()}
         onOpenDetails={onOpenDetails}
@@ -336,7 +354,6 @@ describe('RecordingTextInput', () => {
         onChange={onChange}
         onEditTranscript={onEditTranscript}
         disabled={false}
-        lengthWarning=""
         instructionText="Write what you remember"
         switchToVoiceLabel="Pause dictation"
         voiceStatus="recording"
@@ -373,7 +390,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Dictate your dream"
         switchToVoiceLabel="Dictate the dream"
         onSwitchToVoice={onSwitchToVoice}
@@ -399,7 +415,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Type your dream"
         switchToVoiceLabel="Dictate the dream"
         onSwitchToVoice={jest.fn()}
@@ -421,7 +436,6 @@ describe('RecordingTextInput', () => {
         value={value}
         onChange={onChange}
         disabled={false}
-        lengthWarning=""
         instructionText="Type your dream"
         switchToVoiceLabel="Dictate the dream"
         onSwitchToVoice={onSwitchToVoice}
@@ -442,7 +456,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Type your dream"
         switchToVoiceLabel="Dictate the dream"
         onSwitchToVoice={jest.fn()}
@@ -463,7 +476,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Dictate your dream"
         showVoiceHint
         onVoiceHintDismiss={onVoiceHintDismiss}
@@ -491,7 +503,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Dictate your dream"
         switchToVoiceLabel="Retry voice"
         onSwitchToVoice={onSwitchToVoice}
@@ -512,7 +523,6 @@ describe('RecordingTextInput', () => {
         value="A blue room"
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Dictate your dream"
         voiceStatus="recording"
         recordingDurationLabel="0:12"
@@ -543,7 +553,6 @@ describe('RecordingTextInput', () => {
         value="A remembered corridor"
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Dictate your dream"
         voiceStatus="preparing"
         onSwitchToVoice={jest.fn()}
@@ -565,7 +574,6 @@ describe('RecordingTextInput', () => {
         value="A blue room under the rain"
         onChange={onChange}
         disabled={false}
-        lengthWarning=""
         instructionText="Write what you remember"
         onSwitchToVoice={jest.fn()}
       />
@@ -581,7 +589,6 @@ describe('RecordingTextInput', () => {
         value="A blue room under the rain"
         onChange={onChange}
         disabled={false}
-        lengthWarning=""
         instructionText="Dictate your dream"
         onSwitchToVoice={jest.fn()}
       />
@@ -592,7 +599,7 @@ describe('RecordingTextInput', () => {
     expect(screen.queryByTestId(TID.Input.DreamTranscript)).toBeNull();
     rerender(
       <RecordingTextInput layout="textFirst" value="A blue room under the rain"
-        onChange={onChange} disabled={false} lengthWarning="" instructionText=""
+        onChange={onChange} disabled={false} instructionText=""
         onSwitchToVoice={jest.fn()} />
     );
     expect(screen.getAllByTestId(TID.Input.DreamTranscript)).toHaveLength(1);
@@ -619,7 +626,6 @@ describe('RecordingTextInput', () => {
           value=""
           onChange={jest.fn()}
           disabled={false}
-          lengthWarning=""
           instructionText="Write what you remember"
           onSwitchToVoice={jest.fn()}
         />
@@ -640,7 +646,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Write what you remember"
         onSwitchToVoice={jest.fn()}
       />
@@ -661,7 +666,6 @@ describe('RecordingTextInput', () => {
         value=""
         onChange={jest.fn()}
         disabled={false}
-        lengthWarning=""
         instructionText="Write what you remember"
         onSwitchToVoice={jest.fn()}
       />

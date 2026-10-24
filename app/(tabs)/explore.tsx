@@ -1,5 +1,7 @@
 import type { ViewInstance } from 'react-native';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
+import { CollectionEntryCard } from '@/components/badges/CollectionEntry';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { RitualPickerSheet } from '@/components/ritual/RitualPickerSheet';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -15,9 +17,9 @@ import { TID } from '@/lib/testIDs';
 import { getRitualPreference, saveRitualPreference } from '@/services/storageService';
 import { router, useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, AppState, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { AccessibilityInfo, AppState, Platform, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 // TalkBack rejects input-focus events while its window transition is unstable.
@@ -53,10 +55,10 @@ function ExplorerRow({ icon, title, body, testID, onPress, separator = false }: 
         <IconSymbol name={icon} size={24} color={noctalia.accent.text} />
       </View>
       <View className="min-w-0 flex-1 gap-1">
-        <Text className="text-[18px] leading-[24px] font-display-semibold text-ivory">
+        <Text className="text-h3 leading-[24px] font-display-semibold text-ivory">
           {title}
         </Text>
-        <Text className="text-[14px] leading-[20px] font-sans text-ivory-muted">
+        <Text className="text-body-sm leading-[20px] font-sans text-ivory-muted">
           {body}
         </Text>
       </View>
@@ -72,7 +74,7 @@ function ExploreScreen() {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, height, fontScale } = useContentWindow();
   const insets = useSafeAreaInsets();
   const [selectedRitualId, setSelectedRitualId] = useState<RitualId>('starter');
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -183,7 +185,7 @@ function ExploreScreen() {
 
   return (
     <View className="flex-1 bg-ink" testID={TID.Screen.Explore}>
-      <ScrollView
+      <HeaderScrollView
         className="flex-1"
         onScroll={onHeaderScroll}
         scrollEventThrottle={16}
@@ -198,6 +200,7 @@ function ExploreScreen() {
         {header}
         <ScreenContainer key="resources">
           <View className="gap-5 px-4 pt-3">
+            <CollectionEntryCard testID="btn.explore.collection" />
             <View className="border-t border-line">
               <ExplorerRow
                 icon="book.closed.fill"
@@ -231,33 +234,33 @@ function ExploreScreen() {
                   <IconSymbol name="moon.stars.fill" size={28} color={noctalia.accent.text} />
                 </View>
                 <View className="min-w-0 flex-1 gap-1">
-                  <Text accessibilityRole="header" className="font-display-semibold text-[18px] leading-[24px] text-ivory">
+                  <Text accessibilityRole="header" className="font-display-semibold text-h3 leading-[24px] text-ivory">
                     {t('explore.ritual.title')}
                   </Text>
-                  <Text className="font-sans text-[15px] leading-[20px] text-ivory-muted">
+                  <Text className="font-sans text-body leading-[20px] text-ivory-muted">
                     {t(ritual.labelKey)}
                   </Text>
                 </View>
               </View>
-              <Text className="font-sans text-[14px] leading-[20px] text-ivory-muted">
+              <Text className="font-sans text-body-sm leading-[20px] text-ivory-muted">
                 {t('explore.ritual.body')}
               </Text>
               <Pressable onPress={() => router.push(`/ritual/${ritual.id}`)} accessibilityRole="button"
                 accessibilityLabel={t('explore.ritual.open', { ritual: t(ritual.labelKey) })}
                 testID={TID.Button.ExplorerRitual}
                 className="min-h-[52px] items-center justify-center rounded-[16px] bg-champagne px-4 py-3">
-                <Text className="text-center font-sans-bold text-[15px] leading-[20px] text-on-champagne">
+                <Text className="text-center font-sans-bold text-body leading-[20px] text-on-champagne">
                   {t('explore.ritual.open', { ritual: t(ritual.labelKey) })}
                 </Text>
               </Pressable>
               <Pressable ref={changeRitualRef} focusable onPress={() => setPickerVisible(true)} accessibilityRole="button"
                 testID="explorer-change-ritual" className="min-h-11 items-center justify-center rounded-[16px] px-4 py-2 active:opacity-[0.78]">
-                <Text className="text-center font-sans-medium text-[15px] leading-[20px] text-ivory">{t('explore.ritual.change')}</Text>
+                <Text className="text-center font-sans-medium text-body leading-[20px] text-ivory">{t('explore.ritual.change')}</Text>
               </Pressable>
             </View>
           </View>
         </ScreenContainer>
-      </ScrollView>
+      </HeaderScrollView>
       {pickerVisible ? <RitualPickerSheet currentId={selectedRitualId}
         onClose={() => setPickerVisible(false)}
         onConfirm={async (id) => {

@@ -34,6 +34,11 @@ export const NETWORK_REQUEST_POLICIES = {
   recallQuestion: createPolicy(15000, 0, 1200),
   // The narrator waits on this one; past 20 s the review keeps their own words instead.
   formatRecall: createPolicy(20000, 0, 1200),
+  // Claude has 30 s to write the letter, then Gemini its own turn; no retry would pay twice.
+  moonLetter: createPolicy(70000, 0, 1200),
+  // The prepared analysis: Claude has 20 s, then Gemini; the painting follows on the server.
+  analysisPreviewPrepare: createPolicy(70000, 0, 1200),
+  analysisPreviewRead: createPolicy(10000, 1, 750),
   analyzeDreamFull: createPolicy(60000, 0, 1200),
   chat: createPolicy(45000, 0, 1200), // no auto-retry to avoid duplicate sends
 
@@ -41,7 +46,20 @@ export const NETWORK_REQUEST_POLICIES = {
   generateImage: createPolicy(60000, 0, 1200),
   imageJobCommand: createPolicy(15000, 1, 1000),
   imageJobStatus: createPolicy(10000, 1, 1000),
-  generateImageWithReference: createPolicy(90000, 0, 1500),
   textToSpeech: createPolicy(60000, 0, 1200),
   transcribeAudio: createPolicy(60000, 0, 1200),
 } as const;
+
+/** Runs a cancellable request (a Supabase query or RPC), aborting it after `timeoutMs`. */
+export async function withAbortTimeout<T>(
+  timeoutMs: number,
+  request: (signal: AbortSignal) => PromiseLike<T>,
+): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await request(controller.signal);
+  } finally {
+    clearTimeout(timer);
+  }
+}
