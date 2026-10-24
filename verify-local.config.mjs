@@ -401,7 +401,12 @@ export default {
     // starts from nothing.
     { name: 'typecheck-app', command: cachedTypecheck('app', 'typecheck:app'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     { name: 'typecheck-tests', command: cachedTypecheck('tests', 'typecheck:tests'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint', command: 'npm run lint', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    // `npm run lint` with ESLint narrowed, in a PR, to the files changed since
+    // the merge base and the files importing them (scripts/check-lint-warnings.js
+    // --changed); a change to the ESLint config, the packages or the baseline,
+    // and every release, lint every file. On PR #570: 190 files of 1,580. The
+    // files linted come from the diff: reused only against the same merge base.
+    { name: 'lint', command: 'npm run brand:check && npm run lint:warnings -- --changed', perBase: true, parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
