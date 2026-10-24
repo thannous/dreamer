@@ -1,10 +1,10 @@
 import { usePathname } from 'expo-router';
 import React, { useMemo } from 'react';
 import { Platform, View, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext, useSafeAreaInsets, type EdgeInsets } from 'react-native-safe-area-context';
 
 import { DesktopSidebar } from '@/components/navigation/DesktopSidebar';
-import { DarkTheme } from '@/constants/journalTheme';
+import { DarkTheme, ThemeLayout } from '@/constants/journalTheme';
 import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { SideGuttersProvider } from '@/context/ContentWindowContext';
@@ -25,6 +25,16 @@ function isUnder(pathname: string, prefixes: string[]): boolean {
   return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
 }
 
+/**
+ * Folded, the iPhone Duo shows its status bar in a column beside the page and leaves no
+ * inset at the top, like a phone on its side: every header would start against the edge
+ * of the glass. Screens then keep a margin above them as wide as the page's own.
+ */
+export function getScreenInsets(insets: EdgeInsets): EdgeInsets {
+  if (insets.top > 0 || (insets.left === 0 && insets.right === 0)) return insets;
+  return { ...insets, top: ThemeLayout.spacing.md };
+}
+
 export function shouldShowDesktopSidebar(pathname: string | null | undefined): boolean {
   if (!pathname) return false;
   return !isUnder(pathname, FULL_WINDOW_PREFIXES);
@@ -39,7 +49,9 @@ export function shouldShowDesktopSidebar(pathname: string | null | undefined): b
  */
 export function DesktopShell({ children }: { children: React.ReactNode }) {
   const { width } = useWindowDimensions();
-  const { left, right } = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
+  const { left, right } = insets;
+  const screenInsets = useMemo(() => getScreenInsets(insets), [insets]);
   const { colors, mode } = useTheme();
   const pathname = usePathname();
   const nightOnly = Boolean(pathname && isUnder(pathname, NIGHT_ONLY_PREFIXES));
@@ -53,13 +65,15 @@ export function DesktopShell({ children }: { children: React.ReactNode }) {
   // parents would remount the root navigator on a resize, a fold or a route change.
   return (
     <SideGuttersProvider left={left} right={right}>
-      <View
-        className={showSidebar ? 'flex-1 flex-row' : 'flex-1'}
-        style={{ paddingLeft: left, paddingRight: right, backgroundColor: ground }}
-      >
-        {showSidebar ? <DesktopSidebar /> : null}
-        <View className="min-w-0 flex-1">{children}</View>
-      </View>
+      <SafeAreaInsetsContext.Provider value={screenInsets}>
+        <View
+          className={showSidebar ? 'flex-1 flex-row' : 'flex-1'}
+          style={{ paddingLeft: left, paddingRight: right, backgroundColor: ground }}
+        >
+          {showSidebar ? <DesktopSidebar /> : null}
+          <View className="min-w-0 flex-1">{children}</View>
+        </View>
+      </SafeAreaInsetsContext.Provider>
     </SideGuttersProvider>
   );
 }
