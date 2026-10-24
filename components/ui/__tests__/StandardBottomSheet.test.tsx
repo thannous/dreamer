@@ -8,6 +8,7 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 let mockScrollProps: any;
 let mockFooterLayout: ((event: unknown) => void) | undefined;
 let mockSheetStyle: any;
+let mockViewStyles: any[] = [];
 
 jest.mock('react-native', () => {
   const stub = require('../../../tests/react-native-stub');
@@ -20,6 +21,7 @@ jest.mock('react-native', () => {
     // The only view measured here is the footer's.
     View: (props: any) => {
       if (props.onLayout) mockFooterLayout = props.onLayout;
+      mockViewStyles.push(props.style);
       return stub.View(props);
     },
   };
@@ -59,6 +61,7 @@ const layout = (y: number, height: number) => ({ nativeEvent: { layout: { x: 0, 
 beforeEach(() => {
   mockScrollProps = undefined;
   mockFooterLayout = undefined;
+  mockViewStyles = [];
 });
 
 describe('StandardBottomSheet', () => {
@@ -82,6 +85,14 @@ describe('StandardBottomSheet', () => {
     render(sheet());
     expect(mockScrollProps.onLayout).toBeUndefined();
     expect(mockFooterLayout).toBeUndefined();
+  });
+
+  // A body with its own scroller (the e-mail account sheet) shares a bounded height: inside a
+  // scroll view's content its scroller kept its full height and ran under the footer.
+  it('gives a body that scrolls on its own a height it can shrink to', () => {
+    render(sheet({ bodyScrollEnabled: false }));
+    expect(mockScrollProps).toBeUndefined();
+    expect(mockViewStyles).toContainEqual({ flexGrow: 1, flexShrink: 1, minHeight: 0 });
   });
 
   // The iOS sheet holds its content above the home indicator and draws its own edge, so the

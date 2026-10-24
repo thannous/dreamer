@@ -228,6 +228,46 @@ export function StandardBottomSheet({
     ? 'disabled'
     : 'enabled';
 
+  const measureBodyTop = onBodyRoom ? (event: LayoutChangeEvent) => {
+    const top = event.nativeEvent?.layout?.y;
+    if (top !== undefined) setChrome((current) => (current.top === top ? current : { ...current, top }));
+  } : undefined;
+  const body = (
+    <>
+      {/* Title */}
+      {headerIcon ? (
+        <View
+          accessible={false}
+          className="mb-4 h-14 w-14 items-center justify-center self-center rounded-artwork border-2 border-champagne-soft bg-ink-soft"
+        >
+          <IconSymbol name={headerIcon} size={32} color={noctalia.accent.soft} />
+        </View>
+      ) : null}
+
+      {!closeButton ? <Text
+        ref={titleRef}
+        {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
+        accessible
+        accessibilityRole="header"
+        className="mb-2 text-center font-sans-bold text-h2 text-ivory"
+        style={webTitleFocusResetStyle}
+        testID={titleTestID}
+      >
+        {title}
+      </Text> : null}
+
+      {/* Subtitle */}
+      {subtitle ? (
+        <Text className="mb-6 text-center font-sans text-body-sm text-ivory-muted">
+          {subtitle}
+        </Text>
+      ) : null}
+
+      {/* Optional custom body content */}
+      {children}
+    </>
+  );
+
   // Actions remain outside the scrollable content.
   const footerContent = footer ?? (actions ? (
     <BottomSheetActions>
@@ -334,45 +374,18 @@ export function StandardBottomSheet({
           </Pressable>
         </View>
       ) : null}
-      <ScrollView ref={scrollRef} scrollEnabled={bodyScrollEnabled} showsVerticalScrollIndicator={showsVerticalScrollIndicator} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled"
-        onLayout={onBodyRoom ? (event: LayoutChangeEvent) => {
-          const top = event.nativeEvent?.layout?.y;
-          if (top !== undefined) setChrome((current) => (current.top === top ? current : { ...current, top }));
-        } : undefined}>
-
-      {/* Title */}
-      {headerIcon ? (
-        <View
-          accessible={false}
-          className="mb-4 h-14 w-14 items-center justify-center self-center rounded-artwork border-2 border-champagne-soft bg-ink-soft"
-        >
-          <IconSymbol name={headerIcon} size={32} color={noctalia.accent.soft} />
+      {bodyScrollEnabled ? (
+        <ScrollView ref={scrollRef} showsVerticalScrollIndicator={showsVerticalScrollIndicator} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled" onLayout={measureBodyTop}>
+          {body}
+        </ScrollView>
+      ) : (
+        // A body that scrolls on its own needs a height it can share, which a scroll view's content
+        // never has: its scroller would keep its full height and run under the footer. It still
+        // grows as the scroll view did, so a full-height sheet keeps its footer at the bottom.
+        <View style={{ flexGrow: 1, flexShrink: 1, minHeight: 0 }} onLayout={measureBodyTop}>
+          {body}
         </View>
-      ) : null}
-
-      {!closeButton ? <Text
-        ref={titleRef}
-        {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
-        accessible
-        accessibilityRole="header"
-        className="mb-2 text-center font-sans-bold text-h2 text-ivory"
-        style={webTitleFocusResetStyle}
-        testID={titleTestID}
-      >
-        {title}
-      </Text> : null}
-
-      {/* Subtitle */}
-      {subtitle ? (
-        <Text className="mb-6 text-center font-sans text-body-sm text-ivory-muted">
-          {subtitle}
-        </Text>
-      ) : null}
-
-      {/* Optional custom body content */}
-      {children}
-
-      </ScrollView>
+      )}
 
       {onBodyRoom && footerContent ? (
         <View onLayout={(event: LayoutChangeEvent) => {
