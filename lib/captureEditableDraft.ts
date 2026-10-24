@@ -32,6 +32,11 @@ export function serializeCaptureEditableDraft(draft: CaptureEditableDraft): stri
   return draft.sections.map(section => section.prefix + section.text).join('');
 }
 
+/** Whether one of the assistant's questions still holds an answer, however it was edited. */
+export function captureHasAnswer(source: string): boolean {
+  return parseCaptureEditableDraft(source).sections.some(section => section.question !== null && section.text.trim() !== '');
+}
+
 export function updateCaptureDraftSection(draft: CaptureEditableDraft, index: number, text: string): CaptureEditableDraft {
   return { sections: draft.sections.map((section, position) => position === index ? { ...section, text } : section) };
 }

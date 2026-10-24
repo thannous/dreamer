@@ -42,7 +42,8 @@ Unreadable local ledgers are never overwritten. Signed-in accounts also merge wi
 first acquisition date of each tier. An optimistic revision check prevents a late
 client overwriting another device; an ambiguous acknowledgement can be replayed.
 Journal identities, months and notes are retained up to each family's last threshold
-(at most 100 keys, the account copy's bound; past it the family's best holds the count),
+(at most 150 keys, enough for the journal's diamond and the account copy's bound for version 2,
+100 for version 1; past it the family's best holds the count),
 so deleted dreams still contribute once. Older ledgers that stored only a maximum keep that
 maximum, but cannot reconstruct identities that were never recorded.
 

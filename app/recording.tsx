@@ -9,7 +9,7 @@ import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
-import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
+import { captureHasAnswer, parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { CaptureReviewPanel } from '@/components/recording/CaptureReviewPanel';
 import { buildCaptureNarrative, decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
 import { RecordingConversation } from '@/components/recording/RecordingConversation';
@@ -267,10 +267,6 @@ function RecordingScreen() {
       formatSourceRef.current = null;
     };
   }, [onboardingScope]);
-  // What this capture tried, for the collection's first steps: recognized speech, and whether
-  // each of the assistant's questions holds an answer, as it stands (an erased one does not).
-  const voicedCaptureRef = useRef(false);
-  const questionAnswersRef = useRef(new Map<string, boolean>());
   // Freeze the question when an answer begins. Persist the pair as editable text
   // so draft restoration and analysis retain context without another AI request.
   const getAnswerInsertion = useCallback(() => {
@@ -287,11 +283,6 @@ function RecordingScreen() {
     setAnswerBase(storyBase);
     return insertion;
   }, [conversation.question, t]);
-  // The answer written or told under one of the assistant's questions, not the opening story.
-  const noteQuestionAnswer = useCallback((answer: string) => {
-    const insertion = answerInsertionRef.current;
-    if (insertion && insertion.base !== insertion.storyBase) questionAnswersRef.current.set(insertion.base, answer.trim() !== '');
-  }, []);
   const captureMicrophoneMutedRef = useRef(false);
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
@@ -469,6 +460,8 @@ function RecordingScreen() {
   const textInputRef = useRef<TextInputInstance | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
+  // For the collection: whether this capture recognized speech.
+  const voicedCaptureRef = useRef(false);
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   // Voice is blocked only when the device cannot capture speech at all. Every
@@ -572,13 +565,11 @@ function RecordingScreen() {
     setTranscriptSelection(result.selection);
     setTranscript(result.text);
     if (answerInsertionRef.current) {
-      const answer = result.text.slice(answerInsertionRef.current.base.length).trimStart();
-      setCurrentAnswer(answer);
-      noteQuestionAnswer(answer);
+      setCurrentAnswer(result.text.slice(answerInsertionRef.current.base.length).trimStart());
     }
     voicedCaptureRef.current = true;
     return true;
-  }, [isHydrated, noteInput, noteQuestionAnswer, noteReviewAnswer]);
+  }, [isHydrated, noteInput, noteReviewAnswer]);
 
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
@@ -709,7 +700,6 @@ function RecordingScreen() {
     setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
     voicedCaptureRef.current = false;
-    questionAnswersRef.current.clear();
   }, [resetConversation]);
 
   const navigateToSavedDream = useCallback((
@@ -1238,12 +1228,13 @@ function RecordingScreen() {
       markPerformance('journal.save_acknowledged', { trace: saveTrace });
       if (isNewDream) {
         void trackDreamSaveMilestone(isFirstDream);
-        // A restored draft alone says neither: only what this capture did counts.
+        // Speech counts only when this capture heard it. An answer to the assistant is read from
+        // the capture as saved, so one erased before saving, in any editor, never counts.
         recordBadgeEvent({
           type: 'dream_saved',
           dream: savedDream,
           voiced: voicedCaptureRef.current,
-          answered: [...questionAnswersRef.current.values()].includes(true),
+          answered: captureHasAnswer(captureReview ? captureReview.source : latestTranscript),
         });
       }
       clearAfterSuccessfulSave();
@@ -1834,14 +1825,13 @@ function RecordingScreen() {
       : { text: insertion.storyBase, selection: { start: insertion.storyBase.length, end: insertion.storyBase.length } };
     if (noteInput(result.text) !== true) return;
     answerInsertionRef.current = insertion;
-    noteQuestionAnswer(text);
     setAnswerBase(insertion.storyBase);
     setCurrentAnswer(text);
     dictationInsertionRef.current = dictationInsertionRef.current && rebaseDictation(dictationInsertionRef.current, result.text);
     baseTranscriptRef.current = result.text;
     setTranscript(result.text);
     transcriptSelectionRef.current = result.selection;
-  }, [getAnswerInsertion, isHydrated, noteInput, noteQuestionAnswer, noteReviewAnswer]);
+  }, [getAnswerInsertion, isHydrated, noteInput, noteReviewAnswer]);
 
   const handleValidateCapture = useCallback(async () => {
     if (!isHydrated || isPersisting || formatRequestRef.current) return;

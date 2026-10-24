@@ -160,8 +160,8 @@ describe('badge ledger', () => {
     const dreams = Array.from({ length: 160 }, (_, index) => dream(at('2026-02-01') + index * 60_000, { isFavorite: index < 2 }));
     const settled = settleBadgeLedger(createEmptyBadgeLedger(), dreams, at('2026-03-01'));
     expect(settled.earned['night-journal']).toHaveLength(5);
-    // At most a hundred identities are kept; the count above them is the family's best.
-    expect(settled.keys['night-journal']).toHaveLength(100);
+    // At most 150 identities are kept; the count above them is the family's best.
+    expect(settled.keys['night-journal']).toHaveLength(150);
 
     // After a long pause, with most dreams gone and no favourite left:
     const remaining = dreams.slice(0, 2).map((entry) => ({ ...entry, isFavorite: false }));
@@ -169,6 +169,14 @@ describe('badge ledger', () => {
     expect(stateOf(later, remaining, 'night-journal')).toMatchObject({ tier: 5, progress: 160, nextThreshold: null });
     expect(stateOf(later, remaining, 'treasure-keeper')).toMatchObject({ tier: 1, nextThreshold: null });
     expect(later.earned['night-journal']).toEqual(settled.earned['night-journal']);
+  });
+
+  it('reaches the diamond with dreams written after others were deleted', () => {
+    const first = Array.from({ length: 100 }, (_, index) => dream(at('2026-02-01') + index * 60_000));
+    const settled = settleBadgeLedger(createEmptyBadgeLedger(), first, at('2026-03-01'));
+    const others = Array.from({ length: 50 }, (_, index) => dream(at('2026-05-01') + index * 60_000));
+    const later = settleBadgeLedger(settled, others, at('2026-06-01'));
+    expect(stateOf(later, others, 'night-journal')).toMatchObject({ tier: 5, progress: 150, nextThreshold: null });
   });
 
   it('counts families by tier and the first steps apart', () => {

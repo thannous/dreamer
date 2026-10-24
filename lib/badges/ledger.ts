@@ -154,8 +154,11 @@ export function countDistinctDreams(groups: Iterable<readonly string[]>): number
 
 // ------------------------------------------------------------------------------ reducing --
 
-/** The account copy keeps at most this many keys per family; past it, `best` holds the count. */
-const KEY_LIMIT = 100;
+/**
+ * The account copy keeps at most this many keys per family: enough for the journal's diamond,
+ * so dreams deleted and others written later still add up to it. Past it, `best` holds the count.
+ */
+const KEY_LIMIT = 150;
 const keyCap = (id: BadgeFamilyId) => {
   const thresholds = getBadgeFamily(id)!.thresholds;
   return Math.min(thresholds[thresholds.length - 1], KEY_LIMIT);

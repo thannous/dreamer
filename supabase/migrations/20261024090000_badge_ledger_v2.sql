@@ -4,7 +4,7 @@
 create or replace function public.valid_badge_ledger(p_ledger jsonb)
 returns boolean language plpgsql immutable set search_path = '' as $$
 declare
-  section text; family text; value jsonb; item jsonb; families text[]; max_tiers integer;
+  section text; family text; value jsonb; item jsonb; families text[]; max_tiers integer; max_keys integer;
   v1_families constant text[] := array['night-journal','gentle-rhythm','night-thread','moon-cycles',
     'ink-dreamer','night-voice','memory-keeper','dream-reader','time-traveler','treasure-keeper',
     'favorite-echoes','dream-weaver','dream-namer','night-cartographer','dream-seeker','path-finder',
@@ -16,9 +16,10 @@ begin
   if p_ledger is null or jsonb_typeof(p_ledger) <> 'object' or octet_length(p_ledger::text) > 524288
     or (p_ledger - array['version','keys','best','earned','revealed']) <> '{}'::jsonb then return false; end if;
   if p_ledger->'version' = '1'::jsonb then
-    families := v1_families; max_tiers := 3;
+    families := v1_families; max_tiers := 3; max_keys := 100;
   elsif p_ledger->'version' = '2'::jsonb then
-    families := v2_families; max_tiers := 5;
+    -- Enough identities for the journal's diamond (150 dreams).
+    families := v2_families; max_tiers := 5; max_keys := 150;
   else
     return false;
   end if;
@@ -27,7 +28,7 @@ begin
     for family, value in select key, val from jsonb_each(p_ledger->section) as entries(key,val) loop
       if not family = any(families) then return false; end if;
       if section = 'keys' then
-        if jsonb_typeof(value) <> 'array' or jsonb_array_length(value) > 100 then return false; end if;
+        if jsonb_typeof(value) <> 'array' or jsonb_array_length(value) > max_keys then return false; end if;
         for item in select * from jsonb_array_elements(value) loop
           if jsonb_typeof(item) <> 'string' or length(item #>> '{}') not between 1 and 512
             or (item #>> '{}') !~ '^[A-Za-z0-9_:|.-]+$' then return false; end if;

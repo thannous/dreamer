@@ -68,6 +68,7 @@ test('badge RPC rejects foreign accounts and stale writes, bounds data and erase
     for (const invalid of [
       { ...v2, earned: { 'symbol-explorer': [1, 2, 3, 4, 5, 6] } },
       { ...v2, keys: { 'gentle-rhythm': ['2026-10-01'] } },
+      { ...v2, keys: { 'night-journal': Array.from({ length: 151 }, (_, i) => `c:dream-${i}`) } },
     ]) {
       expect((await owner.rpc('sync_badge_ledger', { ...args, p_revision: 3, p_ledger: invalid })).error?.code).toBe('22023');
     }
