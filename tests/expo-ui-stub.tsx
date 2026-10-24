@@ -4,7 +4,7 @@ type CommonProps = {
   children?: React.ReactNode;
   hidden?: boolean;
   label?: string;
-  matchContents?: boolean;
+  matchContents?: boolean | { vertical?: boolean; horizontal?: boolean };
   modifiers?: ExpoUIModifier[];
   testID?: string;
 };
@@ -61,7 +61,7 @@ export function RNHostView({ children, hidden, matchContents, modifiers, testID 
     'div',
     {
       'data-child-pointer-events': child.props.pointerEvents,
-      'data-match-contents': String(matchContents),
+      'data-match-contents': typeof matchContents === 'object' ? JSON.stringify(matchContents) : String(matchContents),
       'data-testid': testID,
     },
     renderedChild
