@@ -70,6 +70,7 @@ let mockScrollLayout: ((event: any) => void) | undefined;
 let mockProgressLayout: ((event: any) => void) | undefined;
 const mockScrollToEnd = jest.fn();
 let mockKeyboardListeners: Record<string, () => void> = {};
+let mockKeyboardSubscribers: Record<string, Set<() => void>> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
@@ -231,9 +232,12 @@ jest.doMock('react-native', () => {
     },
     Keyboard: {
       isVisible: () => false,
+      // Every subscriber hears the event, as on a device.
       addListener: (event: string, listener: () => void) => {
-        mockKeyboardListeners[event] = listener;
-        return { remove: () => { delete mockKeyboardListeners[event]; } };
+        const listeners = (mockKeyboardSubscribers[event] ??= new Set());
+        listeners.add(listener);
+        mockKeyboardListeners[event] = () => { for (const subscriber of [...listeners]) subscriber(); };
+        return { remove: () => { listeners.delete(listener); } };
       },
       dismiss: jest.fn(),
     },
@@ -856,12 +860,17 @@ describe('Recording screen', () => {
     // The document is the editor's section and its padding: Save, after the scroll view, adds nothing.
     const documentStyles = JSON.parse(composer.parentElement?.parentElement?.getAttribute('data-native-style') ?? '[]');
     expect(Object.assign({}, ...documentStyles.flat().filter(Boolean)).paddingBottom).toBe(16);
-    // Scrolled to the end again once the view has its height above the keyboard.
+    // Scrolled to the end again once the keyboard has shown (on iOS, after the view's animation).
+    act(() => mockKeyboardListeners.keyboardDidShow?.());
+    act(() => { jest.advanceTimersByTime(32); });
     expect(mockScrollToEnd).toHaveBeenCalledTimes(1);
 
     // Once the writer types, another keyboard leaves the scroll where the writer has it.
     fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A station full of clocks.' } });
-    act(() => mockScrollLayout?.({ nativeEvent: { layout: { height: 240 } } }));
+    act(() => {
+      mockKeyboardListeners.keyboardDidShow?.();
+      mockScrollLayout?.({ nativeEvent: { layout: { height: 240 } } });
+    });
     act(() => { jest.advanceTimersByTime(32); });
     expect(mockScrollToEnd).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBe(roomAfterTyping);
@@ -891,6 +900,7 @@ describe('Recording screen', () => {
     mockProgressLayout = undefined;
     mockScrollToEnd.mockClear();
     mockKeyboardListeners = {};
+    mockKeyboardSubscribers = {};
     mockOnPartialTranscript = undefined;
     mockOnNativeEnd = undefined;
     mockAppStateHandler = undefined;

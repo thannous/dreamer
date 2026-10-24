@@ -1472,9 +1472,10 @@ function RecordingScreen() {
     setBottomNavHeight((current) => current === nextHeight ? current : nextHeight);
   }, [viewportHeight]);
 
-  // From the keyboard opening until the writer types or drags, the document's end stays in view
-  // as the view takes its height above the keyboard: a scroll run before it shrinks stops short of
-  // the end. Afterwards another keyboard or the suggestions bar leaves the scroll where it is.
+  // A scroll run as the keyboard starts to show can stop short of the end, or not move at all: on
+  // iOS the view is still animating to its height above the keyboard. So once the keyboard has
+  // shown the end comes into view again, until the writer types or drags; after that another
+  // keyboard or the suggestions bar leaves the scroll where it is.
   const keyboardSettlingRef = useRef(false);
   useEffect(() => {
     keyboardSettlingRef.current = keyboardVisible;
@@ -1494,12 +1495,19 @@ function RecordingScreen() {
     return () => cancelAnimationFrame(frame);
   }, [footerHeight, inputMode, keyboardVisible]);
   useEffect(() => {
-    if (!keyboardSettlingRef.current) return;
-    const frame = requestAnimationFrame(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
+    let frame: number | undefined;
+    const subscription = Keyboard.addListener('keyboardDidShow', () => {
+      if (!keyboardSettlingRef.current) return;
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      });
     });
-    return () => cancelAnimationFrame(frame);
-  }, [scrollViewportHeight]);
+    return () => {
+      subscription.remove();
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
+  }, []);
   useEffect(() => {
     keyboardSettlingRef.current = false;
   }, [transcript, captureReview?.text]);
