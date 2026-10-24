@@ -91,6 +91,8 @@ const REEXPORT = /\bexport\s+(?:type\s+)?(?:\*(?:\s+as\s+\w+)?|\{[^}]*\})\s*from
  * ones, and those importing a module whose exports changed (import/named and
  * the other import rules read them), through any chain of re-exports. Null
  * when a change reaches every file, or when there is no base to compare with.
+ * The graph knows only relative and `@/` specifiers: a module reached through
+ * another alias, or named only in jest.mock('...'), pulls in no importer.
  */
 function lintScope({ changed, files, read }) {
   if (changed.some((file) => WHOLE_SCOPE.includes(file))) return null;
@@ -134,7 +136,9 @@ function changedScope(root, env) {
   } catch (error) {
     return { files: null, reason: `the import graph could not be read (${error.message})` };
   }
-  return files ? { files, base } : { files: null, reason: 'a change reaches every file' };
+  // A deleted file is linted no more, but its allowances must leave the baseline.
+  const deleted = changed.filter((file) => !fs.existsSync(path.join(root, file)));
+  return files ? { files, base, deleted } : { files: null, reason: 'a change reaches every file' };
 }
 
 async function main(args = process.argv.slice(2), root = process.cwd(), env = process.env) {
@@ -148,12 +152,14 @@ async function main(args = process.argv.slice(2), root = process.cwd(), env = pr
   // Same rules and results on every core; one process took 82 s against 57 s on 4 cores.
   const eslint = new ESLint({ cwd: root, concurrency: 'auto' });
   let scope = null;
+  let deleted = new Set();
   if (args.includes('--changed')) {
     const changed = changedScope(root, env);
     if (changed.files) {
       const files = [];
       for (const file of changed.files) if (!(await eslint.isPathIgnored(path.join(root, file)))) files.push(file);
       scope = new Set(files);
+      deleted = new Set(changed.deleted);
       console.log(`ESLint on ${files.length} files changed since ${changed.base.slice(0, 12)} or importing them; a release lints every file.`);
     } else {
       console.log(`ESLint on every file: ${changed.reason}.`);
@@ -165,7 +171,7 @@ async function main(args = process.argv.slice(2), root = process.cwd(), env = pr
   const errorCount = results.reduce((sum, result) => sum + result.errorCount + result.fatalErrorCount, 0);
   if (errorCount) { console.error('ESLint errors remain fatal; the warning baseline cannot allow them.'); return 1; }
   const warnings = collectWarnings(results, root);
-  const allowed = scope ? baseline.warnings.filter((finding) => scope.has(finding.file)) : baseline.warnings;
+  const allowed = scope ? baseline.warnings.filter((finding) => scope.has(finding.file) || deleted.has(finding.file)) : baseline.warnings;
   const { added, removed } = compareWarnings(warnings, allowed);
   if (added.length) {
     console.error('New ESLint warnings are not allowed:');

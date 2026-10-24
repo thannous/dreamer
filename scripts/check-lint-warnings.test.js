@@ -118,4 +118,19 @@ describe('--changed', () => {
     expect(release.status).toBe(1);
     expect(run('--prune', '--changed').status).toBe(1);
   });
+
+  it('asks a PR deleting a file to drop its allowances, as a full run does', async () => {
+    await fixture('const known = 1;\n');
+    const git = (...args) => spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@noctalia.invalid', ...args], { cwd: root, encoding: 'utf8' });
+    git('init', '-q', '-b', 'master');
+    git('add', '.');
+    git('commit', '-qm', 'fixture');
+    git('update-ref', 'refs/remotes/origin/master', 'HEAD');
+    fs.rmSync(path.join(root, 'app', 'example.js'));
+    git('commit', '-qam', 'delete');
+    const pr = spawnSync(process.execPath, [script, '--changed'], { cwd: root, encoding: 'utf8', env: { ...process.env, VERIFY_LOCAL_KIND: 'pr' } });
+    expect(pr.stdout).toContain('ESLint on 0 files changed since');
+    expect(pr.stderr).toContain('Resolved ESLint warnings must leave the baseline');
+    expect(pr.status).toBe(1);
+  });
 });
