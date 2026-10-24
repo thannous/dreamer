@@ -3,7 +3,8 @@ import type { Page } from 'playwright/test';
 import { test, expect, login, journal, client, admin, restrictNetwork } from '../backend-fixtures';
 
 type WireMutation = { mutation_id: string; client_request_id: string; operation: string; payload: Record<string, unknown> };
-type GuestDream = { id: number; transcript: string; remoteId?: number; personalNotes?: { id: string; text: string; createdAt: number; updatedAt: number }[] };
+type GuestDream = { id: number; transcript: string; remoteId?: number; personalNotes?: { id: string; text: string; createdAt: number; updatedAt: number }[];
+  migrationRecovery?: { remoteId: number } };
 
 // Read only the synthetic guest journal and its migration owner. The real web
 // journal is in IndexedDB; checking localStorage would miss premature cleanup.
@@ -117,6 +118,10 @@ test('a guest personal note survives an old create receipt and reload until acco
       expect(replay.error).toBeNull();
       expect(replay.data[0].status).toBe('ack');
       expect(replay.data[0].dream).not.toHaveProperty('personal_notes');
+      // The guest copy records the acknowledged identity with a fresh receipt.
+      // Restart only once that recovery state is durable on the device.
+      await expect.poll(async () => (await guestSnapshot(page, story)).dreams[0]?.migrationRecovery?.remoteId)
+        .toBe(state.remoteId);
 
       // Reload with recovery unavailable: an ID alone must not justify deleting
       // the guest's only complete copy or releasing its claim to another account.

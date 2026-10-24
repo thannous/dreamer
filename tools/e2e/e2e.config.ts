@@ -109,7 +109,8 @@ export default {
             NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
             EXPO_PUBLIC_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',
           }),
-          ...(product === 'dreamer' ? {
+          // Backend journeys take the direct onboarding path, as their evidence records.
+          ...(product === 'dreamer' || backend ? {
             EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true' ? 'true' : 'false',
           } : {}),
         },
