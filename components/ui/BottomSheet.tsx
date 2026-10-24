@@ -84,6 +84,10 @@ export function BottomSheet({
   const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const maximumHeight = getBottomSheetMaximumHeight(viewportHeight, insets);
+  // On iOS the platform sheet paints the background, edge to edge: content that painted it again
+  // drew a second edge wherever it stops short of the sheet (above the home indicator, beside the
+  // iPhone Duo's status bar column), in another colour when a caller sets the sheet's surface.
+  const contentBackground = transparentContent || Platform.OS === 'ios' ? undefined : 'bg-ink-solid';
   const previouslyFocusedElementRef = useRef<{ focus?: () => void } | null>(null);
   const wasVisibleRef = useRef(false);
   const [presentationEpoch, setPresentationEpoch] = useState(0);
@@ -182,7 +186,7 @@ export function BottomSheet({
               automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
             >
               <View
-                className={[transparentContent ? undefined : 'bg-ink-solid', 'px-6 pt-2 pb-6', className].filter(Boolean).join(' ')}
+                className={[contentBackground, 'px-6 pt-2 pb-6', className].filter(Boolean).join(' ')}
                 style={style}
               >
                 {normalizedChildren}
@@ -190,7 +194,7 @@ export function BottomSheet({
             </ScrollView>
           ) : (
             <View
-              className={[transparentContent ? undefined : 'bg-ink-solid', 'px-6 pt-2 pb-6', className, fillsViewport ? 'flex-1' : undefined]
+              className={[contentBackground, 'px-6 pt-2 pb-6', className, fillsViewport ? 'flex-1' : undefined]
                 .filter(Boolean)
                 .join(' ')}
               style={[{ maxHeight: maximumHeight }, style]}
