@@ -1197,10 +1197,9 @@ export function prepareWorktree({ git, root, sha, files, config, env, log, workt
   const base = worktreeRoot ?? path.join(os.tmpdir(), 'verify-local');
   mkdirSync(base, { recursive: true });
   sweepStaleCopies(base, log);
-  const dir = path.join(base, `${path.basename(root)}-${sha.slice(0, 12)}-${randomBytes(3).toString('hex')}`);
   // The owner file names this run; a later run removes the copy once its
   // owner is gone (a SIGKILLed engine and supervisor cannot clean up).
-  writeFileSync(`${dir}.owner`, lockToken());
+  const dir = claimCopy(base, path.basename(root));
   currentCopy = dir;
   git(['worktree', 'prune'], { allowFailure: true });
   git(['worktree', 'add', '--detach', '--quiet', dir, sha]);
@@ -1267,6 +1266,30 @@ function installInWorktree(worktree, config, env, log, shell = posixShell(env)) 
  * step removes it if the engine dies during the step.
  */
 let currentCopy = null;
+
+/**
+ * Copies of one clone sit at <base>/<name>-<slot>, in the lowest free slot, so
+ * a run usually gets the path of the previous one and a check's cache keyed by
+ * absolute paths (Jest's) can serve it. Creating the owner file takes the slot;
+ * a slot whose copy or .tmp directory is still there (a live run, a kept copy
+ * not yet swept) is passed over. TMPDIR is new for every run all the same: the
+ * .tmp directory goes with the copy. Past COPY_SLOTS, a random name.
+ */
+export const COPY_SLOTS = 4;
+
+export function claimCopy(base, name, token = lockToken()) {
+  for (let slot = 0; slot < COPY_SLOTS; slot++) {
+    const dir = path.join(base, `${name}-${slot}`);
+    if (existsSync(dir) || existsSync(`${dir}.tmp`)) continue;
+    try {
+      writeFileSync(`${dir}.owner`, token, { flag: 'wx' });
+      return dir;
+    } catch {}
+  }
+  const dir = path.join(base, `${name}-${randomBytes(3).toString('hex')}`);
+  writeFileSync(`${dir}.owner`, token);
+  return dir;
+}
 
 /** An isolated copy and what sits beside it: its .tmp directory and its owner file. */
 function copyPaths(dir) {

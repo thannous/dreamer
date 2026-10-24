@@ -210,11 +210,16 @@ const DREAMER_PASSES = DREAMER_CAMPAIGN_CONTEXTS.map(({ locale, featureSheets, a
   `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=${featureSheets} E2E_WEB_LOCALE=${locale} node tools/e2e/run.mjs dreamer web run${args.length ? ' ' + args.map(shellQuote).join(' ') : ''}`,
 ).join(' && ');
 
+const cachedTypecheck = (name, script) => {
+  const info = `.cache/tsc/${name}.tsbuildinfo`;
+  return `node scripts/verify-cache.mjs ${info} -- npm run ${script} -- --incremental --tsBuildInfoFile ${info}`;
+};
+
 // sha256 of this repository's own copy of scripts/verify-local.mjs. The engine
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'feaa8dc419f88c1faaff5330a5f31bfde327e355fec8307795a84cb18f893ef3';
+  'b9db26791531e01cd76afdda0a3244b9492e749d9c9c9c924ff832165d6b384b';
 
 export default {
   mainBranch: 'master',
@@ -390,8 +395,12 @@ export default {
     },
     // Independent read-only checks share one supervised step and machine lock.
     // Route declarations are atomically replaced by generate-shared-route-types.
-    { name: 'typecheck-app', command: 'npm run typecheck:app', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'typecheck-tests', command: 'npm run typecheck:tests', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    // tsc keeps its incremental build info in the copy, and a PR run passes it
+    // on to the next one (scripts/verify-cache.mjs): 32 s cold, 7 s from the
+    // previous copy's build info. TypeScript rechecks what changed; a release
+    // starts from nothing.
+    { name: 'typecheck-app', command: cachedTypecheck('app', 'typecheck:app'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'typecheck-tests', command: cachedTypecheck('tests', 'typecheck:tests'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     { name: 'lint', command: 'npm run lint', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
     // Root Jest tests related to the files changed since the merge-base with
@@ -399,7 +408,9 @@ export default {
     // Picks its tests from the diff: reused only against the same merge base.
     // JEST_CHANGED_SINCE would override that base (HEAD selects no test), so
     // the check never inherits it. Workers come from jest.config.js: on PR
-    // #570's 1,314 related tests, 95 s in band against 42 s on 4 workers.
+    // #570's 1,314 related tests, 95 s in band against 42 s on 4 workers. A PR
+    // run keeps Jest's cache in the shared git directory (the copy's path stays
+    // the same from one run to the next): 24 s cold, 8 s warm on components/.
     {
       name: 'jest-changed',
       perBase: true,

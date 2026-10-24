@@ -11,7 +11,7 @@ import path from 'node:path';
 import { describe, test } from 'node:test';
 import { pathToFileURL } from 'node:url';
 
-import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, verify } from './verify-local.mjs';
+import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, verify } from './verify-local.mjs';
 
 import { ENGINE, CONFIG_PATH, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
 
@@ -1591,6 +1591,37 @@ describe('cleanup of the isolated copy', () => {
     repo.commit('fail', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, `command: 'exit 3'`) });
     assert.notEqual((await verify('pr', [], repo.options)).status, 0);
     assert.deepEqual(left(repo.options.worktreeRoot), []);
+  });
+
+  test('consecutive runs check their commit out at the same path', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    repo.commit('more', { 'src/b.js': '2\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    const copies = repo.lines.map((line) => /isolated copy (\S+): /.exec(line)?.[1]).filter(Boolean);
+    assert.equal(copies.length, 2);
+    assert.equal(copies[1], copies[0]);
+    assert.equal(path.basename(copies[0]), `${path.basename(repo.work)}-0`);
+    assert.deepEqual(left(repo.options.worktreeRoot), []);
+  });
+
+  test('a copy takes the lowest slot no run holds, past the last slot a random name', () => {
+    const base = mkdtempSync(path.join(scratch, 'slots-'));
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-0');
+    // A live run owns slot 0.
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-1');
+    // A kept copy keeps its slot without an owner; a slot its run has left is free again.
+    mkdirSync(path.join(base, 'repo-1'));
+    rmSync(path.join(base, 'repo-1.owner'));
+    rmSync(path.join(base, 'repo-0.owner'));
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-0');
+    // A .tmp directory alone (its copy being removed) also keeps the slot: TMPDIR is never reused.
+    mkdirSync(path.join(base, 'repo-2.tmp'));
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-3');
+    for (let slot = 4; slot < COPY_SLOTS; slot++) claimCopy(base, 'repo');
+    assert.match(path.basename(claimCopy(base, 'repo')), /^repo-[0-9a-f]{6}$/);
   });
 
   test('a later run sweeps copies whose owner is gone, and keeps those of a live run', () => {
