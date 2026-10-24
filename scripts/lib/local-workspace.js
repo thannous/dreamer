@@ -64,6 +64,17 @@ function assertDirectoryIdentity(ctx, receipt) {
   // The caller's next receipt write keeps the new device and upgrades a legacy identity.
   receipt.directoryIdentity = actual;
 }
+const covered = (file, regenerable) => regenerable.some((item) => file === item || file.startsWith(item + '/'));
+// Scratch has no git inventory: descend only into the parents of declared paths,
+// so a nested declaration such as apps/site/node_modules covers its own files.
+function scratchEntries(root, regenerable, prefix = '') {
+  return fs.readdirSync(path.join(root, prefix)).flatMap((name) => {
+    const entry = prefix ? `${prefix}/${name}` : name;
+    if (covered(entry, regenerable) || !regenerable.some((item) => item.startsWith(entry + '/'))) return [entry];
+    const stat = fs.lstatSync(path.join(root, entry));
+    return stat.isDirectory() && !stat.isSymbolicLink() ? scratchEntries(root, regenerable, entry) : [entry];
+  });
+}
 function json(file, value) {
   const temporary = `${file}.${randomUUID()}.tmp`;
   try {
@@ -209,8 +220,8 @@ function release(options, retain = false) {
       else directory(ctx.path);
       const candidates = receipt.kind === 'worktree'
         ? git(ctx.path, ['ls-files', '--others', '--ignored', '--exclude-standard', '-z']).split('\0').filter(Boolean)
-        : fs.readdirSync(ctx.path);
-      const unknown = candidates.filter((file) => !receipt.regenerable.some((item) => file === item || file.startsWith(item + '/')));
+        : scratchEntries(ctx.path, receipt.regenerable);
+      const unknown = candidates.filter((file) => !covered(file, receipt.regenerable));
       if (unknown.length) refuse(`WORKSPACE_HAS_PRESERVED_FILES: ${unknown.length} undeclared path(s)`);
       assertDirectoryIdentity(ctx, receipt);
       if (receipt.kind === 'worktree') git(ctx.source, ['worktree', 'remove', '--force', ctx.path]);

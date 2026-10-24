@@ -90,6 +90,23 @@ describe('local workspace CLI failure and recovery journeys', () => {
     passed(invoke('release'));
   });
 
+  it('releases a scratch workspace whose only content is a nested regenerable path', () => {
+    const current = passed(invoke('scratch', { extra: ['--regenerable', 'apps/site/node_modules'] }));
+    write(path.join(current.path, 'apps/site/node_modules/pkg/cache.bin'), 'regenerable');
+    write(path.join(current.path, 'apps/site/notes.txt'), 'unique note');
+    expect(invoke('release').stderr).toContain('WORKSPACE_HAS_PRESERVED_FILES: 1 undeclared path(s)');
+    expect(fs.readFileSync(path.join(current.path, 'apps/site/notes.txt'), 'utf8')).toBe('unique note');
+    fs.rmSync(path.join(current.path, 'apps/site/notes.txt'));
+    fs.renameSync(path.join(current.path, 'apps/site'), path.join(current.path, 'apps-site'));
+    fs.symlinkSync(path.join(repo, 'apps/site'), path.join(current.path, 'apps/site'), process.platform === 'win32' ? 'junction' : 'dir');
+    expect(invoke('release').stderr).toContain('WORKSPACE_HAS_PRESERVED_FILES: 2 undeclared path(s)');
+    fs.unlinkSync(path.join(current.path, 'apps/site'));
+    fs.renameSync(path.join(current.path, 'apps-site'), path.join(current.path, 'apps/site'));
+    passed(invoke('release'));
+    expect(fs.existsSync(current.path)).toBe(false);
+    expect(fs.readFileSync(path.join(repo, 'apps/site/package.json'), 'utf8')).toBe('{}\n');
+  });
+
   it('keeps a new detached commit and rejects an unmanaged path collision', () => {
     const current = passed(invoke('prepare'));
     write(path.join(current.path, 'source.txt'), 'new commit\n');
