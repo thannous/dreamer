@@ -57,6 +57,9 @@ type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 const SKY_FALLBACK = DREAMER_ARTWORK.symbols;
 const TOP_BAR_HEIGHT = 52;
+// How much of the painting, from its foot, the title and description may cover: about where
+// its veil starts to darken.
+const HERO_COPY_SHARE = 0.55;
 const BODY_GUTTER = 24;
 // The painted scenes keep a reading size on a wide window.
 const SCENES_MAX_WIDTH = 640;
@@ -92,6 +95,7 @@ export default function SymbolDetailScreen() {
   const { width: windowWidth, height: windowHeight } = useContentWindow();
   // Measured, since a wide web window may give the screen less than the window.
   const [heroWidth, setHeroWidth] = useState(windowWidth);
+  const [heroCopyHeight, setHeroCopyHeight] = useState(0);
   const [bodyWidth, setBodyWidth] = useState(windowWidth);
   const reducedMotion = useReducedMotion();
   const trackedSymbolRef = useRef<string | null>(null);
@@ -154,9 +158,14 @@ export default function SymbolDetailScreen() {
   // On the paper theme the night scene needs room to dawn into the page below its copy.
   const heroDusk = mode === 'light' ? 72 : 0;
   // A living painting takes most of the screen: the page opens inside it.
-  const heroHeight = Math.round(living
+  const paintingHeight = living
     ? Math.max(460, windowHeight * 0.75)
-    : Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
+    : Math.min(560, Math.max(380, windowHeight * 0.58));
+  // The copy rests on the painting's darkened lower part. A short, narrow window (the folded
+  // iPhone Duo) wraps the description into more lines than that part holds, so the painting
+  // grows instead of laying the copy over its bright middle.
+  const copyFitHeight = Math.min(windowHeight * 0.9, Math.max(0, heroCopyHeight - heroDusk) / HERO_COPY_SHARE);
+  const heroHeight = Math.round(Math.max(paintingHeight, copyFitHeight)) + heroDusk;
   const heroFrame = useMemo(() => ({ width: heroWidth, height: heroHeight }), [heroHeight, heroWidth]);
   const backdropSource = useMemo(
     // The smallest width is plenty under a 40 point blur.
@@ -298,7 +307,9 @@ export default function SymbolDetailScreen() {
               locations={mode === 'dark' ? undefined : [0, 0.3, 0.58, 0.82, 1]}
               style={[styles.heroFade, heroDusk ? { height: heroDusk + 36 } : null]}
             />
-            <Animated.View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null, living && !reducedMotion ? COPY_RISE : null]}>
+            <Animated.View
+              onLayout={(event: LayoutChangeEvent) => setHeroCopyHeight(Math.ceil(event.nativeEvent.layout.height))}
+              style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null, living && !reducedMotion ? COPY_RISE : null]}>
               <View style={[styles.chip, { borderColor: 'rgba(234,212,180,0.45)' }]}>
                 <Text style={[styles.chipText, { color: HERO_TOKENS.accent.text }]}>{categoryName}</Text>
               </View>

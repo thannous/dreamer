@@ -6,6 +6,7 @@ import { router, usePathname } from 'expo-router';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
+import { getScreenInsets } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -23,7 +24,8 @@ export function AnalysisFlightIndicator() {
   const { colors, mode } = useTheme();
   const { t } = useTranslation();
   const pathname = usePathname();
-  const insets = useSafeAreaInsets();
+  // Mounted beside the root shell, so it applies the screens' top margin itself.
+  const insets = getScreenInsets(useSafeAreaInsets());
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   // Marks which outcome (by completion timestamp) already had its display
   // window; set only from the timer so render stays pure.

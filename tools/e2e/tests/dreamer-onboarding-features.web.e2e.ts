@@ -433,3 +433,31 @@ test.describe('feature sheet previews', () => {
   });
 
 });
+
+// The call to action floats over each step. On a short window, the folded iPhone Duo (its
+// window less the status bar column) or the smallest iPhone, the step's last element must
+// still end above it instead of hiding under it.
+const shortWindowTest = createParityTest({ timezoneId: 'Europe/Paris' });
+for (const viewport of [{ width: 382, height: 678 }, { width: 375, height: 667 }]) {
+  shortWindowTest.use({ viewport });
+  shortWindowTest(`at ${viewport.width}x${viewport.height} the call to action covers neither the privacy link nor the last path`, async ({ page }, testInfo) => {
+    const gap = (above: string, below: string) => page.evaluate(([aboveId, belowId]) => {
+      const rect = (id: string) => document.querySelector(`[data-testid="${id}"]`)?.getBoundingClientRect();
+      const [upper, lower] = [rect(aboveId), rect(belowId)];
+      return upper && lower ? lower.top - upper.bottom : Number.NEGATIVE_INFINITY;
+    }, [above, below]);
+    // As openOnboarding does, at this window's size: a fixed theme, then no startup overlay.
+    await page.clock.setFixedTime(new Date('2026-10-02T12:00:00+02:00'));
+    await page.goto('/');
+    await expect(page.getByTestId('btn.onboarding.privacy')).toBeVisible();
+    await expect(page.getByText('NOCTALIA', { exact: true })).toHaveCount(0);
+    await expect.poll(() => gap('btn.onboarding.privacy', 'btn.onboarding.intro.next')).toBeGreaterThanOrEqual(16);
+    await page.screenshot({ path: testInfo.outputPath('short-window-welcome.png') });
+    await page.getByTestId('btn.onboarding.intro.next').click();
+    // With feature sheets, "Commencer" first tells the three stories; leaving them by the cross is confirmed.
+    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') await leaveStories(page);
+    await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+    await expect.poll(() => gap('btn.onboarding.path.dictionary', 'btn.onboarding.primary')).toBeGreaterThanOrEqual(16);
+    await page.screenshot({ path: testInfo.outputPath('short-window-path.png') });
+  });
+}

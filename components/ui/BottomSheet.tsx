@@ -152,13 +152,21 @@ export function BottomSheet({
       snapPoints={snapPoints}
       testID={testID}
     >
-      <RNHostView matchContents={!fillsViewport}>
+      {/* On iOS and the web the content takes its width from the platform sheet (a
+          content-sized sheet takes its height from what it holds): the window is no measure of
+          the sheet, which the folded iPhone Duo draws narrower, clear of its status bar column.
+          On iOS a content-sized sheet stays within the window width, capped at the sheet's
+          widest, which also bounds its first layout before the sheet reports its own width.
+          Android keeps sizing the content itself, as Expo UI's own Android sheet does. */}
+      <RNHostView matchContents={fillsViewport ? false : Platform.OS === 'android' ? true : { vertical: true }}>
         <View
           accessibilityViewIsModal
           style={[
             { maxHeight: maximumHeight },
             fillsViewport && { flex: 1 },
-            nativeContentWidth != null && { width: nativeContentWidth },
+            nativeContentWidth != null && (Platform.OS === 'android'
+              ? { width: nativeContentWidth }
+              : !fillsViewport && { maxWidth: nativeContentWidth }),
           ]}
         >
           {scrollable ? (
