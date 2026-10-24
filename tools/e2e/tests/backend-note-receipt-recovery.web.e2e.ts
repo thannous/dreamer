@@ -78,11 +78,15 @@ test('a durable pre-notes receipt recovers after reload without duplicating the 
     await journal(page);
     await page.getByTestId(/^dream\.item\./).filter({ hasText: story }).click();
     await expect(page.getByTestId('dream.personal-notes')).toContainText(noteText);
-    await expect(page.getByText('Retry sync', { exact: true })).toBeVisible();
+    const retry = page.getByText('Retry sync', { exact: true });
+    await expect(retry).toBeVisible();
+    // After a reload the app also retries on its own. Keep those attempts
+    // blocked until the action is clickable, so recovery comes from this retry.
+    await retry.click({ trial: true });
     state.recoveryAllowed = true;
-    await page.getByText('Retry sync', { exact: true }).click();
+    await retry.click();
     await expect.poll(async () => (await read()).personal_notes.map((note: { text: string }) => note.text)).toEqual([noteText]);
-    await expect(page.getByText('Retry sync', { exact: true })).toHaveCount(0);
+    await expect(retry).toHaveCount(0);
     await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
     const rows = await owner.from('dreams').select('id').eq('client_request_id', dreamKey);
     expect(rows.error).toBeNull();
