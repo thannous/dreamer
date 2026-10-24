@@ -1,9 +1,16 @@
 /** Durable account copy. Only badge identities, counts and dates leave the device. */
-import { mergeBadgeLedgers, parseBadgeLedger, settleBadgeLedger, type BadgeLedger } from '@/lib/badges/ledger';
+import {
+  BADGE_LEDGER_VERSION,
+  mergeBadgeLedgers,
+  parseBadgeLedger,
+  settleBadgeLedger,
+  type BadgeLedger,
+} from '@/lib/badges/ledger';
 import { withAbortTimeout } from '@/lib/networkPolicy';
 import { supabase } from '@/lib/supabase';
 
-export type RemoteBadgeLedger = { ledger: BadgeLedger; revision: number; accepted: boolean };
+/** `legacy` when the account copy is still the first collection's, read through a conversion. */
+export type RemoteBadgeLedger = { ledger: BadgeLedger; revision: number; accepted: boolean; legacy?: boolean };
 export type BadgeLedgerTransport = {
   exchange(userId: string, revision: number | null, ledger: BadgeLedger | null): Promise<RemoteBadgeLedger>;
 };
@@ -20,7 +27,7 @@ export const badgeLedgerTransport: BadgeLedgerTransport = {
         typeof data.accepted !== 'boolean') {
       throw new Error('Invalid badge sync response');
     }
-    return { ...data, ledger: remote };
+    return { ...data, ledger: remote, legacy: data.ledger.version !== BADGE_LEDGER_VERSION };
   },
 };
 
@@ -39,8 +46,9 @@ export async function synchronizeBadgeLedger(
   for (let attempt = 0; attempt < 5; attempt += 1) {
     if (!isCurrent()) return null;
     const merged = settleBadgeLedger(mergeBadgeLedgers(remote.ledger, local), [], Date.now());
-    // The merge returns its base when every local fact is already on the server.
-    if (merged === remote.ledger) return merged;
+    // The merge returns its base when every local fact is already on the server; a copy of
+    // the first collection is rewritten anyway, so older app versions stop writing to it.
+    if (merged === remote.ledger && !remote.legacy) return merged;
     remote = await transport.exchange(userId, remote.revision, merged);
     if (remote.accepted) return isCurrent() ? remote.ledger : null;
   }

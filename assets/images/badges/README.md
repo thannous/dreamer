@@ -28,6 +28,9 @@ L’app n’embarque pas ces PNG : elle utilise des exports WebP qui gardent la
 transparence, `app/<family-id>.webp` (720 px, carte tenue en main) et
 `app/<family-id>-small.webp` (320 px, album et rangée des niveaux). Après une
 nouvelle livraison, régénérer avec `node scripts/export-badge-artwork.mjs` ;
-`--check` signale un export manquant. La correspondance famille/fichier et les
-habillages bronze, argent et or sont décrits dans
-[les règles de la collection](../../../lib/badges/README.md).
+`--check` signale un export manquant. Depuis la refonte du 24 octobre 2026, la
+collection montre 15 cartes : deux reprennent la peinture d’une famille retirée
+(`favorite-echoes` pour Échos de nuit, `night-thread` pour Fil des questions), et
+les cinq peintures marquées `"inApp": false` dans `catalogue.json` ne sont plus
+exportées. La correspondance carte/fichier et les habillages, du bronze au
+diamant, sont décrits dans [les règles de la collection](../../../lib/badges/README.md).

@@ -267,6 +267,10 @@ function RecordingScreen() {
       formatSourceRef.current = null;
     };
   }, [onboardingScope]);
+  // What this capture tried, for the collection's first steps: recognized speech, and whether
+  // each of the assistant's questions holds an answer, as it stands (an erased one does not).
+  const voicedCaptureRef = useRef(false);
+  const questionAnswersRef = useRef(new Map<string, boolean>());
   // Freeze the question when an answer begins. Persist the pair as editable text
   // so draft restoration and analysis retain context without another AI request.
   const getAnswerInsertion = useCallback(() => {
@@ -283,6 +287,11 @@ function RecordingScreen() {
     setAnswerBase(storyBase);
     return insertion;
   }, [conversation.question, t]);
+  // The answer written or told under one of the assistant's questions, not the opening story.
+  const noteQuestionAnswer = useCallback((answer: string) => {
+    const insertion = answerInsertionRef.current;
+    if (insertion && insertion.base !== insertion.storyBase) questionAnswersRef.current.set(insertion.base, answer.trim() !== '');
+  }, []);
   const captureMicrophoneMutedRef = useRef(false);
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
@@ -460,9 +469,6 @@ function RecordingScreen() {
   const textInputRef = useRef<TextInputInstance | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
-  // How this capture's words arrived, for the collection: recognized speech, or typing.
-  const voicedCaptureRef = useRef(false);
-  const typedCaptureRef = useRef(false);
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   // Voice is blocked only when the device cannot capture speech at all. Every
@@ -511,7 +517,6 @@ function RecordingScreen() {
     (text: string) => {
       if (!isHydrated || noteInput(text) !== true) return;
       lastInputSourceRef.current = 'text';
-      if (text.trim()) typedCaptureRef.current = true;
       if (!captureStartedTrackedRef.current && text.trim().length > 0) {
         captureStartedTrackedRef.current = true;
         void trackProductEvent('dream_capture_started', {
@@ -567,11 +572,13 @@ function RecordingScreen() {
     setTranscriptSelection(result.selection);
     setTranscript(result.text);
     if (answerInsertionRef.current) {
-      setCurrentAnswer(result.text.slice(answerInsertionRef.current.base.length).trimStart());
+      const answer = result.text.slice(answerInsertionRef.current.base.length).trimStart();
+      setCurrentAnswer(answer);
+      noteQuestionAnswer(answer);
     }
     voicedCaptureRef.current = true;
     return true;
-  }, [isHydrated, noteInput, noteReviewAnswer]);
+  }, [isHydrated, noteInput, noteQuestionAnswer, noteReviewAnswer]);
 
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
@@ -702,7 +709,7 @@ function RecordingScreen() {
     setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
     voicedCaptureRef.current = false;
-    typedCaptureRef.current = false;
+    questionAnswersRef.current.clear();
   }, [resetConversation]);
 
   const navigateToSavedDream = useCallback((
@@ -1231,12 +1238,12 @@ function RecordingScreen() {
       markPerformance('journal.save_acknowledged', { trace: saveTrace });
       if (isNewDream) {
         void trackDreamSaveMilestone(isFirstDream);
-        // Spoken words make it a told dream; otherwise typed ones make it a written one.
-        // A restored draft alone says neither.
+        // A restored draft alone says neither: only what this capture did counts.
         recordBadgeEvent({
           type: 'dream_saved',
           dream: savedDream,
-          input: voicedCaptureRef.current ? 'voice' : typedCaptureRef.current ? 'text' : null,
+          voiced: voicedCaptureRef.current,
+          answered: [...questionAnswersRef.current.values()].includes(true),
         });
       }
       clearAfterSuccessfulSave();
@@ -1689,7 +1696,6 @@ function RecordingScreen() {
     const draft = updateCaptureDraftSection(editableCapture, index, text);
     const source = serializeCaptureEditableDraft(draft);
     if (!noteInput(source)) return;
-    typedCaptureRef.current = true;
     if (source !== baseTranscriptRef.current) invalidateCaptureSource(baseTranscriptRef.current);
     setEditableCapture(draft);
     baseTranscriptRef.current = source;
@@ -1827,15 +1833,15 @@ function RecordingScreen() {
       ? insertDictation(insertion, text)
       : { text: insertion.storyBase, selection: { start: insertion.storyBase.length, end: insertion.storyBase.length } };
     if (noteInput(result.text) !== true) return;
-    if (text.trim()) typedCaptureRef.current = true;
     answerInsertionRef.current = insertion;
+    noteQuestionAnswer(text);
     setAnswerBase(insertion.storyBase);
     setCurrentAnswer(text);
     dictationInsertionRef.current = dictationInsertionRef.current && rebaseDictation(dictationInsertionRef.current, result.text);
     baseTranscriptRef.current = result.text;
     setTranscript(result.text);
     transcriptSelectionRef.current = result.selection;
-  }, [getAnswerInsertion, isHydrated, noteInput, noteReviewAnswer]);
+  }, [getAnswerInsertion, isHydrated, noteInput, noteQuestionAnswer, noteReviewAnswer]);
 
   const handleValidateCapture = useCallback(async () => {
     if (!isHydrated || isPersisting || formatRequestRef.current) return;

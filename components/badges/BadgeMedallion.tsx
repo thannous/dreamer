@@ -8,16 +8,16 @@ import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg'
 import { sparklePath } from '@/components/journal/story/sparkle';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BADGE_GLYPHS, getBadgeArtwork } from '@/constants/badgeArtwork';
-import type { BadgeFamilyId, BadgeTier } from '@/lib/badges/catalog';
+import type { BadgeFamilyId } from '@/lib/badges/catalog';
 
-import { COLLECTION, getBadgeMaterial } from './badgeMaterials';
+import { COLLECTION, getBadgeMaterial, type BadgeFinish } from './badgeMaterials';
 
 /** The light's position across a card, -1 to 1 on each axis; still when absent. */
 export type BadgeLight = { x: SharedValue<number>; y: SharedValue<number> } | null;
 
 type Props = {
   family: BadgeFamilyId;
-  tier: BadgeTier | null;
+  tier: BadgeFinish | null;
   size: number;
   /** A tier not earned yet is shown veiled: blurred and dimmed, like a dream half remembered. */
   veiled?: boolean;
@@ -69,8 +69,8 @@ const BadgePlaceholderArt = memo(function BadgePlaceholderArt({ family, size }: 
 
 /**
  * A family's medallion as a card shows it: the illustration (or its drawn stand-in) in a
- * circle, the glow of the tier's metal behind it, and on silver and gold the light it
- * catches, moving with the card when a light is given.
+ * circle, the glow of the tier's metal behind it, and from silver up the light it catches,
+ * moving with the card when a light is given.
  */
 export const BadgeMedallion = memo(function BadgeMedallion({ family, tier, size, veiled = false, light = null, small = false }: Props) {
   const [failed, setFailed] = useState(false);
@@ -87,8 +87,8 @@ export const BadgeMedallion = memo(function BadgeMedallion({ family, tier, size,
     // that tilts the card.
     <View pointerEvents="none" style={{ width: size, height: size, opacity: veiled ? 0.42 : 1 }}
       accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-      {tier === 'gold' && !veiled ? <Rays size={size} light={light} color={material.ink} /> : null}
-      {tier === 'silver' && !veiled ? (
+      {material.rays ? <Rays size={size} light={light} color={material.ink} /> : null}
+      {material.ring ? (
         <View pointerEvents="none" style={{
           position: 'absolute', inset: -size * 0.04, borderRadius: size, borderWidth: 1, borderColor: material.frame[1], opacity: 0.5,
         }} />
@@ -113,11 +113,11 @@ export const BadgeMedallion = memo(function BadgeMedallion({ family, tier, size,
       ) : (
         <BadgePlaceholderArt family={family} size={size} />
       )}
-      {material.foil || material.sheen ? (
+      {material.film || material.sheen ? (
         <View pointerEvents="none" style={{
           position: 'absolute', top: discInset, left: discInset, width: disc, height: disc, borderRadius: disc / 2, overflow: 'hidden',
         }}>
-          {material.foil ? <Foil size={disc} light={light} /> : null}
+          {material.film ? <Film size={disc} light={light} colors={material.film} /> : null}
           {material.sheen ? <Sheen size={disc} light={light} /> : null}
         </View>
       ) : null}
@@ -125,7 +125,7 @@ export const BadgeMedallion = memo(function BadgeMedallion({ family, tier, size,
   );
 });
 
-/** Gold's crown of light behind the medallion, turning a little with the card. */
+/** The crown of light behind a medallion from gold up, turning a little with the card. */
 function Rays({ size, light, color }: { size: number; light: BadgeLight; color: string }) {
   const span = size * 1.7;
   const c = span / 2;
@@ -150,8 +150,8 @@ function Rays({ size, light, color }: { size: number; light: BadgeLight; color: 
   );
 }
 
-/** Gold's holographic film: iridescent bands drifting across the painting with the light. */
-function Foil({ size, light }: { size: number; light: BadgeLight }) {
+/** The film of gold, platinum or diamond: bands drifting across the painting with the light. */
+function Film({ size, light, colors }: { size: number; light: BadgeLight; colors: readonly [string, string, ...string[]] }) {
   const style = useAnimatedStyle(() => ({
     transform: [
       { translateX: (light ? light.x.get() : -0.2) * size * 0.9 },
@@ -163,7 +163,7 @@ function Foil({ size, light }: { size: number; light: BadgeLight }) {
       pointerEvents="none"
       style={[{ position: 'absolute', left: -size, top: -size, width: size * 3, height: size * 3, opacity: 0.32, mixBlendMode: 'soft-light' }, style]}
     >
-      <LinearGradient colors={COLLECTION.foil} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ flex: 1 }} />
+      <LinearGradient colors={colors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ flex: 1 }} />
     </Animated.View>
   );
 }

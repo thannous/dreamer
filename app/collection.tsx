@@ -50,13 +50,13 @@ function openAction(state: BadgeFamilyState) {
   switch (state.family.action) {
     case 'capture':
     case 'capture_voice':
+    case 'capture_questions':
       router.push('/recording');
       return;
     case 'capture_memory':
       router.push({ pathname: '/recording', params: { intent: 'remembered', source: 'journal' } });
       return;
     case 'journal':
-    case 'favorites':
       router.navigate('/(tabs)/journal');
       return;
     case 'dictionary':
@@ -72,8 +72,9 @@ function openAction(state: BadgeFamilyState) {
 }
 
 /**
- * The collection: twenty families laid out as an album of cards, chapter by chapter. Each
- * card shows its highest tier; a tier just earned waits face down until it is turned over.
+ * The collection: nine families and six first steps laid out as an album of cards, chapter by
+ * chapter. Each card shows its highest tier; a tier just earned waits face down until it is
+ * turned over.
  */
 function CollectionScreen() {
   const onHeaderScroll = useHeaderScroll();
@@ -163,15 +164,19 @@ function CollectionScreen() {
               <ProgressFill percent={(collection.earnedCards / BADGE_CARD_COUNT) * 100} className="h-full rounded-full bg-champagne" />
             </View>
             <View className="flex-row flex-wrap gap-x-5 gap-y-2">
-              {BADGE_TIERS.map((tier) => (
-                <View key={tier} className="flex-row items-center gap-2" accessible
-                  accessibilityLabel={t('badges.summary.tier', { tier: badgeTierName(t, tier), count: formatNumber(collection.counts[tier]) })}>
-                  <View style={{ width: 10, height: 10, transform: [{ rotate: '45deg' }], backgroundColor: COLLECTION[tier].ink, borderWidth: 1, borderColor: COLLECTION[tier].frame[0] }} />
-                  <Text className="font-sans-medium text-body-sm text-ivory">
-                    {badgeTierName(t, tier)} · {formatNumber(collection.counts[tier])}
-                  </Text>
-                </View>
-              ))}
+              {/* Each tier's families, then the first steps discovered. */}
+              {[...BADGE_TIERS, 'discovery' as const].map((finish) => {
+                const discovery = finish === 'discovery';
+                const count = formatNumber(discovery ? collection.firsts : collection.counts[finish]);
+                const name = discovery ? t('badges.chapter.firsts') : badgeTierName(t, finish);
+                return (
+                  <View key={finish} className="flex-row items-center gap-2" accessible
+                    accessibilityLabel={discovery ? t('badges.summary.firsts', { count }) : t('badges.summary.tier', { tier: name, count })}>
+                    <View style={{ width: 10, height: 10, transform: [{ rotate: '45deg' }], backgroundColor: COLLECTION[finish].ink, borderWidth: 1, borderColor: COLLECTION[finish].frame[0] }} />
+                    <Text className="font-sans-medium text-body-sm text-ivory">{name} · {count}</Text>
+                  </View>
+                );
+              })}
             </View>
           </View>
         </View>
@@ -213,7 +218,7 @@ function CollectionScreen() {
 
         <View className="gap-3 border-t border-line pt-6">
           <View className="flex-row items-center gap-3">
-            <TierPips tier={3} />
+            <TierPips tier={3} count={3} />
             <Text className="min-w-0 flex-1 font-sans-bold text-body-sm text-ivory">{t('badges.footnote.title')}</Text>
           </View>
           <Text className="font-sans text-body-sm text-ivory-muted">{t('badges.footnote.principles')}</Text>
