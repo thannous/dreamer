@@ -42,7 +42,8 @@ jest.mock('@/services/lucidKeyValueStorage', () => ({
   }),
 }));
 
-const KEY = 'noctalia_badge_ledger_v1:';
+const KEY = 'noctalia_badge_ledger_v2:';
+const LEGACY_KEY = 'noctalia_badge_ledger_v1:';
 function deferRead(scope: string) {
   let resolve!: (raw: string | null) => void;
   let reject!: (error: Error) => void;
@@ -75,7 +76,7 @@ describe('badge ledger store', () => {
   it('keeps an action finished while the ledger is still being read', async () => {
     mockStore.set(`${KEY}user:a`, JSON.stringify({ ...createEmptyBadgeLedger(), keys: { 'symbol-explorer': ['moon'] } }));
     const opening = activateBadgeScope('user:a');
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
     await opening;
     await flushBadgeLedgerWritesForTests();
     expect(stored('user:a').keys['symbol-explorer']).toEqual(['moon', 'water']);
@@ -87,9 +88,9 @@ describe('badge ledger store', () => {
     const delayed = deferRead('user:a');
     const openingA = activateBadgeScope('user:a');
     await delayed.reading;
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
     const openingB = activateBadgeScope('user:b');
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'sun' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'sun' });
     delayed.resolve(saved);
     await Promise.all([openingA, openingB]);
     await flushBadgeLedgerWritesForTests();
@@ -104,11 +105,11 @@ describe('badge ledger store', () => {
     try {
       const saved = { ...createEmptyBadgeLedger(), keys: { 'symbol-explorer': ['moon'] } };
       mockStore.set(`${KEY}user:a`, JSON.stringify(saved));
-      mockStore.set(`${KEY}user:b`, JSON.stringify({ version: 2, future: true }));
+      mockStore.set(`${KEY}user:b`, JSON.stringify({ version: 3, future: true }));
       const delayed = deferRead('user:a');
       const openingA = activateBadgeScope('user:a');
       await delayed.reading;
-      recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+      recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
       const openingB = activateBadgeScope('user:b');
       delayed.reject(new Error('database is locked'));
       await Promise.all([openingA, openingB]);
@@ -116,10 +117,10 @@ describe('badge ledger store', () => {
 
       await jest.advanceTimersByTimeAsync(1_000);
       await flushBadgeLedgerWritesForTests();
-      recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'sun' });
+      recordBadgeEvent({ type: 'symbol_read', symbolId: 'sun' });
       await flushBadgeLedgerWritesForTests();
       expect(stored('user:a').keys['symbol-explorer']).toEqual(['moon', 'water']);
-      expect(stored('user:b')).toEqual({ version: 2, future: true });
+      expect(stored('user:b')).toEqual({ version: 3, future: true });
       expect(getBadgeLedgerSnapshot().scope).toBe('user:b');
       expect(getBadgeLedgerSnapshot().ledger.keys['symbol-explorer']).toEqual(['sun']);
     } finally {
@@ -129,21 +130,21 @@ describe('badge ledger store', () => {
   });
 
   it('preserves an unreadable A ledger during a switch and retains its pending action only in A memory', async () => {
-    const saved = JSON.stringify({ version: 2, future: true });
+    const saved = JSON.stringify({ version: 3, future: true });
     mockStore.set(`${KEY}user:a`, saved);
     const delayed = deferRead('user:a');
     const openingA = activateBadgeScope('user:a');
     await delayed.reading;
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
     const openingB = activateBadgeScope('user:b');
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'sun' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'sun' });
     delayed.resolve(saved);
     await Promise.all([openingA, openingB]);
-    expect(stored('user:a')).toEqual({ version: 2, future: true });
+    expect(stored('user:a')).toEqual({ version: 3, future: true });
     expect(stored('user:b').keys['symbol-explorer']).toEqual(['sun']);
     await activateBadgeScope('user:a');
     expect(getBadgeLedgerSnapshot().ledger.keys['symbol-explorer']).toEqual(['water']);
-    expect(stored('user:a')).toEqual({ version: 2, future: true });
+    expect(stored('user:a')).toEqual({ version: 3, future: true });
   });
 
   it('retries a failed initial write to A after switching without losing either account action', async () => {
@@ -153,14 +154,14 @@ describe('badge ledger store', () => {
       const delayed = deferRead('user:a');
       const openingA = activateBadgeScope('user:a');
       await delayed.reading;
-      recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+      recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
       const openingB = activateBadgeScope('user:b');
       mockWriteFails = true;
       delayed.resolve(null);
       await Promise.all([openingA, openingB]);
       expect(stored('user:a')).toBeNull();
       mockWriteFails = false;
-      recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'sun' });
+      recordBadgeEvent({ type: 'symbol_read', symbolId: 'sun' });
       await jest.advanceTimersByTimeAsync(1_000);
       await flushBadgeLedgerWritesForTests();
       expect(stored('user:a').keys['symbol-explorer']).toEqual(['water']);
@@ -178,9 +179,9 @@ describe('badge ledger store', () => {
     const delayed = deferRead('user:a');
     const openingA = activateBadgeScope('user:a');
     await delayed.reading;
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
     const openingB = activateBadgeScope('user:b');
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'sun' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'sun' });
     const deletingA = forgetBadgeLedger('a');
     delayed.resolve(JSON.stringify(saved));
     await Promise.all([openingA, openingB, deletingA]);
@@ -193,7 +194,7 @@ describe('badge ledger store', () => {
   });
 
   it('keeps an action finished at launch, before any account is known, for the first ledger opened', async () => {
-    recordBadgeEvent({ type: 'guide_viewed', guideId: 'dream-journal' });
+    recordBadgeEvent({ type: 'guide_completed', guideId: 'dream-journal' });
     await activateBadgeScope('user:a');
     await flushBadgeLedgerWritesForTests();
     expect(progressIn('user:a')['night-scholar']).toBe(1);
@@ -211,7 +212,7 @@ describe('badge ledger store', () => {
       mockStore.set(`${KEY}user:a`, JSON.stringify(saved));
       mockReadFailures = 1;
       await activateBadgeScope('user:a');
-      recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+      recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
       await flushBadgeLedgerWritesForTests();
       expect(getBadgeLedgerSnapshot().ready).toBe(false);
       expect(stored('user:a')).toEqual(saved);
@@ -228,24 +229,24 @@ describe('badge ledger store', () => {
   });
 
   it('keeps a ledger it cannot read untouched, counting meanwhile only in memory', async () => {
-    mockStore.set(`${KEY}user:a`, JSON.stringify({ version: 2, future: true }));
+    mockStore.set(`${KEY}user:a`, JSON.stringify({ version: 3, future: true }));
     await activateBadgeScope('user:a');
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
     await flushBadgeLedgerWritesForTests();
-    expect(stored('user:a')).toEqual({ version: 2, future: true });
+    expect(stored('user:a')).toEqual({ version: 3, future: true });
     expect(getBadgeLedgerSnapshot().ledger.keys['symbol-explorer']).toEqual(['water']);
   });
 
   it('stamps a tier earned by actions alone the moment it is earned', async () => {
     await activateBadgeScope('user:a');
-    for (const guideId of ['dream-journal', 'lucid-dreaming']) recordBadgeEvent({ type: 'guide_viewed', guideId });
+    for (const guideId of ['dream-journal', 'lucid-dreaming']) recordBadgeEvent({ type: 'guide_completed', guideId });
     await flushBadgeLedgerWritesForTests();
     expect(stored('user:a').earned['night-scholar']).toHaveLength(1);
   });
 
   it('gives a guest ledger to the first account that opens, once, and keeps accounts apart', async () => {
     await activateBadgeScope('guest');
-    recordBadgeEvent({ type: 'guide_viewed', guideId: 'dream-journal' });
+    recordBadgeEvent({ type: 'guide_completed', guideId: 'dream-journal' });
     // What the guest journal told stays with it: the account reads its own journal.
     settleBadges([dream(Date.parse('2026-10-01T12:00:00'))], Date.parse('2026-10-01T12:00:00'));
     await flushBadgeLedgerWritesForTests();
@@ -279,14 +280,56 @@ describe('badge ledger store', () => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     await activateBadgeScope('user:a');
     mockWriteFails = true;
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'moon' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'moon' });
     await flushBadgeLedgerWritesForTests();
     expect(warn).toHaveBeenCalled();
     warn.mockRestore();
     mockWriteFails = false;
-    recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+    recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
     await flushBadgeLedgerWritesForTests();
     expect(stored('user:a').keys['symbol-explorer']).toEqual(['moon', 'water']);
+  });
+});
+
+describe('badge ledger store across the collection change', () => {
+  beforeEach(() => {
+    mockStore.clear();
+    mockWriteFails = false;
+    mockReadFailures = 0;
+    mockDeferredRead = null;
+    resetBadgeLedgerStoreForTests();
+  });
+
+  const legacy = {
+    version: 1,
+    keys: { 'night-journal': ['c:a|l:1'], 'symbol-explorer': ['moon', 'sea', 'fox'] },
+    best: {},
+    earned: { 'night-journal': [10], 'symbol-explorer': [20], 'path-finder': [5], 'dream-reader': [15] },
+    revealed: { 'night-journal': 1 },
+  };
+
+  it('brings a first-collection ledger to the new key once, and leaves the old one untouched', async () => {
+    mockStore.set(`${LEGACY_KEY}user:a`, JSON.stringify(legacy));
+    await activateBadgeScope('user:a');
+    await flushBadgeLedgerWritesForTests();
+    expect(stored('user:a')).toMatchObject({
+      version: 2,
+      earned: { 'night-journal': [10], 'symbol-explorer': [20], 'dream-seeker': [5] },
+      revealed: { 'night-journal': 1 },
+    });
+    expect(JSON.parse(mockStore.get(`${LEGACY_KEY}user:a`)!)).toEqual(legacy);
+  });
+
+  it('gives a first-collection guest ledger to the first account, then forgets both of its keys', async () => {
+    mockStore.set(`${LEGACY_KEY}guest`, JSON.stringify(legacy));
+    await activateBadgeScope('user:a');
+    await flushBadgeLedgerWritesForTests();
+    // Its actions only: what the guest journal told is read again from the account's journal.
+    // Dream Reader now reads the journal, but its first-collection tier was earned by actions.
+    expect(stored('user:a').earned).toEqual({ 'symbol-explorer': [20], 'dream-seeker': [5], 'dream-reader': [15] });
+    expect(mockStore.has(`${LEGACY_KEY}guest`)).toBe(false);
+    await forgetBadgeLedger('a');
+    expect(mockStore.size).toBe(0);
   });
 });
 
@@ -295,12 +338,12 @@ it('ignores a late account response and clears only the deleted account after pe
   mockStore.clear();
   resetBadgeLedgerStoreForTests();
   await activateBadgeScope('user:a');
-  recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'water' });
+  recordBadgeEvent({ type: 'symbol_read', symbolId: 'water' });
   await flushBadgeLedgerWritesForTests();
   const a = stored('user:a');
   await activateBadgeScope('user:b');
   mergeRemoteBadgeLedger('user:a', a);
-  recordBadgeEvent({ type: 'symbol_viewed', symbolId: 'moon' });
+  recordBadgeEvent({ type: 'symbol_read', symbolId: 'moon' });
   await forgetBadgeLedger('a');
   await flushBadgeLedgerWritesForTests();
   expect(stored('user:a')).toBeNull();

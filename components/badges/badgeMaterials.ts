@@ -1,6 +1,6 @@
 import { DarkTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { BADGE_TIERS, type BadgeTier, type BadgeTierLevel } from '@/lib/badges/catalog';
+import { BADGE_TIERS, isFirstCard, type BadgeFamily, type BadgeTier, type BadgeTierLevel } from '@/lib/badges/catalog';
 
 const NIGHT = getNoctaliaDesignTokens(DarkTheme, 'dark');
 
@@ -10,25 +10,38 @@ export const COLLECTION = NIGHT.collection;
 /** The held card's own action, on the night it is shown against in either theme. */
 export const NIGHT_ACTION = NIGHT.action;
 
+/** How an earned card is dressed: a tier's metal, or the violet of a card earned once. */
+export type BadgeFinish = BadgeTier | 'discovery';
+
 export type BadgeMaterial = {
   frame: readonly [string, string, ...string[]];
   glow: string;
   ink: string;
-  /** Silver and gold catch a moving sheen; gold also carries the holographic foil. */
+  /** Silver and the metals above it catch a moving band of light. */
   sheen: boolean;
-  foil: boolean;
+  /** A film drifting across the painting: gold's foil, platinum's nacre, diamond's prism. */
+  film: readonly [string, string, ...string[]] | null;
+  /** Gold and above wear a crown of rays; silver and platinum a ring around the medallion. */
+  rays: boolean;
+  ring: boolean;
 };
 
-const MATERIALS: Record<BadgeTier | 'locked', BadgeMaterial> = {
-  locked: { ...COLLECTION.locked, sheen: false, foil: false },
-  bronze: { ...COLLECTION.bronze, sheen: false, foil: false },
-  silver: { ...COLLECTION.silver, sheen: true, foil: false },
-  gold: { ...COLLECTION.gold, sheen: true, foil: true },
+const MATERIALS: Record<BadgeFinish | 'locked', BadgeMaterial> = {
+  locked: { ...COLLECTION.locked, sheen: false, film: null, rays: false, ring: false },
+  discovery: { ...COLLECTION.discovery, sheen: false, film: null, rays: false, ring: true },
+  bronze: { ...COLLECTION.bronze, sheen: false, film: null, rays: false, ring: false },
+  silver: { ...COLLECTION.silver, sheen: true, film: null, rays: false, ring: true },
+  gold: { ...COLLECTION.gold, sheen: true, film: COLLECTION.foil, rays: true, ring: false },
+  platinum: { ...COLLECTION.platinum, sheen: true, film: COLLECTION.nacre, rays: true, ring: true },
+  diamond: { ...COLLECTION.diamond, sheen: true, film: COLLECTION.prism, rays: true, ring: true },
 };
 
-export const tierOfLevel = (level: BadgeTierLevel): BadgeTier | null =>
-  level === 0 ? null : BADGE_TIERS[level - 1];
+/** A family's dress at a level: none before it is earned, a metal per tier, or a discovery. */
+export function finishOf(family: BadgeFamily, level: BadgeTierLevel): BadgeFinish | null {
+  if (level === 0) return null;
+  return isFirstCard(family) ? 'discovery' : BADGE_TIERS[level - 1];
+}
 
-export function getBadgeMaterial(tier: BadgeTier | null): BadgeMaterial {
-  return MATERIALS[tier ?? 'locked'];
+export function getBadgeMaterial(finish: BadgeFinish | null): BadgeMaterial {
+  return MATERIALS[finish ?? 'locked'];
 }

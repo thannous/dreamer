@@ -40,11 +40,13 @@ import { usePaintingArrival } from '@/components/ui/headerStretch';
 import Animated, {
   Extrapolation,
   interpolate,
+  useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TypeScale } from '@/constants/typeScale';
 
@@ -130,10 +132,23 @@ export default function SymbolDetailScreen() {
       );
     }
   }, [onboardingState, source, symbol]);
-  // For the collection: an entry read for a moment, whichever way it was opened.
+  // For the collection: an entry read to its end, whichever way it was opened. The end of
+  // the text is compared on the UI thread; React hears of it once, when it comes into view.
   const symbolId = symbol?.id ?? null;
-  useBadgeReading(symbolId, () => {
-    if (symbolId) recordBadgeEvent({ type: 'symbol_viewed', symbolId });
+  // Only a loaded entry has an end: while its interpretation loads, or offline, the short body
+  // a tall window shows whole is not the entry read.
+  const textLoaded = extendedStatus === 'ready';
+  const hasFullText = Boolean(extended?.fullInterpretation);
+  const textEndY = useSharedValue(Number.POSITIVE_INFINITY);
+  const bodyEnd = useRef(Number.POSITIVE_INFINITY);
+  useEffect(() => {
+    // Without a full interpretation the body keeps the layout it had while loading.
+    if (textLoaded && !hasFullText) textEndY.set(bodyEnd.current);
+  }, [hasFullText, textEndY, textLoaded]);
+  const viewportHeight = useSharedValue(0);
+  const [readToEndOf, setReadToEndOf] = useState<string | null>(null);
+  useBadgeReading(symbolId !== null && readToEndOf === symbolId ? symbolId : null, () => {
+    if (symbolId) recordBadgeEvent({ type: 'symbol_read', symbolId });
   });
 
   // On the paper theme the night scene needs room to dawn into the page below its copy.
@@ -153,6 +168,9 @@ export default function SymbolDetailScreen() {
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.set(event.contentOffset.y);
   });
+  useAnimatedReaction(() => scrollY.get() + viewportHeight.get() >= textEndY.get(), (reached, previous) => {
+    if (reached && !previous && symbolId) scheduleOnRN(setReadToEndOf, symbolId);
+  }, [symbolId]);
 
   // Scroll-derived, so it runs on the UI thread. The artwork drifts at a third of
   // the scroll speed and the page reads as a window onto the sky; reduce motion
@@ -222,6 +240,7 @@ export default function SymbolDetailScreen() {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={onScroll}
+          onLayout={(event: LayoutChangeEvent) => viewportHeight.set(event.nativeEvent.layout.height)}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
@@ -299,7 +318,12 @@ export default function SymbolDetailScreen() {
             </Animated.View>
           </View>
 
-          <View style={styles.body} onLayout={(event: LayoutChangeEvent) => setBodyWidth(event.nativeEvent.layout.width)}>
+          <View style={styles.body} onLayout={(event: LayoutChangeEvent) => {
+            const { y, width, height } = event.nativeEvent.layout;
+            setBodyWidth(width);
+            bodyEnd.current = y + height;
+            if (textLoaded) textEndY.set(bodyEnd.current);
+          }}>
             {paragraphs.length > 0 ? (
               <Section label={t('symbols.interpretation')} noctalia={noctalia}>
                 {/* The opening paragraph reads as a lead, like the site's summary;
@@ -382,6 +406,8 @@ export default function SymbolDetailScreen() {
                 </ScrollView>
               </Section>
             ) : null}
+            {/* The entry's last line: reaching it is reading the entry to its end. */}
+            <View testID="symbol.detail.end" />
           </View>
         </Animated.ScrollView>
 

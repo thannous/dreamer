@@ -9,7 +9,7 @@ import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
-import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
+import { captureHasAnswer, parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { CaptureReviewPanel } from '@/components/recording/CaptureReviewPanel';
 import { buildCaptureNarrative, decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
 import { RecordingConversation } from '@/components/recording/RecordingConversation';
@@ -460,9 +460,8 @@ function RecordingScreen() {
   const textInputRef = useRef<TextInputInstance | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
-  // How this capture's words arrived, for the collection: recognized speech, or typing.
+  // For the collection: whether this capture recognized speech.
   const voicedCaptureRef = useRef(false);
-  const typedCaptureRef = useRef(false);
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   // Voice is blocked only when the device cannot capture speech at all. Every
@@ -511,7 +510,6 @@ function RecordingScreen() {
     (text: string) => {
       if (!isHydrated || noteInput(text) !== true) return;
       lastInputSourceRef.current = 'text';
-      if (text.trim()) typedCaptureRef.current = true;
       if (!captureStartedTrackedRef.current && text.trim().length > 0) {
         captureStartedTrackedRef.current = true;
         void trackProductEvent('dream_capture_started', {
@@ -702,7 +700,6 @@ function RecordingScreen() {
     setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
     voicedCaptureRef.current = false;
-    typedCaptureRef.current = false;
   }, [resetConversation]);
 
   const navigateToSavedDream = useCallback((
@@ -1231,12 +1228,13 @@ function RecordingScreen() {
       markPerformance('journal.save_acknowledged', { trace: saveTrace });
       if (isNewDream) {
         void trackDreamSaveMilestone(isFirstDream);
-        // Spoken words make it a told dream; otherwise typed ones make it a written one.
-        // A restored draft alone says neither.
+        // Speech counts only when this capture heard it. An answer to the assistant is read from
+        // the capture as saved, so one erased before saving, in any editor, never counts.
         recordBadgeEvent({
           type: 'dream_saved',
           dream: savedDream,
-          input: voicedCaptureRef.current ? 'voice' : typedCaptureRef.current ? 'text' : null,
+          voiced: voicedCaptureRef.current,
+          answered: captureHasAnswer(captureReview ? captureReview.source : latestTranscript),
         });
       }
       clearAfterSuccessfulSave();
@@ -1689,7 +1687,6 @@ function RecordingScreen() {
     const draft = updateCaptureDraftSection(editableCapture, index, text);
     const source = serializeCaptureEditableDraft(draft);
     if (!noteInput(source)) return;
-    typedCaptureRef.current = true;
     if (source !== baseTranscriptRef.current) invalidateCaptureSource(baseTranscriptRef.current);
     setEditableCapture(draft);
     baseTranscriptRef.current = source;
@@ -1827,7 +1824,6 @@ function RecordingScreen() {
       ? insertDictation(insertion, text)
       : { text: insertion.storyBase, selection: { start: insertion.storyBase.length, end: insertion.storyBase.length } };
     if (noteInput(result.text) !== true) return;
-    if (text.trim()) typedCaptureRef.current = true;
     answerInsertionRef.current = insertion;
     setAnswerBase(insertion.storyBase);
     setCurrentAnswer(text);

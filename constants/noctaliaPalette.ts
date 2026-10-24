@@ -69,7 +69,9 @@ export function getNoctaliaPalette(mode: ThemeMode) {
     // The collection's cards are night objects in either theme, like the illustrations they
     // hold: a night ground, a frame of the tier's metal (shadow, light, shadow, edge), the
     // glow it casts and an ink at 4.5:1 or more on that ground. A card not yet earned has
-    // no metal. The foil and sheen are the light the gold and silver cards catch.
+    // no metal; a card earned once, a discovery, is moonlit violet rather than a metal. The
+    // foil, nacre, prism and sheen are the light the gold, platinum, diamond and silver
+    // cards catch.
     collection: {
       ground: ['#121A42', '#070B24', '#03040D'] as const,
       text: '#FFF9EF',
@@ -78,6 +80,11 @@ export function getNoctaliaPalette(mode: ThemeMode) {
       bronze: { frame: ['#6B3F22', '#E6AE7E', '#9A5F35', '#4E2D18'] as const, glow: 'rgba(230, 174, 126, 0.3)', ink: '#EDBE95' },
       silver: { frame: ['#6F7789', '#F5F7FC', '#A3ACBD', '#4E5566'] as const, glow: 'rgba(225, 231, 243, 0.3)', ink: '#E3E8F2' },
       gold: { frame: ['#7E5414', '#FFF0B8', '#C9973A', '#5E3E0C'] as const, glow: 'rgba(255, 214, 128, 0.42)', ink: '#F5D88E' },
+      platinum: { frame: ['#5C6677', '#FFFFFF', '#C7D1E0', '#3B4454'] as const, glow: 'rgba(214, 228, 255, 0.42)', ink: '#EEF3FB' },
+      diamond: { frame: ['#2F527F', '#F2FBFF', '#9AD6F5', '#1F375C'] as const, glow: 'rgba(160, 222, 255, 0.5)', ink: '#C8EEFF' },
+      discovery: { frame: ['#3A2E6E', '#D9CCFF', '#7A68C2', '#241B4A'] as const, glow: 'rgba(190, 170, 255, 0.32)', ink: '#D6CCFF' },
+      nacre: ['rgba(255, 255, 255, 0)', 'rgba(255, 236, 246, 0.45)', 'rgba(222, 240, 255, 0.5)', 'rgba(236, 255, 246, 0.45)', 'rgba(255, 255, 255, 0)'] as const,
+      prism: ['rgba(255, 120, 160, 0)', 'rgba(255, 140, 170, 0.55)', 'rgba(255, 220, 140, 0.55)', 'rgba(140, 240, 200, 0.55)', 'rgba(130, 190, 255, 0.55)', 'rgba(200, 150, 255, 0.55)', 'rgba(255, 120, 160, 0)'] as const,
       foil: ['rgba(255, 170, 205, 0)', 'rgba(255, 170, 205, 0.5)', 'rgba(255, 236, 170, 0.5)', 'rgba(150, 240, 220, 0.5)', 'rgba(165, 175, 255, 0.5)', 'rgba(255, 170, 230, 0.5)', 'rgba(255, 170, 205, 0)'] as const,
       sheen: ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0)'] as const,
       // The night a held card is shown against (opaque: no album text ghosts behind the tiers),

@@ -22,7 +22,7 @@ function server() {
   return { transport, rows, loseAck: () => { loseNextAck = true; } };
 }
 const symbols = (...ids: string[]): BadgeLedger => ids.reduce((ledger, symbolId) =>
-  applyBadgeEvent(ledger, { type: 'symbol_viewed', symbolId }), createEmptyBadgeLedger());
+  applyBadgeEvent(ledger, { type: 'symbol_read', symbolId }), createEmptyBadgeLedger());
 
 describe('badge account continuity (transport isolation)', () => {
   it('restores facts and original earned dates onto an empty device', async () => {
@@ -51,14 +51,14 @@ describe('badge account continuity (transport isolation)', () => {
   it('does not collapse distinct devices whose dreams have the same local timestamp', async () => {
     const remote = server();
     const first = applyBadgeEvent(createEmptyBadgeLedger(), {
-      type: 'dream_saved', input: 'text', dream: { id: 12345, clientRequestId: 'device-a-request' },
+      type: 'dream_shared', dream: { id: 12345, clientRequestId: 'device-a-request' },
     });
     const second = applyBadgeEvent(createEmptyBadgeLedger(), {
-      type: 'dream_saved', input: 'text', dream: { id: 12345, clientRequestId: 'device-b-request' },
+      type: 'dream_shared', dream: { id: 12345, clientRequestId: 'device-b-request' },
     });
     await synchronizeBadgeLedger('a', first, remote.transport);
     const combined = await synchronizeBadgeLedger('a', second, remote.transport);
-    expect(computeBadgeProgress(combined!, [])['ink-dreamer']).toBe(2);
+    expect(computeBadgeProgress(combined!, [])['night-echoes']).toBe(2);
   });
 
   it('retries a lost acknowledgement without double counting or changing acquired dates', async () => {
@@ -85,17 +85,27 @@ describe('badge account continuity (transport isolation)', () => {
     expect(computeBadgeProgress(b!, [])['symbol-explorer']).toBe(0);
   });
 
-  it('keeps disjoint historical days after dreams were deleted on both devices', async () => {
+  it('keeps disjoint historical months after dreams were deleted on both devices', async () => {
     const remote = server();
     const one = createEmptyBadgeLedger();
-    one.keys['gentle-rhythm'] = ['2026-10-01', '2026-10-02'];
-    one.best['gentle-rhythm'] = 2;
+    one.keys['moon-cycles'] = ['2026-08', '2026-09'];
+    one.best['moon-cycles'] = 2;
     const two = createEmptyBadgeLedger();
-    two.keys['gentle-rhythm'] = ['2026-10-02', '2026-10-03'];
-    two.best['gentle-rhythm'] = 2;
+    two.keys['moon-cycles'] = ['2026-09', '2026-10'];
+    two.best['moon-cycles'] = 2;
     await synchronizeBadgeLedger('a', one, remote.transport);
     const combined = await synchronizeBadgeLedger('a', two, remote.transport);
-    expect(computeBadgeProgress(combined!, [])['gentle-rhythm']).toBe(3);
-    expect(combined?.earned['gentle-rhythm']).toHaveLength(1);
+    expect(computeBadgeProgress(combined!, [])['moon-cycles']).toBe(3);
+    expect(combined?.earned['moon-cycles']).toHaveLength(2);
+  });
+
+  it('rewrites an account copy of the first collection even when this device adds nothing', async () => {
+    const remote = server();
+    const converted = settleBadgeLedger(symbols('water', 'moon', 'sun'), [], 12345);
+    remote.rows.set('a', { ledger: converted, revision: 3, accepted: false, legacy: true });
+    const restored = await synchronizeBadgeLedger('a', createEmptyBadgeLedger(), remote.transport);
+    expect(restored?.earned['symbol-explorer']).toEqual([12345]);
+    expect(remote.rows.get('a')).toMatchObject({ revision: 4, accepted: true });
+    expect(remote.rows.get('a')?.legacy).toBeUndefined();
   });
 });

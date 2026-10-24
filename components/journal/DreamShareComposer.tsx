@@ -13,6 +13,7 @@ import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { getDreamImageCacheKey } from '@/lib/imageUtils';
 import type { ShareCardOptions } from '@/lib/journal/shareCard';
 import type { DreamAnalysis } from '@/lib/types';
+import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 
 /** The dream's painting as the screen behind the composer already resolved it. */
 export type DreamShareMedia = {
@@ -154,6 +155,8 @@ export function DreamShareComposer({
       if (!shareImageRef.current) throw new Error('Dream share card is not mounted');
 
       await shareComposite(dream);
+      // The share sheet opened with the card: whether it was then sent cannot be known.
+      recordBadgeEvent({ type: 'dream_shared', dream });
       if (mountedRef.current) onClose();
     } catch (error) {
       if (!mountedRef.current) return;

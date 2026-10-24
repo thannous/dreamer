@@ -3,7 +3,7 @@ import { expect, type App, type Screen } from 'e2e';
 import { isolateWeb } from '../web-fixtures';
 
 const KEY = 'noctalia_guide_reading_v1:guest';
-const LEDGER = 'noctalia_badge_ledger_v1:guest';
+const LEDGER = 'noctalia_badge_ledger_v2:guest';
 async function start(app: App, screen: Screen, browser: Browser) {
   await isolateWeb(browser, app);
   await app.open();

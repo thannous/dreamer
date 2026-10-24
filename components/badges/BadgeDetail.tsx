@@ -19,14 +19,14 @@ import { sparklePath } from '@/components/journal/story/sparkle';
 import { DURATION, EASING, PressableScale, ProgressFill, Reveal, SPRING } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useContentWindow } from '@/context/ContentWindowContext';
-import { BADGE_TIERS, type BadgeFamilyId, type BadgeTierLevel } from '@/lib/badges/catalog';
+import { BADGE_TIERS, isFirstCard, type BadgeFamilyId, type BadgeTierLevel } from '@/lib/badges/catalog';
 import { nextTierPercent, type BadgeFamilyState } from '@/lib/badges/ledger';
 import type { TranslateFunction as Translate } from '@/lib/errors';
 
 import { BADGE_CARD_RATIO, BadgeCardBackFace, BadgeCardFrame, TierPips } from './BadgeCard';
 import { BadgeMedallion } from './BadgeMedallion';
-import { badgeActionLabel, badgeGoal, badgeName, badgeProgressText, badgeRule, badgeTierName } from './badgeCopy';
-import { COLLECTION, getBadgeMaterial, NIGHT_ACTION, tierOfLevel } from './badgeMaterials';
+import { badgeActionLabel, badgeGoal, badgeName, badgeNewCardLabel, badgeProgressText, badgeRule, badgeTierName } from './badgeCopy';
+import { COLLECTION, finishOf, getBadgeMaterial, NIGHT_ACTION } from './badgeMaterials';
 
 type Props = {
   state: BadgeFamilyState;
@@ -53,8 +53,9 @@ const clamp = (value: number) => {
 
 /**
  * One family held in the hand: its card large enough to see the metal, leaning under the
- * finger so its light moves, its three tiers side by side and the next step. A tier newly
- * earned waits face down and turns over when touched.
+ * finger so its light moves, its tiers side by side and the next step. A tier newly earned
+ * waits face down and turns over when touched. A card earned once has no tiers: only its
+ * rule, its way in and the day it was discovered.
  */
 export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onReveal, onAction }: Props) {
   const reduced = useReducedMotion();
@@ -62,12 +63,15 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
   const { width, height } = useContentWindow();
   const family = state.family;
   const name = badgeName(t, family.id);
-  const heldTier = tierOfLevel(state.tier);
+  const once = isFirstCard(family);
+  const count = family.thresholds.length;
+  const compact = count > 3;
+  const heldTier = finishOf(family, state.tier);
   const [faceDown, setFaceDown] = useState(state.unrevealed > 0 && heldTier !== null);
   // The back stays under the front once turned here, so the turn plays to its end.
   const [arrivedFaceDown] = useState(faceDown);
-  const [shownLevel, setShownLevel] = useState<1 | 2 | 3>(state.tier === 0 ? 1 : state.tier);
-  const shownTier = BADGE_TIERS[shownLevel - 1];
+  const [shownLevel, setShownLevel] = useState<number>(state.tier === 0 ? 1 : state.tier);
+  const shownTier = finishOf(family, shownLevel as BadgeTierLevel)!;
   const shownVeiled = shownLevel > state.tier;
   const cardWidth = Math.round(Math.max(200, Math.min(width - 72, 300, (height - insets.top - 220) * 0.62)));
 
@@ -149,16 +153,17 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
     transform: [{ perspective: 900 }, { rotateY: `${reduced ? 0 : interpolate(flip.get(), [0.5, 1], [-90, 0], 'clamp')}deg` }],
   }));
 
-  const nextLevel = state.tier < 3 ? ((state.tier + 1) as 1 | 2 | 3) : null;
+  const nextLevel = state.tier < count ? state.tier + 1 : null;
+  const nextTier = nextLevel ? finishOf(family, nextLevel as BadgeTierLevel)! : null;
   const percent = nextTierPercent(state);
   const remaining = state.nextThreshold == null ? 0 : Math.max(0, state.nextThreshold - state.progress);
   const remainingText = t(remaining === 1 ? 'badges.detail.remaining_one' : 'badges.detail.remaining', { count: formatNumber(remaining) });
   const earnedOn = (level: number) => {
     const at = state.earnedAt[level - 1];
-    return at ? t('badges.detail.earned_on', {
-      tier: badgeTierName(t, BADGE_TIERS[level - 1]),
-      date: formatDate(at, { day: 'numeric', month: 'long', year: 'numeric' }),
-    }) : null;
+    if (!at) return null;
+    const date = formatDate(at, { day: 'numeric', month: 'long', year: 'numeric' });
+    return once ? t('badges.detail.discovered_on', { date })
+      : t('badges.detail.earned_on', { tier: badgeTierName(t, BADGE_TIERS[level - 1]), date });
   };
   const cardHeight = Math.round(cardWidth / BADGE_CARD_RATIO);
   const shownMaterial = getBadgeMaterial(shownVeiled ? null : shownTier);
@@ -183,7 +188,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
               pointerEvents={faceDown ? 'auto' : 'none'} aria-hidden={!faceDown}
               accessibilityElementsHidden={!faceDown} importantForAccessibility={faceDown ? 'auto' : 'no-hide-descendants'}>
               <PressableScale ref={backRef} onPress={reveal} disabled={!faceDown} haptic="medium" accessibilityRole="button"
-                accessibilityLabel={t('badges.a11y.new_card', { name, tier: heldTier ? badgeTierName(t, heldTier) : '' })}
+                accessibilityLabel={heldTier ? badgeNewCardLabel(t, family, heldTier) : name}
                 accessibilityHint={t('badges.detail.reveal_hint')} testID="collection.detail.reveal">
                 <BadgeCardBackFace tier={heldTier ?? 'bronze'} width={cardWidth} caption={t('badges.detail.reveal')} />
               </PressableScale>
@@ -228,9 +233,11 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
 
         {!faceDown ? (
           <Reveal className="w-full max-w-[420px] gap-5 px-6">
-            <View className="flex-row justify-center gap-3" accessibilityRole="radiogroup">
-              {BADGE_TIERS.map((tier, index) => {
-                const level = (index + 1) as 1 | 2 | 3;
+            {once ? null : (
+            <View className="gap-2.5">
+            <View className={`flex-row justify-center ${compact ? 'gap-2' : 'gap-3'}`} accessibilityRole="radiogroup">
+              {BADGE_TIERS.slice(0, count).map((tier, index) => {
+                const level = index + 1;
                 const earned = level <= state.tier;
                 const selected = level === shownLevel;
                 const material = getBadgeMaterial(earned ? tier : null);
@@ -246,26 +253,44 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                       backgroundColor: selected ? COLLECTION.chosen : 'transparent',
                     }}>
                     <BadgeMedallion family={family.id} tier={tier} size={46} veiled={!earned} small />
-                    <Text style={{ color: material.ink }} maxFontSizeMultiplier={1.4}
-                      className="font-sans-bold text-caption uppercase tracking-[1px]">
-                      {badgeTierName(t, tier)}
-                    </Text>
-                    <Text style={{ color: COLLECTION.muted }} maxFontSizeMultiplier={1.4} className="text-center font-sans text-caption">
-                      {badgeGoal(t, family, level, formatNumber)}
-                    </Text>
+                    {compact ? (
+                      <Text style={{ color: material.ink }} maxFontSizeMultiplier={1.4} className="font-sans-bold text-caption">
+                        {formatNumber(family.thresholds[index])}
+                      </Text>
+                    ) : (
+                      <>
+                        <Text style={{ color: material.ink }} maxFontSizeMultiplier={1.4}
+                          className="font-sans-bold text-caption uppercase tracking-[1px]">
+                          {badgeTierName(t, tier)}
+                        </Text>
+                        <Text style={{ color: COLLECTION.muted }} maxFontSizeMultiplier={1.4} className="text-center font-sans text-caption">
+                          {badgeGoal(t, family, level, formatNumber)}
+                        </Text>
+                      </>
+                    )}
                   </PressableScale>
                 );
               })}
             </View>
+            {/* Five names never fit side by side on a phone: the card names the chosen tier, this its goal. */}
+            {compact ? (
+              <Text style={{ color: COLLECTION.muted }} maxFontSizeMultiplier={1.4} className="text-center font-sans text-caption">
+                {badgeGoal(t, family, shownLevel, formatNumber)}
+              </Text>
+            ) : null}
+            </View>
+            )}
 
             <View className="gap-2.5">
-              {nextLevel ? (
+              {once ? (state.tier ? null : (
+                <Text style={{ color: COLLECTION.text }} className="font-sans-bold text-body">{t('badges.card.to_discover')}</Text>
+              )) : nextLevel && nextTier ? (
                 <>
                   <View className="flex-row items-baseline justify-between gap-3">
                     <Text style={{ color: COLLECTION.text }} className="min-w-0 shrink font-sans-bold text-body">
-                      {t('badges.detail.next', { tier: badgeTierName(t, BADGE_TIERS[nextLevel - 1]) })}
+                      {t('badges.detail.next', { tier: badgeTierName(t, nextTier) })}
                     </Text>
-                    <Text style={{ color: getBadgeMaterial(BADGE_TIERS[nextLevel - 1]).ink }} className="font-sans-medium text-body-sm">
+                    <Text style={{ color: getBadgeMaterial(nextTier).ink }} className="font-sans-medium text-body-sm">
                       {badgeProgressText(t, state, formatNumber)}
                     </Text>
                   </View>
@@ -274,7 +299,7 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                     accessibilityLabel={remainingText}
                     className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: COLLECTION.track }}>
                     <ProgressFill percent={percent} className="h-full rounded-full"
-                      style={{ backgroundColor: getBadgeMaterial(BADGE_TIERS[nextLevel - 1]).ink }} />
+                      style={{ backgroundColor: getBadgeMaterial(nextTier).ink }} />
                   </View>
                   <Text style={{ color: COLLECTION.muted }} className="font-sans text-body-sm">
                     {badgeGoal(t, family, nextLevel, formatNumber)}
@@ -284,8 +309,8 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
                 </>
               ) : (
                 <View className="flex-row items-center gap-3">
-                  <TierPips tier={3} />
-                  <Text style={{ color: COLLECTION.gold.ink }} className="min-w-0 shrink font-sans-bold text-body">
+                  <TierPips tier={count as BadgeTierLevel} count={count} />
+                  <Text style={{ color: getBadgeMaterial(heldTier).ink }} className="min-w-0 shrink font-sans-bold text-body">
                     {t('badges.detail.complete')}
                   </Text>
                 </View>
