@@ -84,6 +84,7 @@ export const test = base.extend<{ recovery: RecoveryFixture }>({
       control: async command => { await request('/__control', command); },
     };
     const pattern = /\/functions\/v1\/api\/[^?]*(?:\?.*)?$/;
+    let unrouting = false;
     const forward = async (route: Route) => {
       // Only this page's API transport is redirected. Auth, PostgREST and Storage
       // keep the base fixture's guarded real stack; all other destinations stay blocked.
@@ -97,8 +98,14 @@ export const test = base.extend<{ recovery: RecoveryFixture }>({
         } });
         return;
       }
-      const response = await route.fetch({ url: `${origin}${source.pathname}${source.search}` });
-      await route.fulfill({ response });
+      try {
+        const response = await route.fetch({ url: `${origin}${source.pathname}${source.search}` });
+        await route.fulfill({ response });
+      } catch (error) {
+        // The app keeps polling after the test body. Once teardown removes this
+        // route, a request still in flight can be settled elsewhere; it no longer matters.
+        if (!unrouting) throw error;
+      }
     };
     let routed = false;
     try {
@@ -116,6 +123,7 @@ export const test = base.extend<{ recovery: RecoveryFixture }>({
       await provide(recovery);
     } finally {
       try {
+        unrouting = true;
         if (routed) await page.unroute(pattern, forward);
       } finally {
         // No worker is left holding a test account when its fixture is removed.
