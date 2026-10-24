@@ -1510,6 +1510,24 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByText('journal.detail.not_found.title')).toBeNull();
   });
 
+  it('does not leave a blank page when a deletion fails after its dream has left', async () => {
+    mockSearchParams = { id: '42' };
+    const alert = require('react-native').Alert.alert;
+    alert.mockClear();
+    let failDelete!: (error: Error) => void;
+    mockDeleteDream.mockImplementationOnce(() => new Promise<void>((_resolve, reject) => { failDelete = reject; }));
+    const view = render(<JournalDetailScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.DreamDelete));
+    fireEvent.click(screen.getByText('Confirm delete'));
+    mockDreams = [];
+    view.rerender(<JournalDetailScreen />);
+    await act(async () => { failDelete(new Error('write failed')); });
+
+    expect(alert).toHaveBeenCalledWith('common.error_title', 'common.unknown_error');
+    expect(screen.getByText('journal.detail.not_found.title')).toBeTruthy();
+  });
+
   it('still shows the not-found page for a dream that is not there', () => {
     mockDreams = [];
     render(<JournalDetailScreen />);
