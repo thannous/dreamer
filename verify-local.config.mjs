@@ -141,6 +141,9 @@ const SITE = [
   '.npmrc',
   '.nvmrc',
 ];
+// The test that keeps SITE covering the site's require graph, and what it reads.
+const SITE_SCOPE_TEST = 'scopes the site check to every script the site build and check load';
+const SITE_SCOPE_TEST_READS = ['scripts/verify-local-config.test.js', 'verify-local.config.mjs', 'scripts/verify-local.mjs', 'jest.config.js'];
 
 // apps/meditation and the shared files .circleci/dependency-consumers.tsv routes to it.
 const MEDITATION = [
@@ -332,6 +335,7 @@ export default {
     'scripts/run-backend-e2e.cjs',
     'scripts/lib/backend-e2e-local.cjs',
     'tools/e2e/run.mjs',
+    'tools/e2e/duration-history.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/dependency-security.test.mjs',
     'scripts/dependency-security-scope.test.mjs',
@@ -540,7 +544,16 @@ export default {
     },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
-    { name: 'site', command: 'npm run docs:build && npm run docs:check', inputs: SITE, when: SITE },
+    // The site's scope test runs with the site check: a PR that wires a new
+    // script into the site build without adding it to SITE fails here, before
+    // later PRs that touch only that script skip the check. It also reads the
+    // config and the engine, so a change to either reruns a reused pass.
+    {
+      name: 'site',
+      command: `npm run docs:build && npm run docs:check && npm run test:file -- scripts/verify-local-config.test.js -t '${SITE_SCOPE_TEST}'`,
+      inputs: [...SITE, ...SITE_SCOPE_TEST_READS],
+      when: SITE,
+    },
     {
       name: 'ci-contracts', command: CI_CONTRACTS,
       when: [

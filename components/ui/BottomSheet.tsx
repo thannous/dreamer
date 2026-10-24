@@ -47,6 +47,11 @@ const NATIVE_SHEET_HORIZONTAL_INSET = 0;
 const IOS_SHEET_MAX_WIDTH = 540;
 const ANDROID_SHEET_MAX_WIDTH = 640;
 
+/** The tallest a sheet's content gets in this window, leaving the scrim in sight above it. */
+export function getBottomSheetMaximumHeight(viewportHeight: number, insets: { top: number; bottom: number }) {
+  return Math.max(160, viewportHeight - insets.top - insets.bottom - 72);
+}
+
 export function getNativeBottomSheetContentWidth(
   viewportWidth: number,
   platform: 'android' | 'ios',
@@ -78,7 +83,11 @@ export function BottomSheet({
 }: BottomSheetProps) {
   const { width: viewportWidth, height: viewportHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const maximumHeight = Math.max(160, viewportHeight - insets.top - insets.bottom - 72);
+  const maximumHeight = getBottomSheetMaximumHeight(viewportHeight, insets);
+  // On iOS the platform sheet paints the background, edge to edge: content that painted it again
+  // drew a second edge wherever it stops short of the sheet (above the home indicator, beside the
+  // iPhone Duo's status bar column), in another colour when a caller sets the sheet's surface.
+  const contentBackground = transparentContent || Platform.OS === 'ios' ? undefined : 'bg-ink-solid';
   const previouslyFocusedElementRef = useRef<{ focus?: () => void } | null>(null);
   const wasVisibleRef = useRef(false);
   const [presentationEpoch, setPresentationEpoch] = useState(0);
@@ -177,7 +186,7 @@ export function BottomSheet({
               automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
             >
               <View
-                className={[transparentContent ? undefined : 'bg-ink-solid', 'px-6 pt-2 pb-6', className].filter(Boolean).join(' ')}
+                className={[contentBackground, 'px-6 pt-2 pb-6', className].filter(Boolean).join(' ')}
                 style={style}
               >
                 {normalizedChildren}
@@ -185,7 +194,7 @@ export function BottomSheet({
             </ScrollView>
           ) : (
             <View
-              className={[transparentContent ? undefined : 'bg-ink-solid', 'px-6 pt-2 pb-6', className, fillsViewport ? 'flex-1' : undefined]
+              className={[contentBackground, 'px-6 pt-2 pb-6', className, fillsViewport ? 'flex-1' : undefined]
                 .filter(Boolean)
                 .join(' ')}
               style={[{ maxHeight: maximumHeight }, style]}

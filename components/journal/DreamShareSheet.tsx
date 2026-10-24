@@ -1,6 +1,6 @@
 import type { ImageSource } from 'expo-image';
 import React, { useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, type LayoutChangeEvent } from 'react-native';
 
 import { DreamShareImage } from '@/components/journal/DreamShareImage';
 import { PressableScale } from '@/components/motion';
@@ -22,6 +22,10 @@ import type { DreamAnalysis } from '@/lib/types';
 const PREVIEW_SCALE = 0.2;
 const CARD_WIDTH = 1080;
 const CARD_HEIGHT = 1350;
+const PREVIEW_HEIGHT = CARD_HEIGHT * PREVIEW_SCALE;
+/** On a short window (the folded iPhone Duo, a small iPhone) the preview gives up height down to this. */
+const MIN_PREVIEW_HEIGHT = 160;
+const PREVIEW_GAP = 20;
 
 const LABEL_CLASS = 'font-sans-medium text-[12px] uppercase tracking-[1.6px] text-champagne-on';
 
@@ -113,6 +117,17 @@ export function DreamShareSheet({
     setShownOpen(visible);
     if (visible) setOptions(getDefaultShareCardOptions(dream));
   }
+  // The choices and the button stay in sight: what the sheet cannot hold comes off the
+  // preview, not off the choices hidden below the button. The room, the height above the
+  // preview and the choices' height do not depend on the preview, so sizing it from them
+  // settles in one pass.
+  const [bodyRoom, setBodyRoom] = useState<number | null>(null);
+  const [previewTop, setPreviewTop] = useState<number | null>(null);
+  const [choicesHeight, setChoicesHeight] = useState<number | null>(null);
+  const previewHeight = bodyRoom !== null && previewTop !== null && choicesHeight !== null
+    ? Math.min(PREVIEW_HEIGHT, Math.max(MIN_PREVIEW_HEIGHT, Math.floor(bodyRoom - previewTop - PREVIEW_GAP - choicesHeight)))
+    : PREVIEW_HEIGHT;
+  const previewScale = previewHeight / CARD_HEIGHT;
 
   const hasPainting = Boolean(painting) || paintingPending;
   const hasTitle = Boolean(dream.title?.trim());
@@ -137,6 +152,7 @@ export function DreamShareSheet({
       // An illustration slow to sign or to show keeps the button waiting, never the dreamer
       // from leaving.
       dismissBehavior={capturing ? 'none' : 'pan'}
+      onBodyRoom={setBodyRoom}
       actions={{
         primaryLabel: t('journal.detail.share_sheet.share'),
         primaryIcon: 'square.and.arrow.up',
@@ -150,14 +166,18 @@ export function DreamShareSheet({
         accessibilityRole="image"
         accessibilityLabel={t('journal.detail.share_sheet.preview')}
         importantForAccessibility="yes"
-        className="mb-5 mt-1 self-center overflow-hidden rounded-[18px] border border-line"
-        style={{ width: CARD_WIDTH * PREVIEW_SCALE, height: CARD_HEIGHT * PREVIEW_SCALE }}
+        className="mt-1 self-center overflow-hidden rounded-[18px] border border-line"
+        style={{ width: (previewHeight * CARD_WIDTH) / CARD_HEIGHT, height: previewHeight, marginBottom: PREVIEW_GAP }}
+        onLayout={(event: LayoutChangeEvent) => {
+          const top = event.nativeEvent?.layout?.y;
+          if (top !== undefined) setPreviewTop(top);
+        }}
       >
         <View
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
           pointerEvents="none"
-          style={{ width: CARD_WIDTH, height: CARD_HEIGHT, transform: [{ scale: PREVIEW_SCALE }], transformOrigin: 'top left' }}
+          style={{ width: CARD_WIDTH, height: CARD_HEIGHT, transform: [{ scale: previewScale }], transformOrigin: 'top left' }}
         >
           <DreamShareImage dream={dream} t={t} options={card} date={date}
             resolvedMedia={{ imageUrl: card.painting ? painting : '', imageCacheKey: paintingCacheKey }}
@@ -165,33 +185,38 @@ export function DreamShareSheet({
         </View>
       </View>
 
-      <View className="mb-4 gap-2.5">
-        <Text className={LABEL_CLASS}>{t('journal.detail.share_sheet.on_card')}</Text>
-        <View className="flex-row flex-wrap gap-2">
-          {hasPainting ? (
-            <ShareChoice role="checkbox" label={t('journal.detail.share_sheet.painting')} selected={card.painting}
-              disabled={sharing} onPress={() => toggle('painting')} />
-          ) : null}
-          {hasTitle ? (
-            <ShareChoice role="checkbox" label={t('journal.detail.share_sheet.name')} selected={card.title}
-              disabled={sharing} onPress={() => toggle('title')} />
-          ) : null}
-          <ShareChoice role="checkbox" label={t('journal.detail.share_sheet.date')} selected={card.date}
-            disabled={sharing} onPress={() => toggle('date')} />
-        </View>
-      </View>
-
-      {texts.length > 1 ? (
-        <View className="mb-2 gap-2.5">
-          <Text className={LABEL_CLASS}>{t('journal.detail.share_sheet.words')}</Text>
-          <View accessibilityRole="radiogroup" className="flex-row gap-2">
-            {texts.map((text) => (
-              <ShareChoice key={text} role="radio" label={t(TEXT_LABEL_KEYS[text])} selected={card.text === text}
-                disabled={sharing} onPress={() => setOptions((current) => ({ ...current, text }))} />
-            ))}
+      <View onLayout={(event: LayoutChangeEvent) => {
+        const height = event.nativeEvent?.layout?.height;
+        if (height !== undefined) setChoicesHeight(height);
+      }}>
+        <View className="mb-4 gap-2.5">
+          <Text className={LABEL_CLASS}>{t('journal.detail.share_sheet.on_card')}</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {hasPainting ? (
+              <ShareChoice role="checkbox" label={t('journal.detail.share_sheet.painting')} selected={card.painting}
+                disabled={sharing} onPress={() => toggle('painting')} />
+            ) : null}
+            {hasTitle ? (
+              <ShareChoice role="checkbox" label={t('journal.detail.share_sheet.name')} selected={card.title}
+                disabled={sharing} onPress={() => toggle('title')} />
+            ) : null}
+            <ShareChoice role="checkbox" label={t('journal.detail.share_sheet.date')} selected={card.date}
+              disabled={sharing} onPress={() => toggle('date')} />
           </View>
         </View>
-      ) : null}
+
+        {texts.length > 1 ? (
+          <View className="mb-2 gap-2.5">
+            <Text className={LABEL_CLASS}>{t('journal.detail.share_sheet.words')}</Text>
+            <View accessibilityRole="radiogroup" className="flex-row gap-2">
+              {texts.map((text) => (
+                <ShareChoice key={text} role="radio" label={t(TEXT_LABEL_KEYS[text])} selected={card.text === text}
+                  disabled={sharing} onPress={() => setOptions((current) => ({ ...current, text }))} />
+              ))}
+            </View>
+          </View>
+        ) : null}
+      </View>
     </StandardBottomSheet>
   );
 }
