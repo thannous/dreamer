@@ -334,6 +334,14 @@ function seedDurations(history) {
     return seed;
   } catch { return null; }
 }
+// Only a run that reached the app measured its files: a blocked one (the app
+// never answered) fails every test in milliseconds and would start the slowest last.
+function measuredDurations(report) {
+  try {
+    const { run } = JSON.parse(report);
+    return run.status !== 'blocked' && run.summary.passed > 0;
+  } catch { return false; }
+}
 // A seed the run did not replace is removed: its provenance predates this run,
 // so it could never qualify, and no later reader mistakes it for this run's report.
 function keepDurations(history, seed, selected) {
@@ -341,7 +349,7 @@ function keepDurations(history, seed, selected) {
   if (!existsSync(report)) return;
   const written = readFileSync(report);
   if (seed && written.equals(seed)) { unlinkSync(report); return; }
-  if (!history || selected) return;
+  if (!history || selected || !measuredDurations(written)) return;
   try {
     mkdirSync(dirname(history), { recursive: true });
     writeFileSync(`${history}.${process.pid}`, written);

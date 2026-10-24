@@ -34,7 +34,8 @@ previous report sits in the same output directory. Each run gets a new one, so
 the runner keeps the report of the last run with no `--grep`, `--tag` or
 `--shard` in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
 seeds it into the next output directory; a seed the run does not replace is
-deleted. Without that file, files start in collection order.
+deleted. A blocked run, or one where no test passed, leaves the kept report as
+it was. Without that file, files start in collection order.
 
 What 0.21.2 changes here:
 
