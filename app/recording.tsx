@@ -2071,6 +2071,11 @@ function RecordingScreen() {
                 ) : <RecordingTextInput
                   compact={isCompactLandscape}
                   expanded={!isCompactLandscape}
+                  // At rest the editor fills what the screen leaves it, and on a short window (the
+                  // folded iPhone Duo, the open one on its side) gives up height rather than run
+                  // under Save. With the keyboard up, and on desktop where nothing else sizes it,
+                  // it keeps its 260 pt.
+                  fitsRoom={!keyboardVisible && !isDesktopWeb}
                   layout="textFirst"
                   ref={textInputRef}
                   value={transcript}

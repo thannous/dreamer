@@ -656,6 +656,32 @@ describe('RecordingTextInput', () => {
     );
   });
 
+  // At rest on a short window (the folded iPhone Duo) the expanded editor gives up height rather
+  // than run under Save; with the keyboard up or on desktop it keeps its 260 points.
+  it.each([
+    [false, 260],
+    [true, 140],
+  ])('keeps the expanded editor at least 260 points unless it fits the room (%s)', (fitsRoom: boolean, expectedMinHeight: number) => {
+    mockWindowWidth = 466;
+    mockWindowHeight = 678;
+
+    render(
+      <RecordingTextInput
+        expanded
+        fitsRoom={fitsRoom}
+        value=""
+        onChange={jest.fn()}
+        disabled={false}
+        instructionText="Write what you remember"
+        onSwitchToVoice={jest.fn()}
+      />
+    );
+
+    expect(screen.getByTestId(TID.Input.DreamTranscript).getAttribute('data-native-style')).toContain(
+      `"minHeight":${expectedMinHeight}`
+    );
+  });
+
   it('allows the compact editor to grow with its content on a short landscape screen', () => {
     mockWindowWidth = 640;
     mockWindowHeight = 320;
