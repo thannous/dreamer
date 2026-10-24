@@ -498,6 +498,14 @@ export default {
     },
     // A PR that changes nothing these tests read (DB) skips them: 11 s.
     { name: 'db-contracts', command: DB_CONTRACTS, inputs: DB, when: DB },
+    // The tests of this configuration, scope guards included, read it and the
+    // engine through a child process: Jest relates no change of either to them,
+    // so jest-changed never runs them for a PR that only edits a scope. 21 s.
+    {
+      name: 'verify-config',
+      command: 'npm run test:file -- scripts/verify-local-config.test.js',
+      when: ['verify-local.config.mjs', 'scripts/verify-local.mjs'],
+    },
     {
       name: 'dependency-security',
       command: 'node --test scripts/dependency-security.test.mjs scripts/dependency-security-scope.test.mjs',
