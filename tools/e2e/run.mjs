@@ -1,5 +1,5 @@
 import { spawn, spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, openSync, closeSync, unlinkSync, writeFileSync, mkdirSync, renameSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, openSync, closeSync, unlinkSync, writeFileSync } from 'node:fs';
 import { createHash, randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
 
@@ -316,45 +317,11 @@ function collectCampaign() {
   }
   writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
-// e2e starts the slowest files first from the previous report in the output
-// directory, and each run gets a new one. The last report of a run with no
-// selection is kept in the clone's git directory, shared by every worktree
-// (verify:release runs in one), and seeded into the next output directory.
+// The last report of a run with no selection is kept in the clone's git
+// directory, shared by every worktree (verify:release runs in one).
 function durationHistory() {
   try { return join(read('git', ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'verify-cache', 'e2e-durations', `${product}-${platform}.report.json`); }
   catch { return null; }
-}
-// The history only orders files: without it, or unreadable, they start in
-// collection order and nothing else changes.
-function seedDurations(history) {
-  if (!history || !existsSync(history)) return null;
-  try {
-    const seed = readFileSync(history);
-    writeFileSync(join(output, 'report.json'), seed, { flag: 'wx' });
-    return seed;
-  } catch { return null; }
-}
-// Only a run that reached the app measured its files: a blocked one (the app
-// never answered) fails every test in milliseconds and would start the slowest last.
-function measuredDurations(report) {
-  try {
-    const { run } = JSON.parse(report);
-    return run.status !== 'blocked' && run.summary.passed > 0;
-  } catch { return false; }
-}
-// A seed the run did not replace is removed: its provenance predates this run,
-// so it could never qualify, and no later reader mistakes it for this run's report.
-function keepDurations(history, seed, selected) {
-  const report = join(output, 'report.json');
-  if (!existsSync(report)) return;
-  const written = readFileSync(report);
-  if (seed && written.equals(seed)) { unlinkSync(report); return; }
-  if (!history || selected || !measuredDurations(written)) return;
-  try {
-    mkdirSync(dirname(history), { recursive: true });
-    writeFileSync(`${history}.${process.pid}`, written);
-    renameSync(`${history}.${process.pid}`, history);
-  } catch {}
 }
 async function runSdk() {
   // The auth script rejects production and unlisted targets before any request.
@@ -370,11 +337,11 @@ async function runSdk() {
   writeOnce(join(output, 'collection.json'), collection);
   if (!collection.pairs?.length) throw new Error('No selected pairs.');
   const history = durationHistory();
-  const seed = seedDurations(history);
+  const seed = seedDurations(history, output);
   sdkLaunched = true;
   const stopStallMonitor = startHostStallMonitor();
   try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment()); }
-  finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0); }
+  finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0, output); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
