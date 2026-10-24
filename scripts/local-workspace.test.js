@@ -107,6 +107,20 @@ describe('local workspace CLI failure and recovery journeys', () => {
     expect(fs.readFileSync(path.join(repo, 'apps/site/package.json'), 'utf8')).toBe('{}\n');
   });
 
+  it('keeps the declarations of a live workspace and takes new ones after release', () => {
+    passed(invoke('scratch', { extra: ['--regenerable', 'node_modules'] }));
+    expect(invoke('scratch', { extra: ['--regenerable', 'outputs'] }).stderr).toContain('WORKSPACE_REGENERABLE_COLLISION');
+    passed(invoke('release'));
+    expect(passed(invoke('scratch', { extra: ['--regenerable', 'node_modules', '--regenerable', 'outputs'] })).regenerable)
+      .toEqual(['node_modules', 'outputs']);
+    passed(invoke('release'));
+    const bare = passed(invoke('scratch'));
+    expect(bare.regenerable).toEqual([]);
+    write(path.join(bare.path, 'node_modules/cache.bin'), 'not declared this time');
+    expect(invoke('release').stderr).toContain('WORKSPACE_HAS_PRESERVED_FILES');
+    expect(fs.readFileSync(path.join(bare.path, 'node_modules/cache.bin'), 'utf8')).toBe('not declared this time');
+  });
+
   it('keeps a new detached commit and rejects an unmanaged path collision', () => {
     const current = passed(invoke('prepare'));
     write(path.join(current.path, 'source.txt'), 'new commit\n');

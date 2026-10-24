@@ -172,11 +172,13 @@ function prepare(options, kind = 'worktree') {
   const declared = regenerablePaths(options.regenerable ?? []);
   return withLock(ctx, () => {
     const prior = readReceipt(ctx);
+    // A released task starts over: only a live workspace keeps its declarations.
+    const active = prior && prior.state !== 'released';
     if (prior) {
       assertOwner(ctx, prior);
-      if (prior.kind !== kind || (prior.state !== 'released' && prior.revision !== revision)) refuse('WORKSPACE_IDENTITY_COLLISION');
+      if (prior.kind !== kind || (active && prior.revision !== revision)) refuse('WORKSPACE_IDENTITY_COLLISION');
       if (prior.state === 'retained') refuse('WORKSPACE_RETAINED_FOR_INSPECTION');
-      if (declared.length && JSON.stringify(declared) !== JSON.stringify(prior.regenerable)) refuse('WORKSPACE_REGENERABLE_COLLISION');
+      if (active && declared.length && JSON.stringify(declared) !== JSON.stringify(prior.regenerable)) refuse('WORKSPACE_REGENERABLE_COLLISION');
     }
     const present = exists(ctx.path);
     if (present && (!prior || prior.state === 'released')) refuse('WORKSPACE_PATH_COLLISION');
@@ -186,7 +188,7 @@ function prepare(options, kind = 'worktree') {
     } else if (prior && prior.state === 'ready') refuse('WORKSPACE_MISSING');
     const receipt = { ...(prior ?? {}), schema: SCHEMA, uid: ctx.uid, source: ctx.source,
       sourceGitDir: ctx.sourceGitDir, task: ctx.task, path: ctx.path, kind, revision,
-      regenerable: prior?.regenerable ?? declared, ownerPid: ctx.ownerPid,
+      regenerable: active ? prior.regenerable : declared, ownerPid: ctx.ownerPid,
       createdAt: prior?.createdAt ?? new Date().toISOString(), updatedAt: new Date().toISOString(), state: 'preparing' };
     json(ctx.receipt, receipt);
     try {
