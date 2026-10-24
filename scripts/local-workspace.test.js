@@ -23,6 +23,22 @@ function passed(result) {
   expect(result.status).toBe(0);
   return JSON.parse(result.stdout);
 }
+function receiptOf(current) {
+  return JSON.parse(fs.readFileSync(current.receipt, 'utf8'));
+}
+function editReceipt(current, change) {
+  const receipt = receiptOf(current);
+  change(receipt);
+  fs.writeFileSync(current.receipt, JSON.stringify(receipt, null, 2) + '\n');
+}
+// What a reboot does to a receipt: macOS numbers the volume again, so only st_dev moves.
+function renumberVolume(receipt) {
+  receipt.directoryIdentity.device = String(BigInt(receipt.directoryIdentity.device) + 1n);
+}
+// A receipt written before birth times were part of the identity.
+function legacy(receipt) {
+  delete receipt.directoryIdentity.birthtime;
+}
 beforeEach(() => {
   base = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'local-workspace-test-')));
   projects = path.join(base, 'Projects');
@@ -95,10 +111,13 @@ describe('local workspace CLI failure and recovery journeys', () => {
     expect(fs.readFileSync(path.join(current.path, 'source.txt'), 'utf8')).toBe('hidden work in progress\n');
   });
 
-  it.each(['scratch', 'prepare'])('refuses reuse and release after the %s directory was replaced', (command) => {
+  it.each([
+    ['scratch', false], ['prepare', false], ['scratch', true], ['prepare', true],
+  ])('refuses reuse and release after the %s directory was replaced (reboot since: %s)', (command, reboot) => {
     const current = passed(invoke(command, { extra: ['--regenerable', 'node_modules'] }));
     fs.renameSync(current.path, current.path + '-preserved');
     fs.cpSync(current.path + '-preserved', current.path, { recursive: true });
+    if (reboot) editReceipt(current, renumberVolume);
     const foreign = path.join(current.path, 'node_modules/unique-input.txt');
     write(foreign, 'foreign input must survive\n');
     if (command === 'prepare') expect(git(['status', '--porcelain=v1'], current.path)).toBe('');
@@ -106,6 +125,59 @@ describe('local workspace CLI failure and recovery journeys', () => {
     expect(invoke(command).stderr).toContain('WORKSPACE_DIRECTORY_REPLACED');
     expect(fs.readFileSync(foreign, 'utf8')).toBe('foreign input must survive\n');
     expect(fs.existsSync(current.path + '-preserved')).toBe(true);
+  });
+
+  it.each(['scratch', 'prepare'])('keeps the %s workspace through reboots that number its volume again', (command) => {
+    const current = passed(invoke(command, { extra: ['--regenerable', 'node_modules'] }));
+    expect(current.directoryIdentity.birthtime).toMatch(/^[1-9][0-9]*$/);
+    editReceipt(current, renumberVolume);
+    expect(passed(invoke(command)).reused).toBe(true);
+    expect(receiptOf(current).directoryIdentity).toEqual(current.directoryIdentity);
+    editReceipt(current, renumberVolume);
+    expect(passed(invoke('release')).released).toBe(true);
+    expect(fs.existsSync(current.path)).toBe(false);
+  });
+
+  it('releases a workspace whose receipt predates birth times after a reboot, and upgrades it', () => {
+    const current = passed(invoke('prepare'));
+    editReceipt(current, (receipt) => { legacy(receipt); renumberVolume(receipt); });
+    expect(passed(invoke('retain')).state).toBe('retained');
+    expect(receiptOf(current).directoryIdentity).toEqual(current.directoryIdentity);
+    editReceipt(current, (receipt) => { legacy(receipt); renumberVolume(receipt); });
+    expect(passed(invoke('release')).released).toBe(true);
+    expect(fs.existsSync(current.path)).toBe(false);
+  });
+
+  it('refuses a directory born after its pre-birth-time receipt was written, even with the same inode', () => {
+    const current = passed(invoke('prepare'));
+    editReceipt(current, (receipt) => {
+      legacy(receipt);
+      renumberVolume(receipt);
+      receipt.updatedAt = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    });
+    expect(invoke('release').stderr).toContain('WORKSPACE_DIRECTORY_REPLACED');
+    expect(invoke('retain').stderr).toContain('WORKSPACE_DIRECTORY_REPLACED');
+    expect(invoke('prepare').stderr).toContain('WORKSPACE_DIRECTORY_REPLACED');
+    expect(fs.readFileSync(path.join(current.path, 'source.txt'), 'utf8')).toBe('preserved source\n');
+  });
+
+  it('refuses the same device and inode with another birth time, as when ext4 reuses a freed inode', () => {
+    const current = passed(invoke('scratch', { extra: ['--regenerable', 'node_modules'] }));
+    editReceipt(current, (receipt) => {
+      receipt.directoryIdentity.birthtime = String(BigInt(receipt.directoryIdentity.birthtime) - 1n);
+    });
+    expect(invoke('release').stderr).toContain('WORKSPACE_DIRECTORY_REPLACED');
+    expect(invoke('scratch').stderr).toContain('WORKSPACE_DIRECTORY_REPLACED');
+    expect(fs.existsSync(current.path)).toBe(true);
+  });
+
+  it('keeps the strict device check for a receipt from a filesystem without birth times', () => {
+    const current = passed(invoke('scratch'));
+    editReceipt(current, (receipt) => { receipt.directoryIdentity.birthtime = null; });
+    expect(passed(invoke('scratch')).reused).toBe(true);
+    editReceipt(current, (receipt) => { receipt.directoryIdentity.birthtime = null; renumberVolume(receipt); });
+    expect(invoke('release').stderr).toContain('WORKSPACE_DIRECTORY_REPLACED');
+    expect(fs.existsSync(current.path)).toBe(true);
   });
 
   it('names an ownerless writer lock explicitly and preserves it for inspected recovery', () => {

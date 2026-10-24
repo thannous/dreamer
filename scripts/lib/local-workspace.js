@@ -37,15 +37,32 @@ function directory(file, create = false) {
   const stat = fs.lstatSync(file);
   if (!stat.isDirectory() || stat.isSymbolicLink()) refuse('WORKSPACE_SYMLINK_OR_NON_DIRECTORY');
 }
+// macOS numbers volumes again at boot, so the device alone cannot tell a reboot
+// from a replacement. The birth time can, even when ext4 reuses a freed inode;
+// without birth times (0), the device check stays strict.
 function directoryIdentity(file) {
   directory(file);
   const stat = fs.lstatSync(file, { bigint: true });
-  return { device: String(stat.dev), inode: String(stat.ino) };
+  return { device: String(stat.dev), inode: String(stat.ino), birthtime: stat.birthtimeNs > 0n ? String(stat.birthtimeNs) : null };
+}
+// A receipt from before birth times survives a reboot only for the same inode,
+// born before that receipt was last written (or just after: prepare writes it
+// before `git worktree add` creates the directory).
+const LEGACY_CREATION_GRACE_NS = 60_000_000_000n;
+function sameDirectory(recorded, actual, recordedAt) {
+  if (recorded.inode !== actual.inode) return false;
+  if (typeof recorded.birthtime === 'string') return recorded.birthtime === actual.birthtime;
+  if (recorded.device === actual.device) return true;
+  if (recorded.birthtime !== undefined || actual.birthtime === null) return false;
+  const written = Date.parse(recordedAt);
+  return Number.isFinite(written) && BigInt(actual.birthtime) <= BigInt(written) * 1_000_000n + LEGACY_CREATION_GRACE_NS;
 }
 function assertDirectoryIdentity(ctx, receipt) {
   const actual = directoryIdentity(ctx.path);
   if (!receipt.directoryIdentity) refuse('WORKSPACE_DIRECTORY_IDENTITY_UNPROVEN');
-  if (receipt.directoryIdentity.device !== actual.device || receipt.directoryIdentity.inode !== actual.inode) refuse('WORKSPACE_DIRECTORY_REPLACED');
+  if (!sameDirectory(receipt.directoryIdentity, actual, receipt.updatedAt)) refuse('WORKSPACE_DIRECTORY_REPLACED');
+  // The caller's next receipt write keeps the new device and upgrades a legacy identity.
+  receipt.directoryIdentity = actual;
 }
 function json(file, value) {
   const temporary = `${file}.${randomUUID()}.tmp`;

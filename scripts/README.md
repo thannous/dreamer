@@ -170,8 +170,13 @@ The owner PID must belong to the process coordinating the work for its entire
 duration. A live different owner is refused; a dead owner can be reclaimed.
 Preparing the same task and commit reuses its path. A conflicting commit or an
 unmanaged destination never creates another numbered copy. Receipts sit beside
-the checkout and record its device/inode identity. A directory replaced at the
-same path is refused rather than adopted or removed. Release is idempotent and only removes an unchanged, clean checkout
+the checkout and record its device, inode and birth time. macOS numbers volumes
+again at boot, so a new device number alone is not a replacement: the same inode
+and birth time keep the workspace, and the receipt takes the new number. A receipt
+written before birth times were recorded is accepted after a reboot only for the
+same inode, already present when the receipt was last written. A directory
+replaced at the same path (`WORKSPACE_DIRECTORY_REPLACED`) is refused rather than
+adopted or removed. Release is idempotent and only removes an unchanged, clean checkout
 whose ignored files are covered by the explicitly declared regenerable paths.
 Other ignored data, including local credentials and unique evidence, blocks release
 and stays intact. Keep source work and commits until delivered or independently
