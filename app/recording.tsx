@@ -1477,13 +1477,15 @@ function RecordingScreen() {
   // the end. Afterwards another keyboard or the suggestions bar leaves the scroll where it is.
   const keyboardSettlingRef = useRef(false);
   useEffect(() => {
+    keyboardSettlingRef.current = keyboardVisible;
+  }, [keyboardVisible]);
+  useEffect(() => {
     // The voice reply sits above the full story: scrolling to the document end
     // would hide the focused answer when the keyboard opens.
     if (!keyboardVisible || footerHeight === 0 || inputMode === 'voice') {
       keyboardSettlingRef.current = false;
       return;
     }
-    keyboardSettlingRef.current = true;
 
     const frame = requestAnimationFrame(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -1500,7 +1502,7 @@ function RecordingScreen() {
   }, [scrollViewportHeight]);
   useEffect(() => {
     keyboardSettlingRef.current = false;
-  }, [transcript]);
+  }, [transcript, captureReview?.text]);
   const handleScrollBeginDrag = useCallback(() => {
     keyboardSettlingRef.current = false;
   }, []);

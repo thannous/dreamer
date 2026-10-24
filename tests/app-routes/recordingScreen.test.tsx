@@ -62,6 +62,7 @@ let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockViewportWidth = 390;
 let mockViewportHeight = 844;
 let mockBottomInset = 0;
+let mockTopInset = 0;
 let mockFontScale = 1;
 let mockFooterLayout: ((event: any) => void) | undefined;
 let mockBottomNavLayout: ((event: any) => void) | undefined;
@@ -266,7 +267,7 @@ jest.doMock('react-native', () => {
 });
 
 jest.doMock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ top: 0, bottom: mockBottomInset, left: 0, right: 0 }),
+  useSafeAreaInsets: () => ({ top: mockTopInset, bottom: mockBottomInset, left: 0, right: 0 }),
 }));
 
 jest.doMock('expo-linear-gradient', () => ({
@@ -824,8 +825,13 @@ describe('Recording screen', () => {
     expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
   });
 
-  it('fits the editor above the keyboard and leaves no empty end for Save', async () => {
+  // Below a top inset the editor's top also clears the status bar's veil: 28 points, not 12.
+  it.each([
+    [0, '215', '177'],
+    [47, '199', '161'],
+  ])('fits the editor above the keyboard and leaves no empty end for Save (top inset %i)', async (topInset: number, room: string, roomAfterTyping: string) => {
     mockPlatformOS = 'android';
+    mockTopInset = topInset;
     mockBottomInset = 34;
     mockViewportWidth = 466;
     mockViewportHeight = 678;
@@ -846,7 +852,7 @@ describe('Recording screen', () => {
     const composer = screen.getByTestId('recording-composer');
     // 278, less 12 above the editor and its 2 of border, the 12 gap and 21 for the draft count,
     // and the 16 padding.
-    expect(composer.getAttribute('data-room')).toBe('215');
+    expect(composer.getAttribute('data-room')).toBe(room);
     // The document is the editor's section and its padding: Save, after the scroll view, adds nothing.
     const documentStyles = JSON.parse(composer.parentElement?.parentElement?.getAttribute('data-native-style') ?? '[]');
     expect(Object.assign({}, ...documentStyles.flat().filter(Boolean)).paddingBottom).toBe(16);
@@ -858,7 +864,7 @@ describe('Recording screen', () => {
     act(() => mockScrollLayout?.({ nativeEvent: { layout: { height: 240 } } }));
     act(() => { jest.advanceTimersByTime(32); });
     expect(mockScrollToEnd).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBe('177');
+    expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBe(roomAfterTyping);
 
     act(() => mockKeyboardListeners.keyboardDidHide?.());
     expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBeNull();
@@ -877,6 +883,7 @@ describe('Recording screen', () => {
     mockViewportWidth = 390;
     mockViewportHeight = 844;
     mockBottomInset = 0;
+    mockTopInset = 0;
     mockFontScale = 1;
     mockFooterLayout = undefined;
     mockBottomNavLayout = undefined;
