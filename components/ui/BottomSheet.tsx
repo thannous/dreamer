@@ -155,9 +155,9 @@ export function BottomSheet({
       {/* On iOS and the web the content takes its width from the platform sheet (a
           content-sized sheet takes its height from what it holds): the window is no measure of
           the sheet, which the folded iPhone Duo draws narrower, clear of its status bar column.
-          The window width only bounds a content-sized sheet's first layout, before the sheet
-          reports its own. Android keeps sizing the content itself, as Expo UI's own Android
-          sheet does. */}
+          On iOS a content-sized sheet stays within the window width, capped at the sheet's
+          widest, which also bounds its first layout before the sheet reports its own width.
+          Android keeps sizing the content itself, as Expo UI's own Android sheet does. */}
       <RNHostView matchContents={fillsViewport ? false : Platform.OS === 'android' ? true : { vertical: true }}>
         <View
           accessibilityViewIsModal
