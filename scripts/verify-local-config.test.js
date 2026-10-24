@@ -348,6 +348,13 @@ describe('verify-local.config.mjs', () => {
     ]);
   });
 
+  it('runs these tests for a change to the configuration or the engine alone', () => {
+    // A narrowed scope must meet its guard before release, not at release.
+    const check = checkNamed('verify-config');
+    expect(check.command).toBe('npm run test:file -- scripts/verify-local-config.test.js');
+    expect(outside(check.when, ['verify-local.config.mjs', 'scripts/verify-local.mjs'])).toEqual([]);
+  });
+
   it('checks each independent security graph when only its manifest or lockfile changes', () => {
     // A root-only success cannot detect a vulnerable independent installation.
     const projects = [

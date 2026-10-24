@@ -44,7 +44,8 @@ is the executable source of truth.
 related Jest and static database contracts, each only when the PR changes a file
 it reads: their scopes in the configuration are checked against the two tsc
 programs, the lint import graph, the Jest projects and the files the database
-tests open. Changed inputs add site build/check, CI/benchmark contracts, mobile
+tests open, and a PR changing the configuration or the engine runs those
+guards. Changed inputs add site build/check, CI/benchmark contracts, mobile
 version pins, Meditation and Deno Edge checks. `npm run verify:pr -- --plan`
 prints what each check would do (run, reused, out of scope, cannot run here) and
 a time from this clone's earlier runs, without running anything.
