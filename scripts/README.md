@@ -9,6 +9,7 @@ connects these commands to implementation paths and current runbooks.
 | Family | Primary commands | Side effects and prerequisites |
 | --- | --- | --- |
 | Development | `start`, `start:*`, `web`, `android`, `ios` | Runtime only. Environment profiles are loaded in memory and never copied to `.env.local`. |
+| Local workspaces | `workspace` | Creates or reuses a named workspace under `~/Projects/.workspaces/<repo>/<task>`; release refuses WIP, changed commits and undeclared ignored files. Existing package-manager caches are inherited. |
 | Quality | `lint`, `lint:scripts`, `typecheck:*`, `test:*`, `verify:pr`, `verify:release`, `verify:release:site` | Read-only except normal test caches, artifacts, and ignored `docs/` output. `verify:pr` (before every push) and `verify:release` (before a publish; `verify:release:site` leaves out the app checks when only noctalia.app ships) run the checks of `verify-local.config.mjs` on an isolated `git worktree` of the commit, with the main checkout's `node_modules` linked, and write the proof under `$(git rev-parse --git-common-dir)/verify-proofs/`; `node scripts/verify-local.mjs proof-block` prints the verified commit and result for the PR. The `.githooks/pre-push` hook only runs `scripts/verify-local.mjs hook` (forbidden files, secrets, size, proof display: a few seconds). `prepare` installs that hook by setting the local `core.hooksPath`. |
 | Site | `docs:build`, `docs:check`, `docs:release-check`, `docs:deploy:*` | `docs:build` regenerates ignored local output. The Pages Git integration still rebuilds that output on `master` until dashboard production auto-deploy is turned off. `docs:deploy:*` publishes externally and needs an explicit production decision. See Publishing to production in `AGENTS.md`. |
 | Content | `content:*`, `validate-seo`, `generate-sitemap` | Manifest commands without `:check` and sitemap generation write generated files. |
@@ -155,6 +156,42 @@ EAS and Store/publication remain separate boundaries. Distribution builds use
 `release:build`; local debug-signed APKs do not qualify a Play update.
 
 ## Maintenance rules
+
+For a shell-created task checkout, use the existing primary repository as the
+source instead of making another clone in `/tmp` or Documents:
+
+```sh
+npm run workspace -- prepare --repo "$PWD" --task example-check --owner-pid $$ --regenerable node_modules
+npm run workspace -- status --repo "$PWD" --task example-check
+npm run workspace -- release --repo "$PWD" --task example-check --owner-pid $$
+```
+
+The owner PID must belong to the process coordinating the work for its entire
+duration. A live different owner is refused; a dead owner can be reclaimed.
+Preparing the same task and commit reuses its path. A conflicting commit or an
+unmanaged destination never creates another numbered copy. Receipts sit beside
+the checkout and record its device, inode and birth time. macOS numbers volumes
+again at boot, so a new device number alone is not a replacement: the same inode
+and birth time keep the workspace, and the receipt takes the new number. A receipt
+written before birth times were recorded is accepted after a reboot only for the
+same inode, already present when the receipt was last written. A directory
+replaced at the same path (`WORKSPACE_DIRECTORY_REPLACED`) is refused rather than
+adopted or removed. Release is idempotent and only removes an unchanged, clean checkout
+whose ignored files are covered by the explicitly declared regenerable paths.
+Other ignored data, including local credentials and unique evidence, blocks release
+and stays intact. Keep source work and commits until delivered or independently
+preserved; this command is not a WIP archive. `retain` records an explicit request
+to keep a workspace for inspection and blocks accidental reuse until released.
+App-managed worktrees keep their own archive lifecycle. The isolated `verify:pr`
+and release engine already cleans its own copies and is unchanged.
+
+`WORKSPACE_LOCK_OWNER_MISSING` means an interrupted writer left a lock without
+its ownership receipt. The command preserves both lock and workspace. Inspect
+the coordinating process and any writers before removing only that empty lock
+directory; never remove the workspace or its receipt to bypass the refusal.
+
+The helper inherits npm/pnpm's configured caches. It never creates a second
+global cache or shares `node_modules` between native checkouts.
 
 `verify:pr` and release verification run the four independent root type/lint
 checks together, under one machine lock where `flock` is available, and retain

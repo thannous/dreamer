@@ -41,8 +41,14 @@ coverage and release targets; [verify-local.config.mjs](../../verify-local.confi
 is the executable source of truth.
 
 `verify:pr` runs engine tests, application/test types, lint and script lint,
-related Jest and static database contracts. Changed inputs add site build/check,
-CI/benchmark contracts, mobile version pins, Meditation and Deno Edge checks.
+related Jest and static database contracts, each only when the PR changes a file
+it reads: their scopes in the configuration are checked against the two tsc
+programs, the lint import graph, the Jest projects and the files the database
+tests open, and a PR changing the configuration or the engine runs those
+guards. Changed inputs add site build/check, CI/benchmark contracts, mobile
+version pins, Meditation and Deno Edge checks. `npm run verify:pr -- --plan`
+prints what each check would do (run, reused, out of scope, cannot run here) and
+a time from this clone's earlier runs, without running anything.
 `verify:release` runs the complete release set afresh on the delivered SHA and
 rebuilds the site and app web output. `verify:release:site` excludes only the app
 target (web app build, backend browser qualification and Dreamer/Lucid/Meditation

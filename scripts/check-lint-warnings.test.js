@@ -68,3 +68,69 @@ test('warning multiplicity and ESLint errors cannot use an existing warning fing
   expect(result.status).toBe(1); expect(result.output).toContain('ESLint errors remain fatal');
   expect(fs.readFileSync(path.join(root, BASELINE), 'utf8')).toBe(prior);
 });
+
+describe('--changed', () => {
+  const { lintScope, WHOLE_SCOPE } = require('./check-lint-warnings');
+  const sources = {
+    'components/Card.tsx': "import { tone } from '@/constants/tone';\nexport const Card = () => tone;\n",
+    'components/index.ts': "export * from './Card';\n",
+    'app/home.tsx': "import { Card } from '../components';\n",
+    'app/settings.tsx': "const Legacy = require('../lib/legacy');\n",
+    'app/about.tsx': "import Icon from './icon.web';\n",
+    'app/icon.web.tsx': 'export default function Icon() {}\n',
+    'constants/tone.ts': "export const tone = 'night';\n",
+    'lib/unrelated.ts': "import { tone } from 'tone-package';\n",
+    'docs/readme.md': '# Not code\n',
+  };
+  const scope = (changed) => lintScope({ changed, files: Object.keys(sources), read: (file) => sources[file] });
+
+  it('lints the changed files and the files importing them, through re-exports', () => {
+    expect(scope(['constants/tone.ts'])).toEqual(['components/Card.tsx', 'constants/tone.ts']);
+    expect(scope(['components/Card.tsx'])).toEqual(['app/home.tsx', 'components/Card.tsx', 'components/index.ts']);
+    expect(scope(['app/icon.web.tsx'])).toEqual(['app/about.tsx', 'app/icon.web.tsx']);
+    expect(scope(['docs/readme.md'])).toEqual([]);
+  });
+
+  it('lints the importers of a deleted file, and everything after a change every result depends on', () => {
+    expect(scope(['lib/legacy.js'])).toEqual(['app/settings.tsx']);
+    for (const file of WHOLE_SCOPE) expect(scope([file])).toBeNull();
+  });
+
+  it('checks only the changed files in a PR, every file in a release', async () => {
+    await fixture('const known = 1;\n');
+    const git = (...args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
+    git('init', '-q', '-b', 'master');
+    git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@noctalia.invalid', 'commit', '--allow-empty', '-qm', 'base');
+    git('add', '.');
+    git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@noctalia.invalid', 'commit', '-qm', 'fixture');
+    git('update-ref', 'refs/remotes/origin/master', 'HEAD');
+    // An unchanged file gains a warning the baseline does not allow: only a full run sees it.
+    fs.writeFileSync(path.join(root, 'components', 'empty.js'), 'const surprise = 1;\n');
+    git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@noctalia.invalid', 'commit', '-qam', 'warning');
+    git('update-ref', 'refs/remotes/origin/master', 'HEAD');
+    fs.writeFileSync(path.join(root, 'app', 'example.js'), '// A comment.\nconst known = 1;\n');
+    const changed = (kind) => spawnSync(process.execPath, [script, '--changed'], { cwd: root, encoding: 'utf8', env: { ...process.env, VERIFY_LOCAL_KIND: kind } });
+    const pr = changed('pr');
+    expect(pr.stdout).toContain('ESLint on 1 files changed since');
+    expect(pr.status).toBe(0);
+    const release = changed('release');
+    expect(release.stdout).toContain('ESLint on every file: a release lints every file.');
+    expect(release.status).toBe(1);
+    expect(run('--prune', '--changed').status).toBe(1);
+  });
+
+  it('asks a PR deleting a file to drop its allowances, as a full run does', async () => {
+    await fixture('const known = 1;\n');
+    const git = (...args) => spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@noctalia.invalid', ...args], { cwd: root, encoding: 'utf8' });
+    git('init', '-q', '-b', 'master');
+    git('add', '.');
+    git('commit', '-qm', 'fixture');
+    git('update-ref', 'refs/remotes/origin/master', 'HEAD');
+    fs.rmSync(path.join(root, 'app', 'example.js'));
+    git('commit', '-qam', 'delete');
+    const pr = spawnSync(process.execPath, [script, '--changed'], { cwd: root, encoding: 'utf8', env: { ...process.env, VERIFY_LOCAL_KIND: 'pr' } });
+    expect(pr.stdout).toContain('ESLint on 0 files changed since');
+    expect(pr.stderr).toContain('Resolved ESLint warnings must leave the baseline');
+    expect(pr.status).toBe(1);
+  });
+});
