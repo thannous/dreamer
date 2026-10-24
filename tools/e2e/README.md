@@ -14,13 +14,13 @@ their separate identified Release/device requirements. See the
 
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.21.2,
-`@e2e-dev/web` 0.15.2, `@e2e-dev/mobile` 0.12.3 and `agent-device` 0.21.28
+from the application's Playwright version. The locked runtime is `e2e` 0.21.3,
+`@e2e-dev/web` 0.15.3, `@e2e-dev/mobile` 0.12.4 and `agent-device` 0.21.29
 (the mobile engine's own exact dependency). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
-a report from another runner or engine. The engine peer ranges accept e2e 0.21.2.
-Web 0.15.2 drives `playwright-core` 1.64.0, so the matcher Playwright moves to
-1.64.0 too and both share one Chromium build.
+a report from another runner or engine. The engine peer ranges accept e2e 0.21.3.
+Web 0.15.3 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
+1.64.1 too and both share one Chromium build.
 Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
@@ -29,13 +29,29 @@ Local web runs use several workers: half the CPU cores, at most eight, or
 `E2E_WORKERS=<n>`. Files run in parallel against the one local server, each
 attempt in its own browser context and storage; a file's tests stay in order.
 CI (`CI` set) keeps one worker and shards across containers, and native runs keep
-one worker per named device. e2e 0.21.2 starts the slowest files first when the
+one worker per named device. e2e starts the slowest files first when the
 previous report sits in the same output directory. Each run gets a new one, so
 the runner keeps the report of the last run with no `--grep`, `--tag` or
 `--shard` in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
 seeds it into the next output directory; a seed the run does not replace is
 deleted. A blocked run, or one where no test passed, leaves the kept report as
 it was. Without that file, files start in collection order.
+
+What 0.21.3 changes here:
+
+- `app.screenshot()` returns the absolute path of the file it wrote, not a path
+  relative to the attempt directory (#1326). The iPhone sandbox flow records that
+  path as `sheetCapture` and checks that it is absolute; the purchase attestation
+  takes it as is.
+- `app.screenshot()`, `toHaveScreenshot()` and assertion and failure captures
+  continue after a secret fill, with secure fields masked; the model still gets
+  no pixels after the fill (#1218). No test here worked around the old stop.
+- `e2e run` accepts `--action-timeout` and `--assertion-timeout` (#1310). `run.mjs`
+  does not pass them through: a qualifying run keeps the config's timeouts.
+- The web engine drives Playwright 1.64.1 and its Chromium; `npm run
+  test:testerarmy:browsers` installs it. `@e2e-dev/mobile` 0.12.4 uses
+  `agent-device` 0.21.29.
+  See the [official release notes](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.3).
 
 What 0.21.2 changes here:
 
@@ -294,7 +310,7 @@ automatically block feature or framework adoption or permit silently bypassing C
 
 The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
 clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
-Playwright 1.64.0 package supplies matchers only. The parity fixture preserves
+Playwright 1.64.1 package supplies matchers only. The parity fixture preserves
 Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
 30-second actions and 15-second exact assertions from the historical config.
 Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
@@ -584,7 +600,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package uses the engine's exact `agent-device` 0.21.28 dependency through its
+package uses the engine's exact `agent-device` 0.21.29 dependency through its
 local CLI. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured
