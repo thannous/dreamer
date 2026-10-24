@@ -25,13 +25,16 @@ Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.21's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
-Local web runs use several workers: half the CPU cores, at most four, or
+Local web runs use several workers: half the CPU cores, at most eight, or
 `E2E_WORKERS=<n>`. Files run in parallel against the one local server, each
 attempt in its own browser context and storage; a file's tests stay in order.
 CI (`CI` set) keeps one worker and shards across containers, and native runs keep
-one worker per named device. e2e 0.21.2 starts the slowest files first only when
-the previous report sits in the same output directory, which this runner never
-reuses, so files start in collection order.
+one worker per named device. e2e 0.21.2 starts the slowest files first when the
+previous report sits in the same output directory. Each run gets a new one, so
+the runner keeps the report of the last run with no `--grep`, `--tag` or
+`--shard` in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
+seeds it into the next output directory; a seed the run does not replace is
+deleted. Without that file, files start in collection order.
 
 What 0.21.2 changes here:
 
