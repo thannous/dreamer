@@ -45,6 +45,59 @@ const SITE_ONLY = [
   'tools/e2e/tests/**',
 ];
 
+// A scope that takes everything but these globs (see `when` in the engine).
+const not = (globs) => globs.map((glob) => `!${glob}`);
+
+// What the two tsc programs (tsconfig.json, tsconfig.test.json) can read: the
+// TypeScript sources their include patterns take, everything under tests/
+// (tsconfig.test.json takes tests/**/*), the JSON their sources import, the
+// tsconfigs, package.json and package-lock.json (the installed types), the
+// route files the type generator lists, and the scripts of the command. No
+// asset, document, site page or site data: a PR changing only those skips
+// both typechecks. scripts/verify-local-config.test.js lists both programs and
+// checks that every tracked file they read is in this scope.
+const TYPESCRIPT = [
+  '**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts', '**/*.json', 'tests/', 'app/', 'routes/',
+  'scripts/generate-shared-route-types.cjs', 'scripts/lib/replace-file.cjs', 'scripts/verify-cache.mjs',
+  // tsconfig.json leaves these out; tests import one file of supabase/functions.
+  '!apps/', '!tools/e2e/', '!outputs/', '!supabase/functions/', 'supabase/functions/api/lib/fullMoon.ts',
+  // Site and repository data no source imports.
+  '!docs-src/**/*.json', 'docs-src/static/data/curation-pages.json', '!data/**/*.json', 'data/app/',
+  ...not(DOCS),
+];
+
+// What `lint` can read: the files of its targets and everything they import,
+// assets included (import/no-unresolved checks that they exist), the ESLint,
+// TypeScript and Babel settings, the packages, and what brand:check compares.
+// No linted file imports a document, a site-only source, a migration or a CI
+// or EAS workflow: scripts/verify-local-config.test.js checks it on the
+// import graph scripts/check-lint-warnings.js reads.
+const LINT = ['**', ...not(DOCS), ...not(SITE_ONLY), '!supabase/migrations/', '!.circleci/', '!.eas/'];
+
+// What `lint-scripts` (expo lint scripts) can read: scripts/, the files
+// outside it that scripts import (and those they re-export), and the ESLint
+// settings and packages. The same test checks the import graph against this
+// list; that graph keys app.json and app/index.tsx alike, hence the latter.
+const LINT_SCRIPTS = [
+  'scripts/', 'eslint.config.js', 'package.json', 'package-lock.json', 'tsconfig.json', 'babel.config.js', 'jest.config.js',
+  'app.config.ts', 'app.json', 'apps/meditation/app.json', 'apps/meditation/app/index.tsx', 'apps/site/dependencies.js',
+  'context/DreamsContext.tsx', 'context/ThemeContext.tsx', 'lib/types.ts', 'lib/journalSyncContracts.ts',
+  'services/storageService.ts', 'services/supabaseDreamService.ts', 'data/site-manifest.json',
+  'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs',
+];
+
+// What jest-changed can select tests from: a module or a snapshot under a
+// root of one of the Jest projects (Jest leaves out a changed file outside
+// its haste map), and the Jest and Babel settings and the packages, whose
+// breakage fails the run before any test. The same test checks the roots and
+// extensions against jest.config.js.
+const JEST_ROOTS = ['app', 'components', 'constants', 'context', 'hooks', 'lib', 'services', 'tests', 'scripts'];
+const JEST_EXTENSIONS = ['js', 'mjs', 'cjs', 'jsx', 'ts', 'mts', 'cts', 'tsx', 'json', 'node', 'snap'];
+const JEST = [
+  ...JEST_ROOTS.flatMap((root) => JEST_EXTENSIONS.map((extension) => `${root}/**/*.${extension}`)),
+  'jest.config*.js', 'jest.setup.ts', 'babel.config.js', 'package.json', 'package-lock.json',
+];
+
 // What `docs:build` and `docs:check` read: every tracked file they opened,
 // traced with strace on master 3cd790554, plus the scripts their require graph
 // reaches on other paths (scripts/verify-local-config.test.js keeps the list
@@ -161,6 +214,19 @@ const DB_CONTRACTS = [
   '&& node --test scripts/ai-daily-budget-migration.test.cjs scripts/dream-sync-limits-migration.test.cjs',
 ].join(' ');
 
+// What db-contracts reads: the migrations, the database contract manifest and
+// the API sources its tests compare with them (supabase/), the tests and the
+// scripts they load (scripts/; the site configuration one of them loads reads
+// docs-src/config and docs-src/locales), the three app files the tests read,
+// Jest (its Expo project reads tsconfig.json) and the packages (PGlite).
+// scripts/verify-local-config.test.js runs the tests with every file they read
+// recorded and checks them against this list.
+const DB = [
+  'supabase/', 'scripts/', 'constants/limits.ts', 'services/storageServiceReal.ts', 'lib/productAnalytics.ts',
+  'docs-src/config/', 'docs-src/locales/', 'jest.config*.js', 'babel.config.js', 'tsconfig.json',
+  'package.json', 'package-lock.json', '.npmrc',
+];
+
 // Job meditation-quality. The engine links apps/meditation/node_modules from the
 // main checkout; when the verified lockfile differs, the copy installs its own.
 const MEDITATION_CHECKS = [
@@ -219,7 +285,7 @@ const cachedTypecheck = (name, script) => {
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'b9db26791531e01cd76afdda0a3244b9492e749d9c9c9c924ff832165d6b384b';
+  'bd42265c67911491d230362ce61006979a76b56e1eda9930355f41dbdb3f7eb6';
 
 export default {
   mainBranch: 'master',
@@ -401,16 +467,19 @@ export default {
     // tsc keeps its incremental build info in the copy, and a PR run passes it
     // on to the next one (scripts/verify-cache.mjs): 32 s cold, 7 s from the
     // previous copy's build info. TypeScript rechecks what changed; a release
-    // starts from nothing.
-    { name: 'typecheck-app', command: cachedTypecheck('app', 'typecheck:app'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'typecheck-tests', command: cachedTypecheck('tests', 'typecheck:tests'), parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    // starts from nothing. A PR that changes nothing tsc reads (TYPESCRIPT)
+    // skips both.
+    { name: 'typecheck-app', command: cachedTypecheck('app', 'typecheck:app'), parallel: true, inputs: TYPESCRIPT, when: TYPESCRIPT },
+    { name: 'typecheck-tests', command: cachedTypecheck('tests', 'typecheck:tests'), parallel: true, inputs: TYPESCRIPT, when: TYPESCRIPT },
     // `npm run lint` with ESLint narrowed, in a PR, to the files changed since
     // the merge base and the files importing them (scripts/check-lint-warnings.js
     // --changed); a change to the ESLint config, the packages or the baseline,
     // and every release, lint every file. On PR #570: 190 files of 1,580. The
     // files linted come from the diff: reused only against the same merge base.
-    { name: 'lint', command: 'npm run brand:check && npm run lint:warnings -- --changed', perBase: true, parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    { name: 'lint', command: 'npm run brand:check && npm run lint:warnings -- --changed', perBase: true, parallel: true, inputs: LINT, when: LINT },
+    // All of scripts/ with no warning allowed, for a PR that changes scripts/
+    // or what they import (LINT_SCRIPTS): 21 to 29 s.
+    { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, inputs: LINT_SCRIPTS, when: LINT_SCRIPTS },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
@@ -419,13 +488,16 @@ export default {
     // #570's 1,314 related tests, 95 s in band against 42 s on 4 workers. A PR
     // run keeps Jest's cache in the shared git directory (the copy's path stays
     // the same from one run to the next): 24 s cold, 8 s warm on components/.
+    // A PR changing no file Jest can relate a test to (JEST) skips it.
     {
       name: 'jest-changed',
       perBase: true,
+      when: JEST,
       command: 'npm run test:changed -- --watchman=false',
       env: { JEST_CHANGED_SINCE: '' },
     },
-    { name: 'db-contracts', command: DB_CONTRACTS },
+    // A PR that changes nothing these tests read (DB) skips them: 11 s.
+    { name: 'db-contracts', command: DB_CONTRACTS, inputs: DB, when: DB },
     {
       name: 'dependency-security',
       command: 'node --test scripts/dependency-security.test.mjs scripts/dependency-security-scope.test.mjs',

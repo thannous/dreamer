@@ -11,7 +11,7 @@ import path from 'node:path';
 import { describe, test } from 'node:test';
 import { pathToFileURL } from 'node:url';
 
-import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, verify } from './verify-local.mjs';
+import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, matchesAny, pastDurations, writeProof, verify } from './verify-local.mjs';
 
 import { ENGINE, CONFIG_PATH, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
 
@@ -49,6 +49,18 @@ describe('globs', () => {
     assert.ok(!globToRegExp('src/*.js').test('src/a/b.js'));
     assert.ok(globToRegExp('db/').test('db/migrations/1.sql'));
     assert.ok(!globToRegExp('db/').test('dbx/1.sql'));
+  });
+
+  test('a ! glob takes files back, and the last glob that matches a file decides', () => {
+    const scope = ['**', '!docs/', 'docs/api.ts', '!**/*.md'];
+    assert.ok(matchesAny('src/a.ts', scope));
+    assert.ok(!matchesAny('docs/guide.txt', scope));
+    assert.ok(matchesAny('docs/api.ts', scope));
+    assert.ok(!matchesAny('src/README.md', scope));
+    assert.ok(!matchesAny('src/a.ts', ['!docs/']), 'negations alone take nothing');
+    for (const field of ['when', 'inputs', 'exclude']) {
+      assert.throws(() => normaliseConfig({ checks: [{ name: 'x', command: 'true', [field]: ['!docs/', '**'] }] }), /takes back nothing/);
+    }
   });
 });
 
@@ -109,6 +121,17 @@ describe('parallel checks', () => {
     assert.equal(status, 1);
     assert.equal(proof.checks.find((entry) => entry.name === 'test').result, 'passed');
     assert.match(proof.checks.find((entry) => entry.name === 'lint').reason, /killed/);
+  });
+
+  test('--plan counts consecutive parallel checks as their longest one', async () => {
+    const repo = makeRepository();
+    repo.commit('parallel', { 'verify-local.config.mjs': parallelConfig('sleep 1; echo lint >> "$RUN_LOG"', 'echo test >> "$RUN_LOG"') });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    const { plan } = await verify('pr', ['--plan', '--force'], repo.options);
+    const [lint, test] = plan.checks;
+    assert.deepEqual([lint.action, lint.parallel, test.action, test.parallel], ['run', true, 'run', true]);
+    assert.ok(lint.estimateMs >= 1000);
+    assert.equal(plan.estimateMs, Math.max(lint.estimateMs, test.estimateMs));
   });
 
   test('parallel checks cannot mutate the shared dependency installation', () => {
@@ -216,6 +239,56 @@ describe('verify:pr', () => {
     const local = await verify('pr', ['--force'], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
     assert.equal(local.status, 0);
     assert.deepEqual(repo.runs(), ['lint', 'test', 'db']);
+  });
+
+  test('--plan says what each check would do, with past times, and runs nothing', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    // Outside src/, so lint can be reused; test reads the whole tree.
+    repo.commit('notes', { 'notes.txt': '1\n' });
+    repo.clearRuns();
+    const proofs = path.join(repo.work, '.git', 'verify-proofs');
+    const before = readdirSync(proofs).sort();
+    repo.lines.length = 0;
+
+    const { status, plan } = await verify('pr', ['--plan'], repo.options);
+    assert.equal(status, 0);
+    assert.deepEqual(repo.runs(), []);
+    assert.deepEqual(readdirSync(proofs).sort(), before, 'no proof, no run log entry');
+    assert.equal(repo.git(['worktree', 'list']).split('\n').length, 1, 'no isolated copy');
+    assert.deepEqual(plan.checks.map(({ name, action }) => [name, action]), [['lint', 'reused'], ['test', 'run'], ['db', 'skipped'], ['site', 'skipped']]);
+    assert.equal(plan.checks[1].pastRuns, 1);
+    assert.equal(plan.estimateMs, plan.checks[1].estimateMs);
+    assert.match(repo.lines.join('\n'), /test: runs \(about \d+ s, median of 1 run\)/);
+    assert.match(repo.lines.join('\n'), /db: out of scope \(no change in its paths since origin\/main\)/);
+    assert.match(repo.lines.at(-1), /plan: 1 to run, 1 reused, 2 out of scope; about \d+ s of checks/);
+
+    // A release reuses nothing and runs every check; a probe that fails here shows.
+    const release = await verify('release', ['--plan'], repo.options);
+    assert.deepEqual(release.plan.checks.map(({ name, action }) => [name, action]), [['lint', 'run'], ['test', 'run'], ['db', 'unavailable'], ['site', 'run'], ['build', 'run']]);
+    assert.match(release.plan.checks[2].reason, /start the database/);
+    assert.deepEqual(release.plan.untimed, ['site', 'build'], 'never run here: no time to give');
+
+    repo.lines.length = 0;
+    const json = await verify('pr', ['--plan', '--json'], repo.options);
+    assert.equal(repo.lines.length, 1, 'the plan alone');
+    assert.deepEqual(JSON.parse(repo.lines[0]), json.plan);
+    await assert.rejects(verify('pr', ['--plan', '--keep'], repo.options), /no isolated copy to keep/);
+    assert.deepEqual(repo.runs(), []);
+    assert.deepEqual(readdirSync(proofs).sort(), before);
+  });
+
+  test('the time of a check is the median of its real passed runs, whatever engine wrote them', () => {
+    const commonDir = mkdtempSync(path.join(os.tmpdir(), 'verify-durations-'));
+    const proof = (tree, checks) => writeProof(commonDir, { version: 1, engine: 'older', tree, checks });
+    proof('a', [{ name: 'x', result: 'passed', durationMs: 3000 }, { name: 'y', result: 'failed', durationMs: 9000 }]);
+    proof('b', [{ name: 'x', result: 'passed', durationMs: 1000 }, { name: 'y', result: 'passed', reused: true, durationMs: 9000 }]);
+    proof('c', [{ name: 'x', result: 'passed', durationMs: 2000 }, { name: 'y', result: 'passed', external: 'owner-machine: elsewhere' }]);
+    writeFileSync(path.join(commonDir, 'verify-proofs', 'torn.json'), '{');
+    assert.deepEqual([...pastDurations(commonDir)], [['x', { ms: 2000, runs: 3 }]]);
+    rmSync(commonDir, { recursive: true, force: true });
   });
 
   test('without a known base, a check limited by when runs rather than being skipped', async () => {
@@ -1525,6 +1598,18 @@ describe('verify:release and the deploy guard', () => {
     repo.git(['checkout', '--quiet', '-b', 'feature']);
     const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8');
     repo.commit('relax', { 'verify-local.config.mjs': config.replace("allow: ['public/*.pem']", "allow: ['public/*.pem', '**/*.key']") });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    assert.match(repo.lines.join('\n'), /^- Delivery checks changed: verify-local.config.mjs \(needs the owner's review\)$/m);
+  });
+
+  test('a ! glob of the config never takes back one of the engine delivery files', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
+      .replace("mainBranch: 'main',", "mainBranch: 'main',\n  deliveryFiles: ['scripts/', '!verify-local.config.mjs'],");
+    repo.commit('hide', { 'verify-local.config.mjs': config });
     await verify('pr', [], repo.options);
     repo.lines.length = 0;
     await proofBlock([], repo.options);
