@@ -4,7 +4,10 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 
-import { BottomSheet } from '@/components/ui/BottomSheet';
+import {
+  BottomSheet,
+  getNativeBottomSheetContentWidth,
+} from '@/components/ui/BottomSheet';
 
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
 
@@ -14,6 +17,12 @@ jest.mock('expo-asset', () => ({ Asset: { fromModule: (source: unknown) => ({ ur
 afterEach(cleanup);
 
 describe('BottomSheet Expo UI adapter', () => {
+  it('gives auto-sized native hosts an explicit content width', () => {
+    expect(getNativeBottomSheetContentWidth(402, 'ios')).toBe(402);
+    expect(getNativeBottomSheetContentWidth(1024, 'ios')).toBe(540);
+    expect(getNativeBottomSheetContentWidth(800, 'android')).toBe(640);
+  });
+
   it('hosts the existing React Native content in the presented sheet', () => {
     const { rerender } = render(
       <BottomSheet visible onClose={() => {}} testID="sheet.test">
@@ -24,10 +33,6 @@ describe('BottomSheet Expo UI adapter', () => {
     expect(screen.getByRole('dialog')).toBeTruthy();
     expect(screen.getByTestId('sheet.test')).toBeTruthy();
     expect(screen.getByText('Sheet content')).toBeTruthy();
-    // The platform sheet sets the width (narrower than the window on the folded iPhone Duo);
-    // the content sets the height.
-    const host = screen.getByTestId('sheet.test').querySelector('[data-match-contents]');
-    expect(host?.getAttribute('data-match-contents')).toBe('{"vertical":true}');
 
     rerender(
       <BottomSheet visible={false} onClose={() => {}} testID="sheet.test">

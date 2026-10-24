@@ -3,10 +3,11 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { DesktopShell, getScreenInsets } from '@/components/navigation/DesktopShell';
+import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { DarkTheme, LightTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { useContentWindow } from '@/context/ContentWindowContext';
+import { getScreenInsets, useContentWindow } from '@/context/ContentWindowContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 let mockPathname = '/journal';
 let mockInsets = { top: 20, right: 54, bottom: 20, left: 0 };
@@ -39,7 +40,6 @@ function ContentWidth() {
 }
 
 function TopInset() {
-  const { useSafeAreaInsets } = jest.requireMock<typeof import('react-native-safe-area-context')>('react-native-safe-area-context');
   return <span data-testid="top-inset">{useSafeAreaInsets().top}</span>;
 }
 

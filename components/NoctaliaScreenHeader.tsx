@@ -241,8 +241,8 @@ export const NoctaliaScreenHeader = memo(function NoctaliaScreenHeader({
     );
   }
 
-  // Over its painting the header reads like the tab header: full ink, and buttons on a dark
-  // scrim with a hairline, legible wherever the painting is bright.
+  // Over its painting the header reads like the tab header: full ink, and buttons on a scrim
+  // of the page's ground with a hairline, legible wherever the painting is bright.
   const painted = Boolean(scene && backdrop);
 
   return (

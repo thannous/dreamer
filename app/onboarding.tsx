@@ -255,18 +255,20 @@ export default function OnboardingScreen() {
   );
   const largeText = fontScale > 1.2;
   const shortWindow = viewportHeight < SHORT_WINDOW_HEIGHT;
-  // The painting opens above each step's copy. On a short window it keeps only what the copy
-  // leaves above the call to action, so the button never covers the last choice or the
-  // privacy link; copy too tall even then scrolls under the button.
+  // The painting opens above each step's copy. Whenever the copy would reach the call to
+  // action (a short window such as the folded iPhone Duo, a long translation), the opening
+  // keeps only what the copy leaves above the button, so the button never covers the last
+  // choice or the privacy link; copy too tall even then scrolls under the button.
+  const isFitted = (renderedStep: OnboardingStep) =>
+    Boolean(copyHeights[renderedStep] && footerHeight && scrollHeight && stageTop !== undefined);
   const artworkSpaceFor = (renderedStep: OnboardingStep) => {
     const artworkFraction = renderedStep === 'path'
       ? (largeText ? 0.10 : 0.18)
       : (largeText ? 0.18 : 0.25);
     const ideal = Math.max(72, Math.min(260, viewportHeight * artworkFraction));
-    const copyHeight = copyHeights[renderedStep];
-    if (!copyHeight || !footerHeight || !scrollHeight || stageTop === undefined) return ideal;
+    if (!isFitted(renderedStep) || stageTop === undefined) return ideal;
     const copyGap = (renderedStep === 'path' ? styles.paths : styles.intro).gap;
-    const room = scrollHeight - footerHeight - CTA_CLEARANCE - stageTop - copyGap - copyHeight;
+    const room = scrollHeight - footerHeight - CTA_CLEARANCE - stageTop - copyGap - (copyHeights[renderedStep] ?? 0);
     return Math.max(MIN_ARTWORK_SPACE, Math.min(ideal, room));
   };
   const introArtworkSpace = artworkSpaceFor('intro');
@@ -615,7 +617,7 @@ export default function OnboardingScreen() {
   }, []);
   const handleCopyLayout = useCallback((renderedStep: OnboardingStep, event: LayoutChangeEvent) => {
     const measuredHeight = event.nativeEvent?.layout?.height;
-    // A hidden step measures nothing; it keeps the height it had when shown.
+    // A step hidden with display: none (iOS, web) measures nothing; it keeps the height it had when shown.
     if (!Number.isFinite(measuredHeight) || measuredHeight <= 0) return;
     const nextHeight = Math.ceil(measuredHeight);
     setCopyHeights((current) => current[renderedStep] === nextHeight
@@ -789,7 +791,10 @@ export default function OnboardingScreen() {
                 <Ellipse cx="50" cy="50" rx="50" ry="50" fill="url(#copyVeil)" />
               </Svg>
             </View>
-            <View style={[styles.intro, { width: '100%' }]} onLayout={(event) => handleCopyLayout('intro', event)}>
+            {/* Unseen until it fits: the painting above settles to the copy's measured height
+                first, so the copy never jumps into place. */}
+            <View style={[styles.intro, { width: '100%' }, !isFitted('intro') && styles.unfittedCopy]}
+              onLayout={(event) => handleCopyLayout('intro', event)}>
             <View style={styles.titleBlock}>
               <Animated.View style={introEnter(STORY.titleLead)}>
                 <Text
@@ -886,7 +891,8 @@ export default function OnboardingScreen() {
             <View collapsable={false} style={[styles.paths, { width: '100%' }]}>
 
             <View style={{ height: pathArtworkSpace }} accessible={false} />
-            <View style={styles.paths} onLayout={(event) => handleCopyLayout('path', event)}>
+            <View style={[styles.paths, !isFitted('path') && styles.unfittedCopy]}
+              onLayout={(event) => handleCopyLayout('path', event)}>
             <View style={styles.titleBlock}>
               <Animated.View style={pathEnter(STORY.titleLead - 200)}>
                 <Text
@@ -1191,6 +1197,7 @@ const styles = StyleSheet.create({
   inactiveStepLayer: { opacity: 0 },
   inactiveControl: { opacity: 0 },
   paths: { gap: 12 },
+  unfittedCopy: { opacity: 0 },
   hiddenStep: { display: 'none' },
   pathHeading: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.display.fontSize, lineHeight: 40, textAlign: 'center' },
   pathSubtitle: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: 'center' },

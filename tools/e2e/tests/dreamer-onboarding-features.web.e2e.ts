@@ -446,7 +446,11 @@ for (const viewport of [{ width: 382, height: 678 }, { width: 375, height: 667 }
       const [upper, lower] = [rect(aboveId), rect(belowId)];
       return upper && lower ? lower.top - upper.bottom : Number.NEGATIVE_INFINITY;
     }, [above, below]);
+    // As openOnboarding does, at this window's size: a fixed theme, then no startup overlay.
+    await page.clock.setFixedTime(new Date('2026-10-02T12:00:00+02:00'));
+    await page.goto('/');
     await expect(page.getByTestId('btn.onboarding.privacy')).toBeVisible();
+    await expect(page.getByText('NOCTALIA', { exact: true })).toHaveCount(0);
     await expect.poll(() => gap('btn.onboarding.privacy', 'btn.onboarding.intro.next')).toBeGreaterThanOrEqual(16);
     await page.screenshot({ path: testInfo.outputPath('short-window-welcome.png') });
     await page.getByTestId('btn.onboarding.intro.next').click();
