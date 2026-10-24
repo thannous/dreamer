@@ -409,15 +409,23 @@ function JournalDetailScreen() {
       analyzeAfterPurchase: undefined, analysisOwnerId: undefined,
     });
   }, []);
+  // Held here, above the turner: once the dream leaves the store, the page is no longer
+  // under it and mounts afresh, forgetting it was deleting.
+  const [deleting, setDeleting] = useState(false);
   const content = <JournalDetailContent key={JSON.stringify([user?.id, route.id, route.remoteId, route.clientRequestId])}
-    dream={dream} folio={neighbours.folio} />;
+    dream={dream} folio={neighbours.folio} onDeletingChange={setDeleting} />;
+  // The dream is gone before router.replace lands: the plain ground for those few frames,
+  // not the "not found" page.
+  if (!dream && deleting) return <View className="flex-1 bg-ink" />;
   return dream
     ? <JournalPageTurner dream={dream} newer={neighbours.newer} older={neighbours.older} folio={neighbours.folio} tonight
       hint={!arrivedFromSeal} opensOnLikeness={opensOnLikeness} onTurn={turnTo}>{content}</JournalPageTurner>
     : content;
 }
 
-const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }: { dream?: DreamAnalysis; folio?: number }) {
+const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, onDeletingChange }: {
+  dream?: DreamAnalysis; folio?: number; onDeletingChange?: (deleting: boolean) => void;
+}) {
   const { id, remoteId, clientRequestId, saved: savedParam, recall: recallParam, autoAnalyze: autoAnalyzeParam, analyzeAfterPurchase, analysisOwnerId, share: shareParam } = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string; saved?: string | string[]; recall?: string | string[]; autoAnalyze?: string; analyzeAfterPurchase?: string; analysisOwnerId?: string; share?: string }>();
   const recallRequested = isJournalSavedConfirmationParam(recallParam);
   const { state: onboardingState, transition: transitionOnboarding } = useOnboarding();
@@ -1452,6 +1460,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     if (!dream) return;
     try {
       setIsDeleting(true);
+      onDeletingChange?.(true);
       await deleteDream(dream);
       // One haptic, at the moment the dream is actually gone, in the same frame as the
       // sheet closing and the journal replacing this screen. Never the only feedback.
@@ -1465,8 +1474,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
       Alert.alert(t('common.error_title'), t('common.unknown_error'));
       setIsDeleting(false);
+      onDeletingChange?.(false);
     }
-  }, [deleteDream, dream, t]);
+  }, [deleteDream, dream, onDeletingChange, t]);
 
   const handleCloseDeleteSheet = useCallback(() => {
     if (isDeleting) return;
