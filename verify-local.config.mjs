@@ -357,11 +357,12 @@ export default {
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
     // JEST_CHANGED_SINCE would override that base (HEAD selects no test), so
-    // the check never inherits it.
+    // the check never inherits it. Workers come from jest.config.js: on PR
+    // #570's 1,314 related tests, 95 s in band against 42 s on 4 workers.
     {
       name: 'jest-changed',
       perBase: true,
-      command: 'npm run test:changed -- --runInBand --watchman=false',
+      command: 'npm run test:changed -- --watchman=false',
       env: { JEST_CHANGED_SINCE: '' },
     },
     { name: 'db-contracts', command: DB_CONTRACTS },
