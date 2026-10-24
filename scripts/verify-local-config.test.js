@@ -168,6 +168,41 @@ describe('verify-local.config.mjs', () => {
     expect(pr.find((check) => check.command.includes('docs:build')).when).toEqual(expect.arrayContaining(['docs-src/', 'data/']));
   });
 
+  it('scopes the site check to every script the site build and check load', () => {
+    // A script left out would let a PR skip the site check, or reuse an old pass,
+    // after changing what the build runs. strace found the list; this walk of
+    // relative requires and spawned scripts keeps it complete.
+    const site = config.checks.find((check) => check.name === 'site');
+    expect(site.inputs).toEqual(site.when);
+    const { existsSync, statSync } = require('node:fs');
+    const isFile = (file) => existsSync(file) && statSync(file).isFile();
+    const seen = new Set();
+    const visit = (file) => {
+      const relative = path.relative(ROOT, file).split(path.sep).join('/');
+      if (seen.has(relative) || !isFile(file)) return;
+      seen.add(relative);
+      const source = readFileSync(file, 'utf8');
+      for (const [, spec] of source.matchAll(/(?:require\(|from\s+|import\()\s*['"](\.{1,2}\/[^'"]+)['"]/g)) {
+        const base = path.resolve(path.dirname(file), spec);
+        const found = [base, `${base}.js`, `${base}.cjs`, `${base}.mjs`, `${base}.json`, path.join(base, 'index.js')].find(isFile);
+        if (found) visit(found);
+      }
+      // runNodeScript('scripts/x.js') and path.join(ROOT_DIR, 'scripts', 'x.js').
+      for (const [, name] of source.matchAll(/['"`](?:\.\/)?scripts\/([\w./-]+\.(?:c|m)?js)['"`]/g)) visit(path.join(ROOT, 'scripts', name));
+      for (const [, name] of source.matchAll(/['"]scripts['"]\s*,\s*['"]([\w.-]+\.(?:c|m)?js)['"]/g)) visit(path.join(ROOT, 'scripts', name));
+    };
+    visit(path.join(ROOT, 'scripts/docs-build.js'));
+    visit(path.join(ROOT, 'scripts/docs-check.js'));
+    expect(seen.size).toBeGreaterThan(50);
+    const uncovered = JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module', '-e',
+      `import { matchesAny } from ${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href)};
+       const when = ${JSON.stringify(site.when)};
+       process.stdout.write(JSON.stringify(${JSON.stringify([...seen])}.filter(file => !matchesAny(file, when))));`,
+    ], { encoding: 'utf8' }));
+    expect(uncovered).toEqual([]);
+  });
+
   it('runs benchmark contracts for a change to any benchmark manifest alone', () => {
     // These manifests can change the canonical command or browser version
     // without touching CI YAML. A browser journey cannot detect a skipped guard.
