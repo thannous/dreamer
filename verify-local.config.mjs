@@ -251,6 +251,9 @@ export default {
     'scripts/lint-warnings-baseline.json',
     'scripts/install-git-hooks.js',
     'scripts/run-jest-changed.js',
+    // What a verify:pr run carries over from the previous one (tsc build info).
+    'scripts/verify-cache.mjs',
+    'scripts/verify-cache.test.js',
     // Meditation's Jest module resolution.
     'apps/meditation/tests/jestResolver.cjs',
     // The contract checkers and runners the checks call, and the tests of
