@@ -96,6 +96,13 @@ const ONBOARDING_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 // As narrow as Split View on the open iPhone Duo (about 290 pt): the top bar can no longer
 // hold the full-size wordmark, the step counter and the skip button side by side.
 const NARROW_TOP_BAR_WIDTH = 360;
+// The folded iPhone Duo (678 pt) or a small iPhone: the three choices tighten so they, the
+// question and the painting above it all fit over the call to action.
+const SHORT_WINDOW_HEIGHT = 720;
+// The least of the painting kept above a step's copy when the window is short.
+const MIN_ARTWORK_SPACE = 24;
+// The air kept between a step's copy and the call to action floating over it.
+const CTA_CLEARANCE = 16;
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -145,6 +152,9 @@ export default function OnboardingScreen() {
   const [analyticsPreferenceLoading, setAnalyticsPreferenceLoading] = useState(false);
   const [analyticsPreferenceError, setAnalyticsPreferenceError] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const [stageTop, setStageTop] = useState<number>();
+  const [copyHeights, setCopyHeights] = useState<Partial<Record<OnboardingStep, number>>>({});
   const [pathPreloaded, setPathPreloaded] = useState(state.step === 'path');
   const [stepHeights, setStepHeights] = useState<Partial<Record<OnboardingStep, number>>>({});
   const introTitleRef = useRef<ViewInstance | null>(null);
@@ -244,10 +254,24 @@ export default function OnboardingScreen() {
     [backgroundUri]
   );
   const largeText = fontScale > 1.2;
-  const artworkFraction = step === 'path'
-    ? (largeText ? 0.10 : 0.18)
-    : (largeText ? 0.18 : 0.25);
-  const artworkSpace = Math.max(72, Math.min(260, viewportHeight * artworkFraction));
+  const shortWindow = viewportHeight < SHORT_WINDOW_HEIGHT;
+  // The painting opens above each step's copy. Whenever the copy would reach the call to
+  // action (a short window such as the folded iPhone Duo, a long translation), the opening
+  // keeps only what the copy leaves above the button, so the button never covers the last
+  // choice or the privacy link; copy too tall even then scrolls under the button.
+  const artworkSpaceFor = (renderedStep: OnboardingStep) => {
+    const artworkFraction = renderedStep === 'path'
+      ? (largeText ? 0.10 : 0.18)
+      : (largeText ? 0.18 : 0.25);
+    const ideal = Math.max(72, Math.min(260, viewportHeight * artworkFraction));
+    const copyHeight = copyHeights[renderedStep];
+    if (!copyHeight || !footerHeight || !scrollHeight || stageTop === undefined) return ideal;
+    const copyGap = (renderedStep === 'path' ? styles.paths : styles.intro).gap;
+    const room = scrollHeight - footerHeight - CTA_CLEARANCE - stageTop - copyGap - copyHeight;
+    return Math.max(MIN_ARTWORK_SPACE, Math.min(ideal, room));
+  };
+  const introArtworkSpace = artworkSpaceFor('intro');
+  const pathArtworkSpace = artworkSpaceFor('path');
 
   useEffect(() => {
     if (loading || pathPreloaded || step === 'path' || isLeaving) return;
@@ -582,6 +606,23 @@ export default function OnboardingScreen() {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
     setFooterHeight((current) => current === nextHeight ? current : nextHeight);
   }, []);
+  const handleScrollLayout = useCallback((event: LayoutChangeEvent) => {
+    const measuredHeight = event.nativeEvent?.layout?.height;
+    if (Number.isFinite(measuredHeight) && measuredHeight > 0) setScrollHeight(Math.floor(measuredHeight));
+  }, []);
+  const handleStageLayout = useCallback((event: LayoutChangeEvent) => {
+    const measuredTop = event.nativeEvent?.layout?.y;
+    if (Number.isFinite(measuredTop)) setStageTop(Math.ceil(measuredTop));
+  }, []);
+  const handleCopyLayout = useCallback((renderedStep: OnboardingStep, event: LayoutChangeEvent) => {
+    const measuredHeight = event.nativeEvent?.layout?.height;
+    // A step hidden with display: none (iOS, web) measures nothing; it keeps the height it had when shown.
+    if (!Number.isFinite(measuredHeight) || measuredHeight <= 0) return;
+    const nextHeight = Math.ceil(measuredHeight);
+    setCopyHeights((current) => current[renderedStep] === nextHeight
+      ? current
+      : { ...current, [renderedStep]: nextHeight });
+  }, []);
   const handleStepLayout = useCallback((renderedStep: OnboardingStep, event: LayoutChangeEvent) => {
     const measuredHeight = event.nativeEvent?.layout?.height;
     if (!Number.isFinite(measuredHeight) || measuredHeight <= 0) return;
@@ -632,6 +673,7 @@ export default function OnboardingScreen() {
       </View>
       <Animated.ScrollView
         style={recede}
+        onLayout={handleScrollLayout}
         contentInsetAdjustmentBehavior="never"
         contentContainerStyle={[
           styles.content,
@@ -703,6 +745,7 @@ export default function OnboardingScreen() {
           // screen reparents their children mid-commit and crashes Android
           // with "addViewAt: view already has a parent".
           collapsable={false}
+          onLayout={handleStageLayout}
           style={Platform.OS === 'android'
             ? [
                 styles.stepStage,
@@ -732,10 +775,10 @@ export default function OnboardingScreen() {
           >
             <View collapsable={false} style={[styles.intro, { width: '100%' }]}>
 
-            <View style={{ height: artworkSpace }} accessible={false} />
+            <View style={{ height: introArtworkSpace }} accessible={false} />
             {/* A soft dark pool behind the copy, so the subtitle and legends stay readable
                 wherever the painting's moon and clouds fall at this screen size. */}
-            <View pointerEvents="none" accessible={false} style={[styles.copyVeil, { top: artworkSpace - 70 }]}>
+            <View pointerEvents="none" accessible={false} style={[styles.copyVeil, { top: introArtworkSpace - 70 }]}>
               <Svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
                 <Defs>
                   <RadialGradient id="copyVeil" cx="50%" cy="50%" rx="50%" ry="50%">
@@ -747,6 +790,7 @@ export default function OnboardingScreen() {
                 <Ellipse cx="50" cy="50" rx="50" ry="50" fill="url(#copyVeil)" />
               </Svg>
             </View>
+            <View style={[styles.intro, { width: '100%' }]} onLayout={(event) => handleCopyLayout('intro', event)}>
             <View style={styles.titleBlock}>
               <Animated.View style={introEnter(STORY.titleLead)}>
                 <Text
@@ -819,6 +863,7 @@ export default function OnboardingScreen() {
               </Pressable>
             </Animated.View>
             </View>
+            </View>
           </View>
 
           {pathPreloaded || step === 'path' ? (
@@ -841,7 +886,8 @@ export default function OnboardingScreen() {
             >
             <View collapsable={false} style={[styles.paths, { width: '100%' }]}>
 
-            <View style={{ height: artworkSpace }} accessible={false} />
+            <View style={{ height: pathArtworkSpace }} accessible={false} />
+            <View style={styles.paths} onLayout={(event) => handleCopyLayout('path', event)}>
             <View style={styles.titleBlock}>
               <Animated.View style={pathEnter(STORY.titleLead - 200)}>
                 <Text
@@ -879,6 +925,7 @@ export default function OnboardingScreen() {
                       onPress={() => selectPath(path.id)}
                       style={({ pressed }) => [
                         styles.pathRow,
+                        shortWindow && styles.pathRowShort,
                         { borderColor: noctalia.surface.border },
                         pressed && styles.pathRowPressed,
                       ]}
@@ -890,7 +937,7 @@ export default function OnboardingScreen() {
                         opacity: selected ? 1 : 0,
                         transitionProperty: 'opacity', transitionDuration: DURATION.fast, transitionTimingFunction: EASE.out,
                       }]} />
-                      <View style={[styles.pathIcon, { borderColor: selected ? titleAccent : noctalia.surface.border }]}>
+                      <View style={[styles.pathIcon, shortWindow && styles.pathIconShort, { borderColor: selected ? titleAccent : noctalia.surface.border }]}>
                         <IconSymbol name={path.icon} size={23} color={titleAccent as ColorValue} />
                       </View>
                       <View style={styles.pathCopy}>
@@ -916,6 +963,7 @@ export default function OnboardingScreen() {
                   </Animated.View>
                 );
               })}
+            </View>
             </View>
             </View>
             </View>
@@ -1109,7 +1157,8 @@ const styles = StyleSheet.create({
   stepProgressNarrow: { marginLeft: 0 },
   stepMarks: { flexDirection: 'row', gap: 5 },
   stepMark: { width: 18, height: 2, borderRadius: 1 },
-  stepNumber: { fontFamily: Fonts.outfit.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.5 },
+  // A halo of the night keeps the counter legible where the painting's moon rises behind it.
+  stepNumber: { fontFamily: Fonts.outfit.medium, fontSize: 11, lineHeight: 14, letterSpacing: 1.5, textShadowColor: 'rgba(3,4,13,0.85)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 10 },
   topBarLeading: { position: 'relative', minWidth: 80, height: 44, justifyContent: 'center' },
   topBarBack: { position: 'absolute', top: 0, left: 0 },
   brand: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h1.fontSize, lineHeight: TypeScale.h1.lineHeight, minWidth: 80 },
@@ -1148,9 +1197,11 @@ const styles = StyleSheet.create({
   pathSubtitle: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight, textAlign: 'center' },
   pathList: { marginTop: 10, gap: 10 },
   pathRow: { minHeight: 88, paddingHorizontal: 16, paddingVertical: 14, flexDirection: 'row', alignItems: 'center', gap: 14, borderWidth: StyleSheet.hairlineWidth, borderRadius: 22, borderCurve: 'continuous', overflow: 'hidden', backgroundColor: 'rgba(14, 10, 26, 0.72)' },
+  pathRowShort: { minHeight: 72, paddingVertical: 10 },
   pathRowPressed: { transform: [{ scale: 0.985 }] },
   pathSelection: { borderWidth: 1, borderRadius: 22, borderCurve: 'continuous' },
   pathIcon: { width: 46, height: 46, borderRadius: 23, borderWidth: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(3,4,13,0.45)' },
+  pathIconShort: { width: 40, height: 40, borderRadius: 20 },
   pathCopy: { flex: 1, gap: 4 },
   pathTitle: { fontFamily: Fonts.fraunces.medium, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
   pathBody: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.bodySm.fontSize, lineHeight: TypeScale.bodySm.lineHeight },

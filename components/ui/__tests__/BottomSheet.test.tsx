@@ -17,7 +17,7 @@ jest.mock('expo-asset', () => ({ Asset: { fromModule: (source: unknown) => ({ ur
 afterEach(cleanup);
 
 describe('BottomSheet Expo UI adapter', () => {
-  it('gives auto-sized native hosts an explicit content width', () => {
+  it('derives the native content width from the window, capped at the platform sheet width', () => {
     expect(getNativeBottomSheetContentWidth(402, 'ios')).toBe(402);
     expect(getNativeBottomSheetContentWidth(1024, 'ios')).toBe(540);
     expect(getNativeBottomSheetContentWidth(800, 'android')).toBe(640);
