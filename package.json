@@ -106,6 +106,7 @@
     "uniwind:types": "npm run theme:generate && uniwind generate-artifacts --css ./global.css --theme morning --theme afterglow --dts ./uniwind-types.d.ts",
     "lint": "npm run brand:check && npm run lint:warnings",
     "lint:scripts": "expo lint scripts --max-warnings=0",
+    "workspace": "node ./scripts/local-workspace.js",
     "scripts:list": "node ./scripts/list-scripts.js",
     "typecheck:app": "node scripts/generate-shared-route-types.cjs && tsc --noEmit",
     "typecheck:tests": "node scripts/generate-shared-route-types.cjs && tsc -p tsconfig.test.json --noEmit",
