@@ -151,22 +151,23 @@ describe('DreamShareSheet', () => {
     expect(screen.getByTestId('share-sheet').getAttribute('data-dismiss')).toBe('none');
   });
 
-  // On the folded iPhone Duo the body has about 410 points between the sheet's header and its
-  // button; 112 above the preview and 102 of choices leave the preview 176, never below 160.
+  // On the folded iPhone Duo the sheet's content may take 556 points: less its 16 point margin,
+  // the 8 above the body and the 72 point button, the body has 460. With 112 above the preview
+  // and two rows of choices (160), the preview keeps 168 of its 270, never below 160.
   it('gives the choices the height they need above the button, out of the preview', () => {
     renderSheet();
     const previewSize = () => screen.getByLabelText('journal.detail.share_sheet.preview').getAttribute('data-size');
     const measure = (key: string, y: number, height: number) => act(() => mockLayouts[key]({ nativeEvent: { layout: { x: 0, y, width: 326, height } } }));
     expect(previewSize()).toBe('216x270');
-    act(() => mockReportBodyRoom?.(410));
+    act(() => mockReportBodyRoom?.(460));
     measure('journal.detail.share_sheet.preview', 112, 270);
     expect(previewSize()).toBe('216x270');
-    measure('choices', 402, 102);
-    expect(previewSize()).toBe('140.8x176');
+    measure('choices', 402, 160);
+    expect(previewSize()).toBe('134.4x168');
     // Measured again at its new size, the preview keeps it: nothing it measures depends on it.
-    measure('journal.detail.share_sheet.preview', 112, 176);
-    measure('choices', 308, 102);
-    expect(previewSize()).toBe('140.8x176');
+    measure('journal.detail.share_sheet.preview', 112, 168);
+    measure('choices', 300, 160);
+    expect(previewSize()).toBe('134.4x168');
     act(() => mockReportBodyRoom?.(300));
     expect(previewSize()).toBe('128x160');
     act(() => mockReportBodyRoom?.(700));
