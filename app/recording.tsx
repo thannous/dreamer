@@ -313,6 +313,8 @@ function RecordingScreen() {
   const keyboardVisible = useKeyboardVisible();
   const [footerHeight, setFooterHeight] = useState(0);
   const [bottomNavHeight, setBottomNavHeight] = useState(0);
+  const [scrollViewportHeight, setScrollViewportHeight] = useState(0);
+  const [draftProgressHeight, setDraftProgressHeight] = useState(0);
   const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
   const activePostSaveRef = useRef<'confirm_analysis' | 'journal_first' | null>(null);
   const captureStartedTrackedRef = useRef(false);
@@ -1416,24 +1418,32 @@ function RecordingScreen() {
       isCompactLandscape && styles.mainContentCompact,
       {
         paddingTop: 16,
+        // Unless Save follows the editor in the document, it sits outside it: below the scroll
+        // view, whose margin keeps clear of it, or right after it with the keyboard up. Room for it
+        // here would be an empty end, brought into view with the keyboard up at the editor's top.
         paddingBottom: chatMode ? 8 : inlineFooter
           ? 16 + (keyboardVisible ? insets.bottom : 0)
-          : separateFooterViewport ? 16 : fixedFooterBottomOffset + footerHeight,
+          : 16,
       },
     ],
     [
-      fixedFooterBottomOffset,
       chatMode,
       chatLayout,
       editableCapture,
-      footerHeight,
       isCompactLandscape,
-      separateFooterViewport,
       inlineFooter,
       keyboardVisible,
       insets.bottom,
     ]
   );
+  const showsDraftProgress = hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice';
+  // With the keyboard up the screen shows the document's end: the editor and its border (2), the
+  // draft count and its gap (12) and the end's padding (16), below a margin that keeps the
+  // editor's top clear of the status bar's veil. On a short window (the folded iPhone Duo, a small
+  // phone) the editor gives up part of its 260 pt rather than its top.
+  const keyboardEditorRoom = keyboardVisible && scrollViewportHeight > 0
+    ? scrollViewportHeight - (insets.top > 0 ? 28 : 12) - 2 - (showsDraftProgress ? 12 + draftProgressHeight : 0) - 16
+    : undefined;
   const fixedFooterStyle = useMemo(
     () => keyboardVisible
       ? styles.keyboardFooter
@@ -1449,15 +1459,32 @@ function RecordingScreen() {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
     setFooterHeight((current) => current === nextHeight ? current : nextHeight);
   }, []);
+  const handleScrollViewportLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.floor(event.nativeEvent.layout.height);
+    setScrollViewportHeight((current) => current === nextHeight ? current : nextHeight);
+  }, []);
+  const handleDraftProgressLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.ceil(event.nativeEvent.layout.height);
+    setDraftProgressHeight((current) => current === nextHeight ? current : nextHeight);
+  }, []);
   const handleBottomNavMeasure = useCallback((event: LayoutChangeEvent) => {
     const nextHeight = Math.ceil(viewportHeight - event.nativeEvent.layout.y);
     setBottomNavHeight((current) => current === nextHeight ? current : nextHeight);
   }, [viewportHeight]);
 
+  // A scroll run as the keyboard starts to show can stop short of the end, or not move at all: on
+  // iOS the view is still animating to its height above the keyboard. So once the keyboard has
+  // shown the end comes into view again, until the writer types or drags; after that another
+  // keyboard or the suggestions bar leaves the scroll where it is.
+  const keyboardSettlingRef = useRef(false);
+  useEffect(() => {
+    keyboardSettlingRef.current = keyboardVisible;
+  }, [keyboardVisible]);
   useEffect(() => {
     // The voice reply sits above the full story: scrolling to the document end
     // would hide the focused answer when the keyboard opens.
     if (!keyboardVisible || footerHeight === 0 || inputMode === 'voice') {
+      keyboardSettlingRef.current = false;
       return;
     }
 
@@ -1467,6 +1494,26 @@ function RecordingScreen() {
 
     return () => cancelAnimationFrame(frame);
   }, [footerHeight, inputMode, keyboardVisible]);
+  useEffect(() => {
+    let frame: number | undefined;
+    const subscription = Keyboard.addListener('keyboardDidShow', () => {
+      if (!keyboardSettlingRef.current) return;
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      });
+    });
+    return () => {
+      subscription.remove();
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
+  }, []);
+  useEffect(() => {
+    keyboardSettlingRef.current = false;
+  }, [transcript, captureReview?.text]);
+  const handleScrollBeginDrag = useCallback(() => {
+    keyboardSettlingRef.current = false;
+  }, []);
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
@@ -1971,6 +2018,8 @@ function RecordingScreen() {
           <HeaderScrollView
             ref={scrollViewRef}
             onScroll={onHeaderScroll}
+            onLayout={handleScrollViewportLayout}
+            onScrollBeginDrag={handleScrollBeginDrag}
             scrollEventThrottle={16}
             style={[
               styles.scrollView,
@@ -2073,9 +2122,10 @@ function RecordingScreen() {
                   expanded={!isCompactLandscape}
                   // At rest the editor fills what the screen leaves it, and on a short window (the
                   // folded iPhone Duo, the open one on its side) gives up height rather than run
-                  // under Save. With the keyboard up, and on desktop where nothing else sizes it,
-                  // it keeps its 260 pt.
+                  // under Save. With the keyboard up it keeps its 260 pt as far as the view above
+                  // the keyboard has room, and on desktop, where nothing else sizes it, it keeps them.
                   fitsRoom={!keyboardVisible && !isDesktopWeb}
+                  room={keyboardEditorRoom}
                   layout="textFirst"
                   ref={textInputRef}
                   value={transcript}
@@ -2112,8 +2162,8 @@ function RecordingScreen() {
                   onClear={handleClearTranscript}
                 />}
 
-                {hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice' ? (
-                  <RecordingDraftProgress value={captureReview?.text ?? transcript} />
+                {showsDraftProgress ? (
+                  <RecordingDraftProgress value={captureReview?.text ?? transcript} onLayout={handleDraftProgressLayout} />
                 ) : null}
 
               </View>

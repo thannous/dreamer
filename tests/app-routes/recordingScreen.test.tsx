@@ -62,10 +62,15 @@ let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockViewportWidth = 390;
 let mockViewportHeight = 844;
 let mockBottomInset = 0;
+let mockTopInset = 0;
 let mockFontScale = 1;
 let mockFooterLayout: ((event: any) => void) | undefined;
 let mockBottomNavLayout: ((event: any) => void) | undefined;
+let mockScrollLayout: ((event: any) => void) | undefined;
+let mockProgressLayout: ((event: any) => void) | undefined;
+const mockScrollToEnd = jest.fn();
 let mockKeyboardListeners: Record<string, () => void> = {};
+let mockKeyboardSubscribers: Record<string, Set<() => void>> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
@@ -127,8 +132,12 @@ jest.doMock('react-native', () => {
         },
         ref: React.ForwardedRef<HTMLElement>
       ) => {
-        if (typeof onLayout === 'function') mockFooterLayout = onLayout as (event: any) => void;
-        return React.createElement(tag, { ...props, 'data-testid': testID, ref }, children);
+        // The draft count reports its own height.
+        if (typeof onLayout === 'function' && testID === TID.Component.RecordingDraftProgress) mockProgressLayout = onLayout as (event: any) => void;
+        else if (typeof onLayout === 'function') mockFooterLayout = onLayout as (event: any) => void;
+        let nativeStyle: string | undefined;
+        try { nativeStyle = _style === undefined ? undefined : JSON.stringify(_style); } catch { nativeStyle = undefined; }
+        return React.createElement(tag, { ...props, 'data-testid': testID, 'data-native-style': nativeStyle, ref }, children);
       }
     );
     MockNativeElement.displayName = `MockNative${tag}`;
@@ -141,6 +150,7 @@ jest.doMock('react-native', () => {
         children,
         contentContainerStyle: _contentContainerStyle,
         keyboardShouldPersistTaps: _keyboardShouldPersistTaps,
+        onLayout,
         style,
         testID,
         ...props
@@ -149,13 +159,15 @@ jest.doMock('react-native', () => {
         children?: React.ReactNode;
         contentContainerStyle?: unknown;
         keyboardShouldPersistTaps?: unknown;
+        onLayout?: (event: any) => void;
         style?: unknown;
         testID?: string;
         [key: string]: any;
       },
       ref: React.ForwardedRef<{ scrollToEnd: () => void; scrollTo: () => void }>
     ) => {
-      React.useImperativeHandle(ref, () => ({ scrollToEnd: jest.fn(), scrollTo: jest.fn() }));
+      React.useImperativeHandle(ref, () => ({ scrollToEnd: mockScrollToEnd, scrollTo: jest.fn() }));
+      if (onLayout) mockScrollLayout = onLayout;
       return (
         <div {...props} aria-busy={accessibilityState?.busy} data-testid={testID} data-native-style={JSON.stringify(style)}>
           {children}
@@ -220,9 +232,12 @@ jest.doMock('react-native', () => {
     },
     Keyboard: {
       isVisible: () => false,
+      // Every subscriber hears the event, as on a device.
       addListener: (event: string, listener: () => void) => {
-        mockKeyboardListeners[event] = listener;
-        return { remove: () => { delete mockKeyboardListeners[event]; } };
+        const listeners = (mockKeyboardSubscribers[event] ??= new Set());
+        listeners.add(listener);
+        mockKeyboardListeners[event] = () => { for (const subscriber of [...listeners]) subscriber(); };
+        return { remove: () => { listeners.delete(listener); } };
       },
       dismiss: jest.fn(),
     },
@@ -256,7 +271,7 @@ jest.doMock('react-native', () => {
 });
 
 jest.doMock('react-native-safe-area-context', () => ({
-  useSafeAreaInsets: () => ({ top: 0, bottom: mockBottomInset, left: 0, right: 0 }),
+  useSafeAreaInsets: () => ({ top: mockTopInset, bottom: mockBottomInset, left: 0, right: 0 }),
 }));
 
 jest.doMock('expo-linear-gradient', () => ({
@@ -305,6 +320,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
       {
         disabled,
         layout,
+        room,
         onChange,
         onSelectionChange,
         onSwitchToVoice,
@@ -316,6 +332,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
       }: {
         disabled?: boolean;
         layout: string;
+        room?: number;
         onChange: (value: string) => void;
         onSelectionChange?: (event: { nativeEvent: { selection: { start: number; end: number } } }) => void;
         onSwitchToVoice: () => void;
@@ -327,7 +344,7 @@ jest.doMock('@/components/recording/RecordingTextInput', () => {
       },
       ref: React.ForwardedRef<HTMLTextAreaElement>
     ) => (
-      <div data-layout={layout} data-testid="recording-composer">
+      <div data-layout={layout} data-room={room} data-testid="recording-composer">
         {onClear && value ? <button data-testid={TID.Button.ClearDream} onClick={onClear}>Clear</button> : null}
         {showVoiceHint ? <span data-testid="recording-voice-hint">Voice hint</span> : null}
         <textarea
@@ -812,6 +829,56 @@ describe('Recording screen', () => {
     expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
   });
 
+  // Below a top inset the editor's top also clears the status bar's veil: 28 points, not 12.
+  it.each([
+    [0, '215', '177'],
+    [47, '199', '161'],
+  ])('fits the editor above the keyboard and leaves no empty end for Save (top inset %i)', async (topInset: number, room: string, roomAfterTyping: string) => {
+    mockPlatformOS = 'android';
+    mockTopInset = topInset;
+    mockBottomInset = 34;
+    mockViewportWidth = 466;
+    mockViewportHeight = 678;
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    act(() => mockFooterLayout?.({ nativeEvent: { layout: { height: 64 } } }));
+    act(() => mockKeyboardListeners.keyboardDidShow?.());
+    act(() => { jest.advanceTimersByTime(32); });
+    mockScrollToEnd.mockClear();
+
+    // A short window above the keyboard: 278 points between the top of the view and Save.
+    act(() => {
+      mockScrollLayout?.({ nativeEvent: { layout: { height: 278 } } });
+      mockProgressLayout?.({ nativeEvent: { layout: { height: 21 } } });
+    });
+    act(() => { jest.advanceTimersByTime(32); });
+
+    const composer = screen.getByTestId('recording-composer');
+    // 278, less 12 above the editor and its 2 of border, the 12 gap and 21 for the draft count,
+    // and the 16 padding.
+    expect(composer.getAttribute('data-room')).toBe(room);
+    // The document is the editor's section and its padding: Save, after the scroll view, adds nothing.
+    const documentStyles = JSON.parse(composer.parentElement?.parentElement?.getAttribute('data-native-style') ?? '[]');
+    expect(Object.assign({}, ...documentStyles.flat().filter(Boolean)).paddingBottom).toBe(16);
+    // Scrolled to the end again once the keyboard has shown (on iOS, after the view's animation).
+    act(() => mockKeyboardListeners.keyboardDidShow?.());
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(mockScrollToEnd).toHaveBeenCalledTimes(1);
+
+    // Once the writer types, another keyboard leaves the scroll where the writer has it.
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A station full of clocks.' } });
+    act(() => {
+      mockKeyboardListeners.keyboardDidShow?.();
+      mockScrollLayout?.({ nativeEvent: { layout: { height: 240 } } });
+    });
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(mockScrollToEnd).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBe(roomAfterTyping);
+
+    act(() => mockKeyboardListeners.keyboardDidHide?.());
+    expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBeNull();
+  });
+
   beforeEach(() => {
     jest.useFakeTimers();
     mockCurrentUser = { id: 'user-1' };
@@ -825,10 +892,15 @@ describe('Recording screen', () => {
     mockViewportWidth = 390;
     mockViewportHeight = 844;
     mockBottomInset = 0;
+    mockTopInset = 0;
     mockFontScale = 1;
     mockFooterLayout = undefined;
     mockBottomNavLayout = undefined;
+    mockScrollLayout = undefined;
+    mockProgressLayout = undefined;
+    mockScrollToEnd.mockClear();
     mockKeyboardListeners = {};
+    mockKeyboardSubscribers = {};
     mockOnPartialTranscript = undefined;
     mockOnNativeEnd = undefined;
     mockAppStateHandler = undefined;

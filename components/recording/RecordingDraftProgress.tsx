@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions, type ViewProps } from 'react-native';
 
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -13,9 +13,10 @@ import { getRecordingDraftProgress } from '@/lib/recordingDraftProgress';
 
 type RecordingDraftProgressProps = {
   value: string;
+  onLayout?: ViewProps['onLayout'];
 };
 
-export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
+export function RecordingDraftProgress({ value, onLayout }: RecordingDraftProgressProps) {
   const { colors, mode } = useTheme();
   const { fontScale } = useWindowDimensions();
   const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
@@ -37,6 +38,7 @@ export function RecordingDraftProgress({ value }: RecordingDraftProgressProps) {
     <View
       style={styles.container}
       testID={TID.Component.RecordingDraftProgress}
+      onLayout={onLayout}
     >
       <View style={styles.headerRow}>
         {shouldShowHint ? (
