@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { browserInstallArgs, installBrowsers } from './install-browsers.mjs';
 
-function packages(t, matcherVersion = '1.64.0') {
+function packages(t, matcherVersion = '1.64.1') {
   // Node resolves package entry points through filesystem aliases (e.g. /var on macOS).
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'browser installer ')));
   t.after(() => rmSync(root, { recursive: true, force: true }));
@@ -17,11 +17,11 @@ function packages(t, matcherVersion = '1.64.0') {
     writeFileSync(join(directory, 'package.json'), JSON.stringify({ version, ...extra }));
     return directory;
   }
-  const web = pkg('@e2e-dev/web', '0.15.2', { main: 'index.js' });
+  const web = pkg('@e2e-dev/web', '0.15.3', { main: 'index.js' });
   writeFileSync(join(web, 'index.js'), '');
   pkg('playwright', matcherVersion);
   pkg('playwright-core', 'unrelated-root-version');
-  const core = pkg('@e2e-dev/web/node_modules/playwright-core', '1.64.0');
+  const core = pkg('@e2e-dev/web/node_modules/playwright-core', '1.64.1');
   return { require: createRequire(join(root, 'package.json')), cli: join(core, 'cli.js') };
 }
 
