@@ -3253,6 +3253,34 @@ describe('useDreamJournal', () => {
       expect(mockAnalyzeDreamText).not.toHaveBeenCalled();
     });
 
+    it('resumes an ambiguously submitted POST with the same key after a restart', async () => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101, isAnalyzed: false, analysisStatus: 'none' });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      mockSubmitDreamAnalysisJob.mockRejectedValueOnce(new TypeError('Network reply lost'));
+      const first = await renderLoadedDreamJournal();
+      await act(async () => {
+        await expect(first.result.current.analyzeDream(1, existingDream.transcript)).rejects.toThrow('Network reply lost');
+      });
+      const pending = first.result.current.dreams[0];
+      expect(pending.analysisStatus).toBe('pending');
+      expect(pending.analysisRequestId).toBeTruthy();
+      expect(first.result.current.lastAnalysisOutcome).toBeNull();
+      first.unmount();
+      setCachedRemoteDreams([pending]);
+      mockFetchDreamsFromSupabase.mockResolvedValue([pending]);
+      mockGetDreamAnalysisJobStatus.mockRejectedValueOnce(new Error('Still offline'));
+      const restarted = await renderLoadedDreamJournal();
+      await act(async () => {
+        await expect(restarted.result.current.analyzeDream(1, pending.transcript)).rejects.toThrow('Still offline');
+      });
+      expect(mockSubmitDreamAnalysisJob).toHaveBeenNthCalledWith(2, expect.objectContaining({
+        analysisRequestId: pending.analysisRequestId,
+      }));
+    });
+
     it('surfaces a durable analysis quota denial as an upgrade error', async () => {
       mockEnvState.analysisJobsEnabled = true;
       setMockUser({ id: 'user-1' });

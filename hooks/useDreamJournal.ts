@@ -1636,6 +1636,7 @@ export const useDreamJournal = () => {
         }
       };
 
+      let serverJobSubmissionStarted = false;
       let serverJobAccepted = false;
       let serverJobTerminalFailure = false;
 
@@ -1644,6 +1645,7 @@ export const useDreamJournal = () => {
         if (useServerAnalysisJob) {
           assertAnalysisScope();
           markPerformance('analysis.http_started', { trace: analysisTrace });
+          serverJobSubmissionStarted = true;
           const command = await submitDreamAnalysisJob({
             dreamId: syncedDream.remoteId!,
             analysisRequestId: requestId,
@@ -1839,6 +1841,21 @@ export const useDreamJournal = () => {
           && (responseBody.code === 'ANALYSIS_ALREADY_CLAIMED'
             || responseBody.code === 'ANALYSIS_TRANSCRIPT_MISMATCH'
             || responseBody.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED');
+        const responseStatus = error && typeof error === 'object' && 'status' in error
+          && typeof error.status === 'number' ? error.status : undefined;
+        const confirmedSubmissionRejection = serverJobSubmissionStarted && !serverJobAccepted
+          && responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500;
+        if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection
+          && !(error instanceof AiConsentWithdrawnError)) {
+          // The POST may have committed before its reply was lost. Persist the same
+          // key across restarts, just as for an acknowledged job awaiting its result.
+          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
+          await persistDreamClientState({
+            ...resolveCurrentDream(currentDreamState),
+            analysisStatus: 'pending', analysisRequestId: requestId,
+          });
+          throw quotaError ?? error;
+        }
         setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         if (serverJobAccepted) {
           if (serverJobTerminalFailure) {
@@ -1864,9 +1881,9 @@ export const useDreamJournal = () => {
           analysisStatus: 'failed',
           // A spent or transcript-mismatched receipt cannot fund another
           // provider call. A later explicit retry needs a fresh quota claim.
-          ...(nonReusableRequest ? { analysisRequestId: undefined } : {}),
+          ...(nonReusableRequest || confirmedSubmissionRejection ? { analysisRequestId: undefined } : {}),
         };
-        if (nonReusableRequest) {
+        if (nonReusableRequest || confirmedSubmissionRejection) {
           analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
           quotaService.invalidate(user);
         }
