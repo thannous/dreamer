@@ -909,6 +909,35 @@ describe('Recording screen', () => {
     expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBeNull();
   });
 
+  it.each([['ios', 'keyboardWillShow', 0], ['android', 'keyboardDidShow', 16 + 34]])('ends the folded iPhone Duo\'s document for the %s keyboard', async (os: string, showEvent: string, end: number) => {
+    mockPlatformOS = os as typeof mockPlatformOS;
+    mockBottomInset = 34;
+    mockViewportWidth = 678;
+    mockViewportHeight = 466;
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    const documentEnd = () => {
+      const styles = JSON.parse(screen.getByTestId('recording-composer').parentElement?.parentElement?.getAttribute('data-native-style') ?? '[]');
+      return Object.assign({}, ...styles.flat().filter(Boolean)).paddingBottom;
+    };
+    // Save follows the editor in this short window.
+    expect(screen.getByTestId(TID.Screen.Recording).contains(getCaptureSaveAction())).toBe(true);
+    expect(documentEnd()).toBe(16);
+    act(() => { jest.advanceTimersByTime(32); });
+    mockScrollToEnd.mockClear();
+
+    // On iOS Save keeps only its own 8 points above the keyboard, which covers the home indicator:
+    // on the Duo the view above it is 220 points, and an end padded for the indicator took the
+    // writing area's first line off the screen.
+    act(() => mockKeyboardListeners[showEvent]?.());
+    expect(screen.getByTestId(TID.Screen.Recording).contains(getCaptureSaveAction())).toBe(true);
+    expect(documentEnd()).toBe(end);
+    // Save comes into view above the keyboard, though no footer outside the document was ever
+    // measured: Capture first shown folded.
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(mockScrollToEnd).toHaveBeenCalled();
+  });
+
   beforeEach(() => {
     jest.useFakeTimers();
     mockCurrentUser = { id: 'user-1' };
@@ -2645,6 +2674,15 @@ describe('Recording screen', () => {
     // Keyboard up, the column shows no navigation, as the bottom bar hides.
     act(() => mockKeyboardListeners.keyboardWillShow?.());
     expect(mockSideColumnBar).toBeNull();
+  });
+
+  it.each([['ios', 'padding'], ['android', 'height']])('avoids the %s keyboard with the %s behavior', async (os: string, behavior: string) => {
+    mockPlatformOS = os as typeof mockPlatformOS;
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    // Resized to the keyboard, iOS's view adds each keyboard to its last height: folding the
+    // iPhone Duo with the keyboard up pushed the writing area and Save above the screen.
+    expect(screen.getByTestId(TID.Screen.Recording).parentElement?.getAttribute('behavior')).toBe(behavior);
   });
 
   it('lets the side column\'s Capture button start a Tell reply', async () => {

@@ -183,6 +183,10 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
         />
         {showInlineActions ? (
           <View
+            // The bar lies over the input's foot, the whole width: a touch beside its buttons
+            // writes, as it would anywhere else in the area. The compact editor of one line (the
+            // folded iPhone Duo) is 96 pt tall, and the bar covers its lower 50.
+            pointerEvents="box-none"
             style={[
               styles.inlineActionFooter,
               expanded && styles.inlineActionFooterExpanded,
