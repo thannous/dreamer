@@ -149,6 +149,41 @@
       "expo-app-intents",
       "./plugins/withAppIntentsLocalizations",
       [
+        "./plugins/withWidgetGalleryStrings",
+        {
+          "de": {
+            "Tell my dream": "Traum erzählen",
+            "Opens the capture screen in one tap, from the Lock Screen or the Home Screen.": "Erzähl deinen Traum mit einem Tippen, vom Sperrbildschirm oder vom Home-Bildschirm aus.",
+            "Last painted dream": "Letzter gemalter Traum",
+            "Your latest dream's painting. Tap it to reopen the dream.": "Das Bild deines letzten Traums. Tippe darauf, um den Traum wieder zu öffnen."
+          },
+          "es": {
+            "Tell my dream": "Contar mi sueño",
+            "Opens the capture screen in one tap, from the Lock Screen or the Home Screen.": "Cuenta tu sueño con un toque, desde la pantalla de bloqueo o la de inicio.",
+            "Last painted dream": "Último sueño pintado",
+            "Your latest dream's painting. Tap it to reopen the dream.": "La pintura de tu último sueño. Tócala para volver a abrirlo."
+          },
+          "fr": {
+            "Tell my dream": "Raconter mon rêve",
+            "Opens the capture screen in one tap, from the Lock Screen or the Home Screen.": "Raconte ton rêve en un geste, depuis l’écran verrouillé ou l’écran d’accueil.",
+            "Last painted dream": "Dernier rêve peint",
+            "Your latest dream's painting. Tap it to reopen the dream.": "La peinture de ton dernier rêve. Touche-la pour rouvrir le rêve."
+          },
+          "it": {
+            "Tell my dream": "Racconta il mio sogno",
+            "Opens the capture screen in one tap, from the Lock Screen or the Home Screen.": "Racconta il tuo sogno con un tocco, dalla schermata di blocco o dalla schermata Home.",
+            "Last painted dream": "Ultimo sogno dipinto",
+            "Your latest dream's painting. Tap it to reopen the dream.": "Il dipinto del tuo ultimo sogno. Toccalo per riaprire il sogno."
+          },
+          "pt": {
+            "Tell my dream": "Contar meu sonho",
+            "Opens the capture screen in one tap, from the Lock Screen or the Home Screen.": "Conte seu sonho com um toque, da tela bloqueada ou da tela de início.",
+            "Last painted dream": "Último sonho pintado",
+            "Your latest dream's painting. Tap it to reopen the dream.": "A pintura do seu último sonho. Toque nela para abrir o sonho de novo."
+          }
+        }
+      ],
+      [
         "expo-widgets",
         {
           "widgets": [
