@@ -1,6 +1,6 @@
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { RecordingDurationLabel } from '@/components/recording/RecordingDurationLabel';
-import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
+import { BOTTOM_NAV_HREFS, NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
@@ -24,6 +24,7 @@ import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { DREAM_TRANSCRIPT_MAX_CHARS, GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useContentWindow } from '@/context/ContentWindowContext';
+import { useSideColumnTabBar, useTabBarInSideColumn } from '@/context/SideColumnTabBarContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -1361,6 +1362,9 @@ function RecordingScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
+  // On the iPhone Duo the navigation stands in the side column, beside the screen.
+  const navInSideColumn = useTabBarInSideColumn();
+  const showsNavigation = !keyboardVisible && !isDesktopWeb && !editableCapture;
   const chatMode = inputMode === 'voice' && !editableCapture;
   const chatLayout = chatMode && !isCompactLandscape;
   const captureStage = !chatLayout && !keyboardVisible && !isDesktopWeb;
@@ -1394,11 +1398,9 @@ function RecordingScreen() {
     }
   }, [captureReview, isHydrated, isPersisting, persistBeforeExit, resetComposer, t]);
 
-  const fixedFooterBottomOffset = keyboardVisible
-    ? insets.bottom
-    : isDesktopWeb || editableCapture
-      ? insets.bottom
-      : Math.max(bottomNavHeight, insets.bottom);
+  const fixedFooterBottomOffset = showsNavigation && !navInSideColumn
+    ? Math.max(bottomNavHeight, insets.bottom)
+    : insets.bottom;
   // Keep the scroll viewport above Save and navigation at every text size.
   // Content padding alone still lets the draft status paint behind the button.
   const separateFooterViewport = !keyboardVisible;
@@ -1833,6 +1835,16 @@ function RecordingScreen() {
     stopRecording,
     transcript,
   ]);
+  const capturePressHint = inputMode !== 'voice'
+    ? t('nav.capture_focus_hint')
+    : t(isVoiceListening ? 'recording.conversation.mute' : 'recording.mode.switch_to_voice');
+  useSideColumnTabBar('recording', showsNavigation ? {
+    // Capture sits above the tab navigator: return to that instance, as the bottom bar does.
+    onSelect: (key) => router.dismissTo(BOTTOM_NAV_HREFS[key]),
+    captureIcon: inputMode === 'voice' ? 'mic' : 'pencil',
+    onCapturePress: handleCaptureNavPress,
+    capturePressHint,
+  } : null);
 
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;
@@ -2177,14 +2189,12 @@ function RecordingScreen() {
             </View>
           ) : null}
         </KeyboardAvoidingView>
-        {!keyboardVisible && !isDesktopWeb && !editableCapture ? (
+        {showsNavigation && !navInSideColumn ? (
           <NoctaliaBottomNav
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
             onCapturePress={handleCaptureNavPress}
-            capturePressHint={inputMode !== 'voice'
-              ? t('nav.capture_focus_hint')
-              : t(isVoiceListening ? 'recording.conversation.mute' : 'recording.mode.switch_to_voice')}
+            capturePressHint={capturePressHint}
             onBarLayout={handleBottomNavMeasure}
           />
         ) : null}

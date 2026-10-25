@@ -1,13 +1,28 @@
 /* @jest-environment jsdom */
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { DesktopShell } from '@/components/navigation/DesktopShell';
 import { DarkTheme, LightTheme } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { getScreenInsets, useContentWindow } from '@/context/ContentWindowContext';
+import {
+  getSideColumn,
+  useSideColumnTabBar,
+  useTabBarInSideColumn,
+  type NavigationKey,
+  type SideColumn,
+  type SideColumnTabBar as SideColumnTabBarState,
+  type SideColumnTabBarOwner,
+} from '@/context/SideColumnTabBarContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+// The repository has no react-dom types: the two calls a render outside act needs.
+const { flushSync } = jest.requireActual<{ flushSync: (update: () => void) => void }>('react-dom');
+const { createRoot } = jest.requireActual<{
+  createRoot: (container: Element) => { render: (element: React.ReactNode) => void; unmount: () => void };
+}>('react-dom/client');
 
 let mockPathname = '/journal';
 let mockInsets = { top: 20, right: 54, bottom: 20, left: 0 };
@@ -31,12 +46,45 @@ jest.mock('react-native-safe-area-context', () => {
 });
 jest.mock('expo-router', () => ({ usePathname: () => mockPathname }));
 jest.mock('@/components/navigation/DesktopSidebar', () => ({ DesktopSidebar: () => null }));
+jest.mock('@/components/navigation/SideColumnTabBar', () => ({
+  SideColumnTabBar: ({ column, bar, windowHeight, bottomInset }: {
+    column: SideColumn;
+    bar: SideColumnTabBarState;
+    windowHeight: number;
+    bottomInset: number;
+  }) => (
+    <button
+      data-testid="side-column-bar"
+      data-column={JSON.stringify(column)}
+      data-active={bar.activeKey}
+      data-window-height={windowHeight}
+      data-bottom-inset={bottomInset}
+      aria-description={bar.capturePressHint}
+      onClick={() => (bar.activeKey === 'addDream' ? bar.onCapturePress?.() : bar.onSelect('stats'))}
+    />
+  ),
+}));
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: jest.requireActual('@/constants/journalTheme').LightTheme, mode: 'light' }),
 }));
 
 function ContentWidth() {
   return <span data-testid="content-width">{useContentWindow().width}</span>;
+}
+
+function Navigation({ owner, shown, onSelect, onCapturePress, hint }: {
+  owner: SideColumnTabBarOwner;
+  shown: boolean;
+  onSelect: (key: NavigationKey) => void;
+  onCapturePress?: () => void;
+  hint?: string;
+}) {
+  const inColumn = useSideColumnTabBar(owner, shown ? { onSelect, onCapturePress, capturePressHint: hint } : null);
+  return <span data-testid={`in-column-${owner}`}>{String(inColumn)}</span>;
+}
+
+function FreedBottom() {
+  return <span data-testid="freed-bottom">{String(useTabBarInSideColumn())}</span>;
 }
 
 function TopInset() {
@@ -86,4 +134,116 @@ it('leaves the system insets alone wherever the status bar sits at the top or no
   expect(getScreenInsets(browser)).toBe(browser);
   // A phone on its side: the camera on one side, no status bar.
   expect(getScreenInsets({ top: 0, right: 59, bottom: 21, left: 59 })).toEqual({ top: 16, right: 59, bottom: 21, left: 59 });
+});
+
+describe('the navigation in the iPhone Duo side column', () => {
+  const duo = { top: 0, right: 84, bottom: 34, left: 0 };
+  const bar = () => screen.queryByTestId('side-column-bar');
+
+  function Screens(props: {
+    tabs: boolean;
+    recording: boolean;
+    onTabSelect?: (key: NavigationKey) => void;
+    onCapturePress?: () => void;
+  }) {
+    return (
+      <DesktopShell>
+        <Navigation owner="tabs" shown={props.tabs} onSelect={props.onTabSelect ?? jest.fn()} />
+        <Navigation owner="recording" shown={props.recording} onSelect={jest.fn()}
+          onCapturePress={props.onCapturePress} hint="focus" />
+        <FreedBottom />
+      </DesktopShell>
+    );
+  }
+
+  it('finds the column where iOS puts its own bars, and nowhere else', () => {
+    // Measured in the iPhone Duo simulator (iOS 27.1): folded, and open on its side.
+    expect(getSideColumn({ left: 0, right: 84 }, 'ios')).toEqual({ side: 'right', width: 84 });
+    expect(getSideColumn({ left: 84, right: 0 }, 'ios')).toEqual({ side: 'left', width: 84 });
+    // Open upright, a phone upright, a phone on its side (camera on one side, both kept clear).
+    expect(getSideColumn({ left: 0, right: 0 }, 'ios')).toBeNull();
+    expect(getSideColumn({ left: 62, right: 62 }, 'ios')).toBeNull();
+    expect(getSideColumn({ left: 84, right: 84 }, 'ios')).toBeNull();
+    // Too narrow for the labels; Android's side insets are its navigation bar or camera, the web has none.
+    expect(getSideColumn({ left: 0, right: 54 }, 'ios')).toBeNull();
+    expect(getSideColumn({ left: 0, right: 84 }, 'android')).toBeNull();
+    expect(getSideColumn({ left: 0, right: 84 }, 'web')).toBeNull();
+  });
+
+  it('draws the navigation of the screen on show in the folded Duo column, and none above the tabs', () => {
+    mockInsets = duo;
+    const onTabSelect = jest.fn();
+    const onCapturePress = jest.fn();
+    const screens = (tabs: boolean, recording: boolean) => (
+      <Screens tabs={tabs} recording={recording} onTabSelect={onTabSelect} onCapturePress={onCapturePress} />
+    );
+    const { rerender } = render(screens(true, true));
+
+    expect(bar()?.getAttribute('data-active')).toBe('journal');
+    expect(JSON.parse(bar()?.getAttribute('data-column') ?? '{}')).toEqual({ side: 'right', width: 84 });
+    expect(bar()?.getAttribute('data-window-height')).toBe('678');
+    expect(bar()?.getAttribute('data-bottom-inset')).toBe('34');
+    expect(screen.getByTestId('in-column-tabs').textContent).toBe('true');
+    expect(screen.getByTestId('freed-bottom').textContent).toBe('true');
+    fireEvent.click(bar()!);
+    expect(onTabSelect).toHaveBeenCalledWith('stats');
+
+    // Capture sits above the tabs: its own bar, its own Capture press.
+    mockPathname = '/recording';
+    rerender(screens(true, true));
+    expect(bar()?.getAttribute('data-active')).toBe('addDream');
+    expect(bar()?.getAttribute('aria-description')).toBe('focus');
+    fireEvent.click(bar()!);
+    expect(onCapturePress).toHaveBeenCalledTimes(1);
+
+    // Back from Capture to a tab, Capture gone in the same render: that tab is the active one at once.
+    mockPathname = '/statistics';
+    rerender(screens(true, false));
+    expect(bar()?.getAttribute('data-active')).toBe('stats');
+
+    // A dream pushed above the tabs, or Capture with the keyboard up: the column keeps only the status bar.
+    mockPathname = '/journal/12';
+    rerender(screens(true, true));
+    expect(bar()).toBeNull();
+    mockPathname = '/recording';
+    rerender(screens(true, false));
+    expect(bar()).toBeNull();
+    mockPathname = '/';
+    rerender(screens(true, false));
+    expect(bar()?.getAttribute('data-active')).toBe('home');
+  });
+
+  it('hands the navigation over before the frame is drawn', () => {
+    // Outside act, which also runs the effects React leaves until after the frame.
+    const environment = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
+    const actEnvironment = environment.IS_REACT_ACT_ENVIRONMENT;
+    environment.IS_REACT_ACT_ENVIRONMENT = false;
+    mockInsets = duo;
+    const container = document.body.appendChild(document.createElement('div'));
+    const root = createRoot(container);
+    const drawn = () => container.querySelector('[data-testid="side-column-bar"]')?.getAttribute('data-active');
+    try {
+      flushSync(() => root.render(<Screens tabs recording={false} />));
+      expect(drawn()).toBe('journal');
+      // Capture opens above the tabs: its bar is in the frame that shows it.
+      mockPathname = '/recording';
+      flushSync(() => root.render(<Screens tabs recording />));
+      expect(drawn()).toBe('addDream');
+    } finally {
+      flushSync(() => root.unmount());
+      container.remove();
+      environment.IS_REACT_ACT_ENVIRONMENT = actEnvironment;
+    }
+  });
+
+  it.each([
+    ['a phone upright', { top: 62, right: 0, bottom: 34, left: 0 }],
+    ['a phone on its side', { top: 0, right: 62, bottom: 21, left: 62 }],
+  ])('keeps the bar at the bottom on %s', (_name: string, insets: typeof duo) => {
+    mockInsets = insets;
+    render(<Screens tabs recording />);
+    expect(bar()).toBeNull();
+    expect(screen.getByTestId('in-column-tabs').textContent).toBe('false');
+    expect(screen.getByTestId('freed-bottom').textContent).toBe('false');
+  });
 });

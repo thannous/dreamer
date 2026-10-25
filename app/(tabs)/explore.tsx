@@ -1,5 +1,6 @@
 import type { ViewInstance } from 'react-native';
 import { useContentWindow } from '@/context/ContentWindowContext';
+import { useTabBarInSideColumn } from '@/context/SideColumnTabBarContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { CollectionEntryCard } from '@/components/badges/CollectionEntry';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
@@ -135,7 +136,11 @@ function ExploreScreen() {
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const scrollHeader = navigationLayout.compact && navigationLayout.largeText && !isDesktopLayout;
-  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  const tabBarInSideColumn = useTabBarInSideColumn();
+  // In the iPhone Duo's side column the navigation leaves the bottom free but for the safe area.
+  const navigationClearance = tabBarInSideColumn
+    ? insets.bottom
+    : navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
     : (scrollHeader ? 0 : navigationClearance) + ThemeLayout.spacing.lg;

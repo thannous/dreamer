@@ -1,4 +1,5 @@
 import { useContentWindow } from '@/context/ContentWindowContext';
+import { useTabBarInSideColumn } from '@/context/SideColumnTabBarContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { DreamSymbolSheet } from '@/components/journal/symbols/DreamSymbolSheet';
@@ -152,7 +153,11 @@ function StatisticsScreen() {
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
-  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  const tabBarInSideColumn = useTabBarInSideColumn();
+  // In the iPhone Duo's side column the navigation leaves the bottom free but for the safe area.
+  const navigationClearance = tabBarInSideColumn
+    ? insets.bottom
+    : navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
     : scrollHeader ? ThemeLayout.spacing.lg : navigationClearance + ThemeLayout.spacing.lg;

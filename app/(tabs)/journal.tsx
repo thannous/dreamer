@@ -1,6 +1,7 @@
 import { markPerformance } from '@/lib/performanceTrace';
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useContentWindow } from '@/context/ContentWindowContext';
+import { useTabBarInSideColumn } from '@/context/SideColumnTabBarContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
@@ -158,9 +159,13 @@ function JournalListScreen() {
   // rotation cannot remount the input. Filters remain in ListHeaderComponent;
   // on short viewports the measured chrome can collapse as the list scrolls.
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
-  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  const tabBarInSideColumn = useTabBarInSideColumn();
+  const navigationClearance = tabBarInSideColumn
+    ? insets.bottom
+    : navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // The tab bar in app/(tabs)/_layout.tsx is position:absolute glass, so dreams scroll
-  // behind it and the list's bottom padding clears it for the last one. On phones the header and search stay
+  // behind it and the list's bottom padding clears it for the last one; in the iPhone Duo's
+  // side column it leaves the list's foot to the bottom safe area. On phones the header and search stay
   // mounted outside the column-keyed list but float over it: a header spacer and a
   // scroll translation carry them away with the first dreams, so the list gets the
   // whole screen once it scrolls.

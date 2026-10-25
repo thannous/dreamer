@@ -57,7 +57,7 @@ let mockPendingRecordingIntent: {
   phase: string;
 } | null = null;
 let mockTransitionOnboarding = jest.fn().mockResolvedValue(undefined);
-let mockPlatformOS: 'android' | 'web' = 'web';
+let mockPlatformOS: 'android' | 'ios' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockViewportWidth = 390;
 let mockViewportHeight = 844;
@@ -66,11 +66,19 @@ let mockTopInset = 0;
 let mockFontScale = 1;
 let mockFooterLayout: ((event: any) => void) | undefined;
 let mockBottomNavLayout: ((event: any) => void) | undefined;
+let mockInSideColumn = false;
+let mockSideColumnBar: {
+  onSelect: (key: string) => void;
+  captureIcon?: string;
+  onCapturePress?: () => void;
+  capturePressHint?: string;
+} | null = null;
+const mockDismissTo = jest.fn();
 let mockScrollLayout: ((event: any) => void) | undefined;
 let mockProgressLayout: ((event: any) => void) | undefined;
 const mockScrollToEnd = jest.fn();
 let mockKeyboardListeners: Record<string, () => void> = {};
-let mockKeyboardSubscribers: Record<string, Set<() => void>> = {};
+let mockKeyboardSubscribers: Record<string, Set<(event: { duration: number }) => void>> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
@@ -104,6 +112,7 @@ jest.doMock('expo-router', () => ({
     canGoBack: mockCanGoBack,
     push: mockPush,
     replace: mockReplace,
+    dismissTo: mockDismissTo,
     setParams: jest.fn(),
   },
   useFocusEffect: mockUseFocusEffect,
@@ -233,10 +242,11 @@ jest.doMock('react-native', () => {
     Keyboard: {
       isVisible: () => false,
       // Every subscriber hears the event, as on a device.
-      addListener: (event: string, listener: () => void) => {
+      addListener: (event: string, listener: (event: { duration: number }) => void) => {
         const listeners = (mockKeyboardSubscribers[event] ??= new Set());
         listeners.add(listener);
-        mockKeyboardListeners[event] = () => { for (const subscriber of [...listeners]) subscriber(); };
+        // iOS reports the keyboard's animation; none here.
+        mockKeyboardListeners[event] = () => { for (const subscriber of [...listeners]) subscriber({ duration: 0 }); };
         return { remove: () => { listeners.delete(listener); } };
       },
       dismiss: jest.fn(),
@@ -279,7 +289,22 @@ jest.doMock('expo-linear-gradient', () => ({
 }));
 
 
+jest.doMock('@/context/SideColumnTabBarContext', () => ({
+  useTabBarInSideColumn: () => mockInSideColumn,
+  useSideColumnTabBar: (_owner: string, bar: typeof mockSideColumnBar) => {
+    mockSideColumnBar = bar;
+    return mockInSideColumn;
+  },
+}));
+
 jest.doMock('@/components/navigation/NoctaliaBottomNav', () => ({
+  BOTTOM_NAV_HREFS: {
+    home: '/(tabs)',
+    journal: '/(tabs)/journal',
+    addDream: '/recording',
+    stats: '/(tabs)/statistics',
+    explore: '/(tabs)/explore',
+  },
   NoctaliaBottomNav: ({ onBarLayout, onCapturePress }: { onBarLayout?: (event: any) => void; onCapturePress?: () => void }) => {
     mockBottomNavLayout = onBarLayout;
     return <div data-testid="recording-bottom-nav" onClick={onCapturePress} />;
@@ -896,6 +921,9 @@ describe('Recording screen', () => {
     mockFontScale = 1;
     mockFooterLayout = undefined;
     mockBottomNavLayout = undefined;
+    mockInSideColumn = false;
+    mockSideColumnBar = null;
+    mockDismissTo.mockClear();
     mockScrollLayout = undefined;
     mockProgressLayout = undefined;
     mockScrollToEnd.mockClear();
@@ -2576,6 +2604,54 @@ describe('Recording screen', () => {
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(questionCount);
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toContain('Un jardin au soleil.');
+  });
+
+  it('hands its navigation to the iPhone Duo side column and gives the bottom to Save', async () => {
+    mockPlatformOS = 'ios';
+    mockBottomInset = 34;
+    // Open upright, the Duo keeps the bar at the bottom; folded, its page sits beside the
+    // 84 pt status bar column.
+    mockViewportWidth = 669;
+    mockViewportHeight = 951;
+    const view = render(<RecordingScreen />);
+    await awaitEditorReady();
+    act(() => {
+      mockFooterLayout?.({ nativeEvent: { layout: { height: 96 } } });
+      mockBottomNavLayout?.({ nativeEvent: { layout: { y: 951 - 120 } } });
+    });
+    expect(screen.getByTestId('recording-bottom-nav')).toBeTruthy();
+    mockInSideColumn = true;
+    mockViewportWidth = 382;
+    mockViewportHeight = 678;
+    view.rerender(<RecordingScreen />);
+
+    expect(screen.queryByTestId('recording-bottom-nav')).toBeNull();
+    const styles = JSON.parse(screen.getByTestId(TID.Screen.Recording).getAttribute('data-native-style') ?? '[]');
+    // Save and the bottom safe area only: no room kept for a bar at the bottom.
+    expect(Object.assign({}, ...styles.filter(Boolean)).marginBottom).toBe(96 + 34);
+    expect(mockSideColumnBar).toEqual(expect.objectContaining({
+      captureIcon: 'pencil',
+      capturePressHint: 'nav.capture_focus_hint',
+    }));
+    // Capture sits above the tabs: another destination returns to them, as the bottom bar does.
+    act(() => mockSideColumnBar?.onSelect('journal'));
+    expect(mockDismissTo).toHaveBeenCalledWith('/(tabs)/journal');
+
+    // Keyboard up, the column shows no navigation, as the bottom bar hides.
+    act(() => mockKeyboardListeners.keyboardWillShow?.());
+    expect(mockSideColumnBar).toBeNull();
+  });
+
+  it('lets the side column\'s Capture button start a Tell reply', async () => {
+    mockPlatformOS = 'ios';
+    mockInSideColumn = true;
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    await waitFor(() => expect(mockSideColumnBar?.captureIcon).toBe('mic'));
+    await act(async () => { mockSideColumnBar?.onCapturePress?.(); });
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
   });
 
   it('lets the bar\'s Capture button start and mute a Tell reply like the conversation\'s microphone', async () => {
