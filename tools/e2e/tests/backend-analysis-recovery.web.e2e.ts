@@ -8,7 +8,7 @@ const analysisText = 'A lighthouse can be a point of orientation. What does this
 // transport is deterministic; the real worker is held after durable admission.
 test('Plus reanalysis survives reload and completes once while preserving its image', {
   tags: ['analysis-recovery'], timeout: 180_000,
-}, async ({ page, browser, accounts, recovery }) => {
+}, async ({ page, accounts, recovery }) => {
   const owner = client();
   expect((await owner.auth.signInWithPassword(accounts.plus)).error).toBeNull();
   await recovery.control({ reset: true, analysisHold: true });
@@ -51,18 +51,12 @@ test('Plus reanalysis survives reload and completes once while preserving its im
     const replaceImage = page.getByRole('checkbox', { name: 'Also regenerate the dream image', exact: true });
     await expect(replaceImage).toBeVisible();
     await expect(replaceImage).not.toBeChecked();
-    const consentPrompts: string[] = [];
-    const offConsent = await browser.onDialog(async dialog => {
-      consentPrompts.push(dialog.message);
-      await dialog.accept();
-    });
-    try {
-      await page.getByRole('button', { name: 'Update', exact: true }).click();
-      await expect.poll(() => consentPrompts.length).toBe(1);
-      expect(consentPrompts[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
-    } finally {
-      offConsent();
-    }
+    await page.getByRole('button', { name: 'Update', exact: true }).click();
+    const consent = page.getByTestId('modal.aiConsent');
+    await expect(consent).toBeVisible();
+    expect(await jobs()).toHaveLength(0);
+    await consent.getByTestId('btn.aiConsent.accept').click();
+    await expect(consent).toBeHidden();
     await expect.poll(async () => (await recovery.state()).analysisDispatches).toBeGreaterThan(0);
     const pending = await jobs();
     expect(pending).toHaveLength(1);

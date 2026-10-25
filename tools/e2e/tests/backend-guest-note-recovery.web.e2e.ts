@@ -29,7 +29,7 @@ async function guestSnapshot(page: Page, story: string) {
 }
 
 test('a guest personal note survives an old create receipt and reload until account migration is durable',
-  async ({ page, browser, browserSurface, accounts }) => {
+  async ({ page, browserSurface, accounts }) => {
     const owner = client();
     expect((await owner.auth.signInWithPassword(accounts.free)).error).toBeNull();
     const story = `E2E guest note recovery ${randomUUID()}: a notebook beside the river.`;
@@ -77,7 +77,12 @@ test('a guest personal note survives an old create receipt and reload until acco
       state.legacyRequest = noteMutation;
       await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(responses) });
     });
-    const stopDialogs = await browser.onDialog('dismiss');
+    // Saving can offer a reading or open the story directly, depending on the
+    // guest quota snapshot. Decline any AI prompt without requiring one to save.
+    const consent = page.getByTestId('modal.aiConsent');
+    await page.addLocatorHandler(consent, async modal => {
+      await modal.getByTestId('btn.aiConsent.decline').click();
+    });
     try {
       await page.goto('/');
       await page.getByTestId('btn.onboarding.intro.next').click();
@@ -90,6 +95,8 @@ test('a guest personal note survives an old create receipt and reload until acco
       await expect(later.or(savedStory).first()).toBeVisible();
       if (await later.isVisible()) await later.click();
       await expect(savedStory).toContainText(story);
+      await expect(page.getByTestId('component.dreamDetail.readingZone')).toBeHidden();
+      expect(await page.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBeNull();
       await page.getByTestId('dream.note.add').click();
       await page.getByTestId('dream.note.input').fill(noteText);
       await page.getByTestId('dream.note.save').click();
@@ -162,7 +169,7 @@ test('a guest personal note survives an old create receipt and reload until acco
         await expect(second.getByTestId('component.transcriptCard')).toContainText(story);
       } finally { await fresh.close(); }
     } finally {
-      await stopDialogs();
+      await page.removeLocatorHandler(consent);
       await page.unroute(syncRoute);
       await owner.auth.signOut();
     }

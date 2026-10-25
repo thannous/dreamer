@@ -10,6 +10,7 @@ if (process.env.E2E_PERSONAS === '1') {
     await app.open();
     await screen.getByTestId('btn.onboarding.intro.next').tap();
     if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+      // Leaving the onboarding stories still uses the browser confirmation.
       const stop = await browser.onDialog('accept');
       try { await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap(); }
       finally { stop(); }
@@ -86,18 +87,13 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(input).not.toHaveAttribute('readonly');
       const question = 'Personas réflexion : pourquoi cette bibliothèque semblait-elle si familière ?';
       await input.fill(question);
-      let consentPrompts = 0;
-      const stopConsent = await browser.onDialog(async dialog => {
-        expect(dialog.message).toMatch(/Noctalia (relies on artificial intelligence|s’appuie sur une intelligence artificielle)/);
-        consentPrompts++;
-        await dialog.accept();
-      });
       const savedQuestion = screen.getByText(question, { exact: true, visible: true });
-      try {
-        await screen.getByTestId('chat.button.send', { visible: true }).tap();
-        await expect(savedQuestion).toBeVisible();
-      } finally { await stopConsent(); }
-      expect(consentPrompts).toBe(1);
+      await screen.getByTestId('chat.button.send', { visible: true }).tap();
+      const consent = screen.getByTestId('modal.aiConsent');
+      await expect(consent).toBeVisible();
+      await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+      await expect(consent).toBeHidden();
+      await expect(savedQuestion).toBeVisible();
       const latest = screen.getByRole('button', 'Jump to latest', { exact: true, visible: true });
       if (await latest.isVisible()) await latest.tap();
       await expect(savedQuestion).toBeVisible();
