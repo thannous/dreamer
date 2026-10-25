@@ -35,8 +35,11 @@ week, silver within a month, gold within three, platinum within six, diamond wit
 Readings, stories, shares, searches and Trends were never recorded before the
 collection: they count from the day it ships. A tier earned by actions is stamped with the action;
 a tier earned by the journal is stamped after its changes or when the collection opens.
-The ledger is per scope (`guest` or `user:<id>`). A guest's actions join the first
-account that opens after it; journal facts come from that account's own dreams.
+The ledger is per scope (`guest` or `user:<id>`). Cards belong to accounts only: a
+guest's ledger keeps counting everything (actions and journal facts, deleted dreams and
+favourites let go included), and the first account that opens after it receives all of it
+and earns, at that moment, every tier it reaches (`claimGuestLedger`). Tiers a
+first-collection guest already held stay, even where a rule changed, earned that day too.
 Unreadable local ledgers are never overwritten. Signed-in accounts also merge with a private Supabase
 `badge_ledgers` row. Every device unions distinct facts, preserves maxima and the
 first acquisition date of each tier. An optimistic revision check prevents a late
@@ -91,3 +94,8 @@ moonlit violet, with a single rim and a star above its medallion, and no tiers. 
 family that holds its last tier says « Complete ». A family not earned yet shows
 its illustration blurred. Reduced motion removes the lean, the turn and the
 burst; text keeps its tier name, since colour alone never tells the tier.
+
+A guest sees the album with every card still to come and one call to create a free
+account, which tells how many cards already wait for it; a card's detail offers the
+account instead of the family's action. The doors (Explore, Home) show no held or new
+card for a guest.

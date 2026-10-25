@@ -11,7 +11,7 @@ import { BADGE_FAMILIES, getBadgeFamily } from '@/lib/badges/catalog';
 
 import { BADGE_CARD_RATIO, BadgeCardFrame } from './BadgeCard';
 import { BadgeMedallion } from './BadgeMedallion';
-import { badgeHeldText, badgeNewCardsText } from './badgeCopy';
+import { badgeGuestEntryText, badgeHeldText, badgeNewCardsText } from './badgeCopy';
 import { COLLECTION, finishOf } from './badgeMaterials';
 
 export const COLLECTION_ROUTE = '/collection' as const;
@@ -54,10 +54,12 @@ export const CollectionFan = memo(function CollectionFan({ width }: { width: num
 export function CollectionEntryCard({ testID }: { testID?: string }) {
   const { t } = useTranslation();
   const { formatNumber } = useLocaleFormatting();
-  const { earnedCards, unrevealedCards, ready } = useBadgeSummary();
-  // How many cards are held, and how many wait to be turned over.
+  const { earnedCards, unrevealedCards, waitingCards, guest, ready } = useBadgeSummary();
+  // How many cards are held, and how many wait to be turned over; for a guest, how many an
+  // account would receive.
   const held = badgeHeldText(t, earnedCards, formatNumber);
   const summary = !ready ? t('badges.entry.body')
+    : guest ? badgeGuestEntryText(t, waitingCards, formatNumber)
     : unrevealedCards === 0 ? held : `${held} · ${badgeNewCardsText(t, unrevealedCards, formatNumber)}`;
   return (
     <PressableScale onPress={() => router.push(COLLECTION_ROUTE)} accessibilityRole="button"

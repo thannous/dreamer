@@ -20,7 +20,7 @@ const ROWS: Record<GuestAccountReason, { icon: React.ComponentProps<typeof Nudge
 };
 
 /** Account creation, as the dream page's invitation and the capture limit open it. */
-const SIGN_UP_ROUTE = '/settings?section=account&auth=signup';
+export const SIGN_UP_ROUTE = '/settings?section=account&auth=signup';
 
 /**
  * A guest with a dream reads, on each screen, what happens there without an account,
