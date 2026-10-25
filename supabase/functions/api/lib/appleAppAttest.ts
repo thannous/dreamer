@@ -562,18 +562,44 @@ function parseAppExtensions(reader: Reader): AppExtensions {
   };
 }
 
+export type BundleVersionPolicy = {
+  allowedBundleVersions: string[];
+  minimumBundleVersion?: string;
+};
+
+// CFBundleVersion is one to three period-separated non-negative integers.
+export const NUMERIC_BUNDLE_VERSION = /^\d{1,9}(?:\.\d{1,9}){0,2}$/;
+
+function compareBundleVersions(a: string, b: string): number {
+  const left = a.split('.').map(Number);
+  const right = b.split('.').map(Number);
+  for (let i = 0; i < 3; i += 1) {
+    const difference = (left[i] ?? 0) - (right[i] ?? 0);
+    if (difference !== 0) return difference;
+  }
+  return 0;
+}
+
+function isBundleVersionAllowed(version: string, policy: BundleVersionPolicy): boolean {
+  if (policy.allowedBundleVersions.includes(version)) return true;
+  // A minimum admits every later build without a server change at each release.
+  const minimum = policy.minimumBundleVersion;
+  return minimum !== undefined && NUMERIC_BUNDLE_VERSION.test(minimum) &&
+    NUMERIC_BUNDLE_VERSION.test(version) && compareBundleVersions(version, minimum) >= 0;
+}
+
 function validateAppExtensions(
   extensions: AppExtensions,
   environment: AppAttestEnvironment,
-  allowedBundleVersions: string[],
+  versions: BundleVersionPolicy,
   allowedCategories?: number[],
 ): void {
   // Older OS versions omit these fields. When Apple supplies them, enforce the
-  // signing category and an explicitly supported CFBundleVersion.
+  // signing category and a supported CFBundleVersion.
   if (!extensions) return;
   const categories = allowedCategories ?? (environment === 'production' ? [2, 4] : [3, 5]);
   if (!categories.includes(extensions.validationCategory) ||
-      !allowedBundleVersions.includes(extensions.bundleVersion)) invalid();
+      !isBundleVersionAllowed(extensions.bundleVersion, versions)) invalid();
 }
 
 function parseAttestationAuthData(bytes: Uint8Array) {
@@ -609,6 +635,7 @@ type AttestationInput = {
   expectedAppId: string;
   expectedEnvironment: AppAttestEnvironment;
   allowedBundleVersions: string[];
+  minimumBundleVersion?: string;
   allowedCategories?: number[];
   now?: Date;
 };
@@ -651,8 +678,8 @@ export function verifyAppleAppAttestationWithClientDataHash(
   if (!equalBytes(authenticator.rpIdHash, appIdHash(input.expectedAppId))) invalid();
   if (authenticator.counter !== 0 || !equalBytes(authenticator.credentialId, keyIdBytes)) invalid();
   if (!isValidAppAttestAaguid(authenticator.aaguid, input.expectedEnvironment)) invalid();
-  validateAppExtensions(authenticator.extensions, input.expectedEnvironment,
-    input.allowedBundleVersions, input.allowedCategories);
+  validateAppExtensions(authenticator.extensions, input.expectedEnvironment, input,
+    input.allowedCategories);
 
   const publicKey = certificate.publicKey;
   if (publicKey.asymmetricKeyType !== 'ec') invalid();
@@ -692,6 +719,7 @@ export function verifyAppleAppAssertion(input: {
   expectedAppId: string;
   expectedEnvironment: AppAttestEnvironment;
   allowedBundleVersions: string[];
+  minimumBundleVersion?: string;
   previousCounter: number;
 }): number {
   if (input.challenge.length < 20 || input.challenge.length > 256) invalid();
@@ -702,7 +730,7 @@ export function verifyAppleAppAssertion(input: {
   if (!equalBytes(authData.slice(0, 32), appIdHash(input.expectedAppId))) invalid();
   const extensions = parseAppExtensions({ bytes: authData, offset: 37 });
   if ((authData[32] & 0x80) !== 0 && !extensions) invalid();
-  validateAppExtensions(extensions, input.expectedEnvironment, input.allowedBundleVersions);
+  validateAppExtensions(extensions, input.expectedEnvironment, input);
   const counter = new DataView(authData.buffer, authData.byteOffset + 33, 4).getUint32(0, false);
   if (counter <= input.previousCounter || counter === 0) invalid();
   const data = concat(authData, sha256(encoder.encode(input.challenge)));

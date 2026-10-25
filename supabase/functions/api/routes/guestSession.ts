@@ -5,6 +5,7 @@ import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
 import { getRemoteIp, isTurnstileConfigured, verifyTurnstileToken } from '../lib/turnstile.ts';
 import {
   AppAttestProofError,
+  NUMERIC_BUNDLE_VERSION,
   verifyAppleAppAssertion,
   verifyAppleAppAttestation,
 } from '../lib/appleAppAttest.ts';
@@ -117,24 +118,38 @@ type IosAppAttestConfig = {
   appId: string;
   environment: 'development' | 'production';
   allowedBundleVersions: string[];
+  minimumBundleVersion?: string;
 };
+
+const APP_ATTEST_CONFIG_KEYS = new Set([
+  'allowedBundleVersions', 'bundleId', 'environment', 'minimumBundleVersion', 'teamId',
+]);
 
 function parseAppAttestConfig(value: unknown): IosAppAttestConfig | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
-  if (Object.keys(record).sort().join(',') !==
-      'allowedBundleVersions,bundleId,environment,teamId') return null;
-  const { teamId, bundleId, environment, allowedBundleVersions } = record;
+  if (Object.keys(record).some((key) => !APP_ATTEST_CONFIG_KEYS.has(key))) return null;
+  const { teamId, bundleId, environment, allowedBundleVersions, minimumBundleVersion } = record;
+  // Each identity names its builds: an exact list, a minimum, or both.
+  if (allowedBundleVersions === undefined && minimumBundleVersion === undefined) return null;
+  const versions = allowedBundleVersions ?? [];
   if (typeof teamId !== 'string' || !/^[A-Z0-9]{10}$/.test(teamId) ||
       typeof bundleId !== 'string' ||
       !/^com(?:\.[A-Za-z0-9][A-Za-z0-9-]*){2,}$/.test(bundleId) ||
       (environment !== 'development' && environment !== 'production') ||
-      !Array.isArray(allowedBundleVersions) ||
-      allowedBundleVersions.length === 0 || allowedBundleVersions.length > 20 ||
-      allowedBundleVersions.some((version) =>
+      !Array.isArray(versions) ||
+      (allowedBundleVersions !== undefined && versions.length === 0) || versions.length > 20 ||
+      versions.some((version) =>
         typeof version !== 'string' || !/^[A-Za-z0-9._-]{1,32}$/.test(version)) ||
-      new Set(allowedBundleVersions).size !== allowedBundleVersions.length) return null;
-  return { appId: teamId + '.' + bundleId, environment, allowedBundleVersions };
+      new Set(versions).size !== versions.length ||
+      (minimumBundleVersion !== undefined && (typeof minimumBundleVersion !== 'string' ||
+        !NUMERIC_BUNDLE_VERSION.test(minimumBundleVersion)))) return null;
+  return {
+    appId: teamId + '.' + bundleId,
+    environment,
+    allowedBundleVersions: versions as string[],
+    ...(minimumBundleVersion !== undefined ? { minimumBundleVersion } : {}),
+  };
 }
 
 function appAttestConfigs(): IosAppAttestConfig[] | null {
@@ -156,8 +171,13 @@ function appAttestConfigs(): IosAppAttestConfig[] | null {
   const bundleId = Deno.env.get('IOS_APP_ATTEST_BUNDLE_ID')?.trim();
   const environment = Deno.env.get('IOS_APP_ATTEST_ENVIRONMENT')?.trim();
   const allowedBundleVersions = Deno.env.get('IOS_APP_ATTEST_ALLOWED_BUNDLE_VERSIONS')
-    ?.split(',').map((value) => value.trim()) ?? [];
-  const single = parseAppAttestConfig({ teamId, bundleId, environment, allowedBundleVersions });
+    ?.split(',').map((value) => value.trim());
+  const minimumBundleVersion = Deno.env.get('IOS_APP_ATTEST_MIN_BUNDLE_VERSION')?.trim();
+  const single = parseAppAttestConfig({
+    teamId, bundleId, environment,
+    ...(allowedBundleVersions !== undefined ? { allowedBundleVersions } : {}),
+    ...(minimumBundleVersion !== undefined ? { minimumBundleVersion } : {}),
+  });
   return single ? [single] : null;
 }
 
@@ -351,6 +371,7 @@ export async function handleGuestSession(
                 expectedAppId: config.appId,
                 expectedEnvironment: config.environment,
                 allowedBundleVersions: config.allowedBundleVersions,
+                minimumBundleVersion: config.minimumBundleVersion,
               });
               if (candidate.appId === config.appId &&
                   candidate.environment === config.environment) {
@@ -397,6 +418,7 @@ export async function handleGuestSession(
               expectedAppId: config.appId,
               expectedEnvironment: config.environment,
               allowedBundleVersions: config.allowedBundleVersions,
+              minimumBundleVersion: config.minimumBundleVersion,
               previousCounter: key.assertion_counter,
             });
           } catch (error) {
