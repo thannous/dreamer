@@ -2647,6 +2647,15 @@ describe('Recording screen', () => {
     expect(mockSideColumnBar).toBeNull();
   });
 
+  it.each([['ios', 'padding'], ['android', 'height']])('keeps the page above the %s keyboard with the %s behavior', async (os: string, behavior: string) => {
+    mockPlatformOS = os as typeof mockPlatformOS;
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    // Resized to the keyboard, iOS's view adds each keyboard to its last height: folding the
+    // iPhone Duo with the keyboard up pushed the writing area and Save above the screen.
+    expect(screen.getByTestId(TID.Screen.Recording).parentElement?.getAttribute('behavior')).toBe(behavior);
+  });
+
   it('lets the side column\'s Capture button start a Tell reply', async () => {
     mockPlatformOS = 'ios';
     mockInSideColumn = true;

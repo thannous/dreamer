@@ -100,17 +100,20 @@ jest.mock('react-native', () => {
       testID,
       nativeID,
       accessibilityLiveRegion,
+      pointerEvents,
     }: {
       children?: React.ReactNode;
       style?: unknown;
       testID?: string;
       nativeID?: string;
       accessibilityLiveRegion?: 'none' | 'polite' | 'assertive';
+      pointerEvents?: 'auto' | 'none' | 'box-none' | 'box-only';
     }) => (
       <div
         data-native-style={JSON.stringify(flattenStyle(style))}
         data-testid={testID}
         data-layout={nativeID}
+        data-pointer-events={pointerEvents}
         aria-live={
           accessibilityLiveRegion === 'polite' || accessibilityLiveRegion === 'assertive'
             ? accessibilityLiveRegion
@@ -303,6 +306,32 @@ describe('RecordingTextInput', () => {
     expect(screen.queryByTestId('icon.pencil')).toBeNull();
     expect(screen.getByTestId('icon.trash')).toBeTruthy();
     expect(onChange).toHaveBeenCalledWith('A blue room with rain');
+    expect(onClear).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([false, true])('lets a touch between the bar\'s buttons write in the area (compact: %s)', (compact: boolean) => {
+    // The folded iPhone Duo: there the bar covers the compact editor's lower half.
+    mockWindowWidth = 678;
+    mockWindowHeight = 466;
+    const onClear = jest.fn();
+
+    render(
+      <RecordingTextInput
+        compact={compact}
+        value="A blue room"
+        onChange={jest.fn()}
+        disabled={false}
+        instructionText=""
+        onSwitchToVoice={jest.fn()}
+        onClear={onClear}
+      />
+    );
+
+    const bar = screen.getByTestId(TID.Button.ClearDream).parentElement?.parentElement;
+    expect(JSON.parse(bar?.getAttribute('data-native-style') ?? '{}')).toMatchObject({ position: 'absolute', bottom: 1 });
+    expect(bar?.getAttribute('data-pointer-events')).toBe('box-none');
+    // Its buttons still answer.
+    fireEvent.click(screen.getByTestId(TID.Button.ClearDream));
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 

@@ -2023,8 +2023,12 @@ function RecordingScreen() {
             <IconSymbol name="chevron.left" size={22} color={noctalia.accent.text} />
           </Pressable>
         ) : null}
+        {/* On iOS the view keeps its frame and pads its end above the keyboard. Resized to the
+            keyboard instead, it adds each keyboard to its last height: when the iPhone Duo folds
+            with the keyboard up, it took a keyboard of 1135 pt in a window of 466 and pushed the
+            writing area and Save above the screen until the keyboard closed. */}
         <KeyboardAvoidingView
-          behavior="height"
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={[styles.keyboardView, { paddingTop: isDesktopWeb ? insets.top : 0 }]}
         >
           <HeaderScrollView
