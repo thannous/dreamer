@@ -7,6 +7,11 @@ const test = createParityTest();
 
 const INVITE = 'Your included analyses for this month are used. This week, Noctalia still gives you a preview';
 const OPENING = 'In this dream the river of glass is no obstacle: it carries you towards a house you already know.';
+// The mock journal's two unread dreams: the first has no analysis, the second's did not finish.
+const STORIES = {
+  'The Broken Mirror': 'I was looking at myself in a mirror',
+  'The Shadowy Pursuer': 'I was running through dark corridors',
+};
 
 async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -24,7 +29,7 @@ async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
 
-async function openDream(page: Page, title: string) {
+async function openDream(page: Page, title: keyof typeof STORIES) {
   // A dream page opens over the journal: its tab stays on that page, the way back leaves it.
   const back = page.getByTestId('btn.navigateJournal').filter({ visible: true });
   if (await back.isVisible()) await back.click();
@@ -32,8 +37,7 @@ async function openDream(page: Page, title: string) {
   await expect(page.getByTestId('screen.journal').filter({ visible: true })).toHaveCount(1);
   await page.getByRole('textbox', { name: 'Search dreams…' }).fill(title);
   await page.getByTestId(/^dream\.item\./).filter({ hasText: title, visible: true }).click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(title === 'The Broken Mirror'
-    ? 'I was looking at myself in a mirror' : 'I was running through dark corridors');
+  await expect(page.getByTestId('component.transcriptCard')).toContainText(STORIES[title]);
 }
 
 const preview = (page: Page) => page.getByTestId('screen.dreamDetail').getByTestId('component.analysisPreview');
@@ -75,7 +79,7 @@ test('a free account past its analyses previews one dream, then opens its prepar
   await expect(offer).toBeVisible();
   await expect(offer).toContainText('Your analysis is ready');
   await expect(offer).toContainText('Your analyzed dream');
-  await expect(offer.getByTestId('text.paywall.dreamExcerpt')).toContainText('I was looking at myself in a mirror');
+  await expect(offer.getByTestId('text.paywall.dreamExcerpt')).toContainText(STORIES['The Broken Mirror']);
   await expectOffer(page, 'Subscribe and read the analysis');
   // Back on the dream, its preview is still read, not prepared again.
   await expect(preview(page).getByTestId('text.analysisPreview.opening')).toHaveText(OPENING);
