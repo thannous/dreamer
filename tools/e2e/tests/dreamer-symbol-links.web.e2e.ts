@@ -34,11 +34,13 @@ async function settledMotion(browser: Browser) {
     animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).length)).toBe(0);
 }
 
-async function tellAndRead(screen: Screen, story: string) {
+async function tellAndRead(screen: Screen, story: string, firstReading = false) {
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   // The journal asks during the seal; yes opens the page already reading the dream.
   await screen.getByTestId('btn.dreamCaptureSeal.readNow', { visible: true }).tap();
+  // The first reading asks the AI permission in Noctalia's modal; later ones do not.
+  if (firstReading) await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
   await expect(screen.getByTestId('component.dreamDetail.readingZone', { visible: true })).toContainText('Symbols');
   await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
 }
@@ -54,10 +56,8 @@ test('a personal symbol is born when first opened, then the reading and Tendance
   async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
     await startPlus(app, screen, browser);
-    const consent = await browser.onDialog('accept');
     const first = 'E2E symbols: a lamp glows beside still water near an old doorway.';
-    await tellAndRead(screen, first);
-    await consent();
+    await tellAndRead(screen, first, true);
 
     // A first reading: every symbol appears for the first time; the dreamer's own one is new.
     const water = screen.getByTestId('dream.symbol.d.water', { visible: true });

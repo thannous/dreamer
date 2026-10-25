@@ -72,8 +72,13 @@ test('guide reading resumes after reload and only explicit completion earns a un
     await screen.getByTestId('guide.reading.completed').scrollIntoView();
     await expect(screen.getByTestId('guide.reading.complete')).toHaveCount(0);
     await expect.poll(() => browser.evaluate((key: string) => JSON.parse(localStorage.getItem(key) ?? '{}').keys?.['night-scholar']?.length ?? 0, LEDGER)).toBe(2);
+    // A guest holds no card (owner decision, 2026-10-25): its completed guides wait for its account.
     await app.back(); await app.back();
-    await screen.getByTestId('btn.explore.collection', { visible: true }).tap();
-    await expect(screen.getByTestId('collection.card.night-scholar')).toHaveAttribute('aria-label', /New Bronze card/);
-    await app.screenshot('guide-progress-bronze-earned');
+    const door = screen.getByTestId('btn.explore.collection', { visible: true });
+    await expect(door).toContainText('1 card waiting for your account');
+    await door.tap();
+    await expect(screen.getByTestId('collection.card.night-scholar', { visible: true }))
+      .toHaveAttribute('aria-label', 'Dream Library. Earned with a free account.');
+    await expect(screen.getByTestId('collection.guest.body', { visible: true })).toContainText('1 card is waiting for you');
+    await app.screenshot('guide-progress-card-waits-for-account');
   });

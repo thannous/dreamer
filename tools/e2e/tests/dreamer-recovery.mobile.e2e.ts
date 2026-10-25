@@ -41,10 +41,12 @@ async function openDream(screen: TestFixtures['screen'], journalId: number) {
 }
 
 async function acceptAi(screen: TestFixtures['screen']) {
-  const consent = screen.getByRole('button', /^Accept and continue$/i, { visible: true });
-  await expect(consent).toBeVisible();
-  await consent.tap();
-  await expect(consent).toHaveCount(0);
+  // AiConsentModalHost is mounted for Dreamer, so consent is the Noctalia modal, not a system alert.
+  // Do not scroll: a swipe on the dimmed overlay declines.
+  const modal = screen.getByTestId('modal.aiConsent', { visible: true });
+  await expect(modal).toBeVisible();
+  await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+  await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
 }
 
 test('Dreamer queued real analysis survives process restart and completes once with one quota claim', recoveryOptions, async fixtures => {

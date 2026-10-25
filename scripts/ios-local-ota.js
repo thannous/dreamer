@@ -6,6 +6,7 @@ const http = require('node:http');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const plist = require('plist');
+const { loadEnvProfile } = require('./expo-safe-runner');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUTPUT = path.join(ROOT, '.tmp/ios-local-ota');
@@ -51,6 +52,39 @@ function assertBuildReady(readiness, team) {
   if (!readiness.signingIdentities) throw new Error('No valid Apple signing identity on this Mac. Configure signing in Xcode first.');
   if (!/^[A-Z0-9]{10}$/.test(team || '')) throw new Error('Provide your Apple team with --team <TEAM_ID>.');
   if (readiness.remoteUpdatesEnabled === true) throw new Error('Disable remote updates in ios/Noctalia/Supporting/Expo.plist for this local binary OTA workflow.');
+}
+
+function requireBuildRuntimeEnvironment(env) {
+  if (env.EXPO_PUBLIC_MOCK_MODE?.toLowerCase() === 'true') return;
+  for (const key of ['EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID', 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID', 'EXPO_PUBLIC_REVENUECAT_IOS_KEY']) {
+    if (!env[key]?.trim()) {
+      throw new Error(`${key} is required for a real iOS build. Select --profile <file> or provide the build environment.`);
+    }
+  }
+  if (!/^appl_\S+$/.test(env.EXPO_PUBLIC_REVENUECAT_IOS_KEY)) {
+    throw new Error('EXPO_PUBLIC_REVENUECAT_IOS_KEY must be an Apple App Store public SDK key (appl_) for a real iOS Release build. Test Store and other platform keys are not supported.');
+  }
+  return env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+}
+
+function assertBuildEnvironment(env, nativeUrlSchemes) {
+  const iosClientId = requireBuildRuntimeEnvironment(env);
+  if (!iosClientId) return;
+  const match = iosClientId.match(/^([A-Za-z0-9.-]+)\.apps\.googleusercontent\.com$/);
+  if (!match || !nativeUrlSchemes.includes(`com.googleusercontent.apps.${match[1]}`)) {
+    throw new Error('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID must match a Google URL scheme in ios/Noctalia/Info.plist. Regenerate the isolated native project with the selected profile.');
+  }
+}
+
+function prepareBuildEnvironment(profile, { env = process.env, cwd = ROOT, readFileSync = fs.readFileSync } = {}) {
+  if (profile) loadEnvProfile(profile, { env, cwd, readFileSync });
+  // Freeze the values checked here so Expo cannot overlay another dotenv file.
+  env.EXPO_NO_DOTENV = '1';
+  // Keep missing configuration actionable even in a clean checkout without ios/.
+  if (!requireBuildRuntimeEnvironment(env)) return;
+  const nativeInfo = plist.parse(readFileSync(path.join(cwd, 'ios/Noctalia/Info.plist'), 'utf8'));
+  const nativeUrlSchemes = (nativeInfo.CFBundleURLTypes || []).flatMap((entry) => entry.CFBundleURLSchemes || []);
+  assertBuildEnvironment(env, nativeUrlSchemes);
 }
 
 function readReadiness() {
@@ -108,8 +142,16 @@ function validateProfile(profile, udid) {
   }
 }
 
+function getExplicitDeviceUdid(selector) {
+  return /^(?:[A-Fa-f0-9]{8}-[A-Fa-f0-9]{16}|[A-Fa-f0-9]{40})$/.test(selector || '') ? selector : undefined;
+}
+
 function readDevice(selector) {
   if (!selector) throw new Error('Select the paired iPhone with --device <name or UDID>.');
+  // Known UDIDs can prepare an IPA offline; validateProfile still requires that
+  // exact registered device in the exported provisioning profile before serving.
+  const explicitUdid = getExplicitDeviceUdid(selector);
+  if (explicitUdid) return explicitUdid;
   const data = JSON.parse(execute('xcrun', ['devicectl', 'list', 'devices', '--timeout', '15', '--json-output', '-']));
   const device = data.result?.devices?.find((item) => [item.identifier, item.hardwareProperties?.udid, item.deviceProperties?.name].includes(selector));
   if (!device?.hardwareProperties?.udid || device.hardwareProperties.reality !== 'physical') {
@@ -118,7 +160,8 @@ function readDevice(selector) {
   return device.hardwareProperties.udid;
 }
 
-function build(team, deviceName, provision = false, localVersion, localBuild) {
+function build(team, deviceName, provision = false, localVersion, localBuild, envProfile) {
+  prepareBuildEnvironment(envProfile);
   const readiness = readReadiness();
   assertBuildReady(readiness, team);
   const versionOverrides = [];
@@ -260,20 +303,22 @@ function main(argv = process.argv.slice(2)) {
   const options = {};
   for (let index = 0; index < args.length; index += 1) {
     if (args[index] === '--provision') { options.provision = true; continue; }
-    if (!['--team', '--device', '--version', '--build-number'].includes(args[index]) || !args[index + 1]) throw new Error('Use --team TEAM_ID, --device NAME, --version X.Y.Z and/or --build-number N.');
+    if (!['--team', '--device', '--version', '--build-number', '--profile'].includes(args[index]) || !args[index + 1] || args[index + 1].startsWith('--')) throw new Error('Use --team TEAM_ID, --device NAME, --version X.Y.Z, --build-number N and/or --profile FILE.');
+    if (args[index] === '--profile' && options.profile) throw new Error('--profile can only be provided once.');
     options[args[index].slice(2)] = args[++index];
   }
+  if (options.profile && action !== 'build') throw new Error('--profile is only supported by build.');
   if (action === 'check') console.log(JSON.stringify(readReadiness(), null, 2));
-  else if (action === 'build') build(options.team, options.device, options.provision, options.version, options['build-number']);
+  else if (action === 'build') build(options.team, options.device, options.provision, options.version, options['build-number'], options.profile);
   else if (action === 'serve') serve();
   else if (action === 'launch') {
     readDevice(options.device);
     console.log(execute('xcrun', ['devicectl', 'device', 'process', 'launch', '--device', options.device, '--timeout', '20', BUNDLE]));
-  } else throw new Error('Usage: ios-local-ota.js check|build|serve|launch [--team TEAM_ID] [--device NAME] [--version X.Y.Z --build-number N] [--provision]');
+  } else throw new Error('Usage: ios-local-ota.js check|build|serve|launch [--team TEAM_ID] [--device NAME_OR_UDID] [--version X.Y.Z --build-number N] [--profile FILE] [--provision]');
 }
 
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
 
-module.exports = { assertBuildReady, assertPrivateServe, validateManifest, validateProfile };
+module.exports = { assertBuildEnvironment, assertBuildReady, assertPrivateServe, getExplicitDeviceUdid, prepareBuildEnvironment, readDevice, validateManifest, validateProfile };

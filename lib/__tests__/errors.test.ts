@@ -19,6 +19,15 @@ import {
 } from '../errors';
 
 describe('classifyError', () => {
+  it('explains the Plus requirement without offering to retry a refused reanalysis', () => {
+    const error = Object.assign(new Error('Analysis state conflict'), { status: 409,
+      body: { code: 'ANALYSIS_ALREADY_COMPLETE' } });
+    const translate = jest.fn((key: string) => key === 'error.reanalysis_requires_plus' ? 'Plus required; previous reading preserved' : key);
+    expect(classifyError(error, translate)).toMatchObject({ type: ErrorType.CLIENT,
+      userMessage: 'Plus required; previous reading preserved', canRetry: false });
+    expect(classifyError(error).userMessage).toContain('Noctalia Plus');
+  });
+
   it('should classify network errors correctly', () => {
     const error = new Error('Network request failed');
     const result = classifyError(error);
@@ -501,4 +510,36 @@ it.each([
   expect(result.canRetry).toBe(false);
   expect(result.type).toBe(ErrorType.CLIENT);
   expect(result.userMessage).toContain('remain');
+});
+
+
+describe('provider availability messages', () => {
+  it.each(['ANALYSIS_PROVIDER_UNAVAILABLE', 'ANALYSIS_PROVIDER_OVERLOADED', 'ANALYSIS_TIMEOUT'])('%s stays retryable and has a complete message', (code: string) => {
+    for (const error of [Object.assign(new Error('job failed'), { code }),
+      Object.assign(new Error('HTTP 503'), { status: 503, body: { code } })]) {
+      expect(classifyError(error)).toEqual(expect.objectContaining({ canRetry: true,
+        userMessage: 'The analysis service is temporarily unavailable. Try again in a few moments.' }));
+    }
+  });
+  it.each(['en', 'fr', 'de', 'es', 'it', 'pt'])('defines the complete unavailable message in %s', (lang: string) => {
+    const source = readFileSync(join(__dirname, '..', 'i18n', `${lang}.ts`), 'utf8');
+    expect(source).toMatch(/'error.provider_unavailable': '[^']{20,}'/);
+  });
+});
+
+
+it.each(['ANALYSIS_REQUEST_REJECTED', 'ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND', 'ANALYSIS_ACCESS_DENIED', '42501'])('never retries request-state failure %s even behind HTTP 500', (code: string) => {
+  expect(classifyError(Object.assign(new Error('request failed'), { status: 500, body: { code } })).canRetry).toBe(false);
+});
+it.each(['AiConsentWithdrawnError', 'AbortError'])('never retries user cancellation %s', (name: string) => {
+  expect(classifyError(Object.assign(new Error('cancelled'), { name })).canRetry).toBe(false);
+});
+
+describe('AI admission delay', () => {
+  it.each(['AI_ACTOR_RATE_LIMIT', 'AI_GLOBAL_RATE_LIMIT', 'AI_ADMISSION_DENIED'])('shows %s immediately with its delay', (code: string) => {
+    const error = Object.assign(new Error('HTTP 429'), { status: 429, body: { code, retryAfter: 540 } });
+    const result = classifyError(error);
+    expect(result.canRetry).toBe(false);
+    expect(result.userMessage).toContain('540 s');
+  });
 });

@@ -108,6 +108,10 @@ jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => null,
 }));
 
+jest.mock('@/hooks/useTranslation', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     colors: {},
@@ -214,6 +218,12 @@ describe('SearchBar', () => {
     expect(input.getAttribute('data-return-key-type')).toBe('search');
     expect(input.tagName.toLowerCase()).toBe('input');
     expect(sanitizeSearchQuery('ligne une\nligne deux\rfin')).toBe('ligne une ligne deux fin');
+  });
+
+  it('names the clear button, whose icon alone is silent to screen readers', () => {
+    render(<SearchBar onChangeText={jest.fn()} placeholder="Search dreams" value="moon" />);
+
+    expect(screen.getByRole('button', { name: 'common.clear' })).toBeTruthy();
   });
 
 });

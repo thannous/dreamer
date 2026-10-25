@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-fr-1200x630.jpg",
   "twitterImageAlt": "Politique de Confidentialité",
   "publishedTime": "",
-  "modifiedTime": "2026-10-18",
+  "modifiedTime": "2026-10-25",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Politique de Confidentialité</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 18 octobre 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Dernière mise à jour : 25 octobre 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
@@ -118,7 +118,7 @@
                 <p>Nous traitons vos données personnelles pour les finalités et sur les bases légales suivantes&nbsp;:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Fourniture de l'application et de ses fonctionnalités</strong> (journal de rêves, analyses, images générées, création et gestion du compte)&nbsp;: traitement nécessaire à l'<strong>exécution du contrat</strong> (acceptation des CGU) entre vous et Noctalia.</li>
-                    <li><strong>Transcription et analyse de vos rêves, y compris lorsqu'ils contiennent des informations sensibles</strong>&nbsp;: traitement fondé sur votre <strong>consentement explicite</strong>, que vous pouvez retirer à tout moment en supprimant les rêves concernés et/ou votre compte.</li>
+                    <li><strong>Transcription et analyse de vos rêves, y compris lorsqu'ils contiennent des informations sensibles</strong>&nbsp;: traitement fondé sur votre <strong>consentement explicite</strong>, que vous pouvez retirer à tout moment en désactivant l’interrupteur «&nbsp;IA pour explorer et illustrer mes rêves&nbsp;» (Paramètres&nbsp;→ Informations légales), ou en supprimant les rêves concernés et/ou votre compte. Une fois l’interrupteur désactivé, aucune nouvelle demande d’analyse, de conversation ou d’illustration n’est envoyée aux services d’IA depuis cet appareil&nbsp;; une demande déjà en cours peut se terminer, et la transcription vocale de secours décrite au §4 ne dépend pas de ce choix. Les rêves, analyses et images déjà produits sont conservés.</li>
                     <li><strong>Mesure de la stabilité technique, prévention des abus et sécurité</strong>&nbsp;: traitement fondé sur notre <strong>intérêt légitime</strong> à assurer le bon fonctionnement, la sécurité et l'évolution du service, sans profilage marketing.</li>
                     <li><strong>Mesure agrégée et sans cookie de la fréquentation du site avec Ahrefs</strong>&nbsp;: traitement fondé sur notre <strong>intérêt légitime</strong> à améliorer nos contenus publics, sans publicité ciblée ni suivi entre sites.</li>
                     <li><strong>Cartes de chaleur et enregistrements de session avec Microsoft Clarity</strong>&nbsp;: traitement fondé uniquement sur votre <strong>consentement</strong> aux analytics, que vous pouvez refuser ou retirer à tout moment.</li>
@@ -197,7 +197,7 @@
                     <li><strong>Droit à la limitation du traitement&nbsp;:</strong> demander la suspension temporaire de certains traitements.</li>
                     <li><strong>Droit d'opposition&nbsp;:</strong> vous opposer à certains traitements fondés sur notre intérêt légitime.</li>
                     <li><strong>Droit à la portabilité&nbsp;:</strong> recevoir les données que vous nous avez fournies dans un format structuré, couramment utilisé et lisible par machine, ou demander leur transmission à un autre responsable lorsque cela est techniquement possible.</li>
-                    <li><strong>Droit de retirer votre consentement&nbsp;:</strong> lorsque le traitement est fondé sur votre consentement (notamment pour certaines données sensibles), vous pouvez le retirer à tout moment, sans porter atteinte à la licéité du traitement antérieur. Le choix Clarity et Google Analytics se modifie via «&nbsp;Préférences analytics&nbsp;» dans le pied de page.</li>
+                    <li><strong>Droit de retirer votre consentement&nbsp;:</strong> lorsque le traitement est fondé sur votre consentement (notamment pour certaines données sensibles), vous pouvez le retirer à tout moment, sans porter atteinte à la licéité du traitement antérieur. Le choix Clarity et Google Analytics se modifie via «&nbsp;Préférences analytics&nbsp;» dans le pied de page. Le consentement à l’IA se retire dans l’application avec l’interrupteur «&nbsp;IA pour explorer et illustrer mes rêves&nbsp;» (Paramètres&nbsp;→ Informations légales).</li>
                 </ul>
                 <p class="mt-4">Vous pouvez exercer vos droits en nous contactant à&nbsp;: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>, en précisant l'adresse émail utilisée pour créer votre compte. Nous pourrons être amenés à vous demander des informations complémentaires pour vérifier votre identité.</p>
                 <p class="mt-4">Si vous résidez dans l'Espace économique européen ou au Royaume-Uni, vous disposez également du droit d'introduire une réclamation auprès de votre autorité de contrôle locale (en France&nbsp;: la CNIL).</p>

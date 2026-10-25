@@ -191,7 +191,9 @@ the coordinating process and any writers before removing only that empty lock
 directory; never remove the workspace or its receipt to bypass the refusal.
 
 The helper inherits npm/pnpm's configured caches. It never creates a second
-global cache or shares `node_modules` between native checkouts.
+global cache or shares `node_modules` between native checkouts. The install
+benchmark's intentionally cold caches are an isolated exception, cleaned with
+its owned scratch; see [site measurements](site-performance/README.md).
 
 `verify:pr` and release verification run the four independent root type/lint
 checks together, under one machine lock where `flock` is available, and retain

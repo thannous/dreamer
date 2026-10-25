@@ -17,6 +17,7 @@ const {
   parseLockOwner,
   prepareAndroidDeviceLocks,
 } = require('./android-device-lock');
+const { prepareIosNativeProject } = require('./ios-native-preflight');
 
 function parseRunnerArgs(args) {
   const expoArgs = [];
@@ -56,12 +57,38 @@ function parseRunnerArgs(args) {
   return { envFile, expoArgs };
 }
 
+// Env profiles are ignored files, so a task worktree does not have them: fall
+// back to the primary checkout that owns the shared git directory.
+function resolveEnvProfilePath(envFile, {
+  cwd = process.cwd(),
+  existsSync = fs.existsSync,
+  primaryRoot = () => {
+    const { execFileSync } = require('node:child_process');
+    const commonDir = execFileSync('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], {
+      cwd,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return path.dirname(commonDir);
+  },
+} = {}) {
+  const localPath = path.resolve(cwd, envFile);
+  if (path.isAbsolute(envFile) || existsSync(localPath)) return localPath;
+  try {
+    const primaryPath = path.resolve(primaryRoot(), envFile);
+    if (existsSync(primaryPath)) return primaryPath;
+  } catch {
+    // Not a git checkout: report the local path below.
+  }
+  return localPath;
+}
+
 function loadEnvProfile(envFile, {
   cwd = process.cwd(),
   env = process.env,
   readFileSync = fs.readFileSync,
 } = {}) {
-  const resolvedPath = path.resolve(cwd, envFile);
+  const resolvedPath = resolveEnvProfilePath(envFile, { cwd });
   let parsed;
 
   try {
@@ -311,6 +338,9 @@ function main(args = process.argv.slice(2), {
       const synced = syncMobileBuildVersions({ platform: parsedArgs.expoArgs[0] === 'run:android' ? 'android' : 'ios' });
       console.error(`[expo] EAS build version synchronized: ${synced.version} (${synced.versionCode ?? synced.buildNumber})`);
     }
+    if (parsedArgs.expoArgs[0] === 'run:ios') {
+      prepareIosNativeProject();
+    }
     if (isAndroidRun(parsedArgs.expoArgs)) {
       const result = syncAndroidNativeVersion({
         expoConfig: require('@expo/config').getConfig(process.cwd(), { skipPlugins: true }).exp,
@@ -373,6 +403,7 @@ module.exports = {
   isAndroidRun,
   loadEnvProfile,
   main,
+  resolveEnvProfilePath,
   parseRunnerArgs,
   inferExpoLockOwner,
   extractAndroidLockFlags,

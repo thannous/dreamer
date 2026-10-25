@@ -24,6 +24,18 @@ export function badgeNewCardsText(t: Translate, unrevealed: number, formatNumber
   return t(unrevealed === 1 ? 'badges.new_cards_one' : 'badges.new_cards', { count: formatNumber(unrevealed) });
 }
 
+/** At a door to the collection, for a guest: what an account would receive. */
+export function badgeGuestEntryText(t: Translate, waiting: number, formatNumber: FormatNumber): string {
+  if (waiting === 0) return t('badges.guest.entry');
+  return t(waiting === 1 ? 'badges.guest.entry_waiting_one' : 'badges.guest.entry_waiting', { count: formatNumber(waiting) });
+}
+
+/** At the head of the album, for a guest: cards come with an account, what it did counts. */
+export function badgeGuestBodyText(t: Translate, waiting: number, formatNumber: FormatNumber): string {
+  if (waiting === 0) return t('badges.guest.body');
+  return t(waiting === 1 ? 'badges.guest.body_waiting_one' : 'badges.guest.body_waiting', { count: formatNumber(waiting) });
+}
+
 /** How far along the next tier is: « 3 / 25 ». Empty once complete. */
 export function badgeProgressText(t: Translate, state: BadgeFamilyState, formatNumber: FormatNumber): string {
   if (state.nextThreshold == null) return '';

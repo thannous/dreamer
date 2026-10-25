@@ -6,6 +6,8 @@ export type AnalysisJobRequestPayload = {
   lang?: string;
   replaceExistingImage?: boolean;
   transcript_sha256?: string;
+  /** Worker-owned retry deadline; clients cannot supply it at admission. */
+  retry_not_before?: string;
 };
 
 export type AnalysisJobResultPayload = {

@@ -176,7 +176,7 @@ function setup(options: {
   const deps = {
     now: () => NOW,
     apiKey: 'gemini-key',
-    anthropicApiKey: null,
+    anthropicApiKey: 'synthetic-key',
     createAdminClient: (() => admin) as never,
     admit: (async () => { calls.admit++; return options.admit ? await options.admit() : { tier: 'free', actorClass: 'FREE' }; }) as never,
     analyze: (async (analyzeOptions: Record<string, unknown>) => {
@@ -249,7 +249,7 @@ Deno.test('prepares the analysis once and gives its title, first sentence, symbo
   assertEquals(calls.analyzeOptions[0].lang, 'fr');
   assertEquals(calls.analyzeOptions[0].knownSymbols, [{ key: 'glass-river', name: 'Rivière de verre' }]);
   // Like the other synchronous analyses, Claude has twenty seconds before Gemini takes over.
-  assertEquals(calls.analyzeOptions[0].claudeTimeoutMs, 20_000);
+  assertEquals(calls.analyzeOptions[0].claudeTimeoutMs, 35_000);
 
   // Read again, prepared or not: the same preview, no second writing.
   const again = await (await handleAnalysisPreview(ctx({ dreamId: 7, lang: 'fr' }), deps)).json();

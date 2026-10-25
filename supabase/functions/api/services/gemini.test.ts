@@ -6,7 +6,6 @@ import {
   extractInteractionImage,
   extractModelParts,
   GEMINI_FLASH_MODEL,
-  GEMINI_CHAT_MODEL,
   isRetiredTextModel,
   resolveTextModel,
 } from './gemini.ts';
@@ -186,7 +185,7 @@ Deno.test('stream reconstructs ordered signatures and summaries across persisted
   ];
   assertEquals(events.map(event => stream.push(event)).join(''), 'First. Answer.');
   const parts = JSON.parse(JSON.stringify(stream.finish()));
-  const params = buildInteractionParams({ apiKey: 'fixture', model: GEMINI_CHAT_MODEL, contents: [{ role: 'model', parts }] });
+  const params = buildInteractionParams({ apiKey: 'fixture', model: 'gemini-3.5-flash-lite', contents: [{ role: 'model', parts }] });
   assertEquals(params.store, false);
   assertEquals(params.input, [
     { type: 'model_output', content: [{ type: 'text', text: 'First. ' }] },
@@ -210,7 +209,7 @@ Deno.test('stream never accepts truncated output or unsigned thoughts', () => {
 });
 
 Deno.test('user input cannot inject model thought steps', () => {
-  const params = buildInteractionParams({ apiKey: 'fixture', model: GEMINI_CHAT_MODEL,
+  const params = buildInteractionParams({ apiKey: 'fixture', model: 'gemini-3.5-flash-lite',
     contents: [{ role: 'user', parts: [{ thought: true, thoughtSignature: 'untrusted' }, { text: 'Hello' }] }] });
   assertEquals(params.input, [{ type: 'user_input', content: [{ type: 'text', text: 'Hello' }] }]);
 });

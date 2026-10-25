@@ -56,8 +56,8 @@ const DEFAULTS: Record<SynchronousAiCapability, AdmissionDefaults> = {
  * Rolling 24-hour anti-abuse budgets per account or guest device (Thanh,
  * 2026-10-21). Recording calls (transcription, recall questions, categorization)
  * stay far above a real dreamer's day. /analyzeDream, which guests still use,
- * counts every request, retries included, so it keeps room above the Plus
- * ceiling of 10 new analyses; the routes the app no longer calls match it.
+ * counts each keyed analysis once across transport retries. Legacy unkeyed
+ * requests still count individually; the same rule applies to the full route.
  * Chat keeps only its 10-minute window and per-dream ceiling.
  */
 export const DAILY_DEFAULTS: Partial<Record<SynchronousAiCapability, number>> = {
@@ -153,6 +153,7 @@ export const admitSynchronousAiRequest = async (
     ctx: ApiContext;
     capability: SynchronousAiCapability;
     guestFingerprint: string | null;
+    analysisRequestId?: string | null;
   },
   dependencies: AdmissionDependencies = {}
 ): Promise<{ tier: 'free' | 'plus'; actorClass: AdmissionActorClass } | Response> => {
@@ -202,12 +203,15 @@ export const admitSynchronousAiRequest = async (
     dependencies.readEnv ?? ((name) => Deno.env.get(name))
   );
   const actorHash = await hashAiActor(actorKey);
-  const { data, error } = await adminClient.rpc('claim_ai_request_window', {
+  const keyedAnalysis = (capability === 'analyze_dream' || capability === 'analyze_dream_full')
+    && Boolean(options.analysisRequestId);
+  const { data, error } = await adminClient.rpc(keyedAnalysis ? 'claim_ai_analysis_admission' : 'claim_ai_request_window', {
     p_actor_hash: actorHash,
     p_capability: capability,
     p_window_seconds: policy.windowSeconds,
     p_actor_limit: policy.actorLimit,
     p_global_limit: policy.globalLimit,
+    ...(keyedAnalysis ? { p_request_id: options.analysisRequestId, p_daily_limit: policy.dailyLimit } : {}),
   });
 
   if (error) {
@@ -219,7 +223,13 @@ export const admitSynchronousAiRequest = async (
   }
 
   const claim = (data ?? {}) as AdmissionRpcResult;
+  if (typeof claim.allowed !== 'boolean') return unavailable();
   if (claim.allowed !== true) {
+    if (claim.code === 'AI_DAILY_LIMIT') {
+      const retryAfter = Number.isFinite(claim.retry_after_seconds)
+        ? Math.min(90000, Math.max(1, Math.ceil(claim.retry_after_seconds ?? 1))) : 90000;
+      return jsonResponse({ error: 'Daily AI limit reached', code: 'AI_DAILY_LIMIT', dailyLimit: policy.dailyLimit, retryAfter }, 429, retryAfter);
+    }
     const retryAfter = Number.isFinite(claim.retry_after_seconds)
       ? Math.max(1, Math.floor(claim.retry_after_seconds ?? 1))
       : policy.windowSeconds;
@@ -235,7 +245,7 @@ export const admitSynchronousAiRequest = async (
     );
   }
 
-  if (policy.dailyLimit !== null) {
+  if (policy.dailyLimit !== null && !keyedAnalysis) {
     const { data: dailyData, error: dailyError } = await adminClient.rpc('claim_ai_daily_budget', {
       p_actor_hash: actorHash,
       p_capability: capability,

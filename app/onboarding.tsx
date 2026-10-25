@@ -426,10 +426,32 @@ export default function OnboardingScreen() {
     else router.replace('/settings');
   }, [waitForExitFade]);
 
+  /**
+   * A replayed choice still opens what its button names, but as a plain visit:
+   * no onboarding source or post-save step, so nothing is saved or counted as
+   * an onboarding destination.
+   */
+  const openReplayDestination = useCallback(async (path: OnboardingPath) => {
+    isLeavingRef.current = true;
+    setIsLeaving(true);
+    await waitForExitFade();
+    if (path === 'dictionary') {
+      router.replace('/symbol-dictionary');
+      return;
+    }
+    router.replace({
+      pathname: '/recording',
+      params: {
+        entryId: `replay-${Date.now().toString(36)}`,
+        intent: path === 'memory' ? 'remembered' : 'fresh',
+      },
+    });
+  }, [waitForExitFade]);
+
   const completePath = useCallback(async (path: OnboardingPath) => {
     if (isLeavingRef.current || stepTransitionRef.current) return;
     if (isReplay) {
-      await leaveReplay();
+      await openReplayDestination(path);
       return;
     }
     isLeavingRef.current = true;
@@ -462,7 +484,7 @@ export default function OnboardingScreen() {
       setIsLeaving(false);
       setFailedAction({ type: 'complete', path });
     }
-  }, [isReplay, leaveReplay, openRecording, transition, waitForExitFade]);
+  }, [isReplay, openRecording, openReplayDestination, transition, waitForExitFade]);
 
   const skip = useCallback(async () => {
     if (isLeavingRef.current) return;
@@ -805,7 +827,8 @@ export default function OnboardingScreen() {
                   {t('onboarding.intro.title_lead')}
                 </Text>
               </Animated.View>
-              <Animated.View style={introEnter(STORY.titleAccent)} accessible={false} importantForAccessibility="no-hide-descendants">
+              {/* The header's label already says this line: hidden from assistive technology on every platform (the web reads only aria-hidden). */}
+              <Animated.View style={introEnter(STORY.titleAccent)} accessible={false} aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
                 <Text style={[styles.title, styles.titleAccent, { color: titleAccent }]}>
                   {t('onboarding.intro.title_accent')}
                 </Text>
@@ -902,7 +925,7 @@ export default function OnboardingScreen() {
                   {t('onboarding.path.title_lead')}
                 </Text>
               </Animated.View>
-              <Animated.View style={pathEnter(STORY.titleLead)} accessible={false} importantForAccessibility="no-hide-descendants">
+              <Animated.View style={pathEnter(STORY.titleLead)} accessible={false} aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
                 <Text style={[styles.pathHeading, styles.titleAccent, { color: titleAccent }]}>
                   {t('onboarding.path.title_accent')}
                 </Text>
@@ -920,6 +943,8 @@ export default function OnboardingScreen() {
                   <Animated.View key={path.id} style={pathEnter(STORY.titleLead + 220 + index * STORY.stepStagger)}>
                     <Pressable
                       accessibilityRole="radio"
+                      // Named by its words alone: iOS would otherwise read the icon's symbol name first.
+                      accessibilityLabel={`${t(`onboarding.path.${path.id}.title`)}. ${t(`onboarding.path.${path.id}.body`)}`}
                       aria-checked={selected}
                       accessibilityState={{ checked: selected }}
                       onPress={() => selectPath(path.id)}
@@ -1069,7 +1094,6 @@ export default function OnboardingScreen() {
         <React.Suspense fallback={null}>
           <OnboardingFeatureSheet feature={activeFeature} onClose={confirmLeaveStories} ending={{
               label: t('onboarding.narrative.finish_guided'),
-              restartLabel: t('onboarding.narrative.restart'),
               onFinish: passThroughDoor,
             }} />
         </React.Suspense>
@@ -1100,7 +1124,10 @@ export default function OnboardingScreen() {
             ['chart.bar', 'onboarding.privacy.no_content'],
           ] as const).map(([icon, key]) => (
             <View key={key} style={styles.privacyPoint} testID={key === 'onboarding.privacy.ai_body' ? 'component.onboarding.privacy.ai' : undefined}>
-              <IconSymbol name={icon} size={18} color={sheetTokens.accent.text} />
+              {/* Decorative: iOS would read the symbol's name ("lock") before the promise. */}
+              <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <IconSymbol name={icon} size={18} color={sheetTokens.accent.text} />
+              </View>
               <Text style={[styles.privacyAssuranceText, { color: sheetTokens.text.secondary }]}>{t(key)}</Text>
             </View>
           ))}

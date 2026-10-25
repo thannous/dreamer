@@ -123,6 +123,7 @@ export async function fetchAnalysisPreview(options: {
     method: 'POST',
     body: { dreamId: options.remoteDreamId, lang: options.lang, ...(options.prepare ? { prepare: true } : {}) },
     ...(options.prepare ? NETWORK_REQUEST_POLICIES.analysisPreviewPrepare : NETWORK_REQUEST_POLICIES.analysisPreviewRead),
+    readOnly: options.prepare !== true,
     signal: options.signal,
   });
   return parseResult(result);

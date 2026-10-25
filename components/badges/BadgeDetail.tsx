@@ -30,6 +30,8 @@ import { COLLECTION, finishOf, getBadgeMaterial, NIGHT_ACTION } from './badgeMat
 
 type Props = {
   state: BadgeFamilyState;
+  /** A guest holds no card: the next step is an account, where what it did already counts. */
+  guest?: boolean;
   t: Translate;
   formatNumber: (value: number) => string;
   formatDate: (value: number, options?: Intl.DateTimeFormatOptions) => string;
@@ -57,7 +59,7 @@ const clamp = (value: number) => {
  * waits face down and turns over when touched. A card earned once has no tiers: only its
  * rule, its way in and the day it was discovered.
  */
-export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onReveal, onAction }: Props) {
+export function BadgeDetail({ state, guest = false, t, formatNumber, formatDate, onClose, onReveal, onAction }: Props) {
   const reduced = useReducedMotion();
   const insets = useSafeAreaInsets();
   const { width, height } = useContentWindow();
@@ -282,7 +284,11 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
             )}
 
             <View className="gap-2.5">
-              {once ? (state.tier ? null : (
+              {guest ? (
+                <Text style={{ color: COLLECTION.text }} className="font-sans-bold text-body" testID="collection.detail.guest">
+                  {t('badges.guest.detail')}
+                </Text>
+              ) : once ? (state.tier ? null : (
                 <Text style={{ color: COLLECTION.text }} className="font-sans-bold text-body">{t('badges.card.to_discover')}</Text>
               )) : nextLevel && nextTier ? (
                 <>
@@ -330,7 +336,9 @@ export function BadgeDetail({ state, t, formatNumber, formatDate, onClose, onRev
               testID="collection.detail.action"
               className="min-h-[50px] flex-row items-center justify-center gap-2 rounded-[18px] border px-5"
               style={{ backgroundColor: NIGHT_ACTION.primary, borderColor: NIGHT_ACTION.primaryBorder }}>
-              <Text style={{ color: NIGHT_ACTION.primaryText }} className="font-sans-bold text-body">{badgeActionLabel(t, family.action)}</Text>
+              <Text style={{ color: NIGHT_ACTION.primaryText }} className="font-sans-bold text-body">
+                {guest ? t('guest.account.cta') : badgeActionLabel(t, family.action)}
+              </Text>
             </PressableScale>
           </Reveal>
         ) : (

@@ -40,11 +40,10 @@ export type GeminiGenerationConfig = {
   maxOutputTokens?: number;
 };
 
-// Model identifiers are owned by lib/models.ts (single registry); these named
-// exports keep the existing import sites stable.
-export const GEMINI_FLASH_MODEL = GEMINI_MODELS.text.default;
-export const GEMINI_CHAT_MODEL = GEMINI_MODELS.text.chat;
-export const GEMINI_FLASH_LITE_MODEL = GEMINI_MODELS.text.fallback;
+// Text identifiers below support offline evaluations and the image-prompt pipeline only.
+// Runtime dream text features exclusively use Claude; images use lib/models.ts.
+export const GEMINI_FLASH_MODEL = 'gemini-3.8-flash';
+export const GEMINI_FLASH_LITE_MODEL = 'gemini-3.5-flash-lite';
 export const GEMINI_FLASH_IMAGE_MODEL = GEMINI_MODELS.image.default;
 export const GEMINI_FLASH_LITE_IMAGE_MODEL = GEMINI_MODELS.image.lite;
 

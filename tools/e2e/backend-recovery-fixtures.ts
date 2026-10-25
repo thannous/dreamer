@@ -14,6 +14,7 @@ export type RecoveryState = {
   analysisRequests: string[];
   pendingWorkers: number;
   analysisHold: boolean;
+  analysisOutage: boolean;
   analysisText: string;
   blockedExternalRequests: number;
   workerFailures: number;
@@ -21,7 +22,7 @@ export type RecoveryState = {
 };
 export type RecoveryFixture = {
   origin: string;
-  control: (command: { reset?: boolean; analysisHold?: boolean }) => Promise<void>;
+  control: (command: { reset?: boolean; analysisHold?: boolean; analysisOutage?: boolean }) => Promise<void>;
   state: () => Promise<RecoveryState>;
 };
 

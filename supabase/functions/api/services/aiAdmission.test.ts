@@ -33,7 +33,7 @@ Deno.test('synchronous AI admission defaults are tier-aware and environment-boun
     name === 'AI_RECALL_QUESTION_MAX_PER_DAY' ? '20000' : undefined);
   assertEquals(recall.dailyLimit, 10000);
   assertEquals(resolveSynchronousAiAdmissionPolicy('analyze_dream_full', 'PLUS', () => undefined).dailyLimit, 10);
-  // Retries count on /analyzeDream: its request budget never blocks the 10 new analyses Plus may start.
+  // Keyed retries count once; the daily budget retains room above 10 new Plus analyses.
   const analysis = resolveSynchronousAiAdmissionPolicy('analyze_dream', 'PLUS', () => undefined).dailyLimit;
   assertEquals(analysis, 20);
   assert(analysis! > PLUS_DAILY_LIMITS.analysis);
@@ -223,4 +223,21 @@ Deno.test('QA guest admission claims the daily paid-call budget after rate admis
   assertEquals(rpcCalls, ['claim_ai_request_window', 'claim_guest_qa_paid_call']);
   assertEquals(result.status, 429);
   assertEquals((await result.json()).code, 'QA_DAILY_BUDGET_EXCEEDED');
+});
+
+Deno.test('keyed analysis admission claims window and day once through the atomic RPC', async () => {
+  const calls: { name: string; args: Record<string, unknown> }[] = [];
+  const requestId = '11111111-1111-4111-8111-111111111111';
+  for (const capability of ['analyze_dream', 'analyze_dream_full'] as const) {
+    const result = await admitSynchronousAiRequest({ ctx: buildContext(), capability, guestFingerprint: 'guest', analysisRequestId: requestId }, {
+      createAdminClient: (() => ({ rpc: async (name: string, args: Record<string, unknown>) => {
+        calls.push({ name, args }); return { data: { allowed: true }, error: null };
+      } })) as any,
+    });
+    assert(!(result instanceof Response));
+  }
+  assertEquals(calls.map(call => call.name), ['claim_ai_analysis_admission', 'claim_ai_analysis_admission']);
+  assertEquals(calls[0].args.p_request_id, requestId);
+  assertEquals(calls[0].args.p_daily_limit, 20);
+  assertEquals(calls[0].args.p_actor_limit, 2);
 });

@@ -31,10 +31,11 @@ import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
 import { SavedDreamMoment, type SavedDreamAction, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
 import { CoverFlight } from '@/components/journal/story/CoverFlight';
-import { SEAL_EMBLEMS, SEAL_MEASURES, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
+import { SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
 import { WrittenTitle } from '@/components/journal/story/WrittenTitle';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
+import { PaintingCanvas } from '@/components/journal/story/PaintingCanvas';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { useJournalSpread } from '@/components/journal/useJournalSpread';
 import { WaitingStars } from '@/components/journal/story/WaitingStars';
@@ -93,7 +94,7 @@ import {
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isMockModeEnabled } from '@/lib/env';
 import { isFullMoonDream } from '@/lib/fullMoon';
-import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { AiConsentWithdrawnError, classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getDreamImageCacheKey, getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
   resolveJournalIllustrationAccess,
@@ -672,6 +673,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
+  const handleDiscoverPlus = useCallback(() => {
+    router.push(buildPaywallHref('analysis_limit'));
+  }, []);
   useEffect(() => {
     if (dream?.analysisStatus !== 'pending' || isAnalyzing) return undefined;
 
@@ -942,7 +946,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, []);
   const visibleIllustrationCta =
     quotaLoading && illustrationCta === 'quota' ? 'none' : illustrationCta;
-  const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade';
+  // A guest out of illustrations goes to Plus too: a free account adds none of its own.
+  const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade' || visibleIllustrationCta === 'quota';
 
   useEffect(() => {
     if (
@@ -1052,9 +1057,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       return {
         icon: 'arrow.clockwise' as const,
         title: t('journal.detail.stale.label'),
-        message: t('journal.detail.stale.banner'),
+        message: t(isPlus ? 'journal.detail.stale.banner' : 'error.reanalysis_requires_plus'),
         step: t('journal.detail.action.analyze.step'),
-        cta: t('journal.detail.stale.cta'),
+        cta: t(isPlus ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus'),
         disabled: false,
       };
     }
@@ -1131,7 +1136,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
+  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isPlus, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
   const isAnalysisLaunchBlocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isAnalysisLocked = isAnalysisLaunchBlocked || awaitingPurchasedAnalysis;
   // Act II of the dream story follows the dream's real state: waiting while an analysis
@@ -1577,8 +1582,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, [dream, reflectionJourney.primary.resume]);
 
   const showAnalysisNotice = useCallback(
-    (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
-      const notice = { title, message, tone };
+    (title: string, message: string, tone: AnalysisNotice['tone'] = 'info', retryable = false) => {
+      const notice = { title, message, tone, retryable };
       setLastAnalysisNotice(notice);
       setAnalysisNotice(notice);
     },
@@ -1652,8 +1657,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, []);
 
   const runAnalyze = useCallback(
-    (replaceImage: boolean, skipAllowanceCheck = false): Promise<void> => {
-      if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return Promise.resolve();
+    (replaceImage: boolean, skipAllowanceCheck = false, resumePending = false): Promise<void> => {
+      const canObservePending = resumePending && isAnalysisPending && !isAnalyzing;
+      if (!dream || (isAnalysisLaunchBlocked && !canObservePending) || analysisLaunchInFlightRef.current) return Promise.resolve();
       // Lock synchronously, including the asynchronous quota check and consent.
       analysisLaunchInFlightRef.current = true;
       const consented = skipAllowanceCheck || isResumableAnalysisRequest(dream)
@@ -1682,6 +1688,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         });
         setAnalysisNotice(null);
       }).catch((error: unknown) => {
+        if (error instanceof AiConsentWithdrawnError) return;
         if (error instanceof QuotaError) {
           if (error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest') {
             setQuotaSheetMode('login');
@@ -1706,7 +1713,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           }
         } else {
           const classified = classifyError(error as Error, t);
-          showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error');
+          showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error', classified.canRetry);
         }
       }).finally(() => {
         analysisLaunchInFlightRef.current = false;
@@ -1718,6 +1725,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       dream,
       ensureAnalyzeAllowed,
       isAnalysisLaunchBlocked,
+      isAnalysisPending,
+      isAnalyzing,
       isPlus,
       language,
       onboardingState.pendingRecordingIntent,
@@ -1856,9 +1865,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
   const handleStaleReanalyze = useCallback(() => {
     if (isAnalysisLocked) return;
+    if (!isPlus) {
+      handleDiscoverPlus();
+      return;
+    }
     setReanalyzeImagePolicy('keep');
     setShowReanalyzeSheet(true);
-  }, [isAnalysisLocked]);
+  }, [handleDiscoverPlus, isAnalysisLocked, isPlus]);
 
   const handleDismissReplaceSheet = useCallback(() => {
     setShowReplaceImageSheet(false);
@@ -1924,6 +1937,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   // Act III starts on the tap: a request in flight already paints, before the job reports.
   const paintingRequested = illustrationSidecar === 'pending' || (isRetryingImage && !dream?.imageUrl);
   const paintingInProgress = paintingRequested || (artworkAtArrival === false && artworkResolving);
+  // A plate painted again keeps its picture until the new one lands, painted over meanwhile.
+  const repaintingCover = hasIllustratedCover && (isRetryingImage
+    || dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running');
   const [artworkLanded, setArtworkLanded] = useState(false);
   const artworkLanding = artworkAtArrival === false && Boolean(paintedArtwork) && !artworkLanded;
   useEffect(() => {
@@ -2105,6 +2121,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     const timer = setTimeout(landed, 700);
     return () => clearTimeout(timer);
   }, [coverShown, plateUnderFlight]);
+
+  if (!dream && isDeleting) {
+    // The dream is gone from the store before router.replace lands: show the plain
+    // ground, not the "not found" page, for those few frames.
+    return <View className="flex-1 bg-ink" />;
+  }
 
   if (!dream) {
     return (
@@ -2520,23 +2542,24 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     && (visiblePrimaryAction === 'analyze' || readingInFlight);
   // Whatever page it is on, the seal says while the dream is being read; the dock need not.
   const sealShowsReading = sealVisible && readingInFlight;
-  // Once read, the seal offers the dream's illustration, which it then paints in its own window.
-  // Asked there, it keeps its words while it paints, so the seal stays the same button meanwhile.
+  // Once read, the seal offers the dream's illustration, which it then paints in its own window,
+  // and says so under it however the painting was asked. Asked there, it keeps its words while
+  // it paints, so the seal stays the same button meanwhile.
   const sealSettled = sealVisible && !readingInFlight && !sealReads;
-  const sealPaints = sealSettled && illustrationAskedOnSeal && paintingInProgress && !plateRevealed;
+  const sealPaints = sealSettled && paintingInProgress && !plateRevealed;
   // Only a dream with no illustration yet: a failed one keeps its own card and its own step.
   const sealIllustrates = sealSettled && illustrationSidecar === 'empty' && !paintingInProgress
     && (visibleIllustrationCta === 'illustrate' || visibleIllustrationCta === 'upgrade');
   const sealAction: SavedDreamAction | null = !sealVisible ? null
     : readingInFlight ? { label: t('loading.analyzing') }
-      : sealPaints ? {
-        label: t('analysis.reading.image_generating'),
-        icon: 'sparkles',
+      : sealPaints ? (illustrationAskedOnSeal ? {
+        label: t('journal.detail.image.generating_title'),
+        icon: 'paintbrush.pointed.fill',
         onPress: () => {},
         disabled: true,
         testID: TID.Button.JournalIllustrate,
         emphasis: 'secondary',
-      }
+      } : { label: t('journal.detail.image.generating_title'), icon: 'paintbrush.pointed.fill' })
         : sealIllustrates ? (visibleIllustrationCta === 'upgrade' ? {
           label: t('journal.detail.image.seal_upgrade'),
           icon: 'sparkles',
@@ -2564,6 +2587,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             testID: primaryButtonTestID,
             emphasis: 'primary',
           };
+
+  // A guest out of readings is asked for an account first; Plus stays one quiet step away.
+  const renderDiscoverPlus = () => guestNeedsAccount && savedAnalysisAction === 'signup' ? (
+    <PressableScale accessibilityRole="button" onPress={handleDiscoverPlus}
+      testID={TID.Button.SavedDreamDiscoverPlus}
+      className="min-h-[44px] items-center justify-center px-4">
+      <Text className="font-sans-medium text-[15px] text-champagne-on">
+        {t('journal.detail.quota_limit.discover_plus')}
+      </Text>
+    </PressableScale>
+  ) : null;
 
   const renderReturnToJournal = (quiet: boolean) => (
     <PressableScale accessibilityRole="button" onPress={handleBackPress}
@@ -2602,10 +2636,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             {arrivalMessage}
           </Text>
         ) : guestNeedsAccount ? null : renderQuotaHint('center');
+      // A guest out of readings is invited to the account the seal offers, not back to the journal.
       return (
         <View testID={TID.Component.DreamDetailActionCard} className="gap-1">
           {caption ? <View className="px-2">{caption}</View> : null}
-          {renderReturnToJournal(true)}
+          {guestNeedsAccount ? renderDiscoverPlus() : renderReturnToJournal(true)}
         </View>
       );
     }
@@ -2658,8 +2693,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     if (isSavedArrival && !isStalePrimaryAction) {
       // Act I ends on one clear next step: the story continues into the analysis when the
       // permission allows it, otherwise the journal is the way out and the offer stays secondary.
+      // A guest out of readings is led to create an account rather than back to the journal.
       const analysisFirst = visiblePrimaryAction === 'analyze' && !analysisAccessLabel
-        && (savedAnalysisAction === 'analyze' || canResumeAnalysis);
+        && (savedAnalysisAction === 'analyze' || canResumeAnalysis || guestNeedsAccount);
       // One caption at most: the explanation of the offer, otherwise the allowance.
       const quotaCaption = guestNeedsAccount || arrivalMessage ? null : renderQuotaHint('center');
       const captions = arrivalMessage || quotaCaption ? (
@@ -2693,12 +2729,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           </Text>
         </PressableScale>
       );
-      const returnButton = renderReturnToJournal(analysisFirst);
+      const returnButton = guestNeedsAccount ? null : renderReturnToJournal(analysisFirst);
 
       return (
         <View testID={TID.Component.DreamDetailActionCard} className={analysisFirst ? 'gap-2.5' : 'gap-1.5'}>
           {analysisFirst
-            ? <>{analysisButton}{captions}{returnButton}</>
+            ? <>{analysisButton}{captions}{returnButton}{renderDiscoverPlus()}</>
             : <>{returnButton}{analysisButton}{captions}</>}
         </View>
       );
@@ -2760,6 +2796,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             {analysisAccessLabel ?? detailActionCard.cta}
           </Text>
         </PressableScale>
+        {renderDiscoverPlus()}
       </View>
     );
   };
@@ -2886,6 +2923,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       </PaintingTilt>
       </Animated.View>
       </Animated.View>
+      {repaintingCover ? (
+        <PaintingCanvas testID={TID.Component.CoverPainting} travel={coverViewport?.width ?? windowSize.width}
+          ink={SEAL_GOLD} brush={30} label={t('journal.detail.image.generating_title')}
+          centre={{ bottom: (coverIntroHeight ?? 0) + insets.bottom }} />
+      ) : null}
     </PressableScale>
   );
 
@@ -2985,7 +3027,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             </Text>
             {!isRetryingImage && !isImageJobPending && (
               <View className="w-full items-center gap-3">
-                {visibleIllustrationCta === 'upgrade' && (
+                {canOfferImageUpgrade && (
                   <PressableScale
                     onPress={handleImageUpgrade}
                     accessibilityRole="button"
@@ -3491,6 +3533,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           visible={Boolean(analysisNotice)}
           onClose={handleDismissAnalysisNotice}
           notice={displayedAnalysisNotice}
+          onRetry={() => { setAnalysisNotice(null); void runAnalyze(false, false, true); }}
         />
         <ReplaceImageSheet
           visible={showReplaceImageSheet}
@@ -3559,6 +3602,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           tier={tier}
           mode={quotaSheetMode}
           usageLimit={usage?.analysis.limit}
+          onDiscoverPlus={() => {
+            setShowQuotaLimitSheet(false);
+            handleDiscoverPlus();
+          }}
         />
         <ImageErrorSheet
           visible={Boolean(imageErrorMessage)}

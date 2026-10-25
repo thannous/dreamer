@@ -11,6 +11,7 @@ export type GuestAnalysisQuotaClaim = {
   is_upgraded?: boolean;
   claimed?: boolean;
   duplicate?: boolean;
+  reservation_id?: string;
 };
 
 export const isAuthenticatedAnalysisQuotaRetry = (
@@ -53,7 +54,7 @@ export async function claimGuestAnalysisQuota({
     };
   }
 
-  const { data, error } = await adminClient.rpc('claim_guest_analysis_quota', {
+  const { data, error } = await adminClient.rpc('reserve_guest_text_analysis', {
     p_fingerprint: fingerprint,
     p_analysis_request_id: analysisRequestId,
     p_limit: limit,

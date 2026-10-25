@@ -34,6 +34,7 @@ import { BadgeLedgerHost } from '@/components/badges/BadgeLedgerHost';
 import { GuideReadingHost } from '@/components/guides/GuideReadingHost';
 import { HomeWidgetsHost } from '@/components/widgets/HomeWidgetsHost';
 import { NotificationDreamImportHost } from '@/components/reminders/NotificationDreamImportHost';
+import { AiConsentModalHost } from '@/components/privacy/AiConsentModal';
 import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
 import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
 import { VercelAnalytics } from '@/components/VercelAnalytics';
@@ -963,7 +964,7 @@ const RootNavigator = memo(function RootNavigator({
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          {!isLucidTrainer ? <><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator /></> : null}
+          {!isLucidTrainer ? <><AiConsentModalHost /><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator /></> : null}
           {!isLucidTrainer ? <VercelAnalytics /> : null}
           {!isLucidTrainer ? <VercelSpeedInsights /> : null}
         </JournalRuntime>

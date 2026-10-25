@@ -2,6 +2,8 @@ import Constants from 'expo-constants';
 
 import { getAccessToken } from './auth';
 import { classifyError, ErrorType } from './errors';
+import { markHttpRequestDispatched } from './httpDispatch';
+export { wasHttpRequestDispatched } from './httpDispatch';
 
 /**
  * HTTP error thrown by `fetchJSON()` when a non-2xx response is returned.
@@ -17,6 +19,7 @@ export class HttpError<TBody = unknown> extends Error {
   public readonly url: string;
   public readonly bodyText: string;
   public readonly body?: TBody;
+  public readonly retryAfterMs?: number;
 
   constructor(options: {
     status: number;
@@ -24,6 +27,7 @@ export class HttpError<TBody = unknown> extends Error {
     url: string;
     bodyText: string;
     body?: TBody;
+    retryAfterMs?: number;
   }) {
     // Security: avoid including response bodies in `Error.message` (often logged and shown to users),
     // since they can contain sensitive/internal details from the backend (e.g., stack traces).
@@ -33,14 +37,21 @@ export class HttpError<TBody = unknown> extends Error {
     this.url = options.url;
     this.bodyText = options.bodyText;
     this.body = options.body;
+    this.retryAfterMs = options.retryAfterMs;
   }
 }
 
 export type HttpOptions = {
+  /** Recheck a caller precondition after auth and before every network attempt. */
+  beforeRequest?: () => Promise<void>;
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   headers?: Record<string, string>;
   body?: unknown;
   timeoutMs?: number;
+  /** Pure read implemented with POST (for example a job status RPC). */
+  readOnly?: boolean;
+  /** Explicitly idempotent server mutation, never a generation or one-use auth code. */
+  idempotent?: boolean;
   retries?: number; // Number of automatic retries (default: 0)
   retryDelay?: number; // Delay between retries in ms (default: 2000)
   signal?: AbortSignal;
@@ -236,7 +247,7 @@ function isSupabaseFunctionsUrl(targetUrl: string): boolean {
 /**
  * Performs a single HTTP request
  */
-async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
+async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}, onDispatch?: () => void): Promise<T> {
   const controller = new AbortController();
   const timeoutMs = options.timeoutMs ?? 30000;
   let didTimeout = false;
@@ -298,17 +309,27 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
     }
 
     try {
-      const res = await fetch(url, {
+      if (options.beforeRequest) await options.beforeRequest();
+      const request: RequestInit = {
         method: options.method ?? 'GET',
         headers,
         body: options.body === undefined ? undefined : JSON.stringify(options.body),
         signal: controller.signal,
-      } as RequestInit);
+      };
+      onDispatch?.();
+      const res = await fetch(url, request);
 
       if (!res.ok) {
         const bodyText = await readResponseText(res).catch(() => '');
         const body = parseJsonSafely(bodyText);
+        const retryAfter = getHeaderValue(res, 'retry-after')
+          ?? (body && typeof body === 'object' && 'retryAfter' in body ? body.retryAfter : undefined);
+        const retrySeconds = Number(retryAfter);
+        const retryAfterMs = Number.isFinite(retrySeconds)
+          ? retrySeconds * 1000
+          : typeof retryAfter === 'string' ? Date.parse(retryAfter) - Date.now() : 0;
         throw new HttpError({
+          ...(Number.isFinite(retryAfterMs) && retryAfterMs > 0 ? { retryAfterMs } : {}),
           status: res.status,
           statusText: res.statusText,
           url,
@@ -356,20 +377,29 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
  * Fetches JSON with automatic retry logic
  */
 export async function fetchJSON<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
-  const retries = options.retries ?? 0;
+  const body = options.body && typeof options.body === 'object' ? options.body as Record<string, unknown> : {};
+  const hasRequestKey = [body.clientRequestId, body.analysisRequestId,
+    ...Object.entries(options.headers ?? {}).filter(([key]) => key.toLowerCase() === 'idempotency-key').map(([, value]) => value),
+  ].some(value => typeof value === 'string' && value.trim().length > 0);
+  const canReplay = (options.method ?? 'GET') === 'GET' || options.readOnly === true || options.idempotent === true || hasRequestKey;
+  // Never manufacture a key here: retries must reuse the caller's admitted command.
+  const retries = canReplay && Number.isFinite(options.retries)
+    ? Math.max(0, Math.min(3, Math.trunc(options.retries ?? 0))) : 0;
   const retryDelay = options.retryDelay ?? 2000;
   const signal = options.signal;
 
   let lastError: Error | null = null;
+  let dispatched = false;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     if (signal?.aborted) {
       throw createAbortError();
     }
     try {
-      return await fetchJSONOnce<T>(url, options);
+      return await fetchJSONOnce<T>(url, options, () => { dispatched = true; });
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
+      if (dispatched) markHttpRequestDispatched(lastError);
 
       if (signal?.aborted) {
         if (lastError.name === 'AbortError') {
@@ -381,23 +411,28 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
       // If we have more retries left, check if we should retry
       if (attempt < retries) {
         const classified = classifyError(lastError);
+        const httpError = lastError instanceof HttpError ? lastError : undefined;
+        const code = httpError?.body && typeof httpError.body === 'object' && 'code' in httpError.body
+          ? httpError.body.code : undefined;
+        const admissionRateLimit = httpError?.status === 429 && typeof code === 'string'
+          && (/^AI_.*_RATE_LIMIT$/.test(code) || code === 'AI_ADMISSION_DENIED');
+        // Preserve the real server deadline for the UI. Never shorten it into
+        // a replay that is guaranteed to be refused again.
+        if (admissionRateLimit || (httpError?.retryAfterMs ?? 0) > 30_000) throw lastError;
 
-        // Only retry on network, timeout, or server errors
-        if (
-          classified.type === ErrorType.NETWORK ||
-          classified.type === ErrorType.TIMEOUT ||
-          classified.type === ErrorType.SERVER
-        ) {
+        // Unknown failures are transient too. Explicit request/permission failures,
+        // quota denials and consent withdrawal remain terminal.
+        if (classified.canRetry !== false && classified.type !== ErrorType.CLIENT) {
           // Exponential backoff with jitter to avoid thundering herd
           const jitter = 0.8 + Math.random() * 0.5; // 0.8-1.3 multiplier
-          const delay = Math.min(
+          const delay = Math.min(30_000, Math.max(
             retryDelay * Math.pow(2, attempt) * jitter,
-            30000 // Cap at 30 seconds max
-          );
+            (lastError as HttpError).retryAfterMs ?? 0,
+          ));
           await sleep(delay, signal);
           continue;
         } else {
-          // For other errors (rate limit, client errors), don't retry automatically
+          // Explicit request failures must be corrected before another attempt
           throw lastError;
         }
       }

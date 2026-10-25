@@ -98,6 +98,8 @@ jest.mock('@/components/releases/WhatsNewModal', () => ({ WhatsNewModalHost: () 
 jest.mock('@/components/settings/QuickSettingsProvider', () => ({ QuickSettingsProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/VercelAnalytics', () => ({ VercelAnalytics: () => null }));
 jest.mock('@/components/VercelSpeedInsights', () => ({ VercelSpeedInsights: () => null }));
+// The consent modal draws native SF Symbols; this suite checks which hosts start, not its look.
+jest.mock('@/components/privacy/AiConsentModal', () => ({ AiConsentModalHost: () => null }));
 jest.mock('@/lib/i18n', () => ({ loadTranslations: jest.fn().mockResolvedValue(undefined) }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: jest.fn(), getPaywallTrigger: jest.fn(() => 'settings') }));
 jest.mock('@/lib/productAnalytics', () => ({ setProductAnalyticsLocale: jest.fn() }));

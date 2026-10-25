@@ -231,6 +231,19 @@ async function leaveGuidedStories(screen: TestFixtures['screen']) {
   await screen.getByRole('button', /^(Quitter|Leave|Sair|Salir|Esci|Verlassen)$/i, { visible: true }).tap();
 }
 
+/** Dreamer's root layout mounts the Noctalia consent host, so this is `modal.aiConsent`, not `Alert.alert`. */
+async function acceptAiConsent(screen: TestFixtures['screen']) {
+  await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
+  await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+  await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
+}
+
+async function declineAiConsent(screen: TestFixtures['screen']) {
+  await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
+  await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
+  await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
+}
+
 async function acceptDreamerLink({ screen }: Pick<TestFixtures, 'screen'>) {
   // iOS asks before handing a custom URL back from Safari to the installed app.
   const prompt = screen.getByText(/^(Ouvrir dans|Open in).*Noctalia/, { visible: true });
@@ -359,9 +372,7 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
     await app.screenshot(`native-reflection-${mode}`);
     await screen.getByTestId('btn.dreamCategory.symbols', { visible: true }).tap();
-    const consent = screen.getByRole('button', 'Accepter et continuer', { visible: true });
-    await consent.tap();
-    await expect(consent).toHaveCount(0);
+    await acceptAiConsent(screen);
     // Native first-use consent precedes the composer. An initial conversation
     // has no synthesis yet; that action is outside this background inspection.
     await expect(screen.getByTestId('chat.input.message', { visible: true })).toBeEnabled();
@@ -503,6 +514,9 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
   await device.dismissKeyboard();
   await screen.scrollUntilVisible(screen.getByTestId('btn.recording.inputMode.voice', { visible: true }), { direction: 'up' });
   await screen.getByTestId('btn.recording.inputMode.voice', { visible: true }).tap();
+  // Speech with a draft owes its first question: the host asks before any provider call.
+  // Declining keeps that question local, so the draft itself is not rewritten.
+  await declineAiConsent(screen);
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue(draft);
   await expect(screen.getByTestId('btn.saveDream')).toBeEnabled();
@@ -669,10 +683,20 @@ test('Dreamer release opt-in feature story bridges capture to exploration', {
   await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
   await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
+  await expect(screen.getByTestId('component.onboarding.story.explore.3', { visible: true })).toBeVisible();
+  // Nothing is chosen ahead of time. Skip is the way on until the reader answers;
+  // the door button arrives only after Noctalia's closing line.
+  await expect(screen.getByTestId('text.onboarding.dialogue.question', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('btn.onboarding.story.skip', { visible: true })).toBeEnabled();
+  await screen.getByTestId('btn.onboarding.dialogue.home', { visible: true }).tap();
+  await expect(screen.getByTestId('component.onboarding.dialogue.followup', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('text.onboarding.dialogue.closing', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('btn.onboarding.story.skip')).toHaveCount(0);
   await expect(screen.getByTestId('btn.onboarding.story.continue', { visible: true })).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.continue', { visible: true }).tap();
   await expect(screen.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
-  await expect(screen.getByTestId('component.onboarding.intro', { visible: true })).toBeVisible();
+  // The last story ends through the blue door, which opens on the path step.
+  await expect(screen.getByTestId('component.onboarding.path', { visible: true })).toBeVisible();
   await app.screenshot('release-story-complete');
 });
 

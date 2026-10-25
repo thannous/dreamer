@@ -2,7 +2,7 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { AnalysisJobRow } from '../api/services/analysisJobs.ts';
 import { hashAnalysisTranscript } from '../api/lib/analysisTranscriptHash.ts';
-import { claimSpecificJob, hasAuthorizedAnalysisTranscript } from './index.ts';
+import { analysisRetryDelayMs, claimSpecificJob, failJob, requeueJob, hasAuthorizedAnalysisTranscript } from './index.ts';
 
 const queuedJob = {
   id: '11111111-1111-4111-8111-111111111111',
@@ -80,4 +80,170 @@ Deno.test('an async analysis cannot spend its receipt on a changed transcript', 
   assertEquals(await hasAuthorizedAnalysisTranscript(bound, 'Different dream'), false);
   assertEquals(await hasAuthorizedAnalysisTranscript(bound, ' First dream'), false);
   assertEquals(await hasAuthorizedAnalysisTranscript(queuedJob, 'First dream'), false);
+});
+
+Deno.test('Claude configuration and generation failures keep the worker retryable', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  const { ClaudeConfigurationError, ClaudeRequestError } = await import('../api/services/claude.ts');
+  for (const error of [new ClaudeConfigurationError(), new ClaudeRequestError(502), new ClaudeRequestError(504), new ClaudeRequestError(502, 'ANALYSIS_PROVIDER_OVERLOADED')]) {
+    const result = serializeAnalysisJobError(error);
+    assertEquals(result.retryable, true);
+    assertEquals(result.errorCode, error instanceof ClaudeConfigurationError ? 'ANALYSIS_CONFIGURATION_ERROR'
+      : error.code);
+  }
+});
+
+// Exercise the actual catch-path mutations with a conditional-update client.
+// The job snapshot is still running when completion commits but its reply is lost.
+const createStatusClient = (status: string) => {
+  const rows: Record<string, Record<string, unknown>> = {
+    ai_jobs: { id: queuedJob.id, status },
+    dreams: { id: 1, user_id: 'owner', analysis_request_id: 'request', analysis_status: status === 'succeeded' ? 'done' : 'pending' },
+  };
+  const client = {
+    from: (table: string) => ({
+      update: (values: Record<string, unknown>) => {
+        const filters: Record<string, unknown> = {};
+        const query = {
+          eq: (key: string, value: unknown) => { filters[key] = value; return query; },
+          then: (resolve: (result: { error: null }) => unknown) => {
+            const row = rows[table];
+            if (Object.entries(filters).every(([key, value]) => row[key] === value)) Object.assign(row, values);
+            return Promise.resolve(resolve({ error: null }));
+          },
+        };
+        return query;
+      },
+    }),
+  };
+  return { client, rows };
+};
+const runningSnapshot = { ...queuedJob, user_id: 'owner', dream_id: 1, client_request_id: 'request', status: 'running' } as AnalysisJobRow;
+
+Deno.test('lost completion replies cannot fail or requeue a succeeded job through worker catch paths', async () => {
+  for (const mutate of [failJob, requeueJob]) {
+    const { client, rows } = createStatusClient('succeeded');
+    await mutate(client as any, runningSnapshot, 'LOST_REPLY', 'Reply lost');
+    assertEquals(rows.ai_jobs.status, 'succeeded');
+    assertEquals(rows.dreams.analysis_status, 'done');
+  }
+});
+
+Deno.test('worker failure and retry still transition a running attempt', async () => {
+  const failed = createStatusClient('running');
+  await failJob(failed.client as any, runningSnapshot, 'PROVIDER_FAILED', 'Failed');
+  assertEquals(failed.rows.ai_jobs.status, 'failed');
+  assertEquals(failed.rows.dreams.analysis_status, 'failed');
+  const retry = createStatusClient('running');
+  await requeueJob(retry.client as any, runningSnapshot, 'TRANSIENT', 'Retry');
+  assertEquals(retry.rows.ai_jobs.status, 'queued');
+  assertEquals(retry.rows.dreams.analysis_status, 'pending');
+});
+
+Deno.test('worker keeps explicit client and state failures terminal', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  for (const code of ['ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND', 'ANALYSIS_STATE_CONFLICT', 'ANALYSIS_REQUEST_STALE', 'ANALYSIS_CLIENT_CANCELLED']) {
+    const result = serializeAnalysisJobError(Object.assign(new Error('State changed'), { code, status: 409 }));
+    assertEquals(result.errorCode, code);
+    assertEquals(result.retryable, false);
+    const { client, rows } = createStatusClient('running');
+    await failJob(client as any, runningSnapshot, result.errorCode, result.errorMessage);
+    assertEquals(rows.ai_jobs.error_code, code);
+    assertEquals(rows.ai_jobs.status, 'failed');
+  }
+});
+
+Deno.test('retry backoff grows with jitter, stays bounded, and cannot be bypassed by polling', async () => {
+  assertEquals(analysisRetryDelayMs(1, 0), 800);
+  assertEquals(analysisRetryDelayMs(1, 1), 1300);
+  assertEquals(analysisRetryDelayMs(2, 0), 1600);
+  assertEquals(analysisRetryDelayMs(20, 1), 30000);
+  const pending = { ...queuedJob, request_payload: { retry_not_before: new Date(2000).toISOString() } };
+  const attempt = createClient(pending, { ...pending, status: 'running' });
+  assertEquals(await claimSpecificJob(attempt.client as any, queuedJob.id, 1999), null);
+  assertEquals(attempt.updateCount, 0);
+  assertEquals((await claimSpecificJob(attempt.client as any, queuedJob.id, 2000))?.status, 'running');
+});
+
+Deno.test('permission failures are terminal while unrecognized failures remain retryable', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  assertEquals(serializeAnalysisJobError({ code: '42501' }).retryable, false);
+  for (const error of [{ status: 503 }, { code: '40P01' }, { code: '57014' }, { message: 'unknown' }]) {
+    assertEquals(serializeAnalysisJobError(error).retryable, true);
+  }
+});
+
+Deno.test('an open provider breaker defers the next worker attempt until cooldown instead of burning its budget', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  const { ProviderCircuitOpenError } = await import('../api/lib/providerCircuit.ts');
+  const error = serializeAnalysisJobError(new ProviderCircuitOpenError(10));
+  assertEquals(error.errorCode, 'ANALYSIS_PROVIDER_UNAVAILABLE');
+  assertEquals(error.retryable, true);
+  assertEquals(error.retryAfterMs, 10000);
+});
+
+Deno.test('an in-flight provider probe defers even the last worker slot without consuming a provider attempt', async () => {
+  const { ProviderCircuit } = await import('../api/lib/providerCircuit.ts');
+  const { claudeProviderCircuit } = await import('../api/services/claude.ts');
+  const { processAnalysisJob } = await import('./index.ts');
+  let now = 0;
+  const circuit = new ProviderCircuit({ failureThreshold: 1, failureWindowMs: 30000, cooldownMs: 10000 }, () => now);
+  circuit.enter().failure(true);
+  now = 10000;
+  const probe = circuit.enter(35000);
+  const originalEnter = claudeProviderCircuit.enter;
+  claudeProviderCircuit.enter = timeout => circuit.enter(timeout);
+  const originalFetch = globalThis.fetch;
+  const originalKey = Deno.env.get('ANTHROPIC_API_KEY');
+  Deno.env.set('ANTHROPIC_API_KEY', 'synthetic');
+  const transcript = 'A door opened.';
+  const job = { ...queuedJob, status: 'queued', user_id: 'owner', dream_id: 1,
+    client_request_id: 'request', attempt_count: 2,
+    request_payload: { transcript_sha256: await hashAnalysisTranscript(transcript) } };
+  let requeued: Record<string, any> | undefined;
+  let providerCalls = 0;
+  globalThis.fetch = async (input, init) => {
+    const request = new Request(input, init);
+    const url = new URL(request.url);
+    const json = (body: unknown) => new Response(JSON.stringify(body), { headers: { 'Content-Type': 'application/json' } });
+    if (url.hostname !== 'supabase.test') { providerCalls++; throw new Error('provider must not be called'); }
+    if (url.pathname === '/functions/v1/analysis-job-worker') return json({ ok: true });
+    if (url.pathname === '/rest/v1/rpc/get_effective_subscription_tier') return json('free');
+    if (url.pathname === '/rest/v1/analysis_previews') return json([]);
+    if (url.pathname === '/rest/v1/ai_jobs') {
+      if (request.method === 'GET') return json([job]);
+      const body = await request.json();
+      if (body.status === 'running') return json(request.headers.get('Accept')?.includes('vnd.pgrst.object') ? { ...job, ...body } : [{ ...job, ...body }]);
+      requeued = body;
+      return new Response(null, { status: 204 });
+    }
+    if (url.pathname === '/rest/v1/dreams') return json([{
+      id: 1, user_id: 'owner', transcript, analysis_request_id: 'request', analysis_status: 'pending', is_analyzed: false,
+    }]);
+    throw new Error('unexpected backend call');
+  };
+  try {
+    await processAnalysisJob({ supabaseUrl: 'https://supabase.test', serviceRoleKey: 'synthetic', storageBucket: 'dream-images', jobId: job.id }, {
+      now: () => now, random: () => 0,
+      sleep: async ms => {
+        assertEquals(ms, 30000);
+        assertEquals(requeued?.attempt_count, 2);
+        assertEquals(requeued?.status, 'queued');
+        now += ms;
+        probe.success();
+      },
+    });
+    assertEquals(requeued?.error_code, 'ANALYSIS_PROVIDER_UNAVAILABLE');
+    assertEquals(requeued?.request_payload.retry_not_before, new Date(40000).toISOString());
+    assertEquals(providerCalls, 0);
+    // The resumed worker can claim its third actual provider attempt after the probe succeeds.
+    const pending = { ...job, ...requeued } as AnalysisJobRow;
+    const attempt = createClient(pending, { ...pending, status: 'running', attempt_count: 3 });
+    assertEquals((await claimSpecificJob(attempt.client as any, job.id, now))?.attempt_count, 3);
+    circuit.enter().success();
+  } finally {
+    globalThis.fetch = originalFetch;
+    claudeProviderCircuit.enter = originalEnter;
+    if (originalKey === undefined) Deno.env.delete('ANTHROPIC_API_KEY'); else Deno.env.set('ANTHROPIC_API_KEY', originalKey);
+  }
 });

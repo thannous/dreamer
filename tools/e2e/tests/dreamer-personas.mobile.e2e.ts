@@ -179,11 +179,12 @@ if (process.env.E2E_PERSONAS === '1') {
       // The iPhone composer keeps its keyboard open; Send remains reachable.
       if (platform === 'android') await device.dismissKeyboard();
       await tap(screen, 'chat.button.send');
-      // Native Alert is visible UI, unlike the browser's dialog callback.
-      await expect(screen.getByText(/Anthropic \(Claude\).*Google \(Gemini\)/, { visible: true })).toBeVisible();
-      const consent = screen.getByRole('button', /^Accepter et continuer$/i, { visible: true });
-      await consent.tap();
-      await expect(consent).toHaveCount(0);
+      // The root host shows modal.aiConsent. Alert.alert is only the fallback when that host is absent.
+      // Do not scroll: a swipe on the dimmed overlay declines.
+      await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
+      await expect(screen.getByTestId('component.aiConsent.card', { visible: true })).toBeVisible();
+      await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+      await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
       const savedQuestion = screen.getByText(question, { exact: true, visible: true });
       await expect(savedQuestion).toBeVisible();
       const latest = screen.getByRole('button', 'Jump to latest', { exact: true, visible: true });

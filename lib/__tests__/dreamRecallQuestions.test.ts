@@ -6,6 +6,7 @@ import {
   DREAM_RECALL_QUESTION_I18N_KEYS,
   DREAM_RECALL_QUESTION_SEQUENCE,
   dreamRecallQuestionKey,
+  getCaptureFallbackQuestion,
   getDreamRecallQuestion,
 } from '../dreamRecallQuestions';
 
@@ -111,5 +112,23 @@ describe('getDreamRecallQuestion', () => {
     expect(JSON.stringify(t.mock.calls)).not.toContain(ORIGINAL);
     expect(question.text).not.toContain(ORIGINAL);
     expect(Object.keys(question)).toEqual(['kind', 'text']);
+  });
+});
+
+describe('getCaptureFallbackQuestion', () => {
+  const kinds = (transcript: string) => [0, 1, 2].map(index => getCaptureFallbackQuestion(transcript, index, translator()).kind);
+
+  it('asks a fragment about its image before anything else', () => {
+    expect(kinds('A blue door.')).toEqual(['what_seen', 'where', 'what_else']);
+  });
+
+  it('asks a story what else comes back, never about what happened next', () => {
+    const story = 'I was walking in a city at night, the streets were empty and every door was painted blue.';
+    expect(kinds(story)).toEqual(['what_else', 'who_else', 'what_seen']);
+  });
+
+  it('measures the opening account, not the answers added after it', () => {
+    const draft = 'A blue door.\n\nQuestion: What do you see most clearly?\nAnswer: a long corridor with many windows, all open, and wind going through them';
+    expect(getCaptureFallbackQuestion(draft, 1, translator()).kind).toBe('where');
   });
 });

@@ -16,7 +16,8 @@ export const NETWORK_REQUEST_POLICIES = {
   default: createPolicy(30000, 0, 2000),
 
   // Auth / session
-  guestSessionCreate: createPolicy(10000, 1, 750),
+  // Challenges/attestations are single-use unkeyed writes, so never replay a lost reply.
+  guestSessionCreate: createPolicy(10000, 0, 750),
   guestQaCommand: createPolicy(10000, 0, 1000),
   authMarkUpgrade: createPolicy(10000, 2, 1000),
   // No auto-retry: deletion must not be replayed after an ambiguous failure.
@@ -26,18 +27,23 @@ export const NETWORK_REQUEST_POLICIES = {
   quotaStatus: createPolicy(10000, 1, 750),
   subscriptionRefresh: createPolicy(10000, 1, 1000),
 
-  // Analysis + chat
-  analyzeDream: createPolicy(45000, 0, 1200),
+  // Analysis + chat. Keep budgets unchanged: durable commands/reads retry once;
+  // non-durable generations and streams require explicit user retry. fetchJSON
+  // enforces the existing command key (or an explicitly read-only POST).
+  // One bounded recovery for transcript-bound receipts, as requested in F.
+  // This is the sole increased budget (0→1); fetchJSON disables it without the
+  // existing analysisRequestId. A consumed receipt prevents a second generation.
+  analyzeDream: createPolicy(45000, 1, 1200),
   analysisJobCommand: createPolicy(15000, 1, 1000),
   analysisJobStatus: createPolicy(10000, 1, 1000),
   categorizeDream: createPolicy(30000, 0, 1200),
   recallQuestion: createPolicy(15000, 0, 1200),
-  // The narrator waits on this one; past 20 s the review keeps their own words instead.
-  formatRecall: createPolicy(20000, 0, 1200),
-  // Claude has 30 s to write the letter, then Gemini its own turn; no retry would pay twice.
-  moonLetter: createPolicy(70000, 0, 1200),
-  // The prepared analysis: Claude has 20 s, then Gemini; the painting follows on the server.
-  analysisPreviewPrepare: createPolicy(70000, 0, 1200),
+  // Claude has 45 s for a complete account; failure keeps the author’s words reviewable.
+  formatRecall: createPolicy(55000, 0, 1200),
+  // Claude has 50 s for the letter; explicit retry avoids duplicate generation.
+  moonLetter: createPolicy(60000, 0, 1200),
+  // Claude has 35 s for the reading; painting remains on the server after it.
+  analysisPreviewPrepare: createPolicy(65000, 0, 1200),
   analysisPreviewRead: createPolicy(10000, 1, 750),
   analyzeDreamFull: createPolicy(60000, 0, 1200),
   chat: createPolicy(45000, 0, 1200), // no auto-retry to avoid duplicate sends

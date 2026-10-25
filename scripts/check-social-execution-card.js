@@ -50,7 +50,7 @@ function parseExecutionCard(content) {
   if (sectionEntries.length > 0) return sectionEntries;
 
   const tableRows = content.split('\n').filter((line) => /^\| [123] \|/.test(line));
-  const durableDir = content.match(/`(output\/video\/noctalia-social-execution-[^/`]+\/)`/);
+  const durableDir = content.match(/`(outputs?\/video\/noctalia-social-execution-[^/`]+\/)`/);
   if (tableRows.length === 0) return [];
 
   return tableRows.map((row, index) => {
@@ -61,7 +61,7 @@ function parseExecutionCard(content) {
     if (!masterCell || !sha || !caption) {
       throw new Error(`Créneau ${index + 1}: ligne de tableau incomplète.`);
     }
-    const master = masterCell[1].startsWith('output/')
+    const master = /^outputs?\//.test(masterCell[1])
       ? masterCell[1]
       : durableDir
         ? `${durableDir[1]}${masterCell[1]}`

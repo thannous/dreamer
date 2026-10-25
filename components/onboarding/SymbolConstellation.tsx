@@ -25,7 +25,10 @@ const DREAMS: { symbols: SymbolName[] }[] = [
   { symbols: ['water', 'house'] },
   { symbols: ['cat', 'house'] },
 ];
-const MAP_HEIGHT = 256;
+// Room for the cat's label under the largest symbols.
+const MAP_HEIGHT = 268;
+/** A symbol's full size: its 160 px picture stays sharp enough at this size on 3x screens. */
+const NODE = 68;
 
 const AnimatedLine = Animated.createAnimatedComponent(Line);
 
@@ -62,9 +65,13 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
       setInspecting(false);
     }
   }
-  // As a story slide the map fits the stage; the interactive example keeps its full size.
-  const mapHeight = storyStep !== undefined && stageHeight ? Math.min(MAP_HEIGHT, stageHeight) : MAP_HEIGHT;
+  // The map fits the stage it is given: full size on a tall phone, smaller on a short one,
+  // so no symbol of the example hides under the button.
+  const mapHeight = stageHeight ? Math.min(MAP_HEIGHT, stageHeight) : MAP_HEIGHT;
   const mapScale = mapHeight / MAP_HEIGHT;
+  // On a short stage the symbols shrink a little with the map, so the cat never covers the house.
+  const node = Math.round(NODE * Math.min(1, Math.max(0.7, mapScale)));
+  const round = { width: node, height: node, borderRadius: node / 2 };
   const seen = DREAMS.slice(0, current + 1);
   const count = (id: SymbolName) => seen.filter((dream) => dream.symbols.includes(id)).length;
   const related = seen.flatMap((dream, index) => dream.symbols.includes(selected) ? [index] : []);
@@ -93,7 +100,7 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
         {SYMBOLS.map((symbol) => {
           const born = count(symbol.id) > 0;
           return born ? (
-            <StoryScene key={symbol.id} style={[styles.node, { left: symbol.x / 300 * width - 27, top: symbol.y * mapScale - 27 }]}>
+            <StoryScene key={symbol.id} style={[styles.node, { width: node, minHeight: node + 16, left: symbol.x / 300 * width - node / 2, top: symbol.y * mapScale - node / 2 }]}>
             <PressableScale
               accessibilityRole="button"
               accessibilityLabel={`${t(`onboarding.feature.constellation.symbol.${symbol.id}`)}, ${status(symbol.id)}`}
@@ -105,15 +112,15 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
             >
               {/* In the story, a symbol that returns breathes: the eye finds what repeats.
                   In the example, every symbol breathes in turn until the first touch: they are there to be touched. */}
-              {!reduced && (storyStep !== undefined ? count(symbol.id) > 1 : !inspecting) ? <Animated.View pointerEvents="none" style={[styles.halo, {
+              {!reduced && (storyStep !== undefined ? count(symbol.id) > 1 : !inspecting) ? <Animated.View pointerEvents="none" style={[styles.halo, round, {
                 backgroundColor: tokens.accent.text,
-                animationName: { from: { opacity: 0.08, transform: [{ scale: 0.9 }] }, to: { opacity: 0.4, transform: [{ scale: 1.35 }] } },
+                animationName: { from: { opacity: 0.08, transform: [{ scale: 0.9 }] }, to: { opacity: 0.3, transform: [{ scale: 1.2 }] } },
                 animationDuration: 1600, animationDelay: storyStep !== undefined ? 600 : 300 + 400 * SYMBOLS.indexOf(symbol),
                 animationIterationCount: 'infinite', animationDirection: 'alternate',
                 animationTimingFunction: EASE.inOut, animationFillMode: 'both',
               }]} /> : null}
-              <View style={[styles.nodeImageBorder, { borderColor: chosen === symbol.id ? tokens.accent.text : tokens.surface.border, borderWidth: chosen === symbol.id ? 2 : 1 }]}>
-                <Image source={symbol.image} style={styles.nodeImage} contentFit="cover" />
+              <View style={[styles.nodeImageBorder, round, { borderColor: chosen === symbol.id ? tokens.accent.text : tokens.surface.border, borderWidth: chosen === symbol.id ? 2 : 1 }]}>
+                <Image source={symbol.image} style={[styles.nodeImage, { borderRadius: node / 2 - 3 }]} contentFit="cover" />
                 {count(symbol.id) > 1 ? <View style={[styles.count, { backgroundColor: tokens.surface.base, borderColor: tokens.accent.text }]}>
                   <Text style={[styles.countText, { color: tokens.accent.text }]}>{count(symbol.id)}</Text>
                 </View> : null}
@@ -137,17 +144,17 @@ export function SymbolConstellation({ tokens, storyStep, onInteraction, stageHei
 const styles = StyleSheet.create({
   // Full width in a story frame too: node positions are fractions of the measured width.
   root: { width: '100%', paddingTop: 4 },
-  node: { position: 'absolute', width: 54, minHeight: 70, alignItems: 'center', gap: 5 },
+  node: { position: 'absolute', alignItems: 'center', gap: 5 },
   nodeButton: { alignItems: 'center', gap: 5 },
-  nodeImageBorder: { width: 54, height: 54, borderRadius: 27, padding: 3 },
-  nodeImage: { width: '100%', height: '100%', borderRadius: 24 },
+  nodeImageBorder: { padding: 3 },
+  nodeImage: { width: '100%', height: '100%' },
   nodeLabel: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, textAlign: 'center' },
   count: { position: 'absolute', right: -6, top: -6, width: 22, height: 22, borderRadius: 11, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   countText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16 },
   selection: { borderWidth: 1, borderRadius: 14, padding: 12, gap: 5 },
   // Over a story scene the detail floats on it instead of pushing the frame open.
   selectionOverlay: { position: 'absolute', left: 12, right: 12, bottom: 12 },
-  halo: { position: 'absolute', top: 0, width: 54, height: 54, borderRadius: 27 },
+  halo: { position: 'absolute', top: 0 },
   selectionTitle: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
   related: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.caption.fontSize, lineHeight: 18 },
 });

@@ -145,3 +145,38 @@ it('drops a local question when the draft is cleared during the consent check', 
   expect(request).not.toHaveBeenCalled();
   expect(result.current).toMatchObject({ question: null, loading: false });
 });
+
+it('asks for AI consent once when the first question is due, then personalizes', async () => {
+  consent.mockResolvedValue(false);
+  const requestConsent = jest.fn(async () => true);
+  request.mockResolvedValue({ question: 'Et ce jardin, il ressemblait à quoi ?', done: false });
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t, requestConsent }));
+  await act(async () => { await result.current.ask('Un jardin.'); });
+  expect(requestConsent).toHaveBeenCalledTimes(1);
+  expect(result.current.question).toBe('Et ce jardin, il ressemblait à quoi ?');
+});
+
+it('keeps general questions without asking again after consent is declined', async () => {
+  consent.mockResolvedValue(false);
+  const requestConsent = jest.fn(async () => false);
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t, requestConsent }));
+  await act(async () => { await result.current.ask('Un jardin.'); });
+  await act(async () => { await result.current.ask('Un jardin. Une porte.'); });
+  expect(requestConsent).toHaveBeenCalledTimes(1);
+  expect(request).not.toHaveBeenCalled();
+  expect(result.current).toMatchObject({ question: t(), unavailable: false });
+});
+
+it('asks again instead of sending when consent granted earlier in the capture is withdrawn in Settings', async () => {
+  consent.mockResolvedValue(false);
+  const requestConsent = jest.fn().mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+  request.mockResolvedValue({ question: 'Et ce jardin, il ressemblait à quoi ?', done: false });
+  const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t, requestConsent }));
+  await act(async () => { await result.current.ask('Un jardin.'); });
+  expect(request).toHaveBeenCalledTimes(1);
+  // The grant is withdrawn while the same capture continues: hasAiConsent stays false.
+  await act(async () => { await result.current.ask('Un jardin. Une porte.'); });
+  expect(requestConsent).toHaveBeenCalledTimes(2);
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(result.current).toMatchObject({ question: t(), unavailable: false });
+});

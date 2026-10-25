@@ -14,8 +14,14 @@ export function IconSymbol({
   style?: StyleProp<ViewStyle>;
   weight?: SymbolWeight;
 }) {
+  // Decorative, as on Android, where the icon font says nothing: iOS would otherwise read the
+  // symbol's own name ("lock", "filled person icon"), alone or inside its button's label.
+  // A button that is only an icon carries its own accessibility label.
   return (
     <SymbolView
+      accessible={false}
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
       weight={weight}
       tintColor={color}
       resizeMode="scaleAspectFit"

@@ -861,8 +861,8 @@ describe('Recording screen', () => {
 
   // Below a top inset the editor's top also clears the status bar's veil: 28 points, not 12.
   it.each([
-    [0, '215', '177'],
-    [47, '199', '161'],
+    [0, '248', '210'],
+    [47, '232', '194'],
   ])('fits the editor above the keyboard and leaves no empty end for Save (top inset %i)', async (topInset: number, room: string, roomAfterTyping: string) => {
     mockPlatformOS = 'android';
     mockTopInset = topInset;
@@ -884,8 +884,8 @@ describe('Recording screen', () => {
     act(() => { jest.advanceTimersByTime(32); });
 
     const composer = screen.getByTestId('recording-composer');
-    // 278, less 12 above the editor and its 2 of border, the 12 gap and 21 for the draft count,
-    // and the 16 padding.
+    // 278, less 12 above the editor and its 2 of border, and the 16 padding: a short dream shows
+    // no draft count, so its height does not count.
     expect(composer.getAttribute('data-room')).toBe(room);
     // The document is the editor's section and its padding: Save, after the scroll view, adds nothing.
     const documentStyles = JSON.parse(composer.parentElement?.parentElement?.getAttribute('data-native-style') ?? '[]');
@@ -1203,7 +1203,7 @@ describe('Recording screen', () => {
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn');
   });
 
-  it('edits the narrative and answers while keeping their question context, then keeps the narrator words when weaving fails', async () => {
+  it('edits the narrative and answers while keeping their question context, then reports a weaving failure and lets the narrator retry without losing edits', async () => {
     const source = answerPair('Une plage.', 'Noir.', 'Quelle couleur ?');
     mockFormatCaptureNarrative.mockRejectedValueOnce(new Error('offline'));
     mockGetInputModePreference.mockResolvedValue('voice');
@@ -1224,12 +1224,17 @@ describe('Recording screen', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Gris, je crois.');
     fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
-    await screen.findByTestId('capture-review-text');
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith(
+      'common.error_title', 'recording.review.error', expect.any(Array),
+    ));
     expect(mockFormatCaptureNarrative).toHaveBeenCalledWith(edited, 'fr', expect.anything());
-    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Je marchais sur une plage.\n\nGris, je crois.');
-    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('capture-review-text')).toBeNull();
     expect(mockAddDream).not.toHaveBeenCalled();
-    expect(screen.queryByTestId('capture-draft-editor')).toBeNull();
+    // Retry uses the edited exchanges; a failure never becomes a successful proposal.
+    fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
+    await screen.findByTestId('capture-review-text');
+    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn. A door was open.');
+    expect(mockAddDream).not.toHaveBeenCalled();
   });
 
   it('removes a stale question after editing and offers explicit continuation or local review', async () => {
@@ -1778,6 +1783,21 @@ describe('Recording screen', () => {
     expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(false);
   });
 
+  it('reports failed automatic classification while keeping the saved account', async () => {
+    mockCategorizeDream.mockRejectedValueOnce(new Error('Text AI unavailable'));
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A blue room under the rain' } });
+    fireEvent.click(await screen.findByTestId('recording-save'));
+    await answerTheJournal();
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith(
+      'recording.analysis_offer.title', 'recording.categorization.error',
+    ));
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+    expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'A blue room under the rain' }));
+    expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
+  });
+
   it('holds Android Back during the seal so the saved dream still opens', async () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
@@ -2313,7 +2333,7 @@ describe('Recording screen', () => {
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(answerPair(answerPair('Un jardin.', 'Une porte.'), 'Du soleil.', 'dream_recall.question.what_else'));
   });
 
-  it('keeps the draft without announcing it: Write shows its progress, Tell shows none', async () => {
+  it('keeps the draft without announcing it: a short dream shows no hint or count in either mode', async () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
 
@@ -2321,12 +2341,8 @@ describe('Recording screen', () => {
       target: { value: 'A blue room under the rain' },
     });
 
-    const progress = screen.getByTestId(TID.Component.RecordingDraftProgress);
-    const hint = 'recording.draft_progress.ready';
-    expect(progress.textContent).toContain(hint);
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenCalledWith('A blue room under the rain'));
-    // The kept draft no longer replaces the progress hint with a status line.
-    expect(progress.textContent).toContain(hint);
+    expect(screen.queryByTestId(TID.Component.RecordingDraftProgress)).toBeNull();
 
     fireEvent.click(screen.getByTestId('recording-mode-voice'));
     await waitFor(() => {
@@ -2346,7 +2362,7 @@ describe('Recording screen', () => {
     expect(
       (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value
     ).toBe(answerPair('A blue room under the rain', 'and a red bicycle'));
-    expect(screen.getByTestId(TID.Component.RecordingDraftProgress)).toBeTruthy();
+    expect(screen.queryByTestId(TID.Component.RecordingDraftProgress)).toBeNull();
   });
 
   it('inserts cumulative voice partials after the kept draft without duplicating them', async () => {

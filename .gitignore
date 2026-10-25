@@ -127,7 +127,9 @@ doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json
 # Local SEO working document (Ahrefs one-month plan), kept out of the repo
 doc_web_interne/SEO_NOCTALIA_AHREF
 
-# Local generated creative assets (images, videos, storyboards, and QA sheets)
+# Local task artifacts and creative assets; outputs/ is the canonical directory.
+# Keep the former spelling excluded if an older tool recreates it.
+/outputs/
 /output/
 
 # Vercel CLI link (vercel link, npm run web:deploy:prod)

@@ -146,6 +146,7 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
         },
         headers,
         ...NETWORK_REQUEST_POLICIES.quotaStatus,
+        readOnly: true,
       });
 
     const initialHeaders = await getGuestHeaders({ requireSession: true });

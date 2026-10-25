@@ -234,7 +234,7 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
 }));
 jest.mock('@/components/inspiration/PageHeader', () => ({ PageHeaderContent: () => <header data-testid="journal-header">Journal</header> }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
-jest.mock('@/components/guest/UpsellCard', () => ({ UpsellCard: () => <div data-testid="journal-upsell" /> }));
+jest.mock('@/components/guest/GuestAccountRow', () => ({ GuestAccountRow: () => <div data-testid="journal-guest-account" /> }));
 jest.mock('@/components/journal/DreamCard', () => ({
   DreamCard: ({ testID, scrollState, dream, onPress, onShare }: any) => (
     <>
@@ -522,7 +522,7 @@ describe('Journal compact large-text layout', () => {
       expect(screen.getAllByTestId(TID.Button.HeaderJournalSettings)).toHaveLength(1);
       expect(list.contains(input)).toBe(false);
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
-      expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
+      expect(list.contains(screen.getByTestId('journal-guest-account'))).toBe(true);
       expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
       expectReachableListViewport(width, height, scale);
       expect(mockListProps.contentInsetAdjustmentBehavior).toBe('never');
@@ -553,7 +553,7 @@ describe('Journal compact large-text layout', () => {
       expect(screen.getByTestId('filter-favorites').getAttribute('aria-pressed')).toBe('true');
       expect(screen.getByTestId('advanced-filters')).toBeTruthy();
       expect(screen.getByTestId(TID.List.Dreams).contains(inputAfterRotation)).toBe(false);
-      expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-upsell'))).toBe(true);
+      expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-guest-account'))).toBe(true);
       expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
       expect(mockListProps.keyboardShouldPersistTaps).toBe('handled');
       fireEvent.click(screen.getByTestId('advanced-filters'));
@@ -570,7 +570,7 @@ describe('Journal compact large-text layout', () => {
     const navigationClearance = listNavigationPadding();
     expect(list.contains(input)).toBe(false);
     expect(list.contains(screen.getByTestId('journal-shared-header'))).toBe(false);
-    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
+    expect(list.contains(screen.getByTestId('journal-guest-account'))).toBe(true);
     expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
     expectReachableListViewport(437, 949, fontScale);
     expect(navigationClearance).toBeGreaterThan(0);
@@ -640,13 +640,13 @@ describe('Journal compact large-text layout', () => {
     const view = render(<JournalScreen />);
     const list = screen.getByTestId(TID.List.Dreams);
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
-    const upsell = screen.getByTestId('journal-upsell');
+    const guestAccount = screen.getByTestId('journal-guest-account');
     const dreamCard = screen.getByTestId(TID.List.DreamItem(guestDream.id));
 
     expect(list.contains(input)).toBe(false);
-    expect(list.contains(upsell)).toBe(true);
+    expect(list.contains(guestAccount)).toBe(true);
     expect(list.contains(dreamCard)).toBe(true);
-    expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-upsell')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-guest-account')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.queryByTestId('journal-empty')).toBeNull();
     expect(React.isValidElement(mockListProps.ListHeaderComponent)).toBe(true);
     expectReachableListViewport(width, height, 2);
@@ -660,7 +660,7 @@ describe('Journal compact large-text layout', () => {
     expect(inputAfterRotation).toBe(input);
     expect(document.activeElement).toBe(input);
     expect(screen.getByTestId(TID.List.Dreams).contains(inputAfterRotation)).toBe(false);
-    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-upsell'))).toBe(true);
+    expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId('journal-guest-account'))).toBe(true);
     expect(screen.getByTestId(TID.List.Dreams).contains(screen.getByTestId(TID.List.DreamItem(guestDream.id)))).toBe(true);
     expectReachableListViewport(height, width, 2);
   });
@@ -683,7 +683,7 @@ describe('Journal compact large-text layout', () => {
     expect(uncoveredListBox).toBeGreaterThanOrEqual(120);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
     expect(list.contains(dreamCard)).toBe(true);
-    expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-upsell')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(dreamCard.compareDocumentPosition(screen.getByTestId('journal-guest-account')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(list.contains(screen.getByTestId('journal-search-scroll-slot'))).toBe(true);
 
     const input = screen.getByTestId(TID.Input.SearchDreams) as HTMLInputElement;
@@ -919,7 +919,7 @@ describe('Journal compact large-text layout', () => {
     render(<JournalScreen />);
     const list = screen.getByTestId(TID.List.Dreams);
     expect(list.contains(screen.getByTestId(TID.Input.SearchDreams))).toBe(false);
-    expect(list.contains(screen.getByTestId('journal-upsell'))).toBe(true);
+    expect(list.contains(screen.getByTestId('journal-guest-account'))).toBe(true);
     expect(mockListProps.ListHeaderComponent).toBeUndefined();
     expect(mockListProps.style).toBeUndefined();
     expect(mockListProps.numColumns).toBe(4);

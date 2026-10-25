@@ -244,24 +244,38 @@ describe('badge ledger store', () => {
     expect(stored('user:a').earned['night-scholar']).toHaveLength(1);
   });
 
-  it('gives a guest ledger to the first account that opens, once, and keeps accounts apart', async () => {
+  it('gives what a guest did to the first account that opens, which earns its cards then', async () => {
+    const days = ['2026-10-01T08:00:00', '2026-10-02T08:00:00', '2026-10-03T08:00:00'].map(Date.parse);
+    const [first, second, third] = days.map(dream);
     await activateBadgeScope('guest');
-    recordBadgeEvent({ type: 'guide_completed', guideId: 'dream-journal' });
-    // What the guest journal told stays with it: the account reads its own journal.
-    settleBadges([dream(Date.parse('2026-10-01T12:00:00'))], Date.parse('2026-10-01T12:00:00'));
+    for (const guideId of ['dream-journal', 'lucid-dreaming']) recordBadgeEvent({ type: 'guide_completed', guideId });
+    settleBadges([{ ...first, isFavorite: true }, second, third], days[2]);
     await flushBadgeLedgerWritesForTests();
-    expect(stored('guest').earned['night-journal']).toHaveLength(1);
 
-    await activateBadgeScope('user:a');
+    // The favourite is let go and the third dream deleted before the account opens: both
+    // still count once, and the cards are earned when the account opens, not before.
+    const signUp = Date.parse('2026-10-20T09:00:00');
+    jest.spyOn(Date, 'now').mockReturnValue(signUp);
+    try {
+      await activateBadgeScope('user:a');
+      await flushBadgeLedgerWritesForTests();
+    } finally {
+      jest.restoreAllMocks();
+    }
+    settleBadges([{ ...first, remoteId: 11 }, { ...second, remoteId: 12 }], signUp + 1000);
     await flushBadgeLedgerWritesForTests();
-    expect(progressIn('user:a')['night-scholar']).toBe(1);
-    expect(stored('user:a').earned['night-journal']).toBeUndefined();
-    expect(stored('user:a').best['night-journal']).toBeUndefined();
+    const account = stored('user:a');
+    for (const id of ['night-journal', 'treasure-keeper', 'night-scholar']) {
+      expect(account.earned[id]).toEqual([signUp]);
+    }
+    expect(progressIn('user:a')['night-journal']).toBe(3);
+    expect(account.revealed).toEqual({});
     expect(stored('guest')).toBeNull();
 
     await activateBadgeScope('user:b');
     await flushBadgeLedgerWritesForTests();
     expect(progressIn('user:b')['night-scholar']).toBe(0);
+    expect(progressIn('user:b')['night-journal']).toBe(0);
   });
 
   it('stamps an earned tier once and keeps it after the journal empties', async () => {
@@ -322,11 +336,19 @@ describe('badge ledger store across the collection change', () => {
 
   it('gives a first-collection guest ledger to the first account, then forgets both of its keys', async () => {
     mockStore.set(`${LEGACY_KEY}guest`, JSON.stringify(legacy));
-    await activateBadgeScope('user:a');
-    await flushBadgeLedgerWritesForTests();
-    // Its actions only: what the guest journal told is read again from the account's journal.
-    // Dream Reader now reads the journal, but its first-collection tier was earned by actions.
-    expect(stored('user:a').earned).toEqual({ 'symbol-explorer': [20], 'dream-seeker': [5], 'dream-reader': [15] });
+    const signUp = Date.parse('2026-10-20T09:00:00');
+    jest.spyOn(Date, 'now').mockReturnValue(signUp);
+    try {
+      await activateBadgeScope('user:a');
+      await flushBadgeLedgerWritesForTests();
+    } finally {
+      jest.restoreAllMocks();
+    }
+    // Everything moves, journal facts included. The tiers it held stay, Dream Reader's too
+    // although its rule changed, and like the others they are earned when the account opens.
+    expect(stored('user:a').earned).toEqual({
+      'night-journal': [signUp], 'symbol-explorer': [signUp], 'dream-seeker': [signUp], 'dream-reader': [signUp],
+    });
     expect(mockStore.has(`${LEGACY_KEY}guest`)).toBe(false);
     await forgetBadgeLedger('a');
     expect(mockStore.size).toBe(0);

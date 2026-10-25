@@ -187,6 +187,8 @@ describe('RemoteGuestQuotaProvider', () => {
     const provider = new RemoteGuestQuotaProvider(fallback as any);
     const status = await provider.getQuotaStatus(null, 'guest');
 
+    expect(mockFetchJSON).toHaveBeenCalledWith(expect.stringContaining('/quota/status'),
+      expect.objectContaining({ readOnly: true, retries: 1 }));
     expect(status.isUpgraded).toBe(false);
     expect(status.canAnalyze).toBe(true);
     expect(status.canExplore).toBe(true);

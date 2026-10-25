@@ -83,6 +83,7 @@ const LINT_SCRIPTS = [
   'app.config.ts', 'app.json', 'apps/meditation/app.json', 'apps/meditation/app/index.tsx', 'apps/site/dependencies.js',
   'context/DreamsContext.tsx', 'context/ThemeContext.tsx', 'lib/types.ts', 'lib/journalSyncContracts.ts',
   'services/storageService.ts', 'services/supabaseDreamService.ts', 'data/site-manifest.json',
+  'supabase/db-contract.manifest.json',
   'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs',
 ];
 
@@ -214,6 +215,7 @@ const DB_CONTRACTS = [
   'scripts/product-analytics-migration.test.js',
   'scripts/product-analytics-schema-parity.test.js',
   '&& npm run test:analysis-authorization:db',
+  '&& npm run test:analysis-admission:db',
   '&& node --test scripts/ai-daily-budget-migration.test.cjs scripts/dream-sync-limits-migration.test.cjs',
 ].join(' ');
 

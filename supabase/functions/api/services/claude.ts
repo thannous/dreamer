@@ -1,5 +1,9 @@
 import Anthropic from 'npm:@anthropic-ai/sdk@0.132.1';
+import { type TextAnalysisRefundCode, isRefundableTextAnalysisFailure, isTerminalTextAnalysisFailure } from '../lib/textAnalysisRefund.ts';
+import { ProviderCircuit, ProviderCircuitOpenError } from '../lib/providerCircuit.ts';
 import { toClaudeSchema } from '../lib/schemas.ts';
+
+export const claudeProviderCircuit = new ProviderCircuit();
 
 export type ClaudeEffort = 'low' | 'medium' | 'high';
 
@@ -21,7 +25,7 @@ export class ClaudeStopError extends Error {
 }
 
 // Explicit base URL: a local ANTHROPIC_BASE_URL must never receive this key.
-// No retries: a slow or failing call must leave time for the Gemini fallback.
+// No automatic retry: the app explicitly retries a failed request with the same provider.
 const createClient = (apiKey: string, timeoutMs: number) => new Anthropic({
   apiKey,
   baseURL: 'https://api.anthropic.com',
@@ -36,7 +40,7 @@ const textOf = (content: unknown): string => (content as { type: string; text?: 
 
 /**
  * One structured-output request to Claude. Throws on any non-final stop
- * (refusal, max_tokens) so the caller can fall back to another provider.
+ * (refusal, max_tokens) so the caller reports a retryable failure.
  */
 export const requestClaudeJson = async (options: {
   apiKey: string;
@@ -47,7 +51,7 @@ export const requestClaudeJson = async (options: {
   schema: unknown;
   timeoutMs?: number;
 }): Promise<{ text: string; usage: ClaudeUsage | null }> => {
-  const response = await createClient(options.apiKey, options.timeoutMs ?? 45_000).messages.create({
+  const response = await claudeProviderCircuit.run(() => createClient(options.apiKey, options.timeoutMs ?? 45_000).messages.create({
     model: options.model,
     max_tokens: 16000,
     system: options.system,
@@ -57,7 +61,7 @@ export const requestClaudeJson = async (options: {
       effort: options.effort,
       format: { type: 'json_schema', schema: toClaudeSchema(options.schema) as Record<string, unknown> },
     },
-  });
+  }), isProviderAvailabilityFailure, options.timeoutMs ?? 45_000);
   if (response.stop_reason !== 'end_turn') {
     throw new ClaudeStopError(response.stop_reason);
   }
@@ -68,7 +72,7 @@ export const requestClaudeJson = async (options: {
  * Text-only Claude history from Gemini-shaped contents: thought parts and
  * signatures are dropped and consecutive turns of one role are merged. Null when
  * a turn carries media, or the history cannot open and end on the user, so the
- * caller stays on Gemini.
+ * caller rejects unsupported history instead of changing provider.
  */
 export const toClaudeMessages = (
   contents: readonly { role?: string; parts: readonly { text?: string; thought?: boolean; inlineData?: unknown }[] }[]
@@ -99,14 +103,14 @@ type ClaudeTextOptions = {
 
 /** One plain-text reply. Throws on any non-final stop or an empty answer. */
 export const requestClaudeText = async (options: ClaudeTextOptions): Promise<{ text: string; usage: ClaudeUsage | null }> => {
-  const response = await createClient(options.apiKey, options.timeoutMs).messages.create({
+  const response = await claudeProviderCircuit.run(() => createClient(options.apiKey, options.timeoutMs).messages.create({
     model: options.model,
     max_tokens: options.maxTokens ?? 16000,
     system: options.system,
     messages: options.messages,
     thinking: { type: 'adaptive' },
     output_config: { effort: options.effort },
-  });
+  }), isProviderAvailabilityFailure, options.timeoutMs);
   if (response.stop_reason !== 'end_turn') throw new ClaudeStopError(response.stop_reason);
   const text = textOf(response.content).trim();
   if (!text) throw new ClaudeStopError('empty');
@@ -118,19 +122,25 @@ export type ClaudeTextStream = { deltas: AsyncGenerator<string>; usage: () => Cl
 /**
  * Opens a streamed reply and waits for its first text, so connection, auth,
  * overload, refusal and a slow start all surface before the caller sends a byte
- * and can still fall back. `timeoutMs` bounds that first text only; afterwards a
- * failure ends the iteration with an error.
+ * and returns a retryable error. `timeoutMs` bounds the entire stream, including
+ * a stall after the first text.
  */
 export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise<ClaudeTextStream> => {
-  // The overall bound only stops a stream that hangs after its first text.
-  const stream = createClient(options.apiKey, 120_000).messages.stream({
+  const permit = claudeProviderCircuit.enter(options.timeoutMs);
+  let stream: ReturnType<ReturnType<typeof createClient>['messages']['stream']>;
+  try {
+    stream = createClient(options.apiKey, options.timeoutMs).messages.stream({
     model: options.model,
     max_tokens: options.maxTokens ?? 16000,
     system: options.system,
     messages: options.messages,
     thinking: { type: 'adaptive' },
     output_config: { effort: options.effort },
-  });
+    });
+  } catch (error) {
+    permit.failure(isProviderAvailabilityFailure(error));
+    throw error;
+  }
   const iterator = (stream as AsyncIterable<any>)[Symbol.asyncIterator]();
   const textDelta = (event: any): string | null =>
     event?.type === 'content_block_delta' && event.delta?.type === 'text_delta' && event.delta.text ? event.delta.text : null;
@@ -142,26 +152,39 @@ export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise
       if (done) break;
       first = textDelta(value);
     }
-  } finally {
+    if (first === null) {
+      const final = await stream.finalMessage();
+      throw new ClaudeStopError(final?.stop_reason ?? null);
+    }
+  } catch (error) {
     clearTimeout(timer);
-  }
-  if (first === null) {
-    const final = await stream.finalMessage();
-    throw new ClaudeStopError(final?.stop_reason ?? null);
+    stream.abort();
+    permit.failure(isProviderAvailabilityFailure(error));
+    throw error;
   }
   let usage: ClaudeUsage | null = null;
   const firstText = first;
   async function* deltas() {
-    yield firstText;
-    for (;;) {
-      const { value, done } = await iterator.next();
-      if (done) break;
-      const delta = textDelta(value);
-      if (delta) yield delta;
+    try {
+      yield firstText;
+      for (;;) {
+        const { value, done } = await iterator.next();
+        if (done) break;
+        const delta = textDelta(value);
+        if (delta) yield delta;
+      }
+      const final = await stream.finalMessage();
+      usage = (final?.usage as ClaudeUsage | undefined) ?? null;
+      if (final?.stop_reason !== 'end_turn') throw new ClaudeStopError(final?.stop_reason ?? null);
+      permit.success();
+    } catch (error) {
+      permit.failure(isProviderAvailabilityFailure(error));
+      throw error;
+    } finally {
+      permit.cancel();
+      clearTimeout(timer);
+      stream.abort();
     }
-    const final = await stream.finalMessage();
-    usage = (final?.usage as ClaudeUsage | undefined) ?? null;
-    if (final?.stop_reason !== 'end_turn') throw new ClaudeStopError(final?.stop_reason ?? null);
   }
   return { deltas: deltas(), usage: () => usage };
 };
@@ -177,37 +200,93 @@ export const logClaudeSpend = (route: string, model: string, effort: string, usa
   });
 };
 
-/** Never logs the error message or a response body: they can carry dream content. */
-export const logClaudeFallback = (route: string, error: unknown) => {
-  const status = (error as { status?: unknown })?.status;
-  console.warn(`[api] ${route}: Claude failed, falling back to Gemini`, {
-    status: typeof status === 'number' ? status : null,
-    stopReason: error instanceof ClaudeStopError ? error.stopReason : null,
-    invalidJson: error instanceof SyntaxError,
-  });
+/** Missing server configuration must never become a provider switch. */
+export class ClaudeConfigurationError extends Error {
+  readonly code = 'ANALYSIS_CONFIGURATION_ERROR';
+  constructor() { super('Text AI is not configured: ANTHROPIC_API_KEY is required'); }
+}
+
+export class ClaudeRequestError extends Error {
+  constructor(
+    readonly status: number,
+    readonly code: TextAnalysisRefundCode = status === 504 ? 'ANALYSIS_TIMEOUT' : 'ANALYSIS_PROVIDER_UNAVAILABLE'
+  ) { super(status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry'); }
+}
+
+export class ClaudeInvalidOutputError extends Error {}
+
+/** Only known application codes cross this boundary; PostgREST errors are service failures. */
+export const textAnalysisFailureCode = (error: unknown): string => {
+  const candidate = error as { code?: unknown; status?: unknown; name?: unknown } | null;
+  if (isRefundableTextAnalysisFailure(candidate?.code) || isTerminalTextAnalysisFailure(candidate?.code)) return candidate!.code as string;
+  if (candidate?.code === '42501') return 'ANALYSIS_ACCESS_DENIED';
+  if (typeof candidate?.code === 'string') return 'ANALYSIS_SERVER_ERROR';
+  if (candidate?.name === 'AbortError') return 'ANALYSIS_CLIENT_CANCELLED';
+  if (candidate?.name === 'TimeoutError' || candidate?.status === 504) return 'ANALYSIS_TIMEOUT';
+  if (typeof candidate?.status === 'number') {
+    return candidate.status >= 500 && candidate.status <= 599 ? 'ANALYSIS_SERVER_ERROR' : 'ANALYSIS_REQUEST_REJECTED';
+  }
+  return 'ANALYSIS_SERVER_ERROR';
 };
 
-/**
- * Runs `claude` when a key is set and returns its value; on any failure there, or
- * without a key, runs `fallback` (the Gemini path). `claude` should parse and
- * validate its answer so an unusable one also falls back.
- */
-export const runClaudeFirst = async <T>(options: {
+const claudeProviderFailureCode = (error: unknown): TextAnalysisRefundCode => {
+  if (error instanceof ProviderCircuitOpenError) return error.code;
+  if (error instanceof ClaudeConfigurationError) return error.code;
+  if (error instanceof ClaudeRequestError) return error.code;
+  if (error instanceof ClaudeStopError) {
+    return error.stopReason === 'refusal' ? 'ANALYSIS_PROVIDER_REFUSED' : 'ANALYSIS_INVALID_OUTPUT';
+  }
+  if (error instanceof SyntaxError || error instanceof ClaudeInvalidOutputError) return 'ANALYSIS_INVALID_OUTPUT';
+  const candidate = error as { status?: number; name?: string } | null;
+  if (candidate?.status === 429 || candidate?.status === 529) return 'ANALYSIS_PROVIDER_OVERLOADED';
+  if (candidate?.status === 401 || candidate?.status === 403) return 'ANALYSIS_CONFIGURATION_ERROR';
+  if (error instanceof Anthropic.APIConnectionTimeoutError || /timeout|abort/i.test(candidate?.name ?? '') || candidate?.status === 504) return 'ANALYSIS_TIMEOUT';
+  return 'ANALYSIS_PROVIDER_UNAVAILABLE';
+};
+
+/** Only provider transport/availability failures affect health, never content or configuration. */
+export const isProviderAvailabilityFailure = (error: unknown): boolean => {
+  if (error instanceof ClaudeStopError || error instanceof SyntaxError || error instanceof ClaudeInvalidOutputError
+    || error instanceof ClaudeConfigurationError || error instanceof ProviderCircuitOpenError) return false;
+  const candidate = error as { status?: number; code?: unknown } | null;
+  if (candidate?.status !== undefined && candidate.status >= 400 && candidate.status < 500
+    && candidate.status !== 408 && candidate.status !== 429) return false;
+  return ['ANALYSIS_PROVIDER_UNAVAILABLE', 'ANALYSIS_PROVIDER_OVERLOADED', 'ANALYSIS_TIMEOUT']
+    .includes(claudeProviderFailureCode(error));
+};
+
+export const requireAnthropicApiKey = (value = Deno.env.get('ANTHROPIC_API_KEY')): string => {
+  const key = value?.trim();
+  if (!key) throw new ClaudeConfigurationError();
+  return key;
+};
+
+/** Provider credentials/errors are never exposed or mistaken for app authentication. */
+export const classifyClaudeError = (error: unknown) => {
+  if (error instanceof ClaudeConfigurationError) return { status: 503, code: error.code, userMessage: error.message, canRetry: true, retryAfter: undefined };
+  const candidate = error as { name?: string; status?: number } | null;
+  const status = error instanceof ProviderCircuitOpenError ? 503 : error instanceof ClaudeRequestError ? error.status
+    : error instanceof Anthropic.APIConnectionTimeoutError || /timeout|abort/i.test(candidate?.name ?? '') || candidate?.status === 504 ? 504 : 502;
+  return { status, code: claudeProviderFailureCode(error), retryAfter: error instanceof ProviderCircuitOpenError ? error.retryAfterSeconds : undefined, userMessage: status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry', canRetry: true };
+};
+
+/** Parse and validate inside the callback: unusable output is also a retryable error. */
+export const runClaudeOnly = async <T>(options: {
   route: string;
   anthropicApiKey?: string | null;
   config: { model: string; effort: ClaudeEffort };
   claude: (apiKey: string) => Promise<{ value: T; usage: ClaudeUsage | null }>;
-  fallback: () => Promise<T>;
 }): Promise<T> => {
-  const apiKey = options.anthropicApiKey?.trim();
-  if (apiKey) {
-    try {
-      const { value, usage } = await options.claude(apiKey);
-      logClaudeSpend(options.route, options.config.model, options.config.effort, usage);
-      return value;
-    } catch (error) {
-      logClaudeFallback(options.route, error);
-    }
+  const apiKey = requireAnthropicApiKey(options.anthropicApiKey ?? '');
+  try {
+    const { value, usage } = await options.claude(apiKey);
+    logClaudeSpend(options.route, options.config.model, options.config.effort, usage);
+    return value;
+  } catch (error) {
+    // Categorical diagnostics only: errors and responses may contain private dreams.
+    const info = classifyClaudeError(error);
+    console.warn('[api] text request failed', { route: options.route, status: info.status });
+    if (error instanceof ProviderCircuitOpenError) throw error;
+    throw new ClaudeRequestError(info.status, claudeProviderFailureCode(error));
   }
-  return options.fallback();
 };

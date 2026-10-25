@@ -7,9 +7,14 @@ import { isolateWeb } from '../web-fixtures';
 // turned over, counts a dictionary entry once it has been read to its end, leaves the first
 // steps of a capture it did not make undiscovered, and keeps all of it across a reload. An
 // answer to the assistant discovers its first step only if it is still there when saved.
-// Exact steps only: no model is involved.
+// Cards belong to accounts (owner decision, 2026-10-25): each journey opens a new, empty
+// account first; a guest's locked album has its own journey. Exact steps only: no model.
 
-const LEDGER = 'noctalia_badge_ledger_v2:guest';
+const ACCOUNT_LEDGER = 'noctalia_badge_ledger_v2:user:';
+const ledger = (browser: Browser) => browser.evaluate((prefix: string) => {
+  const key = Object.keys(localStorage).find((name) => name.startsWith(prefix));
+  return key ? localStorage.getItem(key) ?? '' : '';
+}, ACCOUNT_LEDGER);
 
 async function start(app: App, screen: Screen, browser: Browser) {
   await app.open();
@@ -21,6 +26,27 @@ async function start(app: App, screen: Screen, browser: Browser) {
   }
   await screen.getByTestId('btn.onboarding.skip').tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  // A new account with an empty journal, signed in from the settings like a dreamer would.
+  await screen.getByTestId('tab.home', { visible: true }).tap();
+  await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
+  await screen.getByTestId('quick-settings.all', { visible: true }).tap();
+  await screen.getByTestId('settings-account-open-signin', { visible: true }).tap();
+  await screen.getByTestId('btn.mockProfile.new', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+}
+
+// Asked before anything reaches the AI: declining keeps the dream and the capture going.
+async function declineAi(screen: Screen) {
+  await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
+  await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
+}
+
+// Saved, an account is offered a reading: later keeps the dream saved, unread, on its page.
+async function saveForLater(screen: Screen, story: string) {
+  await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  await screen.getByTestId('btn.dreamCaptureSeal.readLater', { visible: true }).tap();
+  await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
+  await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
 }
 
 async function openCollection(screen: Screen) {
@@ -44,23 +70,16 @@ async function expectTierSelection(screen: Screen, selected: (typeof TIERS)[numb
   }
 }
 
-test('a written dream earns its card face down, turned over once and kept after a reload',
+test('an account\'s written dream earns its card face down, turned over once and kept when the album reopens',
   { tags: ['collection', 'persistence'] }, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
     await start(app, screen, browser);
 
-    // A guest's first dream is read at once: declining the AI keeps the dream saved, unread.
     const story = 'E2E collection: a glass beach under an enormous moon.';
-    const dialogs: string[] = [];
-    const decline = await browser.onDialog(async (dialog) => {
-      dialogs.push(dialog.message);
-      await dialog.dismiss();
-    });
-    try {
     await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
-    await screen.getByTestId('btn.saveDream', { visible: true }).tap();
-    await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
-    await expect.poll(() => dialogs.length).toBe(1);
+    await saveForLater(screen, story);
+    // Counted in the account's own ledger, never a guest's.
+    await expect.poll(() => ledger(browser), { timeout: 10_000 }).toContain('"night-journal"');
 
     await screen.getByTestId('btn.navigateJournal', { visible: true }).tap();
     await screen.getByTestId('tab.explore', { visible: true }).tap();
@@ -146,15 +165,16 @@ test('a written dream earns its card face down, turned over once and kept after 
     await expect(screen.getByTestId('screen.symbolDetail', { visible: true })).toBeVisible();
     // Past the reading dwell (2 s) with the end out of view: still nothing counted.
     await new Promise((resolve) => setTimeout(resolve, 3_000));
-    expect(await browser.evaluate((key: string) => localStorage.getItem(key) ?? '', LEDGER)).not.toContain('"symbol-explorer"');
+    expect(await ledger(browser)).not.toContain('"symbol-explorer"');
     await screen.getByTestId('symbol.detail.end').scrollIntoView();
-    await expect.poll(() => browser.evaluate((key: string) => localStorage.getItem(key) ?? '', LEDGER), { timeout: 10_000 })
-      .toContain('"symbol-explorer":["water"]');
+    await expect.poll(() => ledger(browser), { timeout: 10_000 }).toContain('"symbol-explorer":["water"]');
 
-    // After a reload, nothing earned or turned over is lost, and nothing counts twice.
-    await browser.reload();
-    await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-    await openCollection(screen);
+    // Back in the album, nothing earned or turned over is lost, and nothing counts twice. A
+    // mock account lives in memory only: its ledger across a restart, from an empty browser,
+    // is backend-badge-continuity's journey.
+    await app.back();
+    await app.back();
+    await expect(screen.getByTestId('screen.collection', { visible: true })).toBeVisible();
     await expect(card(screen, 'night-journal'))
       .toHaveAttribute('aria-label', 'Night Journal. Bronze earned. 1 of 10 toward Silver');
     await expect(card(screen, 'symbol-explorer'))
@@ -166,16 +186,13 @@ test('a written dream earns its card face down, turned over once and kept after 
     await expect.poll(focused).toEqual({ testId: null, role: 'img', label: 'Night Journal, Bronze', hidden: false });
     await expectTierSelection(screen, 'bronze');
     await screen.getByTestId('collection.detail.close', { visible: true }).tap();
-    await app.screenshot('collection-after-reload');
-    } finally { await decline(); }
+    await app.screenshot('collection-reopened');
   });
 
 test('an answer to the assistant discovers its first step only when it stays in the saved dream',
   { tags: ['collection', 'capture'] }, async ({ app, screen, browser }) => {
     await isolateWeb(browser, app);
     await start(app, screen, browser);
-    const decline = await browser.onDialog((dialog) => dialog.dismiss());
-    try {
     const reply = screen.getByTestId('recording-conversation-answer', { visible: true });
     // Told in the chat: the story first, then words under the assistant's question, kept or
     // taken back before the dream is saved.
@@ -183,13 +200,14 @@ test('an answer to the assistant discovers its first step only when it stays in 
       await screen.getByTestId('btn.recording.inputMode.voice', { visible: true }).tap();
       await reply.fill(story);
       await screen.getByTestId('recording-conversation-submit', { visible: true }).tap();
+      // Without the AI, the assistant still asks its own question.
+      await declineAi(screen);
       await expect(screen.getByTestId('recording-conversation-question', { visible: true })).toBeVisible();
       await reply.fill('A red door.');
       await reply.fill(answer);
       if (answer) await screen.getByTestId('recording-conversation-submit', { visible: true }).tap();
       await screen.getByTestId('recording-conversation-finish', { visible: true }).tap();
-      await screen.getByTestId('btn.saveDream', { visible: true }).tap();
-      await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
+      await saveForLater(screen, story);
       await screen.getByTestId('btn.navigateJournal', { visible: true }).tap();
       await openCollection(screen);
     }
@@ -197,11 +215,12 @@ test('an answer to the assistant discovers its first step only when it stays in 
     await tell('E2E questions: a staircase going down into warm water.', '');
     await expect(card(screen, 'dream-questions')).toHaveAttribute('aria-label', 'Thread of Questions. Not discovered yet');
 
-    await browser.goto('/recording');
+    // Back to capture inside the app: a mock account lives in memory and a reload would end it.
+    await app.back();
+    await screen.getByTestId('tab.addDream', { visible: true }).tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await tell('E2E questions: a library whose shelves turned like pages.', 'A red door at the end of the aisle.');
     await expect(card(screen, 'dream-questions'))
       .toHaveAttribute('aria-label', 'New discovery: Thread of Questions. Ready to reveal.');
     await app.screenshot('collection-question-discovered');
-    } finally { await decline(); }
   });

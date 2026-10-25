@@ -3,6 +3,7 @@ import {
   isNeutralRecallQuestion,
   type DreamRecallQuestionKind,
 } from './dreamRecallAssistant';
+import { parseCaptureEditableDraft } from './captureEditableDraft';
 
 export const DREAM_RECALL_QUESTION_SEQUENCE = [
   'what_else',
@@ -62,4 +63,29 @@ export function getDreamRecallQuestion(
     );
   }
   return { kind, text: question.text };
+}
+
+/** At most this many words, the opening account is a fragment rather than a story. */
+const CAPTURE_FRAGMENT_MAX_WORDS = 12;
+
+/**
+ * General capture questions, used without the AI, follow the account's shape: a fragment is
+ * first asked about the image it holds, a story about what else comes back. None presupposes
+ * a chronology, and a kind is never asked twice within the three-question allowance.
+ */
+export const CAPTURE_FALLBACK_SEQUENCES = {
+  fragment: ['what_seen', 'where', 'what_else'],
+  story: ['what_else', 'who_else', 'what_seen'],
+} as const satisfies Record<string, readonly DreamRecallSequenceKind[]>;
+
+export function getCaptureFallbackQuestion(
+  transcript: string,
+  index: number,
+  t: DreamRecallQuestionTranslator
+): DreamRecallQuestion {
+  const opening = parseCaptureEditableDraft(transcript).sections[0]?.text ?? '';
+  const words = opening.trim().split(/\s+/).filter(Boolean).length;
+  const sequence = CAPTURE_FALLBACK_SEQUENCES[words <= CAPTURE_FRAGMENT_MAX_WORDS ? 'fragment' : 'story'];
+  const kind = sequence[Math.min(Math.max(Math.trunc(index) || 0, 0), sequence.length - 1)];
+  return getDreamRecallQuestion(DREAM_RECALL_QUESTION_SEQUENCE.indexOf(kind), t);
 }

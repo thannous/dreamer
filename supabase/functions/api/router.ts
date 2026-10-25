@@ -86,12 +86,19 @@ export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
       });
 
       let userLookupFailed = false;
-      const { data: authData } = userBearer
+      const authResult = userBearer
         ? await supabase.auth.getUser(userBearer).catch(() => {
           userLookupFailed = true;
-          return { data: null };
+          return { data: null, error: null };
         })
-        : { data: null };
+        : { data: null, error: null };
+      const authData = authResult.data;
+      const authError = authResult.error;
+      userLookupFailed ||= Boolean(authError && (authError.name === 'AuthRetryableFetchError'
+        || (authError.status !== undefined && authError.status >= 500)));
+      // A transport outage is not invalid credentials. Never let it fall through
+      // to requireUser (401), or to guest admission on a public AI route.
+      if (userLookupFailed) return errorResponse('Authentication service unavailable', 503);
       const user = authData?.user ?? null;
 
       if (hasApplicationClientClaim(req.headers.get('Authorization'))) {

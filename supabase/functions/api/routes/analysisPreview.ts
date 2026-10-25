@@ -1,4 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { classifyClaudeError, requireAnthropicApiKey } from '../services/claude.ts';
 import { requireUser } from '../lib/guards.ts';
 import { jsonResponse } from '../lib/http.ts';
 import { AI_REQUEST_LIMITS, normalizeAiLanguage } from '../lib/aiRequestPolicy.ts';
@@ -26,7 +27,7 @@ type Dependencies = {
   now?: () => number;
   createAdminClient?: typeof createClient;
   apiKey?: string;
-  /** Defaults to ANTHROPIC_API_KEY; null keeps the request on Gemini. */
+  /** Defaults to ANTHROPIC_API_KEY; null fails closed. */
   anthropicApiKey?: string | null;
   admit?: typeof admitSynchronousAiRequest;
   analyze?: typeof runDreamAnalysis;
@@ -265,6 +266,11 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     if (quotaError || !quota || typeof quota !== 'object') return refused('PREVIEW_UNAVAILABLE', 503);
     if ((quota as { canAnalyze?: unknown }).canAnalyze !== false) return refused('CAN_ANALYZE', 409);
 
+    const anthropicApiKey = deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY')?.trim() : deps.anthropicApiKey;
+    try { requireAnthropicApiKey(anthropicApiKey ?? ''); } catch (error) {
+      const info = classifyClaudeError(error);
+      return jsonResponse({ error: info.userMessage, code: 'PREVIEW_UNAVAILABLE', providerCode: info.code, retryAfter: info.retryAfter }, info.status);
+    }
     if (!apiKey) return refused('PREVIEW_UNAVAILABLE', 503);
 
     // Under a lock per account, the database checks the dream and the week again and holds
@@ -299,8 +305,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
       try {
         // The same reading the analysis job would write, so the job can take it as it is.
         reading = await (deps.analyze ?? runDreamAnalysis)({
-          apiKey,
-          anthropicApiKey: deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY')?.trim() : deps.anthropicApiKey,
+          anthropicApiKey,
           claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS,
           transcript: transcript.promptTranscript,
           truncatedForPrompt: transcript.truncatedForPrompt,
@@ -308,9 +313,10 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
           knownSymbols: await loadKnownDreamSymbols(admin, userId, dreamId, '/analysis-preview'),
           route: '/analysis-preview',
         });
-      } catch {
+      } catch (error) {
         // Dream content and provider payloads must not enter logs.
-        return refused('PREVIEW_FAILED', 502);
+        const info = classifyClaudeError(error);
+        return jsonResponse({ error: info.userMessage, code: 'PREVIEW_FAILED', providerCode: info.code, retryAfter: info.retryAfter }, info.status);
       }
       // A reading the analysis job could not save is no preview.
       if (!isPreparedReading(reading)) return refused('PREVIEW_FAILED', 502);

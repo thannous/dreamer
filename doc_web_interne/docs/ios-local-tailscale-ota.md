@@ -151,8 +151,47 @@ Une fois le compte Apple et la signature locale configurés dans Xcode et l'iPho
 enregistré :
 
 ```sh
-mise exec -- npm run ios:local:build -- --team <TEAM_ID> --device '<nom de l iPhone>'
+mise exec -- npm run ios:local:build -- --profile .env.ios.local --team <TEAM_ID> --device '<nom de l iPhone ou UDID>'
 ```
+
+`--profile` charge le fichier avec le même lecteur que le lanceur Expo. Sans cette
+option, les variables doivent déjà être présentes dans l'environnement de la
+commande. Préparer ce profil iOS privé avec les deux identifiants Google et la
+clé publique SDK RevenueCat Apple ; les profils Android `.env.playstore` et
+`.env.teststore` ne contiennent pas cette clé iOS. Le lanceur fixe
+`EXPO_NO_DOTENV=1` avant toute préparation Xcode pour
+empêcher un autre fichier dotenv de remplacer les valeurs contrôlées. En mode
+réel, il exige les identifiants Google Web et iOS, puis vérifie que le schéma
+inversé du client iOS est présent dans `ios/Noctalia/Info.plist`. Un profil avec
+`EXPO_PUBLIC_MOCK_MODE=true` peut omettre ces identifiants. Les valeurs des profils
+ne sont pas affichées.
+
+Un build réel exige aussi `EXPO_PUBLIC_REVENUECAT_IOS_KEY` explicitement dans le
+profil sélectionné ou l'environnement, même si le service accepte un repli dans
+la configuration Expo. Cette clé publique SDK doit commencer par `appl_` : elle
+utilise l'App Store, y compris son Sandbox. Les clés `test_` (RevenueCat Test
+Store) et celles d'une autre plateforme sont refusées pour cette archive Release.
+Le mode mock explicite peut omettre la clé. Cette garde détecte les variables
+absentes du binaire que les parcours UI simulés ne peuvent pas vérifier ; elle
+ne prouve pas qu'une offre ou un achat fonctionne sur iPhone.
+
+Un UDID explicite de forme `8 hexadécimaux-16 hexadécimaux` ou `40 hexadécimaux`
+permet de préparer l'IPA lorsque CoreDevice ne découvre pas le téléphone. Le
+profil exporté doit toujours contenir cet appareil déjà enregistré avant que
+l'IPA soit proposée. Un nom d'appareil nécessite toujours la découverte native ;
+les règles de signature et `--provision` restent identiques.
+
+Régression isolée du 19 octobre 2026 : le bundle Hermes du candidat local
+**3.6.0 (20)**, source `0648d74faf5e5a1daeaccb2ab38c21bc71fd4f2b`, retourne
+`undefined` pour les identifiants Google alors que son mode mock vaut `false`.
+Son empreinte JavaScript est
+`2ce51d1f9d88dfe1866ee5b54ea0c2da1cb2d6ea51000ac85a1ad3f028e0b7b0`.
+La connexion échoue ainsi avant l'ouverture de Google. Un parcours UI avec les
+services simulés ne peut pas détecter cette configuration absente du binaire.
+Les tests ciblés du lanceur couvrent donc le refus avant Xcode, les identifiants
+complets, le mode mock explicite et le schéma natif incompatible ; ils ne
+qualifient pas la connexion réelle sur iPhone. Répétition :
+`mise exec -- npm run test:file -- scripts/ios-local-ota.test.js --watchman=false`.
 
 Pour une mise à jour locale, annoncer une version et un build supérieurs à ceux
 déjà installés évite le candidat identique signalé « déjà installé » par iOS.
@@ -160,8 +199,13 @@ Les options `--version X.Y.Z --build-number N` s'appliquent à l'archive locale 
 elles ne changent pas les versions dans les sources ni les compteurs Store/EAS.
 `ios/Noctalia/Info.plist` doit référencer `$(MARKETING_VERSION)` et
 `$(CURRENT_PROJECT_VERSION)` pour les prendre en compte. Le lanceur vérifie les
-valeurs réellement exportées avant publication. Le candidat IPA disponible au dernier contrôle est
-**3.4.9 (15), Release**. Relire la version effectivement installée sur l'iPhone avant de
+valeurs réellement exportées avant publication. Le candidat local corrigé le 19 octobre 2026 est
+**3.6.0 (22), Release**, avec les identifiants Google et la clé Apple RevenueCat.
+Le propriétaire a signalé une connexion réussie avec le build 21 ; ce dernier
+n'avait pas la clé d'abonnement iOS. L'API publique RevenueCat confirme les produits
+mensuel et annuel associés à Noctalia Plus, sans consultation d'un compte client.
+L'affichage des offres StoreKit et l'achat sur le build 22 restent à vérifier sur
+l'iPhone. Relire la version effectivement installée sur l'iPhone avant de
 préparer la prochaine mise à jour locale et choisir des numéros supérieurs.
 
 Cette commande archive et exporte localement, puis prépare les fichiers OTA.
