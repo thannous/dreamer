@@ -1083,6 +1083,7 @@ function DreamChatContent() {
               : t('dream_chat.exploration_limit.message_free')}
           </Text>
           <Pressable
+            accessibilityRole="button"
             style={[styles.upgradeButton, shadows.lg, { backgroundColor: noctalia.action.primary }]}
             onPress={() => router.push(tier === 'guest'
               ? '/settings?section=account&auth=signup'

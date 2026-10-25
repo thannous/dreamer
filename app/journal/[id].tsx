@@ -2586,7 +2586,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   // A guest out of readings is asked for an account first; Plus stays one quiet step away.
   const renderDiscoverPlus = () => guestNeedsAccount && savedAnalysisAction === 'signup' ? (
     <PressableScale accessibilityRole="button" onPress={handleDiscoverPlus}
-      testID={TID.Button.QuotaLimitDiscoverPlus}
+      testID={TID.Button.SavedDreamDiscoverPlus}
       className="min-h-[44px] items-center justify-center px-4">
       <Text className="font-sans-medium text-[15px] text-champagne-on">
         {t('journal.detail.quota_limit.discover_plus')}

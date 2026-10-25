@@ -177,6 +177,7 @@ export const TID = {
     FirstValueBackupCta: 'btn.firstValueBackup.cta',
     QuotaLimitCtaGuest: 'btn.quotaLimit.ctaGuest',
     QuotaLimitDiscoverPlus: 'btn.quotaLimit.discoverPlus',
+    SavedDreamDiscoverPlus: 'btn.savedDream.discoverPlus',
     QuotaLimitCtaFree: 'btn.quotaLimit.ctaFree',
     QuotaLimitJournal: 'btn.quotaLimit.journal',
     QuotaLimitResetMock: 'btn.quotaLimit.resetMock',
