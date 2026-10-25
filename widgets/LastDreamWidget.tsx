@@ -23,6 +23,8 @@ export type LastDreamWidgetProps = {
   title?: string;
   /** When it was dreamt, already written in the app's language. */
   date?: string;
+  /** The same day without its weekday, for the small widget: the full date is cut there. */
+  shortDate?: string;
   /** Instead of the date on an anniversary: « Il y a un mois cette nuit ». */
   eyebrow?: string;
   /** Opens that dream, or the capture screen before the first one. */
@@ -69,6 +71,8 @@ const LastDreamWidget = (props: LastDreamWidgetProps, environment: WidgetEnviron
   const ink = dark ? '#FFF9EF' : '#382D35';
   const veil = dark ? ['rgba(3, 4, 13, 0)', 'rgba(3, 4, 13, 0.86)'] : ['rgba(245, 234, 219, 0)', 'rgba(245, 234, 219, 0.92)'];
   const medium = environment.widgetFamily === 'systemMedium';
+  // The small widget takes the short date, and an anniversary's words may wrap there.
+  const above = props.eyebrow ?? (medium ? props.date : props.shortDate ?? props.date);
 
   return (
     <ZStack alignment="bottomLeading" modifiers={[open, fill, containerBackground(ground, 'widget'), accessibilityLabel([props.eyebrow, props.title, props.date].filter(Boolean).join(', '))]}>
@@ -80,8 +84,8 @@ const LastDreamWidget = (props: LastDreamWidgetProps, environment: WidgetEnviron
         ]}
       />
       <VStack alignment="leading" spacing={2} modifiers={[padding({ horizontal: 14, bottom: 12 })]}>
-        {props.eyebrow || props.date ? (
-          <Text modifiers={[font({ size: 11, weight: 'medium' }), foregroundStyle(ink), lineLimit(1)]}>{props.eyebrow ?? props.date}</Text>
+        {above ? (
+          <Text modifiers={[font({ size: 11, weight: 'medium' }), foregroundStyle(ink), lineLimit(medium ? 1 : 2)]}>{above}</Text>
         ) : null}
         <Text modifiers={[font({ size: medium ? 18 : 15, weight: 'semibold', design: 'serif' }), foregroundStyle(ink), lineLimit(2)]}>
           {props.title}

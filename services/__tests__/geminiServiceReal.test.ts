@@ -120,7 +120,10 @@ describe('geminiServiceReal', () => {
     global.fetch = originalFetch;
   });
 
-  it.each(['analysis', 'full analysis', 'analysis job', 'chat', 'streaming chat'])(
+  it.each([
+    'analysis', 'full analysis', 'analysis job', 'chat', 'streaming chat',
+    'categorization', 'illustration from prompt', 'illustration from story', 'illustration job',
+  ])(
     'does not send %s when permission is withdrawn during async preparation', async (kind: string) => {
       let finishAuth!: (value: string) => void;
       mockGetAccessToken.mockImplementationOnce(() => new Promise(resolve => { finishAuth = resolve; }));
@@ -129,6 +132,10 @@ describe('geminiServiceReal', () => {
       const request = kind === 'analysis' ? analyzeDream('Private dream')
         : kind === 'full analysis' ? analyzeDreamWithImage('Private dream')
         : kind === 'analysis job' ? submitDreamAnalysisJob({ dreamId: 1, analysisRequestId: 'request' })
+        : kind === 'categorization' ? categorizeDream('Private dream')
+        : kind === 'illustration from prompt' ? generateImageForDream('Private scene')
+        : kind === 'illustration from story' ? generateImageFromTranscript('Private dream')
+        : kind === 'illustration job' ? submitImageGenerationJob({ clientRequestId: 'request', transcript: 'Private dream' })
         : startOrContinueChat('1', 'Private question', 'en', undefined, undefined,
           kind === 'streaming chat' ? { onDelta: jest.fn() } : undefined);
       // Authentication and caller synchronization are allowed to finish; no AI
@@ -140,6 +147,16 @@ describe('geminiServiceReal', () => {
       await rejected;
       expect(global.fetch).not.toHaveBeenCalled();
       expect(mockStreamingFetch).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each(['analysis job', 'illustration job'])(
+    'still reads %s status after permission is withdrawn', async (kind: string) => {
+      // Withdrawal stops new sends; work already admitted can still be observed to completion.
+      mockHasAiConsent.mockResolvedValue(false);
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse({ jobId: 'job', status: 'running' }));
+      await (kind === 'analysis job' ? getDreamAnalysisJobStatus('job') : getImageGenerationJobStatus('job'));
+      expect(global.fetch).toHaveBeenCalledTimes(1);
     }
   );
 

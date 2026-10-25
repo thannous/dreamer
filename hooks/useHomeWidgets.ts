@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useDreamsData } from '@/context/DreamsContext';
 import { useAppState } from '@/hooks/useAppState';
 import { useTranslation } from '@/hooks/useTranslation';
-import { formatDreamDate } from '@/lib/dateUtils';
+import { formatDreamDate, formatShortDate } from '@/lib/dateUtils';
 import { upcomingAnniversaries } from '@/lib/dreamAnniversary';
 import { lastDreamImageKey, pickLastPaintedDream } from '@/lib/homeWidgets';
 import { getLocalDateKey } from '@/lib/ritualProgressUtils';
@@ -69,6 +69,7 @@ export function useHomeWidgets(): void {
       userId,
       title,
       date: dream ? formatDreamDate(dream.id, currentLang) : null,
+      shortDate: dream ? formatShortDate(dream.id, currentLang) : null,
       empty,
       anniversaries,
     }).then((done) => {

@@ -1,3 +1,6 @@
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
+
 import type { ExpoConfig } from 'expo/config';
 import { createClient } from '@supabase/supabase-js';
 import resolveExpoConfig, {
@@ -262,8 +265,31 @@ describe('product route roots', () => {
       expect(pluginNames(resolveExpoConfig({ config: baseExpo() } as any))).toContain('expo-widgets');
     });
     withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid-trainer' }, () => {
-      expect(pluginNames(resolveExpoConfig({ config: baseExpo() } as any))).not.toContain('expo-widgets');
+      const names = pluginNames(resolveExpoConfig({ config: baseExpo() } as any));
+      expect(names).not.toContain('expo-widgets');
+      expect(names).not.toContain('./plugins/withWidgetGalleryStrings');
     });
+  });
+
+  it('names every widget in the gallery in each language of the app', () => {
+    const plugins = (appJson.expo.plugins ?? []) as unknown[];
+    const indexOf = (name: string) =>
+      plugins.findIndex((plugin) => (Array.isArray(plugin) ? plugin[0] : plugin) === name);
+    const widgets = plugins[indexOf('expo-widgets')] as [string, { widgets: { displayName: string; description: string }[] }];
+    const strings = plugins[indexOf('./plugins/withWidgetGalleryStrings')] as [string, Record<string, Record<string, string>>];
+    // Its mods must run after expo-widgets' own, which creates the extension target.
+    expect(indexOf('./plugins/withWidgetGalleryStrings')).toBeLessThan(indexOf('expo-widgets'));
+    const english = widgets[1].widgets.flatMap(({ displayName, description }) => [displayName, description]).sort();
+    // The app's own languages (lib/i18n), English being the one app.json writes.
+    const languages = readdirSync(join(__dirname, '../lib/i18n'))
+      .filter((file) => /^[a-z]{2}\.ts$/.test(file) && file !== 'en.ts')
+      .map((file) => file.slice(0, 2))
+      .sort();
+    expect(Object.keys(strings[1]).sort()).toEqual(languages);
+    for (const translations of Object.values(strings[1])) {
+      expect(Object.keys(translations).sort()).toEqual(english);
+      expect(Object.values(translations).every((value) => value.trim() && !value.includes('—'))).toBe(true);
+    }
   });
 });
 

@@ -19,7 +19,7 @@ export type SleepTimerActivityProps = {
   /** The countdown, as two instants (ms): it runs from `from` down to `to`. */
   from: number;
   to: number;
-  /** Paused, the countdown holds the time left at `from`. */
+  /** Paused, the countdown holds the time left, `to` minus `from`. */
   paused: boolean;
 };
 
@@ -38,21 +38,22 @@ const SleepTimerActivity = (props: SleepTimerActivityProps, environment: LiveAct
   const muted = '#B7AEC9';
   const over = environment.isStale === true;
   const interval = { lower: new Date(props.from), upper: new Date(props.to) };
-  const pauseTime = props.paused ? new Date(props.from) : undefined;
-  const timer = (size: number, width?: number) => (
-    <Text
-      timerInterval={interval}
-      countsDown
-      pauseTime={pauseTime}
-      modifiers={[
-        font({ size, weight: 'semibold' }),
-        monospacedDigit(),
-        foregroundStyle(ink),
-        multilineTextAlignment('trailing'),
-        ...(width ? [frame({ width })] : []),
-      ]}
-    />
-  );
+  // Paused, the time left is written out: given a pauseTime, the system timer kept counting
+  // down in the Live Activity. It reads like the running timer (m:ss), so nothing jumps.
+  const left = Math.max(0, Math.ceil((props.to - props.from) / 1000));
+  const held = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
+  const timer = (size: number, width?: number) => {
+    const modifiers = [
+      font({ size, weight: 'semibold' }),
+      monospacedDigit(),
+      foregroundStyle(ink),
+      multilineTextAlignment('trailing'),
+      ...(width ? [frame({ width })] : []),
+    ];
+    return props.paused
+      ? <Text modifiers={modifiers}>{held}</Text>
+      : <Text timerInterval={interval} countsDown modifiers={modifiers} />;
+  };
   const moon = (size: number) => (
     <Image systemName="moon.zzz.fill" modifiers={[font({ size, weight: 'semibold' }), foregroundStyle(accent)]} />
   );

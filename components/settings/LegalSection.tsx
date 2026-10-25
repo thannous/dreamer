@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  Platform,
   Text,
   View,
 } from 'react-native';
@@ -25,6 +26,20 @@ import {
   finalizeAccountDeletion,
   requestAccountDeletion,
 } from '@/services/accountDeletionService';
+
+// react-native-web's Alert is a no-op: the browser's own dialogs ask and tell there.
+const confirmInBrowser = (title: string, message: string): boolean =>
+  typeof window !== 'undefined' && typeof window.confirm === 'function' && window.confirm(`${title}\n\n${message}`);
+
+function tell(title: string, message?: string) {
+  if (Platform.OS !== 'web') {
+    Alert.alert(title, message);
+    return;
+  }
+  if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+    window.alert(message ? `${title}\n\n${message}` : title);
+  }
+}
 
 /** Rows are stacked edge to edge; hit slop would overlap the neighbouring row. */
 const NO_HIT_SLOP = 0;
@@ -96,18 +111,25 @@ export function LegalSection() {
         await finalizeAccountDeletion(user.id).catch(() => {
           // The account is already deleted; stale local tokens expire on their own.
         });
-        Alert.alert(
+        tell(
           t('settings.deleteAccount.successTitle'),
           t('settings.deleteAccount.successMessage')
         );
       })
       .catch(() => {
         setIsDeleting(false);
-        Alert.alert(t('settings.deleteAccount.errorMessage'));
+        tell(t('settings.deleteAccount.errorMessage'));
       });
   }, [isDeleting, t, user]);
 
   const confirmDeletion = useCallback(() => {
+    if (Platform.OS === 'web') {
+      // The same two steps as on a phone, one browser question each.
+      const title = t('settings.deleteAccount.confirmTitle');
+      if (confirmInBrowser(title, t('settings.deleteAccount.confirmMessage'))
+        && confirmInBrowser(title, t('settings.deleteAccount.subscriptionWarning'))) runDeletion();
+      return;
+    }
     Alert.alert(
       t('settings.deleteAccount.confirmTitle'),
       t('settings.deleteAccount.confirmMessage'),

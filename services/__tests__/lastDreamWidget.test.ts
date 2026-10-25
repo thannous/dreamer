@@ -98,6 +98,7 @@ const update = (painted: DreamAnalysis | null, userId: string | null) => ({
   userId,
   title: painted?.title ?? '',
   date: painted ? 'Monday 19 October' : null,
+  shortDate: painted ? '19 Oct 2026' : null,
   empty: 'Your next painted dream will appear here.',
 });
 const laid = () => mockUpdateSnapshot.mock.calls.map(([props]) => props as Record<string, unknown>);
@@ -123,6 +124,13 @@ it('clears another dreamer’s dream after a sign-out, even when the next painti
   expect(laid()[1]).toEqual({ url: 'noctalia://recording', empty: 'Your next painted dream will appear here.' });
   expect(paintings()).toEqual([]);
   expect(laid().every((props) => !Object.values(props).includes(null))).toBe(true);
+});
+
+it('gives the small widget its short date beside the full one', async () => {
+  const service = launch();
+  await service.updateLastDreamWidget(update(dream(10), 'alice'));
+
+  expect(laid()[0]).toMatchObject({ date: 'Monday 19 October', shortDate: '19 Oct 2026' });
 });
 
 it('keeps the dreamer’s older dream while a newer painting waits for the network', async () => {
