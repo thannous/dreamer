@@ -504,6 +504,38 @@ describe('http', () => {
     });
   });
 
+  it('does not truncate an HTTP-date Retry-After that exceeds its replay budget', async () => {
+    mockClassifyError.mockReturnValue({ type: 'rate_limit', canRetry: true });
+    const deadline = new Date(Math.ceil(Date.now() / 1000) * 1000 + 600_000).toUTCString();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false, status: 429, statusText: 'Too Many Requests',
+      headers: { get: (key: string) => key.toLowerCase() === 'retry-after' ? deadline : null },
+      json: async () => ({}),
+    });
+    await expect(fetchJSON('https://api.example.com/analysis-jobs', {
+      method: 'POST', body: { analysisRequestId: 'same-key' }, retries: 1,
+    })).rejects.toMatchObject({ status: 429, retryAfterMs: Date.parse(deadline) - Date.now() });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
+  });
+
+  it.each([
+    ['AI_ACTOR_RATE_LIMIT', '1'], ['AI_GLOBAL_RATE_LIMIT', '2'],
+    ['AI_ADMISSION_DENIED', '3'], ['OTHER_RATE_LIMIT', '540'],
+  ])('returns 429 %s immediately with its original deadline', async (code: string, seconds: string) => {
+    mockClassifyError.mockReturnValue({ type: 'rate_limit', canRetry: true });
+    global.fetch = typedJestFn<AnyFunction>().mockResolvedValue({
+      ok: false, status: 429, statusText: 'Too Many Requests',
+      headers: { get: (key: string) => key.toLowerCase() === 'retry-after' ? seconds : null },
+      json: async () => ({ code }),
+    }) as typeof fetch;
+    await expect(fetchJSON('https://api.example.com/analyzeDream', {
+      method: 'POST', body: { analysisRequestId: 'same-key' }, retries: 1,
+    })).rejects.toMatchObject({ status: 429, retryAfterMs: Number(seconds) * 1000 });
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(jest.getTimerCount()).toBe(0);
+  });
+
   describe('timeout handling', () => {
     it('given custom timeout when request takes too long then aborts', async () => {
       let abortSignal: AbortSignal | null | undefined;

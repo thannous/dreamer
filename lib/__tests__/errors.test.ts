@@ -525,3 +525,12 @@ it.each(['ANALYSIS_REQUEST_REJECTED', 'ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_
 it.each(['AiConsentWithdrawnError', 'AbortError'])('never retries user cancellation %s', (name: string) => {
   expect(classifyError(Object.assign(new Error('cancelled'), { name })).canRetry).toBe(false);
 });
+
+describe('AI admission delay', () => {
+  it.each(['AI_ACTOR_RATE_LIMIT', 'AI_GLOBAL_RATE_LIMIT', 'AI_ADMISSION_DENIED'])('shows %s immediately with its delay', (code: string) => {
+    const error = Object.assign(new Error('HTTP 429'), { status: 429, body: { code, retryAfter: 540 } });
+    const result = classifyError(error);
+    expect(result.canRetry).toBe(false);
+    expect(result.userMessage).toContain('540 s');
+  });
+});

@@ -311,6 +311,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       ctx,
       capability: 'analyze_dream',
       guestFingerprint: fingerprint,
+      analysisRequestId: toUuid(body.analysisRequestId) ?? toUuid(body.requestId),
     });
     if (admission instanceof Response) return admission;
 
@@ -459,6 +460,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       ctx,
       capability: 'analyze_dream_full',
       guestFingerprint: null,
+      analysisRequestId: toUuid(body.analysisRequestId) ?? toUuid(body.requestId),
     });
     if (admission instanceof Response) return admission;
 

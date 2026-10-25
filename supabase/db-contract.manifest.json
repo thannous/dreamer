@@ -241,6 +241,17 @@
         "updated_at_ms",
         "completed_at_ms"
       ]
+    },
+    {
+      "schema": "private",
+      "name": "ai_analysis_admissions",
+      "requiredColumns": [
+        "actor_hash",
+        "capability",
+        "request_id",
+        "admitted_at",
+        "daily_admitted"
+      ]
     }
   ],
   "requiredFunctions": [
@@ -435,6 +446,12 @@
       "name": "is_refundable_text_analysis_failure",
       "identityArguments": "p_error_code text",
       "result": "boolean"
+    },
+    {
+      "schema": "public",
+      "name": "claim_ai_analysis_admission",
+      "identityArguments": "p_actor_hash text, p_capability text, p_request_id uuid, p_window_seconds integer, p_actor_limit integer, p_global_limit integer, p_daily_limit integer",
+      "result": "jsonb"
     }
   ],
   "requiredTriggers": [

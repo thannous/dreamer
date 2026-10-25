@@ -151,8 +151,7 @@ for (const code of ['ANALYSIS_ALREADY_CLAIMED', 'ANALYSIS_TRANSCRIPT_MISMATCH'])
       assertEquals((await response.json()).code, code);
       assertEquals(rpcCalls, [
         'get_effective_subscription_tier',
-        'claim_ai_request_window',
-        'claim_ai_daily_budget',
+        'claim_ai_analysis_admission',
         'claim_authenticated_analysis_quota_bound',
       ]);
       assertEquals(providerRequests, []);

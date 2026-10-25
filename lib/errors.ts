@@ -62,6 +62,7 @@ export interface ClassifiedError {
 
 type HttpErrorDetails = {
   status: number;
+  retryAfterMs?: number;
   body?: Record<string, unknown> | null;
   url?: string;
 };
@@ -377,12 +378,16 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
     }
 
     if (status === 429) {
+      const retryAfter = Number((error as unknown as HttpErrorDetails).retryAfterMs) / 1000
+        || Number(body?.retryAfter);
+      const delay = Number.isFinite(retryAfter) && retryAfter > 0 ? Math.ceil(retryAfter) : null;
       return {
         type: ErrorType.RATE_LIMIT,
         message: error.message,
         originalError: error,
-        userMessage: translate('error.rate_limit'),
-        canRetry: true,
+        userMessage: translate('error.rate_limit') + (delay ? ` (${delay} s)` : ''),
+        canRetry: !(code && (/^AI_.*_RATE_LIMIT$/.test(code) || code === 'AI_ADMISSION_DENIED'))
+          && !(delay && delay > 30),
       };
     }
 

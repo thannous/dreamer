@@ -321,8 +321,11 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
         const retryAfter = getHeaderValue(res, 'retry-after')
           ?? (body && typeof body === 'object' && 'retryAfter' in body ? body.retryAfter : undefined);
         const retrySeconds = Number(retryAfter);
+        const retryAfterMs = Number.isFinite(retrySeconds)
+          ? retrySeconds * 1000
+          : typeof retryAfter === 'string' ? Date.parse(retryAfter) - Date.now() : 0;
         throw new HttpError({
-          ...(Number.isFinite(retrySeconds) && retrySeconds > 0 ? { retryAfterMs: Math.min(30_000, retrySeconds * 1000) } : {}),
+          ...(Number.isFinite(retryAfterMs) && retryAfterMs > 0 ? { retryAfterMs } : {}),
           status: res.status,
           statusText: res.statusText,
           url,
@@ -402,6 +405,14 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
       // If we have more retries left, check if we should retry
       if (attempt < retries) {
         const classified = classifyError(lastError);
+        const httpError = lastError instanceof HttpError ? lastError : undefined;
+        const code = httpError?.body && typeof httpError.body === 'object' && 'code' in httpError.body
+          ? httpError.body.code : undefined;
+        const admissionRateLimit = httpError?.status === 429 && typeof code === 'string'
+          && (/^AI_.*_RATE_LIMIT$/.test(code) || code === 'AI_ADMISSION_DENIED');
+        // Preserve the real server deadline for the UI. Never shorten it into
+        // a replay that is guaranteed to be refused again.
+        if (admissionRateLimit || (httpError?.retryAfterMs ?? 0) > 30_000) throw lastError;
 
         // Unknown failures are transient too. Explicit request/permission failures,
         // quota denials and consent withdrawal remain terminal.
