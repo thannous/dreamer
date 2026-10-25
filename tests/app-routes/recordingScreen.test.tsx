@@ -909,7 +909,7 @@ describe('Recording screen', () => {
     expect(screen.getByTestId('recording-composer').getAttribute('data-room')).toBeNull();
   });
 
-  it.each([['ios', 'keyboardWillShow', 0], ['android', 'keyboardDidShow', 16 + 34]])('ends the folded iPhone Duo\'s document at Save above the %s keyboard', async (os: string, showEvent: string, end: number) => {
+  it.each([['ios', 'keyboardWillShow', 0], ['android', 'keyboardDidShow', 16 + 34]])('ends the folded iPhone Duo\'s document for the %s keyboard', async (os: string, showEvent: string, end: number) => {
     mockPlatformOS = os as typeof mockPlatformOS;
     mockBottomInset = 34;
     mockViewportWidth = 678;
@@ -923,12 +923,19 @@ describe('Recording screen', () => {
     // Save follows the editor in this short window.
     expect(screen.getByTestId(TID.Screen.Recording).contains(getCaptureSaveAction())).toBe(true);
     expect(documentEnd()).toBe(16);
+    act(() => { jest.advanceTimersByTime(32); });
+    mockScrollToEnd.mockClear();
 
-    // Above the keyboard, which covers the home indicator on iOS, the view is 220 points: an end
-    // padded for the indicator took the writing area's first line off the screen.
+    // On iOS Save keeps only its own 8 points above the keyboard, which covers the home indicator:
+    // on the Duo the view above it is 220 points, and an end padded for the indicator took the
+    // writing area's first line off the screen.
     act(() => mockKeyboardListeners[showEvent]?.());
     expect(screen.getByTestId(TID.Screen.Recording).contains(getCaptureSaveAction())).toBe(true);
     expect(documentEnd()).toBe(end);
+    // Save comes into view above the keyboard, though no footer outside the document was ever
+    // measured: Capture first shown folded.
+    act(() => { jest.advanceTimersByTime(32); });
+    expect(mockScrollToEnd).toHaveBeenCalled();
   });
 
   beforeEach(() => {

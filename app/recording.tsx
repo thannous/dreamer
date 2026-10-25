@@ -1488,8 +1488,9 @@ function RecordingScreen() {
   }, [keyboardVisible]);
   useEffect(() => {
     // The voice reply sits above the full story: scrolling to the document end
-    // would hide the focused answer when the keyboard opens.
-    if (!keyboardVisible || footerHeight === 0 || inputMode === 'voice') {
+    // would hide the focused answer when the keyboard opens. Save after the scroll view is
+    // measured first; Save in the document, as on the folded iPhone Duo, is never measured.
+    if (!keyboardVisible || (footerHeight === 0 && !inlineFooter) || inputMode === 'voice') {
       keyboardSettlingRef.current = false;
       return;
     }
@@ -1499,7 +1500,7 @@ function RecordingScreen() {
     });
 
     return () => cancelAnimationFrame(frame);
-  }, [footerHeight, inputMode, keyboardVisible]);
+  }, [footerHeight, inlineFooter, inputMode, keyboardVisible]);
   useEffect(() => {
     let frame: number | undefined;
     const subscription = Keyboard.addListener('keyboardDidShow', () => {
