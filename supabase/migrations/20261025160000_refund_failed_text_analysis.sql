@@ -65,6 +65,12 @@ begin
   if new.job_type = 'analyze_dream' and new.status = 'failed' and old.status <> 'failed' then
     perform 1 from public.dreams where id = new.dream_id and user_id = new.user_id for update;
     perform pg_advisory_xact_lock(hashtextextended(format('quota:analysis:all:%s', new.user_id::text), 0));
+    -- Close the old pending request before making its quota available again.
+    -- A synchronous retry must not start between refund and the worker's later
+    -- best-effort dream update. Preserve a newer request or completed reading.
+    update public.dreams set analysis_status = 'failed', revision_id = gen_random_uuid(), updated_at = now()
+      where id = new.dream_id and user_id = new.user_id
+        and analysis_request_id::text = new.client_request_id and analysis_status = 'pending';
     delete from public.quota_usage where user_id = new.user_id and dream_id = new.dream_id
       and quota_type = 'analysis' and metadata->>'source' = 'analysis_job_admission'
       and metadata->>'analysis_request_id' = new.client_request_id;
