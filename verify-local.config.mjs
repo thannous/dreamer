@@ -214,6 +214,7 @@ const DB_CONTRACTS = [
   'scripts/product-analytics-migration.test.js',
   'scripts/product-analytics-schema-parity.test.js',
   '&& npm run test:analysis-authorization:db',
+  '&& npm run test:analysis-admission:db',
   '&& node --test scripts/ai-daily-budget-migration.test.cjs scripts/dream-sync-limits-migration.test.cjs',
 ].join(' ');
 
