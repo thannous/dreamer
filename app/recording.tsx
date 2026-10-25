@@ -55,7 +55,7 @@ import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { isDreamTextTooLong, shouldShowDreamLengthCounter } from '@/lib/dreamTextLimit';
-import { classifyError, GuestDreamLimitError } from '@/lib/errors';
+import { AiConsentWithdrawnError, classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
 import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { formatCaptureNarrative } from '@/services/captureConversation';
@@ -1248,6 +1248,8 @@ function RecordingScreen() {
         await applyDreamCategorization(savedDream.id, categorization);
       })
         .catch((error) => {
+          // Consent withdrawn while the dream was being saved: nothing was sent.
+          if (error instanceof AiConsentWithdrawnError) return;
           log.warn('Quick categorization failed:', error);
           Alert.alert(t('recording.analysis_offer.title'), t('recording.categorization.error'));
         });
