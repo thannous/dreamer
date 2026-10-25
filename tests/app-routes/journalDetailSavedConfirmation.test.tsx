@@ -48,6 +48,8 @@ const mockCompositeEvents: {
   report: (source: string, ready: boolean) => void;
 }[] = [];
 const mockAnnounceForAccessibility = jest.fn();
+type MockKeyboardEvent = { endCoordinates: { screenX: number; screenY: number; width: number; height: number } };
+const mockKeyboardListeners = new Map<string, Set<(event: MockKeyboardEvent) => void>>();
 let mockThemeMode: 'light' | 'dark' = 'dark';
 const mockRetryMedia = jest.fn();
 const mockShareComposite = jest.fn();
@@ -145,7 +147,11 @@ jest.mock('react-native', () => {
     ActivityIndicator: () => <div role="progressbar" />,
     Alert: { alert: jest.fn() },
     Keyboard: {
-      addListener: () => ({ remove: jest.fn() }),
+      addListener: (event: string, listener: (event: MockKeyboardEvent) => void) => {
+        const listeners = mockKeyboardListeners.get(event) ?? new Set();
+        mockKeyboardListeners.set(event, listeners.add(listener));
+        return { remove: () => { listeners.delete(listener); } };
+      },
       dismiss: jest.fn(),
     },
     KeyboardAvoidingView: createElement('div'),
@@ -625,6 +631,22 @@ describe('journal detail saved confirmation route', () => {
     });
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(mockTransitionOnboarding).not.toHaveBeenCalled();
+  });
+
+  it('keeps the next step through a fold of the iPhone Duo, which reports a keyboard of no height', () => {
+    const showKeyboard = (height: number) => act(() => {
+      const keyboard = { endCoordinates: { screenX: 0, screenY: 678 - height, width: 466, height } };
+      mockKeyboardListeners.get('keyboardDidShow')?.forEach((listener) => listener(keyboard));
+    });
+    const dock = () => screen.queryByTestId('component.dreamDetail.actionDock');
+    render(<JournalDetailScreen />);
+    expect(dock()).not.toBeNull();
+
+    showKeyboard(0);
+    expect(dock()).not.toBeNull();
+    // A real keyboard still gives the page its room.
+    showKeyboard(300);
+    expect(dock()).toBeNull();
   });
 
   // Web E2E cannot observe this: the browser's confirm() blocks the page while it is open.

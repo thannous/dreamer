@@ -1,5 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Keyboard, LayoutAnimation, Platform, type KeyboardEvent } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Keyboard, LayoutAnimation, Platform, type KeyboardEvent, type KeyboardMetrics } from 'react-native';
+
+/**
+ * Whether a keyboard React Native reports shown covers part of the window. Folding the
+ * iPhone Duo reports one shown with no height, and no hide until it unfolds.
+ */
+export function keyboardCoversWindow(keyboard: KeyboardMetrics | null | undefined): boolean {
+  return (keyboard?.height ?? 0) > 0;
+}
 
 /**
  * Whether the software keyboard is up, for layouts that hide or resize chrome
@@ -11,11 +19,17 @@ import { Keyboard, LayoutAnimation, Platform, type KeyboardEvent } from 'react-n
  * removes leave at once. Android only reports `Did`.
  */
 export function useKeyboardVisible(): boolean {
-  const [visible, setVisible] = useState(() => Keyboard.isVisible());
+  const [visible, setVisible] = useState(() => Keyboard.isVisible() && keyboardCoversWindow(Keyboard.metrics()));
+  const current = useRef(visible);
 
   useEffect(() => {
     const ios = Platform.OS === 'ios';
-    const onChange = (next: boolean) => (event: KeyboardEvent) => {
+    const onChange = (shows: boolean) => (event: KeyboardEvent) => {
+      const next = shows && keyboardCoversWindow(event.endCoordinates);
+      // An event that changes nothing, such as a fold's keyboard of no height or the hide
+      // after it, lends no animation to the next layout, which would be another change's.
+      if (next === current.current) return;
+      current.current = next;
       if (ios && event.duration > 0) {
         // No `delete` phase: React Native would defer each faded-out removal to a
         // later commit, and Reanimated 4.7's layout animations proxy then miscounts

@@ -18,6 +18,7 @@ import { EmptyState } from '@/components/journal/EmptyState';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { JournalFirstPage } from '@/components/journal/JournalFirstPage';
 import { useJournalListPagination } from '@/hooks/useJournalListPagination';
+import { keyboardCoversWindow } from '@/hooks/useKeyboardVisible';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { JournalPersistenceNotice } from '@/components/journal/JournalPersistenceNotice';
 import { FilterBar } from '@/components/journal/FilterBar';
@@ -99,7 +100,7 @@ function getInitialKeyboardVisibility(): boolean {
   if (Platform.OS === 'web') {
     return false;
   }
-  return typeof Keyboard.isVisible === 'function' ? Keyboard.isVisible() : false;
+  return typeof Keyboard.isVisible === 'function' ? Keyboard.isVisible() && keyboardCoversWindow(Keyboard.metrics()) : false;
 }
 
 // FlashList spreads its style into a DOM view on web. Reanimated passes an array,
@@ -206,7 +207,7 @@ function JournalListScreen() {
   useEffect(() => {
     const show = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      () => setIsKeyboardVisible(true),
+      (event) => setIsKeyboardVisible(keyboardCoversWindow(event.endCoordinates)),
     );
     const hide = Keyboard.addListener(
       Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',

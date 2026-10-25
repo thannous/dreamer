@@ -146,6 +146,21 @@ export function SymbolScenes({ atlas, symbolId, readings, width, noctalia }: Sym
         })}
       </View>
 
+      <View style={styles.reading} accessibilityLiveRegion="polite" aria-live="polite">
+        <Text style={[styles.kicker, { color: noctalia.accent.text }]}>{t('symbols.scene_chosen')}</Text>
+        <Text selectable style={[styles.readingTitle, { color: noctalia.text.primary }]}>{reading.label}</Text>
+        {reading.question ? (
+          <MarkdownText selectable style={[styles.question, { color: noctalia.text.primary }]}>
+            {reading.question}
+          </MarkdownText>
+        ) : null}
+        {reading.excerpt ? (
+          <MarkdownText selectable style={[styles.excerpt, { color: noctalia.text.secondary }]}>
+            {reading.excerpt}
+          </MarkdownText>
+        ) : null}
+      </View>
+
       <View
         style={[styles.stage, frame, { backgroundColor: noctalia.surface.soft }]}
         accessible={false}
@@ -172,21 +187,6 @@ export function SymbolScenes({ atlas, symbolId, readings, width, noctalia }: Sym
             </Animated.View>
           );
         })}
-      </View>
-
-      <View style={styles.reading} accessibilityLiveRegion="polite" aria-live="polite">
-        <Text style={[styles.kicker, { color: noctalia.accent.text }]}>{t('symbols.scene_chosen')}</Text>
-        <Text selectable style={[styles.readingTitle, { color: noctalia.text.primary }]}>{reading.label}</Text>
-        {reading.question ? (
-          <MarkdownText selectable style={[styles.question, { color: noctalia.text.primary }]}>
-            {reading.question}
-          </MarkdownText>
-        ) : null}
-        {reading.excerpt ? (
-          <MarkdownText selectable style={[styles.excerpt, { color: noctalia.text.secondary }]}>
-            {reading.excerpt}
-          </MarkdownText>
-        ) : null}
       </View>
     </View>
   );

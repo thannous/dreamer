@@ -577,7 +577,7 @@ describe('Journal compact large-text layout', () => {
     input.focus();
     fireEvent.change(input, { target: { value: 'blue room' } });
 
-    act(() => { mockKeyboardListeners.get('keyboardDidShow')?.(); });
+    act(() => { mockKeyboardListeners.get('keyboardDidShow')?.({ endCoordinates: { height: 459, screenY: 490 } }); });
     Object.assign(mockWindow, { height: 490 });
     view.rerender(<JournalScreen />);
     expect(screen.getByTestId(TID.Input.SearchDreams)).toBe(input);
@@ -957,6 +957,10 @@ describe('Journal on an iPhone Duo', () => {
     Object.assign(mockWindow, { width: 382, height: 678 });
     render(<JournalScreen />);
     // No floating bar to clear: the last dream stops above the home indicator only.
+    expect(listNavigationPadding()).toBe(MOCK_INSETS.bottom);
+
+    // Folding reports a keyboard of no height, never hidden while folded: the foot stays clear.
+    act(() => { mockKeyboardListeners.get('keyboardWillShow')?.({ endCoordinates: { height: 0, screenY: 678 } }); });
     expect(listNavigationPadding()).toBe(MOCK_INSETS.bottom);
   });
 

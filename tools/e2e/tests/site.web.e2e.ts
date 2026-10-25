@@ -315,13 +315,13 @@ async function expectExpandedScene(browser: Browser, scene: string) {
 
 test('the French tiger atlas reads like a dictionary entry and shows each published scene from mouse or keyboard', { timeout: 180_000 }, async ({ app, browser, screen }) => {
   // Every paragraph of the published interpretation, whole, in its zone: the first opens the plate,
-  // the others (but the fictional journal example, which the page leaves out) make the detailed reading.
+  // the others make the detailed reading.
   const extended = JSON.parse(readFileSync(new URL('../../../data/dream-symbols-extended.json', import.meta.url), 'utf8')) as {
     symbols: Record<string, { fr: { fullInterpretation: string } }>;
   };
   const source = (extended.symbols.tiger.fr.fullInterpretation.match(/<p>[\s\S]*?<\/p>/g) ?? [])
     .map(paragraph => paragraph.replace(/<[^>]+>/g, '').replace(/&#0?39;/g, "'").replace(/&amp;/g, '&').replace(/\s+/g, ''));
-  expect(source).toHaveLength(5);
+  expect(source).toHaveLength(4);
 
   for (const [width, height] of [[1586, 992], [1920, 1080]] as const) {
     await browser.setViewport({ width, height });
@@ -354,7 +354,6 @@ test('the French tiger atlas reads like a dictionary entry and shows each publis
   expect(wide.railTargets.every(Boolean)).toBe(true);
   expect(wide.counts).toEqual({ opening: 1, continuation: 3, variations: 6, questions: 3, faq: 4 });
   source.forEach((paragraph, index) => {
-    if (paragraph.startsWith('Exemplefictifdejournal')) return;
     const zone = index === 0 ? 'meaning' : 'lecture';
     expect(wide.zones[zone].includes(paragraph), `interpretation paragraph ${index + 1} is whole in #${zone}`).toBe(true);
   });
@@ -697,7 +696,7 @@ test('the French atlas pages keep every published block and show each chosen var
     expect(wide.plate).toBe('plate');
     expect(wide.decor!.left).toBeGreaterThanOrEqual(wide.reading!.right);
     expect(wide.thumbsClear).toEqual([true, true, true]);
-    // Every paragraph (journal example and method included), card, question and answer.
+    // Every paragraph (method included), card, question and answer.
     expect(wide.counts).toEqual({
       opening: 1, continuation: source.paragraphs.length - 1, variations: source.variations.length,
       questions: source.questions, faq: source.faq, faqSchema: source.faq, thumbnails: 3,

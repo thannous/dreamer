@@ -266,6 +266,12 @@ export const TID = {
   },
   Component: {
     SearchBar: 'component.searchBar',
+    SymbolVariations: 'symbol.detail.variations',
+    /** A variation card of a symbol's page, by its place in the entry. */
+    SymbolVariation: (index: number) => `symbol.detail.variation.${index}`,
+    SymbolQuestions: 'symbol.detail.questions',
+    SymbolInterpretation: 'symbol.detail.interpretation',
+    SymbolInterpretationToggle: 'symbol.detail.interpretation.toggle',
     DesktopSidebar: 'component.desktopSidebar',
     SideColumnTabBar: 'component.sideColumnTabBar',
     EmailVerificationBanner: 'component.emailVerificationBanner',

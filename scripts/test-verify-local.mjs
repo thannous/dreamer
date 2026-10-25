@@ -589,11 +589,15 @@ describe('verify:pr --post-status', () => {
   test('state mapping: success only for a pass; a failure or an incomplete run is a failure', () => {
     const sha = 'a'.repeat(40);
     const proof = { result: 'passed', checks: [
-      { name: 'lint', result: 'passed' }, { name: 'test', result: 'passed', reused: true }, { name: 'db', result: 'skipped' },
+      { name: 'lint', result: 'passed', durationMs: 5 }, { name: 'test', result: 'passed', reused: true }, { name: 'db', result: 'skipped' },
     ] };
     assert.deepEqual(commitStatusFor('pr', { status: 0, proof }, sha), {
-      state: 'success', context: 'verify-local/pr', description: 'verify:pr passed on aaaaaaaaaaaa: 1 ran, 1 reused, 1 skipped',
+      state: 'success', context: 'verify-local/pr', description: 'verify:pr passed on aaaaaaaaaaaa: 1 ran, 1 reused, 1 out of scope',
     });
+    // The run of this invocation wins over a kept earlier proof.
+    const run = { result: 'passed', checks: [{ name: 'lint', result: 'passed', reused: true }, { name: 'test', result: 'passed', reused: true }] };
+    assert.equal(commitStatusFor('pr', { status: 0, proof, run }, sha).description, 'verify:pr passed on aaaaaaaaaaaa: 0 ran, 2 reused, 0 out of scope');
+    assert.equal(commitStatusFor('pr', { status: 0, proof, run: { ...run, result: 'failed' } }, sha).state, 'failure', 'a kept passed proof never makes a failed run a success');
     const failed = commitStatusFor('pr', { status: 1, proof: { checks: [{ name: 'lint', result: 'passed' }, { name: 'test', result: 'failed' }] } }, sha);
     assert.equal(failed.state, 'failure');
     assert.equal(failed.description, 'verify:pr failed on aaaaaaaaaaaa: test');
@@ -636,6 +640,23 @@ describe('verify:pr --post-status', () => {
     assert.ok(!call.args.join(' ').includes(os.hostname()), 'no host name is sent');
     assert.ok(!call.args.join(' ').includes(repo.base), 'no local path is sent');
     assert.equal(result.commitStatus.state, 'success');
+  });
+
+  test('a fully reused rerun posts its own counts, not those of the kept proof', async () => {
+    const repo = githubRepository();
+    const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const first = await verify('pr', [], repo.options);
+    assert.equal(first.status, 0, repo.lines.join('\n'));
+    repo.clearRuns();
+    const gh = fakeGh();
+    const rerun = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(rerun.status, 0, repo.lines.join('\n'));
+    assert.deepEqual(repo.runs(), [], 'nothing ran again');
+    assert.ok(repo.lines.some((line) => line.includes('the proof is unchanged')), 'the earlier proof is kept');
+    assert.equal(rerun.proof.finishedAt, first.proof.finishedAt, 'proof is still the first run');
+    assert.equal(field(gh.calls[0], 'state'), 'success');
+    assert.equal(field(gh.calls[0], 'description'), `verify:pr passed on ${sha.slice(0, 12)}: 0 ran, 2 reused, 2 out of scope`);
+    assert.ok(repo.lines.some((line) => line.includes('passed: 0 run, 2 reused, 2 out of scope.')), 'the same counts as the summary line');
   });
 
   test('a failed run posts failure and keeps its exit status', async () => {
