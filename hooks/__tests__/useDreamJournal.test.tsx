@@ -5,6 +5,7 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
+import { wasHttpRequestDispatched } from '../../lib/httpDispatch';
 import { AiConsentWithdrawnError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
 import { markDreamNamed } from '../../lib/dreamNaming';
@@ -3273,6 +3274,47 @@ describe('useDreamJournal', () => {
       expect(result.current.lastAnalysisOutcome).toBeNull();
       expect(result.current.activeAnalysis).toBeNull();
       expect(mockUpdateDreamInSupabase.mock.calls.some(([dream]: [DreamAnalysis]) => dream.analysisStatus === 'failed')).toBe(false);
+    });
+
+    it.each([false, true])('keeps the admitted request pending when consent is withdrawn before a transport replay (jobs=%s)', async (jobs: boolean) => {
+      mockEnvState.analysisJobsEnabled = jobs;
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101, isAnalyzed: false, analysisStatus: 'none' });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      const withdrawal = new AiConsentWithdrawnError();
+      const originalFetch = global.fetch;
+      const transport = jest.fn().mockRejectedValue(new TypeError('Reply lost'));
+      global.fetch = transport;
+      const submit = async () => {
+        const { fetchJSON } = require('../../lib/http') as typeof import('../../lib/http');
+        let checks = 0;
+        return fetchJSON('https://example.test/analysis-jobs', {
+          method: 'POST', body: { analysisRequestId: 'stable-key' }, retries: 1, retryDelay: 0,
+          beforeRequest: async () => { if (++checks > 1) throw withdrawal; },
+        });
+      };
+      if (jobs) mockSubmitDreamAnalysisJob.mockImplementationOnce(submit);
+      else mockAnalyzeDreamText.mockImplementationOnce(submit);
+      try {
+        const { result } = await renderLoadedDreamJournal();
+        await act(async () => {
+          await expect(result.current.analyzeDream(1, existingDream.transcript)).rejects.toBe(withdrawal);
+        });
+        expect(transport).toHaveBeenCalledTimes(1);
+        expect(wasHttpRequestDispatched(withdrawal)).toBe(true);
+        const pending = result.current.dreams[0];
+        expect(pending.analysisStatus).toBe('pending');
+        expect(pending.analysisRequestId).toBeTruthy();
+        expect(result.current.lastAnalysisOutcome).toBeNull();
+        expect(result.current.activeAnalysis).toBeNull();
+        expect(mockUpdateDreamInSupabase.mock.calls.some(([dream]: [DreamAnalysis]) => dream.analysisStatus !== 'pending')).toBe(false);
+        if (jobs) {
+          mockGetDreamAnalysisJobStatus.mockRejectedValueOnce(new Error('offline'));
+          await act(async () => { await result.current.analyzeDream(1, existingDream.transcript).catch(() => undefined); });
+          expect(mockSubmitDreamAnalysisJob.mock.calls[1][0].analysisRequestId).toBe(pending.analysisRequestId);
+        }
+      } finally { global.fetch = originalFetch; }
     });
 
     it('resumes an ambiguously submitted POST with the same key after a restart', async () => {

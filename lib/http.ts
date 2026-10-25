@@ -2,6 +2,8 @@ import Constants from 'expo-constants';
 
 import { getAccessToken } from './auth';
 import { classifyError, ErrorType } from './errors';
+import { markHttpRequestDispatched } from './httpDispatch';
+export { wasHttpRequestDispatched } from './httpDispatch';
 
 /**
  * HTTP error thrown by `fetchJSON()` when a non-2xx response is returned.
@@ -245,7 +247,7 @@ function isSupabaseFunctionsUrl(targetUrl: string): boolean {
 /**
  * Performs a single HTTP request
  */
-async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
+async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}, onDispatch?: () => void): Promise<T> {
   const controller = new AbortController();
   const timeoutMs = options.timeoutMs ?? 30000;
   let didTimeout = false;
@@ -308,12 +310,14 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
 
     try {
       if (options.beforeRequest) await options.beforeRequest();
-      const res = await fetch(url, {
+      const request: RequestInit = {
         method: options.method ?? 'GET',
         headers,
         body: options.body === undefined ? undefined : JSON.stringify(options.body),
         signal: controller.signal,
-      } as RequestInit);
+      };
+      onDispatch?.();
+      const res = await fetch(url, request);
 
       if (!res.ok) {
         const bodyText = await readResponseText(res).catch(() => '');
@@ -385,15 +389,17 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
   const signal = options.signal;
 
   let lastError: Error | null = null;
+  let dispatched = false;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     if (signal?.aborted) {
       throw createAbortError();
     }
     try {
-      return await fetchJSONOnce<T>(url, options);
+      return await fetchJSONOnce<T>(url, options, () => { dispatched = true; });
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
+      if (dispatched) markHttpRequestDispatched(lastError);
 
       if (signal?.aborted) {
         if (lastError.name === 'AbortError') {

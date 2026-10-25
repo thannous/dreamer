@@ -57,6 +57,7 @@ import {
 import { stampDreamAnalysisTranscript } from '@/lib/dreamAnalysisFreshness';
 import { collectKnownSymbols } from '@/lib/symbolLinks';
 import { AiConsentWithdrawnError, coerceQuotaError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { wasHttpRequestDispatched } from '@/lib/httpDispatch';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
 import { logger } from '@/lib/logger';
@@ -1833,6 +1834,17 @@ export const useDreamJournal = () => {
       } catch (error) {
         assertAnalysisScope();
         if (error instanceof AiConsentWithdrawnError) {
+          setLastAnalysisOutcome(null);
+          if (wasHttpRequestDispatched(error) || serverJobAccepted || isResumingAnalysis) {
+            // Withdrawal stops future transport attempts, not work already admitted.
+            // Keep the revision and key intact so recovery observes that same job.
+            analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
+            await persistDreamClientState({
+              ...resolveCurrentDream(currentDreamState),
+              analysisStatus: 'pending', analysisRequestId: requestId,
+            });
+            throw error;
+          }
           analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
           analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
           setLastAnalysisOutcome(null);

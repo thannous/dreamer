@@ -539,6 +539,22 @@ describe('http', () => {
     expect(jest.getTimerCount()).toBe(0);
   });
 
+  it.each([false, true])('records whether a request left the device before consent withdrawal (sent=%s)', async (sent: boolean) => {
+    const { wasHttpRequestDispatched } = require('../http') as typeof import('../http');
+    const withdrawal = Object.assign(new Error('consent withdrawn'), { name: 'AiConsentWithdrawnError' });
+    mockClassifyError.mockImplementation((error: Error) => ({ type: 'unknown', canRetry: error !== withdrawal }));
+    global.fetch = jest.fn().mockRejectedValue(new TypeError('Reply lost'));
+    let checks = 0;
+    const result = fetchJSON('https://api.example.com/analysis-jobs', {
+      method: 'POST', body: { analysisRequestId: 'stable-key' }, retries: 1, retryDelay: 1,
+      beforeRequest: async () => { if (!sent || ++checks > 1) throw withdrawal; },
+    }).catch(error => error);
+    await jest.runAllTimersAsync();
+    expect(await result).toBe(withdrawal);
+    expect(global.fetch).toHaveBeenCalledTimes(sent ? 1 : 0);
+    expect(wasHttpRequestDispatched(withdrawal)).toBe(sent);
+  });
+
   describe('timeout handling', () => {
     it('given custom timeout when request takes too long then aborts', async () => {
       let abortSignal: AbortSignal | null | undefined;
