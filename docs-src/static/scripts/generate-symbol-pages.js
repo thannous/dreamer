@@ -1037,6 +1037,9 @@ function renderTigerAtlasActions(lang, content, pagePath, placement) {
                         <p class="symbol-webapp-note atlas-note" data-web-app-cta>${escapeHtml(sharedLocale.webAppNote)}</p>`;
 }
 
+// The closing paragraph of every entry that names its editorial method, in the six languages.
+const METHOD_NOTE = /^(Méthode|Method|Método|Methode|Metodo)\b/u;
+
 // The tiger reading: its paintings, drawn and moved like a pack's, its scene labels, the opening
 // question and next sentence of each scene's card.
 const TIGER_ATLAS_PAGE = {
@@ -1065,6 +1068,8 @@ function renderAtlasArticle(c, atlas) {
   const [opening, ...continuation] = !interpretation ? []
     : !plainParagraphs ? [interpretation]
     : paragraphs;
+  // The editorial method note closes the reading as a footnote, not as one more paragraph.
+  const readingHtml = continuation.map((p) => (METHOD_NOTE.test(looseSpaces(plainText(p))) ? p.replace(/^<p>/, '<p class="atlas-method">') : p));
   if (atlas.scenes && (!opening || continuation.length === 0)) throw new Error(`${atlas.name} atlas: the interpretation needs an opening and a continuation`);
   const caveat = atlas.caveat ? sentenceStarting(plainText(interpretation), atlas.caveat, 'the interpretation') : '';
 
@@ -1202,7 +1207,7 @@ function renderAtlasArticle(c, atlas) {
             <section id="${anchors.reading}" class="symbol-meaning symbol-section atlas-continuation" aria-labelledby="atlas-${anchors.reading}-title">
                 ${heading(anchors.reading)}
                 <div class="prose prose-invert prose-purple max-w-none leading-relaxed">
-                    ${continuation.join('\n                    ')}
+                    ${readingHtml.join('\n                    ')}
                 </div>
             </section>` : ''}${c.variations.length ? `
 
@@ -1298,7 +1303,9 @@ function atlasCss(sceneIds) {
         .atlas .symbol-reading-card:hover h3 { color: var(--salmon); }
         .atlas-continuation .prose > * + * { margin-top: 1rem; }
         .atlas-continuation .prose p { max-width: 40rem; }
-        .atlas-continuation .prose p:last-child { font-size: 0.9rem; color: var(--cream-64); }
+        .atlas-continuation .prose p.atlas-method { column-span: all; max-width: 40rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.8rem; line-height: 1.55; color: var(--cream-64); opacity: 0.8; }
+        .atlas-continuation .prose p.atlas-method strong { font-weight: 500; color: inherit; }
+        .atlas-continuation .prose p.atlas-method a { color: inherit; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.24); }
 
         /* Scene selector: native radios, one published question and excerpt per scene, read
            beside the list (under it on a phone). */
