@@ -47,7 +47,7 @@ const translations: Record<string, string> = {
     'common.apply': 'Applica',
     'common.cancel': 'Annulla',
     'ai_consent.title': "Dare vita al tuo sogno?",
-    'ai_consent.message': "Per esplorare e illustrare il tuo sogno, Noctalia si affida a un’intelligenza artificiale. I tuoi scritti restano privati e personali.",
+    'ai_consent.message': "Noctalia invia il testo del tuo sogno, senza il tuo nome né il tuo account, a servizi di IA esterni per interpretarlo, illustrarlo e parlarne con te. Il tuo diario funziona senza IA e puoi cambiare idea in qualsiasi momento nelle Impostazioni.",
     'ai_consent.accept': "Accetta e continua",
     'ai_consent.decline': "Non ora",
     'common.done': 'Fatto',
