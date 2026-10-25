@@ -663,7 +663,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         setEditableTheme((current) => found('theme', current));
         setEditableDreamType((current) => found('dreamType', current));
       }
-    } catch {
+    } catch (error) {
+      if (error instanceof AiConsentWithdrawnError) return;
       if (latestMetadataDreamRef.current === dream) setMetadataRecoveryFailed(true);
     } finally {
       metadataRecoveryInFlightRef.current = false;
@@ -1535,6 +1536,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         clientRequestId: illustrationAccess.bundledRequestId,
       });
     } catch (error) {
+      if (error instanceof AiConsentWithdrawnError) return;
       if (error instanceof QuotaError) {
         setImageErrorCanRetry(false);
         setImageErrorNeedsSubscription(Boolean(user));

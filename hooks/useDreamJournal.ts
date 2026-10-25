@@ -1805,18 +1805,22 @@ export const useDreamJournal = () => {
             });
             next = resolveCurrentDream(submittedImage.dream);
           } catch (error) {
-            logger.warn('Image job submission failed', error);
-            const latestDream = resolveCurrentDream(next);
-            next = {
-              ...latestDream,
-              imageGenerationFailed: !latestDream.imageUrl && !dream.imageUrl,
-              imageJobId: undefined,
-              imageJobStatus: undefined,
-              imageJobRequestId: undefined,
-              imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED',
-              imageJobErrorMessage: error instanceof Error ? error.message : undefined,
-            };
-            await updateDream(next);
+            // Consent withdrawn before the illustration was sent: the reading stands,
+            // and the illustration can still be asked for later rather than shown as failed.
+            if (!(error instanceof AiConsentWithdrawnError)) {
+              logger.warn('Image job submission failed', error);
+              const latestDream = resolveCurrentDream(next);
+              next = {
+                ...latestDream,
+                imageGenerationFailed: !latestDream.imageUrl && !dream.imageUrl,
+                imageJobId: undefined,
+                imageJobStatus: undefined,
+                imageJobRequestId: undefined,
+                imageJobErrorCode: 'IMAGE_JOB_SUBMISSION_FAILED',
+                imageJobErrorMessage: error instanceof Error ? error.message : undefined,
+              };
+              await updateDream(next);
+            }
           }
         }
         emitProgress(AnalysisStep.FINALIZING);

@@ -3220,6 +3220,38 @@ describe('useDreamJournal', () => {
       );
     });
 
+    it('keeps the reading and leaves the illustration askable when consent is withdrawn before it is sent', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({
+        id: 1,
+        remoteId: 101,
+        isAnalyzed: false,
+        analysisStatus: 'none',
+        imageUrl: '',
+      });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockSubmitImageGenerationJob.mockRejectedValueOnce(new AiConsentWithdrawnError());
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => dream);
+
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.analyzeDream(1, existingDream.transcript, {
+          lang: 'fr',
+          replaceExistingImage: true,
+        });
+      });
+
+      // Pending, then the reading: no third write records a failed illustration.
+      expect(mockUpdateDreamInSupabase).toHaveBeenCalledTimes(2);
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({
+        analysisStatus: 'done',
+        interpretation: 'Deep meaning',
+        imageGenerationFailed: false,
+        imageJobErrorCode: undefined,
+      }));
+    });
+
     it('keeps an accepted durable analysis pending when status observation goes offline', async () => {
       mockEnvState.analysisJobsEnabled = true;
       setMockUser({ id: 'user-1' });
