@@ -4,11 +4,10 @@ import {
   decideIosLegacyGuest,
   IOS_LEGACY_GUEST_MAX_BUILD_ENV,
   IOS_LEGACY_GUEST_UNTIL_ENV,
-  logIosLegacyDecision,
   parseLegacyIosBuild,
   readIosLegacyWindow,
-  toLoggedIosLegacyReason,
 } from './iosLegacyGuest.ts';
+import { logIosLegacyDecision, toLoggedIosGuestReason } from '../routes/guestSession.ts';
 
 const NOW = Date.parse('2026-10-25T08:00:00Z');
 const DAY = 24 * 60 * 60 * 1000;
@@ -70,7 +69,7 @@ Deno.test('legacy decision accepts only a build at or below the highest legacy b
     { accepted: false, reason: 'legacy_expired' });
 });
 
-Deno.test('legacy decisions log an allowlisted reason code and no request value', () => {
+Deno.test('legacy decisions log a code from the iOS guest reason allowlist and no request value', () => {
   const logged: unknown[][] = [];
   const original = { log: console.log, warn: console.warn };
   console.log = (...args: unknown[]) => logged.push(args);
@@ -88,6 +87,9 @@ Deno.test('legacy decisions log an allowlisted reason code and no request value'
     ['[api] ios legacy guest rejected', { route: 'analytics_session', reason: 'legacy_version_unknown' }],
     ['[api] ios legacy guest rejected', { route: 'guest_session', reason: 'unknown' }],
   ]);
-  assertEquals(toLoggedIosLegacyReason('legacy_expired'), 'legacy_expired');
-  assertEquals(toLoggedIosLegacyReason(undefined), 'unknown');
+  for (const reason of ['legacy_accepted', 'legacy_disabled', 'legacy_config_invalid', 'legacy_expired',
+    'legacy_version_unknown', 'legacy_version_too_new', 'legacy_build_attested']) {
+    assertEquals(toLoggedIosGuestReason(reason), reason);
+  }
+  assertEquals(toLoggedIosGuestReason('legacy_something_else'), 'unknown');
 });

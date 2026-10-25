@@ -3,9 +3,13 @@ import { resolveGuestQaPassport } from '../lib/guestQa.ts';
 import { createGuestToken } from '../lib/guestToken.ts';
 import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
 import { getRemoteIp, isTurnstileConfigured, verifyTurnstileToken } from '../lib/turnstile.ts';
-import { verifyAppleAppAssertion, verifyAppleAppAttestation } from '../lib/appleAppAttest.ts';
+import {
+  AppAttestProofError,
+  verifyAppleAppAssertion,
+  verifyAppleAppAttestation,
+} from '../lib/appleAppAttest.ts';
 import { createAppAttestStore, type AppAttestStore } from '../lib/appleAppAttestStore.ts';
-import { decideIosLegacyGuest, logIosLegacyDecision } from '../lib/iosLegacyGuest.ts';
+import { decideIosLegacyGuest, type IosLegacyDecision } from '../lib/iosLegacyGuest.ts';
 
 type GuestSessionBody = {
   fingerprint?: string;
@@ -42,6 +46,71 @@ const LOGGED_INTEGRITY_REASONS = new Set([
 export function toLoggedIntegrityReason(reason: string | undefined): string {
   if (!reason) return 'unknown';
   return LOGGED_INTEGRITY_REASONS.has(reason) ? reason : 'other';
+}
+
+// Reject reasons for the iOS guest challenge and session paths. Only these
+// literal codes reach the log; anything else becomes 'unknown'. A code names
+// the failed check and never carries the token, keyId, fingerprint, challenge,
+// IP or any other caller value.
+const IOS_GUEST_REJECT_REASONS = [
+  'config_unavailable',
+  'body_invalid',
+  'proof_missing',
+  'fingerprint_malformed',
+  'key_id_malformed',
+  'challenge_id_malformed',
+  'challenge_issue_failed',
+  'challenge_error',
+  'challenge_not_found',
+  'challenge_consumed',
+  'challenge_expired',
+  'challenge_key_mismatch',
+  'challenge_fingerprint_mismatch',
+  'challenge_kind_unknown',
+  'attestation_shape_invalid',
+  'attestation_unverified',
+  'attestation_store_rejected',
+  'assertion_shape_invalid',
+  'assertion_key_unknown',
+  'assertion_config_mismatch',
+  'assertion_fingerprint_mismatch',
+  'assertion_unverified',
+  'assertion_verifier_error',
+  'assertion_store_rejected',
+  'verification_error',
+  // Pre-3.7.0 legacy bridge decisions (lib/iosLegacyGuest.ts). 'legacy_accepted'
+  // is logged on success so every legacy use is counted with the same codes.
+  'legacy_accepted',
+  'legacy_disabled',
+  'legacy_config_invalid',
+  'legacy_expired',
+  'legacy_version_unknown',
+  'legacy_version_too_new',
+  'legacy_build_attested',
+] as const;
+
+export type IosGuestRejectReason = typeof IOS_GUEST_REJECT_REASONS[number];
+const IOS_GUEST_REJECT_REASON_SET: ReadonlySet<string> = new Set(IOS_GUEST_REJECT_REASONS);
+
+export function toLoggedIosGuestReason(reason: unknown): IosGuestRejectReason | 'unknown' {
+  return typeof reason === 'string' && IOS_GUEST_REJECT_REASON_SET.has(reason)
+    ? reason as IosGuestRejectReason
+    : 'unknown';
+}
+
+// Outcome of one configured app identity in the attestation verify loop.
+const ATTESTATION_CONFIG_RESULTS = ['proof_rejected', 'verifier_error', 'identity_mismatch'] as const;
+export type AttestationConfigResult = typeof ATTESTATION_CONFIG_RESULTS[number];
+const ATTESTATION_CONFIG_RESULT_SET: ReadonlySet<string> = new Set(ATTESTATION_CONFIG_RESULTS);
+
+export function toLoggedAttestationConfigResult(result: unknown): AttestationConfigResult | 'unknown' {
+  return typeof result === 'string' && ATTESTATION_CONFIG_RESULT_SET.has(result)
+    ? result as AttestationConfigResult
+    : 'unknown';
+}
+
+function classifyVerifierError(error: unknown): 'proof_rejected' | 'verifier_error' {
+  return error instanceof AppAttestProofError ? 'proof_rejected' : 'verifier_error';
 }
 
 const response = (error: string, status: number) => new Response(JSON.stringify({ error }), {
@@ -118,23 +187,54 @@ export function appAttestBundleVersions(): string[] {
     .flatMap((config) => config.allowedBundleVersions) ?? [];
 }
 
+export type IosLegacyRoute = 'guest_session' | 'analytics_session';
+const LOGGED_LEGACY_ROUTES: ReadonlySet<string> = new Set(['guest_session', 'analytics_session']);
+
+/** Logs a legacy decision: route, reason code and, when accepted, the build number. */
+export function logIosLegacyDecision(route: IosLegacyRoute, decision: IosLegacyDecision): void {
+  const entry = {
+    route: LOGGED_LEGACY_ROUTES.has(route) ? route : 'unknown',
+    reason: toLoggedIosGuestReason(decision.reason),
+    ...(decision.accepted ? { build: decision.build } : {}),
+  };
+  if (decision.accepted) console.log('[api] ios legacy guest', entry);
+  else console.warn('[api] ios legacy guest rejected', entry);
+}
+
+function rejectIosChallenge(reason: IosGuestRejectReason, error: string, status: number): Response {
+  console.warn('[api] /guest/session/challenge rejected', {
+    reason: toLoggedIosGuestReason(reason),
+    status,
+  });
+  return response(error, status);
+}
+
 /** A signed challenge is short-lived and bound to this key and quota identity. */
 export async function handleIosGuestChallenge(
   req: Request,
   dependencies: Pick<GuestSessionDependencies, 'appAttestStore'> = {}
 ): Promise<Response> {
   try {
-    if (!appAttestConfigs()) return response('Guest session unavailable', 503);
+    if (!appAttestConfigs()) {
+      return rejectIosChallenge('config_unavailable', 'Guest session unavailable', 503);
+    }
     const body = await req.json().catch(() => null) as Record<string, unknown> | null;
-    const fingerprint = body?.fingerprint;
-    const keyId = body?.keyId;
-    if (typeof fingerprint !== 'string' || !IOS_FINGERPRINT.test(fingerprint) ||
-        typeof keyId !== 'string' || !KEY_ID.test(keyId)) {
-      return response('Invalid App Attest request', 400);
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      return rejectIosChallenge('body_invalid', 'Invalid App Attest request', 400);
+    }
+    const fingerprint = body.fingerprint;
+    const keyId = body.keyId;
+    if (typeof fingerprint !== 'string' || !IOS_FINGERPRINT.test(fingerprint)) {
+      return rejectIosChallenge('fingerprint_malformed', 'Invalid App Attest request', 400);
+    }
+    if (typeof keyId !== 'string' || !KEY_ID.test(keyId)) {
+      return rejectIosChallenge('key_id_malformed', 'Invalid App Attest request', 400);
     }
     const challenge = await (dependencies.appAttestStore ?? createAppAttestStore())
       .issue(fingerprint, keyId);
-    if (!challenge) return response('Guest session unavailable', 503);
+    if (!challenge) {
+      return rejectIosChallenge('challenge_issue_failed', 'Guest session unavailable', 503);
+    }
     return new Response(JSON.stringify({
       challengeId: challenge.id,
       challenge: challenge.challenge,
@@ -142,8 +242,26 @@ export async function handleIosGuestChallenge(
       expiresAt: challenge.expires_at,
     }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
   } catch {
-    return response('Guest session unavailable', 503);
+    return rejectIosChallenge('challenge_error', 'Guest session unavailable', 503);
   }
+}
+
+type IosRejectDetails = { attestationConfigResults?: AttestationConfigResult[] };
+
+function rejectIosSession(
+  reason: IosGuestRejectReason,
+  status = 401,
+  error = 'Invalid App Attest proof',
+  details: IosRejectDetails = {}
+): Response {
+  console.warn('[api] /guest/session ios rejected', {
+    reason: toLoggedIosGuestReason(reason),
+    status,
+    ...(details.attestationConfigResults
+      ? { attestationConfigResults: details.attestationConfigResults.map(toLoggedAttestationConfigResult) }
+      : {}),
+  });
+  return response(error, status);
 }
 
 export async function handleGuestSession(
@@ -255,24 +373,33 @@ export async function handleGuestSession(
       const configs = appAttestConfigs();
       const keyId = body?.keyId;
       const challengeId = body?.challengeId;
-      if (!configs) return response('Guest session unavailable', 503);
-      if (!IOS_FINGERPRINT.test(fingerprint) || typeof keyId !== 'string' || !KEY_ID.test(keyId) ||
-          typeof challengeId !== 'string' || challengeId.length > 1024 ||
+      if (!configs) return rejectIosSession('config_unavailable', 503, 'Guest session unavailable');
+      if (keyId == null && challengeId == null) return rejectIosSession('proof_missing');
+      if (!IOS_FINGERPRINT.test(fingerprint)) return rejectIosSession('fingerprint_malformed');
+      if (typeof keyId !== 'string' || !KEY_ID.test(keyId)) return rejectIosSession('key_id_malformed');
+      if (typeof challengeId !== 'string' || challengeId.length > 1024 ||
           !/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(challengeId)) {
-        return response('Invalid App Attest proof', 401);
+        return rejectIosSession('challenge_id_malformed');
       }
       const store = dependencies.appAttestStore ?? createAppAttestStore();
       const challenge = await store.challenge(challengeId);
-      if (!challenge || challenge.consumed_at || Date.parse(challenge.expires_at) <= Date.now() ||
-          challenge.key_id !== keyId || challenge.fingerprint_hash !== fingerprint) {
-        return response('Invalid App Attest proof', 401);
+      if (!challenge) return rejectIosSession('challenge_not_found');
+      if (challenge.consumed_at) return rejectIosSession('challenge_consumed');
+      if (Date.parse(challenge.expires_at) <= Date.now()) return rejectIosSession('challenge_expired');
+      if (challenge.key_id !== keyId) return rejectIosSession('challenge_key_mismatch');
+      if (challenge.fingerprint_hash !== fingerprint) {
+        return rejectIosSession('challenge_fingerprint_mismatch');
       }
       try {
         if (challenge.kind === 'attestation') {
           if (typeof body.attestationObject !== 'string' || body.assertionObject != null) {
-            return response('Invalid App Attest proof', 401);
+            return rejectIosSession('attestation_shape_invalid');
           }
           let verified: ReturnType<typeof verifyAppleAppAttestation> | null = null;
+          // One entry per configured app identity, in config order, so a reject
+          // shows whether each identity refused the proof, threw unexpectedly,
+          // or verified as a different identity.
+          const configResults: AttestationConfigResult[] = [];
           for (const config of configs) {
             try {
               const candidate = (dependencies.verifyAppAttestation ?? verifyAppleAppAttestation)({
@@ -288,9 +415,16 @@ export async function handleGuestSession(
                 verified = candidate;
                 break;
               }
-            } catch { /* This exact app identity did not verify. */ }
+              configResults.push('identity_mismatch');
+            } catch (error) {
+              configResults.push(classifyVerifierError(error));
+            }
           }
-          if (!verified) return response('Invalid App Attest proof', 401);
+          if (!verified) {
+            return rejectIosSession('attestation_unverified', 401, 'Invalid App Attest proof', {
+              attestationConfigResults: configResults,
+            });
+          }
           const completed = await store.completeAttestation({
             challengeId,
             keyId,
@@ -300,35 +434,42 @@ export async function handleGuestSession(
             environment: verified.environment,
             appId: verified.appId,
           });
-          if (!completed) return response('Invalid App Attest proof', 401);
+          if (!completed) return rejectIosSession('attestation_store_rejected');
           iosAppId = verified.appId;
         } else if (challenge.kind === 'assertion') {
           if (typeof body.assertionObject !== 'string' || body.attestationObject != null) {
-            return response('Invalid App Attest proof', 401);
+            return rejectIosSession('assertion_shape_invalid');
           }
           const key = await store.key(keyId);
-          const config = configs.find((item) => item.appId === key?.app_id &&
-            item.environment === key?.environment);
-          if (!key || !config || key.fingerprint_hash !== fingerprint) {
-            return response('Invalid App Attest proof', 401);
+          if (!key) return rejectIosSession('assertion_key_unknown');
+          const config = configs.find((item) => item.appId === key.app_id &&
+            item.environment === key.environment);
+          if (!config) return rejectIosSession('assertion_config_mismatch');
+          if (key.fingerprint_hash !== fingerprint) return rejectIosSession('assertion_fingerprint_mismatch');
+          let counter: number;
+          try {
+            counter = (dependencies.verifyAppAssertion ?? verifyAppleAppAssertion)({
+              assertionObject: body.assertionObject,
+              challenge: challenge.challenge,
+              publicKeyPem: key.public_key_pem,
+              expectedAppId: config.appId,
+              expectedEnvironment: config.environment,
+              allowedBundleVersions: config.allowedBundleVersions,
+              previousCounter: key.assertion_counter,
+            });
+          } catch (error) {
+            return rejectIosSession(classifyVerifierError(error) === 'proof_rejected'
+              ? 'assertion_unverified'
+              : 'assertion_verifier_error');
           }
-          const counter = (dependencies.verifyAppAssertion ?? verifyAppleAppAssertion)({
-            assertionObject: body.assertionObject,
-            challenge: challenge.challenge,
-            publicKeyPem: key.public_key_pem,
-            expectedAppId: config.appId,
-            expectedEnvironment: config.environment,
-            allowedBundleVersions: config.allowedBundleVersions,
-            previousCounter: key.assertion_counter,
-          });
           const completed = await store.completeAssertion({ challengeId, keyId, fingerprint, counter });
-          if (!completed) return response('Invalid App Attest proof', 401);
+          if (!completed) return rejectIosSession('assertion_store_rejected');
           iosAppId = config.appId;
         } else {
-          return response('Invalid App Attest proof', 401);
+          return rejectIosSession('challenge_kind_unknown');
         }
       } catch {
-        return response('Invalid App Attest proof', 401);
+        return rejectIosSession('verification_error');
       }
     } else if (!legacyIos) {
       // Android and web retain their own proofs. Unknown platforms stay closed.

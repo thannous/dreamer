@@ -18,6 +18,8 @@
 // below it, the request is treated as 3.7.0 or later and must present App
 // Attest.
 
+import type { IosGuestRejectReason } from '../routes/guestSession.ts';
+
 /** ISO 8601 date with an explicit zone. After it, or when unset, legacy is off. */
 export const IOS_LEGACY_GUEST_UNTIL_ENV = 'IOS_LEGACY_GUEST_UNTIL';
 /** Highest iOS store build number released before 3.7.0. Unset means legacy is off. */
@@ -31,29 +33,10 @@ const ISO_WITH_ZONE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?
 const BUILD_NUMBER = /^[1-9]\d{0,5}$/;
 const LEGACY_USER_AGENT = /^Noctalia\/([1-9]\d{0,5}) CFNetwork\/[0-9][0-9.]{0,31} Darwin\/[0-9][0-9.]{0,31}$/;
 
-// Reason codes for every legacy decision. Only these literal codes reach the
-// log; anything else becomes 'unknown'. None carries a request value.
-const IOS_LEGACY_GUEST_REASONS = [
-  'legacy_accepted',
-  'legacy_disabled',
-  'legacy_config_invalid',
-  'legacy_expired',
-  'legacy_version_unknown',
-  'legacy_version_too_new',
-  'legacy_build_attested',
-] as const;
-
-export type IosLegacyGuestReason = typeof IOS_LEGACY_GUEST_REASONS[number];
-const IOS_LEGACY_GUEST_REASON_SET: ReadonlySet<string> = new Set(IOS_LEGACY_GUEST_REASONS);
-
-export function toLoggedIosLegacyReason(reason: unknown): IosLegacyGuestReason | 'unknown' {
-  return typeof reason === 'string' && IOS_LEGACY_GUEST_REASON_SET.has(reason)
-    ? reason as IosLegacyGuestReason
-    : 'unknown';
-}
-
-export type IosLegacyRoute = 'guest_session' | 'analytics_session';
-const LOGGED_ROUTES: ReadonlySet<string> = new Set(['guest_session', 'analytics_session']);
+// Decision reasons. They are part of the iOS guest reason allowlist in
+// routes/guestSession.ts (IOS_GUEST_REJECT_REASONS), which is the only place
+// that logs them.
+export type IosLegacyGuestReason = Extract<IosGuestRejectReason, `legacy_${string}`>;
 
 type ReadEnv = (name: string) => string | undefined;
 const denoEnv: ReadEnv = (name) => Deno.env.get(name);
@@ -109,15 +92,4 @@ export function decideIosLegacyGuest(input: {
   }
   if (build > window.maxBuild) return { accepted: false, reason: 'legacy_version_too_new' };
   return { accepted: true, reason: 'legacy_accepted', build };
-}
-
-/** Logs a legacy decision: route, reason code and, when accepted, the build number. */
-export function logIosLegacyDecision(route: IosLegacyRoute, decision: IosLegacyDecision): void {
-  const entry = {
-    route: LOGGED_ROUTES.has(route) ? route : 'unknown',
-    reason: toLoggedIosLegacyReason(decision.reason),
-    ...(decision.accepted ? { build: decision.build } : {}),
-  };
-  if (decision.accepted) console.log('[api] ios legacy guest', entry);
-  else console.warn('[api] ios legacy guest rejected', entry);
 }

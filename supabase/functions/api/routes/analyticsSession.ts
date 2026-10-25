@@ -1,8 +1,8 @@
 import { createAnalyticsGuestToken } from '../lib/analyticsGuestToken.ts';
 import { corsHeaders } from '../lib/constants.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
-import { decideIosLegacyGuest, logIosLegacyDecision } from '../lib/iosLegacyGuest.ts';
-import { appAttestBundleVersions } from './guestSession.ts';
+import { decideIosLegacyGuest } from '../lib/iosLegacyGuest.ts';
+import { appAttestBundleVersions, logIosLegacyDecision } from './guestSession.ts';
 import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
 
 function jsonResponse(body: unknown, status: number): Response {
