@@ -62,6 +62,7 @@ export const TID = {
     SettingsStreakRiskToggle: 'btn.settings.notifications.streakRisk',
     SettingsInactivityNudgeToggle: 'btn.settings.notifications.inactivityNudge',
     SettingsSignatureSoundsToggle: 'btn.settings.signatureSounds',
+    SettingsAiConsentToggle: 'btn.settings.aiConsent',
     ClearFilters: 'btn.clearFilters',
     AdvancedFiltersClear: 'btn.advancedFilters.clear',
     EmptyClearFilters: 'btn.empty.clearFilters',

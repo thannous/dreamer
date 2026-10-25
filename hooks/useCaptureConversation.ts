@@ -111,7 +111,10 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
       let consented = await hasAiConsent();
       if (!consented && requestConsent && generation.current === owner) {
         consentRequest.current ??= requestConsent().catch(() => false);
-        consented = await consentRequest.current;
+        const request = consentRequest.current;
+        consented = await request;
+        // Only a refusal is remembered: a grant withdrawn in Settings later must be asked again.
+        if (consented && consentRequest.current === request) consentRequest.current = null;
       }
       if (!consented) {
         if (generation.current !== owner) return;

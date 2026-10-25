@@ -69,6 +69,11 @@ jest.mock('@/components/settings/useStabilityReportsController', () => ({
   useStabilityReportsController: () => ({ available: false }),
 }));
 
+// The AI permission row is proven by the dreamer-ai-consent-settings web journey.
+jest.mock('@/components/settings/useAiConsentController', () => ({
+  useAiConsentController: () => ({ enabled: true, loading: false, saving: false, error: false, toggle: jest.fn() }),
+}));
+
 const mockRequestAccountDeletion = jest.mocked(requestAccountDeletion);
 const mockFinalizeAccountDeletion = jest.mocked(finalizeAccountDeletion);
 

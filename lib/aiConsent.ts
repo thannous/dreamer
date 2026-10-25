@@ -11,7 +11,8 @@ import { Alert, Platform } from 'react-native';
  * silent background work) before calling the service. Writing and reading the journal
  * never need it. Guests are asked too: their dreams reach the same providers.
  *
- * v2 (2026-10-19): a v1 grant is asked once more; a v2 grant is never asked again.
+ * v2 (2026-10-19): a v1 grant is asked once more; a v2 grant is never asked again
+ * unless it is withdrawn in Settings, after which the next AI action asks again.
  *
  * The web E2E fixtures pre-grant this key outside the consent journey.
  */
@@ -28,6 +29,34 @@ export type AiConsentPromptHandler = {
 let granted: boolean | null = null;
 let pending: Promise<boolean> | null = null;
 let promptHandler: AiConsentPromptHandler | null = null;
+// Bumped by every decision so a storage read or prompt begun earlier cannot overrule it.
+let decision = 0;
+// A decision taken in this session is authoritative, even while its write is still pending.
+let decided = false;
+// Writes run in order: a withdrawal never lands before the grant it withdraws.
+let storageWrites: Promise<void> = Promise.resolve();
+const listeners = new Set<() => void>();
+
+function writeStorage(write: () => Promise<void>): Promise<void> {
+  const next = storageWrites.then(write);
+  storageWrites = next.catch(() => undefined);
+  return next;
+}
+
+function decide(value: boolean): void {
+  decision += 1;
+  decided = true;
+  granted = value;
+  listeners.forEach((listener) => listener());
+}
+
+/** Notifies after each grant or withdrawal, so a visible setting follows the decision. */
+export function subscribeAiConsent(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
 
 /**
  * Register the Noctalia-themed AI consent modal host.
@@ -48,12 +77,16 @@ export function registerAiConsentPromptHandler(handler: AiConsentPromptHandler |
 }
 
 export async function hasAiConsent(): Promise<boolean> {
-  if (granted) return true;
+  if (granted || decided) return granted === true;
+  const asked = decision;
+  let stored = false;
   try {
-    granted = (await AsyncStorage.getItem(STORAGE_KEY)) === GRANTED;
+    stored = (await AsyncStorage.getItem(STORAGE_KEY)) === GRANTED;
   } catch {
-    granted = false;
+    stored = false;
   }
+  if (asked !== decision) return Boolean(granted);
+  granted = stored;
   return granted;
 }
 
@@ -62,10 +95,16 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
   if (await hasAiConsent()) return true;
   // Several entry points can fire together (auto-sent chat topic, analysis after save).
   if (pending) return pending;
-  pending = new Promise<boolean>((resolve) => {
+  const asked = decision;
+  const request: Promise<boolean> = new Promise<boolean>((resolve) => {
     const accept = () => {
-      granted = true;
-      void AsyncStorage.setItem(STORAGE_KEY, GRANTED).catch(() => undefined);
+      // A withdrawal while this prompt was open wins: the next action asks again.
+      if (asked !== decision) {
+        resolve(false);
+        return;
+      }
+      decide(true);
+      void writeStorage(() => AsyncStorage.setItem(STORAGE_KEY, GRANTED)).catch(() => undefined);
       resolve(true);
     };
     if (promptHandler) {
@@ -96,13 +135,29 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
       { cancelable: true, onDismiss: () => resolve(false) },
     );
   }).finally(() => {
-    pending = null;
+    if (pending === request) pending = null;
   });
-  return pending;
+  pending = request;
+  return request;
+}
+
+/**
+ * Withdraws the permission from Settings. Nothing already written or read is removed; the
+ * next AI action asks again before anything is sent. Withdrawn for this session even if the
+ * device cannot store it, in which case this rejects so the setting can say so.
+ */
+export async function withdrawAiConsent(): Promise<void> {
+  pending = null;
+  decide(false);
+  await writeStorage(() => AsyncStorage.removeItem(STORAGE_KEY));
 }
 
 /** Test helper: forget the in-memory decision. */
 export function resetAiConsentCacheForTests(): void {
   granted = null;
   pending = null;
+  decision += 1;
+  decided = false;
+  storageWrites = Promise.resolve();
+  listeners.clear();
 }
