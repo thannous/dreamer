@@ -17,6 +17,10 @@ export interface RecordingTextInputProps {
   compact?: boolean;
   chat?: boolean;
   expanded?: boolean;
+  /** The expanded editor gives up height to what the screen leaves it, rather than keep 260 pt. */
+  fitsRoom?: boolean;
+  /** The height the screen can show the expanded editor in, with the keyboard up: its 260 pt give way to it. */
+  room?: number;
   layout?: 'textFirst' | 'voiceFirst';
   value: string;
   onChange: (text: string) => void;
@@ -51,6 +55,8 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
       compact = false,
       chat = false,
       expanded = false,
+      fitsRoom = false,
+      room,
       value,
       layout = 'textFirst',
       onChange,
@@ -155,7 +161,7 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
             compact && styles.textInputCompact,
             compact && styles.compactInputOverlay,
             hasValue && styles.textInputWithValue,
-            expanded && [styles.textInputExpanded, { minHeight: Math.max(260, 50 * fontScale + 90) }],
+            expanded && [styles.textInputExpanded, { minHeight: fitsRoom ? 50 * fontScale + 90 : Math.max(Math.min(260, room ?? 260), 50 * fontScale + 90) }],
             showInlineActions && styles.textInputWithInlineActions,
             compact && showInlineActions && styles.textInputWithInlineActionsCompact,
             chat && styles.chatInput,

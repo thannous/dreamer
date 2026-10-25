@@ -8,8 +8,8 @@
 // verify-local.config.mjs), and describes its checks in verify-local.config.mjs
 // at its root. Nothing here reads or compares another repository.
 //
-//   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>]
-//   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...]
+//   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>] [--plan [--json]] [--post-status]
+//   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...] [--plan [--json]]
 //   node scripts/verify-local.mjs status   [--rev <rev>] [--json]
 //   node scripts/verify-local.mjs proof-block [--rev <rev>]
 //   node scripts/verify-local.mjs hook <remote> [<url>]       (pre-push hook; refs on stdin)
@@ -38,7 +38,13 @@
 // if its paths changed since origin/<main> (a docs-only PR skips typecheck in a
 // fresh clone). A release runs every check, `when` ones included: on the main
 // commit nothing changed since origin/<main>, and a release proves the
-// delivered commit, not a diff (releaseAlways is implied).
+// delivered commit, not a diff (releaseAlways is implied). In `when`, `inputs`
+// and `exclude`, a glob starting with `!` takes files back; the last glob that
+// matches a file decides, as in .gitignore.
+//
+// --plan prints what the run would do with each check (run, reused, out of
+// scope, cannot run here) and a time from the past runs of the clone, then
+// stops: no isolated copy, no run log entry, no proof.
 //
 // --external <check>=<evidence> stands in only for a specialised check whose
 // probe fails here. The evidence is "owner-machine: <host> <note> on <SHA>"
@@ -57,8 +63,19 @@
 // step. Each keeps its own receipt, reuse, environment and failure result.
 // Non-parallel checks are barriers; dependency installs cannot opt in.
 //
+// --post-status (pr only, opt-in) then posts the result as a GitHub commit
+// status (context verify-local/pr, success or failure, a short description)
+// with `gh api` on github.com, for the verified commit only. The checkout must
+// be clean and at that commit when the run starts (else usage error, nothing
+// runs), still be so when it ends, and github.com must already know the commit
+// (push it first; a rerun reuses the passed checks), else nothing is posted.
+// Success needs exit 0 and a passed proof; a thrown error posts nothing.
+// Only the owner/repo of the origin remote and the SHA are sent; never a host,
+// path or user.
+//
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
-// could not run here; see --external), 64 usage or configuration error.
+// could not run here; see --external), 3 passed but --post-status posted
+// nothing, 64 usage or configuration error.
 
 import { spawnSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
@@ -201,6 +218,10 @@ export function normaliseConfig(raw) {
   for (const check of checks) {
     if (check.parallel && check.install) throw new UsageError(`check ${check.name}: parallel checks cannot install dependencies.`);
     if (names.has(check.name)) throw new UsageError(`check ${check.name} is declared twice.`);
+    for (const field of ['inputs', 'exclude', 'when']) {
+      // A leading `!` has nothing to take back: the list would take no file.
+      if (check[field]?.[0]?.startsWith('!')) throw new UsageError(`check ${check.name}: ${field} starts with ${check[field][0]}, which takes back nothing; put a glob that takes files first.`);
+    }
     names.add(check.name);
     // A release proof must also prove what a PR proof proves.
     if (check.kinds.includes('pr') && !check.kinds.includes('release')) {
@@ -259,8 +280,18 @@ export function globToRegExp(glob) {
   return new RegExp(`^${out}$`);
 }
 
+/**
+ * Whether a list of globs takes the file. A glob starting with `!` takes it
+ * back, and the last glob that matches decides, as in .gitignore:
+ * ['**', '!docs/', 'docs/api.ts'] takes everything but docs/, except docs/api.ts.
+ */
 export function matchesAny(file, globs) {
-  return globs.some((glob) => globToRegExp(glob).test(file));
+  let matched = false;
+  for (const glob of globs) {
+    const negated = glob.startsWith('!');
+    if (negated === matched && globToRegExp(negated ? glob.slice(1) : glob).test(file)) matched = !negated;
+  }
+  return matched;
 }
 
 // ---------------------------------------------------------------- proofs
@@ -1197,10 +1228,9 @@ export function prepareWorktree({ git, root, sha, files, config, env, log, workt
   const base = worktreeRoot ?? path.join(os.tmpdir(), 'verify-local');
   mkdirSync(base, { recursive: true });
   sweepStaleCopies(base, log);
-  const dir = path.join(base, `${path.basename(root)}-${sha.slice(0, 12)}-${randomBytes(3).toString('hex')}`);
   // The owner file names this run; a later run removes the copy once its
   // owner is gone (a SIGKILLed engine and supervisor cannot clean up).
-  writeFileSync(`${dir}.owner`, lockToken());
+  const dir = claimCopy(base, path.basename(root));
   currentCopy = dir;
   git(['worktree', 'prune'], { allowFailure: true });
   git(['worktree', 'add', '--detach', '--quiet', dir, sha]);
@@ -1268,6 +1298,30 @@ function installInWorktree(worktree, config, env, log, shell = posixShell(env)) 
  */
 let currentCopy = null;
 
+/**
+ * Copies of one clone sit at <base>/<name>-<slot>, in the lowest free slot, so
+ * a run usually gets the path of the previous one and a check's cache keyed by
+ * absolute paths (Jest's) can serve it. Creating the owner file takes the slot;
+ * a slot whose copy or .tmp directory is still there (a live run, a kept copy
+ * not yet swept) is passed over. TMPDIR is new for every run all the same: the
+ * .tmp directory goes with the copy. Past COPY_SLOTS, a random name.
+ */
+export const COPY_SLOTS = 4;
+
+export function claimCopy(base, name, token = lockToken()) {
+  for (let slot = 0; slot < COPY_SLOTS; slot++) {
+    const dir = path.join(base, `${name}-${slot}`);
+    if (existsSync(dir) || existsSync(`${dir}.tmp`)) continue;
+    try {
+      writeFileSync(`${dir}.owner`, token, { flag: 'wx' });
+      return dir;
+    } catch {}
+  }
+  const dir = path.join(base, `${name}-${randomBytes(3).toString('hex')}`);
+  writeFileSync(`${dir}.owner`, token);
+  return dir;
+}
+
 /** An isolated copy and what sits beside it: its .tmp directory and its owner file. */
 function copyPaths(dir) {
   return [dir, `${dir}.tmp`, `${dir}.owner`];
@@ -1329,7 +1383,7 @@ function removeWorktree(git, dir) {
 // ---------------------------------------------------------------- verify
 
 function parseArgs(argv) {
-  const options = { rev: 'HEAD', targets: [], external: {}, force: false, keep: false, json: false, rest: [] };
+  const options = { rev: 'HEAD', targets: [], external: {}, force: false, keep: false, json: false, plan: false, postStatus: false, rest: [] };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     const value = () => {
@@ -1347,6 +1401,8 @@ function parseArgs(argv) {
     } else if (arg === '--force') options.force = true;
     else if (arg === '--keep') options.keep = true;
     else if (arg === '--json') options.json = true;
+    else if (arg === '--plan') options.plan = true;
+    else if (arg === '--post-status') options.postStatus = true;
     else if (arg === '--') continue;
     else options.rest.push(arg);
   }
@@ -1359,6 +1415,117 @@ function selectChecks(config, kind, targets) {
     if (!check.targets) return true;
     return kind === 'release' && check.targets.some((target) => targets.includes(target));
   });
+}
+
+/**
+ * What a run does with a check, decided before anything runs: out of scope (a
+ * PR that changes none of its `when` paths; a release runs every check),
+ * reused (a PR whose identical inputs passed already, on any tree), external
+ * or unavailable (its probe fails here), or run. --plan prints these.
+ */
+function decideCheck(check, fingerprint, { kind, scope, base, proofs, open, probe, external }) {
+  // Without a known base the changed files are unknown: nothing is out of scope.
+  if (check.when && kind === 'pr' && scope && !scope.files.some((file) => matchesAny(file, check.when))) {
+    return { action: 'skipped', reason: `no change in its paths since ${base.ref}` };
+  }
+  const reusedFrom = open.has(check.name) ? null : findReusable(proofs, fingerprint);
+  if (reusedFrom) return { action: 'reused', reusedFrom };
+  if (check.requires && !probe(check)) {
+    if (external[check.name]) return { action: 'external', evidence: external[check.name] };
+    return { action: 'unavailable', hint: check.requires.hint ?? 'run it where it can run, then pass --external' };
+  }
+  return { action: 'run' };
+}
+
+/**
+ * The median duration of each check over its real passed runs in the proofs
+ * of the clone, whatever engine wrote them: an estimate, never a result.
+ */
+export function pastDurations(commonDir) {
+  const dir = proofsDir(commonDir);
+  const runs = new Map();
+  for (const name of existsSync(dir) ? readdirSync(dir) : []) {
+    if (!name.endsWith('.json')) continue;
+    let proof;
+    try {
+      proof = JSON.parse(readFileSync(path.join(dir, name), 'utf8'));
+    } catch {
+      continue;
+    }
+    for (const check of Array.isArray(proof?.checks) ? proof.checks : []) {
+      if (check?.result !== 'passed' || check.reused || check.external || !Number.isFinite(check.durationMs)) continue;
+      runs.set(check.name, [...(runs.get(check.name) ?? []), check.durationMs]);
+    }
+  }
+  return new Map([...runs].map(([name, list]) => {
+    const sorted = list.sort((a, b) => a - b);
+    return [name, { ms: sorted[Math.floor(sorted.length / 2)], runs: sorted.length }];
+  }));
+}
+
+const duration = (ms) => {
+  const seconds = Math.round(ms / 1000);
+  return seconds < 60 ? `${seconds} s` : `${Math.floor(seconds / 60)} min ${String(seconds % 60).padStart(2, '0')} s`;
+};
+
+/**
+ * --plan: what verify would do with each check, without an isolated copy, a
+ * run log entry or a proof. The time is the median of past runs; consecutive
+ * parallel checks count as their longest one.
+ */
+function planRun({ kind, sha, tree, base, scope, selected, decisions, durations, json, log }) {
+  const checks = [];
+  let estimateMs = 0;
+  let step = 0;
+  const flush = () => {
+    estimateMs += step;
+    step = 0;
+  };
+  for (const check of selected) {
+    if (!check.parallel) flush();
+    const { decision } = decisions.get(check.name);
+    const item = { name: check.name, action: decision.action };
+    if (decision.reason) item.reason = decision.reason;
+    if (decision.reusedFrom) item.reusedFrom = decision.reusedFrom;
+    if (decision.hint) item.reason = `\`${check.requires.command}\` failed here: ${decision.hint}`;
+    if (decision.action === 'run') {
+      item.parallel = check.parallel;
+      const past = durations.get(check.name);
+      if (past) {
+        Object.assign(item, { estimateMs: past.ms, pastRuns: past.runs });
+        if (check.parallel) step = Math.max(step, past.ms);
+        else estimateMs += past.ms;
+      }
+    }
+    checks.push(item);
+  }
+  flush();
+  const count = (action) => checks.filter((item) => item.action === action).length;
+  const untimed = checks.filter((item) => item.action === 'run' && item.estimateMs === undefined).map((item) => item.name);
+  const plan = {
+    kind, sha, tree, base: { ref: base.ref, sha: base.sha, mergeBase: scope?.mergeBase ?? null },
+    changedFiles: scope ? scope.files.length : null, checks, estimateMs, untimed,
+  };
+  if (json) {
+    log(JSON.stringify(plan, null, 2));
+    return { status: 0, plan };
+  }
+  log(`${PREFIX} plan only: nothing runs, no proof is written. ${scope ? `${scope.files.length} file${scope.files.length === 1 ? '' : 's'} changed since the merge base.` : 'Changes since the base unknown: every check is in scope.'}`);
+  for (const item of checks) {
+    let what;
+    if (item.action === 'run') {
+      const time = item.estimateMs === undefined ? 'no earlier run to time it' : `about ${duration(item.estimateMs)}, median of ${item.pastRuns} run${item.pastRuns === 1 ? '' : 's'}`;
+      what = `runs (${time}${item.parallel ? ', parallel step' : ''})`;
+    } else if (item.action === 'skipped') what = `out of scope (${item.reason})`;
+    else if (item.action === 'reused') what = `reused (same inputs passed on ${item.reusedFrom.sha.slice(0, 12)})`;
+    else if (item.action === 'external') what = 'cannot run here, --external evidence given';
+    else what = `cannot run here (${item.reason})`;
+    log(`${PREFIX}   ${item.name}: ${what}`);
+  }
+  const unavailable = count('unavailable');
+  log(`${PREFIX} plan: ${count('run')} to run, ${count('reused')} reused, ${count('skipped')} out of scope${count('external') ? `, ${count('external')} external` : ''}${unavailable ? `, ${unavailable} cannot run here` : ''}; `
+    + `about ${duration(estimateMs)} of checks${untimed.length ? ` plus ${untimed.join(', ')} (never timed here)` : ''}, without the isolated copy and its setup.`);
+  return { status: 0, plan };
 }
 
 const HEX40 = /(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])/gi;
@@ -1471,7 +1638,120 @@ export async function loadExternalSources({ cwd = process.cwd(), env = cleanGitE
   return (await loadConfig(git, 'HEAD')).externalSources;
 }
 
-export async function verify(kind, argv = [], {
+// ---------------------------------------------------------------- commit status
+
+export const STATUS_CONTEXT_PREFIX = 'verify-local/';
+// GitHub keeps at most 140 characters of a status description.
+export const STATUS_DESCRIPTION_MAX = 140;
+/** Exit code of a passed run whose --post-status posted nothing. */
+export const STATUS_NOT_POSTED = 3;
+
+/** owner/repo of a GitHub remote URL, or null. The URL itself is never logged. */
+export function githubSlug(url) {
+  const match = /^(?:https:\/\/(?:[^@/\s]+@)?github\.com\/|ssh:\/\/git@github\.com\/|git@github\.com:)([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(url ?? '');
+  return match ? `${match[1]}/${match[2]}` : null;
+}
+
+/** The commit status of a verify result: success only for exit status 0. */
+export function commitStatusFor(kind, { status, proof }, sha) {
+  // Success only for exit 0 with a passed proof: anything else is a failure.
+  if (status === 0 && proof?.result !== 'passed') status = 1;
+  const checks = Array.isArray(proof?.checks) ? proof.checks : [];
+  const names = (result) => checks.filter((check) => check.result === result).map((check) => check.name);
+  const head = `verify:${kind} ${status === 0 ? 'passed' : status === 2 ? 'incomplete' : 'failed'} on ${sha.slice(0, 12)}`;
+  let detail;
+  if (status === 0) {
+    const reused = checks.filter((check) => check.result === 'passed' && check.reused).length;
+    const ran = checks.filter((check) => check.result === 'passed' && !check.reused).length;
+    detail = `${ran} ran, ${reused} reused, ${names('skipped').length} skipped`;
+  } else if (status === 2) {
+    detail = `could not run here: ${names('unavailable').join(', ') || 'see the local run'}`;
+  } else {
+    detail = names('failed').join(', ') || (proof ? 'see the local run' : 'no proof written');
+  }
+  const description = `${head}: ${detail}`;
+  return {
+    state: status === 0 ? 'success' : 'failure',
+    context: `${STATUS_CONTEXT_PREFIX}${kind}`,
+    description: description.length > STATUS_DESCRIPTION_MAX ? `${description.slice(0, STATUS_DESCRIPTION_MAX - 3)}...` : description,
+  };
+}
+
+/** Where the checkout stands: its HEAD commit and how many paths differ. */
+function checkoutState(git) {
+  const head = git(['rev-parse', '--verify', '--quiet', 'HEAD^{commit}'], { allowFailure: true }) ?? null;
+  const changes = git(['status', '--porcelain=v1', '--untracked-files=all'], { allowFailure: true });
+  return { head, dirty: changes === null ? null : changes ? changes.split('\n').length : 0 };
+}
+
+/** Why the status of <sha> cannot be posted from this checkout, or null. */
+export function statusRefusal(state, sha) {
+  if (state.head !== sha) return `the checkout is at ${state.head ? state.head.slice(0, 12) : 'no commit'}, not at the verified ${sha.slice(0, 12)}`;
+  if (state.dirty === null) return 'git status failed, so the checkout cannot be shown clean';
+  if (state.dirty) return `the checkout has changes (${state.dirty} path${state.dirty === 1 ? '' : 's'})`;
+  return null;
+}
+
+const ghFailure = (result) => {
+  if (result.error) return `gh could not start (${result.error.code ?? 'error'})`;
+  const http = /HTTP (\d{3})/.exec(`${result.stderr ?? ''}`);
+  return `gh api exited ${result.status}${http ? ` (HTTP ${http[1]})` : ''}`;
+};
+
+/**
+ * Posts <commitStatus> for <sha> with `gh api` on github.com, once github.com
+ * knows the commit. Returns { posted, reason }. gh's own output (it names the
+ * account) is never printed. The host is explicit, whatever GH_HOST says.
+ */
+export function postCommitStatus({ slug, sha, commitStatus, cwd, env, execute = spawnSync }) {
+  const options = { cwd, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] };
+  const known = execute('gh', ['api', '--hostname', 'github.com', `repos/${slug}/commits/${sha}`, '--silent'], options);
+  if (known.error || known.status !== 0) {
+    return { posted: false, reason: `github.com does not know the commit yet (${ghFailure(known)}); push it, then run again (passed checks are reused)` };
+  }
+  const result = execute('gh', [
+    'api', '--hostname', 'github.com', '-X', 'POST', `repos/${slug}/statuses/${sha}`,
+    '-f', `state=${commitStatus.state}`,
+    '-f', `context=${commitStatus.context}`,
+    '-f', `description=${commitStatus.description}`,
+    '--silent',
+  ], options);
+  if (result.error || result.status !== 0) return { posted: false, reason: ghFailure(result) };
+  return { posted: true, reason: null };
+}
+
+/**
+ * pr / release. With --post-status, the run of the checkout's clean HEAD is
+ * followed by its GitHub commit status (see the header).
+ */
+export async function verify(kind, argv = [], options = {}) {
+  const parsed = parseArgs(argv);
+  if (!parsed.postStatus) return runVerify(kind, argv, options);
+  if (kind !== 'pr') throw new UsageError('--post-status applies to pr only.');
+  if (parsed.plan) throw new UsageError('--plan posts no status.');
+  // postStatusExecute: test seam only (the JS API, never the CLI or the environment).
+  const { cwd = process.cwd(), env = cleanGitEnv(), log = (line) => console.log(line), postStatusExecute = spawnSync } = options;
+  const { root, git } = resolveRepository(cwd, env);
+  const sha = git(['rev-parse', '--verify', `${parsed.rev}^{commit}`]);
+  const slug = githubSlug(git(['config', '--get', 'remote.origin.url'], { allowFailure: true }));
+  if (!slug) throw new UsageError('--post-status needs a github.com origin remote.');
+  const before = statusRefusal(checkoutState(git), sha);
+  if (before) throw new UsageError(`--post-status: ${before}; commit or stash first, nothing runs.`);
+  const result = await runVerify(kind, argv, options);
+  const after = statusRefusal(checkoutState(git), sha);
+  const notPosted = (reason) => {
+    log(`${PREFIX} --post-status: no commit status posted for ${sha.slice(0, 12)}: ${reason}.`);
+    return { ...result, status: result.status === 0 ? STATUS_NOT_POSTED : result.status, commitStatus: null };
+  };
+  if (after) return notPosted(`${after} at the end of the run`);
+  const commitStatus = commitStatusFor(kind, result, sha);
+  const outcome = postCommitStatus({ slug, sha, commitStatus, cwd: root, env, execute: postStatusExecute });
+  if (!outcome.posted) return notPosted(outcome.reason);
+  log(`${PREFIX} --post-status: ${commitStatus.context} ${commitStatus.state} posted on ${slug}@${sha.slice(0, 12)}.`);
+  return { ...result, commitStatus };
+}
+
+async function runVerify(kind, argv = [], {
   cwd = process.cwd(),
   env = cleanGitEnv(),
   log = (line) => console.log(line),
@@ -1484,6 +1764,10 @@ export async function verify(kind, argv = [], {
 } = {}) {
   const options = parseArgs(argv);
   if (options.rest.length) throw new UsageError(`unknown argument ${options.rest[0]}.`);
+  if (options.plan && options.keep) throw new UsageError('--plan makes no isolated copy to keep.');
+  // --plan --json prints the plan alone.
+  const report = log;
+  if (options.plan && options.json) log = () => {};
   const { root, commonDir, git } = resolveRepository(cwd, env);
   const sha = git(['rev-parse', '--verify', `${options.rev}^{commit}`]);
   const tree = git(['rev-parse', `${sha}^{tree}`]);
@@ -1531,7 +1815,7 @@ export async function verify(kind, argv = [], {
   // A release reuses nothing: every release check runs on the delivered commit.
   const proofs = options.force || kind === 'release' ? [] : listProofs(commonDir);
   const command = config.commands[kind];
-  log(`${PREFIX} ${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
+  log(`${PREFIX} ${options.plan ? 'plan of ' : ''}${command} on ${sha} (tree ${tree.slice(0, 12)}, base ${base.ref} ${base.sha ? base.sha.slice(0, 12) : 'unknown'}).`);
 
   // --external stands in for a specialised check that cannot run here, and
   // only with evidence for this exact head commit. Anything else writes no proof.
@@ -1557,6 +1841,14 @@ export async function verify(kind, argv = [], {
   // pass) is never reused: only a run that really reruns it can close it.
   const openItems = openChecks(readRunLog(commonDir, sha), config.checks.map((check) => check.name));
   const open = new Set(openItems.map((item) => item.check));
+  const decisions = new Map(selected.map((check) => {
+    const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
+    const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
+    if (check.targets) entry.targets = check.targets;
+    return [check.name, { entry, decision: decideCheck(check, fingerprint, { kind, scope, base, proofs, open, probe, external: options.external }) }];
+  }));
+  if (options.plan) return planRun({ kind, sha, tree, base, scope, selected, decisions, durations: pastDurations(commonDir), json: options.json, log: report });
+
   // A start entry first: a run that never ends (killed, OOM) counts as an
   // interrupted run of every check it selected, so it is never a pass.
   const runId = randomBytes(8).toString('hex');
@@ -1596,37 +1888,26 @@ export async function verify(kind, argv = [], {
       // including dependency installs, builds, and checks after a failed batch.
       if (!check.parallel) finishParallel();
       if (failed) break;
-      const fingerprint = checkFingerprint({ check, files, tree, sha, environment, mergeBase: scope?.mergeBase ?? null });
-      const entry = { name: check.name, command: check.command, fingerprint, specialised: check.specialised };
-      if (check.targets) entry.targets = check.targets;
-
-      // `when` narrows a PR to the paths it changes; a release runs every check.
-      if (check.when && kind === 'pr') {
-        const touched = scope ? scope.files.filter((file) => matchesAny(file, check.when)) : null;
-        if (touched && touched.length === 0) {
-          results.push({ ...entry, result: 'skipped', reason: `no change under ${check.when.join(', ')} since ${base.ref}` });
-          log(`${PREFIX} ${check.name}: out of scope (no change under ${check.when.join(', ')}).`);
-          continue;
-        }
-      }
-      // A PR reuses a result whose inputs are identical, from any tree; a
-      // release has no proofs to reuse.
-      const reusable = open.has(check.name) ? null : findReusable(proofs, fingerprint);
-      if (reusable) {
-        results.push({ ...entry, result: 'passed', reused: true, reusedFrom: reusable });
-        log(`${PREFIX} ${check.name}: reused (same inputs passed on ${reusable.sha.slice(0, 12)}).`);
+      const { entry, decision } = decisions.get(check.name);
+      if (decision.action === 'skipped') {
+        results.push({ ...entry, result: 'skipped', reason: decision.reason });
+        log(`${PREFIX} ${check.name}: out of scope (${decision.reason}).`);
         continue;
       }
-      if (check.requires && !probe(check)) {
-        if (options.external[check.name]) {
-          results.push({ ...entry, result: 'passed', external: options.external[check.name] });
-          log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${options.external[check.name]}).`);
-          continue;
-        }
+      if (decision.action === 'reused') {
+        results.push({ ...entry, result: 'passed', reused: true, reusedFrom: decision.reusedFrom });
+        log(`${PREFIX} ${check.name}: reused (same inputs passed on ${decision.reusedFrom.sha.slice(0, 12)}).`);
+        continue;
+      }
+      if (decision.action === 'external') {
+        results.push({ ...entry, result: 'passed', external: decision.evidence });
+        log(`${PREFIX} ${check.name}: cannot run here, passed elsewhere (${decision.evidence}).`);
+        continue;
+      }
+      if (decision.action === 'unavailable') {
         incomplete = true;
-        const hint = check.requires.hint ?? 'run it where it can run, then pass --external';
-        results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${hint}` });
-        log(`${PREFIX} ${check.name}: cannot run here (\`${check.requires.command}\` failed). ${hint}.`);
+        results.push({ ...entry, result: 'unavailable', reason: `\`${check.requires.command}\` failed here: ${decision.hint}` });
+        log(`${PREFIX} ${check.name}: cannot run here (\`${check.requires.command}\` failed). ${decision.hint}.`);
         continue;
       }
 
@@ -1938,7 +2219,8 @@ export async function proofBlock(argv = [], { cwd = process.cwd(), env = cleanGi
   if (open.length) lines.push(`- Open on this commit: ${describeOpen(open)}; a run that really reruns them must pass`);
   // A PR can change its own checks or hook rules: say so, for the owner's review.
   const scope = changedFiles(git, base, sha);
-  const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, [...DELIVERY_FILES, ...config.deliveryFiles]));
+  // Two lists: a `!` glob of the config never takes back one of the engine's.
+  const delivery = (scope?.files ?? []).filter((file) => matchesAny(file, DELIVERY_FILES) || matchesAny(file, config.deliveryFiles));
   // Every package.json the PR changes, root and workspaces: its scripts are
   // what the checks run, and it can hold tool config (jest, eslintConfig,
   // prettier, babel). Only a dependency or version change goes unflagged.

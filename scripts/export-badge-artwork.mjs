@@ -3,7 +3,8 @@
  * Exports the badge family illustrations for the app.
  *
  * Sources: the original transparent PNGs listed in assets/images/badges/catalogue.json,
- * kept untouched. Outputs: assets/images/badges/app/<family-id>.webp for a card held in
+ * kept untouched. A painting marked `"inApp": false` is no longer shown by the app and is
+ * not exported. Outputs: assets/images/badges/app/<family-id>.webp for a card held in
  * the hand (up to about 230 pt wide at 3x) and <family-id>-small.webp for the album grid
  * and the tier row, both keeping the alpha channel at full quality.
  *
@@ -30,7 +31,8 @@ const problems = [];
 let written = 0;
 
 mkdirSync(OUTPUT_DIR, { recursive: true });
-for (const family of catalogue.families) {
+const exported = catalogue.families.filter((family) => family.inApp !== false);
+for (const family of exported) {
   const source = path.join(ROOT, family.asset);
   if (!existsSync(source)) {
     problems.push(`${family.id}: missing source ${family.asset}`);
@@ -52,4 +54,4 @@ if (problems.length) {
   console.error(problems.join('\n'));
   process.exit(1);
 }
-console.log(check ? `Badge artwork exports present for ${catalogue.families.length} families.` : `Wrote ${written} badge artwork exports.`);
+console.log(check ? `Badge artwork exports present for ${exported.length} paintings.` : `Wrote ${written} badge artwork exports.`);

@@ -30,7 +30,8 @@
       ],
       "art": "Three delicate stepping stones crossing a calm midnight pool toward a small crescent, expressing a gentle personal rhythm.",
       "asset": "assets/images/badges/gentle-rhythm-v1.png",
-      "status": "generated"
+      "status": "generated",
+      "inApp": false
     },
     {
       "id": "night-thread",
@@ -69,7 +70,8 @@
       ],
       "art": "A gracefully curved ivory quill dipping into a tiny midnight enamel inkwell, a small star forming at its tip.",
       "asset": "assets/images/badges/ink-dreamer-v1.png",
-      "status": "generated"
+      "status": "generated",
+      "inApp": false
     },
     {
       "id": "night-voice",
@@ -173,7 +175,8 @@
       ],
       "art": "A blank ivory parchment cartouche and a tiny elegant writing nib, crowned by a solitary luminous star; absolutely no text.",
       "asset": "assets/images/badges/dream-namer-v1.png",
-      "status": "generated"
+      "status": "generated",
+      "inApp": false
     },
     {
       "id": "night-cartographer",
@@ -186,7 +189,8 @@
       ],
       "art": "An antique celestial compass rose floating above a folded midnight star map, no lettering or numerals.",
       "asset": "assets/images/badges/night-cartographer-v1.png",
-      "status": "generated"
+      "status": "generated",
+      "inApp": false
     },
     {
       "id": "dream-seeker",
@@ -212,7 +216,8 @@
       ],
       "art": "Three curved celestial paths meeting at a delicate open archway of warm ivory stone under a tiny crescent.",
       "asset": "assets/images/badges/path-finder-v1.png",
-      "status": "generated"
+      "status": "generated",
+      "inApp": false
     },
     {
       "id": "symbol-explorer",

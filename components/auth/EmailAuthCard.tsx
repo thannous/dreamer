@@ -1397,6 +1397,8 @@ const styles = StyleSheet.create({
   accountSheetScroll: {
     flexGrow: 1,
     flexShrink: 1,
+    // Where the sheet cuts the form short, its last line stops clear of the footer.
+    marginBottom: ThemeLayout.spacing.md,
     marginTop: ThemeLayout.spacing.md,
     maxHeight: 520,
     minHeight: 0,

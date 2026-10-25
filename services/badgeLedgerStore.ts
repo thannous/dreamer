@@ -4,7 +4,9 @@
  * One ledger per scope, as the journal itself: `guest` or `user:<id>`. A guest's ledger is
  * joined once to the first account that opens after it, the same way its dreams move there,
  * and is then forgotten. Writes are serialized, so two actions finishing together both count.
- * Actions recorded before the ledger is read wait for it instead of being lost.
+ * Actions recorded before the ledger is read wait for it instead of being lost. A ledger of
+ * the first collection is read once and brought to the current one under a new key; the old
+ * key is never written again, so an older app version keeps its own copy intact.
  */
 import { useSyncExternalStore } from 'react';
 
@@ -27,8 +29,10 @@ import { getLucidKeyValueStorage } from '@/services/lucidKeyValueStorage';
 
 export type BadgeScope = 'guest' | `user:${string}`;
 
-const STORAGE_PREFIX = 'noctalia_badge_ledger_v1:';
+const STORAGE_PREFIX = 'noctalia_badge_ledger_v2:';
+const LEGACY_PREFIX = 'noctalia_badge_ledger_v1:';
 const storageKey = (scope: BadgeScope) => `${STORAGE_PREFIX}${scope}`;
+const legacyKey = (scope: BadgeScope) => `${LEGACY_PREFIX}${scope}`;
 
 type Change = (ledger: BadgeLedger) => BadgeLedger;
 
@@ -56,20 +60,31 @@ const publish = (next: BadgeLedgerSnapshot) => {
 
 type StoredLedger =
   | { status: 'absent' }
-  | { status: 'read'; ledger: BadgeLedger }
+  /** `legacy` when it was brought from the first collection's key and is not saved yet. */
+  | { status: 'read'; ledger: BadgeLedger; legacy?: boolean }
   /** Present but not a ledger this version can read: it is never written over. */
   | { status: 'unreadable' };
 
+const parseRaw = (raw: string) => {
+  try {
+    return parseBadgeLedger(JSON.parse(raw));
+  } catch {
+    return null;
+  }
+};
+
 /** Reads a scope's ledger. A storage failure throws, so the caller can try again later. */
 async function readLedger(scope: BadgeScope): Promise<StoredLedger> {
-  const raw = await getLucidKeyValueStorage().getItem(storageKey(scope));
-  if (!raw) return { status: 'absent' };
-  try {
-    const ledger = parseBadgeLedger(JSON.parse(raw));
+  const storage = getLucidKeyValueStorage();
+  const raw = await storage.getItem(storageKey(scope));
+  if (raw) {
+    const ledger = parseRaw(raw);
     return ledger ? { status: 'read', ledger } : { status: 'unreadable' };
-  } catch {
-    return { status: 'unreadable' };
   }
+  // The legacy key is only ever read: an unreadable one is left to the app that wrote it.
+  const legacy = await storage.getItem(legacyKey(scope));
+  const ledger = legacy ? parseRaw(legacy) : null;
+  return ledger ? { status: 'read', ledger, legacy: true } : { status: 'absent' };
 }
 
 /** Waits before reading again a ledger the storage could not give: 1 s, then longer. */
@@ -148,11 +163,13 @@ function open(scope: BadgeScope, id: number, attempt: number, pending: Change[])
     const pendingCount = pending.length;
     for (const change of pending.slice(0, pendingCount)) ledger = change(ledger);
     if (isCurrent()) publish({ scope, ledger, ready: true });
-    if (canWrite && (ledger !== initial || claimedGuest || pendingCount > 0)) {
+    const legacy = own.status === 'read' && own.legacy === true;
+    if (canWrite && (ledger !== initial || claimedGuest || legacy || pendingCount > 0)) {
       await getLucidKeyValueStorage().setItem(storageKey(scope), JSON.stringify(ledger));
     }
     if (canWrite) pending.splice(0, pendingCount);
-    if (claimedGuest) await getLucidKeyValueStorage().removeItem(storageKey('guest'));
+    // Claimed once: neither key may hand the guest's actions to another account.
+    if (claimedGuest) await removeLedger('guest');
   }).catch((error) => {
     if (__DEV__) console.warn('[Badges] Failed to open the ledger', error);
     if (canContinue()) retry();
@@ -242,6 +259,12 @@ export async function forgetBadgeLedger(userId: string): Promise<void> {
     beforeScope = [];
     publish({ scope: null, ledger: createEmptyBadgeLedger(), ready: false });
   }
-  writes = writes.catch(() => undefined).then(() => getLucidKeyValueStorage().removeItem(storageKey(scope)));
+  writes = writes.catch(() => undefined).then(() => removeLedger(scope));
   await writes;
+}
+
+async function removeLedger(scope: BadgeScope): Promise<void> {
+  const storage = getLucidKeyValueStorage();
+  await storage.removeItem(storageKey(scope));
+  await storage.removeItem(legacyKey(scope));
 }

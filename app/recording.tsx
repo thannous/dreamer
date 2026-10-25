@@ -1,6 +1,6 @@
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { RecordingDurationLabel } from '@/components/recording/RecordingDurationLabel';
-import { NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
+import { BOTTOM_NAV_HREFS, NoctaliaBottomNav } from '@/components/navigation/NoctaliaBottomNav';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
@@ -9,7 +9,7 @@ import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
-import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
+import { captureHasAnswer, parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { CaptureReviewPanel } from '@/components/recording/CaptureReviewPanel';
 import { buildCaptureNarrative, decodeCaptureDraft, encodeCaptureReview, type CaptureReview } from '@/lib/captureReviewDraft';
 import { RecordingConversation } from '@/components/recording/RecordingConversation';
@@ -24,6 +24,7 @@ import { DESKTOP_BREAKPOINT } from '@/constants/layout';
 import { DREAM_TRANSCRIPT_MAX_CHARS, GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useContentWindow } from '@/context/ContentWindowContext';
+import { useSideColumnTabBar, useTabBarInSideColumn } from '@/context/SideColumnTabBarContext';
 import { useDreamsData, useDreamsActions } from '@/context/DreamsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -315,6 +316,8 @@ function RecordingScreen() {
   const keyboardVisible = useKeyboardVisible();
   const [footerHeight, setFooterHeight] = useState(0);
   const [bottomNavHeight, setBottomNavHeight] = useState(0);
+  const [scrollViewportHeight, setScrollViewportHeight] = useState(0);
+  const [draftProgressHeight, setDraftProgressHeight] = useState(0);
   const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
   const activePostSaveRef = useRef<'confirm_analysis' | 'journal_first' | null>(null);
   const captureStartedTrackedRef = useRef(false);
@@ -462,9 +465,8 @@ function RecordingScreen() {
   const textInputRef = useRef<TextInputInstance | null>(null);
   const scrollViewRef = useRef<React.ElementRef<typeof ScrollView> | null>(null);
   const lastInputSourceRef = useRef<RecordingInputModePreference>('text');
-  // How this capture's words arrived, for the collection: recognized speech, or typing.
+  // For the collection: whether this capture recognized speech.
   const voicedCaptureRef = useRef(false);
-  const typedCaptureRef = useRef(false);
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
   // Voice is blocked only when the device cannot capture speech at all. Every
@@ -513,7 +515,6 @@ function RecordingScreen() {
     (text: string) => {
       if (!isHydrated || noteInput(text) !== true) return;
       lastInputSourceRef.current = 'text';
-      if (text.trim()) typedCaptureRef.current = true;
       if (!captureStartedTrackedRef.current && text.trim().length > 0) {
         captureStartedTrackedRef.current = true;
         void trackProductEvent('dream_capture_started', {
@@ -704,7 +705,6 @@ function RecordingScreen() {
     setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
     voicedCaptureRef.current = false;
-    typedCaptureRef.current = false;
   }, [resetConversation]);
 
   const navigateToSavedDream = useCallback((
@@ -1233,12 +1233,13 @@ function RecordingScreen() {
       markPerformance('journal.save_acknowledged', { trace: saveTrace });
       if (isNewDream) {
         void trackDreamSaveMilestone(isFirstDream);
-        // Spoken words make it a told dream; otherwise typed ones make it a written one.
-        // A restored draft alone says neither.
+        // Speech counts only when this capture heard it. An answer to the assistant is read from
+        // the capture as saved, so one erased before saving, in any editor, never counts.
         recordBadgeEvent({
           type: 'dream_saved',
           dream: savedDream,
-          input: voicedCaptureRef.current ? 'voice' : typedCaptureRef.current ? 'text' : null,
+          voiced: voicedCaptureRef.current,
+          answered: captureHasAnswer(captureReview ? captureReview.source : latestTranscript),
         });
       }
       clearAfterSuccessfulSave();
@@ -1363,6 +1364,9 @@ function RecordingScreen() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const gradientColors = noctalia.screen.gradient;
   const isDesktopWeb = Platform.OS === 'web' && viewportWidth >= DESKTOP_BREAKPOINT;
+  // On the iPhone Duo the navigation stands in the side column, beside the screen.
+  const navInSideColumn = useTabBarInSideColumn();
+  const showsNavigation = !keyboardVisible && !isDesktopWeb && !editableCapture;
   const chatMode = inputMode === 'voice' && !editableCapture;
   const chatLayout = chatMode && !isCompactLandscape;
   const captureStage = !chatLayout && !keyboardVisible && !isDesktopWeb;
@@ -1396,11 +1400,9 @@ function RecordingScreen() {
     }
   }, [captureReview, isHydrated, isPersisting, persistBeforeExit, resetComposer, t]);
 
-  const fixedFooterBottomOffset = keyboardVisible
-    ? insets.bottom
-    : isDesktopWeb || editableCapture
-      ? insets.bottom
-      : Math.max(bottomNavHeight, insets.bottom);
+  const fixedFooterBottomOffset = showsNavigation && !navInSideColumn
+    ? Math.max(bottomNavHeight, insets.bottom)
+    : insets.bottom;
   // Keep the scroll viewport above Save and navigation at every text size.
   // Content padding alone still lets the draft status paint behind the button.
   const separateFooterViewport = !keyboardVisible;
@@ -1420,24 +1422,32 @@ function RecordingScreen() {
       isCompactLandscape && styles.mainContentCompact,
       {
         paddingTop: 16,
+        // Unless Save follows the editor in the document, it sits outside it: below the scroll
+        // view, whose margin keeps clear of it, or right after it with the keyboard up. Room for it
+        // here would be an empty end, brought into view with the keyboard up at the editor's top.
         paddingBottom: chatMode ? 8 : inlineFooter
           ? 16 + (keyboardVisible ? insets.bottom : 0)
-          : separateFooterViewport ? 16 : fixedFooterBottomOffset + footerHeight,
+          : 16,
       },
     ],
     [
-      fixedFooterBottomOffset,
       chatMode,
       chatLayout,
       editableCapture,
-      footerHeight,
       isCompactLandscape,
-      separateFooterViewport,
       inlineFooter,
       keyboardVisible,
       insets.bottom,
     ]
   );
+  const showsDraftProgress = hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice';
+  // With the keyboard up the screen shows the document's end: the editor and its border (2), the
+  // draft count and its gap (12) and the end's padding (16), below a margin that keeps the
+  // editor's top clear of the status bar's veil. On a short window (the folded iPhone Duo, a small
+  // phone) the editor gives up part of its 260 pt rather than its top.
+  const keyboardEditorRoom = keyboardVisible && scrollViewportHeight > 0
+    ? scrollViewportHeight - (insets.top > 0 ? 28 : 12) - 2 - (showsDraftProgress ? 12 + draftProgressHeight : 0) - 16
+    : undefined;
   const fixedFooterStyle = useMemo(
     () => keyboardVisible
       ? styles.keyboardFooter
@@ -1453,15 +1463,32 @@ function RecordingScreen() {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
     setFooterHeight((current) => current === nextHeight ? current : nextHeight);
   }, []);
+  const handleScrollViewportLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.floor(event.nativeEvent.layout.height);
+    setScrollViewportHeight((current) => current === nextHeight ? current : nextHeight);
+  }, []);
+  const handleDraftProgressLayout = useCallback((event: LayoutChangeEvent) => {
+    const nextHeight = Math.ceil(event.nativeEvent.layout.height);
+    setDraftProgressHeight((current) => current === nextHeight ? current : nextHeight);
+  }, []);
   const handleBottomNavMeasure = useCallback((event: LayoutChangeEvent) => {
     const nextHeight = Math.ceil(viewportHeight - event.nativeEvent.layout.y);
     setBottomNavHeight((current) => current === nextHeight ? current : nextHeight);
   }, [viewportHeight]);
 
+  // A scroll run as the keyboard starts to show can stop short of the end, or not move at all: on
+  // iOS the view is still animating to its height above the keyboard. So once the keyboard has
+  // shown the end comes into view again, until the writer types or drags; after that another
+  // keyboard or the suggestions bar leaves the scroll where it is.
+  const keyboardSettlingRef = useRef(false);
+  useEffect(() => {
+    keyboardSettlingRef.current = keyboardVisible;
+  }, [keyboardVisible]);
   useEffect(() => {
     // The voice reply sits above the full story: scrolling to the document end
     // would hide the focused answer when the keyboard opens.
     if (!keyboardVisible || footerHeight === 0 || inputMode === 'voice') {
+      keyboardSettlingRef.current = false;
       return;
     }
 
@@ -1471,6 +1498,26 @@ function RecordingScreen() {
 
     return () => cancelAnimationFrame(frame);
   }, [footerHeight, inputMode, keyboardVisible]);
+  useEffect(() => {
+    let frame: number | undefined;
+    const subscription = Keyboard.addListener('keyboardDidShow', () => {
+      if (!keyboardSettlingRef.current) return;
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      });
+    });
+    return () => {
+      subscription.remove();
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
+  }, []);
+  useEffect(() => {
+    keyboardSettlingRef.current = false;
+  }, [transcript, captureReview?.text]);
+  const handleScrollBeginDrag = useCallback(() => {
+    keyboardSettlingRef.current = false;
+  }, []);
 
   const focusTranscriptEnd = useCallback((value: string) => {
     const len = value.length;
@@ -1691,7 +1738,6 @@ function RecordingScreen() {
     const draft = updateCaptureDraftSection(editableCapture, index, text);
     const source = serializeCaptureEditableDraft(draft);
     if (!noteInput(source)) return;
-    typedCaptureRef.current = true;
     if (source !== baseTranscriptRef.current) invalidateCaptureSource(baseTranscriptRef.current);
     setEditableCapture(draft);
     baseTranscriptRef.current = source;
@@ -1791,6 +1837,16 @@ function RecordingScreen() {
     stopRecording,
     transcript,
   ]);
+  const capturePressHint = inputMode !== 'voice'
+    ? t('nav.capture_focus_hint')
+    : t(isVoiceListening ? 'recording.conversation.mute' : 'recording.mode.switch_to_voice');
+  useSideColumnTabBar('recording', showsNavigation ? {
+    // Capture sits above the tab navigator: return to that instance, as the bottom bar does.
+    onSelect: (key) => router.dismissTo(BOTTOM_NAV_HREFS[key]),
+    captureIcon: inputMode === 'voice' ? 'mic' : 'pencil',
+    onCapturePress: handleCaptureNavPress,
+    capturePressHint,
+  } : null);
 
   const handleMicRationaleClose = useCallback(() => {
     hasSeenMicRationaleRef.current = true;
@@ -1829,7 +1885,6 @@ function RecordingScreen() {
       ? insertDictation(insertion, text)
       : { text: insertion.storyBase, selection: { start: insertion.storyBase.length, end: insertion.storyBase.length } };
     if (noteInput(result.text) !== true) return;
-    if (text.trim()) typedCaptureRef.current = true;
     answerInsertionRef.current = insertion;
     setAnswerBase(insertion.storyBase);
     setCurrentAnswer(text);
@@ -1977,6 +2032,8 @@ function RecordingScreen() {
           <HeaderScrollView
             ref={scrollViewRef}
             onScroll={onHeaderScroll}
+            onLayout={handleScrollViewportLayout}
+            onScrollBeginDrag={handleScrollBeginDrag}
             scrollEventThrottle={16}
             style={[
               styles.scrollView,
@@ -2077,6 +2134,12 @@ function RecordingScreen() {
                 ) : <RecordingTextInput
                   compact={isCompactLandscape}
                   expanded={!isCompactLandscape}
+                  // At rest the editor fills what the screen leaves it, and on a short window (the
+                  // folded iPhone Duo, the open one on its side) gives up height rather than run
+                  // under Save. With the keyboard up it keeps its 260 pt as far as the view above
+                  // the keyboard has room, and on desktop, where nothing else sizes it, it keeps them.
+                  fitsRoom={!keyboardVisible && !isDesktopWeb}
+                  room={keyboardEditorRoom}
                   layout="textFirst"
                   ref={textInputRef}
                   value={transcript}
@@ -2113,8 +2176,8 @@ function RecordingScreen() {
                   onClear={handleClearTranscript}
                 />}
 
-                {hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice' ? (
-                  <RecordingDraftProgress value={captureReview?.text ?? transcript} />
+                {showsDraftProgress ? (
+                  <RecordingDraftProgress value={captureReview?.text ?? transcript} onLayout={handleDraftProgressLayout} />
                 ) : null}
 
               </View>
@@ -2128,14 +2191,12 @@ function RecordingScreen() {
             </View>
           ) : null}
         </KeyboardAvoidingView>
-        {!keyboardVisible && !isDesktopWeb && !editableCapture ? (
+        {showsNavigation && !navInSideColumn ? (
           <NoctaliaBottomNav
             activeKey="addDream"
             addDreamIcon={inputMode === 'voice' ? 'mic' : 'pencil'}
             onCapturePress={handleCaptureNavPress}
-            capturePressHint={inputMode !== 'voice'
-              ? t('nav.capture_focus_hint')
-              : t(isVoiceListening ? 'recording.conversation.mute' : 'recording.mode.switch_to_voice')}
+            capturePressHint={capturePressHint}
             onBarLayout={handleBottomNavMeasure}
           />
         ) : null}

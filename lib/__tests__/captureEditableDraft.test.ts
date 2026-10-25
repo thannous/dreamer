@@ -1,4 +1,4 @@
-import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection } from '../captureEditableDraft';
+import { captureHasAnswer, parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection } from '../captureEditableDraft';
 
 it('edits only the selected answer while preserving questions, other answers and exact original spacing', () => {
   const source = ' Une plage.\r\n\r\nQuestion : Quelle couleur ?\r\nRéponse : Noir.\r\n\r\nQuestion : Quel bruit ?\r\nRéponse : Des vagues.\nJe crois.';
@@ -31,4 +31,8 @@ it('keeps an emptied answer associated with its question', () => {
   const edited = updateCaptureDraftSection(draft, 1, '');
   expect(serializeCaptureEditableDraft(edited)).toBe('Une plage.\n\nQuestion : Quelle couleur ?\nRéponse : ');
   expect(parseCaptureEditableDraft(serializeCaptureEditableDraft(edited)).sections[1].question).toBe('Quelle couleur ?');
+  // An answer erased in the editor no longer counts as one, even with its question kept.
+  expect(captureHasAnswer(serializeCaptureEditableDraft(draft))).toBe(true);
+  expect(captureHasAnswer(serializeCaptureEditableDraft(edited).trim())).toBe(false);
+  expect(captureHasAnswer('Une plage.')).toBe(false);
 });

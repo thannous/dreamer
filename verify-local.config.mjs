@@ -45,8 +45,105 @@ const SITE_ONLY = [
   'tools/e2e/tests/**',
 ];
 
-// Site inputs, kept at least as broad as the former CI routing.
-const SITE = ['docs-src/', 'data/', 'scripts/', 'package.json', 'package-lock.json', '.nvmrc'];
+// A scope that takes everything but these globs (see `when` in the engine).
+const not = (globs) => globs.map((glob) => `!${glob}`);
+
+// What the two tsc programs (tsconfig.json, tsconfig.test.json) can read: the
+// TypeScript sources their include patterns take, everything under tests/
+// (tsconfig.test.json takes tests/**/*), the JSON their sources import, the
+// tsconfigs, package.json and package-lock.json (the installed types), the
+// route files the type generator lists, and the scripts of the command. No
+// asset, document, site page or site data: a PR changing only those skips
+// both typechecks. scripts/verify-local-config.test.js lists both programs and
+// checks that every tracked file they read is in this scope.
+const TYPESCRIPT = [
+  '**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts', '**/*.json', 'tests/', 'app/', 'routes/',
+  'scripts/generate-shared-route-types.cjs', 'scripts/lib/replace-file.cjs', 'scripts/verify-cache.mjs',
+  // tsconfig.json leaves these out; tests import one file of supabase/functions.
+  '!apps/', '!tools/e2e/', '!outputs/', '!supabase/functions/', 'supabase/functions/api/lib/fullMoon.ts',
+  // Site and repository data no source imports.
+  '!docs-src/**/*.json', 'docs-src/static/data/curation-pages.json', '!data/**/*.json', 'data/app/',
+  ...not(DOCS),
+];
+
+// What `lint` can read: the files of its targets and everything they import,
+// assets included (import/no-unresolved checks that they exist), the ESLint,
+// TypeScript and Babel settings, the packages, and what brand:check compares.
+// No linted file imports a document, a site-only source, a migration or a CI
+// or EAS workflow: scripts/verify-local-config.test.js checks it on the
+// import graph scripts/check-lint-warnings.js reads.
+const LINT = ['**', ...not(DOCS), ...not(SITE_ONLY), '!supabase/migrations/', '!.circleci/', '!.eas/'];
+
+// What `lint-scripts` (expo lint scripts) can read: scripts/, the files
+// outside it that scripts import (and those they re-export), and the ESLint
+// settings and packages. The same test checks the import graph against this
+// list; that graph keys app.json and app/index.tsx alike, hence the latter.
+const LINT_SCRIPTS = [
+  'scripts/', 'eslint.config.js', 'package.json', 'package-lock.json', 'tsconfig.json', 'babel.config.js', 'jest.config.js',
+  'app.config.ts', 'app.json', 'apps/meditation/app.json', 'apps/meditation/app/index.tsx', 'apps/site/dependencies.js',
+  'context/DreamsContext.tsx', 'context/ThemeContext.tsx', 'lib/types.ts', 'lib/journalSyncContracts.ts',
+  'services/storageService.ts', 'services/supabaseDreamService.ts', 'data/site-manifest.json',
+  'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs',
+];
+
+// What jest-changed can select tests from: a module or a snapshot under a
+// root of one of the Jest projects (Jest leaves out a changed file outside
+// its haste map), and the Jest and Babel settings and the packages, whose
+// breakage fails the run before any test. The same test checks the roots and
+// extensions against jest.config.js.
+const JEST_ROOTS = ['app', 'components', 'constants', 'context', 'hooks', 'lib', 'services', 'tests', 'scripts'];
+const JEST_EXTENSIONS = ['js', 'mjs', 'cjs', 'jsx', 'ts', 'mts', 'cts', 'tsx', 'json', 'node', 'snap'];
+const JEST = [
+  ...JEST_ROOTS.flatMap((root) => JEST_EXTENSIONS.map((extension) => `${root}/**/*.${extension}`)),
+  'jest.config*.js', 'jest.setup.ts', 'babel.config.js', 'package.json', 'package-lock.json',
+];
+
+// What `docs:build` and `docs:check` read: every tracked file they opened,
+// traced with strace on master 3cd790554, plus the scripts their require graph
+// reaches on other paths (scripts/verify-local-config.test.js keeps the list
+// covering that graph). A PR that changes none of them skips the site check,
+// and a later push that leaves them as they were reuses its pass. A release
+// rebuilds the site whatever changed.
+const SITE_SCRIPTS = [
+  'build-content-manifest', 'build-experience', 'build-guides-pages', 'build-site-manifest',
+  'check-article-date-contract', 'check-content-hub-contract', 'check-content-release-gates',
+  'check-docs-deploy-surface', 'check-docs-links', 'check-docs-shell', 'check-image-seo-contract',
+  'check-intent-ownership', 'check-public-url-stability', 'check-public-url-stability.test',
+  'check-symbol-illustration-parity', 'check-symbol-image-contract', 'check-web-performance-contract',
+  'docs-build', 'docs-check', 'generate-blog-responsive-images', 'generate-image-seo-assets',
+  'generate-sitemap-v2', 'generate-symbol-avif-images', 'generate-symbol-hero-posters',
+  'generate-symbol-responsive-images', 'optimize-homepage-hero', 'sync-app-symbol-dictionary',
+  'validate-i18n-seo',
+].map((name) => `scripts/${name}.js`);
+const SITE_LIBS = [
+  'ahrefs-analytics', 'alternatives-table', 'article-date-contract', 'atlas-motion',
+  'canonical-organization', 'content-hub-registry', 'docs-check-helpers', 'docs-deploy-staging',
+  'docs-renderer', 'docs-seo-utils', 'docs-site-config', 'docs-source-utils', 'docs-view-transitions',
+  'educational-diagram-v2', 'experience-tier', 'generated-page-writer', 'guide-dictionary-model',
+  'image-build-cache', 'image-seo-assets', 'landing-stylesheet', 'lucide-inline',
+  'minify-static-stylesheets', 'page-illustrations', 'pages-redirect-contract', 'site-manifest',
+  'site-media', 'symbol-image-assets', 'symbol-locales',
+].map((name) => `scripts/lib/${name}.js`);
+const SITE = [
+  'docs-src/',
+  'data/',
+  ...SITE_SCRIPTS,
+  ...SITE_LIBS,
+  'scripts/lib/docs-components/',
+  // docs:check scans the archived one-shot SEO scripts.
+  'scripts/archive/seo-one-shots/',
+  // The plan facts the pages state, and the site's own dependency manifest.
+  'constants/limits.ts',
+  'apps/site/dependencies.js',
+  'apps/site/package.json',
+  'package.json',
+  'package-lock.json',
+  '.npmrc',
+  '.nvmrc',
+];
+// The test that keeps SITE covering the site's require graph, and what it reads.
+const SITE_SCOPE_TEST = 'scopes the site check to every script the site build and check load';
+const SITE_SCOPE_TEST_READS = ['scripts/verify-local-config.test.js', 'verify-local.config.mjs', 'scripts/verify-local.mjs', 'jest.config.js'];
 
 // apps/meditation and the shared files .circleci/dependency-consumers.tsv routes to it.
 const MEDITATION = [
@@ -120,6 +217,19 @@ const DB_CONTRACTS = [
   '&& node --test scripts/ai-daily-budget-migration.test.cjs scripts/dream-sync-limits-migration.test.cjs',
 ].join(' ');
 
+// What db-contracts reads: the migrations, the database contract manifest and
+// the API sources its tests compare with them (supabase/), the tests and the
+// scripts they load (scripts/; the site configuration one of them loads reads
+// docs-src/config and docs-src/locales), the three app files the tests read,
+// Jest (its Expo project reads tsconfig.json) and the packages (PGlite).
+// scripts/verify-local-config.test.js runs the tests with every file they read
+// recorded and checks them against this list.
+const DB = [
+  'supabase/', 'scripts/', 'constants/limits.ts', 'services/storageServiceReal.ts', 'lib/productAnalytics.ts',
+  'docs-src/config/', 'docs-src/locales/', 'jest.config*.js', 'babel.config.js', 'tsconfig.json',
+  'package.json', 'package-lock.json', '.npmrc',
+];
+
 // Job meditation-quality. The engine links apps/meditation/node_modules from the
 // main checkout; when the verified lockfile differs, the copy installs its own.
 const MEDITATION_CHECKS = [
@@ -169,11 +279,16 @@ const DREAMER_PASSES = DREAMER_CAMPAIGN_CONTEXTS.map(({ locale, featureSheets, a
   `EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=${featureSheets} E2E_WEB_LOCALE=${locale} node tools/e2e/run.mjs dreamer web run${args.length ? ' ' + args.map(shellQuote).join(' ') : ''}`,
 ).join(' && ');
 
+const cachedTypecheck = (name, script) => {
+  const info = `.cache/tsc/${name}.tsbuildinfo`;
+  return `node scripts/verify-cache.mjs ${info} -- npm run ${script} -- --incremental --tsBuildInfoFile ${info}`;
+};
+
 // sha256 of this repository's own copy of scripts/verify-local.mjs. The engine
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'feaa8dc419f88c1faaff5330a5f31bfde327e355fec8307795a84cb18f893ef3';
+  '2de05fbd80ae47a6a0912ac82668620f3306de15da384f54bbe9199c6f28f2f8';
 
 export default {
   mainBranch: 'master',
@@ -205,6 +320,9 @@ export default {
     'scripts/lint-warnings-baseline.json',
     'scripts/install-git-hooks.js',
     'scripts/run-jest-changed.js',
+    // What a verify:pr run carries over from the previous one (tsc build info).
+    'scripts/verify-cache.mjs',
+    'scripts/verify-cache.test.js',
     // Meditation's Jest module resolution.
     'apps/meditation/tests/jestResolver.cjs',
     // The contract checkers and runners the checks call, and the tests of
@@ -217,6 +335,7 @@ export default {
     'scripts/run-backend-e2e.cjs',
     'scripts/lib/backend-e2e-local.cjs',
     'tools/e2e/run.mjs',
+    'tools/e2e/duration-history.mjs',
     'scripts/verify-local-config.test.js',
     'scripts/dependency-security.test.mjs',
     'scripts/dependency-security-scope.test.mjs',
@@ -349,22 +468,48 @@ export default {
     },
     // Independent read-only checks share one supervised step and machine lock.
     // Route declarations are atomically replaced by generate-shared-route-types.
-    { name: 'typecheck-app', command: 'npm run typecheck:app', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'typecheck-tests', command: 'npm run typecheck:tests', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint', command: 'npm run lint', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
-    { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, exclude: [...DOCS, ...SITE_ONLY] },
+    // tsc keeps its incremental build info in the copy, and a PR run passes it
+    // on to the next one (scripts/verify-cache.mjs): 32 s cold, 7 s from the
+    // previous copy's build info. TypeScript rechecks what changed; a release
+    // starts from nothing. A PR that changes nothing tsc reads (TYPESCRIPT)
+    // skips both.
+    { name: 'typecheck-app', command: cachedTypecheck('app', 'typecheck:app'), parallel: true, inputs: TYPESCRIPT, when: TYPESCRIPT },
+    { name: 'typecheck-tests', command: cachedTypecheck('tests', 'typecheck:tests'), parallel: true, inputs: TYPESCRIPT, when: TYPESCRIPT },
+    // `npm run lint` with ESLint narrowed, in a PR, to the files changed since
+    // the merge base and the files importing them (scripts/check-lint-warnings.js
+    // --changed); a change to the ESLint config, the packages or the baseline,
+    // and every release, lint every file. On PR #570: 190 files of 1,580. The
+    // files linted come from the diff: reused only against the same merge base.
+    { name: 'lint', command: 'npm run brand:check && npm run lint:warnings -- --changed', perBase: true, parallel: true, inputs: LINT, when: LINT },
+    // All of scripts/ with no warning allowed, for a PR that changes scripts/
+    // or what they import (LINT_SCRIPTS): 21 to 29 s.
+    { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, inputs: LINT_SCRIPTS, when: LINT_SCRIPTS },
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
     // JEST_CHANGED_SINCE would override that base (HEAD selects no test), so
-    // the check never inherits it.
+    // the check never inherits it. Workers come from jest.config.js: on PR
+    // #570's 1,314 related tests, 95 s in band against 42 s on 4 workers. A PR
+    // run keeps Jest's cache in the shared git directory (the copy's path stays
+    // the same from one run to the next): 24 s cold, 8 s warm on components/.
+    // A PR changing no file Jest can relate a test to (JEST) skips it.
     {
       name: 'jest-changed',
       perBase: true,
-      command: 'npm run test:changed -- --runInBand --watchman=false',
+      when: JEST,
+      command: 'npm run test:changed -- --watchman=false',
       env: { JEST_CHANGED_SINCE: '' },
     },
-    { name: 'db-contracts', command: DB_CONTRACTS },
+    // A PR that changes nothing these tests read (DB) skips them: 11 s.
+    { name: 'db-contracts', command: DB_CONTRACTS, inputs: DB, when: DB },
+    // The tests of this configuration, scope guards included, read it and the
+    // engine through a child process: Jest relates no change of either to them,
+    // so jest-changed never runs them for a PR that only edits a scope. 21 s.
+    {
+      name: 'verify-config',
+      command: 'npm run test:file -- scripts/verify-local-config.test.js',
+      when: ['verify-local.config.mjs', 'scripts/verify-local.mjs'],
+    },
     {
       name: 'dependency-security',
       command: 'node --test scripts/dependency-security.test.mjs scripts/dependency-security-scope.test.mjs',
@@ -399,7 +544,16 @@ export default {
     },
 
     // ---- verify:pr, only when the commit changes that surface since origin/master.
-    { name: 'site', command: 'npm run docs:build && npm run docs:check', when: SITE },
+    // The site's scope test runs with the site check: a PR that wires a new
+    // script into the site build without adding it to SITE fails here, before
+    // later PRs that touch only that script skip the check. It also reads the
+    // config and the engine, so a change to either reruns a reused pass.
+    {
+      name: 'site',
+      command: `npm run docs:build && npm run docs:check && npm run test:file -- scripts/verify-local-config.test.js -t '${SITE_SCOPE_TEST}'`,
+      inputs: [...SITE, ...SITE_SCOPE_TEST_READS],
+      when: SITE,
+    },
     {
       name: 'ci-contracts', command: CI_CONTRACTS,
       when: [
@@ -422,11 +576,11 @@ export default {
       kinds: ['release'],
     },
     { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },
-    // noctalia.app (Cloudflare Pages) and the Vercel web app, rebuilt for the delivered commit.
+    // The Vercel web app, rebuilt for the delivered commit. noctalia.app needs no
+    // check of its own here: a release runs `site` above on that commit too.
     // `targets: ['app']` marks what only an app release runs (npm run
     // verify:release, which web:deploy:prod requires); npm run
     // verify:release:site, enough for the static site, leaves it out.
-    { name: 'site-build', command: 'npm run docs:build && npm run docs:check', kinds: ['release'], perCommit: true },
     { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true },
     {
       name: 'e2e-backend',

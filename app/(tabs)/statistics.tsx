@@ -1,10 +1,11 @@
 import { useContentWindow } from '@/context/ContentWindowContext';
+import { useTabBarInSideColumn } from '@/context/SideColumnTabBarContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { JournalCompletenessNotice } from '@/components/journal/JournalCompletenessNotice';
 import { DreamSymbolSheet } from '@/components/journal/symbols/DreamSymbolSheet';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useCallback, useDeferredValue, useMemo, useState } from 'react';
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import {
   Platform,
   Text,
@@ -61,7 +62,7 @@ import { getPeriodSymbols } from '@/lib/trendsSymbols';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { CONSTELLATION_NIGHTS, getFormedWeeks, nameWeek, type WeekNights } from '@/lib/weekConstellations';
-import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
+import { HeaderScrollView, useHeaderScroll, useOnScreen } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
 const COMPACT_BREAKPOINT = 360;
@@ -153,7 +154,11 @@ function StatisticsScreen() {
   const isDesktopLayout = Platform.OS === 'web' && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
-  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  const tabBarInSideColumn = useTabBarInSideColumn();
+  // In the iPhone Duo's side column the navigation leaves the bottom free but for the safe area.
+  const navigationClearance = tabBarInSideColumn
+    ? insets.bottom
+    : navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   const scrollBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
     : scrollHeader ? ThemeLayout.spacing.lg : navigationClearance + ThemeLayout.spacing.lg;
@@ -193,26 +198,16 @@ function StatisticsScreen() {
     useTrendsReveal(loaded && !trends.empty, trends.count > 0);
   const handleScroll = useHeaderScroll(onRevealScroll);
 
-  // For the collection: a day the dreamer looked into their own trends, by choice.
-  const noteExploration = useCallback(() => {
-    if (!trends.empty) recordBadgeEvent({ type: 'trends_explored', now: Date.now() });
-  }, [trends.empty]);
+  // For the collection: Trends opened over the dreamer's own dreams.
+  const onScreen = useOnScreen();
+  useEffect(() => {
+    if (onScreen && !trends.empty) recordBadgeEvent({ type: 'trends_opened', now: Date.now() });
+  }, [onScreen, trends.empty]);
 
-  const choosePeriod = useCallback((next: DreamTrendsPeriod) => {
-    if (next === period) return;
-    setPeriod(next);
-    noteExploration();
-  }, [noteExploration, period]);
 
   const chooseTheme = useCallback((theme: DreamTheme) => {
     setSelectedTheme((current) => (current === theme ? null : theme));
-    noteExploration();
-  }, [noteExploration]);
-
-  const chooseSymbol = useCallback((key: string | null) => {
-    setOpenSymbol(key);
-    if (key !== null) noteExploration();
-  }, [noteExploration]);
+  }, []);
 
   const openDream = useCallback((dream: DreamAnalysis) => {
     router.push({ pathname: '/journal/[id]', params: getDreamRouteParams(dream) });
@@ -305,7 +300,7 @@ function StatisticsScreen() {
   // Each section is its own element: one that lights or changes redraws only itself.
   const periodSection = (
     <View className="gap-5" testID="trends.section.period" accessible={false} accessibilityRole="none">
-      <TrendsPeriodSwitch period={period} onChange={choosePeriod} reduced={reduced} t={t} />
+      <TrendsPeriodSwitch period={period} onChange={setPeriod} reduced={reduced} t={t} />
       <View className="flex-row items-start gap-3">
         <View className="mt-[9px] h-px w-[22px] bg-champagne" />
         <Text testID="trends.range" className="min-w-0 shrink text-caption leading-[18px] font-sans-medium uppercase tracking-[1.6px] text-champagne-on">
@@ -378,7 +373,7 @@ function StatisticsScreen() {
         formatNumber={formatNumber}
         onOpenUnanalyzed={() => openJournal(trends, { analysis: 'unanalyzed' })}
         onOpenType={(type: DreamType) => openJournal(trends, { dreamType: type, analysis: 'analyzed' })}
-        onOpenSymbol={chooseSymbol}
+        onOpenSymbol={setOpenSymbol}
         plusHint={analysesUsedUp && trends.patterns.unrequested > 0 ? {
           text: t(trends.patterns.unrequested === 1 ? 'trends.returns.plus_hint_one' : 'trends.returns.plus_hint', {
             date: formatQuotaResetDate(locale),

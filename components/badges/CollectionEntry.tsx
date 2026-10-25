@@ -7,19 +7,19 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useBadgeSummary } from '@/hooks/useBadgeSummary';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
-import { BADGE_FAMILIES } from '@/lib/badges/catalog';
+import { BADGE_FAMILIES, getBadgeFamily } from '@/lib/badges/catalog';
 
 import { BADGE_CARD_RATIO, BadgeCardFrame } from './BadgeCard';
 import { BadgeMedallion } from './BadgeMedallion';
 import { badgeHeldText, badgeNewCardsText } from './badgeCopy';
-import { COLLECTION, tierOfLevel } from './badgeMaterials';
+import { COLLECTION, finishOf } from './badgeMaterials';
 
 export const COLLECTION_ROUTE = '/collection' as const;
 
 /** A small fan of three cards: the one earned last in front, two families behind it. */
 export const CollectionFan = memo(function CollectionFan({ width }: { width: number }) {
   const { featured } = useBadgeSummary();
-  const tier = tierOfLevel(featured.tier);
+  const tier = finishOf(getBadgeFamily(featured.id)!, featured.tier);
   const behind = BADGE_FAMILIES.filter((family) => family.id !== featured.id).slice(0, 2);
   const card = Math.round(width * 0.56);
   return (

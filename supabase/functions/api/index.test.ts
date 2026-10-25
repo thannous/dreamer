@@ -1,7 +1,14 @@
 import { assertEquals, assertStrictEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import { corsHeaders } from './lib/constants.ts';
-import { type ApiHandlerDependencies, createApiHandler, type RouteHandler } from './router.ts';
+import {
+  type ApiHandlerDependencies,
+  createApiHandler,
+  type RouteHandler,
+  routeSegmentAllowlist,
+  toLoggedRoute,
+  toLoggedRouterReason,
+} from './router.ts';
 
 // The entrypoint (index.ts) calls serve() at module load and its route table pulls
 // in heavy dependencies, so the dispatch logic is exercised through the
@@ -210,4 +217,98 @@ Deno.test('invalid scoped tokens cannot become guests; resolver failure denies d
     assertEquals(response.status, mode === 'invalid' ? 401 : mode === 'null-claim' ? 403 : 503);
     assertEquals(dispatched, false);
   }
+});
+
+const captureWarnings = async (run: () => Promise<void>): Promise<unknown[][]> => {
+  const calls: unknown[][] = [];
+  const original = console.warn;
+  console.warn = (...args: unknown[]) => {
+    calls.push(args);
+  };
+  try {
+    await run();
+  } finally {
+    console.warn = original;
+  }
+  return calls;
+};
+
+Deno.test('an anonymous unmatched route logs only the method and route shape', async () => {
+  const unused = () => Promise.reject(new Error('must not be called'));
+  const handler = buildHandler({ 'POST /guest/session': unused, 'POST /dreams/share': unused, 'GET /a/b': unused });
+  const secretId = '7f3c2a10-1111-4222-8333-944455556666';
+  const secretToken = 'eyJhbGciOiJIUzI1NiJ9.secret-token-value';
+  const warnings = await captureWarnings(async () => {
+    const plain = await handler(request('/guest/session/challenge'));
+    assertEquals(plain.status, 401);
+    await plain.body?.cancel();
+    const withIds = await handler(request(`/dreams/${secretId}/share/${secretToken}`, {
+      method: 'GET',
+      headers: { 'X-Forwarded-For': '203.0.113.7', 'x-guest-fingerprint': 'f'.repeat(64) },
+    }));
+    assertEquals(withIds.status, 401);
+    await withIds.body?.cancel();
+    const odd = await handler(request('/a/b/a/b/a/b/a/b', { method: 'PROPFIND' }));
+    assertEquals(odd.status, 401);
+    await odd.body?.cancel();
+    const username = await handler(request('/users/secret-user-id', { method: 'GET' }));
+    assertEquals(username.status, 401);
+    await username.body?.cancel();
+  });
+
+  assertEquals(warnings, [
+    ['[api] unmatched route without user', { method: 'POST', route: '/guest/session/:param' }],
+    ['[api] unmatched route without user', { method: 'GET', route: '/dreams/:param/share/:param' }],
+    ['[api] unmatched route without user', { method: 'OTHER', route: '/a/b/a/b/a/b/:more' }],
+    ['[api] unmatched route without user', { method: 'GET', route: '/:param/:param' }],
+  ]);
+  const serialized = JSON.stringify(warnings);
+  for (const secret of [secretId, secretToken, '203.0.113.7', 'f'.repeat(64), 'secret-user-id', 'users']) {
+    assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
+  }
+});
+
+Deno.test('a scoped bearer without a valid user logs an allowlisted reason code only', async () => {
+  const token = [encodeBase64Url({ alg: 'HS256' }),
+    encodeBase64Url({ sub: 'secret-user-id', client_id: 'secret-client-id' }), 'signature'].join('.');
+  const warnings = await captureWarnings(async () => {
+    for (const mode of ['no-user', 'lookup-throws'] as const) {
+      const createClient = (() => ({
+        auth: {
+          getUser: () => mode === 'lookup-throws'
+            ? Promise.reject(new Error(`auth down for ${token}`))
+            : Promise.resolve({ data: { user: null } }),
+        },
+        rpc: () => Promise.reject(new Error('must not be called')),
+      })) as unknown as ApiHandlerDependencies['createClient'];
+      const handler = createApiHandler({ readEnv, createClient, routes: new Map() });
+      const response = await handler(request('/analyzeDream', {
+        headers: { Authorization: `Bearer ${token}`, 'X-Forwarded-For': '203.0.113.7' },
+      }));
+      assertEquals(response.status, 401);
+      await response.body?.cancel();
+    }
+  });
+
+  assertEquals(warnings, [
+    ['[api] scoped bearer rejected', { reason: 'scoped_bearer_no_user', method: 'POST' }],
+    ['[api] scoped bearer rejected', { reason: 'scoped_bearer_lookup_failed', method: 'POST' }],
+  ]);
+  const serialized = JSON.stringify(warnings);
+  for (const secret of [token, 'secret-user-id', 'secret-client-id', '203.0.113.7']) {
+    assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
+  }
+});
+
+Deno.test('router reason and route helpers map anything outside the allowlist to safe values', () => {
+  assertEquals(toLoggedRouterReason('scoped_bearer_no_user'), 'scoped_bearer_no_user');
+  assertEquals(toLoggedRouterReason('scoped_bearer_lookup_failed'), 'scoped_bearer_lookup_failed');
+  assertEquals(toLoggedRouterReason('leak:token'), 'unknown');
+  assertEquals(toLoggedRouterReason(undefined), 'unknown');
+  const known = routeSegmentAllowlist(['DELETE /account', 'POST /guest/session', 'GET /users/me']);
+  assertEquals([...known].sort(), ['account', 'guest', 'me', 'session', 'users']);
+  assertEquals(toLoggedRoute('DELETE', '/account', known), { method: 'DELETE', route: '/account' });
+  assertEquals(toLoggedRoute('POST', '/', known), { method: 'POST', route: '/' });
+  assertEquals(toLoggedRoute('GET', '/users/someone@example.com/x9', known), { method: 'GET', route: '/users/:param/:param' });
+  assertEquals(toLoggedRoute('GET', '/users/secret-user-id', known), { method: 'GET', route: '/users/:param' });
 });

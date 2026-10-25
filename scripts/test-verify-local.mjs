@@ -11,7 +11,7 @@ import path from 'node:path';
 import { describe, test } from 'node:test';
 import { pathToFileURL } from 'node:url';
 
-import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, verify } from './verify-local.mjs';
+import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, matchesAny, pastDurations, writeProof, verify, githubSlug, commitStatusFor, statusRefusal, STATUS_DESCRIPTION_MAX, STATUS_NOT_POSTED } from './verify-local.mjs';
 
 import { ENGINE, CONFIG_PATH, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
 
@@ -49,6 +49,18 @@ describe('globs', () => {
     assert.ok(!globToRegExp('src/*.js').test('src/a/b.js'));
     assert.ok(globToRegExp('db/').test('db/migrations/1.sql'));
     assert.ok(!globToRegExp('db/').test('dbx/1.sql'));
+  });
+
+  test('a ! glob takes files back, and the last glob that matches a file decides', () => {
+    const scope = ['**', '!docs/', 'docs/api.ts', '!**/*.md'];
+    assert.ok(matchesAny('src/a.ts', scope));
+    assert.ok(!matchesAny('docs/guide.txt', scope));
+    assert.ok(matchesAny('docs/api.ts', scope));
+    assert.ok(!matchesAny('src/README.md', scope));
+    assert.ok(!matchesAny('src/a.ts', ['!docs/']), 'negations alone take nothing');
+    for (const field of ['when', 'inputs', 'exclude']) {
+      assert.throws(() => normaliseConfig({ checks: [{ name: 'x', command: 'true', [field]: ['!docs/', '**'] }] }), /takes back nothing/);
+    }
   });
 });
 
@@ -109,6 +121,17 @@ describe('parallel checks', () => {
     assert.equal(status, 1);
     assert.equal(proof.checks.find((entry) => entry.name === 'test').result, 'passed');
     assert.match(proof.checks.find((entry) => entry.name === 'lint').reason, /killed/);
+  });
+
+  test('--plan counts consecutive parallel checks as their longest one', async () => {
+    const repo = makeRepository();
+    repo.commit('parallel', { 'verify-local.config.mjs': parallelConfig('sleep 1; echo lint >> "$RUN_LOG"', 'echo test >> "$RUN_LOG"') });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    const { plan } = await verify('pr', ['--plan', '--force'], repo.options);
+    const [lint, test] = plan.checks;
+    assert.deepEqual([lint.action, lint.parallel, test.action, test.parallel], ['run', true, 'run', true]);
+    assert.ok(lint.estimateMs >= 1000);
+    assert.equal(plan.estimateMs, Math.max(lint.estimateMs, test.estimateMs));
   });
 
   test('parallel checks cannot mutate the shared dependency installation', () => {
@@ -216,6 +239,56 @@ describe('verify:pr', () => {
     const local = await verify('pr', ['--force'], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } });
     assert.equal(local.status, 0);
     assert.deepEqual(repo.runs(), ['lint', 'test', 'db']);
+  });
+
+  test('--plan says what each check would do, with past times, and runs nothing', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    // Outside src/, so lint can be reused; test reads the whole tree.
+    repo.commit('notes', { 'notes.txt': '1\n' });
+    repo.clearRuns();
+    const proofs = path.join(repo.work, '.git', 'verify-proofs');
+    const before = readdirSync(proofs).sort();
+    repo.lines.length = 0;
+
+    const { status, plan } = await verify('pr', ['--plan'], repo.options);
+    assert.equal(status, 0);
+    assert.deepEqual(repo.runs(), []);
+    assert.deepEqual(readdirSync(proofs).sort(), before, 'no proof, no run log entry');
+    assert.equal(repo.git(['worktree', 'list']).split('\n').length, 1, 'no isolated copy');
+    assert.deepEqual(plan.checks.map(({ name, action }) => [name, action]), [['lint', 'reused'], ['test', 'run'], ['db', 'skipped'], ['site', 'skipped']]);
+    assert.equal(plan.checks[1].pastRuns, 1);
+    assert.equal(plan.estimateMs, plan.checks[1].estimateMs);
+    assert.match(repo.lines.join('\n'), /test: runs \(about \d+ s, median of 1 run\)/);
+    assert.match(repo.lines.join('\n'), /db: out of scope \(no change in its paths since origin\/main\)/);
+    assert.match(repo.lines.at(-1), /plan: 1 to run, 1 reused, 2 out of scope; about \d+ s of checks/);
+
+    // A release reuses nothing and runs every check; a probe that fails here shows.
+    const release = await verify('release', ['--plan'], repo.options);
+    assert.deepEqual(release.plan.checks.map(({ name, action }) => [name, action]), [['lint', 'run'], ['test', 'run'], ['db', 'unavailable'], ['site', 'run'], ['build', 'run']]);
+    assert.match(release.plan.checks[2].reason, /start the database/);
+    assert.deepEqual(release.plan.untimed, ['site', 'build'], 'never run here: no time to give');
+
+    repo.lines.length = 0;
+    const json = await verify('pr', ['--plan', '--json'], repo.options);
+    assert.equal(repo.lines.length, 1, 'the plan alone');
+    assert.deepEqual(JSON.parse(repo.lines[0]), json.plan);
+    await assert.rejects(verify('pr', ['--plan', '--keep'], repo.options), /no isolated copy to keep/);
+    assert.deepEqual(repo.runs(), []);
+    assert.deepEqual(readdirSync(proofs).sort(), before);
+  });
+
+  test('the time of a check is the median of its real passed runs, whatever engine wrote them', () => {
+    const commonDir = mkdtempSync(path.join(os.tmpdir(), 'verify-durations-'));
+    const proof = (tree, checks) => writeProof(commonDir, { version: 1, engine: 'older', tree, checks });
+    proof('a', [{ name: 'x', result: 'passed', durationMs: 3000 }, { name: 'y', result: 'failed', durationMs: 9000 }]);
+    proof('b', [{ name: 'x', result: 'passed', durationMs: 1000 }, { name: 'y', result: 'passed', reused: true, durationMs: 9000 }]);
+    proof('c', [{ name: 'x', result: 'passed', durationMs: 2000 }, { name: 'y', result: 'passed', external: 'owner-machine: elsewhere' }]);
+    writeFileSync(path.join(commonDir, 'verify-proofs', 'torn.json'), '{');
+    assert.deepEqual([...pastDurations(commonDir)], [['x', { ms: 2000, runs: 3 }]]);
+    rmSync(commonDir, { recursive: true, force: true });
   });
 
   test('without a known base, a check limited by when runs rather than being skipped', async () => {
@@ -471,6 +544,193 @@ describe('verify:pr', () => {
     // A check's own env still applies: here it sets TURBO_SCM_BASE itself.
     assert.ok(repo.runs().includes('lint:unset:unset:unset:origin/main'), repo.runs().join('\n'));
     assert.ok(repo.lines.some((line) => line.includes('ignored JEST_CHANGED_SINCE, TURBO_SCM_BASE, TURBO_SCM_HEAD, MY_SCOPE from the environment')));
+  });
+});
+
+describe('verify:pr --post-status', () => {
+  // gh is never run: a fake records each call and answers like gh would.
+  // `calls` holds the status POSTs, `lookups` the "does github.com know the
+  // commit" requests that come first.
+  const ok = { status: 0, stdout: '', stderr: '' };
+  const fakeGh = ({ post = ok, known = ok } = {}) => {
+    const calls = [];
+    const lookups = [];
+    const execute = (program, args) => {
+      if (args.includes('POST')) {
+        calls.push({ program, args });
+        return post;
+      }
+      lookups.push({ program, args });
+      return known;
+    };
+    return { calls, lookups, execute };
+  };
+  const field = (call, name) => call.args.find((arg) => arg.startsWith(`${name}=`))?.slice(name.length + 1);
+  const githubRepository = () => {
+    const repo = makeRepository();
+    repo.git(['config', 'remote.origin.url', 'https://github.com/acme/fixture.git']);
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    return repo;
+  };
+  const withLint = (command) => CONFIG.replace(`{ name: 'lint', command: 'echo lint >> "$RUN_LOG"', inputs: ['src/**'] }`,
+    () => `{ name: 'lint', command: ${JSON.stringify(command)}, inputs: ['src/**'] }`);
+
+  test('the owner/repo comes from a github.com URL only, credentials never kept', () => {
+    assert.equal(githubSlug('https://github.com/thannous/dreamer.git'), 'thannous/dreamer');
+    assert.equal(githubSlug('https://github.com/thannous/dreamer'), 'thannous/dreamer');
+    assert.equal(githubSlug('git@github.com:thannous/dreamer.git'), 'thannous/dreamer');
+    assert.equal(githubSlug('ssh://git@github.com/thannous/dreamer.git'), 'thannous/dreamer');
+    assert.equal(githubSlug('https://x-access-token:abc@github.com/thannous/dreamer.git'), 'thannous/dreamer');
+    for (const url of ['https://gitlab.com/a/b.git', 'https://github.com.evil.example/a/b', '/srv/origin.git', 'https://github.com/a/b/c', '', null]) {
+      assert.equal(githubSlug(url), null, String(url));
+    }
+  });
+
+  test('state mapping: success only for a pass; a failure or an incomplete run is a failure', () => {
+    const sha = 'a'.repeat(40);
+    const proof = { result: 'passed', checks: [
+      { name: 'lint', result: 'passed' }, { name: 'test', result: 'passed', reused: true }, { name: 'db', result: 'skipped' },
+    ] };
+    assert.deepEqual(commitStatusFor('pr', { status: 0, proof }, sha), {
+      state: 'success', context: 'verify-local/pr', description: 'verify:pr passed on aaaaaaaaaaaa: 1 ran, 1 reused, 1 skipped',
+    });
+    const failed = commitStatusFor('pr', { status: 1, proof: { checks: [{ name: 'lint', result: 'passed' }, { name: 'test', result: 'failed' }] } }, sha);
+    assert.equal(failed.state, 'failure');
+    assert.equal(failed.description, 'verify:pr failed on aaaaaaaaaaaa: test');
+    const incomplete = commitStatusFor('pr', { status: 2, proof: { checks: [{ name: 'db', result: 'unavailable' }] } }, sha);
+    assert.equal(incomplete.state, 'failure');
+    assert.equal(incomplete.description, 'verify:pr incomplete on aaaaaaaaaaaa: could not run here: db');
+    assert.equal(commitStatusFor('pr', { status: 1, proof: null }, sha).description, 'verify:pr failed on aaaaaaaaaaaa: no proof written');
+    // Exit 0 alone is not enough: success needs a passed proof too.
+    assert.equal(commitStatusFor('pr', { status: 0, proof: null }, sha).state, 'failure');
+    assert.equal(commitStatusFor('pr', { status: 0, proof: { result: 'failed', checks: [{ name: 'lint', result: 'failed' }] } }, sha).state, 'failure');
+    assert.equal(commitStatusFor('pr', { status: 0, proof: { result: 'incomplete', checks: [] } }, sha).state, 'failure');
+    const long = commitStatusFor('pr', { status: 1, proof: { checks: Array.from({ length: 40 }, (_, i) => ({ name: `check-${i}`, result: 'failed' })) } }, sha);
+    assert.equal(long.description.length, STATUS_DESCRIPTION_MAX);
+    assert.ok(long.description.endsWith('...'));
+  });
+
+  test('the checkout must be at the verified commit and clean', () => {
+    const sha = 'b'.repeat(40);
+    assert.equal(statusRefusal({ head: sha, dirty: 0 }, sha), null);
+    assert.match(statusRefusal({ head: 'c'.repeat(40), dirty: 0 }, sha), /not at the verified bbbbbbbbbbbb/);
+    assert.match(statusRefusal({ head: sha, dirty: 2 }, sha), /has changes \(2 paths\)/);
+    assert.match(statusRefusal({ head: sha, dirty: null }, sha), /git status failed/);
+  });
+
+  test('a pass of the clean HEAD posts success for that exact SHA, with only owner/repo and the SHA', async () => {
+    const repo = githubRepository();
+    const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh();
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, 0, repo.lines.join('\n'));
+    assert.equal(result.proof.sha, sha);
+    assert.equal(gh.calls.length, 1);
+    const [call] = gh.calls;
+    assert.equal(call.program, 'gh');
+    assert.deepEqual(call.args.slice(0, 6), ['api', '--hostname', 'github.com', '-X', 'POST', `repos/acme/fixture/statuses/${sha}`], 'github.com explicitly, whatever GH_HOST says');
+    assert.deepEqual(gh.lookups.map((lookup) => lookup.args.slice(0, 4)), [['api', '--hostname', 'github.com', `repos/acme/fixture/commits/${sha}`]], 'the commit is looked up on github.com first');
+    assert.equal(field(call, 'state'), 'success');
+    assert.equal(field(call, 'context'), 'verify-local/pr');
+    assert.match(field(call, 'description'), new RegExp(`^verify:pr passed on ${sha.slice(0, 12)}: `));
+    assert.ok(!call.args.join(' ').includes(os.hostname()), 'no host name is sent');
+    assert.ok(!call.args.join(' ').includes(repo.base), 'no local path is sent');
+    assert.equal(result.commitStatus.state, 'success');
+  });
+
+  test('a failed run posts failure and keeps its exit status', async () => {
+    const repo = githubRepository();
+    repo.commit('break', { 'src/a.js': 'nope\n' });
+    const gh = fakeGh();
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, 1);
+    assert.equal(field(gh.calls[0], 'state'), 'failure');
+    assert.match(field(gh.calls[0], 'description'), /: test$/);
+  });
+
+  test('a dirty checkout or another commit than HEAD is refused before anything runs', async () => {
+    const repo = githubRepository();
+    const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh();
+    repo.write('scratch.txt', 'untracked\n');
+    await assert.rejects(verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute }), /has changes \(1 path\); commit or stash first, nothing runs/);
+    rmSync(path.join(repo.work, 'scratch.txt'));
+    await assert.rejects(verify('pr', ['--post-status', '--rev', 'HEAD^'], { ...repo.options, postStatusExecute: gh.execute }), new RegExp(`at ${sha.slice(0, 12)}, not at the verified`));
+    assert.deepEqual(repo.runs(), [], 'no check ran');
+    assert.equal(gh.calls.length, 0);
+    assert.equal(existsSync(path.join(repo.work, '.git', 'verify-proofs', runLogName(sha))), false, 'no run was logged');
+  });
+
+  test('a checkout that changes or moves during the run posts nothing, and a pass then exits 3', async () => {
+    const repo = githubRepository();
+    repo.commit('dirty during run', { 'verify-local.config.mjs': withLint('echo lint >> "$RUN_LOG" && touch "$VERIFY_LOCAL_ROOT/late.txt"') });
+    const gh = fakeGh();
+    const dirty = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(dirty.status, STATUS_NOT_POSTED, repo.lines.join('\n'));
+    assert.equal(dirty.proof.result, 'passed', 'the proof itself stands');
+    assert.ok(repo.lines.some((line) => /no commit status posted for [0-9a-f]{12}: the checkout has changes \(1 path\) at the end of the run/.test(line)), repo.lines.join('\n'));
+    rmSync(path.join(repo.work, 'late.txt'));
+
+    repo.commit('moves during run', { 'verify-local.config.mjs': withLint('echo lint >> "$RUN_LOG" && git -C "$VERIFY_LOCAL_ROOT" checkout --quiet main') });
+    const moved = await verify('pr', ['--post-status', '--force'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(moved.status, STATUS_NOT_POSTED, repo.lines.join('\n'));
+    assert.ok(repo.lines.some((line) => /not at the verified [0-9a-f]{12} at the end of the run/.test(line)), repo.lines.join('\n'));
+    assert.equal(gh.calls.length, 0);
+  });
+
+  test('a gh failure posts nothing, exits 3 after a pass, and never prints what gh said', async () => {
+    const repo = githubRepository();
+    repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh({ post: { status: 1, stdout: '{"creator":{"login":"someone"}}', stderr: 'gh: Not Found (HTTP 404) secret-detail' } });
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, STATUS_NOT_POSTED);
+    assert.equal(gh.calls.length, 1);
+    const text = repo.lines.join('\n');
+    assert.match(text, /no commit status posted for [0-9a-f]{12}: gh api exited 1 \(HTTP 404\)/);
+    assert.ok(!text.includes('secret-detail') && !text.includes('someone'), 'gh output stays out of the log');
+  });
+
+  test('a killed check or a run that throws never posts success', async () => {
+    const repo = githubRepository();
+    repo.commit('killed', { 'verify-local.config.mjs': withLint('kill -KILL $$') });
+    const gh = fakeGh();
+    const killed = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(killed.status, 1);
+    assert.equal(gh.calls.length, 1);
+    assert.equal(field(gh.calls[0], 'state'), 'failure');
+    assert.match(field(gh.calls[0], 'description'), /failed on [0-9a-f]{12}: lint$/);
+
+    repo.commit('broken config', { 'verify-local.config.mjs': 'export default { checks: [ { name: 1 } ] };\n' });
+    const thrown = fakeGh();
+    await assert.rejects(verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: thrown.execute }));
+    assert.equal(thrown.calls.length, 0, 'a run that throws posts nothing');
+  });
+
+  test('a commit github.com does not know yet posts nothing, and says to push then run again', async () => {
+    const repo = githubRepository();
+    const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh({ known: { status: 1, stdout: '', stderr: 'gh: No commit found for SHA (HTTP 422)' } });
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, STATUS_NOT_POSTED);
+    assert.equal(result.proof.result, 'passed', 'the proof itself stands');
+    assert.equal(gh.lookups.length, 1);
+    assert.equal(gh.calls.length, 0, 'no status POST');
+    assert.ok(repo.lines.some((line) => line.includes(`no commit status posted for ${sha.slice(0, 12)}: github.com does not know the commit yet (gh api exited 1 (HTTP 422)); push it, then run again`)), repo.lines.join('\n'));
+  });
+
+  test('pr only, never with --plan, and only for a github.com origin; without the flag nothing is posted', async () => {
+    const repo = githubRepository();
+    repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh();
+    const options = { ...repo.options, postStatusExecute: gh.execute };
+    await assert.rejects(verify('release', ['--post-status'], options), /applies to pr only/);
+    await assert.rejects(verify('pr', ['--post-status', '--plan'], options), /--plan posts no status/);
+    repo.git(['config', 'remote.origin.url', '/srv/origin.git']);
+    await assert.rejects(verify('pr', ['--post-status'], options), /needs a github.com origin remote/);
+    const plain = await verify('pr', [], options);
+    assert.equal(plain.status, 0);
+    assert.equal(plain.commitStatus, undefined);
+    assert.equal(gh.calls.length, 0);
   });
 });
 
@@ -1531,6 +1791,18 @@ describe('verify:release and the deploy guard', () => {
     assert.match(repo.lines.join('\n'), /^- Delivery checks changed: verify-local.config.mjs \(needs the owner's review\)$/m);
   });
 
+  test('a ! glob of the config never takes back one of the engine delivery files', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
+      .replace("mainBranch: 'main',", "mainBranch: 'main',\n  deliveryFiles: ['scripts/', '!verify-local.config.mjs'],");
+    repo.commit('hide', { 'verify-local.config.mjs': config });
+    await verify('pr', [], repo.options);
+    repo.lines.length = 0;
+    await proofBlock([], repo.options);
+    assert.match(repo.lines.join('\n'), /^- Delivery checks changed: verify-local.config.mjs \(needs the owner's review\)$/m);
+  });
+
   test('proof-block also flags the repository check scripts and package.json changes', async () => {
     const repo = makeRepository();
     const config = readFileSync(path.join(repo.work, 'verify-local.config.mjs'), 'utf8')
@@ -1591,6 +1863,37 @@ describe('cleanup of the isolated copy', () => {
     repo.commit('fail', { 'verify-local.config.mjs': config.replace(`command: 'echo lint >> "$RUN_LOG"'`, `command: 'exit 3'`) });
     assert.notEqual((await verify('pr', [], repo.options)).status, 0);
     assert.deepEqual(left(repo.options.worktreeRoot), []);
+  });
+
+  test('consecutive runs check their commit out at the same path', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    repo.commit('feature', { 'src/b.js': '1\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    repo.commit('more', { 'src/b.js': '2\n' });
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    const copies = repo.lines.map((line) => /isolated copy (\S+): /.exec(line)?.[1]).filter(Boolean);
+    assert.equal(copies.length, 2);
+    assert.equal(copies[1], copies[0]);
+    assert.equal(path.basename(copies[0]), `${path.basename(repo.work)}-0`);
+    assert.deepEqual(left(repo.options.worktreeRoot), []);
+  });
+
+  test('a copy takes the lowest slot no run holds, past the last slot a random name', () => {
+    const base = mkdtempSync(path.join(scratch, 'slots-'));
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-0');
+    // A live run owns slot 0.
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-1');
+    // A kept copy keeps its slot without an owner; a slot its run has left is free again.
+    mkdirSync(path.join(base, 'repo-1'));
+    rmSync(path.join(base, 'repo-1.owner'));
+    rmSync(path.join(base, 'repo-0.owner'));
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-0');
+    // A .tmp directory alone (its copy being removed) also keeps the slot: TMPDIR is never reused.
+    mkdirSync(path.join(base, 'repo-2.tmp'));
+    assert.equal(path.basename(claimCopy(base, 'repo')), 'repo-3');
+    for (let slot = 4; slot < COPY_SLOTS; slot++) claimCopy(base, 'repo');
+    assert.match(path.basename(claimCopy(base, 'repo')), /^repo-[0-9a-f]{6}$/);
   });
 
   test('a later run sweeps copies whose owner is gone, and keeps those of a live run', () => {

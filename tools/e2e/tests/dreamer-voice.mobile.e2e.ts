@@ -1,7 +1,7 @@
 import { test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
 import { injectAndroidMicrophone, voiceInputUnavailable } from '../native-voice-input';
-import { nativeGuest, nativeJournal, nativeTranscript } from '../native-backend-fixtures';
+import { nativeDismissCaptureKeyboard, nativeGuest, nativeJournal, nativeTranscript } from '../native-backend-fixtures';
 
 type VoiceFixtures = TestFixtures & { device: Device };
 const profileUnavailable = process.env.E2E_NATIVE_MOCK_MODE !== 'false' || !process.env.E2E_NATIVE_BACKEND_MANIFEST
@@ -19,7 +19,7 @@ async function prepareVoice(fixtures: VoiceFixtures) {
   // The shared fixture signs out normally before resetting this owned QA app,
   // asserts its guest identity, sets English, and opens an empty text capture.
   await nativeGuest(fixtures);
-  await fixtures.device.dismissKeyboard();
+  await nativeDismissCaptureKeyboard(fixtures, { afterFill: false });
   await expect(fixtures.screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue('');
 }
 
@@ -95,7 +95,7 @@ test('Dreamer native denied microphone preserves typed fallback through reauthor
   const draft = 'Voice permission fixture: a purple garden beside the sea.';
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
   await editor.fill(draft);
-  await device.dismissKeyboard();
+  await nativeDismissCaptureKeyboard(fixtures);
   // Leaving Capture flushes the current draft before the OS may kill the process.
   await device.home();
   try {
@@ -136,7 +136,7 @@ test('Dreamer native denied microphone preserves typed fallback through reauthor
     await expect(editor).toHaveValue(draft);
     const corrected = `${draft} I added this sentence after allowing the microphone.`;
     await editor.fill(corrected);
-    await device.dismissKeyboard();
+    await nativeDismissCaptureKeyboard(fixtures);
     await expectSavedOnceAfterRestart(fixtures, corrected);
   } finally {
     // Only the owned QA app permission is reset; no host audio settings are changed.
@@ -171,7 +171,7 @@ test('Dreamer native real microphone dictation is recognized before correction a
     const recognized = await editor.inputValue();
     const corrected = recognized.replace(/blue lighthouse/i, 'green lighthouse') + ' I felt peaceful when I woke up.';
     await editor.fill(corrected);
-    await device.dismissKeyboard();
+    await nativeDismissCaptureKeyboard(fixtures);
     await expect(editor).toHaveValue(corrected);
     await expectSavedOnceAfterRestart(fixtures, corrected);
   } finally {
@@ -238,7 +238,7 @@ test('Dreamer native system speech recognizes a QA audio file before correction 
     const recognized = await editor.inputValue();
     const corrected = recognized.replace(/blue lighthouse/i, 'green lighthouse') + ' I felt peaceful when I woke up.';
     await editor.fill(corrected);
-    await device.dismissKeyboard();
+    await nativeDismissCaptureKeyboard(fixtures);
     await expectSavedOnceAfterRestart(fixtures, corrected);
   } finally {
     await device.setPermission('microphone', 'reset');

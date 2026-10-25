@@ -54,6 +54,25 @@ test('badge RPC rejects foreign accounts and stale writes, bounds data and erase
     }
     expect((await owner.rpc('sync_badge_ledger', args)).data.ledger.earned['symbol-explorer']).toEqual([12345]);
 
+    // A current app rewrites the copy as version 2; an older app can no longer write over it.
+    const v2 = { version: 2, keys: { 'symbol-explorer': ['water', 'moon', 'sun', 'forest'] }, best: {},
+      earned: { 'symbol-explorer': [12345] }, revealed: {} };
+    const upgraded = await owner.rpc('sync_badge_ledger', { ...args, p_revision: 2, p_ledger: v2 });
+    expect(upgraded.error).toBeNull();
+    expect(upgraded.data.accepted).toBe(true);
+    const downgrade = await owner.rpc('sync_badge_ledger', { ...args, p_revision: 3, p_ledger: facts(['water']) });
+    expect(downgrade.error).toBeNull();
+    expect(downgrade.data.accepted).toBe(false);
+    expect(downgrade.data.ledger.version).toBe(2);
+    // Up to five tiers in version 2, and none for a family the collection retired.
+    for (const invalid of [
+      { ...v2, earned: { 'symbol-explorer': [1, 2, 3, 4, 5, 6] } },
+      { ...v2, keys: { 'gentle-rhythm': ['2026-10-01'] } },
+      { ...v2, keys: { 'night-journal': Array.from({ length: 151 }, (_, i) => `c:dream-${i}`) } },
+    ]) {
+      expect((await owner.rpc('sync_badge_ledger', { ...args, p_revision: 3, p_ledger: invalid })).error?.code).toBe('22023');
+    }
+
     // Dedicated disposable owner for the actual auth.users cascade, not an app reset.
     const extra = await admin.auth.admin.createUser({ email: `badge-delete-${randomUUID()}@example.test`, password: `E2e!${randomUUID()}`, email_confirm: true });
     expect(extra.error).toBeNull();
@@ -88,6 +107,8 @@ test('saved and reading badges restore on an empty browser with their original a
     await page.getByTestId('collection.detail.action').filter({ visible: true }).click();
     await page.getByTestId('symbol.popular.water').filter({ visible: true }).click();
     await expect(page.getByTestId('screen.symbolDetail').filter({ visible: true })).toBeVisible();
+    // An entry counts once read to its end.
+    await page.getByTestId('symbol.detail.end').scrollIntoViewIfNeeded();
     const remote = async () => {
       const result = await owner.rpc('sync_badge_ledger', { p_user_id: accounts.free.id, p_revision: null, p_ledger: null });
       expect(result.error).toBeNull();
@@ -96,7 +117,7 @@ test('saved and reading badges restore on an empty browser with their original a
     await expect.poll(() => page.evaluate((key: string) => {
       const raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw).keys['symbol-explorer'] : null;
-    }, `noctalia_badge_ledger_v1:user:${accounts.free.id}`)).toEqual(['water']);
+    }, `noctalia_badge_ledger_v2:user:${accounts.free.id}`)).toEqual(['water']);
     // Reload exercises durable pending state, rather than relying on a still-live closure.
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('screen.recording')).toBeVisible();

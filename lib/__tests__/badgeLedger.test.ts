@@ -1,12 +1,13 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { BADGE_FAMILIES, getBadgeFamily } from '@/lib/badges/catalog';
+import { BADGE_CARD_COUNT, BADGE_FAMILIES, getBadgeFamily } from '@/lib/badges/catalog';
 import {
   applyBadgeEvent,
   buildBadgeCollection,
   computeBadgeProgress,
   countDistinctDreams,
   createEmptyBadgeLedger,
+  countStoryWords,
   mergeBadgeLedgers,
   parseBadgeLedger,
   revealBadgeFamily,
@@ -39,17 +40,25 @@ const fold = (events: BadgeEvent[], ledger: BadgeLedger = createEmptyBadgeLedger
 
 const progressOf = (ledger: BadgeLedger, dreams: DreamAnalysis[] = []) => computeBadgeProgress(ledger, dreams);
 
+const note = (createdAt: number) => ({ id: `note-${createdAt}`, text: 'Seen again.', createdAt, updatedAt: createdAt });
+const stateOf = (ledger: BadgeLedger, dreams: DreamAnalysis[], id: string) =>
+  buildBadgeCollection(ledger, progressOf(ledger, dreams)).families.find((entry) => entry.family.id === id)!;
+
 describe('badge catalogue', () => {
-  it('holds twenty families of three strictly rising tiers, with the eight guides as gold', () => {
-    expect(BADGE_FAMILIES).toHaveLength(20);
-    expect(new Set(BADGE_FAMILIES.map((family) => family.id)).size).toBe(20);
+  it('holds nine families of three or five rising tiers and six cards earned once', () => {
+    expect(BADGE_FAMILIES).toHaveLength(15);
+    expect(new Set(BADGE_FAMILIES.map((family) => family.id)).size).toBe(15);
     for (const family of BADGE_FAMILIES) {
-      const [bronze, silver, gold] = family.thresholds;
-      expect(bronze).toBeGreaterThan(0);
-      expect(silver).toBeGreaterThan(bronze);
-      expect(gold).toBeGreaterThan(silver);
+      expect([1, 3, 5]).toContain(family.thresholds.length);
+      expect(family.thresholds[0]).toBeGreaterThan(0);
+      family.thresholds.slice(1).forEach((threshold, index) => expect(threshold).toBeGreaterThan(family.thresholds[index]));
+      expect(family.thresholds.length === 1).toBe(family.chapter === 'firsts');
     }
-    expect(getBadgeFamily('night-scholar')?.thresholds).toEqual([2, 4, 8]);
+    expect(BADGE_FAMILIES.filter((family) => family.thresholds.length === 5).map((family) => family.id))
+      .toEqual(['night-journal', 'moon-cycles', 'dream-reader', 'time-traveler', 'symbol-explorer']);
+    expect(BADGE_CARD_COUNT).toBe(43);
+    // The gold card of the guides asks for every one of the eight guides.
+    expect(getBadgeFamily('night-scholar')?.thresholds).toEqual([1, 4, 8]);
   });
 });
 
@@ -58,97 +67,125 @@ describe('badge ledger', () => {
     const saved = dream(at('2026-10-01'));
     const synced = { ...saved, id: saved.id + 5000, remoteId: 42 };
     const ledger = fold([
-      { type: 'dream_saved', dream: saved, input: 'text' },
-      { type: 'dream_saved', dream: saved, input: 'text' },
-      { type: 'dream_saved', dream: synced, input: 'text' },
-      { type: 'symbol_viewed', symbolId: 'water' },
-      { type: 'symbol_viewed', symbolId: 'water' },
-      { type: 'guide_viewed', guideId: 'dream-journal' },
-      { type: 'guide_viewed', guideId: 'dream-journal' },
+      { type: 'dream_shared', dream: saved },
+      { type: 'dream_shared', dream: saved },
+      { type: 'dream_shared', dream: synced },
+      { type: 'symbol_read', symbolId: 'water' },
+      { type: 'symbol_read', symbolId: 'water' },
+      { type: 'guide_completed', guideId: 'dream-journal' },
+      { type: 'guide_completed', guideId: 'dream-journal' },
     ]);
     const progress = progressOf(ledger);
-    expect(progress['ink-dreamer']).toBe(1);
-    expect(progress['night-voice']).toBe(0);
+    expect(progress['night-echoes']).toBe(1);
     expect(progress['symbol-explorer']).toBe(1);
     expect(progress['night-scholar']).toBe(1);
   });
 
-  it('tells a spoken dream from a written one', () => {
+  it('discovers the voice and the assistant only through what the capture did', () => {
     const ledger = fold([
-      { type: 'dream_saved', dream: dream(1), input: 'voice' },
-      { type: 'dream_saved', dream: dream(2), input: 'text' },
+      { type: 'dream_saved', dream: dream(1), voiced: true, answered: false },
+      { type: 'dream_saved', dream: dream(2), voiced: false, answered: true },
       // A restored draft alone says neither.
-      { type: 'dream_saved', dream: dream(3), input: null },
+      { type: 'dream_saved', dream: dream(3), voiced: false, answered: false },
     ]);
     expect(progressOf(ledger)['night-voice']).toBe(1);
-    expect(progressOf(ledger)['ink-dreamer']).toBe(1);
+    expect(progressOf(ledger)['dream-questions']).toBe(1);
+    const nothing = fold([{ type: 'dream_saved', dream: dream(3), voiced: false, answered: false }]);
+    expect(progressOf(nothing)['night-voice']).toBe(0);
+    expect(progressOf(nothing)['dream-questions']).toBe(0);
   });
 
-  it('counts a reading only from the day after saving and keeps the longest gap', () => {
-    const saved = dream(at('2026-09-01'), { isFavorite: true });
-    const sameDay = fold([{ type: 'dream_reopened', dream: saved, now: saved.id + 3 * 60 * 60 * 1000 }]);
-    expect(progressOf(sameDay)['dream-reader']).toBe(0);
-
+  it('counts a story completed by at least twenty words, once per dream', () => {
+    expect(countStoryWords('  a quiet\nsea  under the moon ')).toBe(6);
     const ledger = fold([
-      { type: 'dream_reopened', dream: saved, now: at('2026-10-01') },
-      { type: 'dream_reopened', dream: saved, now: at('2026-09-03') },
+      { type: 'narrative_enriched', dream: dream(1), addedWords: 19 },
+      { type: 'narrative_enriched', dream: dream(2), addedWords: 20 },
+      { type: 'narrative_enriched', dream: dream(2), addedWords: 40 },
     ]);
-    const progress = progressOf(ledger);
-    expect(progress['dream-reader']).toBe(1);
-    expect(progress['favorite-echoes']).toBe(1);
+    expect(progressOf(ledger)['dream-weaver']).toBe(1);
+  });
+
+  it('counts a note only from the day after its dream, keeps the longest gap and survives the note', () => {
+    const saved = at('2026-09-01');
+    const sameDay = [dream(saved, { personalNotes: [note(saved + 3 * 60 * 60 * 1000)] })];
+    expect(progressOf(createEmptyBadgeLedger(), sameDay)['dream-reader']).toBe(0);
+
+    const dreams = [
+      dream(saved, { personalNotes: [note(at('2026-09-03')), note(at('2026-10-01'))] }),
+      dream(at('2026-09-10'), { personalNotes: [note(at('2026-09-12'))] }),
+    ];
+    const progress = progressOf(createEmptyBadgeLedger(), dreams);
+    expect(progress['dream-reader']).toBe(2);
     expect(progress['time-traveler']).toBe(30);
+    // Deleted notes take nothing back once the ledger has seen them.
+    const settled = settleBadgeLedger(createEmptyBadgeLedger(), dreams, at('2026-10-02'));
+    const withoutNotes = dreams.map((entry) => ({ ...entry, personalNotes: [] }));
+    expect(progressOf(settled, withoutNotes)).toMatchObject({ 'dream-reader': 2, 'time-traveler': 30 });
+    expect(settled.earned['time-traveler']).toEqual([at('2026-10-02'), at('2026-10-02')]);
   });
 
-  it('counts days, not consecutive days, for searches, filters and trends', () => {
+  it('counts days, not consecutive days, for a first search or a first look at Trends', () => {
     const ledger = fold([
-      { type: 'journal_result_opened', searched: true, filtered: false, now: at('2026-10-01') },
-      { type: 'journal_result_opened', searched: true, filtered: true, now: at('2026-10-01') + 60_000 },
-      { type: 'journal_result_opened', searched: true, filtered: false, now: at('2026-10-09') },
-      { type: 'trends_explored', now: at('2026-10-02') },
-      { type: 'trends_explored', now: at('2026-10-20') },
+      { type: 'journal_result_opened', now: at('2026-10-01') },
+      { type: 'journal_result_opened', now: at('2026-10-01') + 60_000 },
+      { type: 'trends_opened', now: at('2026-10-02') },
     ]);
     const progress = progressOf(ledger);
-    expect(progress['dream-seeker']).toBe(2);
-    expect(progress['path-finder']).toBe(1);
-    expect(progress.observatory).toBe(2);
+    expect(progress['dream-seeker']).toBe(1);
+    expect(progress.observatory).toBe(1);
+    expect(stampActionTiers(ledger, 7).earned).toMatchObject({ 'dream-seeker': [7], observatory: [7] });
   });
 
-  it('reads the journal it was given: dreams, days, weeks, months, memories and images', () => {
+  it('reads the journal it was given: dreams, months, memories, favourites and images', () => {
     const dreams = [
       dream(at('2026-01-05')),
       dream(at('2026-01-05') + 60_000),
-      dream(at('2026-01-07')),
       dream(at('2026-03-15'), { memory: { origin: 'remembered', createdFrom: 'journal' } }),
-      // A dream handed over by Lucid is not an old memory written down as such.
+      // The same memories as the journal's own filter, a Lucid hand-over included.
       dream(at('2026-03-16'), { memory: { origin: 'remembered', createdFrom: 'lucid_trainer' } }),
-      dream(at('2026-03-17'), { imageSource: 'user', imageUrl: 'file:///kept.webp', syncState: 'clean' }),
+      dream(at('2026-03-17'), { imageSource: 'user', imageUrl: 'file:///kept.webp', syncState: 'clean', isFavorite: true }),
       // An upload still pending, or stripped after failing, is not an added image yet.
       dream(at('2026-03-18'), { imageSource: 'user', imageUrl: 'file:///pending.webp', syncState: 'pending' }),
       dream(at('2026-03-19'), { imageSource: 'user', imageUrl: '' }),
     ];
     const progress = progressOf(createEmptyBadgeLedger(), dreams);
-    expect(progress['night-journal']).toBe(8);
-    expect(progress['gentle-rhythm']).toBe(7);
-    // Sunday 15 March closes one week; Monday 16 opens the next.
-    expect(progress['night-thread']).toBe(3);
+    expect(progress['night-journal']).toBe(7);
     expect(progress['moon-cycles']).toBe(2);
-    expect(progress['memory-keeper']).toBe(1);
+    expect(progress['memory-keeper']).toBe(2);
+    expect(progress['treasure-keeper']).toBe(1);
     expect(progress['dream-painter']).toBe(1);
   });
 
-  it('keeps earned tiers, favourites and counts after dreams are deleted or unmarked', () => {
-    const dreams = Array.from({ length: 25 }, (_, index) => dream(at('2026-02-01') + index * DAY, { isFavorite: index < 5 }));
+  it('keeps earned tiers, favourites and counts past the stored identities after dreams are deleted', () => {
+    const dreams = Array.from({ length: 160 }, (_, index) => dream(at('2026-02-01') + index * 60_000, { isFavorite: index < 2 }));
     const settled = settleBadgeLedger(createEmptyBadgeLedger(), dreams, at('2026-03-01'));
-    expect(settled.earned['night-journal']).toEqual([at('2026-03-01'), at('2026-03-01')]);
+    expect(settled.earned['night-journal']).toHaveLength(5);
+    // At most 150 identities are kept; the count above them is the family's best.
+    expect(settled.keys['night-journal']).toHaveLength(150);
 
     // After a long pause, with most dreams gone and no favourite left:
     const remaining = dreams.slice(0, 2).map((entry) => ({ ...entry, isFavorite: false }));
     const later = settleBadgeLedger(settled, remaining, at('2026-09-01'));
-    const collection = buildBadgeCollection(later, progressOf(later, remaining));
-    const state = (id: string) => collection.families.find((entry) => entry.family.id === id)!;
-    expect(state('night-journal')).toMatchObject({ tier: 2, progress: 25, nextThreshold: 100 });
-    expect(state('treasure-keeper')).toMatchObject({ tier: 2, progress: 5 });
-    expect(later.earned['night-journal']).toEqual([at('2026-03-01'), at('2026-03-01')]);
+    expect(stateOf(later, remaining, 'night-journal')).toMatchObject({ tier: 5, progress: 160, nextThreshold: null });
+    expect(stateOf(later, remaining, 'treasure-keeper')).toMatchObject({ tier: 1, nextThreshold: null });
+    expect(later.earned['night-journal']).toEqual(settled.earned['night-journal']);
+  });
+
+  it('reaches the diamond with dreams written after others were deleted', () => {
+    const first = Array.from({ length: 100 }, (_, index) => dream(at('2026-02-01') + index * 60_000));
+    const settled = settleBadgeLedger(createEmptyBadgeLedger(), first, at('2026-03-01'));
+    const others = Array.from({ length: 50 }, (_, index) => dream(at('2026-05-01') + index * 60_000));
+    const later = settleBadgeLedger(settled, others, at('2026-06-01'));
+    expect(stateOf(later, others, 'night-journal')).toMatchObject({ tier: 5, progress: 150, nextThreshold: null });
+  });
+
+  it('counts families by tier and the first steps apart', () => {
+    const dreams = Array.from({ length: 10 }, (_, index) => dream(at('2026-02-01') + index * DAY, { isFavorite: index === 0 }));
+    const settled = settleBadgeLedger(createEmptyBadgeLedger(), dreams, at('2026-03-01'));
+    const collection = buildBadgeCollection(settled, progressOf(settled, dreams));
+    expect(collection.counts).toEqual({ bronze: 1, silver: 1, gold: 0, platinum: 0, diamond: 0 });
+    expect(collection.firsts).toBe(1);
+    expect(collection.earnedCards).toBe(3);
   });
 
   it('counts the same dream once across its local, client and server names', () => {
@@ -166,7 +203,7 @@ describe('badge ledger', () => {
   });
 
   it('stamps a tier earned by actions without a journal, and keeps a card turned at the tier it showed', () => {
-    const read = fold([1, 2, 3].map((index) => ({ type: 'symbol_viewed', symbolId: `s${index}` }) as BadgeEvent));
+    const read = fold([1, 2, 3].map((index) => ({ type: 'symbol_read', symbolId: `s${index}` }) as BadgeEvent));
     expect(stampActionTiers(read, 42).earned['symbol-explorer']).toEqual([42]);
     // A tier the album showed from progress, before the journal stamped it, stays turned over.
     // A remote silver award arriving while bronze is open must remain unrevealed.
@@ -178,21 +215,57 @@ describe('badge ledger', () => {
     expect(buildBadgeCollection(settled, progressOf(settled, [dream(at('2026-10-01'))])).unrevealedCards).toBe(0);
   });
 
-  it('survives a corrupt store and keeps both sides when a guest ledger joins an account', () => {
+  it('survives a corrupt store, drops tiers a family does not have, and keeps both sides of a guest join', () => {
     expect(parseBadgeLedger('not json')).toBeNull();
-    expect(parseBadgeLedger({ version: 2, keys: {} })).toBeNull();
-    expect(parseBadgeLedger({ version: 1, keys: { 'night-voice': 'x', unknown: ['a'] }, earned: { 'night-voice': [1, 'b'] } }))
+    expect(parseBadgeLedger({ version: 3, keys: {} })).toBeNull();
+    expect(parseBadgeLedger({ version: 2, keys: { 'night-voice': 'x', unknown: ['a'] }, earned: { 'night-voice': [1, 2] } }))
       .toEqual(createEmptyBadgeLedger());
 
-    const guest = fold([{ type: 'symbol_viewed', symbolId: 'moon' }, { type: 'dream_saved', dream: dream(1), input: 'voice' }]);
-    const account = fold([{ type: 'symbol_viewed', symbolId: 'water' }, { type: 'dream_saved', dream: dream(1), input: 'voice' }]);
+    const guest = fold([{ type: 'symbol_read', symbolId: 'moon' }, { type: 'dream_shared', dream: dream(1) }]);
+    const account = fold([{ type: 'symbol_read', symbolId: 'water' }, { type: 'dream_shared', dream: dream(1) }]);
     const merged = mergeBadgeLedgers(
-      { ...account, earned: { 'night-voice': [200] } },
-      { ...guest, earned: { 'night-voice': [100] } },
+      { ...account, earned: { 'night-echoes': [200] } },
+      { ...guest, earned: { 'night-echoes': [100] } },
     );
     expect(progressOf(merged)['symbol-explorer']).toBe(2);
-    expect(progressOf(merged)['night-voice']).toBe(1);
-    expect(merged.earned['night-voice']).toEqual([100]);
+    expect(progressOf(merged)['night-echoes']).toBe(1);
+    expect(merged.earned['night-echoes']).toEqual([100]);
     expect(parseBadgeLedger(JSON.parse(JSON.stringify(merged)))).toEqual(merged);
+  });
+
+  it('brings a first-collection ledger over without losing a tier of a family that stays', () => {
+    const converted = parseBadgeLedger({
+      version: 1,
+      keys: {
+        'night-journal': ['c:a|l:1'], 'moon-cycles': ['2026-09', '2026-10'], 'symbol-explorer': ['water', 'moon', 'sun'],
+        'dream-seeker': ['2026-10-01'], 'path-finder': ['2026-09-20', '2026-09-21', '2026-09-22'],
+        'gentle-rhythm': ['2026-10-01'], 'ink-dreamer': ['c:a|l:1'],
+      },
+      best: { 'night-journal': 25, 'time-traveler': 40 },
+      earned: {
+        'night-journal': [10, 20], 'symbol-explorer': [30], 'path-finder': [5], 'observatory': [8],
+        'gentle-rhythm': [3], 'night-voice': [6],
+      },
+      revealed: { 'night-journal': 2, 'symbol-explorer': 1, 'observatory': 1 },
+    })!;
+    // Kept whole.
+    expect(converted.keys['night-journal']).toEqual(['c:a|l:1']);
+    expect(converted.best['night-journal']).toBe(25);
+    expect(converted.earned['night-journal']).toEqual([10, 20]);
+    expect(converted.revealed['night-journal']).toBe(2);
+    // A rule that changed keeps its tiers, not what the old rule counted.
+    expect(converted.earned['symbol-explorer']).toEqual([30]);
+    expect(converted.revealed['symbol-explorer']).toBe(1);
+    expect(converted.keys['symbol-explorer']).toBeUndefined();
+    expect(converted.best['time-traveler']).toBeUndefined();
+    // A bronze becomes the card earned once, at the earliest date of its families.
+    expect(converted.earned['dream-seeker']).toEqual([5]);
+    expect(converted.earned['observatory']).toEqual([8]);
+    expect(converted.revealed['observatory']).toBe(1);
+    expect(converted.earned['night-voice']).toEqual([6]);
+    // Retired families leave nothing behind.
+    expect(Object.keys(converted.earned)).not.toContain('gentle-rhythm');
+    expect(Object.keys(converted.keys)).not.toContain('ink-dreamer');
+    expect(converted.version).toBe(2);
   });
 });

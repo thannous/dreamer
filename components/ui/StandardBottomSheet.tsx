@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   Pressable,
@@ -7,7 +7,9 @@ import {
   findNodeHandle,
   Text,
   View,
+  useWindowDimensions,
   type StyleProp,
+  type LayoutChangeEvent,
   type TextStyle,
   type ViewStyle,
   type ScrollViewInstance,
@@ -20,7 +22,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 
-import { BottomSheet, type BottomSheetProps } from './BottomSheet';
+import { BottomSheet, getBottomSheetMaximumHeight, type BottomSheetProps } from './BottomSheet';
 import {
   BottomSheetActions,
   BottomSheetLinkAction,
@@ -116,6 +118,12 @@ export type StandardBottomSheetProps = {
   dragIndicatorColor?: string;
   showsVerticalScrollIndicator?: boolean;
   dismissBehavior?: BottomSheetProps['dismissBehavior'];
+  /**
+   * Told the height the body can take before it scrolls: the tallest sheet in this window less
+   * the header, the footer and the margins. A body can then give up what it can spare, so its
+   * end does not hide under the footer.
+   */
+  onBodyRoom?: (room: number) => void;
 };
 
 /**
@@ -169,12 +177,28 @@ export function StandardBottomSheet({
   dragIndicatorColor,
   showsVerticalScrollIndicator = true,
   dismissBehavior,
+  onBodyRoom,
 }: StandardBottomSheetProps) {
   const { colors, mode, shadows } = useTheme();
   const insets = useSafeAreaInsets();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const titleRef = useRef<ViewInstance | null>(null);
   const scrollRef = useRef<ScrollViewInstance | null>(null);
+  const { height: viewportHeight } = useWindowDimensions();
+  // Safe-area inset and the theme shadow are runtime values, not classes. On iOS the platform
+  // sheet already holds its content above the home indicator and draws its own edge: there the
+  // inset would count twice, and the shadow would mark a seam on the sheet wherever the content
+  // stops short of it (the iPhone Duo's status bar column).
+  const paddingBottom = (process.env.EXPO_OS === 'ios' ? 0 : insets.bottom) + ThemeLayout.spacing.md;
+  // What sits above and below the body. Neither depends on the body, so a body sized from its
+  // room never moves the room.
+  const [chrome, setChrome] = useState<{ top: number | null; footer: number }>({ top: null, footer: 0 });
+  const bodyRoom = onBodyRoom && chrome.top !== null
+    ? getBottomSheetMaximumHeight(viewportHeight, insets) - paddingBottom - chrome.top - chrome.footer
+    : null;
+  useEffect(() => {
+    if (bodyRoom !== null) onBodyRoom?.(bodyRoom);
+  }, [bodyRoom, onBodyRoom]);
 
   useEffect(() => {
     if (!visible) return;
@@ -204,6 +228,81 @@ export function StandardBottomSheet({
     ? 'disabled'
     : 'enabled';
 
+  const measureBodyTop = onBodyRoom ? (event: LayoutChangeEvent) => {
+    const top = event.nativeEvent?.layout?.y;
+    if (top !== undefined) setChrome((current) => (current.top === top ? current : { ...current, top }));
+  } : undefined;
+  const body = (
+    <>
+      {/* Title */}
+      {headerIcon ? (
+        <View
+          accessible={false}
+          className="mb-4 h-14 w-14 items-center justify-center self-center rounded-artwork border-2 border-champagne-soft bg-ink-soft"
+        >
+          <IconSymbol name={headerIcon} size={32} color={noctalia.accent.soft} />
+        </View>
+      ) : null}
+
+      {!closeButton ? <Text
+        ref={titleRef}
+        {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
+        accessible
+        accessibilityRole="header"
+        className="mb-2 text-center font-sans-bold text-h2 text-ivory"
+        style={webTitleFocusResetStyle}
+        testID={titleTestID}
+      >
+        {title}
+      </Text> : null}
+
+      {/* Subtitle */}
+      {subtitle ? (
+        <Text className="mb-6 text-center font-sans text-body-sm text-ivory-muted">
+          {subtitle}
+        </Text>
+      ) : null}
+
+      {/* Optional custom body content */}
+      {children}
+    </>
+  );
+
+  // Actions remain outside the scrollable content.
+  const footerContent = footer ?? (actions ? (
+    <BottomSheetActions>
+      <BottomSheetPrimaryAction
+        label={actions.primaryLabel}
+        detail={actions.primaryDetail}
+        leadingIcon={actions.primaryIcon}
+        trailingIcon={actions.primaryTrailingIcon}
+        onPress={actions.onPrimary}
+        state={primaryState}
+        testID={actions.primaryTestID}
+        variant={actions.primaryVariant}
+      />
+      {actions.secondaryLabel && actions.onSecondary ? (
+        <BottomSheetSecondaryAction
+          label={actions.secondaryLabel}
+          detail={actions.secondaryDetail}
+          leadingIcon={actions.secondaryIcon}
+          trailingIcon={actions.secondaryTrailingIcon}
+          onPress={actions.onSecondary}
+          state={secondaryState}
+          testID={actions.secondaryTestID}
+        />
+      ) : null}
+      {actions.supportingContent}
+      {actions.linkLabel && actions.onLink ? (
+        <BottomSheetLinkAction
+          label={actions.linkLabel}
+          onPress={actions.onLink}
+          testID={actions.linkTestID}
+        />
+      ) : null}
+    </BottomSheetActions>
+  ) : null);
+
   return (
     <BottomSheet
       visible={visible}
@@ -216,12 +315,7 @@ export function StandardBottomSheet({
       showDragIndicator={!dragIndicatorColor}
       dismissBehavior={dismissBehavior ?? (actions?.primaryLoading ? 'none' : 'pan')}
       className="px-6 pt-2"
-      style={[
-        // Safe-area inset and the theme shadow are runtime values, not classes.
-        { paddingBottom: insets.bottom + ThemeLayout.spacing.md },
-        !transparentContent && shadows.xl,
-        style,
-      ]}
+      style={[{ paddingBottom }, !transparentContent && process.env.EXPO_OS !== 'ios' && shadows.xl, style]}
       testID={testID}
     >
       {background ? <View accessible={false} importantForAccessibility="no-hide-descendants" pointerEvents="none" style={StyleSheet.absoluteFill}>
@@ -280,74 +374,27 @@ export function StandardBottomSheet({
           </Pressable>
         </View>
       ) : null}
-      <ScrollView ref={scrollRef} scrollEnabled={bodyScrollEnabled} showsVerticalScrollIndicator={showsVerticalScrollIndicator} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled">
-
-      {/* Title */}
-      {headerIcon ? (
-        <View
-          accessible={false}
-          className="mb-4 h-14 w-14 items-center justify-center self-center rounded-artwork border-2 border-champagne-soft bg-ink-soft"
-        >
-          <IconSymbol name={headerIcon} size={32} color={noctalia.accent.soft} />
+      {bodyScrollEnabled ? (
+        <ScrollView ref={scrollRef} showsVerticalScrollIndicator={showsVerticalScrollIndicator} style={{ flexShrink: 1 }} nestedScrollEnabled keyboardShouldPersistTaps="handled" onLayout={measureBodyTop}>
+          {body}
+        </ScrollView>
+      ) : (
+        // A body that scrolls on its own needs a height it can share, which a scroll view's content
+        // never has: its scroller would keep its full height and run under the footer. It still
+        // grows as the scroll view did, so a full-height sheet keeps its footer at the bottom.
+        <View style={{ flexGrow: 1, flexShrink: 1, minHeight: 0 }} onLayout={measureBodyTop}>
+          {body}
         </View>
-      ) : null}
+      )}
 
-      {!closeButton ? <Text
-        ref={titleRef}
-        {...(process.env.EXPO_OS === 'web' ? { tabIndex: -1 as const } : {})}
-        accessible
-        accessibilityRole="header"
-        className="mb-2 text-center font-sans-bold text-h2 text-ivory"
-        style={webTitleFocusResetStyle}
-        testID={titleTestID}
-      >
-        {title}
-      </Text> : null}
-
-      {/* Subtitle */}
-      {subtitle ? (
-        <Text className="mb-6 text-center font-sans text-body-sm text-ivory-muted">
-          {subtitle}
-        </Text>
-      ) : null}
-
-      {/* Optional custom body content */}
-      {children}
-
-      </ScrollView>
-
-      {/* Actions remain outside the scrollable content. */}
-      {footer ?? (actions ? <BottomSheetActions>
-        <BottomSheetPrimaryAction
-          label={actions.primaryLabel}
-          detail={actions.primaryDetail}
-          leadingIcon={actions.primaryIcon}
-          trailingIcon={actions.primaryTrailingIcon}
-          onPress={actions.onPrimary}
-          state={primaryState}
-          testID={actions.primaryTestID}
-          variant={actions.primaryVariant}
-        />
-        {actions.secondaryLabel && actions.onSecondary ? (
-          <BottomSheetSecondaryAction
-            label={actions.secondaryLabel}
-            detail={actions.secondaryDetail}
-            leadingIcon={actions.secondaryIcon}
-            trailingIcon={actions.secondaryTrailingIcon}
-            onPress={actions.onSecondary}
-            state={secondaryState}
-            testID={actions.secondaryTestID}
-          />
-        ) : null}
-        {actions.supportingContent}
-        {actions.linkLabel && actions.onLink ? (
-          <BottomSheetLinkAction
-            label={actions.linkLabel}
-            onPress={actions.onLink}
-            testID={actions.linkTestID}
-          />
-        ) : null}
-      </BottomSheetActions> : null)}
+      {onBodyRoom && footerContent ? (
+        <View onLayout={(event: LayoutChangeEvent) => {
+          const height = event.nativeEvent?.layout?.height;
+          if (height !== undefined) setChrome((current) => (current.footer === height ? current : { ...current, footer: height }));
+        }}>
+          {footerContent}
+        </View>
+      ) : footerContent}
     </BottomSheet>
   );
 }

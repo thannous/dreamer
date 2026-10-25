@@ -1,10 +1,10 @@
 'use strict';
 
 const { execFileSync } = require('node:child_process');
-const { mkdtempSync, writeFileSync, rmSync } = require('node:fs');
+const { existsSync, mkdtempSync, writeFileSync, rmSync, utimesSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 const path = require('node:path');
-const { buildJestArgs, resolveChangedSince, runJestChanged } = require('./run-jest-changed');
+const { buildJestArgs, cacheDirectory, resolveChangedSince, runJestChanged } = require('./run-jest-changed');
 
 describe('run-jest-changed', () => {
   it('keeps the explicit CI base and allows an explicit HEAD for a working-tree delta', () => {
@@ -56,6 +56,29 @@ describe('run-jest-changed', () => {
   it('returns the Jest failure status', () => {
     const spawnSyncImpl = jest.fn(() => ({ status: 7 }));
     expect(runJestChanged({ env: { JEST_CHANGED_SINCE: 'base' }, execPath: '/node', jestBin: '/jest.js', spawnSyncImpl })).toBe(7);
+  });
+
+  it('keeps Jest\'s cache in the shared git directory for a verify:pr run only', () => {
+    const common = mkdtempSync(path.join(tmpdir(), 'noctalia-jest-cache-'));
+    const kept = path.join(common, 'verify-cache', 'jest');
+    try {
+      expect(cacheDirectory({ VERIFY_LOCAL_KIND: 'release', VERIFY_LOCAL_COMMON_DIR: common })).toBeNull();
+      expect(cacheDirectory({})).toBeNull();
+      expect(cacheDirectory({ VERIFY_LOCAL_KIND: 'pr', VERIFY_LOCAL_COMMON_DIR: common })).toBe(kept);
+      writeFileSync(path.join(kept, 'transform'), 'cached');
+      expect(cacheDirectory({ VERIFY_LOCAL_KIND: 'pr', VERIFY_LOCAL_COMMON_DIR: common })).toBe(kept);
+      expect(existsSync(path.join(kept, 'transform'))).toBe(true);
+      // A week-old cache starts over.
+      const old = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000);
+      utimesSync(path.join(kept, '.created'), old, old);
+      expect(cacheDirectory({ VERIFY_LOCAL_KIND: 'pr', VERIFY_LOCAL_COMMON_DIR: common })).toBe(kept);
+      expect(existsSync(path.join(kept, 'transform'))).toBe(false);
+      const spawnSyncImpl = jest.fn(() => ({ status: 0 }));
+      runJestChanged({ env: { JEST_CHANGED_SINCE: 'base', VERIFY_LOCAL_KIND: 'pr', VERIFY_LOCAL_COMMON_DIR: common }, execPath: '/node', jestBin: '/jest.js', spawnSyncImpl });
+      expect(spawnSyncImpl.mock.calls[0][1]).toContain(`--cacheDirectory=${kept}`);
+    } finally {
+      rmSync(common, { recursive: true, force: true });
+    }
   });
 
   it('fails when Jest terminates without an exit status', () => {

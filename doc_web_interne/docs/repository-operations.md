@@ -41,8 +41,22 @@ coverage and release targets; [verify-local.config.mjs](../../verify-local.confi
 is the executable source of truth.
 
 `verify:pr` runs engine tests, application/test types, lint and script lint,
-related Jest and static database contracts. Changed inputs add site build/check,
-CI/benchmark contracts, mobile version pins, Meditation and Deno Edge checks.
+related Jest and static database contracts, each only when the PR changes a file
+it reads: their scopes in the configuration are checked against the two tsc
+programs, the lint import graph, the Jest projects and the files the database
+tests open, and a PR changing the configuration or the engine runs those
+guards. Changed inputs add site build/check, CI/benchmark contracts, mobile
+version pins, Meditation and Deno Edge checks. `npm run verify:pr -- --plan`
+prints what each check would do (run, reused, out of scope, cannot run here) and
+a time from this clone's earlier runs, without running anything.
+`npm run verify:pr:status` (`verify:pr -- --post-status`, opt-in) then posts the
+result as the GitHub commit status `verify-local/pr` (success or failure, with a
+short description) through `gh api` on github.com, for the verified SHA only.
+It refuses to start on a dirty checkout or when the verified commit is not HEAD.
+It posts nothing (exit 3 after a pass) if the checkout changed or moved during
+the run, or if github.com does not know the commit yet: push it, then run again
+(the passed checks are reused). Success needs exit 0 and a passed proof; a run
+that throws posts nothing. The default `verify:pr` posts nothing.
 `verify:release` runs the complete release set afresh on the delivered SHA and
 rebuilds the site and app web output. `verify:release:site` excludes only the app
 target (web app build, backend browser qualification and Dreamer/Lucid/Meditation

@@ -13,6 +13,7 @@ let mockWindowWidth = 390;
 let mockWindowHeight = 844;
 let mockFontScale = 1;
 let mockBottomInset = 0;
+let mockInSideColumn = false;
 let mockSleepSoundsAvailable = false;
 const mockPush = jest.fn();
 const mockSaveRitualPreference = jest.fn(async (_id: string): Promise<void> => undefined);
@@ -150,6 +151,8 @@ jest.mock('@/services/storageService', () => ({
   getRitualPreference: (...args: unknown[]) => (mockGetRitualPreference as any)(...args),
 }));
 
+jest.mock('@/context/SideColumnTabBarContext', () => ({ useTabBarInSideColumn: () => mockInSideColumn }));
+
 const { default: ExploreScreen } = require('@/app/(tabs)/explore');
 const { getBottomNavigationLayout } = require('@/constants/layout');
 
@@ -164,6 +167,7 @@ afterEach(() => {
   mockWindowHeight = 844;
   mockFontScale = 1;
   mockBottomInset = 0;
+  mockInSideColumn = false;
   mockSleepSoundsAvailable = false;
   capturedFocusCallback = undefined;
   mockFocusCleanups = [];
@@ -174,6 +178,20 @@ afterEach(() => {
 });
 
 describe('ExploreScreen', () => {
+  it('scrolls to the bottom safe area when the navigation stands in the iPhone Duo side column', async () => {
+    mockPlatformOS = 'ios';
+    mockInSideColumn = true;
+    mockBottomInset = 34;
+    mockWindowWidth = 382;
+    mockWindowHeight = 678;
+    render(<ExploreScreen />);
+    await screen.findByText('explore.ritual.open:inspiration.ritual.variant.starter');
+
+    const { ThemeLayout } = require('@/constants/journalTheme');
+    const content = JSON.parse(screen.getByTestId('explorer-scroll').getAttribute('data-content-style') ?? '{}');
+    expect(content.paddingBottom).toBe(34 + ThemeLayout.spacing.lg);
+  });
+
   it.each([[640, 320], [915, 412]])('scrolls the header with resources, as on Today, at %i by %i dp', async (width: number, height: number) => {
     mockGetRitualPreference.mockResolvedValue('memory');
     mockBottomInset = 24;

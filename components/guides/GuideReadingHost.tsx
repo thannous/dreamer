@@ -26,7 +26,7 @@ export function GuideReadingHost() {
     if (loading || !reading.ready || reading.scope !== scope || !badges.ready || badges.scope !== scope) return;
     // Restored explicit completions count too. Historical badge events never imply a completed guide.
     for (const [guideId, entry] of Object.entries(reading.entries)) {
-      if (entry?.completedAt) recordBadgeEvent({ type: 'guide_viewed', guideId });
+      if (entry?.completedAt) recordBadgeEvent({ type: 'guide_completed', guideId });
     }
   }, [badges.ready, badges.scope, loading, reading.entries, reading.ready, reading.scope, scope]);
   return null;

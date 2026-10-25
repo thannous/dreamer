@@ -8,6 +8,51 @@ import type { ApiContext } from './types.ts';
 export type RouteHandler = (ctx: ApiContext) => Promise<Response>;
 export type RouteTable = Map<string, RouteHandler>;
 
+// Reject reasons the router logs for a scoped bearer without a valid user.
+// Only these literal codes reach the log; anything else becomes 'unknown'.
+const ROUTER_REJECT_REASONS = ['scoped_bearer_lookup_failed', 'scoped_bearer_no_user'] as const;
+export type RouterRejectReason = typeof ROUTER_REJECT_REASONS[number];
+const ROUTER_REJECT_REASON_SET: ReadonlySet<string> = new Set(ROUTER_REJECT_REASONS);
+
+export function toLoggedRouterReason(reason: unknown): RouterRejectReason | 'unknown' {
+  return typeof reason === 'string' && ROUTER_REJECT_REASON_SET.has(reason)
+    ? reason as RouterRejectReason
+    : 'unknown';
+}
+
+const LOGGED_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE']);
+const MAX_LOGGED_SEGMENTS = 6;
+
+/** Every literal path segment of the route table: the only segments ever logged. */
+export function routeSegmentAllowlist(routes: Iterable<string>): ReadonlySet<string> {
+  const segments = new Set<string>();
+  for (const route of routes) {
+    const path = route.split(' ')[1] ?? '';
+    for (const segment of path.split('/')) if (segment) segments.add(segment);
+  }
+  return segments;
+}
+
+/**
+ * Method and route shape of a request, safe to log. A segment is kept only
+ * when it is a literal of the route table; ids, usernames, tokens, emails or
+ * anything else a caller can put in a path become ':param'.
+ */
+export function toLoggedRoute(
+  method: string,
+  subPath: string,
+  knownSegments: ReadonlySet<string>
+): { method: string; route: string } {
+  const segments = subPath.split('/').filter(Boolean);
+  const shown = segments.slice(0, MAX_LOGGED_SEGMENTS)
+    .map((segment) => (knownSegments.has(segment) ? segment : ':param'));
+  if (segments.length > MAX_LOGGED_SEGMENTS) shown.push(':more');
+  return {
+    method: LOGGED_METHODS.has(method) ? method : 'OTHER',
+    route: '/' + shown.join('/'),
+  };
+}
+
 export type ApiHandlerDependencies = {
   routes: RouteTable;
   createClient?: typeof createClient;
@@ -20,6 +65,7 @@ export type ApiHandlerDependencies = {
 // global error boundary — can be unit-tested with an injected route table.
 export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
   const { routes } = dependencies;
+  const knownRouteSegments = routeSegmentAllowlist(routes.keys());
   const createSupabaseClient = dependencies.createClient ?? createClient;
   const readEnv = dependencies.readEnv ?? ((name: string) => Deno.env.get(name));
 
@@ -39,14 +85,25 @@ export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
         global: { headers: buildSupabaseUserAuthHeaders(req.headers.get('Authorization')) },
       });
 
+      let userLookupFailed = false;
       const { data: authData } = userBearer
-        ? await supabase.auth.getUser(userBearer).catch(() => ({ data: null }))
+        ? await supabase.auth.getUser(userBearer).catch(() => {
+          userLookupFailed = true;
+          return { data: null };
+        })
         : { data: null };
       const user = authData?.user ?? null;
 
       if (hasApplicationClientClaim(req.headers.get('Authorization'))) {
         // An invalid scoped bearer must not fall through to a guest handler.
-        if (!user) return errorResponse('Unauthorized', 401);
+        if (!user) {
+          // Reason code and method only: never the bearer, its claims or the caller.
+          console.warn('[api] scoped bearer rejected', {
+            reason: toLoggedRouterReason(userLookupFailed ? 'scoped_bearer_lookup_failed' : 'scoped_bearer_no_user'),
+            method: toLoggedRoute(req.method, subPath, knownRouteSegments).method,
+          });
+          return errorResponse('Unauthorized', 401);
+        }
         try {
           // PostgREST validates the caller JWT again. The RPC reads its signed
           // client_id against a private registry, never a request/body appId.
@@ -64,6 +121,8 @@ export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
       const handler = routes.get(route);
       if (!handler) {
         if (!user) {
+          // Route shape and method only: path ids, headers and tokens stay out.
+          console.warn('[api] unmatched route without user', toLoggedRoute(req.method, subPath, knownRouteSegments));
           return errorResponse('Unauthorized', 401);
         }
 

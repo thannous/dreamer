@@ -40,11 +40,13 @@ import { usePaintingArrival } from '@/components/ui/headerStretch';
 import Animated, {
   Extrapolation,
   interpolate,
+  useAnimatedReaction,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
 } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { TypeScale } from '@/constants/typeScale';
 
@@ -55,6 +57,14 @@ type Tokens = ReturnType<typeof getNoctaliaDesignTokens>;
 const HERO_TOKENS = getNoctaliaDesignTokens(DarkTheme, 'dark');
 const SKY_FALLBACK = DREAMER_ARTWORK.symbols;
 const TOP_BAR_HEIGHT = 52;
+// How much of the painting, from its foot, the title and description may cover before the
+// painting grows to hold them.
+const HERO_COPY_SHARE = 0.55;
+// The painting's veil is dark enough to read on over about its lower 40 %: copy that climbs
+// higher brings a veil of its own.
+const VEIL_DARK_SHARE = 0.4;
+// How far above the title the copy's own veil starts to darken.
+const COPY_VEIL_LEAD = 48;
 const BODY_GUTTER = 24;
 // The painted scenes keep a reading size on a wide window.
 const SCENES_MAX_WIDTH = 640;
@@ -90,6 +100,7 @@ export default function SymbolDetailScreen() {
   const { width: windowWidth, height: windowHeight } = useContentWindow();
   // Measured, since a wide web window may give the screen less than the window.
   const [heroWidth, setHeroWidth] = useState(windowWidth);
+  const [heroCopyHeight, setHeroCopyHeight] = useState(0);
   const [bodyWidth, setBodyWidth] = useState(windowWidth);
   const reducedMotion = useReducedMotion();
   const trackedSymbolRef = useRef<string | null>(null);
@@ -130,18 +141,41 @@ export default function SymbolDetailScreen() {
       );
     }
   }, [onboardingState, source, symbol]);
-  // For the collection: an entry read for a moment, whichever way it was opened.
+  // For the collection: an entry read to its end, whichever way it was opened. The end of
+  // the text is compared on the UI thread; React hears of it once, when it comes into view.
   const symbolId = symbol?.id ?? null;
-  useBadgeReading(symbolId, () => {
-    if (symbolId) recordBadgeEvent({ type: 'symbol_viewed', symbolId });
+  // Only a loaded entry has an end: while its interpretation loads, or offline, the short body
+  // a tall window shows whole is not the entry read.
+  const textLoaded = extendedStatus === 'ready';
+  const hasFullText = Boolean(extended?.fullInterpretation);
+  const textEndY = useSharedValue(Number.POSITIVE_INFINITY);
+  const bodyEnd = useRef(Number.POSITIVE_INFINITY);
+  useEffect(() => {
+    // Without a full interpretation the body keeps the layout it had while loading.
+    if (textLoaded && !hasFullText) textEndY.set(bodyEnd.current);
+  }, [hasFullText, textEndY, textLoaded]);
+  const viewportHeight = useSharedValue(0);
+  const [readToEndOf, setReadToEndOf] = useState<string | null>(null);
+  useBadgeReading(symbolId !== null && readToEndOf === symbolId ? symbolId : null, () => {
+    if (symbolId) recordBadgeEvent({ type: 'symbol_read', symbolId });
   });
 
   // On the paper theme the night scene needs room to dawn into the page below its copy.
   const heroDusk = mode === 'light' ? 72 : 0;
   // A living painting takes most of the screen: the page opens inside it.
-  const heroHeight = Math.round(living
+  const paintingHeight = living
     ? Math.max(460, windowHeight * 0.75)
-    : Math.min(560, Math.max(380, windowHeight * 0.58))) + heroDusk;
+    : Math.min(560, Math.max(380, windowHeight * 0.58));
+  // The copy rests on the painting's darkened lower part. A short, narrow window (the folded
+  // iPhone Duo) wraps the description into more lines than that part holds, so the painting
+  // grows instead of laying the copy over its bright middle.
+  const copyFitHeight = Math.min(windowHeight * 0.9, Math.max(0, heroCopyHeight - heroDusk) / HERO_COPY_SHARE);
+  const heroHeight = Math.round(Math.max(paintingHeight, copyFitHeight)) + heroDusk;
+  // Even grown (up to 90 % of the window), the painting can leave a long description's title
+  // and first lines on its lighter middle: the copy then brings a veil of its own, deeper the
+  // higher it climbs. Measured against the whole hero, as the painting's own veil is.
+  const copyShare = heroHeight > 0 ? heroCopyHeight / heroHeight : 0;
+  const copyVeil = Math.min(1, Math.max(0, (copyShare - VEIL_DARK_SHARE) / 0.15)) * 0.5;
   const heroFrame = useMemo(() => ({ width: heroWidth, height: heroHeight }), [heroHeight, heroWidth]);
   const backdropSource = useMemo(
     // The smallest width is plenty under a 40 point blur.
@@ -153,6 +187,9 @@ export default function SymbolDetailScreen() {
   const onScroll = useAnimatedScrollHandler((event) => {
     scrollY.set(event.contentOffset.y);
   });
+  useAnimatedReaction(() => scrollY.get() + viewportHeight.get() >= textEndY.get(), (reached, previous) => {
+    if (reached && !previous && symbolId) scheduleOnRN(setReadToEndOf, symbolId);
+  }, [symbolId]);
 
   // Scroll-derived, so it runs on the UI thread. The artwork drifts at a third of
   // the scroll speed and the page reads as a window onto the sky; reduce motion
@@ -222,6 +259,7 @@ export default function SymbolDetailScreen() {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onScroll={onScroll}
+          onLayout={(event: LayoutChangeEvent) => viewportHeight.set(event.nativeEvent.layout.height)}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag}
           onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin}
@@ -270,6 +308,14 @@ export default function SymbolDetailScreen() {
               locations={[0, 0.3, 0.56, 0.9]}
               style={StyleSheet.absoluteFill}
             />
+            {copyVeil > 0 ? (
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(9,4,19,0)', `rgba(9,4,19,${copyVeil.toFixed(2)})`]}
+                locations={[0, COPY_VEIL_LEAD / (heroCopyHeight + COPY_VEIL_LEAD)]}
+                style={[styles.copyVeil, { height: heroCopyHeight + COPY_VEIL_LEAD }]}
+              />
+            ) : null}
             <LinearGradient
               pointerEvents="none"
               colors={mode === 'dark'
@@ -279,7 +325,9 @@ export default function SymbolDetailScreen() {
               locations={mode === 'dark' ? undefined : [0, 0.3, 0.58, 0.82, 1]}
               style={[styles.heroFade, heroDusk ? { height: heroDusk + 36 } : null]}
             />
-            <Animated.View style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null, living && !reducedMotion ? COPY_RISE : null]}>
+            <Animated.View
+              onLayout={(event: LayoutChangeEvent) => setHeroCopyHeight(Math.ceil(event.nativeEvent.layout.height))}
+              style={[styles.heroCopy, heroDusk ? { paddingBottom: 30 + heroDusk } : null, living && !reducedMotion ? COPY_RISE : null]}>
               <View style={[styles.chip, { borderColor: 'rgba(234,212,180,0.45)' }]}>
                 <Text style={[styles.chipText, { color: HERO_TOKENS.accent.text }]}>{categoryName}</Text>
               </View>
@@ -299,7 +347,12 @@ export default function SymbolDetailScreen() {
             </Animated.View>
           </View>
 
-          <View style={styles.body} onLayout={(event: LayoutChangeEvent) => setBodyWidth(event.nativeEvent.layout.width)}>
+          <View style={styles.body} onLayout={(event: LayoutChangeEvent) => {
+            const { y, width, height } = event.nativeEvent.layout;
+            setBodyWidth(width);
+            bodyEnd.current = y + height;
+            if (textLoaded) textEndY.set(bodyEnd.current);
+          }}>
             {paragraphs.length > 0 ? (
               <Section label={t('symbols.interpretation')} noctalia={noctalia}>
                 {/* The opening paragraph reads as a lead, like the site's summary;
@@ -382,6 +435,8 @@ export default function SymbolDetailScreen() {
                 </ScrollView>
               </Section>
             ) : null}
+            {/* The entry's last line: reaching it is reading the entry to its end. */}
+            <View testID="symbol.detail.end" />
           </View>
         </Animated.ScrollView>
 
@@ -508,6 +563,7 @@ const styles = StyleSheet.create({
   emptyText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize },
   hero: { overflow: 'hidden', justifyContent: 'flex-end', backgroundColor: '#090413' },
   heroFade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 36 },
+  copyVeil: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   heroCopy: { paddingHorizontal: 24, paddingBottom: 30, gap: 14 },
   chip: {
     alignSelf: 'flex-start',

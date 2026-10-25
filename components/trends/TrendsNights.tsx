@@ -1,5 +1,5 @@
 import React, { memo, useMemo, useState } from 'react';
-import { Image, Pressable, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Image, Platform, Pressable, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { type CSSStyle } from 'react-native-reanimated';
 import Svg, { Circle, Path } from 'react-native-svg';
 
@@ -291,7 +291,13 @@ export function TrendsNights({ trends, lit, reduced, ink, onAccent, t, formatDat
           {stats.map((stat, index) => (
             <View key={stat.key} testID={`trends.nights.stat.${stat.key}`}
               className={`min-w-[96px] flex-1 gap-[2px] ${index > 0 ? 'border-l border-line pl-3' : ''}`}>
-              <Text className="text-h3 font-display-semibold text-ivory">{stat.value}</Text>
+              {/* One line, shrunk if need be: a column is barely 100 pt wide on the folded iPhone
+                  Duo or a small iPhone, where "Aujourd'hui" broke in two. The web cannot shrink
+                  text, so it still wraps there. */}
+              <Text className="text-h3 font-display-semibold text-ivory"
+                {...(Platform.OS === 'web' ? null : { numberOfLines: 1, adjustsFontSizeToFit: true, minimumFontScale: 0.75 })}>
+                {stat.value}
+              </Text>
               <Text className="text-caption font-sans text-ivory-muted">{stat.label}</Text>
             </View>
           ))}

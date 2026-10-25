@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
 
@@ -73,12 +74,12 @@ if (nativeJourneys && (product !== 'dreamer' || platform === 'web' || env.E2E_PE
   throw new Error('Local backend journeys require Dreamer on one owned native QA target.');
 if (nativeJourneys) env.E2E_NATIVE_JOURNEYS = '1';
 // Local web files run in parallel against the one local server, each attempt in its
-// own browser context and storage: half the cores, at most four. CI keeps e2e's single
+// own browser context and storage: half the cores, at most eight. CI keeps e2e's single
 // worker and shards; a native target drives its one named device. The resolved count
 // reaches the config and the evidence's rerun environment.
 if (['backend', 'branch'].includes(product)) env.E2E_WORKERS = '1';
 else if (platform === 'web' && env.E2E_WORKERS === undefined)
-  env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(4, Math.max(1, Math.floor(availableParallelism() / 2))));
+  env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(8, Math.max(1, Math.floor(availableParallelism() / 2))));
 function cliEnvironment() {
   if (platform !== 'web') return env;
   return {
@@ -316,6 +317,12 @@ function collectCampaign() {
   }
   writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
+// The last report of a run with no selection is kept in the clone's git
+// directory, shared by every worktree (verify:release runs in one).
+function durationHistory() {
+  try { return join(read('git', ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'verify-cache', 'e2e-durations', `${product}-${platform}.report.json`); }
+  catch { return null; }
+}
 async function runSdk() {
   // The auth script rejects production and unlisted targets before any request.
   // Sessions stay in ignored .auth/; their tokens never enter SDK step arguments.
@@ -329,10 +336,12 @@ async function runSdk() {
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
   writeOnce(join(output, 'collection.json'), collection);
   if (!collection.pairs?.length) throw new Error('No selected pairs.');
+  const history = durationHistory();
+  const seed = seedDurations(history, output);
   sdkLaunched = true;
   const stopStallMonitor = startHostStallMonitor();
   try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment()); }
-  finally { hostStalls = stopStallMonitor(); }
+  finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0, output); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
