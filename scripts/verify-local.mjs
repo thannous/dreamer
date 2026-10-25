@@ -8,7 +8,7 @@
 // verify-local.config.mjs), and describes its checks in verify-local.config.mjs
 // at its root. Nothing here reads or compares another repository.
 //
-//   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>] [--plan [--json]]
+//   node scripts/verify-local.mjs pr       [--rev <rev>] [--force] [--keep] [--external <check>=<evidence>] [--plan [--json]] [--post-status]
 //   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...] [--plan [--json]]
 //   node scripts/verify-local.mjs status   [--rev <rev>] [--json]
 //   node scripts/verify-local.mjs proof-block [--rev <rev>]
@@ -63,8 +63,16 @@
 // step. Each keeps its own receipt, reuse, environment and failure result.
 // Non-parallel checks are barriers; dependency installs cannot opt in.
 //
+// --post-status (pr only, opt-in) then posts the result as a GitHub commit
+// status (context verify-local/pr, success or failure, a short description)
+// with `gh api`, for the verified commit only. The checkout must be clean and
+// at that commit when the run starts (else usage error, nothing runs), and
+// still be so when it ends (else nothing is posted). Only the owner/repo of
+// the origin remote and the SHA are sent; never a host, path or user.
+//
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
-// could not run here; see --external), 64 usage or configuration error.
+// could not run here; see --external), 3 passed but --post-status posted
+// nothing, 64 usage or configuration error.
 
 import { spawnSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
@@ -1372,7 +1380,7 @@ function removeWorktree(git, dir) {
 // ---------------------------------------------------------------- verify
 
 function parseArgs(argv) {
-  const options = { rev: 'HEAD', targets: [], external: {}, force: false, keep: false, json: false, plan: false, rest: [] };
+  const options = { rev: 'HEAD', targets: [], external: {}, force: false, keep: false, json: false, plan: false, postStatus: false, rest: [] };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     const value = () => {
@@ -1391,6 +1399,7 @@ function parseArgs(argv) {
     else if (arg === '--keep') options.keep = true;
     else if (arg === '--json') options.json = true;
     else if (arg === '--plan') options.plan = true;
+    else if (arg === '--post-status') options.postStatus = true;
     else if (arg === '--') continue;
     else options.rest.push(arg);
   }
@@ -1626,7 +1635,110 @@ export async function loadExternalSources({ cwd = process.cwd(), env = cleanGitE
   return (await loadConfig(git, 'HEAD')).externalSources;
 }
 
-export async function verify(kind, argv = [], {
+// ---------------------------------------------------------------- commit status
+
+export const STATUS_CONTEXT_PREFIX = 'verify-local/';
+// GitHub keeps at most 140 characters of a status description.
+export const STATUS_DESCRIPTION_MAX = 140;
+/** Exit code of a passed run whose --post-status posted nothing. */
+export const STATUS_NOT_POSTED = 3;
+
+/** owner/repo of a GitHub remote URL, or null. The URL itself is never logged. */
+export function githubSlug(url) {
+  const match = /^(?:https:\/\/(?:[^@/\s]+@)?github\.com\/|ssh:\/\/git@github\.com\/|git@github\.com:)([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+?)(?:\.git)?\/?$/.exec(url ?? '');
+  return match ? `${match[1]}/${match[2]}` : null;
+}
+
+/** The commit status of a verify result: success only for exit status 0. */
+export function commitStatusFor(kind, { status, proof }, sha) {
+  const checks = Array.isArray(proof?.checks) ? proof.checks : [];
+  const names = (result) => checks.filter((check) => check.result === result).map((check) => check.name);
+  const head = `verify:${kind} ${status === 0 ? 'passed' : status === 2 ? 'incomplete' : 'failed'} on ${sha.slice(0, 12)}`;
+  let detail;
+  if (status === 0) {
+    const reused = checks.filter((check) => check.result === 'passed' && check.reused).length;
+    const ran = checks.filter((check) => check.result === 'passed' && !check.reused).length;
+    detail = `${ran} ran, ${reused} reused, ${names('skipped').length} skipped`;
+  } else if (status === 2) {
+    detail = `could not run here: ${names('unavailable').join(', ') || 'see the local run'}`;
+  } else {
+    detail = names('failed').join(', ') || (proof ? 'see the local run' : 'no proof written');
+  }
+  const description = `${head}: ${detail}`;
+  return {
+    state: status === 0 ? 'success' : 'failure',
+    context: `${STATUS_CONTEXT_PREFIX}${kind}`,
+    description: description.length > STATUS_DESCRIPTION_MAX ? `${description.slice(0, STATUS_DESCRIPTION_MAX - 3)}...` : description,
+  };
+}
+
+/** Where the checkout stands: its HEAD commit and how many paths differ. */
+function checkoutState(git) {
+  const head = git(['rev-parse', '--verify', '--quiet', 'HEAD^{commit}'], { allowFailure: true }) ?? null;
+  const changes = git(['status', '--porcelain=v1', '--untracked-files=all'], { allowFailure: true });
+  return { head, dirty: changes === null ? null : changes ? changes.split('\n').length : 0 };
+}
+
+/** Why the status of <sha> cannot be posted from this checkout, or null. */
+export function statusRefusal(state, sha) {
+  if (state.head !== sha) return `the checkout is at ${state.head ? state.head.slice(0, 12) : 'no commit'}, not at the verified ${sha.slice(0, 12)}`;
+  if (state.dirty === null) return 'git status failed, so the checkout cannot be shown clean';
+  if (state.dirty) return `the checkout has changes (${state.dirty} path${state.dirty === 1 ? '' : 's'})`;
+  return null;
+}
+
+/**
+ * Posts <commitStatus> for <sha> with `gh api`. Returns { posted, reason }.
+ * gh's own output (it names the account) is never printed.
+ */
+export function postCommitStatus({ slug, sha, commitStatus, cwd, env, execute = spawnSync }) {
+  const result = execute('gh', [
+    'api', '-X', 'POST', `repos/${slug}/statuses/${sha}`,
+    '-f', `state=${commitStatus.state}`,
+    '-f', `context=${commitStatus.context}`,
+    '-f', `description=${commitStatus.description}`,
+    '--silent',
+  ], { cwd, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  if (result.error) return { posted: false, reason: `gh could not start (${result.error.code ?? 'error'})` };
+  if (result.status !== 0) {
+    const http = /HTTP (\d{3})/.exec(`${result.stderr ?? ''}`);
+    return { posted: false, reason: `gh api exited ${result.status}${http ? ` (HTTP ${http[1]})` : ''}` };
+  }
+  return { posted: true, reason: null };
+}
+
+/**
+ * pr / release. With --post-status, the run of the checkout's clean HEAD is
+ * followed by its GitHub commit status (see the header).
+ */
+export async function verify(kind, argv = [], options = {}) {
+  const parsed = parseArgs(argv);
+  if (!parsed.postStatus) return runVerify(kind, argv, options);
+  if (kind !== 'pr') throw new UsageError('--post-status applies to pr only.');
+  if (parsed.plan) throw new UsageError('--plan posts no status.');
+  // postStatusExecute: test seam only (the JS API, never the CLI or the environment).
+  const { cwd = process.cwd(), env = cleanGitEnv(), log = (line) => console.log(line), postStatusExecute = spawnSync } = options;
+  const { root, git } = resolveRepository(cwd, env);
+  const sha = git(['rev-parse', '--verify', `${parsed.rev}^{commit}`]);
+  const slug = githubSlug(git(['config', '--get', 'remote.origin.url'], { allowFailure: true }));
+  if (!slug) throw new UsageError('--post-status needs a github.com origin remote.');
+  const before = statusRefusal(checkoutState(git), sha);
+  if (before) throw new UsageError(`--post-status: ${before}; commit or stash first, nothing runs.`);
+  const result = await runVerify(kind, argv, options);
+  const after = statusRefusal(checkoutState(git), sha);
+  const notPosted = (reason) => {
+    log(`${PREFIX} --post-status: no commit status posted for ${sha.slice(0, 12)}: ${reason}.`);
+    return { ...result, status: result.status === 0 ? STATUS_NOT_POSTED : result.status, commitStatus: null };
+  };
+  if (after) return notPosted(`${after} at the end of the run`);
+  const commitStatus = commitStatusFor(kind, result, sha);
+  const outcome = postCommitStatus({ slug, sha, commitStatus, cwd: root, env, execute: postStatusExecute });
+  if (!outcome.posted) return notPosted(outcome.reason);
+  log(`${PREFIX} --post-status: ${commitStatus.context} ${commitStatus.state} posted on ${slug}@${sha.slice(0, 12)}.`);
+  return { ...result, commitStatus };
+}
+
+async function runVerify(kind, argv = [], {
   cwd = process.cwd(),
   env = cleanGitEnv(),
   log = (line) => console.log(line),

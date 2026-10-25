@@ -122,6 +122,7 @@
     "test:verify-local": "node scripts/run-verify-tests.mjs",
     "test:tooling:native": "node --test scripts/test-verify-local-native.mjs scripts/test-test-auth-permissions-native.mjs && jest --config jest.config.posix-native.js --runInBand --watchman=false",
     "verify:pr": "node scripts/verify-local.mjs pr",
+    "verify:pr:status": "node scripts/verify-local.mjs pr --post-status",
     "verify:release": "node scripts/verify-local.mjs release --target app",
     "verify:release:site": "node scripts/verify-local.mjs release",
     "test:node": "jest --selectProjects node",

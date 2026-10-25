@@ -11,7 +11,7 @@ import path from 'node:path';
 import { describe, test } from 'node:test';
 import { pathToFileURL } from 'node:url';
 
-import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, matchesAny, pastDurations, writeProof, verify } from './verify-local.mjs';
+import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, matchesAny, pastDurations, writeProof, verify, githubSlug, commitStatusFor, statusRefusal, STATUS_DESCRIPTION_MAX, STATUS_NOT_POSTED } from './verify-local.mjs';
 
 import { ENGINE, CONFIG_PATH, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
 
@@ -544,6 +544,152 @@ describe('verify:pr', () => {
     // A check's own env still applies: here it sets TURBO_SCM_BASE itself.
     assert.ok(repo.runs().includes('lint:unset:unset:unset:origin/main'), repo.runs().join('\n'));
     assert.ok(repo.lines.some((line) => line.includes('ignored JEST_CHANGED_SINCE, TURBO_SCM_BASE, TURBO_SCM_HEAD, MY_SCOPE from the environment')));
+  });
+});
+
+describe('verify:pr --post-status', () => {
+  // gh is never run: a fake records the call and answers like gh would.
+  const fakeGh = (answer = { status: 0, stdout: '', stderr: '' }) => {
+    const calls = [];
+    const execute = (program, args) => {
+      calls.push({ program, args });
+      return answer;
+    };
+    return { calls, execute };
+  };
+  const field = (call, name) => call.args.find((arg) => arg.startsWith(`${name}=`))?.slice(name.length + 1);
+  const githubRepository = () => {
+    const repo = makeRepository();
+    repo.git(['config', 'remote.origin.url', 'https://github.com/acme/fixture.git']);
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    return repo;
+  };
+  const withLint = (command) => CONFIG.replace(`{ name: 'lint', command: 'echo lint >> "$RUN_LOG"', inputs: ['src/**'] }`,
+    () => `{ name: 'lint', command: ${JSON.stringify(command)}, inputs: ['src/**'] }`);
+
+  test('the owner/repo comes from a github.com URL only, credentials never kept', () => {
+    assert.equal(githubSlug('https://github.com/thannous/dreamer.git'), 'thannous/dreamer');
+    assert.equal(githubSlug('https://github.com/thannous/dreamer'), 'thannous/dreamer');
+    assert.equal(githubSlug('git@github.com:thannous/dreamer.git'), 'thannous/dreamer');
+    assert.equal(githubSlug('ssh://git@github.com/thannous/dreamer.git'), 'thannous/dreamer');
+    assert.equal(githubSlug('https://x-access-token:abc@github.com/thannous/dreamer.git'), 'thannous/dreamer');
+    for (const url of ['https://gitlab.com/a/b.git', 'https://github.com.evil.example/a/b', '/srv/origin.git', 'https://github.com/a/b/c', '', null]) {
+      assert.equal(githubSlug(url), null, String(url));
+    }
+  });
+
+  test('state mapping: success only for a pass; a failure or an incomplete run is a failure', () => {
+    const sha = 'a'.repeat(40);
+    const proof = { checks: [
+      { name: 'lint', result: 'passed' }, { name: 'test', result: 'passed', reused: true }, { name: 'db', result: 'skipped' },
+    ] };
+    assert.deepEqual(commitStatusFor('pr', { status: 0, proof }, sha), {
+      state: 'success', context: 'verify-local/pr', description: 'verify:pr passed on aaaaaaaaaaaa: 1 ran, 1 reused, 1 skipped',
+    });
+    const failed = commitStatusFor('pr', { status: 1, proof: { checks: [{ name: 'lint', result: 'passed' }, { name: 'test', result: 'failed' }] } }, sha);
+    assert.equal(failed.state, 'failure');
+    assert.equal(failed.description, 'verify:pr failed on aaaaaaaaaaaa: test');
+    const incomplete = commitStatusFor('pr', { status: 2, proof: { checks: [{ name: 'db', result: 'unavailable' }] } }, sha);
+    assert.equal(incomplete.state, 'failure');
+    assert.equal(incomplete.description, 'verify:pr incomplete on aaaaaaaaaaaa: could not run here: db');
+    assert.equal(commitStatusFor('pr', { status: 1, proof: null }, sha).description, 'verify:pr failed on aaaaaaaaaaaa: no proof written');
+    const long = commitStatusFor('pr', { status: 1, proof: { checks: Array.from({ length: 40 }, (_, i) => ({ name: `check-${i}`, result: 'failed' })) } }, sha);
+    assert.equal(long.description.length, STATUS_DESCRIPTION_MAX);
+    assert.ok(long.description.endsWith('...'));
+  });
+
+  test('the checkout must be at the verified commit and clean', () => {
+    const sha = 'b'.repeat(40);
+    assert.equal(statusRefusal({ head: sha, dirty: 0 }, sha), null);
+    assert.match(statusRefusal({ head: 'c'.repeat(40), dirty: 0 }, sha), /not at the verified bbbbbbbbbbbb/);
+    assert.match(statusRefusal({ head: sha, dirty: 2 }, sha), /has changes \(2 paths\)/);
+    assert.match(statusRefusal({ head: sha, dirty: null }, sha), /git status failed/);
+  });
+
+  test('a pass of the clean HEAD posts success for that exact SHA, with only owner/repo and the SHA', async () => {
+    const repo = githubRepository();
+    const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh();
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, 0, repo.lines.join('\n'));
+    assert.equal(result.proof.sha, sha);
+    assert.equal(gh.calls.length, 1);
+    const [call] = gh.calls;
+    assert.equal(call.program, 'gh');
+    assert.deepEqual(call.args.slice(0, 4), ['api', '-X', 'POST', `repos/acme/fixture/statuses/${sha}`]);
+    assert.equal(field(call, 'state'), 'success');
+    assert.equal(field(call, 'context'), 'verify-local/pr');
+    assert.match(field(call, 'description'), new RegExp(`^verify:pr passed on ${sha.slice(0, 12)}: `));
+    assert.ok(!call.args.join(' ').includes(os.hostname()), 'no host name is sent');
+    assert.ok(!call.args.join(' ').includes(repo.base), 'no local path is sent');
+    assert.equal(result.commitStatus.state, 'success');
+  });
+
+  test('a failed run posts failure and keeps its exit status', async () => {
+    const repo = githubRepository();
+    repo.commit('break', { 'src/a.js': 'nope\n' });
+    const gh = fakeGh();
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, 1);
+    assert.equal(field(gh.calls[0], 'state'), 'failure');
+    assert.match(field(gh.calls[0], 'description'), /: test$/);
+  });
+
+  test('a dirty checkout or another commit than HEAD is refused before anything runs', async () => {
+    const repo = githubRepository();
+    const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh();
+    repo.write('scratch.txt', 'untracked\n');
+    await assert.rejects(verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute }), /has changes \(1 path\); commit or stash first, nothing runs/);
+    rmSync(path.join(repo.work, 'scratch.txt'));
+    await assert.rejects(verify('pr', ['--post-status', '--rev', 'HEAD^'], { ...repo.options, postStatusExecute: gh.execute }), new RegExp(`at ${sha.slice(0, 12)}, not at the verified`));
+    assert.deepEqual(repo.runs(), [], 'no check ran');
+    assert.equal(gh.calls.length, 0);
+    assert.equal(existsSync(path.join(repo.work, '.git', 'verify-proofs', runLogName(sha))), false, 'no run was logged');
+  });
+
+  test('a checkout that changes or moves during the run posts nothing, and a pass then exits 3', async () => {
+    const repo = githubRepository();
+    repo.commit('dirty during run', { 'verify-local.config.mjs': withLint('echo lint >> "$RUN_LOG" && touch "$VERIFY_LOCAL_ROOT/late.txt"') });
+    const gh = fakeGh();
+    const dirty = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(dirty.status, STATUS_NOT_POSTED, repo.lines.join('\n'));
+    assert.equal(dirty.proof.result, 'passed', 'the proof itself stands');
+    assert.ok(repo.lines.some((line) => /no commit status posted for [0-9a-f]{12}: the checkout has changes \(1 path\) at the end of the run/.test(line)), repo.lines.join('\n'));
+    rmSync(path.join(repo.work, 'late.txt'));
+
+    repo.commit('moves during run', { 'verify-local.config.mjs': withLint('echo lint >> "$RUN_LOG" && git -C "$VERIFY_LOCAL_ROOT" checkout --quiet main') });
+    const moved = await verify('pr', ['--post-status', '--force'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(moved.status, STATUS_NOT_POSTED, repo.lines.join('\n'));
+    assert.ok(repo.lines.some((line) => /not at the verified [0-9a-f]{12} at the end of the run/.test(line)), repo.lines.join('\n'));
+    assert.equal(gh.calls.length, 0);
+  });
+
+  test('a gh failure posts nothing, exits 3 after a pass, and never prints what gh said', async () => {
+    const repo = githubRepository();
+    repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh({ status: 1, stdout: '{"creator":{"login":"someone"}}', stderr: 'gh: Not Found (HTTP 404) secret-detail' });
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, STATUS_NOT_POSTED);
+    assert.equal(gh.calls.length, 1);
+    const text = repo.lines.join('\n');
+    assert.match(text, /no commit status posted for [0-9a-f]{12}: gh api exited 1 \(HTTP 404\)/);
+    assert.ok(!text.includes('secret-detail') && !text.includes('someone'), 'gh output stays out of the log');
+  });
+
+  test('pr only, never with --plan, and only for a github.com origin; without the flag nothing is posted', async () => {
+    const repo = githubRepository();
+    repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh();
+    const options = { ...repo.options, postStatusExecute: gh.execute };
+    await assert.rejects(verify('release', ['--post-status'], options), /applies to pr only/);
+    await assert.rejects(verify('pr', ['--post-status', '--plan'], options), /--plan posts no status/);
+    repo.git(['config', 'remote.origin.url', '/srv/origin.git']);
+    await assert.rejects(verify('pr', ['--post-status'], options), /needs a github.com origin remote/);
+    const plain = await verify('pr', [], options);
+    assert.equal(plain.status, 0);
+    assert.equal(plain.commitStatus, undefined);
+    assert.equal(gh.calls.length, 0);
   });
 });
 

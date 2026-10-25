@@ -49,6 +49,12 @@ guards. Changed inputs add site build/check, CI/benchmark contracts, mobile
 version pins, Meditation and Deno Edge checks. `npm run verify:pr -- --plan`
 prints what each check would do (run, reused, out of scope, cannot run here) and
 a time from this clone's earlier runs, without running anything.
+`npm run verify:pr:status` (`verify:pr -- --post-status`, opt-in) then posts the
+result as the GitHub commit status `verify-local/pr` (success or failure, with a
+short description) through `gh api`, for the verified SHA only. It refuses to
+start on a dirty checkout or when the verified commit is not HEAD, and posts
+nothing (exit 3 after a pass) if the checkout changed or moved during the run.
+The default `verify:pr` posts nothing.
 `verify:release` runs the complete release set afresh on the delivered SHA and
 rebuilds the site and app web output. `verify:release:site` excludes only the app
 target (web app build, backend browser qualification and Dreamer/Lucid/Meditation
