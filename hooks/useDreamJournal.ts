@@ -1566,6 +1566,7 @@ export const useDreamJournal = () => {
         if (analysisScopeRef.current !== userScope || analysisEpochRef.current !== epoch) throw new Error('Analysis account changed');
       };
       let currentDreamState = dream;
+      let analysisBase = dream;
       try {
         assertAnalysisScope();
         markPerformance('analysis.requested', { trace: analysisTrace });
@@ -1579,7 +1580,7 @@ export const useDreamJournal = () => {
             throw new Error('Dream changes must be synchronized before analysis');
           }
         }
-        const analysisBase = resolveCurrentDream(dream);
+        analysisBase = resolveCurrentDream(dream);
         // Initial pending state
         currentDreamState = {
           ...analysisBase,
@@ -1831,10 +1832,17 @@ export const useDreamJournal = () => {
         return next;
       } catch (error) {
         assertAnalysisScope();
+        if (error instanceof AiConsentWithdrawnError) {
+          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
+          setLastAnalysisOutcome(null);
+          await updateDream(analysisBase);
+          throw error;
+        }
         const quotaError = coerceQuotaError(error, tier);
         const responseBody = error && typeof error === 'object' && 'body' in error
           ? error.body : null;
-        const nonReusableRequest = error instanceof AiConsentWithdrawnError || error && typeof error === 'object'
+        const nonReusableRequest = error && typeof error === 'object'
           && 'status' in error && error.status === 409
           && responseBody && typeof responseBody === 'object'
           && 'code' in responseBody
@@ -1845,8 +1853,7 @@ export const useDreamJournal = () => {
           && typeof error.status === 'number' ? error.status : undefined;
         const confirmedSubmissionRejection = serverJobSubmissionStarted && !serverJobAccepted
           && responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500;
-        if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection
-          && !(error instanceof AiConsentWithdrawnError)) {
+        if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection) {
           // The POST may have committed before its reply was lost. Persist the same
           // key across restarts, just as for an acknowledged job awaiting its result.
           analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');

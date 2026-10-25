@@ -5,7 +5,7 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import type { GuestDreamMigrationOwner, DreamAnalysis, DreamListReadResult, DreamMutation, PendingImageJob, QuotaStatus } from '../../lib/types';
-import { GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
+import { AiConsentWithdrawnError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '../../lib/errors';
 import { getDreamAnalysisFreshness, hashDreamTranscript } from '../../lib/dreamAnalysisFreshness';
 import { markDreamNamed } from '../../lib/dreamNaming';
 import { IncompleteJournalAckError } from '../../lib/journalErrors';
@@ -3251,6 +3251,28 @@ describe('useDreamJournal', () => {
       }));
       expect(mockSubmitDreamAnalysisJob).toHaveBeenCalledTimes(1);
       expect(mockAnalyzeDreamText).not.toHaveBeenCalled();
+    });
+
+    it.each([false, true])('restores analysis state without a failure indicator on consent withdrawal (jobs=%s)', async (jobs: boolean) => {
+      mockEnvState.analysisJobsEnabled = jobs;
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101, isAnalyzed: false, analysisStatus: 'none' });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      const withdrawal = new AiConsentWithdrawnError();
+      if (jobs) mockSubmitDreamAnalysisJob.mockRejectedValueOnce(withdrawal);
+      else mockAnalyzeDreamText.mockRejectedValueOnce(withdrawal);
+      const { result } = await renderLoadedDreamJournal();
+      await act(async () => {
+        await expect(result.current.analyzeDream(1, existingDream.transcript)).rejects.toBe(withdrawal);
+      });
+      expect(result.current.dreams[0]).toEqual(expect.objectContaining({
+        analysisStatus: 'none', isAnalyzed: false, transcript: existingDream.transcript,
+      }));
+      expect(result.current.dreams[0].analysisRequestId).toBeUndefined();
+      expect(result.current.lastAnalysisOutcome).toBeNull();
+      expect(result.current.activeAnalysis).toBeNull();
+      expect(mockUpdateDreamInSupabase.mock.calls.some(([dream]: [DreamAnalysis]) => dream.analysisStatus === 'failed')).toBe(false);
     });
 
     it('resumes an ambiguously submitted POST with the same key after a restart', async () => {
