@@ -309,10 +309,8 @@ describe('RecordingTextInput', () => {
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
-  it.each([false, true])('lets a touch between the bar\'s buttons write in the area (compact: %s)', (compact: boolean) => {
-    // The folded iPhone Duo: there the bar covers the compact editor's lower half.
-    mockWindowWidth = 678;
-    mockWindowHeight = 466;
+  it.each([false, true])('passes a touch beside the bar\'s buttons on to the area (compact: %s)', (compact: boolean) => {
+    // On the folded iPhone Duo the bar covers the compact editor's lower half.
     const onClear = jest.fn();
 
     render(
@@ -330,7 +328,6 @@ describe('RecordingTextInput', () => {
     const bar = screen.getByTestId(TID.Button.ClearDream).parentElement?.parentElement;
     expect(JSON.parse(bar?.getAttribute('data-native-style') ?? '{}')).toMatchObject({ position: 'absolute', bottom: 1 });
     expect(bar?.getAttribute('data-pointer-events')).toBe('box-none');
-    // Its buttons still answer.
     fireEvent.click(screen.getByTestId(TID.Button.ClearDream));
     expect(onClear).toHaveBeenCalledTimes(1);
   });

@@ -1423,8 +1423,12 @@ function RecordingScreen() {
         // Unless Save follows the editor in the document, it sits outside it: below the scroll
         // view, whose margin keeps clear of it, or right after it with the keyboard up. Room for it
         // here would be an empty end, brought into view with the keyboard up at the editor's top.
+        // Following the editor, with the keyboard up on iOS, it keeps only its own 8 points above
+        // the keyboard, as right after the scroll view: the keyboard covers the home indicator.
+        // On the folded iPhone Duo the view above the keyboard is 220 points, and the 50 of an
+        // end padded for the indicator took the writing area's first line off the screen.
         paddingBottom: chatMode ? 8 : inlineFooter
-          ? 16 + (keyboardVisible ? insets.bottom : 0)
+          ? keyboardVisible ? Platform.OS === 'ios' ? 0 : 16 + insets.bottom : 16
           : 16,
       },
     ],
@@ -1475,7 +1479,7 @@ function RecordingScreen() {
   }, [viewportHeight]);
 
   // A scroll run as the keyboard starts to show can stop short of the end, or not move at all: on
-  // iOS the view is still animating to its height above the keyboard. So once the keyboard has
+  // iOS the view is still animating its padding above the keyboard. So once the keyboard has
   // shown the end comes into view again, until the writer types or drags; after that another
   // keyboard or the suggestions bar leaves the scroll where it is.
   const keyboardSettlingRef = useRef(false);
@@ -2024,7 +2028,8 @@ function RecordingScreen() {
           </Pressable>
         ) : null}
         {/* On iOS the view keeps its frame and pads its end above the keyboard. Resized to the
-            keyboard instead, it adds each keyboard to its last height: when the iPhone Duo folds
+            keyboard instead, it adds each overlap to the one it already took, measured on a frame
+            that lags behind, and sizes itself from its first height: when the iPhone Duo folded
             with the keyboard up, it took a keyboard of 1135 pt in a window of 466 and pushed the
             writing area and Save above the screen until the keyboard closed. */}
         <KeyboardAvoidingView
