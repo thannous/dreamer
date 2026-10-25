@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react-native-legacy';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
@@ -180,6 +180,69 @@ describe('LegalSection', () => {
     });
     expect(alertSpy.mock.calls[2][0]).toBe('settings.deleteAccount.successTitle');
     expect(alertSpy.mock.calls[2][1]).toBe('settings.deleteAccount.successMessage');
+  });
+
+  describe('in a browser, where react-native-web has no Alert', () => {
+    const browser = globalThis as unknown as { confirm?: (message: string) => boolean; alert?: (message: string) => void };
+    let confirmAnswers: boolean[];
+    const browserConfirm = jest.fn((_message: string) => confirmAnswers.shift() ?? false);
+    const browserAlert = jest.fn((_message: string) => {});
+    let platform: { restore: () => void };
+
+    beforeEach(() => {
+      platform = jest.replaceProperty(Platform, 'OS', 'web');
+      browser.confirm = browserConfirm;
+      browser.alert = browserAlert;
+    });
+
+    afterEach(() => {
+      platform.restore();
+      delete browser.confirm;
+      delete browser.alert;
+    });
+
+    it('asks both questions with the browser\'s dialogs, then deletes and says so', async () => {
+      confirmAnswers = [true, true];
+      mockRequestAccountDeletion.mockResolvedValue({ deleted: true });
+      mockFinalizeAccountDeletion.mockResolvedValue(undefined);
+
+      const { getByTestId } = render(<LegalSection />);
+      fireEvent.press(getByTestId('settings-delete-account'));
+
+      expect(browserConfirm).toHaveBeenCalledTimes(2);
+      expect(browserConfirm).toHaveBeenNthCalledWith(1, 'settings.deleteAccount.confirmTitle\n\nsettings.deleteAccount.confirmMessage');
+      expect(browserConfirm).toHaveBeenNthCalledWith(2, 'settings.deleteAccount.confirmTitle\n\nsettings.deleteAccount.subscriptionWarning');
+      expect(mockRequestAccountDeletion).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockFinalizeAccountDeletion).toHaveBeenCalledWith('user-1'));
+      await waitFor(() => expect(browserAlert).toHaveBeenCalledWith(
+        'settings.deleteAccount.successTitle\n\nsettings.deleteAccount.successMessage',
+      ));
+      expect(alertSpy).not.toHaveBeenCalled();
+    });
+
+    it('keeps the account when either question is declined', () => {
+      const { getByTestId } = render(<LegalSection />);
+
+      confirmAnswers = [false];
+      fireEvent.press(getByTestId('settings-delete-account'));
+      expect(browserConfirm).toHaveBeenCalledTimes(1);
+
+      confirmAnswers = [true, false];
+      fireEvent.press(getByTestId('settings-delete-account'));
+      expect(browserConfirm).toHaveBeenCalledTimes(3);
+      expect(mockRequestAccountDeletion).not.toHaveBeenCalled();
+    });
+
+    it('says in the browser when the deletion fails', async () => {
+      confirmAnswers = [true, true];
+      mockRequestAccountDeletion.mockRejectedValue(new Error('HTTP 500'));
+
+      const { getByTestId } = render(<LegalSection />);
+      fireEvent.press(getByTestId('settings-delete-account'));
+
+      await waitFor(() => expect(browserAlert).toHaveBeenCalledWith('settings.deleteAccount.errorMessage'));
+      expect(mockFinalizeAccountDeletion).not.toHaveBeenCalled();
+    });
   });
 
   it('shows the generic error message when deletion fails', async () => {
