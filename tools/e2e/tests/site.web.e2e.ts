@@ -52,6 +52,8 @@ async function measureHero() {
     breadcrumbTop: getComputedStyle(breadcrumb).display === 'none' ? null : breadcrumb.getBoundingClientRect().top,
     objectFit: getComputedStyle(img).objectFit,
     objectPosition: getComputedStyle(img).objectPosition,
+    viewportHeight: innerHeight,
+    leadTop: document.querySelector('.symbol-summary')?.getBoundingClientRect().top ?? null,
     paintings: performance.getEntriesByType('resource').map(entry => new URL(entry.name).pathname)
       .filter(path => path.startsWith('/img/seo/symbols-v2/') || /\/tiger-mobile-v4-[0-9]+w\./.test(path)),
   };
@@ -70,11 +72,15 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     expect(image.left).toBeCloseTo((image.available - image.width) / 2, 0);
     expect(image.top).toBe(0);
     expect(image.heroTop).toBe(0);
-    expect(image.width / image.height).toBeCloseTo(16 / 9, 2);
-    expect(image.objectFit).toBe('contain');
+    expect(image.height).toBeCloseTo(landscapeHeroHeight(image.width, image.viewportHeight), 0);
+    expect([image.objectFit, image.objectPosition]).toEqual(['cover', '50% 30%']);
     expect(image.navBackground).toBe('rgba(0, 0, 0, 0)');
     expect(image.headingTop).toBeGreaterThanOrEqual(image.navBottom + 8);
     expect(image.headingBottom).toBeLessThanOrEqual(image.heroBottom);
+    // The first screen shows the whole title and the first lines of the summary.
+    expect(image.headingBottom).toBeLessThanOrEqual(image.viewportHeight);
+    expect(image.leadTop).not.toBeNull();
+    expect(image.leadTop!).toBeLessThanOrEqual(image.viewportHeight - 64);
     if (image.breadcrumbTop !== null) expect(image.breadcrumbTop).toBeGreaterThanOrEqual(image.navBottom + 8);
     expect(image.overflow).toBe(false);
   };
@@ -92,8 +98,9 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     checkLayout(image);
     if (['sex', 'tiger', 'god'].includes(id)) await app.screenshot('symbol-' + id + '-wide');
   }
+  // 1920 × 960 is wider than 16:9: the window where the title used to fall below the first screen.
   for (const [width, height, id] of [
-    [1920, 1200, 'angel'], [2560, 1600, 'tiger'], [2568, 1600, 'angel'],
+    [1920, 1200, 'angel'], [1920, 960, 'tiger'], [2560, 1600, 'tiger'], [2568, 1600, 'angel'],
   ] as const) {
     await browser.setViewport({ width, height });
     const symbol = catalog.symbols.find(item => item.id === id)!;
@@ -148,6 +155,13 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await app.screenshot('symbol-tiger-portrait-' + width);
   }
 });
+
+// Outside a phone held upright the hero keeps the 16:9 painting's full width up to 2560px, never
+// taller than the window less 10rem (the title and the start of the text open the page) nor shorter
+// than 20rem.
+function landscapeHeroHeight(width: number, viewportHeight: number) {
+  return Math.max(320, Math.min(width * 9 / 16, viewportHeight - 160));
+}
 
 // Painted landmarks of the tiger's paintings, in source pixels: lantern centre for the glow, face
 // bottom for the title.
@@ -1031,8 +1045,8 @@ test('on a phone the tiger hero takes 75svh with its portrait painting in the si
     await expect.poll(() => browser.evaluate(readTigerHero).then(read => [read.scene, painting.test(read.src)]), { timeout: 15_000 }).toEqual([scene, true]);
     await expect.poll(() => browser.evaluate(readTigerHero).then(read => Math.abs(read.stage!.width - read.frame.width) < 0.5)).toBe(true);
     const read = await browser.evaluate(readTigerHero);
-    // Landscape keeps the 16:9 contain hero; portrait takes 75svh with cover.
-    if (scene === 'landscape') expect(read.hero.width / read.hero.height).toBeCloseTo(16 / 9, 2);
+    // Landscape caps the full-width hero to the window; portrait takes 75svh. Both crop with cover.
+    if (scene === 'landscape') expect(read.hero.height).toBeCloseTo(landscapeHeroHeight(read.hero.width, height), 0);
     else expect(read.hero.height).toBeCloseTo(height * 0.75, 0);
     expectOnLantern(read);
   }

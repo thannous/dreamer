@@ -895,7 +895,7 @@ function livingStyleHtml(portraitPosition, atlasCss) {
   return `
     <style>
         @media ${TIGER_LIVING.media} {
-            .symbol-hero { aspect-ratio: auto; height: 75vh; height: 75svh; }
+            .symbol-hero { aspect-ratio: auto; height: 75vh; height: 75svh; max-height: none; }
             .symbol-hero .symbol-hero-media img { object-fit: cover; object-position: ${portraitPosition}; }
         }
         .symbol-hero.symbol-hero--bare { aspect-ratio: auto; height: auto; min-height: clamp(18rem, 42vh, 28rem); }${atlasCss}
@@ -2330,6 +2330,11 @@ ${renderSharedComponentStyles()}
             width: 100%;
             max-width: 2560px;
             aspect-ratio: 16 / 9;
+            /* A window wider than 16:9 still opens on the title and the start of the text:
+               the painting keeps the full width and loses its top and bottom edges instead. */
+            max-height: calc(100vh - 10rem);
+            max-height: calc(100svh - 10rem);
+            min-height: 20rem;
             margin: 0 auto;
             isolation: isolate;
             overflow: hidden;
@@ -2354,8 +2359,9 @@ ${renderSharedComponentStyles()}
             width: 100%;
             height: 100%;
             display: block;
-            object-fit: contain;
-            object-position: center;
+            object-fit: cover;
+            /* Cut mostly into the bottom, already darkened under the title: skies and heads stay whole. */
+            object-position: 50% 30%;
         }
         .symbol-hero::after {
             content: '';
