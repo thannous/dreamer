@@ -12,6 +12,21 @@ try {
   for (const name of ['20260722124500_add_ai_sync_admission_control', '20261021170000_add_daily_ai_request_budget', '20261025185137_deduplicate_analysis_admission_retries']) {
     await db.exec(await readFile(new URL(`../supabase/migrations/${name}.sql`, import.meta.url), 'utf8'));
   }
+  // Compare the actual migrated catalog with the production checker's manifest.
+  // Exact table parity also catches newly added columns omitted from the contract.
+  const manifest = JSON.parse(await readFile(new URL('../supabase/db-contract.manifest.json', import.meta.url), 'utf8'));
+  const tableContract = manifest.requiredTables.find(table => table.schema === 'private' && table.name === 'ai_analysis_admissions');
+  assert.ok(tableContract, 'admission table must be in the DB contract');
+  const columns = (await db.query(`select column_name from information_schema.columns
+    where table_schema='private' and table_name='ai_analysis_admissions'`)).rows.map(row => row.column_name);
+  assert.deepEqual([...tableContract.requiredColumns].sort(), columns.sort(), 'admission manifest columns must match migrated schema');
+  const functionContract = manifest.requiredFunctions.find(fn => fn.schema === 'public' && fn.name === 'claim_ai_analysis_admission');
+  assert.ok(functionContract, 'admission RPC must be in the DB contract');
+  const signatures = (await db.query(`select pg_get_function_identity_arguments(p.oid) as arguments,
+    pg_get_function_result(p.oid) as result from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+    where n.nspname='public' and p.proname='claim_ai_analysis_admission'`)).rows;
+  assert.deepEqual(signatures, [{ arguments: functionContract.identityArguments, result: functionContract.result }],
+    'admission manifest RPC signature must match migrated schema');
   const actor = 'a'.repeat(64);
   const key = n => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
   const claim = async (n, who = actor, daily = 20) => (await db.query(`select public.claim_ai_analysis_admission($1,'analyze_dream',$2,600,2,300,$3) r`, [who, key(n), daily])).rows[0].r;
@@ -90,5 +105,5 @@ try {
     await db.query(`select set_config('test.role',$1,false)`, [role]);
     await assert.rejects(() => claim(4), error => error.code === '42501');
   }
-  console.log('PASS: bounded/expired replay, guest/auth refund-replay, retention, hashed receipts, budgets, RLS and service-only grants');
+  console.log('PASS: manifest/schema parity, bounded/expired replay, guest/auth refund-replay, retention, hashed receipts, budgets, RLS and service-only grants');
 } finally { await db.close(); }

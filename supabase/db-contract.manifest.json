@@ -248,7 +248,8 @@
       "requiredColumns": [
         "actor_hash",
         "capability",
-        "request_id",
+        "request_hash",
+        "replay_count",
         "admitted_at",
         "daily_admitted"
       ]
