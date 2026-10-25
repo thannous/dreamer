@@ -373,7 +373,10 @@ export default function TabLayout() {
           height: '100%',
         },
         tabBarButton: HapticTab,
-        tabBarHideOnKeyboard: true,
+        // The navigator's own keyboard state takes the keyboard of no height that a fold of the
+        // iPhone Duo reports for a real one, and keeps the bar hidden: it hides only while this
+        // layout sees a keyboard too.
+        tabBarHideOnKeyboard: keyboardVisible,
         tabBarBackground: () => (
           <TabBarGlass
             borderRadius={barFrame.borderRadius}

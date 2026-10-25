@@ -14,6 +14,7 @@ import { markPerformance, markPerformanceAfterFrames, performanceTraceId } from 
 import { getInitialDreamCategorizationKey, isInitialDreamCategorizationPending, subscribeInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { useDreamCoverPlaceholder } from '@/hooks/useDreamCoverPlaceholder';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
+import { keyboardCoversWindow } from '@/hooks/useKeyboardVisible';
 import { Toast } from '@/components/Toast';
 import { DreamRecallAssistantCard } from '@/components/journal/DreamRecallAssistantCard';
 import { DreamPersonalNotes } from '@/components/journal/DreamPersonalNotes';
@@ -849,7 +850,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
-    const showSub = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
+    const showSub = Keyboard.addListener(showEvent, (event) => setIsKeyboardVisible(keyboardCoversWindow(event.endCoordinates)));
     const hideSub = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
     const shownSub = Keyboard.addListener('keyboardDidShow', revealRecallInput);
 
