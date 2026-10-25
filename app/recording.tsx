@@ -54,9 +54,9 @@ import { resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
-import { isDreamTextTooLong } from '@/lib/dreamTextLimit';
+import { isDreamTextTooLong, shouldShowDreamLengthCounter } from '@/lib/dreamTextLimit';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
-import { hasAiConsent } from '@/lib/aiConsent';
+import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
 import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { formatCaptureNarrative } from '@/services/captureConversation';
 import {
@@ -144,18 +144,15 @@ const log = createScopedLogger('[Recording]');
 /**
  * Answers to the capture questions are woven into the account by the faithful formatter:
  * nothing invented or interpreted, and the narrator reviews it before it is saved. Without
- * an answered question, AI consent or the service, the review keeps the narrator's own
+ * an answered question or AI consent, the review keeps the narrator's own
  * words (null). The original exchanges are saved with the dream either way.
  */
 async function weaveCaptureNarrative(source: string, language: string, signal: AbortSignal): Promise<string | null> {
   const answered = parseCaptureEditableDraft(source).sections.some(section => section.question && section.text.trim());
   if (!answered || !(await hasAiConsent())) return null;
-  try {
-    const woven = await formatCaptureNarrative(source, language, signal);
-    return isTranscriptSaveable(woven) ? woven : null;
-  } catch {
-    return null;
-  }
+  const woven = await formatCaptureNarrative(source, language, signal);
+  if (!isTranscriptSaveable(woven)) throw new Error('Invalid formatted narrative');
+  return woven;
 }
 const trackedOnboardingRecordingDestinations = new Set<string>();
 
@@ -256,7 +253,9 @@ function RecordingScreen() {
     transcript: persistedDraftValue,
     onRestore: handleRestoreDraft,
   });
-  const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
+  // The guided questions need the AI: ask for consent when the first one is due, not before.
+  const requestCaptureConsent = useCallback(() => requestAiConsent(t), [t]);
+  const conversation = useCaptureConversation({ language, t, scope: onboardingScope, requestConsent: requestCaptureConsent });
   const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
   useEffect(() => {
     // Preparing a review cannot outlive its screen or account scope.
@@ -1250,6 +1249,7 @@ function RecordingScreen() {
       })
         .catch((error) => {
           log.warn('Quick categorization failed:', error);
+          Alert.alert(t('recording.analysis_offer.title'), t('recording.categorization.error'));
         });
       void trackProductEvent('recording_saved', {
         input_mode: lastInputSourceRef.current,
@@ -1442,7 +1442,8 @@ function RecordingScreen() {
       insets.bottom,
     ]
   );
-  const showsDraftProgress = hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice';
+  const showsDraftProgress = hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice'
+    && shouldShowDreamLengthCounter((captureReview?.text ?? transcript).length);
   // With the keyboard up the screen shows the document's end: the editor and its border (2), the
   // draft count and its gap (12) and the end's padding (16), below a margin that keeps the
   // editor's top clear of the status bar's veil. On a short window (the folded iPhone Duo, a small

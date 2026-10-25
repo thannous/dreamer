@@ -26,6 +26,8 @@ export interface ChatMessage {
     retry?: {
       messageText: string;
       displayText?: string;
+      /** Exact composer input; absent for generated category/synthesis requests. */
+      userText?: string;
       clientRequestId?: string;
     };
   };

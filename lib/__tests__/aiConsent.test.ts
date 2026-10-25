@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { hasAiConsent, requestAiConsent, resetAiConsentCacheForTests } from '@/lib/aiConsent';
+import { hasAiConsent, requestAiConsent, resetAiConsentCacheForTests, withdrawAiConsent } from '@/lib/aiConsent';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
@@ -84,5 +84,28 @@ describe('requestAiConsent', () => {
     resetAiConsentCacheForTests();
     await expect(requestAiConsent(t)).resolves.toBe(true);
     expect(Alert.alert).toHaveBeenCalledTimes(1);
+  });
+
+  it('stays withdrawn after a restart even when withdrawn right after accepting', async () => {
+    const attempt = requestAiConsent(t);
+    await flush();
+    answer(1);
+    await expect(attempt).resolves.toBe(true);
+    // The grant's write may still be pending: the withdrawal must land after it.
+    await withdrawAiConsent();
+    await expect(hasAiConsent()).resolves.toBe(false);
+    resetAiConsentCacheForTests();
+    await expect(hasAiConsent()).resolves.toBe(false);
+    await expect(AsyncStorage.getItem('noctalia.aiConsent.v2')).resolves.toBeNull();
+  });
+
+  it('grants nothing from a prompt answered after consent was withdrawn', async () => {
+    const attempt = requestAiConsent(t);
+    await flush();
+    await withdrawAiConsent();
+    answer(1);
+    await expect(attempt).resolves.toBe(false);
+    await expect(hasAiConsent()).resolves.toBe(false);
+    await expect(AsyncStorage.getItem('noctalia.aiConsent.v2')).resolves.toBeNull();
   });
 });

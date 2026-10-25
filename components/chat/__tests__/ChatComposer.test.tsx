@@ -97,6 +97,8 @@ describe('ChatComposer', () => {
 
     act(() => composerRef.current?.clearSentText('Un rêve'));
     expect((screen.getByTestId(TID.Chat.Input) as HTMLInputElement).value).toBe('');
+    act(() => composerRef.current?.restoreUnsentText('Un rêve'));
+    expect((screen.getByTestId(TID.Chat.Input) as HTMLInputElement).value).toBe('Un rêve');
   });
 
   it('preserves a newer draft when an earlier send is cleared', () => {
@@ -118,6 +120,7 @@ describe('ChatComposer', () => {
     fireEvent.change(screen.getByTestId(TID.Chat.Input), { target: { value: 'Nouveau' } });
     act(() => composerRef.current?.clearSentText('Premier'));
 
+    act(() => composerRef.current?.restoreUnsentText('Premier'));
     expect((screen.getByTestId(TID.Chat.Input) as HTMLInputElement).value).toBe('Nouveau');
   });
 });

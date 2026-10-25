@@ -135,9 +135,9 @@ test('Settings replays the introduction without reopening a finished onboarding'
   await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
   await page.getByTestId('btn.onboarding.path.memory').click();
   await page.getByTestId('btn.onboarding.primary').click();
-  // The replay returns to Settings instead of starting a capture.
-  await expect(page.getByTestId('screen.settings')).toBeVisible();
-  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(0);
+  // The replayed choice opens what its button names, as a plain visit (9dac2d6bc67).
+  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
+  await expect(page.getByTestId('screen.onboarding')).toHaveCount(0);
   // The saved onboarding is still finished: a fresh start skips it.
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);

@@ -1,5 +1,6 @@
 /* global describe, expect, it */
 const {
+  normalizeTriggerDefinition,
   parseStatusEnv,
   readLocalStackDbUrl,
   resolveDbUrl,
@@ -194,5 +195,22 @@ describe('local database URL resolution', () => {
     expect(resolveDbUrl({ local: true }, { DATABASE_URL: 'c' }, readLocal)).toBe('c');
     expect(resolveDbUrl({ local: true }, { SUPABASE_LOCAL_DB_URL: 'd' }, readLocal)).toBe('d');
     expect(resolveDbUrl({ local: false }, {}, readLocal)).toBe(null);
+  });
+});
+
+describe('trigger definitions with search_path qualification', () => {
+  const manifest = require('../supabase/db-contract.manifest.json');
+  it.each([
+    ['trg_guard_dream_limits_before', 'CREATE TRIGGER trg_guard_dream_limits_before BEFORE UPDATE ON dreams FOR EACH ROW EXECUTE FUNCTION guard_dream_size_and_rate()'],
+    ['refund_failed_text_analysis_job', 'CREATE TRIGGER refund_failed_text_analysis_job AFTER UPDATE OF status ON ai_jobs FOR EACH ROW EXECUTE FUNCTION private.refund_failed_text_analysis_job()'],
+  ])('accepts the actual pg_get_triggerdef output for %s', (name, actual) => {
+    const trigger = manifest.requiredTriggers.find(trigger => trigger.name === name);
+    for (const part of trigger.definitionIncludes) {
+      expect(normalizeTriggerDefinition(actual)).toContain(normalizeTriggerDefinition(part));
+    }
+  });
+  it('normalizes quoted schemas while preserving the table and trigger event', () => {
+    expect(normalizeTriggerDefinition('AFTER UPDATE ON "public".ai_jobs')).toBe('AFTER UPDATE ON ai_jobs');
+    expect(normalizeTriggerDefinition('AFTER INSERT ON public.dreams')).not.toBe(normalizeTriggerDefinition('AFTER UPDATE ON public.ai_jobs'));
   });
 });

@@ -12,6 +12,7 @@ import { handleCreateAnalysisJob, handleGetAnalysisJobStatus } from '../../../su
 import { handleChat } from '../../../supabase/functions/api/routes/chat.ts';
 import { handleQuotaStatus } from '../../../supabase/functions/api/routes/quota.ts';
 import { handleCategorizeDream } from '../../../supabase/functions/api/routes/dreams.ts';
+import { claudeProviderCircuit } from '../../../supabase/functions/api/services/claude.ts';
 import { processAnalysisJob } from '../../../supabase/functions/analysis-job-worker/index.ts';
 
 await Deno.permissions.revoke({ name: 'net', host: 'deno.land:443' });
@@ -48,6 +49,7 @@ Deno.env.set('GEMINI_API_KEY', 'native-e2e-no-network-provider');
 Deno.env.set('ANTHROPIC_API_KEY', 'native-e2e-no-network-provider');
 const originalFetch = globalThis.fetch;
 let analysisHold = false;
+let analysisOutage = false;
 let releaseAnalysis: (() => void) | undefined;
 let analysisGate = Promise.resolve();
 let chatDropDone = false;
@@ -102,6 +104,7 @@ globalThis.fetch = async (input, init) => {
     let answer: string;
     if (isAnalysis) {
       state.analysisProviderCalls += 1;
+      if (analysisOutage) return json({ type: 'error', error: { type: 'api_error', message: 'Synthetic provider outage' } }, 503);
       answer = JSON.stringify(providerAnalysis);
     } else if (structured) {
       state.categorizationProviderCalls += 1;
@@ -150,7 +153,7 @@ Deno.serve({ hostname: '127.0.0.1', port, onListen: () => console.log(`Native re
   const path = new URL(req.url).pathname;
   if (path === '/__state' || path === '/__control') {
     if (req.headers.get('X-E2E-Control-Token') !== controlToken) return json({ error: 'Unauthorized' }, 401);
-    if (path === '/__state') return json({ ...state, analysisHold, pendingWorkers: jobs.size, analysisText, chatText });
+    if (path === '/__state') return json({ ...state, analysisHold, analysisOutage, pendingWorkers: jobs.size, analysisText, chatText });
     if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
     const command = await req.json();
     if (command.reset === true) {
@@ -161,7 +164,10 @@ Deno.serve({ hostname: '127.0.0.1', port, onListen: () => console.log(`Native re
       state.analysisRequests = []; state.chatRequests = [];
       state.backendFailures = [];
       chatDropDone = false;
+      analysisOutage = false;
+      claudeProviderCircuit.reset();
     }
+    if (typeof command.analysisOutage === 'boolean') analysisOutage = command.analysisOutage;
     if (command.analysisHold === true && !analysisHold) {
       analysisHold = true;
       analysisGate = new Promise<void>(resolve => { releaseAnalysis = resolve; });

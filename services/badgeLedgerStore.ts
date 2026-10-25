@@ -1,9 +1,10 @@
 /**
  * The badge ledger of the signed-in dreamer (or the guest), kept on this device.
  *
- * One ledger per scope, as the journal itself: `guest` or `user:<id>`. A guest's ledger is
- * joined once to the first account that opens after it, the same way its dreams move there,
- * and is then forgotten. Writes are serialized, so two actions finishing together both count.
+ * One ledger per scope, as the journal itself: `guest` or `user:<id>`. A guest holds no card,
+ * but its ledger keeps counting: it is handed once to the first account that opens after it,
+ * the same way its dreams move there, which then earns what it reaches, and is forgotten.
+ * Writes are serialized, so two actions finishing together both count.
  * Actions recorded before the ledger is read wait for it instead of being lost. A ledger of
  * the first collection is read once and brought to the current one under a new key; the old
  * key is never written again, so an older app version keeps its own copy intact.
@@ -12,8 +13,8 @@ import { useSyncExternalStore } from 'react';
 
 import type { BadgeFamilyId, BadgeTierLevel } from '@/lib/badges/catalog';
 import {
-  actionsOnly,
   applyBadgeEvent,
+  claimGuestLedger,
   createEmptyBadgeLedger,
   dreamRef,
   mergeBadgeLedgers,
@@ -154,11 +155,10 @@ function open(scope: BadgeScope, id: number, attempt: number, pending: Change[])
     let ledger = own.status === 'read' ? own.ledger : createEmptyBadgeLedger();
     // A retry after a failed initial write must retain subsequent in-memory actions too.
     if (snapshot.scope === scope && snapshot.ready) ledger = mergeBadgeLedgers(ledger, snapshot.ledger);
-    // A guest's actions join the first account that opens; what its journal told does not,
-    // since the account reads its own journal again.
+    // Everything a guest counted joins the first account that opens, which earns its cards now.
     const guestLedger = isCurrent() && canWrite && guest.status === 'read' ? guest.ledger : null;
     const claimedGuest = guestLedger !== null;
-    if (guestLedger) ledger = mergeBadgeLedgers(ledger, actionsOnly(guestLedger));
+    if (guestLedger) ledger = claimGuestLedger(ledger, guestLedger, Date.now());
     const initial = ledger;
     const pendingCount = pending.length;
     for (const change of pending.slice(0, pendingCount)) ledger = change(ledger);

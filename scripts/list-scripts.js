@@ -42,6 +42,7 @@ function classifyScript(name) {
 }
 
 function scriptSafety(name) {
+  if (name === 'workspace') return 'creates, retains or releases managed local workspaces';
   if (name === 'test:testerarmy:benchmark') return 'downloads isolated E2E/Chromium and writes timing reports';
   if (name === 'verify:pr' || name === 'verify:release' || name === 'verify:release:site') return 'writes a local proof';
   if (name === 'release:build') return 'starts a remote build';

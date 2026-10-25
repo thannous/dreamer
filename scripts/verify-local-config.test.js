@@ -308,6 +308,18 @@ describe('verify-local.config.mjs', () => {
     expect(outside(checkNamed('jest-changed').when, probes)).toEqual([]);
   });
 
+  it('runs admission regressions for admission migrations and Edge functions', () => {
+    const check = checkNamed('db-contracts');
+    expect(check.command).toContain('&& npm run test:analysis-admission:db');
+    expect(scriptsOf('package.json')['test:analysis-admission:db']).toBe('node scripts/verify-analysis-admission.mjs');
+    expect(outside(check.when, [
+      'supabase/migrations/20261025160000_refund_failed_text_analysis.sql',
+      'supabase/migrations/20261025185137_deduplicate_analysis_admission_retries.sql',
+      'supabase/functions/api/services/aiAdmission.ts',
+      'scripts/verify-analysis-admission.mjs',
+    ])).toEqual([]);
+  });
+
   it('scopes db-contracts to every tracked file its tests read', () => {
     // These tests read migrations and sources as files, which no import graph
     // shows: they run here with every file they read recorded.

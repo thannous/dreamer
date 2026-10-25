@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Privacy Policy",
   "publishedTime": "",
-  "modifiedTime": "2026-10-18",
+  "modifiedTime": "2026-10-25",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Privacy Policy</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Effective October 18, 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Effective October 25, 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -119,7 +119,7 @@
                 <p>We process your personal data for the following purposes and legal bases:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Providing the app and its features</strong> (dream journal, analyses, generated images, account creation and management): processing necessary for the <strong>performance of the contract</strong> (acceptance of Terms of Service) between you and Noctalia.</li>
-                    <li><strong>Transcription and analysis of your dreams, including when they contain sensitive information:</strong> processing based on your <strong>explicit consent</strong>, which you can withdraw at any time by deleting the relevant dreams and/or your account.</li>
+                    <li><strong>Transcription and analysis of your dreams, including when they contain sensitive information:</strong> processing based on your <strong>explicit consent</strong>, which you can withdraw at any time by turning off the “AI to explore and illustrate my dreams” switch (Settings → Legal), or by deleting the relevant dreams and/or your account. Once the switch is off, no new analysis, conversation or illustration request is sent to AI services from that device; a request already in progress may finish, and the fallback voice transcription described in §4 does not depend on this choice. Dreams, analyses and images already produced are kept.</li>
                     <li><strong>Measuring technical stability, preventing abuse and ensuring security:</strong> processing based on our <strong>legitimate interest</strong> in ensuring the proper functioning, security and development of the service, without marketing profiling.</li>
                     <li><strong>Aggregate, cookie-free traffic measurement with Ahrefs:</strong> processing based on our <strong>legitimate interest</strong> in improving our public content, without targeted advertising or cross-site tracking.</li>
                     <li><strong>Heatmaps and session recordings with Microsoft Clarity:</strong> processing based solely on your analytics <strong>consent</strong>, which you can refuse or withdraw at any time.</li>
@@ -198,7 +198,7 @@
                     <li><strong>Right to restriction of processing:</strong> request the temporary suspension of certain processing.</li>
                     <li><strong>Right to object:</strong> object to certain processing based on our legitimate interest.</li>
                     <li><strong>Right to data portability:</strong> receive the data you have provided to us in a structured, commonly used and machine-readable format, or request its transmission to another controller where technically feasible.</li>
-                    <li><strong>Right to withdraw consent:</strong> where processing is based on your consent (notably for certain sensitive data), you can withdraw it at any time, without affecting the lawfulness of prior processing. You can change the Clarity and Google Analytics choice through “Analytics preferences” in the footer.</li>
+                    <li><strong>Right to withdraw consent:</strong> where processing is based on your consent (notably for certain sensitive data), you can withdraw it at any time, without affecting the lawfulness of prior processing. You can change the Clarity and Google Analytics choice through “Analytics preferences” in the footer. You can withdraw your AI consent in the app with the “AI to explore and illustrate my dreams” switch (Settings → Legal).</li>
                 </ul>
                 <p class="mt-4">You can exercise your rights by contacting us at: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>, specifying the email address used to create your account. We may need to ask you for additional information to verify your identity.</p>
                 <p class="mt-4">If you reside in the European Economic Area or the United Kingdom, you also have the right to lodge a complaint with your local supervisory authority (in France: the CNIL).</p>

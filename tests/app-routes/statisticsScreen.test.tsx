@@ -249,6 +249,7 @@ jest.mock('@/hooks/useLocaleFormatting', () => ({
 }));
 jest.mock('@/context/DreamsContext', () => ({
   useDreams: () => mockUseDreams(),
+  useDreamsData: () => mockUseDreams(),
 }));
 jest.mock('@/context/AuthContext', () => ({
   useAuth: () => ({ user: mockUser }),

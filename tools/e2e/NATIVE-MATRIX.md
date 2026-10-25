@@ -41,7 +41,7 @@ protocol. Do not install, erase or take a private phone from an inventory result
 
 If no compatible project exists, requested native implementation/QA includes the
 necessary generation in its isolated worktree, after SDK/profile checks, preferably
-with `prebuild --no-install`. Do not regenerate the primary or another task's project
+with `prebuild --no-install`. Do not regenerate another task's project
 or request the same permission again. Existing isolated Lucid Android/iOS and
 Meditation iOS generation provenance stays with their native inputs. Dependency check, Java17
 for Android, Xcode/Pods for iOS, embedded JS/OTA identity, actual signing where

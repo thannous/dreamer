@@ -341,47 +341,6 @@ describe('Recording i18n - bottom sheets', () => {
     }
   });
 
-  it('tells every locale that a short fragment is already saveable', async () => {
-    await Promise.all(languages.map((lang) => loadTranslations(lang)));
-
-    const saveabilityByLocale: Record<(typeof languages)[number], RegExp> = {
-      en: /fragment.*enough.*journal/i,
-      fr: /fragment.*suffit.*journal/i,
-      es: /fragmento.*basta.*diario/i,
-      de: /fragment.*reicht.*journal/i,
-      it: /basta.*frammento.*diario/i,
-      pt: /fragmento.*basta.*diário/i,
-    };
-
-    for (const lang of languages) {
-      const value = getTranslator(lang)('recording.draft_progress.short');
-      expect(value).not.toBe('recording.draft_progress.short');
-      expect(value).toMatch(saveabilityByLocale[lang]);
-    }
-  });
-
-  it('shows an actual character count in every locale without a 600 limit', async () => {
-    await Promise.all(languages.map((lang) => loadTranslations(lang)));
-
-    const countByLocale: Record<(typeof languages)[number], RegExp> = {
-      en: /^601 characters$/,
-      fr: /^601 caractères$/,
-      es: /^601 caracteres$/,
-      de: /^601 Zeichen$/,
-      it: /^601 caratteri$/,
-      pt: /^601 caracteres$/,
-    };
-
-    for (const lang of languages) {
-      const t = getTranslator(lang);
-      expect(t('recording.draft_progress.full')).toBe('recording.draft_progress.full');
-      const value = t('recording.draft_progress.count', { count: 601 });
-      expect(value).toMatch(countByLocale[lang]);
-      expect(value).not.toContain('601/600');
-      expect(value).not.toContain('/600');
-    }
-  });
-
   it('has translations for the remembered dream label in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 

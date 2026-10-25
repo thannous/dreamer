@@ -17,12 +17,14 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.network': 'No internet connection. Please check your network and try again.',
   'error.timeout': 'Request timed out. The server is taking too long to respond. Please try again.',
   'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
+  'error.reanalysis_requires_plus': 'Updating an existing analysis requires Noctalia Plus. Your previous analysis is still available.',
   'error.interpretation_limit': 'You have used your included interpretations. Your dream remains saved in the journal.',
   'error.daily_analysis_limit': 'You started {limit} analyses in 24 hours, the limit that protects Noctalia from abuse. Your dream stays saved, and you can analyze it by tomorrow.',
   'error.daily_image_limit': 'You created {limit} illustrations in 24 hours, the limit that protects Noctalia from abuse. Your dream and its analysis stay saved, and you can illustrate it by tomorrow.',
   'error.daily_ai_limit': 'You reached today’s limit that protects Noctalia from abuse. This feature will be available again by tomorrow, and your dreams stay saved.',
   'error.exploration_limit': 'You have reached the exploration limit for your current plan. Your dream and existing conversation remain available.',
   'error.chat_safety_limit': 'This dream has reached its chat safety limit. Its interpretation remains available in your journal.',
+  'error.provider_unavailable': 'The analysis service is temporarily unavailable. Try again in a few moments.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
   'error.client': 'Invalid request. Please check your input and try again.',
   'error.owner_agent_limit_reached': 'You have reached the maximum number of saved keys ({limit}). Delete one before adding another.',
@@ -61,6 +63,7 @@ export interface ClassifiedError {
 
 type HttpErrorDetails = {
   status: number;
+  retryAfterMs?: number;
   body?: Record<string, unknown> | null;
   url?: string;
 };
@@ -187,6 +190,26 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
   };
 
   const httpDetails = getHttpErrorDetails(error);
+  const providerCode = httpDetails?.body?.providerCode ?? httpDetails?.body?.code
+    ?? (error as Error & { code?: unknown }).code;
+  if (providerCode === 'ANALYSIS_ALREADY_COMPLETE') {
+    return { type: ErrorType.CLIENT, message: error.message, originalError: error,
+      userMessage: translate('error.reanalysis_requires_plus'), canRetry: false };
+  }
+  if (error.name === 'AiConsentWithdrawnError' || error.name === 'AbortError' || [
+    'ANALYSIS_TRANSCRIPT_CHANGED', 'ANALYSIS_TRANSCRIPT_MISMATCH', 'ANALYSIS_REQUEST_STALE',
+    'ANALYSIS_STATE_CONFLICT', 'DREAM_NOT_FOUND', 'INVALID_TRANSCRIPT', 'ANALYSIS_ACCESS_DENIED',
+    'ANALYSIS_REQUEST_REJECTED', 'ANALYSIS_CLIENT_CANCELLED', 'ANALYSIS_ALREADY_CLAIMED', 'ANALYSIS_IDEMPOTENCY_KEY_REUSED', '42501',
+  ].includes(String(providerCode))) {
+    return { type: ErrorType.CLIENT, message: error.message, originalError: error,
+      userMessage: translate('error.client'), canRetry: false };
+  }
+  if (typeof providerCode === 'string' && [
+    'ANALYSIS_PROVIDER_UNAVAILABLE', 'ANALYSIS_PROVIDER_OVERLOADED', 'ANALYSIS_TIMEOUT',
+  ].includes(providerCode)) {
+    return { type: ErrorType.SERVER, message: error.message, originalError: error,
+      userMessage: translate('error.provider_unavailable'), canRetry: true };
+  }
   const guestSessionCode =
     error instanceof GuestSessionError
       ? error.code
@@ -360,12 +383,16 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
     }
 
     if (status === 429) {
+      const retryAfter = Number((error as unknown as HttpErrorDetails).retryAfterMs) / 1000
+        || Number(body?.retryAfter);
+      const delay = Number.isFinite(retryAfter) && retryAfter > 0 ? Math.ceil(retryAfter) : null;
       return {
         type: ErrorType.RATE_LIMIT,
         message: error.message,
         originalError: error,
-        userMessage: translate('error.rate_limit'),
-        canRetry: true,
+        userMessage: translate('error.rate_limit') + (delay ? ` (${delay} s)` : ''),
+        canRetry: !(code && (/^AI_.*_RATE_LIMIT$/.test(code) || code === 'AI_ADMISSION_DENIED'))
+          && !(delay && delay > 30),
       };
     }
 
@@ -747,4 +774,10 @@ export class GuestDreamLimitError extends Error {
     super('Guest dream recording limit reached');
     this.name = 'GuestDreamLimitError';
   }
+}
+
+/** A withdrawn permission cancels unsent work without opening another prompt. */
+export class AiConsentWithdrawnError extends Error {
+  readonly name = 'AiConsentWithdrawnError';
+  constructor() { super('AI consent withdrawn'); }
 }

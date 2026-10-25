@@ -1,8 +1,8 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { test, expect, admin } from '../backend-fixtures';
+import { test, expect, admin, client } from '../backend-fixtures';
 
-// Admission through the real service-only RPC. No worker or paid provider is
-// dispatched; the separate UI recovery journey covers execution and restart.
+// Admission and completion use the real service-only RPCs, with synthetic
+// analysis output. No worker/provider is dispatched; UI recovery covers those.
 test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundaries', {
   tags: ['plus-reanalysis'], timeout: 90_000,
 }, async ({ accounts }) => {
@@ -17,12 +17,12 @@ test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundar
     expect(result.error).toBeNull();
     return result.data!.id as number;
   };
-  const admit = async (userId: string, dreamId: number, requestId: string) => {
+  const admit = async (userId: string, dreamId: number, requestId: string, maxCreatedInWindow = 100) => {
     const result = await admin.rpc('admit_authenticated_analysis_job', {
       p_job_id: randomUUID(), p_user_id: userId, p_dream_id: dreamId,
       p_analysis_request_id: requestId, p_lang: 'en', p_replace_existing_image: false,
       p_max_attempts: 3, p_max_active_per_actor: 10, p_window_seconds: 600,
-      p_max_created_in_window: 100, p_max_global_active: 1000,
+      p_max_created_in_window: maxCreatedInWindow, p_max_global_active: 1000,
     });
     expect(result.error).toBeNull();
     return result.data;
@@ -39,13 +39,33 @@ test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundar
     expect(result.error).toBeNull();
     return result.data!;
   };
-  const releaseAdmissionSlot = async (jobId: string) => {
-    // A failed admitted job still spends its daily receipt. Release concurrency
-    // without pretending a provider ran or an analysis succeeded.
+  const failTerminally = async (jobId: string) => {
     const result = await admin.from('ai_jobs').update({
-      status: 'failed', error_code: 'LOCAL_ADMISSION_TEST_FINISHED',
+      status: 'failed', attempt_count: 3, error_code: 'ANALYSIS_PROVIDER_UNAVAILABLE',
     }).eq('id', jobId);
     expect(result.error).toBeNull();
+  };
+  const complete = async (jobId: string) => {
+    const result = await admin.rpc('complete_authenticated_analysis_job', {
+      p_job_id: jobId,
+      p_analysis_result: {
+        title: 'The lighthouse and its blue door', interpretation: 'A synthetic completed reading.',
+        shareableQuote: '', theme: 'calm', dreamType: 'Everyday Dream',
+        imagePrompt: 'A lighthouse with a blue door', symbols: [], emotions: [], reflectionQuestions: [],
+      },
+      p_image_job_id: randomUUID(), p_image_max_attempts: 3, p_image_max_active_per_actor: 10,
+      p_image_window_seconds: 600, p_image_max_created_in_window: 100, p_max_global_active: 1000,
+    });
+    expect(result.error).toBeNull();
+    expect(result.data).toMatchObject({ completed: true, job: { id: jobId, status: 'succeeded' } });
+    expect(result.data.image_job).toBeNull();
+    return result.data;
+  };
+  const start = async (jobId: string, attempt: number) => {
+    const result = await admin.from('ai_jobs').update({ status: 'running', attempt_count: attempt })
+      .eq('id', jobId).eq('status', 'queued').select('id').single();
+    expect(result.error).toBeNull();
+    expect(result.data?.id).toBe(jobId);
   };
 
   const transcript = 'The lighthouse has a new blue door in the revised dream.';
@@ -66,6 +86,7 @@ test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundar
   expect(await jobs(accounts.free.id)).toHaveLength(0);
   expect(await usage(accounts.free.id)).toEqual(freeUsageBefore);
 
+  const plusUsageBefore = await usage(accounts.plus.id);
   const admitted = await admit(accounts.plus.id, plusDream, requestId);
   expect(admitted).toMatchObject({
     allowed: true, job: {
@@ -84,14 +105,58 @@ test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundar
   expect(dream.data).toMatchObject({
     is_analyzed: false, interpretation: 'The previous reading remains available.', analysis_status: 'pending',
   });
-  await releaseAdmissionSlot(admitted.job.id);
+  // A transient failure requeues the same job and keeps its exact reservation.
+  const reservedUsage = await usage(accounts.plus.id);
+  await start(admitted.job.id, 1);
+  const requeued = await admin.from('ai_jobs').update({ status: 'queued', error_code: 'ANALYSIS_TRANSIENT' })
+    .eq('id', admitted.job.id).eq('status', 'running').select('id,status,attempt_count').single();
+  expect(requeued.error).toBeNull();
+  expect(requeued.data).toMatchObject({ id: admitted.job.id, status: 'queued', attempt_count: 1 });
+  expect(await usage(accounts.plus.id)).toEqual(reservedUsage);
+  expect(await admit(accounts.plus.id, plusDream, requestId)).toMatchObject({
+    allowed: true, duplicate: true, job: { id: admitted.job.id, status: 'queued', attempt_count: 1 },
+  });
+  await start(admitted.job.id, 3);
+  await failTerminally(admitted.job.id);
+  expect(await usage(accounts.plus.id)).toEqual(plusUsageBefore);
+  const failedDream = await admin.from('dreams').select('analysis_status,interpretation')
+    .eq('id', plusDream).single();
+  expect(failedDream.error).toBeNull();
+  expect(failedDream.data).toMatchObject({ analysis_status: 'failed', interpretation: 'The previous reading remains available.' });
+  expect(await admit(accounts.plus.id, plusDream, requestId)).toMatchObject({
+    allowed: true, duplicate: true, job: { id: admitted.job.id, status: 'failed' },
+  });
+  expect(await usage(accounts.plus.id)).toEqual(plusUsageBefore);
+  expect(await jobs(accounts.plus.id)).toHaveLength(1);
 
-  // Nine more fresh receipts reach the unchanged rolling-24h ceiling of ten.
-  for (let index = 2; index <= 10; index += 1) {
-    const dreamId = await seedAnalyzed(accounts.plus.id, `${transcript} Attempt ${index}.`);
-    const next = await admit(accounts.plus.id, dreamId, randomUUID());
+  // Refunding user quota never erases a failed admission from the abuse budget.
+  expect(await admit(accounts.plus.id, plusDream, randomUUID(), 1)).toMatchObject({
+    allowed: false, code: 'AI_ACTOR_RATE_LIMIT',
+  });
+  expect(await jobs(accounts.plus.id)).toHaveLength(1);
+  expect(await usage(accounts.plus.id)).toEqual(plusUsageBefore);
+
+  // Ten successful completions, rather than failed fixtures, spend the daily quota.
+  let firstSuccess: { jobId: string; requestId: string; dreamId: number } | undefined;
+  for (let index = 1; index <= 10; index += 1) {
+    const dreamId = await seedAnalyzed(accounts.plus.id, `${transcript} Success ${index}.`);
+    const successRequestId = randomUUID();
+    const next = await admit(accounts.plus.id, dreamId, successRequestId);
     expect(next).toMatchObject({ allowed: true });
-    await releaseAdmissionSlot(next.job.id);
+    const successReservation = await usage(accounts.plus.id);
+    if (index === 1) {
+      firstSuccess = { jobId: next.job.id, requestId: successRequestId, dreamId };
+      // Repeating the old failure must not refund this different live reservation.
+      await failTerminally(admitted.job.id);
+      expect(await usage(accounts.plus.id)).toEqual(successReservation);
+    }
+    await start(next.job.id, 1);
+    await complete(next.job.id);
+    expect(await usage(accounts.plus.id)).toEqual(successReservation);
+    const saved = await admin.from('dreams').select('is_analyzed,analysis_status,interpretation').eq('id', dreamId).single();
+    expect(saved.error).toBeNull();
+    expect(saved.data).toMatchObject({ is_analyzed: true, analysis_status: 'done', interpretation: 'A synthetic completed reading.' });
+    expect((await usage(accounts.plus.id)).filter(row => typeof row.metadata?.analysis_request_id === 'string')).toHaveLength(index);
   }
   expect((await usage(accounts.plus.id)).filter(row => typeof row.metadata?.analysis_request_id === 'string')).toHaveLength(10);
   const cappedDream = await seedAnalyzed(accounts.plus.id, `${transcript} Attempt eleven.`);
@@ -99,10 +164,88 @@ test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundar
   expect(await admit(accounts.plus.id, cappedDream, randomUUID())).toMatchObject({
     allowed: false, code: 'DAILY_ANALYSIS_LIMIT', daily_limit: 10, claimed: false,
   });
-  expect(await jobs(accounts.plus.id)).toHaveLength(10);
+  expect(await jobs(accounts.plus.id)).toHaveLength(11);
   expect(await usage(accounts.plus.id)).toEqual(receiptsBeforeLimit);
-  // A repeat remains the same admitted job even when the daily ceiling is full.
-  expect(await admit(accounts.plus.id, plusDream, requestId)).toMatchObject({
-    allowed: true, duplicate: true, job: { id: admitted.job.id },
+  // Both admission and completion remain idempotent at the daily ceiling.
+  expect(firstSuccess).toBeDefined();
+  expect(await admit(accounts.plus.id, firstSuccess!.dreamId, firstSuccess!.requestId)).toMatchObject({
+    allowed: true, duplicate: true, job: { id: firstSuccess!.jobId, status: 'succeeded' },
   });
+  expect(await complete(firstSuccess!.jobId)).toMatchObject({ duplicate: true });
+  expect(await usage(accounts.plus.id)).toEqual(receiptsBeforeLimit);
+  expect(await jobs(accounts.plus.id)).toHaveLength(11);
+});
+
+// This is an exact DB/HTTP journey with synthetic model output. The completion
+// race and its refund trigger use the same RPCs as the worker, without paid AI.
+test('Free analyses refund service failures but charge edited and deleted dreams', {
+  tags: ['plus-reanalysis'], timeout: 90_000,
+}, async ({ accounts }) => {
+  const owner = client();
+  expect((await owner.auth.signInWithPassword(accounts.free)).error).toBeNull();
+  const usage = async () => {
+    const result = await admin.from('quota_usage').select('id,metadata')
+      .eq('user_id', accounts.free.id).eq('quota_type', 'analysis').order('id');
+    expect(result.error).toBeNull();
+    return result.data!;
+  };
+  const createAndAdmit = async () => {
+    const requestId = randomUUID();
+    const dream = await owner.from('dreams').insert({
+      user_id: accounts.free.id, transcript: 'A lighthouse with a blue door.', title: 'Refund policy',
+      interpretation: '', shareable_quote: '', dream_type: 'Everyday Dream', theme: 'calm',
+      client_request_id: randomUUID(), analysis_status: 'none', is_analyzed: false,
+    }).select('id').single();
+    expect(dream.error).toBeNull();
+    const admitted = await admin.rpc('admit_authenticated_analysis_job', {
+      p_job_id: randomUUID(), p_user_id: accounts.free.id, p_dream_id: dream.data!.id,
+      p_analysis_request_id: requestId, p_lang: 'en', p_replace_existing_image: false,
+      p_max_attempts: 3, p_max_active_per_actor: 1, p_window_seconds: 600,
+      p_max_created_in_window: 4, p_max_global_active: 1000,
+    });
+    expect(admitted.error).toBeNull();
+    expect(admitted.data).toMatchObject({ allowed: true });
+    const started = await admin.from('ai_jobs').update({ status: 'running', attempt_count: 3 })
+      .eq('id', admitted.data.job.id).eq('status', 'queued').select('id').single();
+    expect(started.error).toBeNull();
+    return { dreamId: dream.data!.id, jobId: admitted.data.job.id, requestId };
+  };
+  const fail = async (jobId: string, errorCode: string) => {
+    const result = await admin.from('ai_jobs').update({ status: 'failed', error_code: errorCode })
+      .eq('id', jobId).eq('status', 'running');
+    expect(result.error).toBeNull();
+  };
+  const before = await usage();
+  const service = await createAndAdmit();
+  expect(await usage()).toHaveLength(before.length + 1);
+  await fail(service.jobId, 'ANALYSIS_PROVIDER_OVERLOADED');
+  expect(await usage()).toEqual(before);
+
+  const edited = await createAndAdmit();
+  const afterAdmission = await usage();
+  const changed = await owner.from('dreams').update({ transcript: 'The client changed the story during Claude generation.' }).eq('id', edited.dreamId);
+  expect(changed.error).toBeNull();
+  const completion = await admin.rpc('complete_authenticated_analysis_job', {
+    p_job_id: edited.jobId,
+    p_analysis_result: { title: 'Stale output', interpretation: 'A synthetic result for the original text.', shareableQuote: '', theme: 'calm', dreamType: 'Everyday Dream', imagePrompt: 'A lighthouse', symbols: [], emotions: [], reflectionQuestions: [] },
+    p_image_job_id: randomUUID(), p_image_max_attempts: 3, p_image_max_active_per_actor: 1,
+    p_image_window_seconds: 600, p_image_max_created_in_window: 4, p_max_global_active: 1000,
+  });
+  expect(completion.error).toBeNull();
+  expect(completion.data).toMatchObject({ completed: false, code: 'ANALYSIS_TRANSCRIPT_CHANGED' });
+  await fail(edited.jobId, completion.data.code);
+  expect(await usage()).toEqual(afterAdmission);
+  const terminal = await owner.from('dreams').select('analysis_status,transcript').eq('id', edited.dreamId).single();
+  expect(terminal.error).toBeNull();
+  expect(terminal.data).toMatchObject({ analysis_status: 'failed', transcript: 'The client changed the story during Claude generation.' });
+
+  const deleted = await createAndAdmit();
+  const beforeDelete = await usage();
+  const deletion = await owner.from('dreams').delete().eq('id', deleted.dreamId);
+  expect(deletion.error).toBeNull();
+  const gone = await admin.from('ai_jobs').select('id').eq('id', deleted.jobId);
+  expect(gone.error).toBeNull();
+  expect(gone.data).toEqual([]); // FK cascade removes the job, never its receipt
+  expect(await usage()).toEqual(beforeDelete);
+  expect((await usage()).filter(row => [edited.requestId, deleted.requestId].includes(row.metadata?.analysis_request_id))).toHaveLength(2);
 });

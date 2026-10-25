@@ -106,7 +106,8 @@
         "fingerprint_hash",
         "analysis_request_id",
         "transcript_sha256",
-        "claimed_at"
+        "claimed_at",
+        "reservation_id"
       ]
     },
     {
@@ -239,6 +240,18 @@
         "section",
         "updated_at_ms",
         "completed_at_ms"
+      ]
+    },
+    {
+      "schema": "private",
+      "name": "ai_analysis_admissions",
+      "requiredColumns": [
+        "actor_hash",
+        "capability",
+        "request_hash",
+        "replay_count",
+        "admitted_at",
+        "daily_admitted"
       ]
     }
   ],
@@ -404,6 +417,42 @@
       "name": "merge_guide_reading_progress",
       "identityArguments": "p_user_id uuid, p_guide_id text, p_section integer, p_updated_at_ms bigint, p_completed_at_ms bigint",
       "result": "SETOF guide_reading_progress"
+    },
+    {
+      "schema": "public",
+      "name": "reserve_guest_text_analysis",
+      "identityArguments": "p_fingerprint text, p_analysis_request_id uuid, p_limit integer, p_transcript_sha256 text",
+      "result": "jsonb"
+    },
+    {
+      "schema": "public",
+      "name": "release_guest_text_analysis",
+      "identityArguments": "p_fingerprint text, p_reservation_id uuid, p_failure_code text",
+      "result": "boolean"
+    },
+    {
+      "schema": "public",
+      "name": "release_authenticated_text_analysis",
+      "identityArguments": "p_user_id uuid, p_claim_id uuid, p_failure_code text",
+      "result": "boolean"
+    },
+    {
+      "schema": "private",
+      "name": "refund_failed_text_analysis_job",
+      "identityArguments": "",
+      "result": "trigger"
+    },
+    {
+      "schema": "private",
+      "name": "is_refundable_text_analysis_failure",
+      "identityArguments": "p_error_code text",
+      "result": "boolean"
+    },
+    {
+      "schema": "public",
+      "name": "claim_ai_analysis_admission",
+      "identityArguments": "p_actor_hash text, p_capability text, p_request_id uuid, p_window_seconds integer, p_actor_limit integer, p_global_limit integer, p_daily_limit integer",
+      "result": "jsonb"
     }
   ],
   "requiredTriggers": [
@@ -526,6 +575,17 @@
       "definitionIncludes": [
         "BEFORE INSERT OR UPDATE OF raw_app_meta_data",
         "EXECUTE FUNCTION apple_auth_private.capture_legacy_refresh_token()"
+      ]
+    },
+    {
+      "schema": "public",
+      "table": "ai_jobs",
+      "name": "refund_failed_text_analysis_job",
+      "functionSchema": "private",
+      "functionName": "refund_failed_text_analysis_job",
+      "definitionIncludes": [
+        "AFTER UPDATE OF status ON public.ai_jobs",
+        "EXECUTE FUNCTION private.refund_failed_text_analysis_job()"
       ]
     }
   ],

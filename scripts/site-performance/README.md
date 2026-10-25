@@ -1,20 +1,32 @@
 # Site measurements (TI-530)
 
 Report-only tooling; no CI gate, publication or production access. Run from the
-repository root. Keep evidence outside the checkout.
+repository root. Keep compact evidence in the ignored `outputs/` directory.
 
 ## Locked dependency comparison
 
 ```sh
-python3 scripts/site-performance/measure-install.py /private/tmp/site-install-evidence
+mise exec -- python3 scripts/site-performance/measure-install.py outputs/site-install-evidence
 ```
+
+Output paths outside the repository's `outputs/`, including symlinks resolving
+outside it, are refused before creating the report directory or workspace.
 
 This copies tracked manifests into disposable directories and compares three
 fresh-cache and three populated-cache `npm ci` runs for each package. Every run
 removes/reinstalls node_modules through npm ci. Cold means a new npm cache, not a
 cold OS filesystem cache. No audit/fund network requests are included. All six
-installs for a target use the same directory. Temporary directories remain for
-inspection. Do not run concurrent builds/audits when seeking low-noise results.
+installs for a target use the same directory. Scratch and the six isolated cold
+caches live under `~/Projects/.workspaces/<repo>/measure-install`, with a live
+owner lease; a concurrent benchmark is refused. `finally` removes them after
+success or failure, while preserving partial logs, measurements and the compact
+`workspace-receipt.json` in the output directory. No real package install is run
+by the lifecycle tests. Pass `--keep-workspace` only for explicit diagnosis; its
+receipt records retention, and a later run refuses to overwrite that evidence.
+Inspect it, then use `npm run workspace -- release --task measure-install` when
+finished. Regular installs continue to use the existing configured npm/pnpm
+cache; no additional global cache is created. Do not run concurrent builds/audits
+when seeking low-noise results.
 
 ## Build and validation
 

@@ -159,6 +159,23 @@ export const paintSweep = (travel: number, reduced: boolean): CSSStyle => (reduc
       animationTimingFunction: EASE.inOut,
     });
 
+/**
+ * The brush over a canvas being painted, laying strokes back and forth with the band's
+ * pass. A state indication like the band; reduced motion holds the brush still.
+ */
+export const brushStroke = (reduced: boolean): CSSStyle | null => (reduced
+  ? null
+  : {
+      animationName: {
+        from: { transform: [{ translateX: -5 }, { translateY: 2 }, { rotate: '-16deg' }] },
+        to: { transform: [{ translateX: 5 }, { translateY: -2 }, { rotate: '10deg' }] },
+      },
+      animationDuration: DREAM_STORY.paintSweep / 2,
+      animationIterationCount: 'infinite',
+      animationDirection: 'alternate',
+      animationTimingFunction: EASE.inOut,
+    });
+
 /** A painting that has just landed, settling into its frame once. */
 export const paintSettle = (reduced: boolean): CSSStyle =>
   entrance({ from: [{ scale: 1.08 }], to: [{ scale: 1 }] }, DREAM_STORY.paintSettle, 0, reduced);

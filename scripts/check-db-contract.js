@@ -315,7 +315,7 @@ function normalizeArray(values) {
 
 function normalizeTriggerDefinition(definition) {
   return String(definition).replace(
-    /(\bexecute\s+function\s+)(?:"[^"]+"|[A-Za-z_][A-Za-z0-9_$]*)\./gi,
+    /(\b(?:execute\s+function|on)\s+)(?:"[^"]+"|[A-Za-z_][A-Za-z0-9_$]*)\./gi,
     '$1'
   );
 }
@@ -873,6 +873,7 @@ module.exports = {
   LOCAL_STATUS_COMMAND,
   DEFAULT_MANIFEST_PATH,
   loadManifest,
+  normalizeTriggerDefinition,
   parseArgs,
   parseStatusEnv,
   readLocalStackDbUrl,

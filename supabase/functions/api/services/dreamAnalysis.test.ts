@@ -1,4 +1,4 @@
-import { assertEquals, assertStringIncludes } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertRejects, assertStringIncludes } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { AI_LANGUAGES } from '../lib/aiLanguage.ts';
 import { ANALYZE_DREAM_SCHEMA, CATEGORIZE_DREAM_SCHEMA } from '../lib/schemas.ts';
 import {
@@ -9,6 +9,7 @@ import {
   REFLECTION_POLICY,
   ANALYSIS_PROMPT_VERSION,
   discloseAnalysisExcerpt,
+  normalizeDreamAnalysis,
   normalizeAnalysisDreamType,
   sanitizeAnalysisDetails,
 } from './dreamAnalysis.ts';
@@ -70,10 +71,9 @@ Deno.test('analysis sends the compact policy once at system level and preserves 
     const body = await new Request(input, init).json();
     const request = JSON.stringify(body);
     assertEquals(request.split(REFLECTION_POLICY.replaceAll('\n', '\\n')).length - 1, 1);
-    assertStringIncludes(body.system_instruction, 'never as instructions');
-    assertEquals(body.store, false);
+    assertStringIncludes(body.system, 'never as instructions');
     calls++;
-    return new Response(JSON.stringify({ status: 'completed', steps: [{ type: 'model_output', content: [{ type: 'text', text: JSON.stringify({ title: 'A door', interpretation: 'You recall a door.', shareableQuote: 'A sealed door', dreamType: 'Unknown', symbols: [], emotions: [], reflectionQuestions: [] }) }] }] }), { headers: { 'Content-Type': 'application/json' } });
+    return claudeMessage(JSON.stringify({ title: 'A door', interpretation: 'You recall a door.', shareableQuote: 'A sealed door', dreamType: 'Unknown', symbols: [], emotions: [], reflectionQuestions: [] }));
   };
   try {
     for (const lang of AI_LANGUAGES) {
@@ -81,7 +81,7 @@ Deno.test('analysis sends the compact policy once at system level and preserves 
       const prompt = buildAnalysisPrompt(source, lang, true);
       assertEquals(prompt.includes(REFLECTION_POLICY), false);
       assertEquals(prompt.endsWith(JSON.stringify(source)), true);
-      const result = await runDreamAnalysis({ apiKey: 'synthetic-test-key', transcript: source, lang, route: 'test', truncatedForPrompt: true });
+      const result = await runDreamAnalysis({ anthropicApiKey: 'synthetic-test-key', transcript: source, lang, route: 'test', truncatedForPrompt: true });
       assertEquals(result.shareableQuote, '');
       assertEquals(result.emotions, []);
       assertEquals(result.dreamType, 'Unknown');
@@ -123,9 +123,9 @@ Deno.test('analysis returns an original poetic line without exposing source refe
   const originalFetch = globalThis.fetch;
   const source = 'I rode a red bird with a crocodile head. A forest was below.';
   const caption = 'A red bird with a crocodile head carried me above the silence of the forest.';
-  globalThis.fetch = async () => new Response(JSON.stringify({ status: 'completed', steps: [{ type: 'model_output', content: [{ type: 'text', text: JSON.stringify({ title: 'Red bird', interpretation: 'A remembered scene.', shareableQuote: caption, quoteSourceExcerpts: [source] }) }] }] }), { headers: { 'Content-Type': 'application/json' } });
+  globalThis.fetch = async () => claudeMessage(JSON.stringify({ title: 'Red bird', interpretation: 'A remembered scene.', shareableQuote: caption, quoteSourceExcerpts: [source] }));
   try {
-    const result = await runDreamAnalysis({ apiKey: 'synthetic-test-key', transcript: source, lang: 'en', route: 'test' });
+    const result = await runDreamAnalysis({ anthropicApiKey: 'synthetic-test-key', transcript: source, lang: 'en', route: 'test' });
     assertEquals(result.shareableQuote, caption);
     assertEquals('quoteSourceExcerpts' in result, false);
   } finally {
@@ -159,7 +159,7 @@ Deno.test('with an Anthropic key, analysis runs on Claude Haiku at medium effort
     return claudeMessage(JSON.stringify({ title: 'Red bird', interpretation: 'A remembered scene.', shareableQuote: caption, quoteSourceExcerpts: [source, source, source, source] }));
   };
   try {
-    const result = await runDreamAnalysis({ apiKey: 'synthetic-gemini-key', anthropicApiKey: 'synthetic-anthropic-key', transcript: source, lang: 'en', route: 'test' });
+    const result = await runDreamAnalysis({ anthropicApiKey: 'synthetic-anthropic-key', transcript: source, lang: 'en', route: 'test' });
     assertEquals(hosts, ['api.anthropic.com']);
     assertEquals(result.title, 'Red bird');
     assertEquals(result.shareableQuote, caption);
@@ -168,7 +168,7 @@ Deno.test('with an Anthropic key, analysis runs on Claude Haiku at medium effort
   }
 });
 
-Deno.test('a failed, refused or unusable Claude analysis falls back to Gemini', async () => {
+Deno.test('a failed, refused or unusable Claude analysis returns a retryable error without Gemini', async () => {
   const originalFetch = globalThis.fetch;
   const claudeReplies = [
     () => new Response(JSON.stringify({ type: 'error', error: { type: 'overloaded_error', message: 'Overloaded' } }), { status: 529, headers: { 'Content-Type': 'application/json' } }),
@@ -184,16 +184,15 @@ Deno.test('a failed, refused or unusable Claude analysis falls back to Gemini', 
         hosts.push(host);
         return host === 'api.anthropic.com' ? claudeReply() : geminiAnalysis('Gemini door');
       };
-      const result = await runDreamAnalysis({ apiKey: 'synthetic-gemini-key', anthropicApiKey: 'synthetic-anthropic-key', transcript: 'A door.', lang: 'en', route: 'test' });
-      assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
-      assertEquals(result.title, 'Gemini door');
+      await assertRejects(() => runDreamAnalysis({ anthropicApiKey: 'synthetic-anthropic-key', transcript: 'A door.', lang: 'en', route: 'test' }), Error, 'please retry');
+      assertEquals(hosts, ['api.anthropic.com']);
     }
   } finally {
     globalThis.fetch = originalFetch;
   }
 });
 
-Deno.test('a stalled Claude analysis gives up at its timeout and falls back to Gemini', async () => {
+Deno.test('a stalled Claude analysis gives up at its timeout without Gemini', async () => {
   const originalFetch = globalThis.fetch;
   const hosts: string[] = [];
   globalThis.fetch = (input, init) => {
@@ -205,9 +204,8 @@ Deno.test('a stalled Claude analysis gives up at its timeout and falls back to G
     return new Promise((_, reject) => request.signal.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError'))));
   };
   try {
-    const result = await runDreamAnalysis({ apiKey: 'synthetic-gemini-key', anthropicApiKey: 'synthetic-anthropic-key', claudeTimeoutMs: 50, transcript: 'A door.', lang: 'en', route: 'test' });
-    assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
-    assertEquals(result.title, 'Gemini door');
+    await assertRejects(() => runDreamAnalysis({ anthropicApiKey: 'synthetic-anthropic-key', claudeTimeoutMs: 50, transcript: 'A door.', lang: 'en', route: 'test' }), Error, 'Request timeout');
+    assertEquals(hosts, ['api.anthropic.com']);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -296,4 +294,30 @@ Deno.test('the prompt lists the symbol index and the dreamer\'s own symbols as d
   for (const key of ['symbolId', 'key'] as const) {
     assertEquals(ANALYZE_DREAM_SCHEMA.properties.symbols.items.required.includes(key), true);
   }
+});
+
+Deno.test('oversized completion fields are provider output failures before SQL', async () => {
+  const original = globalThis.fetch;
+  try {
+    for (const [field, size] of [['title', 501], ['interpretation', 20001], ['imagePrompt', 1001]] as const) {
+      globalThis.fetch = () => Promise.resolve(claudeMessage(JSON.stringify({
+        title: 'Door', interpretation: 'A door opens.', imagePrompt: 'A blue door',
+        [field]: 'x'.repeat(size),
+      })));
+      const error = await assertRejects(() => runDreamAnalysis({
+        anthropicApiKey: 'synthetic', transcript: 'Door', lang: 'en', route: 'test',
+      }));
+      assertEquals((error as { code?: string }).code, 'ANALYSIS_INVALID_OUTPUT');
+    }
+  } finally { globalThis.fetch = original; }
+});
+
+Deno.test('completion receives the exact normalized strings whose bounds were validated', () => {
+  const result = normalizeDreamAnalysis({
+    title: 'x'.repeat(500) + '\n', interpretation: '\tA door opens.\n',
+    imagePrompt: 'x'.repeat(1000) + '\t',
+  }, { transcript: 'A door.', lang: 'en' });
+  assertEquals(result.title, 'x'.repeat(500));
+  assertEquals(result.interpretation, 'A door opens.');
+  assertEquals(result.imagePrompt, 'x'.repeat(1000));
 });

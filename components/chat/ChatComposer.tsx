@@ -5,6 +5,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 
 export type ChatComposerHandle = {
   clearSentText: (sentText: string) => void;
+  restoreUnsentText: (text: string) => void;
 };
 
 type ChatComposerProps = {
@@ -24,6 +25,7 @@ export const ChatComposer = forwardRef<ChatComposerHandle, ChatComposerProps>(fu
   const [draft, setDraft] = useState('');
 
   useImperativeHandle(ref, () => ({
+    restoreUnsentText: (text) => setDraft((current) => current || text),
     clearSentText: (sentText) => {
       setDraft((current) => computeNextInputAfterSend(current, sentText));
     },

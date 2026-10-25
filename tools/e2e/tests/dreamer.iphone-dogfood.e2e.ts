@@ -92,7 +92,6 @@ test('iPhone keeps recall answers visible and readable after completion and rela
   try {
     await input.fill('a');
     draftOwned = true;
-    await expect(screen.getByTestId('component.recording.draftProgress.count')).toHaveText('1 caractère');
     await screen.getByRole('button', 'Effacer le rêve', { exact: true }).tap();
     await expect(input).toHaveValue('');
     await input.fill(story);

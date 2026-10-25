@@ -8,7 +8,7 @@ const analysisText = 'A lighthouse can be a point of orientation. What does this
 // transport is deterministic; the real worker is held after durable admission.
 test('Plus reanalysis survives reload and completes once while preserving its image', {
   tags: ['analysis-recovery'], timeout: 180_000,
-}, async ({ page, browser, accounts, recovery }) => {
+}, async ({ page, accounts, recovery }) => {
   const owner = client();
   expect((await owner.auth.signInWithPassword(accounts.plus)).error).toBeNull();
   await recovery.control({ reset: true, analysisHold: true });
@@ -51,18 +51,12 @@ test('Plus reanalysis survives reload and completes once while preserving its im
     const replaceImage = page.getByRole('checkbox', { name: 'Also regenerate the dream image', exact: true });
     await expect(replaceImage).toBeVisible();
     await expect(replaceImage).not.toBeChecked();
-    const consentPrompts: string[] = [];
-    const offConsent = await browser.onDialog(async dialog => {
-      consentPrompts.push(dialog.message);
-      await dialog.accept();
-    });
-    try {
-      await page.getByRole('button', { name: 'Update', exact: true }).click();
-      await expect.poll(() => consentPrompts.length).toBe(1);
-      expect(consentPrompts[0]).toContain('Anthropic');
-    } finally {
-      offConsent();
-    }
+    await page.getByRole('button', { name: 'Update', exact: true }).click();
+    const consent = page.getByTestId('modal.aiConsent');
+    await expect(consent).toBeVisible();
+    expect(await jobs()).toHaveLength(0);
+    await consent.getByTestId('btn.aiConsent.accept').click();
+    await expect(consent).toBeHidden();
     await expect.poll(async () => (await recovery.state()).analysisDispatches).toBeGreaterThan(0);
     const pending = await jobs();
     expect(pending).toHaveLength(1);
@@ -106,6 +100,66 @@ test('Plus reanalysis survives reload and completes once while preserving its im
     expect(state.workerFailures).toBe(0);
   } finally {
     await recovery.control({ analysisHold: false });
+    await expect.poll(async () => (await recovery.state()).pendingWorkers).toBe(0);
+    await owner.auth.signOut();
+  }
+});
+
+// The paid transport alone is unavailable; retries, DB refunds, the notice and
+// its Retry action use the real application/worker/Auth/PostgREST paths.
+test('provider outage retries within budget, refunds, and offers a complete notice with working Retry', {
+  tags: ['analysis-recovery', 'provider-outage'], timeout: 180_000,
+}, async ({ page, accounts, recovery }) => {
+  const owner = client();
+  expect((await owner.auth.signInWithPassword(accounts.plus)).error).toBeNull();
+  await recovery.control({ reset: true, analysisOutage: true });
+  const transcript = `A lighthouse and a blue door ${randomUUID().slice(0, 8)}.`;
+  const revised = `${transcript} I hear the sea.`;
+  const inserted = await owner.from('dreams').insert({
+    user_id: accounts.plus.id, title: 'Provider outage journey', transcript,
+    interpretation: 'The earlier reading.', shareable_quote: '', theme: 'calm', dream_type: 'Everyday Dream',
+    client_request_id: randomUUID(), analysis_request_id: randomUUID(),
+    analysis_status: 'done', is_analyzed: true, analyzed_at: new Date().toISOString(),
+    analysis_details: { analysisTranscriptHash: hashDreamTranscript(transcript) },
+  }).select('id').single();
+  expect(inserted.error).toBeNull();
+  const dreamId = inserted.data!.id as number;
+  const jobs = async () => {
+    const result = await admin.from('ai_jobs').select('id,status,attempt_count,error_code,client_request_id')
+      .eq('dream_id', dreamId).order('created_at');
+    expect(result.error).toBeNull(); return result.data!;
+  };
+  try {
+    await login(page, accounts.plus);
+    await journal(page);
+    await page.getByTestId(/^dream\.item\./).filter({ hasText: transcript }).click();
+    await page.getByTestId('btn.editDream').click();
+    await page.getByTestId('input.dreamTranscript').fill(revised);
+    await page.getByTestId('btn.saveDreamEdit').click();
+    await page.getByTestId('btn.dream.staleCta').click();
+    await page.getByRole('button', { name: 'Update', exact: true }).click();
+    await page.getByTestId('modal.aiConsent').getByTestId('btn.aiConsent.accept').click();
+    await expect(page.getByText('The analysis service is temporarily unavailable. Try again in a few moments.', { exact: true })).toBeVisible({ timeout: 45_000 });
+    const failed = await jobs();
+    expect(failed).toHaveLength(1);
+    expect(failed[0]).toMatchObject({ status: 'failed', attempt_count: 3, error_code: 'ANALYSIS_PROVIDER_UNAVAILABLE' });
+    expect((await recovery.state()).analysisProviderCalls).toBe(3);
+    const refunded = await admin.from('quota_usage').select('id').eq('user_id', accounts.plus.id)
+      .eq('quota_type', 'analysis').eq('metadata->>analysis_request_id', failed[0].client_request_id);
+    expect(refunded.error).toBeNull(); expect(refunded.data).toHaveLength(0);
+    await recovery.control({ analysisOutage: false });
+    await page.getByTestId('sheet.analysisNotice').getByRole('button', { name: 'Try again', exact: true }).click();
+    await expect(page.getByText(analysisText, { exact: true })).toBeVisible({ timeout: 45_000 });
+    const recovered = await jobs();
+    expect(recovered).toHaveLength(2);
+    expect(recovered[1]).toMatchObject({ status: 'succeeded', attempt_count: 1 });
+    expect(recovered[1].client_request_id).not.toBe(failed[0].client_request_id);
+    const state = await recovery.state();
+    expect(state.analysisProviderCalls).toBe(4);
+    expect(state.blockedExternalRequests).toBe(0);
+    expect(state.workerFailures).toBe(0);
+  } finally {
+    await recovery.control({ analysisOutage: false, analysisHold: false });
     await expect.poll(async () => (await recovery.state()).pendingWorkers).toBe(0);
     await owner.auth.signOut();
   }

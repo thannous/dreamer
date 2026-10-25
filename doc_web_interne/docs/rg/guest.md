@@ -116,6 +116,17 @@ Comme pour les analyses :
 - Si le stockage des rêves est purgé (ex: récupération automatique “Row too big”), le journal local est perdu. Le compteur cumulatif peut rester à sa valeur antérieure ; une suppression ou purge ne rend pas le quota guest.
   - Mitigation : proposer un compte pour sauvegarder et synchroniser les rêves.
 
+## Collection de cartes (guest)
+
+- Décision du propriétaire (2026-10-25) : un invité ne détient aucune carte. L’album
+  s’affiche avec toutes les cartes à venir et propose de créer un compte gratuit ;
+  le détail d’une carte propose le compte à la place de l’action de la famille.
+- Ce que l’invité fait compte quand même : son registre local (`noctalia_badge_ledger_v1:guest`)
+  garde actions et faits du journal, y compris rêves supprimés et favoris retirés.
+- À l’ouverture du premier compte, ce registre lui est remis (`claimGuestLedger`) :
+  les niveaux atteints sont obtenus à cette date et attendent d’être retournés.
+  Détails : [lib/badges/README.md](../../../lib/badges/README.md).
+
 ## Passage guest → compte (création / connexion)
 
 ### Données (rêves)

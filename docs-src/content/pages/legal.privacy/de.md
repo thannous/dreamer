@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-de-1200x630.jpg",
   "twitterImageAlt": "Datenschutzerklärung",
   "publishedTime": "",
-  "modifiedTime": "2026-10-18",
+  "modifiedTime": "2026-10-25",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Datenschutzerklärung</h1>
-<p class="text-lg text-purple-200/80 mb-10">Gültig ab 18. Oktober 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">Gültig ab 25. Oktober 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -117,7 +117,7 @@
                 <p class="mt-4">Die freiwillige Nutzungsmessung der App beruht auf deiner Einwilligung, unabhängig von den technischen Vorgängen, die zur Bereitstellung und Absicherung des Dienstes erforderlich sind.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Bereitstellung der App:</strong> Konto, Traumtagebuch, Analysen, Bilder und Kernfunktionen auf Grundlage der Vertragserfüllung.</li>
-      <li><strong>Transkription und Analyse:</strong> Verarbeitung auf Grundlage deiner ausdrücklichen Einwilligung, insbesondere wenn deine Einträge sensible Informationen enthalten.</li>
+      <li><strong>Transkription und Analyse:</strong> Verarbeitung auf Grundlage deiner ausdrücklichen Einwilligung, insbesondere wenn deine Einträge sensible Informationen enthalten. Du kannst sie jederzeit widerrufen, indem du den Schalter „KI zum Erkunden und Illustrieren meiner Träume“ ausschaltest (Einstellungen → Rechtliches) oder die betreffenden Träume und/oder dein Konto löschst. Ist der Schalter ausgeschaltet, werden von diesem Gerät keine neuen Anfragen für Analysen, Gespräche oder Illustrationen an KI-Dienste gesendet; eine bereits laufende Anfrage kann abgeschlossen werden, und die in §4 beschriebene ersatzweise Sprachtranskription hängt nicht von dieser Entscheidung ab. Bereits erstellte Träume, Analysen und Bilder bleiben erhalten.</li>
       <li><strong>Sicherheit und technische Stabilität:</strong> berechtigtes Interesse an einem sicheren und zuverlässigen Dienst ohne Marketingprofiling.</li>
       <li><strong>Aggregierte, cookiefreie Reichweitenmessung mit Ahrefs:</strong> berechtigtes Interesse an der Verbesserung öffentlicher Inhalte, ohne zielgerichtete Werbung oder websiteübergreifendes Tracking.</li>
       <li><strong>Heatmaps und Sitzungsaufzeichnungen mit Microsoft Clarity:</strong> ausschließlich auf Grundlage deiner <strong>Einwilligung</strong> in Analytics, die du jederzeit ablehnen oder widerrufen kannst.</li>
@@ -183,7 +183,7 @@
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">9. Deine Rechte</h2>
-    <p>Nach DSGVO kannst du Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch, Datenübertragbarkeit und den Widerruf einer Einwilligung verlangen. Die Auswahl für Clarity und Google Analytics kannst du über „Analytics-Einstellungen“ im Footer ändern.</p>
+    <p>Nach DSGVO kannst du Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch, Datenübertragbarkeit und den Widerruf einer Einwilligung verlangen. Die Auswahl für Clarity und Google Analytics kannst du über „Analytics-Einstellungen“ im Footer ändern. Deine Einwilligung in die KI kannst du in der App mit dem Schalter „KI zum Erkunden und Illustrieren meiner Träume“ widerrufen (Einstellungen → Rechtliches).</p>
     <p class="mt-4">Schreibe dazu an <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> und nenne die E-Mail-Adresse deines Kontos. Im EWR oder Vereinigten Königreich kannst du dich außerdem bei deiner Datenschutzaufsichtsbehörde beschweren.</p>
   </section>
 

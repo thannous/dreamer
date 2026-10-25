@@ -5,10 +5,12 @@ import { useBadgeLedger } from '@/services/badgeLedgerStore';
 
 /**
  * The cards held and those waiting to be turned over, from the ledger alone: cheap enough
- * for a door to the collection on a screen that stays mounted.
+ * for a door to the collection on a screen that stays mounted. A guest holds none: what it
+ * did already reaches the cards waiting for its account.
  */
 export function useBadgeSummary(): BadgeSummary {
-  const { ledger, ready } = useBadgeLedger();
+  const { scope, ledger, ready } = useBadgeLedger();
+  const guest = scope === 'guest';
   return useMemo(() => {
     let earnedCards = 0;
     let unrevealedCards = 0;
@@ -26,13 +28,19 @@ export function useBadgeSummary(): BadgeSummary {
         featuredAt = at;
       }
     }
-    return { earnedCards, unrevealedCards, featured, ready };
-  }, [ledger, ready]);
+    if (guest) {
+      return { earnedCards: 0, unrevealedCards: 0, waitingCards: earnedCards, featured: { id: BADGE_FAMILIES[0].id, tier: 0 }, guest, ready };
+    }
+    return { earnedCards, unrevealedCards, waitingCards: 0, featured, guest, ready };
+  }, [guest, ledger, ready]);
 }
 
 export type BadgeSummary = {
   earnedCards: number;
   unrevealedCards: number;
+  /** A guest's cards, given to its account as soon as it opens; 0 once signed in. */
+  waitingCards: number;
+  guest: boolean;
   featured: { id: BadgeFamilyId; tier: BadgeTierLevel };
   ready: boolean;
 };

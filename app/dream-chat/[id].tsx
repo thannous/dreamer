@@ -21,13 +21,14 @@ import { useChatCategoryPrompt } from '@/hooks/useChatCategoryPrompt';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
+import { restoreUnsentChatText } from '@/lib/chat/unsentText';
 import { createStreamingReplyChannel } from '@/lib/chat/streamingReplyChannel';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
-import { classifyError, coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { AiConsentWithdrawnError, classifyError, coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from '@/lib/exploration360';
 import { HttpError } from '@/lib/http';
 import { getImageConfig } from '@/lib/imageUtils';
@@ -67,6 +68,7 @@ import { TypeScale } from '@/constants/typeScale';
 type CategoryType = DreamChatCategory;
 type SendMessageOptions = {
   baseMessages?: ChatMessage[];
+  userText?: string;
   category?: Exclude<CategoryType, 'general'>;
   clientRequestId?: string;
   meta?: ChatMessage['meta'];
@@ -635,6 +637,10 @@ function DreamChatContent() {
           } catch (error) {
             if (!isMountedRef.current) return;
             setIsLoading(false);
+            if (error instanceof AiConsentWithdrawnError) {
+              restoreUnsentChatText(composerRef.current, options?.userText);
+              return;
+            }
             if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
               router.push(buildPaywallHref('exploration_limit'));
               return;
@@ -785,6 +791,11 @@ function DreamChatContent() {
         quotaService.invalidate(user);
       } catch (error) {
         if (!isMountedRef.current) return;
+        if (error instanceof AiConsentWithdrawnError) {
+          setMessages(baseMessages);
+          restoreUnsentChatText(composerRef.current, options?.userText);
+          return;
+        }
         if (debugChat) {
           console.debug('[DreamChat] sendMessage error', {
             dreamId: dream.id,
@@ -812,6 +823,7 @@ function DreamChatContent() {
             retry: classified?.canRetry === false ? undefined : {
               messageText: textToSend,
               displayText: resolvedDisplayText,
+              userText: options?.userText,
               clientRequestId: chatRequestId,
             },
           },
@@ -890,6 +902,7 @@ function DreamChatContent() {
       sendMessage(retry.messageText, retry.displayText, {
         baseMessages,
         clientRequestId: retry.clientRequestId,
+        userText: retry.userText,
       });
     },
     [isInteractionLocked, messages, sendMessage]
@@ -1070,8 +1083,11 @@ function DreamChatContent() {
               : t('dream_chat.exploration_limit.message_free')}
           </Text>
           <Pressable
+            accessibilityRole="button"
             style={[styles.upgradeButton, shadows.lg, { backgroundColor: noctalia.action.primary }]}
-            onPress={() => router.push(buildPaywallHref('exploration_limit'))}
+            onPress={() => router.push(tier === 'guest'
+              ? '/settings?section=account&auth=signup'
+              : buildPaywallHref('exploration_limit'))}
           >
             <IconSymbol name="arrow.up.circle" size={24} color={noctalia.action.primaryText} />
             <Text style={[styles.upgradeButtonText, { color: noctalia.action.primaryText }]}>
@@ -1316,7 +1332,7 @@ function DreamChatContent() {
 
           <ChatComposer
             ref={composerRef}
-            onSendText={sendMessage}
+            onSendText={(text) => { void sendMessage(text, undefined, { userText: text }); }}
             placeholder={composerPlaceholder}
             isLoading={isInteractionLocked}
             isDisabled={messageLimitReached}

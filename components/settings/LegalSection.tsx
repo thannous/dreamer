@@ -14,11 +14,13 @@ import { CONTACT_EMAIL, openContactMail } from '@/lib/contact';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { SettingsSection } from './SettingsSection';
 import { SettingsToggle } from './SettingsToggle';
+import { useAiConsentController } from '@/components/settings/useAiConsentController';
 import { useAnalyticsPreferenceController } from '@/components/settings/useAnalyticsPreferenceController';
 import { useStabilityReportsController } from '@/components/settings/useStabilityReportsController';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { TID } from '@/lib/testIDs';
 import {
   finalizeAccountDeletion,
   requestAccountDeletion,
@@ -63,9 +65,9 @@ export function LegalSection() {
   const { t, currentLang } = useTranslation();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const [isDeleting, setIsDeleting] = useState(false);
+  const aiConsent = useAiConsentController();
   const analyticsPreference = useAnalyticsPreferenceController();
   const stabilityReports = useStabilityReportsController();
-  const hasPreferenceRows = analyticsPreference.available || stabilityReports.available;
 
   const openLegalLink = useCallback(
     (kind: LegalLinkKind) => {
@@ -134,13 +136,39 @@ export function LegalSection() {
 
   return (
     <SettingsSection title={t('settings.legal.sectionTitle')} testID="settings-section-legal">
+      <View
+        accessibilityRole="switch"
+        accessibilityState={{ checked: aiConsent.enabled }}
+        aria-checked={aiConsent.enabled}
+        accessibilityLabel={aiConsent.toggleLabel}
+        className={ROW_CLASS.replace('border-t border-line', '')}
+        testID="settings-ai-consent"
+      >
+        <IconSymbol name="sparkles" size={21} color={noctalia.accent.text} />
+        <View className="flex-1 gap-0.5">
+          <Text className="flex-1 font-sans text-body leading-[20px] text-ivory">
+            {aiConsent.title}
+          </Text>
+          <Text className="font-sans text-caption text-ivory-muted">
+            {aiConsent.error ? aiConsent.errorMessage : aiConsent.description}
+          </Text>
+        </View>
+        <SettingsToggle
+          disabled={aiConsent.loading || aiConsent.saving}
+          onValueChange={(next) => {
+            void aiConsent.toggle(next);
+          }}
+          testID={TID.Button.SettingsAiConsentToggle}
+          value={aiConsent.enabled}
+        />
+      </View>
       {analyticsPreference.available ? (
         <View
           accessibilityRole="switch"
           accessibilityState={{ checked: analyticsPreference.enabled === true }}
           aria-checked={analyticsPreference.enabled === true}
           accessibilityLabel={analyticsPreference.toggleLabel}
-          className="min-h-[64px] w-full flex-row items-center gap-3 py-3"
+          className={ROW_CLASS}
           testID="settings-analytics-preference"
         >
           <IconSymbol name="chart.bar.fill" size={21} color={noctalia.accent.text} />
@@ -168,7 +196,7 @@ export function LegalSection() {
           accessibilityState={{ checked: stabilityReports.enabled }}
           aria-checked={stabilityReports.enabled}
           accessibilityLabel={stabilityReports.toggleLabel}
-          className={analyticsPreference.available ? ROW_CLASS : ROW_CLASS.replace('border-t border-line', '')}
+          className={ROW_CLASS}
           testID="settings-stability-reports"
         >
           <IconSymbol name="exclamationmark.triangle" size={21} color={noctalia.accent.text} />
@@ -190,12 +218,12 @@ export function LegalSection() {
           />
         </View>
       ) : null}
-      {LEGAL_LINK_ROWS.map((row, index) => (
+      {LEGAL_LINK_ROWS.map((row) => (
         <PressableScale
           accessibilityRole="link"
           key={row.kind}
           onPress={() => openLegalLink(row.kind)}
-          className={index === 0 && !hasPreferenceRows ? ROW_CLASS.replace('border-t border-line', '') : ROW_CLASS}
+          className={ROW_CLASS}
           hitSlop={NO_HIT_SLOP}
           testID={row.testID}
         >

@@ -5,13 +5,7 @@ import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '.
 import { CLAUDE_MODELS } from '../lib/models.ts';
 import { PLUS_DAILY_LIMITS, plusDailyLimitResponse } from '../lib/plusDailyLimits.ts';
 import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
-import { requestClaudeJson, runClaudeFirst } from '../services/claude.ts';
-import {
-  callGeminiWithFallback,
-  classifyGeminiError,
-  GEMINI_FLASH_LITE_MODEL,
-  resolveTextModel,
-} from '../services/gemini.ts';
+import { ClaudeRequestError, classifyClaudeError, textAnalysisFailureCode, requireAnthropicApiKey, requestClaudeJson, runClaudeOnly } from '../services/claude.ts';
 import { generateImageFromPrompt, resolveImageModel } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
@@ -20,6 +14,7 @@ import {
   claimGuestAnalysisQuota,
   isAuthenticatedAnalysisQuotaRetry,
 } from '../lib/analysisQuota.ts';
+import { isRefundableTextAnalysisFailure } from '../lib/textAnalysisRefund.ts';
 import type { ApiContext } from '../types.ts';
 import {
   aiInputErrorResponse,
@@ -225,7 +220,7 @@ async function claimAuthenticatedAnalysisQuota({
   transcript: string;
   transcriptSha256: string;
   userId: string;
-}): Promise<{ response?: Response; quotaUsed?: { analysis: number }; tier?: string }> {
+}): Promise<{ response?: Response; quotaUsed?: { analysis: number }; tier?: string; release?: (failureCode: string) => Promise<void> }> {
   if (!supabaseServiceRoleKey) {
     console.error(`[api] ${route}: authenticated quota unavailable before provider work`, {
       hasServiceRoleKey: false,
@@ -285,12 +280,18 @@ async function claimAuthenticatedAnalysisQuota({
   return {
     quotaUsed: claim.new_count === undefined ? undefined : { analysis: toCount(claim.new_count) },
     tier: claim.tier,
+    release: async (failureCode) => {
+      if (!isRefundableTextAnalysisFailure(failureCode)) return;
+      const { error } = await adminClient.rpc('release_authenticated_text_analysis', { p_user_id: userId, p_claim_id: claim.claim_id, p_failure_code: failureCode });
+      if (error) console.error('[api] analysis refund failed', { code: error.code });
+    },
   };
 }
 
 export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
+  let releaseQuota: ((failureCode: string) => Promise<void>) | undefined;
   try {
     const body = (await req.json()) as AnalyzeDreamBody;
     const guestCheck = await requireGuestSession(req, body, user);
@@ -310,11 +311,11 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       ctx,
       capability: 'analyze_dream',
       guestFingerprint: fingerprint,
+      analysisRequestId: toUuid(body.analysisRequestId) ?? toUuid(body.requestId),
     });
     if (admission instanceof Response) return admission;
 
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+    requireAnthropicApiKey();
 
     console.log('[api] /analyzeDream request', {
       transcriptLength: transcript.length,
@@ -340,6 +341,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
         return quotaClaim.response;
       }
       quotaUsed = quotaClaim.quotaUsed;
+      releaseQuota = quotaClaim.release;
     } else {
       if (!supabaseServiceRoleKey || !fingerprint) {
         console.error('[api] /analyzeDream: guest quota unavailable before provider work', {
@@ -403,9 +405,14 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       }
 
       quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
+      releaseQuota = async (failureCode) => {
+        if (!isRefundableTextAnalysisFailure(failureCode)) return;
+        const { error } = await adminClient.rpc('release_guest_text_analysis', { p_fingerprint: fingerprint, p_reservation_id: quotaResult.reservation_id, p_failure_code: failureCode });
+        if (error) console.error('[api] guest analysis refund failed', { code: error.code });
+      };
     }
 
-    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, knownSymbols, route: '/analyzeDream' });
+    const analysis = await runDreamAnalysis({ anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, knownSymbols, route: '/analyzeDream' });
 
     console.log('[api] /analyzeDream success', {
       titleLength: analysis.title.length,
@@ -420,9 +427,11 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch (e) {
+    await releaseQuota?.(req.signal.aborted ? 'ANALYSIS_CLIENT_CANCELLED' : textAnalysisFailureCode(e))
+      .catch(() => console.error('[api] analysis refund unavailable'));
     console.error('[api] /analyzeDream failed');
-    const errorInfo = classifyGeminiError(e);
-    return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+    const errorInfo = classifyClaudeError(e);
+    return new Response(JSON.stringify({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter }), {
       status: errorInfo.status,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
@@ -432,6 +441,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
 export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
+  let releaseQuota: ((failureCode: string) => Promise<void>) | undefined;
   try {
     const authCheck = requireUser(user);
     if (authCheck) {
@@ -450,9 +460,11 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       ctx,
       capability: 'analyze_dream_full',
       guestFingerprint: null,
+      analysisRequestId: toUuid(body.analysisRequestId) ?? toUuid(body.requestId),
     });
     if (admission instanceof Response) return admission;
 
+    requireAnthropicApiKey();
     const apiKey = Deno.env.get('GEMINI_API_KEY');
     if (!apiKey) throw new Error('GEMINI_API_KEY not set');
 
@@ -476,9 +488,10 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       return quotaClaim.response;
     }
     const quotaUsed = quotaClaim.quotaUsed;
+    releaseQuota = quotaClaim.release;
     const imageModel = resolveImageModel(quotaClaim.tier);
 
-    const analysis = await runDreamAnalysis({ apiKey, anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, knownSymbols, route: '/analyzeDreamFull' });
+    const analysis = await runDreamAnalysis({ anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'), claudeTimeoutMs: CLAUDE_SYNC_ANALYSIS_TIMEOUT_MS, transcript: promptTranscript, truncatedForPrompt, lang, themes, knownSymbols, route: '/analyzeDreamFull' });
     const imagePrompt = analysis.imagePrompt;
 
     const { imageBase64, mimeType } = await generateImageFromPrompt({
@@ -486,9 +499,15 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       apiKey,
       model: imageModel,
       aspectRatio: '9:16',
+    }).catch((error: unknown) => {
+      // This is a provider response, never a rejection of the app user's request.
+      const status = (error as { status?: number; httpStatus?: number } | null);
+      throw new ClaudeRequestError(502, (status?.status ?? status?.httpStatus) === 429
+        ? 'ANALYSIS_PROVIDER_OVERLOADED' : 'ANALYSIS_PROVIDER_UNAVAILABLE');
     });
 
     if (!imageBase64) {
+      await releaseQuota?.(req.signal.aborted ? 'ANALYSIS_CLIENT_CANCELLED' : 'ANALYSIS_INVALID_OUTPUT');
       return new Response(
         JSON.stringify({
           error: 'No image returned',
@@ -528,11 +547,13 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch (e) {
+    await releaseQuota?.(req.signal.aborted ? 'ANALYSIS_CLIENT_CANCELLED' : textAnalysisFailureCode(e))
+      .catch(() => console.error('[api] analysis refund unavailable'));
     console.error('[api] /analyzeDreamFull failed');
-    const errorInfo = classifyGeminiError(e);
+    const errorInfo = classifyClaudeError(e);
     return new Response(
       JSON.stringify({
-        error: errorInfo.userMessage,
+        error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter,
       }),
       {
         status: errorInfo.status,
@@ -556,16 +577,15 @@ const parseCategorization = (text: string, themes: readonly string[]) => {
   };
 };
 
-/** Title, theme and type for a dream: Claude when a key is set, Gemini otherwise or on any failure. */
+/** Title, theme and type for a dream: Claude only. */
 export const runDreamCategorization = async (options: {
-  apiKey: string;
   anthropicApiKey?: string | null;
   transcript: string;
   truncatedForPrompt: boolean;
   lang: string;
   themes: readonly string[];
 }) => {
-  const { apiKey, transcript, truncatedForPrompt, lang, themes } = options;
+  const { transcript, truncatedForPrompt, lang, themes } = options;
   const langName = aiLanguageName(lang);
   const systemInstruction = `${localizedForAi(lang, CATEGORIZE_SYSTEM_INSTRUCTIONS)} ${CORE_REFLECTION_POLICY}`;
 
@@ -578,7 +598,7 @@ ${truncatedForPrompt ? "Only an excerpt is available; do not infer the omitted c
   const schema = withDreamThemes(CATEGORIZE_DREAM_SCHEMA, themes);
   const claude = CLAUDE_MODELS.categorize;
 
-  return await runClaudeFirst({
+  return await runClaudeOnly({
     route: '/categorizeDream',
     anthropicApiKey: options.anthropicApiKey,
     config: claude,
@@ -587,33 +607,6 @@ ${truncatedForPrompt ? "Only an excerpt is available; do not infer the omitted c
         apiKey: key, model: claude.model, effort: claude.effort, system: systemInstruction, prompt, schema, timeoutMs: claude.timeoutMs,
       });
       return { value: parseCategorization(text, themes), usage };
-    },
-    fallback: async () => {
-      const liteModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
-      const { text } = await callGeminiWithFallback(
-        apiKey,
-        liteModel,
-        liteModel,
-        [{ role: 'user', parts: [{ text: prompt }] }],
-        systemInstruction,
-        {
-          responseMimeType: 'application/json',
-          responseJsonSchema: schema,
-          thinkingLevel: 'minimal',
-          maxOutputTokens: 512,
-        }
-      );
-      try {
-        return parseCategorization(text, themes);
-      } catch (error) {
-        if (error instanceof SyntaxError) {
-          console.error('[api] /categorizeDream: model returned invalid JSON', {
-            responseLength: text.length,
-          });
-          throw new Error('Failed to parse model response');
-        }
-        throw error;
-      }
     },
   });
 };
@@ -639,8 +632,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     });
     if (admission instanceof Response) return admission;
 
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+    requireAnthropicApiKey();
 
     console.log('[api] /categorizeDream request', {
       transcriptLength: transcript.length,
@@ -648,7 +640,6 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     });
 
     const categorization = await runDreamCategorization({
-      apiKey,
       anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY'),
       transcript: promptTranscript,
       truncatedForPrompt,
@@ -662,8 +653,8 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
     );
   } catch (e) {
     console.error('[api] /categorizeDream failed');
-    const errorInfo = classifyGeminiError(e);
-    return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+    const errorInfo = classifyClaudeError(e);
+    return new Response(JSON.stringify({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter }), {
       status: errorInfo.status,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

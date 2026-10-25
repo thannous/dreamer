@@ -1,0 +1,37 @@
+{
+  "description": "New original illustrations for the Today discovery cards, with separate subjects and palettes: amber lantern, teal waterfall, violet dream book. Supersedes the v1 crops for these cards.",
+  "generatedOn": "2026-10-24",
+  "method": "built-in image_gen",
+  "transform": {
+    "width": 592,
+    "height": 736,
+    "fit": "cover",
+    "position": "centre",
+    "format": "webp",
+    "quality": 84,
+    "colourspace": "srgb"
+  },
+  "assets": [
+    {
+      "file": "ritual-v2.webp",
+      "source": "/Users/timax/.codex/generated_images/01a16dc7-ce5f-7b52-a7b2-19d8ff4a68d7/exec-153f5a81-d785-4793-8010-886a404ca3cf.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: finished portrait background illustration for the \"Daily ritual\" discovery card in Noctalia, an elegant dream-journaling app. Generate one single illustration, 4:5 portrait, ideally 1024 by 1280 pixels.\nPrimary request: a large glowing amber lantern in a quiet terracotta stone alcove, a tangible invitation to pause and begin a small evening ritual.\nScene/backdrop: close intimate architectural space, softly textured burnt-sienna plaster arch, just a suggestion of a leafy shadow. The lantern hangs centrally in the upper half; it is the unmistakable dominant subject, shown large enough to read at a 148px-wide thumbnail.\nStyle/medium: exquisite atmospheric digital oil painting with visible fine brushwork, subtle magical realism, restrained editorial illustration, rich luminous materials, refined and calm.\nColor palette: warm copper, terracotta, deep umber and honey amber; warm image throughout.\nComposition/framing: vertical close-up, lantern and its warm pool of light between 12% and 54% of image height, sculptural arch framing it. Lower 38% is quiet dark umber plaster and shadow for a separate white title overlay supplied by the app.\nConstraints: edge-to-edge full-bleed art, opaque background; no text, no letters, no lettering, no logo, no border, no collage, no people, no mountains, no broad landscape, no sunset sky, no lake. The illustration must feel visually different from a blue-green waterfall and a violet open-book scene.",
+      "bytes": 53518,
+      "sha256": "d70644dcb59e4db350e8fe939152548f59cb726c4452d27ac522e19e6371bb9d"
+    },
+    {
+      "file": "sleep-v2.webp",
+      "source": "/Users/timax/.codex/generated_images/01a16dc7-ce5f-7b52-a7b2-19d8ff4a68d7/exec-72994390-7751-4973-a9fd-b560aedcf474.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: finished portrait background illustration for the \"Evening soundscapes\" discovery card in Noctalia, an elegant dream-journaling app. Generate one single illustration, 4:5 portrait, ideally 1024 by 1280 pixels.\nPrimary request: a silky small waterfall descending between dark mossy rocks into a serene turquoise forest pool at night, capturing the soothing sound of water.\nScene/backdrop: intimate nocturnal woodland grotto, ferns and soft moss at the edges. A broad silver-teal ribbon of falling water forms a gentle diagonal from the upper right toward the center-left. Soft luminous mist just above the pool, delicate reflected glints.\nStyle/medium: exquisite atmospheric digital oil painting with visible fine brushwork, subtle magical realism, restrained editorial illustration, refined and calm. Avoid photographic hyperrealism.\nColor palette: unmistakably cool deep teal, petrol blue, emerald and pale turquoise; no warm amber sky.\nComposition/framing: vertical view, bold readable cascade occupying upper 55%, close enough to be recognized at a 148px-wide thumbnail. Lower 38% is a smooth very dark teal pool for a separate white title overlay supplied by the app.\nConstraints: edge-to-edge full-bleed art, opaque background; no text, no letters, no logo, no border, no collage, no people, no lantern, no books, no mountains, no sunrise or sunset clouds, no broad sky. This image must be immediately different in subject, silhouette and palette from a warm terracotta lantern and a violet open-book scene.",
+      "bytes": 89608,
+      "sha256": "425be0b58ace699a5b9824e86d359624a361ac00d2707b430ae7f761205f77a2"
+    },
+    {
+      "file": "guides-v2.webp",
+      "source": "/Users/timax/.codex/generated_images/01a16dc7-ce5f-7b52-a7b2-19d8ff4a68d7/exec-5e9cc3cf-052b-4f43-9a24-506ca3af544f.png",
+      "prompt": "Use case: stylized-concept.\nAsset type: finished portrait background illustration for the \"Dream guides\" discovery card in Noctalia, an elegant dream-journaling app. Generate one single illustration, 4:5 portrait, ideally 1024 by 1280 pixels.\nPrimary request: a large open ivory dream book, seen in graceful three-quarter view, with a few delicate luminous constellation lines and pearl-like stars rising from its pages into a soft violet night.\nScene/backdrop: mysterious but welcoming plum and lilac darkness. The open book floats lightly, tactile cream pages gently curved, page edges touched by lavender light. No readable writing; the pages are mostly blank with only delicate abstract celestial marks.\nStyle/medium: exquisite atmospheric digital oil painting with visible fine brushwork, subtle magical realism, restrained editorial illustration, refined and calm.\nColor palette: violet, dusty lilac, rich aubergine, warm ivory pages, soft silver glimmers. The bright open book silhouette is unmistakable even at a 148px-wide thumbnail.\nComposition/framing: vertical close-up, the open book fills 75% of the image width around 35-55% of image height, a restrained arc of stars above it. Lower 38% fades naturally into quiet deep aubergine for a separate white title overlay supplied by the app.\nConstraints: edge-to-edge full-bleed art, opaque background; no text, no letters, no words, no logo, no border, no collage, no people, no horizon landscape, no mountains, no sunset sky, no lantern, no waterfall. Distinct object-based composition rather than another landscape.",
+      "bytes": 46566,
+      "sha256": "2e1cd8bfc9bb2ae1a08e58ea1f83c65e6e0bb94649848ab3e91dbc613f0985f4"
+    }
+  ]
+}

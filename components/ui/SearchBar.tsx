@@ -6,6 +6,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useTheme } from '@/context/ThemeContext';
 import { TypeScale } from '@/constants/typeScale';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface SearchBarProps {
   autoFocus?: boolean;
@@ -58,6 +59,7 @@ export const SearchBar = memo(forwardRef<TextInputInstance, SearchBarProps>(func
   inputTestID,
 }: SearchBarProps, forwardedRef) {
   const { colors, mode } = useTheme();
+  const { t } = useTranslation();
   const noctalia = getNoctaliaDesignTokens(colors, mode);
   const inputRef = useRef<TextInputInstance>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -132,6 +134,7 @@ export const SearchBar = memo(forwardRef<TextInputInstance, SearchBarProps>(func
             requestAnimationFrame(() => inputRef.current?.focus());
           }}
           accessibilityRole="button"
+          accessibilityLabel={t('common.clear')}
           hitSlop={8}
         >
           <IconSymbol

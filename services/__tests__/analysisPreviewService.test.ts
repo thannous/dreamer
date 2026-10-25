@@ -31,7 +31,7 @@ it('reads a dream’s preview, and prepares one only when asked', async () => {
   }));
   await fetchAnalysisPreview({ remoteDreamId: 7, lang: 'fr', prepare: true });
   // Preparing waits for the reading and is never retried: a retry would pay twice.
-  expect(mockFetch.mock.calls[1][1]).toEqual(expect.objectContaining({ body: { dreamId: 7, lang: 'fr', prepare: true }, retries: 0, timeoutMs: 70000 }));
+  expect(mockFetch.mock.calls[1][1]).toEqual(expect.objectContaining({ body: { dreamId: 7, lang: 'fr', prepare: true }, retries: 0, timeoutMs: 65000 }));
 });
 
 it('accepts a preview only in the shape a free account may see', async () => {

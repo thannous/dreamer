@@ -396,22 +396,18 @@ export function revealBadgeFamily(ledger: BadgeLedger, id: BadgeFamilyId, shown:
 }
 
 /**
- * What a guest ledger may hand to an account: its actions only. What the guest journal told
- * is read again from the account's own journal, which holds the dreams that really moved.
- * The tiers of a family whose rule changed go too: the first collection earned them by actions.
+ * Hands what a guest did to the first account that opens after it. A guest holds no card:
+ * everything it counted moves (dreams since deleted and favourites let go included, each
+ * dream once by its request id), and the account earns now every tier that reaches. A card a
+ * guest turned over before guests stopped holding cards stays turned.
  */
-export function actionsOnly(ledger: BadgeLedger): BadgeLedger {
-  const keep = <T,>(record: Partial<Record<BadgeFamilyId, T>>, earnedByActions = false) => Object.fromEntries(
-    Object.entries(record).filter(([id]) =>
-      !getBadgeFamily(id)?.fromJournal || (earnedByActions && V1_REDONE.includes(id as BadgeFamilyId))),
-  ) as Partial<Record<BadgeFamilyId, T>>;
-  return {
-    version: ledger.version,
-    keys: keep(ledger.keys),
-    best: keep(ledger.best),
-    earned: keep(ledger.earned, true),
-    revealed: keep(ledger.revealed, true),
-  };
+export function claimGuestLedger(account: BadgeLedger, guest: BadgeLedger, now: number): BadgeLedger {
+  // Tiers a first-collection guest already held stay, even where a rule changed since, but
+  // like every other tier they are earned when the account opens.
+  const earned = Object.fromEntries(
+    Object.entries(guest.earned).map(([id, at]) => [id, (at ?? []).map(() => now)]),
+  ) as BadgeLedger['earned'];
+  return settleBadgeLedger(mergeBadgeLedgers(account, { ...guest, earned }), [], now);
 }
 
 // ------------------------------------------------------------------------------ the view --

@@ -56,7 +56,8 @@ import {
 } from '@/lib/dreamUtils';
 import { stampDreamAnalysisTranscript } from '@/lib/dreamAnalysisFreshness';
 import { collectKnownSymbols } from '@/lib/symbolLinks';
-import { coerceQuotaError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { AiConsentWithdrawnError, coerceQuotaError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { wasHttpRequestDispatched } from '@/lib/httpDispatch';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
 import { logger } from '@/lib/logger';
@@ -1252,7 +1253,7 @@ export const useDreamJournal = () => {
             const merged = mergeServerDreamWithLocalState(remoteDream, current);
             const recovered = remoteDream.analysisStatus === 'done'
               ? stampDreamAnalysisTranscript(merged, merged.transcript)
-              : merged;
+              : { ...merged, analysisRequestId: undefined };
             recoveredSnapshot = recovered;
             return upsertDream(previous, recovered);
           });
@@ -1525,14 +1526,17 @@ export const useDreamJournal = () => {
         throw new Error(`Dream with id ${dreamId} not found`);
       }
 
+      const shouldUseServerAnalysis =
+        isAnalysisJobsEnabled() && canUseRemoteSync && Boolean(user) && !isMockMode;
       const inMemoryRequestId = analysisRequestIdsRef.current.get(getDreamIdentityKey(dream));
+      // An accepted job stays pending through transport failures. A server-backed
+      // failed dream is terminal: its refunded receipt needs a new admission.
       const persistedRequestId = isResumableAnalysisRequest(dream)
+        && !(shouldUseServerAnalysis && dream.analysisStatus === 'failed')
         ? dream.analysisRequestId
         : undefined;
       const isResumingAnalysis = Boolean(inMemoryRequestId || persistedRequestId);
       const requestId = inMemoryRequestId ?? persistedRequestId ?? generateUUID();
-      const shouldUseServerAnalysis =
-        isAnalysisJobsEnabled() && canUseRemoteSync && Boolean(user) && !isMockMode;
       // Reserve synchronously before the first await so rapid duplicate calls
       // share one server idempotency key.
       analysisRequestIdsRef.current.set(getDreamIdentityKey(dream), requestId);
@@ -1563,6 +1567,7 @@ export const useDreamJournal = () => {
         if (analysisScopeRef.current !== userScope || analysisEpochRef.current !== epoch) throw new Error('Analysis account changed');
       };
       let currentDreamState = dream;
+      let analysisBase = dream;
       try {
         assertAnalysisScope();
         markPerformance('analysis.requested', { trace: analysisTrace });
@@ -1576,7 +1581,7 @@ export const useDreamJournal = () => {
             throw new Error('Dream changes must be synchronized before analysis');
           }
         }
-        const analysisBase = resolveCurrentDream(dream);
+        analysisBase = resolveCurrentDream(dream);
         // Initial pending state
         currentDreamState = {
           ...analysisBase,
@@ -1633,20 +1638,66 @@ export const useDreamJournal = () => {
         }
       };
 
+      let serverJobSubmissionStarted = false;
       let serverJobAccepted = false;
       let serverJobTerminalFailure = false;
+
+      const finishServerAnalysis = async (remoteDream: DreamAnalysis, latestDream: DreamAnalysis) => {
+        assertAnalysisScope();
+        // Only the read result may mark it done: a failed read keeps it pending
+        // for an image registered before a retry or recovery.
+        analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
+        const mergedDream = mergeServerDreamWithLocalState(remoteDream, latestDream);
+        const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
+        await updateDream(stampedDream);
+        await syncPendingMutations({ target: stampedDream });
+        const refreshedDream = resolveCurrentDream(stampedDream);
+
+        void trackProductEvent('analysis_completed', {
+          duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
+          generated_image: Boolean(refreshedDream.imageUrl),
+          tier,
+        });
+        analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
+        analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+        quotaService.invalidate(user);
+        emitProgress(AnalysisStep.COMPLETE);
+        setLastAnalysisOutcome({ dreamId, status: 'done', completedAt: Date.now() });
+        return refreshedDream;
+      };
 
       setActiveAnalysis({ dreamId });
       try {
         if (useServerAnalysisJob) {
           assertAnalysisScope();
           markPerformance('analysis.http_started', { trace: analysisTrace });
-          const command = await submitDreamAnalysisJob({
-            dreamId: syncedDream.remoteId!,
-            analysisRequestId: requestId,
-            lang: options?.lang,
-            replaceExistingImage: shouldReplaceImage,
-          });
+          serverJobSubmissionStarted = true;
+          let command;
+          try {
+            command = await submitDreamAnalysisJob({
+              dreamId: syncedDream.remoteId!,
+              analysisRequestId: requestId,
+              lang: options?.lang,
+              replaceExistingImage: shouldReplaceImage,
+            });
+          } catch (error) {
+            const response = error as { status?: number; body?: { code?: string } } | null;
+            if (response?.status === 409 && response.body?.code === 'ANALYSIS_ALREADY_COMPLETE') {
+              // A synchronous request may have finished after consent withdrawal.
+              // Recover its persisted reading without issuing another analysis.
+              let completedDream: DreamAnalysis | undefined;
+              try {
+                completedDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
+              } catch (readError) {
+                logger.warn('[useDreamJournal] Completed analysis recovery read failed', readError);
+              }
+              assertAnalysisScope();
+              if (completedDream?.isAnalyzed && completedDream.analysisStatus === 'done') {
+                return await finishServerAnalysis(completedDream, resolveCurrentDream(syncedDream));
+              }
+            }
+            throw error;
+          }
           serverJobAccepted = true;
           markPerformance('analysis.job_accepted', { trace: analysisTrace });
 
@@ -1658,7 +1709,7 @@ export const useDreamJournal = () => {
           }
           if (status.status === 'failed') {
             serverJobTerminalFailure = true;
-            throw new Error(status.errorMessage || 'Dream analysis failed');
+            throw Object.assign(new Error(status.errorMessage || 'Dream analysis failed'), { code: status.errorCode });
           }
 
           let latestDream = resolveCurrentDream(syncedDream);
@@ -1685,27 +1736,7 @@ export const useDreamJournal = () => {
 
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
-          assertAnalysisScope();
-          // Only the read result may mark it done: a failed read keeps it pending
-          // for an image registered before a retry or recovery.
-          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
-          const mergedDream = mergeServerDreamWithLocalState(remoteDream, latestDream);
-          const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
-          await updateDream(stampedDream);
-          await syncPendingMutations({ target: stampedDream });
-          const refreshedDream = resolveCurrentDream(stampedDream);
-
-          void trackProductEvent('analysis_completed', {
-            duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
-            generated_image: Boolean(refreshedDream.imageUrl),
-            tier,
-          });
-          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
-          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
-          quotaService.invalidate(user);
-          emitProgress(AnalysisStep.COMPLETE);
-          setLastAnalysisOutcome({ dreamId, status: 'done', completedAt: Date.now() });
-          return refreshedDream;
+          return await finishServerAnalysis(remoteDream, latestDream);
         }
 
         assertAnalysisScope();
@@ -1826,9 +1857,41 @@ export const useDreamJournal = () => {
         return next;
       } catch (error) {
         assertAnalysisScope();
+        if (error instanceof AiConsentWithdrawnError) {
+          setLastAnalysisOutcome(null);
+          if (wasHttpRequestDispatched(error) || serverJobAccepted || isResumingAnalysis) {
+            // Withdrawal stops future transport attempts, not work already admitted.
+            // Keep the revision and key intact so recovery observes that same job.
+            analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
+            await persistDreamClientState({
+              ...resolveCurrentDream(currentDreamState),
+              analysisStatus: 'pending', analysisRequestId: requestId,
+            });
+            throw error;
+          }
+          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
+          setLastAnalysisOutcome(null);
+          await updateDream(analysisBase);
+          throw error;
+        }
         const quotaError = coerceQuotaError(error, tier);
         const responseBody = error && typeof error === 'object' && 'body' in error
           ? error.body : null;
+        if (serverJobSubmissionStarted && !serverJobAccepted
+          && error && typeof error === 'object' && 'status' in error && error.status === 409
+          && responseBody && typeof responseBody === 'object' && 'code' in responseBody
+          && responseBody.code === 'ANALYSIS_ALREADY_COMPLETE') {
+          // Free cannot reanalyse an existing reading. Our optimistic pending
+          // write may be what the recovery read saw: restore the saved reading,
+          // including its original transcript hash, rather than hiding it as failed.
+          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
+          setLastAnalysisOutcome(null);
+          quotaService.invalidate(user);
+          await updateDream(analysisBase);
+          throw error;
+        }
         const nonReusableRequest = error && typeof error === 'object'
           && 'status' in error && error.status === 409
           && responseBody && typeof responseBody === 'object'
@@ -1836,14 +1899,40 @@ export const useDreamJournal = () => {
           && (responseBody.code === 'ANALYSIS_ALREADY_CLAIMED'
             || responseBody.code === 'ANALYSIS_TRANSCRIPT_MISMATCH'
             || responseBody.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED');
+        const responseStatus = error && typeof error === 'object' && 'status' in error
+          && typeof error.status === 'number' ? error.status : undefined;
+        const admissionCode = responseBody && typeof responseBody === 'object' && 'code' in responseBody
+          && typeof responseBody.code === 'string' ? responseBody.code : undefined;
+        const isApiAdmissionCode = admissionCode !== undefined
+          && (/^(AI_|ANALYSIS_)/.test(admissionCode)
+            || ['QUOTA_EXCEEDED', 'DAILY_ANALYSIS_LIMIT', 'DREAM_NOT_FOUND', 'INVALID_INPUT'].includes(admissionCode));
+        // Only admission answers emitted after the idempotent lookup prove that
+        // no job owns this key. Auth/gateway failures may follow a committed POST.
+        const confirmedSubmissionRejection = serverJobSubmissionStarted && !serverJobAccepted
+          && ((responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500
+            && responseStatus !== 401 && responseStatus !== 408 && isApiAdmissionCode)
+            || (responseStatus === 503 && admissionCode === 'AI_GLOBAL_BACKLOG_LIMIT'));
+        if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection) {
+          // The POST may have committed before its reply was lost. Persist the same
+          // key across restarts, just as for an acknowledged job awaiting its result.
+          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
+          await persistDreamClientState({
+            ...resolveCurrentDream(currentDreamState),
+            analysisStatus: 'pending', analysisRequestId: requestId,
+          });
+          throw quotaError ?? error;
+        }
         setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         if (serverJobAccepted) {
           if (serverJobTerminalFailure) {
+            analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+            quotaService.invalidate(user);
             analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'failed');
             const latestDream = resolveCurrentDream(currentDreamState);
             await persistDreamClientState({
               ...latestDream,
               analysisStatus: 'failed',
+              analysisRequestId: undefined,
             });
           }
           // A timeout or network error is not a server failure. Keep the
@@ -1858,9 +1947,9 @@ export const useDreamJournal = () => {
           analysisStatus: 'failed',
           // A spent or transcript-mismatched receipt cannot fund another
           // provider call. A later explicit retry needs a fresh quota claim.
-          ...(nonReusableRequest ? { analysisRequestId: undefined } : {}),
+          ...(nonReusableRequest || confirmedSubmissionRejection ? { analysisRequestId: undefined } : {}),
         };
-        if (nonReusableRequest) {
+        if (nonReusableRequest || confirmedSubmissionRejection) {
           analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
           quotaService.invalidate(user);
         }

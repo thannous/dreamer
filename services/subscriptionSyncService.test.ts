@@ -30,6 +30,7 @@ describe('subscriptionSyncService', () => {
       expect.objectContaining({
         method: 'POST',
         body: { source: 'app_launch' },
+        idempotent: true,
         timeoutMs: 10000,
         retries: 1,
       })

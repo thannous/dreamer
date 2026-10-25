@@ -330,11 +330,11 @@ jest.mock('@/components/journal/JournalDetailSheets', () => ({
       <button onClick={onClose}>Dismiss offer</button>
     </div>
   ) : null,
-  AnalysisNoticeSheet: ({ visible, notice }: any) => visible ? <div role="alert">{notice.message}</div> : null,
+  AnalysisNoticeSheet: ({ visible, notice, onRetry }: any) => visible ? <div role="alert">{notice.message}{notice.retryable && <button onClick={onRetry}>Notice retry</button>}</div> : null,
   DeleteConfirmSheet: ({ visible, onConfirm }: any) => visible ? <button onClick={onConfirm}>Confirm delete</button> : null,
   ImageErrorSheet: () => null,
   QuotaLimitSheet: ({ visible }: any) => visible ? <div data-testid="quota-limit" /> : null,
-  ReanalyzeSheet: () => null,
+  ReanalyzeSheet: ({ visible }: { visible: boolean }) => visible ? <div>journal.detail.reanalyze_prompt.title</div> : null,
   ReplaceImageSheet: () => null,
 }));
 
@@ -950,6 +950,27 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { finish(); });
   });
 
+  it.each(['free', 'plus'] as const)('routes a stale %s reading to its eligible action', async (tier: 'free' | 'plus') => {
+    mockTier = tier;
+    mockSearchParams = { id: '42' };
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done',
+      interpretation: 'Previous reading', analyzedAt: 1_700_000_000_000, analysisTranscriptHash: 'v1:00000000' })];
+    await act(async () => { render(<JournalDetailScreen />); });
+    const action = screen.getByTestId(TID.Button.AnalysisStaleCta);
+    expect(action.textContent).toContain(tier === 'plus' ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus');
+    if (tier === 'free') expect(screen.getByText('error.reanalysis_requires_plus')).toBeTruthy();
+    await act(async () => { fireEvent.click(action); });
+    const { router } = require('expo-router');
+    if (tier === 'free') {
+      expect(router.push).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'analysis_limit' } });
+      expect(screen.queryByText('journal.detail.reanalyze_prompt.title')).toBeNull();
+    } else {
+      expect(screen.getByText('journal.detail.reanalyze_prompt.title')).toBeTruthy();
+      expect(router.push).not.toHaveBeenCalled();
+    }
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
+  });
+
   it('closes the outdated-analysis banner for good and keeps the update action', async () => {
     const staleDream = buildDream({
       isAnalyzed: true,
@@ -1190,6 +1211,23 @@ describe('journal detail saved confirmation route', () => {
     expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it('resumes the same pending request from Retry after an ambiguous transport failure', async () => {
+    const requestId = 'aabbccdd-0000-4000-8000-000000000001';
+    mockAnalyzeDream.mockImplementationOnce(async () => {
+      mockDreams = [{ ...mockDreams[0], analysisStatus: 'pending', analysisRequestId: requestId,
+        clientUpdatedAt: Date.now() }];
+      throw new Error('Network request failed');
+    });
+    const view = render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByRole('alert')).toBeTruthy();
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    await act(async () => { fireEvent.click(screen.getByText('Notice retry')); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(2);
+    expect(mockAnalyzeDream.mock.calls[1][0].analysisRequestId).toBe(requestId);
   });
 
   it('shows an analysis failure and leaves the saved transcript available for retry', async () => {

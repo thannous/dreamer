@@ -7,6 +7,7 @@ const {
   isAndroidRun,
   loadEnvProfile,
   parseRunnerArgs,
+  resolveEnvProfilePath,
   inferExpoLockOwner,
   extractAndroidLockFlags,
   applyStableExpoMetroPort,
@@ -56,6 +57,26 @@ describe('expo-safe-runner', () => {
       expect(isAndroidRun(['run:android'])).toBe(true);
       expect(isAndroidRun(['start', '--android'])).toBe(true);
       expect(isAndroidRun(['start', '--web'])).toBe(false);
+    });
+  });
+
+  describe('resolveEnvProfilePath', () => {
+    it('falls back to the primary checkout when a worktree lacks the ignored profile', () => {
+      const resolved = resolveEnvProfilePath('.env.teststore', {
+        cwd: '/workspaces/task',
+        existsSync: (file) => file === '/primary/.env.teststore',
+        primaryRoot: () => '/primary',
+      });
+      expect(resolved).toBe('/primary/.env.teststore');
+    });
+
+    it('prefers the profile present in the current checkout', () => {
+      const resolved = resolveEnvProfilePath('.env.teststore', {
+        cwd: '/workspaces/task',
+        existsSync: () => true,
+        primaryRoot: () => { throw new Error('must not look up the primary checkout'); },
+      });
+      expect(resolved).toBe('/workspaces/task/.env.teststore');
     });
   });
 

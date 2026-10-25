@@ -14,20 +14,33 @@ const SEGMENTS = STORY_DEMO_STEP + 1;
  * The reader turns the pages. Nothing advances on a timer: readers found the
  * timed scenes too fast, and a story read at one's own pace is the point.
  * The chapter and its page change together, and a chapter opens on its first page.
+ * Pages turn both ways: going back from a chapter's first page reopens the
+ * previous chapter's example, the page read just before it.
  */
-export function useFeatureStory<Chapter extends string>(first: Chapter) {
+export function useFeatureStory<Chapter extends string>(chapters: readonly Chapter[], first: Chapter) {
   const [page, setPage] = useState({ chapter: first, step: 0 });
-  const seek = (next: number) => {
-    const target = Math.max(0, Math.min(STORY_DEMO_STEP, next));
-    if (target === page.step) return;
+  const index = chapters.indexOf(page.chapter);
+  // Back never goes before the earliest chapter the reader entered: opened on Explorer,
+  // the stories do not lead back into a chapter they did not choose.
+  const [earliest, setEarliest] = useState(chapters.indexOf(first));
+  const turn = (chapter: Chapter, step: number) => {
     // One soft tick per page turn, in the same frame as the new slide.
     if (process.env.EXPO_OS !== 'web') void Haptics.selectionAsync();
-    setPage({ chapter: page.chapter, step: target });
+    setPage({ chapter, step });
   };
   return {
     chapter: page.chapter, step: page.step,
-    next: () => seek(page.step + 1),
-    open: (chapter: Chapter) => setPage({ chapter, step: 0 }),
+    nextChapter: chapters[index + 1] as Chapter | undefined,
+    canGoBack: page.step > 0 || index > earliest,
+    next: () => { if (page.step < STORY_DEMO_STEP) turn(page.chapter, page.step + 1); },
+    back: () => {
+      if (page.step > 0) turn(page.chapter, page.step - 1);
+      else if (index > earliest) turn(chapters[index - 1], STORY_DEMO_STEP);
+    },
+    open: (chapter: Chapter) => {
+      setEarliest((current) => Math.min(current, chapters.indexOf(chapter)));
+      setPage({ chapter, step: 0 });
+    },
   };
 }
 

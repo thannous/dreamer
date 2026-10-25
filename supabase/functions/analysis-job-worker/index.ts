@@ -12,7 +12,9 @@ import {
   type AnalysisJobRow,
 } from '../api/services/analysisJobs.ts';
 import { keepStoredDreamClass, loadKnownDreamSymbols, runDreamAnalysis } from '../api/services/dreamAnalysis.ts';
-import { classifyGeminiError } from '../api/services/gemini.ts';
+import { classifyClaudeError, textAnalysisFailureCode } from '../api/services/claude.ts';
+import { ProviderCircuitOpenError } from '../api/lib/providerCircuit.ts';
+import { isTerminalTextAnalysisFailure } from '../api/lib/textAnalysisRefund.ts';
 import { triggerImageJobWorker } from '../api/services/imageJobs.ts';
 
 const json = (body: unknown, status = 200) =>
@@ -40,7 +42,8 @@ const isAuthorized = (req: Request, serviceRoleKey: string): boolean => {
 
 export const claimSpecificJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
-  jobId: string
+  jobId: string,
+  now = Date.now()
 ): Promise<AnalysisJobRow | null> => {
   const { data: current, error: currentError } = await adminClient
     .from('ai_jobs')
@@ -52,7 +55,8 @@ export const claimSpecificJob = async (
   if (currentError) throw currentError;
 
   const job = (current ?? null) as AnalysisJobRow | null;
-  if (!job || job.status !== 'queued' || job.attempt_count >= job.max_attempts) {
+  if (!job || job.status !== 'queued' || job.attempt_count >= job.max_attempts
+    || Date.parse(job.request_payload?.retry_not_before ?? '') > now) {
     return null;
   }
 
@@ -82,7 +86,7 @@ const updateJob = async (
   jobId: string,
   values: Partial<AnalysisJobRow>
 ) => {
-  const { error } = await adminClient.from('ai_jobs').update(values).eq('id', jobId);
+  const { error } = await adminClient.from('ai_jobs').update(values).eq('id', jobId).eq('status', 'running');
   if (error) throw error;
 };
 
@@ -109,7 +113,7 @@ const markDreamAnalysisFailed = async (
   }
 };
 
-const failJob = async (
+export const failJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
   job: AnalysisJobRow,
   errorCode: string,
@@ -124,14 +128,18 @@ const failJob = async (
   await markDreamAnalysisFailed(adminClient, job);
 };
 
-const requeueJob = async (
+export const requeueJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
   job: AnalysisJobRow,
   errorCode: string,
-  errorMessage: string
+  errorMessage: string,
+  retryAt?: number,
+  providerDeferred = false
 ) => {
   await updateJob(adminClient, job.id, {
     status: 'queued',
+    ...(providerDeferred ? { attempt_count: Math.max(0, job.attempt_count - 1) } : {}),
+    ...(retryAt === undefined ? {} : { request_payload: { ...job.request_payload, retry_not_before: new Date(retryAt).toISOString() } }),
     error_code: errorCode,
     error_message: errorMessage,
     finished_at: null,
@@ -139,16 +147,16 @@ const requeueJob = async (
 };
 
 export const serializeAnalysisJobError = (error: unknown) => {
-  const classified = classifyGeminiError(error);
-  const candidate = error as Record<string, unknown> | null;
-  const retryable = classified.canRetry
-    || classified.status === 429
-    || classified.status >= 500
-    || candidate?.isTransient === true;
+  const classified = classifyClaudeError(error);
+  const errorCode = textAnalysisFailureCode(error);
+  // Retrying a service attempt is safe: every mutation is guarded on status=running.
+  // Refund authority remains the independent SQL allowlist at terminal failure.
+  const retryable = !isTerminalTextAnalysisFailure(errorCode);
   return {
-    errorCode: retryable ? 'ANALYSIS_TRANSIENT' : 'ANALYSIS_JOB_FAILED',
+    errorCode,
     errorMessage: classified.userMessage,
     retryable,
+    retryAfterMs: Math.min(30_000, Math.max(0, (classified.retryAfter ?? 0) * 1000)),
   };
 };
 
@@ -163,12 +171,21 @@ export const hasAuthorizedAnalysisTranscript = async (
     && (await hashAnalysisTranscript(transcript)) === expectedHash;
 };
 
+/** Equal budgets, bounded exponential delay with 0.8–1.3 jitter. Attempts remain 3. */
+export const analysisRetryDelayMs = (attempt: number, random = Math.random()): number =>
+  Math.min(30_000, 1_000 * 2 ** Math.max(0, attempt - 1) * (0.8 + random * 0.5));
+
+type RetryTiming = { now: () => number; random: () => number; sleep: (ms: number) => Promise<void> };
+const retryTiming: RetryTiming = {
+  now: Date.now, random: Math.random, sleep: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
+};
+
 export const processAnalysisJob = async (input: {
   supabaseUrl: string;
   serviceRoleKey: string;
   storageBucket: string;
   jobId: string;
-}) => {
+}, timing: RetryTiming = retryTiming) => {
   const adminClient = createAnalysisAdminClient(input.supabaseUrl, input.serviceRoleKey);
   let job: AnalysisJobRow | null = null;
   let attachedPainting: AttachedPainting | null = null;
@@ -191,7 +208,7 @@ export const processAnalysisJob = async (input: {
   };
 
   try {
-    job = await claimSpecificJob(adminClient, input.jobId);
+    job = await claimSpecificJob(adminClient, input.jobId, timing.now());
     if (!job || job.status !== 'running') return;
 
     const { data: dream, error: dreamError } = await adminClient
@@ -231,7 +248,6 @@ export const processAnalysisJob = async (input: {
       return;
     }
 
-    const apiKey = getRequiredEnv('GEMINI_API_KEY');
     const { data: tierData, error: tierError } = await adminClient.rpc(
       'get_effective_subscription_tier',
       { p_user_id: job.user_id }
@@ -248,7 +264,6 @@ export const processAnalysisJob = async (input: {
       transcriptSha256: await transcriptSha256(resolvedTranscript.storedTranscript),
     });
     const reading = prepared ?? await runDreamAnalysis({
-      apiKey,
       anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY')?.trim(),
       transcript: resolvedTranscript.promptTranscript,
       truncatedForPrompt: resolvedTranscript.truncatedForPrompt,
@@ -322,8 +337,12 @@ export const processAnalysisJob = async (input: {
     if (!job || job.status !== 'running') return;
 
     const serialized = serializeAnalysisJobError(error);
-    if (serialized.retryable && job.attempt_count < job.max_attempts) {
-      await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage);
+    const providerDeferred = error instanceof ProviderCircuitOpenError;
+    if (serialized.retryable && (providerDeferred || job.attempt_count < job.max_attempts)) {
+      const delay = Math.max(analysisRetryDelayMs(job.attempt_count, timing.random()), serialized.retryAfterMs);
+      await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage, timing.now() + delay, providerDeferred);
+      // Persist the deadline first: polling/scheduler invocations must not bypass backoff.
+      await timing.sleep(delay);
       try {
         await triggerAnalysisWorker({
           supabaseUrl: input.supabaseUrl,
