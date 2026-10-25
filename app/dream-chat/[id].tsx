@@ -21,6 +21,7 @@ import { useChatCategoryPrompt } from '@/hooks/useChatCategoryPrompt';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
+import { restoreUnsentChatText } from '@/lib/chat/unsentText';
 import { createStreamingReplyChannel } from '@/lib/chat/streamingReplyChannel';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QUOTAS } from '@/constants/limits';
@@ -67,6 +68,7 @@ import { TypeScale } from '@/constants/typeScale';
 type CategoryType = DreamChatCategory;
 type SendMessageOptions = {
   baseMessages?: ChatMessage[];
+  userText?: string;
   category?: Exclude<CategoryType, 'general'>;
   clientRequestId?: string;
   meta?: ChatMessage['meta'];
@@ -636,7 +638,7 @@ function DreamChatContent() {
             if (!isMountedRef.current) return;
             setIsLoading(false);
             if (error instanceof AiConsentWithdrawnError) {
-              composerRef.current?.restoreUnsentText(textToSend);
+              restoreUnsentChatText(composerRef.current, options?.userText);
               return;
             }
             if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
@@ -791,7 +793,7 @@ function DreamChatContent() {
         if (!isMountedRef.current) return;
         if (error instanceof AiConsentWithdrawnError) {
           setMessages(baseMessages);
-          composerRef.current?.restoreUnsentText(textToSend);
+          restoreUnsentChatText(composerRef.current, options?.userText);
           return;
         }
         if (debugChat) {
@@ -821,6 +823,7 @@ function DreamChatContent() {
             retry: classified?.canRetry === false ? undefined : {
               messageText: textToSend,
               displayText: resolvedDisplayText,
+              userText: options?.userText,
               clientRequestId: chatRequestId,
             },
           },
@@ -899,6 +902,7 @@ function DreamChatContent() {
       sendMessage(retry.messageText, retry.displayText, {
         baseMessages,
         clientRequestId: retry.clientRequestId,
+        userText: retry.userText,
       });
     },
     [isInteractionLocked, messages, sendMessage]
@@ -1325,7 +1329,7 @@ function DreamChatContent() {
 
           <ChatComposer
             ref={composerRef}
-            onSendText={sendMessage}
+            onSendText={(text) => { void sendMessage(text, undefined, { userText: text }); }}
             placeholder={composerPlaceholder}
             isLoading={isInteractionLocked}
             isDisabled={messageLimitReached}
