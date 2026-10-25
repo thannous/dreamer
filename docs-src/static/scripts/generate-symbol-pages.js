@@ -1037,12 +1037,14 @@ function renderTigerAtlasActions(lang, content, pagePath, placement) {
                         <p class="symbol-webapp-note atlas-note" data-web-app-cta>${escapeHtml(sharedLocale.webAppNote)}</p>`;
 }
 
+// The closing paragraph of every entry that names its editorial method, in the six languages.
+const METHOD_NOTE = /^(Méthode|Method|Método|Methode|Metodo)\b/u;
+
 // The tiger reading: its paintings, drawn and moved like a pack's, its scene labels, the opening
-// question and next sentence of each scene's card, the journal example left out.
+// question and next sentence of each scene's card.
 const TIGER_ATLAS_PAGE = {
   ...TIGER_ATLAS,
   name: 'Tiger',
-  omitJournal: true,
   sceneText: 'excerpt',
   scenePicture: (role, expanded) => renderAtlasSixScenePicture(role, TIGER_ATLAS_ASSETS[role], expanded),
   decorHtml: () => renderAtlasSixPlate(TIGER_ATLAS_ASSETS.plate),
@@ -1065,9 +1067,9 @@ function renderAtlasArticle(c, atlas) {
   // The opening keeps the first paragraph; the others, complete, make the detailed reading.
   const [opening, ...continuation] = !interpretation ? []
     : !plainParagraphs ? [interpretation]
-    : atlas.omitJournal
-      ? paragraphs.filter((p) => !looseSpaces(plainText(p)).startsWith(atlas.journalLead))
-      : paragraphs;
+    : paragraphs;
+  // The editorial method note closes the reading as a footnote, not as one more paragraph.
+  const readingHtml = continuation.map((p) => (METHOD_NOTE.test(looseSpaces(plainText(p))) ? p.replace(/^<p>/, '<p class="atlas-method">') : p));
   if (atlas.scenes && (!opening || continuation.length === 0)) throw new Error(`${atlas.name} atlas: the interpretation needs an opening and a continuation`);
   const caveat = atlas.caveat ? sentenceStarting(plainText(interpretation), atlas.caveat, 'the interpretation') : '';
 
@@ -1205,7 +1207,7 @@ function renderAtlasArticle(c, atlas) {
             <section id="${anchors.reading}" class="symbol-meaning symbol-section atlas-continuation" aria-labelledby="atlas-${anchors.reading}-title">
                 ${heading(anchors.reading)}
                 <div class="prose prose-invert prose-purple max-w-none leading-relaxed">
-                    ${continuation.join('\n                    ')}
+                    ${readingHtml.join('\n                    ')}
                 </div>
             </section>` : ''}${c.variations.length ? `
 
@@ -1301,7 +1303,9 @@ function atlasCss(sceneIds) {
         .atlas .symbol-reading-card:hover h3 { color: var(--salmon); }
         .atlas-continuation .prose > * + * { margin-top: 1rem; }
         .atlas-continuation .prose p { max-width: 40rem; }
-        .atlas-continuation .prose p:last-child { font-size: 0.9rem; color: var(--cream-64); }
+        .atlas-continuation .prose p.atlas-method { column-span: all; max-width: 40rem; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.8rem; line-height: 1.55; color: var(--cream-64); opacity: 0.8; }
+        .atlas-continuation .prose p.atlas-method strong { font-weight: 500; color: inherit; }
+        .atlas-continuation .prose p.atlas-method a { color: inherit; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.24); }
 
         /* Scene selector: native radios, one published question and excerpt per scene, read
            beside the list (under it on a phone). */
@@ -1725,9 +1729,8 @@ function loadAtlasLocales() {
     object(byLang, id, CONFIG.languages, Object.hasOwn(SYMBOL_ATLAS_SIX, id) ? ['fr'] : []);
     for (const [lang, entry] of Object.entries(byLang)) {
       const at = `${id}.${lang}`;
-      object(entry, at, id === 'tiger' ? ['caveat', 'journalLead', 'scenes'] : ['caveat', 'scenes']);
+      object(entry, at, ['caveat', 'scenes']);
       if (entry.caveat !== null) text(entry.caveat, `${at}.caveat`);
-      if (id === 'tiger') text(entry.journalLead, `${at}.journalLead`);
       object(entry.scenes, `${at}.scenes`, sceneIds);
       for (const sceneId of sceneIds) {
         const scene = object(entry.scenes[sceneId], `${at}.scenes.${sceneId}`, ['variation', 'anchor', 'label'], id === 'tiger' ? ['variation', 'anchor', 'label'] : ['variation', 'anchor']);
@@ -1756,14 +1759,14 @@ function atlasLocaleFor(symbolId, lang) {
   const locale = SYMBOL_ATLAS_LOCALES.symbols[symbolId]?.[lang];
   if (!locale) return null;
   const { scenes, ...copy } = SYMBOL_ATLAS_LOCALES.copy[lang];
-  return { lang, ...copy, scenes: { id: 'scenes', ...scenes }, caveat: locale.caveat, journalLead: locale.journalLead, sceneLocales: locale.scenes };
+  return { lang, ...copy, scenes: { id: 'scenes', ...scenes }, caveat: locale.caveat, sceneLocales: locale.scenes };
 }
 
 // The same article for a symbol without a pack in that language: the language's copy (index label,
 // detailed reading, app kicker, anchors), no scenes, caveat or side illustration.
 function atlasTextFor(symbolId, lang) {
   const { scenes, ...copy } = SYMBOL_ATLAS_LOCALES.copy[lang];
-  return { lang, ...copy, name: `Symbol ${symbolId}`, scenes: null, caveat: null, omitJournal: false, decorHtml: () => '' };
+  return { lang, ...copy, name: `Symbol ${symbolId}`, scenes: null, caveat: null, decorHtml: () => '' };
 }
 
 // The asset contract: per allowlisted symbol id, all eight of hero (landscape), portrait,
@@ -2201,7 +2204,6 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     name: `Atlas ${symbol.id}`,
     scenes: { ...atlasLocale.scenes, choices: atlasSix.scenes.map((scene) => ({ id: scene.id, ...atlasLocale.sceneLocales[scene.id], image: atlasSixAssets[`scene-${scene.id}`] ? `scene-${scene.id}` : undefined })) },
     sceneText: 'full',
-    omitJournal: false,
     scenePicture: (role, expanded) => renderAtlasSixScenePicture(role, atlasSixAssets[role], expanded),
     decorHtml: () => (atlasSixAssets.plate ? renderAtlasSixPlate(atlasSixAssets.plate) : ''),
   } : atlasTextFor(symbol.id, lang));

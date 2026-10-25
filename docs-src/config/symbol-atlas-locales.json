@@ -167,7 +167,6 @@
     "tiger": {
       "fr": {
         "caveat": "Ce sont des pistes à confronter à votre vie actuelle",
-        "journalLead": "Exemple fictif de journal :",
         "scenes": {
           "poursuite": {
             "variation": "Un tigre qui attaque ou vous poursuit",
@@ -188,7 +187,6 @@
       },
       "en": {
         "caveat": "These are leads to check against your life now",
-        "journalLead": "Fictional journal example:",
         "scenes": {
           "poursuite": {
             "variation": "A tiger attacking or chasing you",
@@ -209,7 +207,6 @@
       },
       "es": {
         "caveat": "Son pistas para contrastar con tu vida actual",
-        "journalLead": "Ejemplo ficticio de diario:",
         "scenes": {
           "poursuite": {
             "variation": "Un tigre que te ataca o te persigue",
@@ -230,7 +227,6 @@
       },
       "de": {
         "caveat": "Das sind Spuren, die du mit deinem jetzigen Leben abgleichen kannst",
-        "journalLead": "Erfundenes Tagebuchbeispiel:",
         "scenes": {
           "poursuite": {
             "variation": "Ein Tiger, der dich angreift oder verfolgt",
@@ -251,7 +247,6 @@
       },
       "it": {
         "caveat": "Sono piste da confrontare con la tua vita di adesso",
-        "journalLead": "Esempio inventato di diario:",
         "scenes": {
           "poursuite": {
             "variation": "Una tigre che ti attacca o ti insegue",
@@ -272,7 +267,6 @@
       },
       "pt-br": {
         "caveat": "São pistas para comparar com a sua vida atual",
-        "journalLead": "Exemplo fictício de diário:",
         "scenes": {
           "poursuite": {
             "variation": "Um tigre atacando ou correndo atrás de você",
