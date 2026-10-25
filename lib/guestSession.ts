@@ -37,6 +37,9 @@ export type GuestBootstrapState = {
 const STORAGE_KEY = Platform.OS === 'ios' ? 'guest-session-v3' : 'guest-session-v1';
 const APP_ATTEST_KEY_STORAGE_KEY = 'guest-app-attest-key-v1';
 const APP_ATTEST_RETRY_STORAGE_KEY = 'guest-app-attest-retry-v1';
+const APP_ATTEST_PAUSE_STORAGE_KEY = 'guest-app-attest-pause-v1';
+const APP_ATTEST_PAUSE_MIN_MS = 60 * 60_000;
+const APP_ATTEST_PAUSE_MAX_MS = 24 * 60 * 60_000;
 // The server accepts its signed challenge for three minutes. Leave time for
 // the attestation and the final request to reach it before that deadline.
 const APP_ATTEST_RETRY_MAX_AGE_MS = 2 * 60_000;
@@ -246,6 +249,45 @@ const discardAppAttestKey = async (): Promise<void> => {
   await SecureStore.deleteItemAsync(APP_ATTEST_KEY_STORAGE_KEY).catch(() => {});
 };
 
+type AppAttestPause = { until: number; delayMs: number };
+
+const readAppAttestPause = async (): Promise<AppAttestPause | null> => {
+  try {
+    const raw = await SecureStore.getItemAsync(APP_ATTEST_PAUSE_STORAGE_KEY);
+    if (!raw) return null;
+    const stored = JSON.parse(raw) as AppAttestPause;
+    if (typeof stored.until !== 'number' || !Number.isFinite(stored.until) ||
+        typeof stored.delayMs !== 'number' || !Number.isFinite(stored.delayMs)) return null;
+    return stored;
+  } catch {
+    return null;
+  }
+};
+
+const isAppAttestPaused = (pause: AppAttestPause | null): boolean => {
+  const remaining = pause ? pause.until - Date.now() : 0;
+  // A clock moved backwards cannot stretch the pause past its longest step.
+  return remaining > 0 && remaining <= APP_ATTEST_PAUSE_MAX_MS;
+};
+
+// Apple asks apps to create keys only when needed: each one stays in the
+// device's count for 30 days. After the server refuses an attestation, wait
+// before attesting a new key, from one hour doubling up to a day.
+const pauseAppAttestation = async (): Promise<void> => {
+  const previous = await readAppAttestPause();
+  const delayMs = previous
+    ? Math.min(Math.max(previous.delayMs, APP_ATTEST_PAUSE_MIN_MS) * 2, APP_ATTEST_PAUSE_MAX_MS)
+    : APP_ATTEST_PAUSE_MIN_MS;
+  await SecureStore.setItemAsync(
+    APP_ATTEST_PAUSE_STORAGE_KEY,
+    JSON.stringify({ until: Date.now() + delayMs, delayMs })
+  ).catch(() => {});
+};
+
+const clearAppAttestPause = async (): Promise<void> => {
+  await SecureStore.deleteItemAsync(APP_ATTEST_PAUSE_STORAGE_KEY).catch(() => {});
+};
+
 const isAppAttestError = (error: unknown, code: string): boolean => {
   const nativeCode = (error as { code?: unknown } | null)?.code;
   return nativeCode === code || (error instanceof Error && error.message.includes(code));
@@ -276,7 +318,10 @@ const mapGuestSessionFailure = (error: unknown): GuestSessionErrorCode => {
   return GuestSessionErrorCode.UNAVAILABLE;
 };
 
-const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecord | null> => {
+const fetchGuestSession = async (
+  fingerprint: string,
+  afterInvalidKey = false
+): Promise<GuestSessionRecord | null> => {
   const base = getApiBaseUrl();
   const body: {
     fingerprint: string;
@@ -343,6 +388,12 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
 
   if (Platform.OS === 'ios') {
     if (!AppIntegrity.isSupported) {
+      updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
+      return null;
+    }
+    const storedKeyId = await SecureStore.getItemAsync(APP_ATTEST_KEY_STORAGE_KEY).catch(() => null);
+    if (!storedKeyId && isAppAttestPaused(await readAppAttestPause())) {
+      logger.warn('[guestSession] App Attest paused after a server refusal');
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
       return null;
     }
@@ -424,10 +475,14 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
         throw new Error('App Attest challenge expired before submission');
       }
     } catch (error) {
-      // An attested key can be lost after restoring/reinstalling the app. The
-      // next bootstrap may generate a new key; it never bypasses verification.
+      // An attested key is lost after reinstalling the app, restoring a backup
+      // or moving to a new iPhone, while its identifier survives in the
+      // keychain. Apple asks to start over with a new key: do it once now
+      // instead of leaving guest AI off until the next launch. A new key still
+      // goes through a full attestation.
       if (isAppAttestError(error, 'ERR_APP_INTEGRITY_INVALID_KEY')) {
         await discardAppAttestKey();
+        if (!afterInvalidKey) return fetchGuestSession(fingerprint, true);
       }
       logger.warn('[guestSession] App Attest unavailable', error);
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
@@ -445,6 +500,7 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
     });
     if (Platform.OS === 'ios' && body.attestationObject) {
       await clearAppAttestRetry();
+      await clearAppAttestPause();
     }
   } catch (error) {
     const status = (error as { status?: unknown } | null)?.status;
@@ -453,6 +509,7 @@ const fetchGuestSession = async (fingerprint: string): Promise<GuestSessionRecor
       // A definitive rejection means this key cannot be trusted for another
       // attestation attempt. An ambiguous transport failure keeps the proof.
       await discardAppAttestKey();
+      await pauseAppAttestation();
     }
     updateGuestBootstrapState('degraded', mapGuestSessionFailure(error));
     throw error;
