@@ -18,6 +18,12 @@ import {
 } from '@/context/SideColumnTabBarContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// The repository has no react-dom types: the two calls a render outside act needs.
+const { flushSync } = jest.requireActual<{ flushSync: (update: () => void) => void }>('react-dom');
+const { createRoot } = jest.requireActual<{
+  createRoot: (container: Element) => { render: (element: React.ReactNode) => void; unmount: () => void };
+}>('react-dom/client');
+
 let mockPathname = '/journal';
 let mockInsets = { top: 20, right: 54, bottom: 20, left: 0 };
 
@@ -205,6 +211,29 @@ describe('the navigation in the iPhone Duo side column', () => {
     mockPathname = '/';
     rerender(screens(true, false));
     expect(bar()?.getAttribute('data-active')).toBe('home');
+  });
+
+  it('hands the navigation over before the frame is drawn', () => {
+    // Outside act, which also runs the effects React leaves until after the frame.
+    const environment = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
+    const actEnvironment = environment.IS_REACT_ACT_ENVIRONMENT;
+    environment.IS_REACT_ACT_ENVIRONMENT = false;
+    mockInsets = duo;
+    const container = document.body.appendChild(document.createElement('div'));
+    const root = createRoot(container);
+    const drawn = () => container.querySelector('[data-testid="side-column-bar"]')?.getAttribute('data-active');
+    try {
+      flushSync(() => root.render(<Screens tabs recording={false} />));
+      expect(drawn()).toBe('journal');
+      // Capture opens above the tabs: its bar is in the frame that shows it.
+      mockPathname = '/recording';
+      flushSync(() => root.render(<Screens tabs recording />));
+      expect(drawn()).toBe('addDream');
+    } finally {
+      flushSync(() => root.unmount());
+      container.remove();
+      environment.IS_REACT_ACT_ENVIRONMENT = actEnvironment;
+    }
   });
 
   it.each([

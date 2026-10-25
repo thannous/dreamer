@@ -14,6 +14,7 @@ const mockUseDreams = jest.fn();
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 let mockBottomInset = 0;
 let mockInSideColumn = false;
+let mockPlatformOS: 'web' | 'ios' = 'web';
 let mockUser: { id: string } | null = null;
 let mockQuota: { tier: string; usage?: unknown; loading: boolean; error: Error | null } = { tier: 'guest', loading: false, error: null };
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
@@ -41,6 +42,7 @@ afterEach(() => {
   mockWindow.fontScale = 1;
   mockBottomInset = 0;
   mockInSideColumn = false;
+  mockPlatformOS = 'web';
   mockUser = null;
   mockQuota = { tier: 'guest', loading: false, error: null };
 });
@@ -128,8 +130,10 @@ jest.mock('react-native', () => {
     __esModule: true,
     AppState: { addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
     Platform: {
-      OS: 'web',
-      select: (values: Record<string, any>) => values?.web ?? values?.default,
+      get OS() {
+        return mockPlatformOS;
+      },
+      select: (values: Record<string, any>) => values?.[mockPlatformOS] ?? values?.default,
     },
     Pressable: createElement('button'),
     ScrollView: ({ children, ...props }: any) => React.createElement('div', { 'data-testid': 'trends-scroll', ...toDomProps(props) }, children),
@@ -456,6 +460,8 @@ describe('Tendances screen', () => {
   });
 
   it('scrolls to the bottom safe area when the navigation stands in the iPhone Duo side column', () => {
+    // The column is iOS's alone.
+    mockPlatformOS = 'ios';
     mockInSideColumn = true;
     mockBottomInset = 34;
     mockWindow.width = 382;

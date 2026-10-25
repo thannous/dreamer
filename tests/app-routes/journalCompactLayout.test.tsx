@@ -951,6 +951,8 @@ describe('Journal on an iPhone Duo', () => {
   });
 
   it('lets the dreams scroll to the bottom safe area when the navigation stands in the side column', () => {
+    // The column is iOS's alone.
+    mockPlatform = 'ios';
     mockInSideColumn = true;
     Object.assign(mockWindow, { width: 382, height: 678 });
     render(<JournalScreen />);

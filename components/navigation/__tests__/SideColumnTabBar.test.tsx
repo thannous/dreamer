@@ -116,8 +116,6 @@ it('stands the five destinations on end at the bottom of the folded Duo column',
   const tabs = screen.getAllByRole('tab');
   expect(tabs.map((tab) => tab.getAttribute('data-testid'))).toEqual(TAB_IDS);
   tabs.forEach((tab) => expect(styleOf(tab).height).toBe(64));
-  // The bar's top leaves the top of the column to the status bar and the camera.
-  expect(678 - frame.bottom - frame.height).toBeGreaterThanOrEqual(120);
   expect(tabs.map((tab) => tab.querySelector('span')?.textContent)).toEqual([
     'nav.home', 'nav.journal', 'nav.capture_dream', 'nav.stats', 'nav.explore',
   ]);
@@ -160,14 +158,18 @@ it('shows a dream analysis running in the background on Capture', () => {
   expect(capture.querySelector('[data-testid="nav-analysis-busy"]')).not.toBeNull();
 });
 
-it('shrinks its cells on a short window so the status bar keeps the top of the column', () => {
-  // The Duo folded on its side (estimated window and bottom safe area).
-  renderBar({}, { windowHeight: 466, bottomInset: 21 });
+it.each([
+  // The Duo folded on its side (estimated), open on its side and folded (measured).
+  [466, 21, 63],
+  [669, 34, 64],
+  [678, 34, 64],
+])('leaves the top of a %i pt column to the status bar and the camera', (windowHeight: number, bottomInset: number, cell: number) => {
+  renderBar({}, { windowHeight, bottomInset });
 
-  const height = styleOf(screen.getByRole('tablist')).height as number;
-  screen.getAllByRole('tab').forEach((tab) => expect(styleOf(tab).height).toBe(63));
-  expect(height).toBe(323);
-  expect(466 - 21 - height).toBeGreaterThanOrEqual(120);
+  const frame = styleOf(screen.getByRole('tablist'));
+  screen.getAllByRole('tab').forEach((tab) => expect(styleOf(tab).height).toBe(cell));
+  expect(frame.bottom).toBe(bottomInset);
+  expect(windowHeight - frame.bottom - frame.height).toBeGreaterThanOrEqual(120);
 });
 
 it('keeps the short names and a smaller Capture with large text', () => {
