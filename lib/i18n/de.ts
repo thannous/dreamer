@@ -47,7 +47,7 @@ const translations: Record<string, string> = {
     'common.apply': 'Anwenden',
     'common.cancel': 'Abbrechen',
     'ai_consent.title': "Deinen Traum zum Leben erwecken?",
-    'ai_consent.message': "Noctalia sendet den Text deines Traums ohne deinen Namen oder dein Konto an externe KI-Dienste, um ihn zu deuten, zu illustrieren und mit dir darüber zu sprechen. Dein Tagebuch funktioniert ohne KI, und du kannst deine Entscheidung jederzeit in den Einstellungen ändern.",
+    'ai_consent.message': "Um deinen Traum zu deuten, zu illustrieren und mit dir darüber zu sprechen, übermittelt Noctalia den Text deines Traums (und je nach Funktion deine Nachrichten und Antworten) verschlüsselt an seine KI-Partner: Anthropic für Text, Google für Bilder. Dein Name, deine E-Mail-Adresse und dein Konto werden nie mitgesendet. Dein Tagebuch funktioniert ohne KI, und du kannst deine Entscheidung jederzeit in den Einstellungen ändern.",
     'ai_consent.accept': "Zustimmen und fortfahren",
     'ai_consent.decline': "Nicht jetzt",
     'ai_consent.details_show': "Details anzeigen",

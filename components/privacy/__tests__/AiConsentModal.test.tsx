@@ -154,7 +154,7 @@ describe('AiConsentModal', () => {
 
     expect(view.getByText('Donner vie à ton rêve ?')).toBeTruthy();
     // The shipped French message must name where the dream goes.
-    expect(view.getByText(/services d’IA externes/)).toBeTruthy();
+    expect(view.getByText(/partenaires d’IA : Anthropic pour le texte, Google pour les images/)).toBeTruthy();
 
     fireEvent.press(view.getByTestId(TID.Button.AiConsentPrivacyPolicy));
     expect(mockOpenURL).toHaveBeenCalledWith('https://noctalia.app/fr/politique-confidentialite/');

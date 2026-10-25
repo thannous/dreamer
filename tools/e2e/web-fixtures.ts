@@ -4,7 +4,7 @@ import { webLocale } from './web-engine';
 
 // The AI consent modal must name where the dream goes (App Review 5.1.2(i), Google
 // Play's User Data policy): check that mention in the run's locale, not the whole text.
-export const aiConsentDisclosure = ({ 'fr-FR': 'services d’IA externes', 'de-DE': 'externe KI-Dienste' } as Record<string, string>)[webLocale] ?? 'external AI services';
+export const aiConsentDisclosure = ({ 'fr-FR': 'partenaires d’IA : Anthropic pour le texte, Google pour les images', 'de-DE': 'KI-Partner: Anthropic für Text, Google für Bilder' } as Record<string, string>)[webLocale] ?? 'AI partners: Anthropic for text, Google for images';
 
 export async function isolateWeb(browser: Browser, app: App) {
   const origin = new URL(app.baseUrl!).origin;

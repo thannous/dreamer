@@ -47,7 +47,7 @@ const translations: Record<string, string> = {
     'common.apply': 'Appliquer',
     'common.cancel': 'Annuler',
     'ai_consent.title': "Donner vie à ton rêve ?",
-    'ai_consent.message': "Noctalia envoie le texte de ton rêve, sans ton nom ni ton compte, à des services d’IA externes pour l’interpréter, l’illustrer et en parler avec toi. Ton journal fonctionne sans IA, et tu peux changer d’avis à tout moment dans Paramètres.",
+    'ai_consent.message': "Pour analyser, illustrer et parler de ton rêve, Noctalia transmet de façon chiffrée le texte de ton récit (et, selon la fonction, tes messages et tes réponses) à ses partenaires d’IA : Anthropic pour le texte, Google pour les images. Ni ton nom, ni ton e-mail, ni ton compte n’y sont joints. Ton journal fonctionne sans IA, et tu peux changer d’avis à tout moment dans Paramètres.",
     'ai_consent.accept': "Accepter et continuer",
     'ai_consent.decline': "Pas maintenant",
     'ai_consent.details_show': "Voir les détails",
