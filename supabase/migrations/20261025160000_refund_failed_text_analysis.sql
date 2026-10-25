@@ -1,0 +1,84 @@
+-- Failed text generation releases only the reservation this invocation owns.
+-- Successful results and active queued retries retain their authorization.
+alter table public.guest_analysis_quota_claims
+  add column reservation_id uuid not null default gen_random_uuid();
+
+create function public.reserve_guest_text_analysis(
+  p_fingerprint text, p_analysis_request_id uuid, p_limit integer, p_transcript_sha256 text
+) returns jsonb language plpgsql security definer set search_path = '' as $$
+declare result jsonb; reservation uuid;
+begin
+  if coalesce(auth.jwt()->>'role', '') not in ('service_role', 'supabase_admin') then
+    raise exception using errcode = '42501', message = 'Service role required';
+  end if;
+  result := public.claim_guest_analysis_quota(p_fingerprint, p_analysis_request_id, p_limit, p_transcript_sha256);
+  if (result->>'claimed')::boolean then
+    select c.reservation_id into reservation from public.guest_analysis_quota_claims c
+    where c.fingerprint_hash = p_fingerprint and c.analysis_request_id = p_analysis_request_id;
+    result := result || jsonb_build_object('reservation_id', reservation);
+  end if;
+  return result;
+end;
+$$;
+
+create function public.release_guest_text_analysis(p_fingerprint text, p_reservation_id uuid)
+returns boolean language plpgsql security definer set search_path = '' as $$
+begin
+  if coalesce(auth.jwt()->>'role', '') not in ('service_role', 'supabase_admin') then
+    raise exception using errcode = '42501', message = 'Service role required';
+  end if;
+  -- Same lock order as admission. A repeated refund cannot release a later retry.
+  perform 1 from public.guest_usage where fingerprint_hash = p_fingerprint for update;
+  delete from public.guest_analysis_quota_claims
+    where fingerprint_hash = p_fingerprint and reservation_id = p_reservation_id;
+  if not found then return false; end if;
+  update public.guest_usage set analysis_count = greatest(analysis_count - 1, 0)
+    where fingerprint_hash = p_fingerprint;
+  return true;
+end;
+$$;
+
+create function public.release_authenticated_text_analysis(p_user_id uuid, p_claim_id uuid)
+returns boolean language plpgsql security definer set search_path = '' as $$
+declare receipt public.quota_usage%rowtype;
+begin
+  if coalesce(auth.jwt()->>'role', '') not in ('service_role', 'supabase_admin') then
+    raise exception using errcode = '42501', message = 'Service role required';
+  end if;
+  select * into receipt from public.quota_usage where id = p_claim_id and user_id = p_user_id
+    and quota_type = 'analysis' and metadata->>'source' = 'api_pre_provider';
+  if not found then return false; end if;
+  -- Dream first, then account, matching reserve_authenticated_analysis_authorization.
+  perform 1 from public.dreams where id = receipt.dream_id and user_id = p_user_id for update;
+  perform pg_advisory_xact_lock(hashtextextended(format('quota:analysis:all:%s', p_user_id::text), 0));
+  delete from public.quota_usage where id = p_claim_id and user_id = p_user_id
+    and quota_type = 'analysis' and metadata->>'source' = 'api_pre_provider';
+  return found;
+end;
+$$;
+
+-- A queued retry still owns its receipt. Only a terminal failure refunds it,
+-- including expiration/reconciliation performed outside the worker process.
+create function private.refund_failed_text_analysis_job()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  if new.job_type = 'analyze_dream' and new.status = 'failed' and old.status <> 'failed' then
+    perform 1 from public.dreams where id = new.dream_id and user_id = new.user_id for update;
+    perform pg_advisory_xact_lock(hashtextextended(format('quota:analysis:all:%s', new.user_id::text), 0));
+    delete from public.quota_usage where user_id = new.user_id and dream_id = new.dream_id
+      and quota_type = 'analysis' and metadata->>'source' = 'analysis_job_admission'
+      and metadata->>'analysis_request_id' = new.client_request_id;
+  end if;
+  return new;
+end;
+$$;
+create trigger refund_failed_text_analysis_job after update of status on public.ai_jobs
+  for each row execute function private.refund_failed_text_analysis_job();
+
+revoke all on function public.reserve_guest_text_analysis(text, uuid, integer, text) from public, anon, authenticated;
+revoke all on function public.release_guest_text_analysis(text, uuid) from public, anon, authenticated;
+revoke all on function public.release_authenticated_text_analysis(uuid, uuid) from public, anon, authenticated;
+revoke all on function private.refund_failed_text_analysis_job() from public, anon, authenticated;
+grant execute on function public.reserve_guest_text_analysis(text, uuid, integer, text) to service_role;
+grant execute on function public.release_guest_text_analysis(text, uuid) to service_role;
+grant execute on function public.release_authenticated_text_analysis(uuid, uuid) to service_role;

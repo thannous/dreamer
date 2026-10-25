@@ -172,8 +172,8 @@ Deno.test('authenticated chat requires a service completion client before starti
 });
 
 Deno.test('authenticated chat releases a failed turn through the service client only', async () => {
-  const previousKey = Deno.env.get('GEMINI_API_KEY');
-  Deno.env.delete('GEMINI_API_KEY');
+  const previousKey = Deno.env.get('ANTHROPIC_API_KEY');
+  Deno.env.delete('ANTHROPIC_API_KEY');
   try {
     const { context } = streamingTurn();
     const released: { name: string; args: Record<string, unknown> }[] = [];
@@ -191,7 +191,7 @@ Deno.test('authenticated chat releases a failed turn through the service client 
       }) as any,
     });
 
-    assertEquals(response.status, 500);
+    assertEquals(response.status, 503);
     assertEquals(released, [{
       name: 'fail_authenticated_chat_turn',
       args: {
@@ -203,15 +203,15 @@ Deno.test('authenticated chat releases a failed turn through the service client 
       },
     }]);
   } finally {
-    if (previousKey == null) Deno.env.delete('GEMINI_API_KEY');
-    else Deno.env.set('GEMINI_API_KEY', previousKey);
+    if (previousKey == null) Deno.env.delete('ANTHROPIC_API_KEY');
+    else Deno.env.set('ANTHROPIC_API_KEY', previousKey);
   }
 });
 
 const withChatKeys = async (run: () => Promise<void>) => {
   const originalFetch = globalThis.fetch;
   const saved = { gemini: Deno.env.get('GEMINI_API_KEY'), anthropic: Deno.env.get('ANTHROPIC_API_KEY') };
-  Deno.env.set('GEMINI_API_KEY', 'synthetic-gemini-key');
+  Deno.env.delete('GEMINI_API_KEY');
   Deno.env.set('ANTHROPIC_API_KEY', 'synthetic-anthropic-key');
   try {
     await run();
@@ -247,7 +247,7 @@ Deno.test('with an Anthropic key, chat streams Claude Haiku at medium effort fro
   assertEquals((committed[0] as { parts: unknown }).parts, [{ text: 'Un rêve ne peut pas répondre à cela.' }]);
 }));
 
-Deno.test('a chat stream that fails before its first Claude text falls back to Gemini', () => withChatKeys(async () => {
+Deno.test('a chat stream that fails before its first Claude text fails without Gemini', () => withChatKeys(async () => {
   const hosts: string[] = [];
   globalThis.fetch = async (input, init) => {
     const host = new URL(new Request(input, init).url).hostname;
@@ -263,10 +263,9 @@ Deno.test('a chat stream that fails before its first Claude text falls back to G
   };
   const { context, createAdminClient } = streamingTurn();
   const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }), createAdminClient });
-  const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
-  assertEquals(hosts, ['api.anthropic.com', 'generativelanguage.googleapis.com']);
-  assertEquals(events[0], { delta: 'Réponse Gemini.' });
-  assertEquals(events.at(-1).done, true);
+  assertEquals(response.status, 502);
+  assertEquals(hosts, ['api.anthropic.com']);
+  assertEquals(await response.json(), { error: 'Text AI unavailable, please retry' });
 }));
 
 Deno.test('guest history preserves long signed answers without widening legacy text limits', () => {
@@ -279,3 +278,37 @@ Deno.test('guest history preserves long signed answers without widening legacy t
   const oversized = 'a'.repeat(32001);
   assertThrows(() => sanitizeClientHistoryMessage({ role: 'model', text: oversized, parts: [{ text: oversized }] }));
 });
+
+Deno.test('an interrupted Claude stream reports retryable failure without committing partial text', () => withChatKeys(async () => {
+  const hosts: string[] = [];
+  const { context } = streamingTurn();
+  const writes: string[] = [];
+  let interrupt: (() => void) | undefined;
+  globalThis.fetch = async (input, init) => {
+    hosts.push(new URL(new Request(input, init).url).hostname);
+    const frames = [
+      { type: 'message_start', message: { id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-haiku-5-5', content: [], stop_reason: null, stop_sequence: null, usage: { input_tokens: 1, output_tokens: 0 } } },
+      { type: 'content_block_start', index: 0, content_block: { type: 'text', text: '' } },
+      { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', text: 'Une réponse inachevée…' } },
+    ];
+    const encode = (event: { type: string }) => new TextEncoder().encode(`event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);
+    return new Response(new ReadableStream({ start(controller) {
+      frames.forEach(frame => controller.enqueue(encode(frame)));
+      interrupt = () => {
+        controller.enqueue(encode({ type: 'error', error: { type: 'overloaded_error', message: 'Unavailable' } } as { type: string }));
+        controller.close();
+      };
+    } }), { headers: { 'Content-Type': 'text/event-stream' } });
+  };
+  const response = await handleChat(context, {
+    admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }),
+    createAdminClient: (() => ({ rpc: async (name: string) => { writes.push(name); return { data: true, error: null }; } })) as never,
+  });
+  interrupt!();
+  const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
+  assertEquals(events[0].delta, 'Une réponse inachevée…');
+  assertEquals(events.at(-1), { error: 'Text AI unavailable, please retry', status: 502 });
+  assertEquals(events.some(event => event.done), false);
+  assertEquals(writes, ['fail_authenticated_chat_turn']);
+  assertEquals(hosts, ['api.anthropic.com']);
+}));

@@ -3,19 +3,17 @@ import { requireUser } from '../lib/guards.ts';
 import { jsonResponse } from '../lib/http.ts';
 import { aiLanguageName, isAiLanguage } from '../lib/aiLanguage.ts';
 import { moonCycleAt, nearestFullMoon } from '../lib/fullMoon.ts';
-import { CLAUDE_MODELS, GEMINI_MODELS } from '../lib/models.ts';
+import { CLAUDE_MODELS } from '../lib/models.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
-import { requestClaudeJson, runClaudeFirst } from '../services/claude.ts';
-import { callGeminiWithFallback, resolveTextModel } from '../services/gemini.ts';
+import { classifyClaudeError, requestClaudeJson, runClaudeOnly } from '../services/claude.ts';
 import type { ApiContext } from '../types.ts';
 
 type Dependencies = {
   now?: () => number;
   createAdminClient?: typeof createClient;
-  apiKey?: string;
-  /** Defaults to ANTHROPIC_API_KEY; null keeps the request on Gemini. */
+  /** Defaults to ANTHROPIC_API_KEY; null fails closed. */
   anthropicApiKey?: string | null;
-  generate?: typeof callGeminiWithFallback;
+  requestJson?: typeof requestClaudeJson;
   admit?: typeof admitSynchronousAiRequest;
 };
 
@@ -225,12 +223,6 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
       await release();
       return admission;
     }
-    const apiKey = deps.apiKey ?? Deno.env.get('GEMINI_API_KEY');
-    if (!apiKey) {
-      await release();
-      return jsonResponse({ error: 'Letters unavailable' }, 503);
-    }
-
     let written: { opening: string; body: string };
     try {
       const read = dreams.slice(-MAX_DREAMS);
@@ -247,31 +239,22 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
       });
       const system = moonLetterInstruction(lang);
       const claude = CLAUDE_MODELS.moonLetter;
-      written = await runClaudeFirst({
+      written = await runClaudeOnly({
         route: '/moon-letter',
         anthropicApiKey: deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY') : deps.anthropicApiKey,
         config: claude,
         claude: async (key) => {
-          const { text, usage } = await requestClaudeJson({
+          const { text, usage } = await (deps.requestJson ?? requestClaudeJson)({
             apiKey: key, model: claude.model, effort: claude.effort, system, prompt: letterData, schema: LETTER_SCHEMA, timeoutMs: claude.timeoutMs,
           });
           return { value: parseMoonLetter(text), usage };
-        },
-        fallback: async () => {
-          const model = resolveTextModel('GEMINI_MODEL', GEMINI_MODELS.text.default);
-          const { text } = await (deps.generate ?? callGeminiWithFallback)(
-            apiKey, model, GEMINI_MODELS.text.fallback,
-            [{ role: 'user', parts: [{ text: letterData }] }],
-            system,
-            { responseMimeType: 'application/json', responseJsonSchema: LETTER_SCHEMA, thinkingLevel: 'low', maxOutputTokens: 4096 },
-          );
-          return parseMoonLetter(text);
         },
       });
     } catch (error) {
       await release();
       // Dream content and provider payloads must not enter logs.
-      return jsonResponse({ error: error instanceof InvalidMoonLetter ? 'Invalid letter' : 'Letters unavailable' }, 502);
+      const info = classifyClaudeError(error);
+      return jsonResponse({ error: info.userMessage }, info.status);
     }
 
     const { data: saved, error: saveError } = await letters()

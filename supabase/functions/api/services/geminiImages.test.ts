@@ -118,7 +118,9 @@ Deno.test('generateImageFromPrompt sends the content rule with every prompt', as
   const originalFetch = globalThis.fetch;
   const bodies: string[] = [];
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
-    bodies.push(await new Request(input, init).text());
+    const request = new Request(input, init);
+    assertEquals(new URL(request.url).hostname, 'generativelanguage.googleapis.com');
+    bodies.push(await request.text());
     return new Response(
       JSON.stringify({ id: 'interaction-1', status: 'completed', output_image: { data: 'aW1hZ2U=', mime_type: 'image/png' } }),
       { status: 200, headers: { 'content-type': 'application/json' } }

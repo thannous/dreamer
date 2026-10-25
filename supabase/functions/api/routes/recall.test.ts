@@ -16,10 +16,10 @@ Deno.test('recall is limited to the journal product scope', () => {
   assertEquals(isProductRouteAllowed('unknown', 'POST /recall-question'), false);
 });
 
-Deno.test('recall rejects anonymous, invalid and oversized input without invoking Gemini', async () => {
+Deno.test('recall rejects anonymous, invalid and oversized input without inference', async () => {
   let calls = 0;
-  const generate = async () => { calls++; return { text: '{}', raw: {} }; };
-  const deps = { apiKey: 'test-key', admit, generate };
+  const requestJson = async () => { calls++; return { text: '{}', usage: null }; };
+  const deps = { anthropicApiKey: 'test-key', admit, requestJson };
   assertEquals((await handleRecallQuestion(ctx(body, null), deps)).status, 401);
   assertEquals((await handleRecallQuestion(ctx({ ...body, transcript: '' }), deps)).status, 400);
   assertEquals((await handleRecallQuestion(ctx({ ...body, transcript: 'a'.repeat(20001) }), deps)).status, 413);
@@ -30,14 +30,14 @@ Deno.test('recall rejects anonymous, invalid and oversized input without invokin
 Deno.test('recall enforces admission before any provider call', async () => {
   let calls = 0;
   const response = await handleRecallQuestion(ctx(body), {
-    apiKey: 'test-key', admit: async () => new Response('', { status: 429 }),
-    generate: async () => { calls++; return { text: '{}', raw: {} }; },
+    anthropicApiKey: 'test-key', admit: async () => new Response('', { status: 429 }),
+    requestJson: async () => { calls++; return { text: '{}', usage: null }; },
   });
   assertEquals(response.status, 429);
   assertEquals(calls, 0);
 });
 
-Deno.test('recall forwards contextual answers and question history in one bounded Gemini 3.8 Flash call', async () => {
+Deno.test('recall forwards contextual answers and question history in one bounded Claude call', async () => {
   const contextualBody = {
     ...body,
     transcript: 'Une cabane en bois.\nQuestion : Que remarques-tu sur ce bois ?\nRéponse : Le bois ne compte pas, la forme de la cabane est importante.',
@@ -45,16 +45,15 @@ Deno.test('recall forwards contextual answers and question history in one bounde
   };
   let calls = 0;
   const response = await handleRecallQuestion(ctx(contextualBody), {
-    apiKey: 'test-key', admit,
-    generate: async (_key, model, _fallback, contents, instruction, config) => {
+    anthropicApiKey: 'test-key', admit,
+    requestJson: async ({ model, prompt, system: instruction, effort }) => {
       calls++;
-      assertEquals(model, 'gemini-3.8-flash');
-      assertEquals(config.thinkingLevel, 'minimal');
+      assertEquals(model, 'claude-haiku-5-5');
+      assertEquals(effort, 'low');
       assertStringIncludes(instruction, 'Do not interpret');
       assertStringIncludes(instruction, 'French');
-      assertEquals(JSON.parse(contents[0].parts[0].text!), { transcript: contextualBody.transcript, previousQuestions: contextualBody.previousQuestions });
-      assertEquals(config.maxOutputTokens, 256);
-      return { text: JSON.stringify({ question: 'Que te revient-il de la forme de la cabane ?', anchor: 'la forme de la cabane' }), raw: {} };
+      assertEquals(JSON.parse(prompt), { transcript: contextualBody.transcript, previousQuestions: contextualBody.previousQuestions });
+      return { text: JSON.stringify({ question: 'Que te revient-il de la forme de la cabane ?', anchor: 'la forme de la cabane' }), usage: null };
     },
   });
   assertEquals(response.status, 200);
@@ -69,7 +68,7 @@ Deno.test('recall rejects ungrounded, repeated and malformed model responses', a
     { question: 'Où étais-tu ?', anchor: 'jardin' },
   ]) {
     const response = await handleRecallQuestion(ctx({ ...body, previousQuestions: ['Où étais-tu ?'] }), {
-      apiKey: 'test-key', admit, generate: async () => ({ text: JSON.stringify(output), raw: {} }),
+      anthropicApiKey: 'test-key', admit, requestJson: async () => ({ text: JSON.stringify(output), usage: null }),
     });
     assertEquals(response.status, 502);
   }
@@ -89,13 +88,13 @@ Deno.test('recall accepts a useful scene-level follow-up after an appearance ans
   };
   let calls = 0;
   const response = await handleRecallQuestion(ctx(appearance), {
-    apiKey: 'test-key', admit,
-    generate: async (_key, _model, _fallback, contents) => {
+    anthropicApiKey: 'test-key', admit,
+    requestJson: async ({ prompt }) => {
       calls++;
-      assertEquals(JSON.parse(contents[0].parts[0].text!), {
+      assertEquals(JSON.parse(prompt), {
         transcript: appearance.transcript, previousQuestions: appearance.previousQuestions,
       });
-      return { text: JSON.stringify({ question: 'Que faisaient ces oiseaux ?', anchor: 'oiseaux' }), raw: {} };
+      return { text: JSON.stringify({ question: 'Que faisaient ces oiseaux ?', anchor: 'oiseaux' }), usage: null };
     },
   });
   assertEquals(await response.json(), { question: 'Que faisaient ces oiseaux ?', done: false });
@@ -105,14 +104,14 @@ Deno.test('recall accepts a useful scene-level follow-up after an appearance ans
 Deno.test('recall accepts an early stop without filling the remaining question allowance', async () => {
   let calls = 0;
   const response = await handleRecallQuestion(ctx({ ...body, transcript: 'Une cour. Je ne me souviens de rien de plus.' }), {
-    apiKey: 'test-key', admit,
-    generate: async () => { calls++; return { text: JSON.stringify({ question: null, anchor: '' }), raw: {} }; },
+    anthropicApiKey: 'test-key', admit,
+    requestJson: async () => { calls++; return { text: JSON.stringify({ question: null, anchor: '' }), usage: null }; },
   });
   assertEquals(await response.json(), { question: null, done: true });
   assertEquals(calls, 1);
 });
 
-Deno.test('recall asks Claude Haiku at low effort and falls back to Gemini on an ungrounded answer', async () => {
+Deno.test('recall asks Claude Haiku at low effort and rejects an ungrounded answer without another provider', async () => {
   const originalFetch = globalThis.fetch;
   let geminiCalls = 0;
   try {
@@ -131,11 +130,10 @@ Deno.test('recall asks Claude Haiku at low effort and falls back to Gemini on an
       }), { headers: { 'Content-Type': 'application/json' } });
     };
     const response = await handleRecallQuestion(ctx(body), {
-      apiKey: 'test-key', anthropicApiKey: 'synthetic-anthropic-key', admit,
-      generate: async () => { geminiCalls++; return { text: JSON.stringify({ question: 'Comment était ce jardin ?', anchor: 'un jardin' }), raw: {} }; },
+      anthropicApiKey: 'synthetic-anthropic-key', admit,
     });
-    assertEquals(await response.json(), { question: 'Comment était ce jardin ?', done: false });
-    assertEquals(geminiCalls, 1);
+    assertEquals(response.status, 502);
+    assertEquals(geminiCalls, 0);
   } finally {
     globalThis.fetch = originalFetch;
   }

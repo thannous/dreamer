@@ -81,3 +81,13 @@ Deno.test('an async analysis cannot spend its receipt on a changed transcript', 
   assertEquals(await hasAuthorizedAnalysisTranscript(bound, ' First dream'), false);
   assertEquals(await hasAuthorizedAnalysisTranscript(queuedJob, 'First dream'), false);
 });
+
+Deno.test('Claude configuration and generation failures keep the worker retryable', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  const { ClaudeConfigurationError, ClaudeRequestError } = await import('../api/services/claude.ts');
+  for (const error of [new ClaudeConfigurationError(), new ClaudeRequestError(502), new ClaudeRequestError(504)]) {
+    const result = serializeAnalysisJobError(error);
+    assertEquals(result.retryable, true);
+    assertEquals(result.errorCode, 'ANALYSIS_TRANSIENT');
+  }
+});

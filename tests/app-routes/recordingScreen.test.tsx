@@ -1169,7 +1169,7 @@ describe('Recording screen', () => {
     expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn');
   });
 
-  it('edits the narrative and answers while keeping their question context, then keeps the narrator words when weaving fails', async () => {
+  it('edits the narrative and answers while keeping their question context, then reports a weaving failure and lets the narrator retry without losing edits', async () => {
     const source = answerPair('Une plage.', 'Noir.', 'Quelle couleur ?');
     mockFormatCaptureNarrative.mockRejectedValueOnce(new Error('offline'));
     mockGetInputModePreference.mockResolvedValue('voice');
@@ -1190,12 +1190,17 @@ describe('Recording screen', () => {
     await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Gris, je crois.');
     fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
-    await screen.findByTestId('capture-review-text');
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith(
+      'common.error_title', 'recording.review.error', expect.any(Array),
+    ));
     expect(mockFormatCaptureNarrative).toHaveBeenCalledWith(edited, 'fr', expect.anything());
-    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('Je marchais sur une plage.\n\nGris, je crois.');
-    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('capture-review-text')).toBeNull();
     expect(mockAddDream).not.toHaveBeenCalled();
-    expect(screen.queryByTestId('capture-draft-editor')).toBeNull();
+    // Retry uses the edited exchanges; a failure never becomes a successful proposal.
+    fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
+    await screen.findByTestId('capture-review-text');
+    expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn. A door was open.');
+    expect(mockAddDream).not.toHaveBeenCalled();
   });
 
   it('removes a stale question after editing and offers explicit continuation or local review', async () => {
@@ -1742,6 +1747,21 @@ describe('Recording screen', () => {
     expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(true);
     await act(async () => { resolveCategorize?.({ title: 'Rain Room', theme: 'calm', dreamType: 'Symbolic Dream' }); });
     expect(isInitialDreamCategorizationPending(savedIdentity)).toBe(false);
+  });
+
+  it('reports failed automatic classification while keeping the saved account', async () => {
+    mockCategorizeDream.mockRejectedValueOnce(new Error('Text AI unavailable'));
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'A blue room under the rain' } });
+    fireEvent.click(await screen.findByTestId('recording-save'));
+    await answerTheJournal();
+    await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith(
+      'recording.analysis_offer.title', 'recording.categorization.error',
+    ));
+    expect(mockAddDream).toHaveBeenCalledTimes(1);
+    expect(mockAddDream).toHaveBeenCalledWith(expect.objectContaining({ transcript: 'A blue room under the rain' }));
+    expect(mockApplyDreamCategorization).not.toHaveBeenCalled();
   });
 
   it('holds Android Back during the seal so the saved dream still opens', async () => {

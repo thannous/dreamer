@@ -144,18 +144,15 @@ const log = createScopedLogger('[Recording]');
 /**
  * Answers to the capture questions are woven into the account by the faithful formatter:
  * nothing invented or interpreted, and the narrator reviews it before it is saved. Without
- * an answered question, AI consent or the service, the review keeps the narrator's own
+ * an answered question or AI consent, the review keeps the narrator's own
  * words (null). The original exchanges are saved with the dream either way.
  */
 async function weaveCaptureNarrative(source: string, language: string, signal: AbortSignal): Promise<string | null> {
   const answered = parseCaptureEditableDraft(source).sections.some(section => section.question && section.text.trim());
   if (!answered || !(await hasAiConsent())) return null;
-  try {
-    const woven = await formatCaptureNarrative(source, language, signal);
-    return isTranscriptSaveable(woven) ? woven : null;
-  } catch {
-    return null;
-  }
+  const woven = await formatCaptureNarrative(source, language, signal);
+  if (!isTranscriptSaveable(woven)) throw new Error('Invalid formatted narrative');
+  return woven;
 }
 const trackedOnboardingRecordingDestinations = new Set<string>();
 
@@ -1252,6 +1249,7 @@ function RecordingScreen() {
       })
         .catch((error) => {
           log.warn('Quick categorization failed:', error);
+          Alert.alert(t('recording.analysis_offer.title'), t('recording.categorization.error'));
         });
       void trackProductEvent('recording_saved', {
         input_mode: lastInputSourceRef.current,

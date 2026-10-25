@@ -12,7 +12,7 @@ import {
   type AnalysisJobRow,
 } from '../api/services/analysisJobs.ts';
 import { keepStoredDreamClass, loadKnownDreamSymbols, runDreamAnalysis } from '../api/services/dreamAnalysis.ts';
-import { classifyGeminiError } from '../api/services/gemini.ts';
+import { classifyClaudeError } from '../api/services/claude.ts';
 import { triggerImageJobWorker } from '../api/services/imageJobs.ts';
 
 const json = (body: unknown, status = 200) =>
@@ -139,7 +139,7 @@ const requeueJob = async (
 };
 
 export const serializeAnalysisJobError = (error: unknown) => {
-  const classified = classifyGeminiError(error);
+  const classified = classifyClaudeError(error);
   const candidate = error as Record<string, unknown> | null;
   const retryable = classified.canRetry
     || classified.status === 429
@@ -231,7 +231,6 @@ export const processAnalysisJob = async (input: {
       return;
     }
 
-    const apiKey = getRequiredEnv('GEMINI_API_KEY');
     const { data: tierData, error: tierError } = await adminClient.rpc(
       'get_effective_subscription_tier',
       { p_user_id: job.user_id }
@@ -248,7 +247,6 @@ export const processAnalysisJob = async (input: {
       transcriptSha256: await transcriptSha256(resolvedTranscript.storedTranscript),
     });
     const reading = prepared ?? await runDreamAnalysis({
-      apiKey,
       anthropicApiKey: Deno.env.get('ANTHROPIC_API_KEY')?.trim(),
       transcript: resolvedTranscript.promptTranscript,
       truncatedForPrompt: resolvedTranscript.truncatedForPrompt,

@@ -21,7 +21,7 @@ export class ClaudeStopError extends Error {
 }
 
 // Explicit base URL: a local ANTHROPIC_BASE_URL must never receive this key.
-// No retries: a slow or failing call must leave time for the Gemini fallback.
+// No automatic retry: the app explicitly retries a failed request with the same provider.
 const createClient = (apiKey: string, timeoutMs: number) => new Anthropic({
   apiKey,
   baseURL: 'https://api.anthropic.com',
@@ -36,7 +36,7 @@ const textOf = (content: unknown): string => (content as { type: string; text?: 
 
 /**
  * One structured-output request to Claude. Throws on any non-final stop
- * (refusal, max_tokens) so the caller can fall back to another provider.
+ * (refusal, max_tokens) so the caller reports a retryable failure.
  */
 export const requestClaudeJson = async (options: {
   apiKey: string;
@@ -68,7 +68,7 @@ export const requestClaudeJson = async (options: {
  * Text-only Claude history from Gemini-shaped contents: thought parts and
  * signatures are dropped and consecutive turns of one role are merged. Null when
  * a turn carries media, or the history cannot open and end on the user, so the
- * caller stays on Gemini.
+ * caller rejects unsupported history instead of changing provider.
  */
 export const toClaudeMessages = (
   contents: readonly { role?: string; parts: readonly { text?: string; thought?: boolean; inlineData?: unknown }[] }[]
@@ -118,12 +118,11 @@ export type ClaudeTextStream = { deltas: AsyncGenerator<string>; usage: () => Cl
 /**
  * Opens a streamed reply and waits for its first text, so connection, auth,
  * overload, refusal and a slow start all surface before the caller sends a byte
- * and can still fall back. `timeoutMs` bounds that first text only; afterwards a
- * failure ends the iteration with an error.
+ * and returns a retryable error. `timeoutMs` bounds the entire stream, including
+ * a stall after the first text.
  */
 export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise<ClaudeTextStream> => {
-  // The overall bound only stops a stream that hangs after its first text.
-  const stream = createClient(options.apiKey, 120_000).messages.stream({
+  const stream = createClient(options.apiKey, options.timeoutMs).messages.stream({
     model: options.model,
     max_tokens: options.maxTokens ?? 16000,
     system: options.system,
@@ -142,26 +141,33 @@ export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise
       if (done) break;
       first = textDelta(value);
     }
-  } finally {
+    if (first === null) {
+      const final = await stream.finalMessage();
+      throw new ClaudeStopError(final?.stop_reason ?? null);
+    }
+  } catch (error) {
     clearTimeout(timer);
-  }
-  if (first === null) {
-    const final = await stream.finalMessage();
-    throw new ClaudeStopError(final?.stop_reason ?? null);
+    stream.abort();
+    throw error;
   }
   let usage: ClaudeUsage | null = null;
   const firstText = first;
   async function* deltas() {
-    yield firstText;
-    for (;;) {
-      const { value, done } = await iterator.next();
-      if (done) break;
-      const delta = textDelta(value);
-      if (delta) yield delta;
+    try {
+      yield firstText;
+      for (;;) {
+        const { value, done } = await iterator.next();
+        if (done) break;
+        const delta = textDelta(value);
+        if (delta) yield delta;
+      }
+      const final = await stream.finalMessage();
+      usage = (final?.usage as ClaudeUsage | undefined) ?? null;
+      if (final?.stop_reason !== 'end_turn') throw new ClaudeStopError(final?.stop_reason ?? null);
+    } finally {
+      clearTimeout(timer);
+      stream.abort();
     }
-    const final = await stream.finalMessage();
-    usage = (final?.usage as ClaudeUsage | undefined) ?? null;
-    if (final?.stop_reason !== 'end_turn') throw new ClaudeStopError(final?.stop_reason ?? null);
   }
   return { deltas: deltas(), usage: () => usage };
 };
@@ -177,37 +183,46 @@ export const logClaudeSpend = (route: string, model: string, effort: string, usa
   });
 };
 
-/** Never logs the error message or a response body: they can carry dream content. */
-export const logClaudeFallback = (route: string, error: unknown) => {
-  const status = (error as { status?: unknown })?.status;
-  console.warn(`[api] ${route}: Claude failed, falling back to Gemini`, {
-    status: typeof status === 'number' ? status : null,
-    stopReason: error instanceof ClaudeStopError ? error.stopReason : null,
-    invalidJson: error instanceof SyntaxError,
-  });
+/** Missing server configuration must never become a provider switch. */
+export class ClaudeConfigurationError extends Error {
+  constructor() { super('Text AI is not configured: ANTHROPIC_API_KEY is required'); }
+}
+
+export class ClaudeRequestError extends Error {
+  constructor(readonly status: number) { super(status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry'); }
+}
+
+export const requireAnthropicApiKey = (value = Deno.env.get('ANTHROPIC_API_KEY')): string => {
+  const key = value?.trim();
+  if (!key) throw new ClaudeConfigurationError();
+  return key;
 };
 
-/**
- * Runs `claude` when a key is set and returns its value; on any failure there, or
- * without a key, runs `fallback` (the Gemini path). `claude` should parse and
- * validate its answer so an unusable one also falls back.
- */
-export const runClaudeFirst = async <T>(options: {
+/** Provider credentials/errors are never exposed or mistaken for app authentication. */
+export const classifyClaudeError = (error: unknown) => {
+  if (error instanceof ClaudeConfigurationError) return { status: 503, userMessage: error.message, canRetry: true };
+  const candidate = error as { name?: string; status?: number } | null;
+  const status = error instanceof ClaudeRequestError ? error.status
+    : error instanceof Anthropic.APIConnectionTimeoutError || /timeout|abort/i.test(candidate?.name ?? '') || candidate?.status === 504 ? 504 : 502;
+  return { status, userMessage: status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry', canRetry: true };
+};
+
+/** Parse and validate inside the callback: unusable output is also a retryable error. */
+export const runClaudeOnly = async <T>(options: {
   route: string;
   anthropicApiKey?: string | null;
   config: { model: string; effort: ClaudeEffort };
   claude: (apiKey: string) => Promise<{ value: T; usage: ClaudeUsage | null }>;
-  fallback: () => Promise<T>;
 }): Promise<T> => {
-  const apiKey = options.anthropicApiKey?.trim();
-  if (apiKey) {
-    try {
-      const { value, usage } = await options.claude(apiKey);
-      logClaudeSpend(options.route, options.config.model, options.config.effort, usage);
-      return value;
-    } catch (error) {
-      logClaudeFallback(options.route, error);
-    }
+  const apiKey = requireAnthropicApiKey(options.anthropicApiKey ?? '');
+  try {
+    const { value, usage } = await options.claude(apiKey);
+    logClaudeSpend(options.route, options.config.model, options.config.effort, usage);
+    return value;
+  } catch (error) {
+    // Categorical diagnostics only: errors and responses may contain private dreams.
+    const info = classifyClaudeError(error);
+    console.warn('[api] text request failed', { route: options.route, status: info.status });
+    throw new ClaudeRequestError(info.status);
   }
-  return options.fallback();
 };

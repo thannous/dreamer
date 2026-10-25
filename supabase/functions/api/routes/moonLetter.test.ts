@@ -97,14 +97,14 @@ function setup(options: { tier?: string; dreams?: Row[]; letters?: Row[]; genera
   });
   const deps = {
     now: () => NOW,
-    apiKey: 'gemini-key',
-    anthropicApiKey: null,
+    anthropicApiKey: 'synthetic-key',
     createAdminClient: (() => admin) as never,
     admit: (async () => { calls.admit++; return options.admit ? await options.admit() : { tier: 'plus', actorClass: 'PLUS' }; }) as never,
-    generate: (async (_key: string, _model: string, _fallback: string, contents: { parts: { text: string }[] }[]) => {
+    requestJson: (async ({ prompt }: { prompt: string }) => {
       calls.generate++;
-      calls.prompts.push(contents[0].parts[0].text);
-      return options.generate ? await options.generate() : { text: letterText, raw: {} };
+      calls.prompts.push(prompt);
+      const output = options.generate ? await options.generate() : { text: letterText };
+      return { text: output.text, usage: null };
     }) as never,
   };
   return { ctx, deps, letters, calls };
@@ -227,4 +227,13 @@ Deno.test('the instruction keeps the letter grounded, informal and free of long 
   assertStringIncludes(instruction, 'never say the moon causes or influences dreams');
   assertStringIncludes(instruction, 'no em dash');
   assertEquals(parseMoonLetter(JSON.stringify({ opening: 'Une phrase.', body: 'La suite.' })), { opening: 'Une phrase.', body: 'La suite.' });
+});
+
+Deno.test('missing Anthropic key releases the letter lease and never invokes another provider', async () => {
+  const { ctx, deps, letters, calls } = setup();
+  const response = await handleMoonLetter(ctx({ lang: 'fr' }), { ...deps, anthropicApiKey: null });
+  assertEquals(response.status, 503);
+  assertStringIncludes((await response.json()).error, 'ANTHROPIC_API_KEY');
+  assertEquals(letters.length, 0);
+  assertEquals(calls.generate, 0);
 });

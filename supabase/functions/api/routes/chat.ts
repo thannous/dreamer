@@ -4,26 +4,15 @@ import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
 import { CLAUDE_MODELS } from '../lib/models.ts';
 import {
-  type ClaudeTextStream,
-  logClaudeFallback,
+  classifyClaudeError,
+  requireAnthropicApiKey,
   logClaudeSpend,
   requestClaudeText,
-  runClaudeFirst,
+  runClaudeOnly,
   startClaudeTextStream,
   toClaudeMessages,
 } from '../services/claude.ts';
-import {
-  callGeminiWithFallback,
-  classifyGeminiError,
-  extractModelParts,
-  GeminiChatStream,
-  GEMINI_FLASH_LITE_MODEL,
-  GEMINI_CHAT_MODEL,
-  type GeminiGenerationConfig,
-  type GeminiPart,
-  requestGeminiStream,
-  resolveTextModel,
-} from '../services/gemini.ts';
+import { type GeminiPart } from '../services/gemini.ts';
 import { requireGuestSession } from '../lib/guards.ts';
 import {
   AI_REQUEST_LIMITS,
@@ -698,8 +687,7 @@ export async function handleChat(
       });
     }
 
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!apiKey) throw new Error('GEMINI_API_KEY not set');
+    const anthropicApiKey = requireAnthropicApiKey();
 
     const systemPreamble = buildChatSystem(lang);
 
@@ -723,16 +711,6 @@ export async function handleChat(
       const parts = toContentParts(turn);
       if (parts.length > 0) contents.push({ role: r, parts });
     }
-
-    const primaryModel = resolveTextModel(
-      ['GEMINI_CHAT_MODEL', 'GEMINI_LITE_MODEL'],
-      GEMINI_CHAT_MODEL
-    );
-    const fallbackModel = resolveTextModel('GEMINI_LITE_MODEL', GEMINI_FLASH_LITE_MODEL);
-    const chatConfig: GeminiGenerationConfig = {
-      thinkingLevel: primaryModel === 'gemini-3.5-flash-lite' ? 'minimal' : 'low',
-      maxOutputTokens: 2048,
-    };
 
     const buildModelMessage = (reply: string, rawParts: GeminiPart[] | null): StoredChatMessage => {
       const modelParts = sanitizeParts(rawParts);
@@ -767,50 +745,16 @@ export async function handleChat(
       }
     };
 
-    // Claude reads text only; a turn with media stays on Gemini.
-    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY')?.trim();
-    const claudeMessages = anthropicApiKey ? toClaudeMessages(contents) : null;
+    // Legacy signed parts remain readable, but only visible text is sent to Claude.
+    const claudeMessages = toClaudeMessages(contents);
+    if (!claudeMessages) throw new Error('Unsupported chat history');
     const claudeChat = CLAUDE_MODELS.chat;
 
     if (wantsStream) {
-      // Stream setup errors (including the fallbacks) happen before the response
-      // starts, so they still surface as normal JSON errors.
-      let claudeStream: ClaudeTextStream | null = null;
-      if (anthropicApiKey && claudeMessages) {
-        try {
-          claudeStream = await startClaudeTextStream({
-            apiKey: anthropicApiKey,
-            model: claudeChat.model,
-            effort: claudeChat.effort,
-            system: systemPreamble,
-            messages: claudeMessages,
-            timeoutMs: claudeChat.timeoutMs,
-            maxTokens: claudeChat.maxTokens,
-          });
-        } catch (claudeError) {
-          logClaudeFallback('/chat', claudeError);
-        }
-      }
-
-      let events: AsyncIterable<any> | null = null;
-      if (!claudeStream) {
-        const streamOptions = (model: string) => ({
-          apiKey,
-          model,
-          contents,
-          systemInstruction: systemPreamble,
-          config: chatConfig,
-        });
-        try {
-          events = await requestGeminiStream(streamOptions(primaryModel));
-        } catch (streamError) {
-          if (primaryModel === fallbackModel) throw streamError;
-          console.warn('[api] /chat: primary stream failed, retrying with fallback', {
-            primaryModel,
-          });
-          events = await requestGeminiStream(streamOptions(fallbackModel));
-        }
-      }
+      // Setup waits for the first text; failure remains a normal JSON error.
+      const claudeStream = await startClaudeTextStream({
+        apiKey: anthropicApiKey, ...claudeChat, system: systemPreamble, messages: claudeMessages,
+      });
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream<Uint8Array>({
@@ -818,39 +762,22 @@ export async function handleChat(
           const send = (payload: unknown) =>
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
           let accumulated = '';
-          const interaction = new GeminiChatStream();
           try {
-            if (claudeStream) {
-              for await (const delta of claudeStream.deltas) {
-                accumulated += delta;
-                send({ delta });
-              }
-              logClaudeSpend('/chat', claudeChat.model, claudeChat.effort, claudeStream.usage());
-            } else {
-              for await (const event of events ?? []) {
-                const delta = interaction.push(event);
-                if (delta) {
-                  accumulated += delta;
-                  send({ delta });
-                }
-              }
+            for await (const delta of claudeStream.deltas) {
+              accumulated += delta;
+              send({ delta });
             }
-
-            const rawParts = claudeStream ? null : interaction.finish();
+            logClaudeSpend('/chat', claudeChat.model, claudeChat.effort, claudeStream.usage());
             const reply = accumulated.trim();
             if (!reply) throw new Error('Empty model response');
 
-            // A Claude reply is stored as plain text; Gemini keeps its signed parts.
-            const modelMessage = buildModelMessage(
-              reply,
-              rawParts && rawParts.length > 0 ? rawParts : [{ text: reply }]
-            );
+            const modelMessage = buildModelMessage(reply, [{ text: reply }]);
             await persistModelMessage(modelMessage);
             send({ done: true, text: reply, message: modelMessage });
           } catch (streamError) {
             console.error('[api] /chat stream failed');
             await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_STREAM_FAILED');
-            const errorInfo = classifyGeminiError(streamError);
+            const errorInfo = classifyClaudeError(streamError);
             send({ error: errorInfo.userMessage, status: errorInfo.status });
           } finally {
             controller.close();
@@ -868,9 +795,9 @@ export async function handleChat(
       });
     }
 
-    const { reply, parts } = await runClaudeFirst({
+    const { reply, parts } = await runClaudeOnly({
       route: '/chat',
-      anthropicApiKey: claudeMessages ? anthropicApiKey : null,
+      anthropicApiKey,
       config: claudeChat,
       claude: async (key) => {
         const { text, usage } = await requestClaudeText({
@@ -878,26 +805,11 @@ export async function handleChat(
           model: claudeChat.model,
           effort: claudeChat.effort,
           system: systemPreamble,
-          messages: claudeMessages ?? [],
+          messages: claudeMessages,
           timeoutMs: claudeChat.timeoutMs,
           maxTokens: claudeChat.maxTokens,
         });
         return { value: { reply: text, parts: [{ text }] as GeminiPart[] }, usage };
-      },
-      fallback: async () => {
-        const { text, raw } = await callGeminiWithFallback(
-          apiKey,
-          primaryModel,
-          fallbackModel,
-          contents,
-          systemPreamble,
-          chatConfig
-        );
-        if (typeof text !== 'string' || !text.trim()) {
-          throw new Error('Empty model response');
-        }
-        if (raw?.status !== 'completed') throw new Error('Incomplete interaction');
-        return { reply: text.trim(), parts: extractModelParts(raw) };
       },
     });
 
@@ -911,7 +823,7 @@ export async function handleChat(
   } catch (e) {
     await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_REQUEST_FAILED');
     console.error('[api] /chat request failed');
-    const errorInfo = classifyGeminiError(e);
+    const errorInfo = classifyClaudeError(e);
     return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
       status: errorInfo.status,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },

@@ -32,12 +32,12 @@ export const NETWORK_REQUEST_POLICIES = {
   analysisJobStatus: createPolicy(10000, 1, 1000),
   categorizeDream: createPolicy(30000, 0, 1200),
   recallQuestion: createPolicy(15000, 0, 1200),
-  // The narrator waits on this one; past 20 s the review keeps their own words instead.
-  formatRecall: createPolicy(20000, 0, 1200),
-  // Claude has 30 s to write the letter, then Gemini its own turn; no retry would pay twice.
-  moonLetter: createPolicy(70000, 0, 1200),
-  // The prepared analysis: Claude has 20 s, then Gemini; the painting follows on the server.
-  analysisPreviewPrepare: createPolicy(70000, 0, 1200),
+  // Claude has 45 s for a complete account; failure keeps the author’s words reviewable.
+  formatRecall: createPolicy(55000, 0, 1200),
+  // Claude has 50 s for the letter; explicit retry avoids duplicate generation.
+  moonLetter: createPolicy(60000, 0, 1200),
+  // Claude has 35 s for the reading; painting remains on the server after it.
+  analysisPreviewPrepare: createPolicy(65000, 0, 1200),
   analysisPreviewRead: createPolicy(10000, 1, 750),
   analyzeDreamFull: createPolicy(60000, 0, 1200),
   chat: createPolicy(45000, 0, 1200), // no auto-retry to avoid duplicate sends

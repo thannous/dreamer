@@ -1,9 +1,9 @@
-Supabase backend (Auth + DB + Gemini proxy)
+Supabase backend (Auth + DB + AI API)
 
 Overview
 - Use Supabase for Auth + Postgres + Row Level Security.
 - Add a single Edge Function `api` that exposes routes used by the app: `/analyzeDream`, `/generateImage`.
-- Keep the Gemini API key secret in the Edge Function; the Expo app never sees it.
+- Keep both provider API keys secret in the Edge Function; the Expo app never sees it.
 
 1) Create project
 - Go to supabase.com, create a new project.
@@ -76,7 +76,9 @@ add column if not exists image_generation_failed boolean default false;
 - Requires the Supabase CLI: https://supabase.com/docs/guides/cli
 - Initialize functions in a separate folder or clone `supabase/functions/api/index.ts` from this repo.
 - Set Gemini secret: `supabase secrets set GEMINI_API_KEY="your_key" --project-ref <project-ref>`.
-- Optional Anthropic secret: `supabase secrets set ANTHROPIC_API_KEY="your_key" --project-ref <project-ref>`. With it, every text feature sends its text to Anthropic and runs on Claude Haiku 5.5: dream analysis and chat at medium effort; categorization, recall questions and recall formatting at low effort. Each falls back to Gemini on any failure, and images stay on Gemini. Without it, all text stays on Gemini.
+- Required text provider: `ANTHROPIC_API_KEY`. Analysis, full analysis, preview, categorization, chat (JSON and SSE), recall, recall formatting, moon letters and the analysis worker use Claude Haiku 5.5 exclusively. Missing configuration returns 503 explicitly; provider failures/invalid output return retryable 502/504 errors with the existing `{error}` envelope. There is no Gemini text relay, including for long recall accounts. Images remain on Gemini; Google Speech-to-Text is unchanged. Setting secrets or deploying requires separate owner authorization.
+- Server/app budgets (seconds): analysis 35/45 (full 35/60), chat stream 35/45, categorization 25/30, recall 12/15, full recall formatting 45/55, moon letter 50/60, preview reading 35/65 (painting follows separately). Formatting sends all accepted text up to 20,000 characters to Claude; failure preserves the draft and offers retry or original exchanges.
+- Failed analysis reservations are released by `20261025160000_refund_failed_text_analysis.sql`: exact reservation identity, service-only idempotent RPCs for synchronous routes; queued retries retain their receipt until a terminal failure refunds it. Admission rate/abuse budgets still count attempts. Apply this migration and functions together only under a separately authorized rollout. Runtime settings `GEMINI_MODEL`, `GEMINI_CHAT_MODEL`, `GEMINI_FALLBACK_MODEL` and `GEMINI_RECALL_MODEL` no longer route text. `GEMINI_LITE_MODEL` remains for the image-prompt pipeline; offline `api/evaluation/` scripts still evaluate Gemini explicitly.
 
 Key points
 - Link project if needed: `supabase link --project-ref <project-ref>`.
@@ -99,7 +101,7 @@ Key points
 5) Try the flow
 - In the app Settings tab, sign up or sign in with email/password.
 - Go to Recording, write a dream, tap Save.
-- Backend calls Gemini to analyze and stores in `public.dreams`. Illustration is a separate optional endpoint; the current image endpoint returns a placeholder URL.
+- Backend calls Claude to analyze and stores in `public.dreams`. Illustration is a separate optional endpoint; the current image endpoint returns a placeholder URL.
 - Guests can record up to five dreams locally, counted cumulatively even after deletion. Costly AI usage (analysis, illustrations, chat) has separate quotas. Once authenticated, new dreams are persisted to `public.dreams` via Supabase and synced back into the journal automatically.
 
 Notes

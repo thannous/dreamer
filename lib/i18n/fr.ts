@@ -1034,6 +1034,7 @@ const translations: Record<string, string> = {
     'recording.guide.next': 'Suivant',
     'recording.guide.done': 'Terminer',
     'recording.guide.dismiss': 'Fermer le guide',
+    'recording.categorization.error': 'Le titre et le classement automatiques sont indisponibles. Ton rêve est enregistré avec tes mots. Tu peux le modifier ou réessayer l’analyse plus tard.',
     'recording.analysis_offer.title': 'Ton rêve est enregistré',
     'recording.analysis_offer.quota_remaining': 'Une analyse offerte sera utilisée · {remaining} restante(s)',
     'recording.analysis_offer.unlimited': 'Analyse incluse avec Noctalia Plus',
