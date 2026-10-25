@@ -53,8 +53,20 @@ function certificateDer(certificate: X509Certificate): Uint8Array {
 const ROOT_CERTIFICATE = certificateFromPem(APPLE_APP_ATTEST_ROOT_PEM);
 const RECEIPT_ROOT_CERTIFICATE = certificateFromPem(APPLE_APP_RECEIPT_ROOT_G3_PEM);
 
+/**
+ * Thrown for every proof that fails verification. Callers use the class to
+ * tell a rejected proof apart from an unexpected runtime error when they log
+ * a reject reason. The message is fixed and never carries request data.
+ */
+export class AppAttestProofError extends Error {
+  constructor() {
+    super('Invalid Apple App Attest proof');
+    this.name = 'AppAttestProofError';
+  }
+}
+
 function invalid(): never {
-  throw new Error('Invalid Apple App Attest proof');
+  throw new AppAttestProofError();
 }
 
 function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
