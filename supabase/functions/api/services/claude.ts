@@ -1,5 +1,5 @@
 import Anthropic from 'npm:@anthropic-ai/sdk@0.132.1';
-import type { TextAnalysisRefundCode } from '../lib/textAnalysisRefund.ts';
+import { type TextAnalysisRefundCode, isRefundableTextAnalysisFailure, isTerminalTextAnalysisFailure } from '../lib/textAnalysisRefund.ts';
 import { toClaudeSchema } from '../lib/schemas.ts';
 
 export type ClaudeEffort = 'low' | 'medium' | 'high';
@@ -199,16 +199,17 @@ export class ClaudeRequestError extends Error {
 
 export class ClaudeInvalidOutputError extends Error {}
 
-/** Preserve explicit client/unknown codes; HTTP presentation is not refund authority. */
+/** Only known application codes cross this boundary; PostgREST errors are service failures. */
 export const textAnalysisFailureCode = (error: unknown): string => {
   const candidate = error as { code?: unknown; status?: unknown; name?: unknown } | null;
-  if (typeof candidate?.code === 'string') return candidate.code;
+  if (isRefundableTextAnalysisFailure(candidate?.code) || isTerminalTextAnalysisFailure(candidate?.code)) return candidate!.code as string;
+  if (typeof candidate?.code === 'string') return 'ANALYSIS_SERVER_ERROR';
   if (candidate?.name === 'AbortError') return 'ANALYSIS_CLIENT_CANCELLED';
   if (candidate?.name === 'TimeoutError' || candidate?.status === 504) return 'ANALYSIS_TIMEOUT';
   if (typeof candidate?.status === 'number') {
     return candidate.status >= 500 && candidate.status <= 599 ? 'ANALYSIS_SERVER_ERROR' : 'ANALYSIS_REQUEST_REJECTED';
   }
-  return error instanceof Error ? 'ANALYSIS_SERVER_ERROR' : 'ANALYSIS_JOB_FAILED';
+  return 'ANALYSIS_SERVER_ERROR';
 };
 
 const claudeProviderFailureCode = (error: unknown): TextAnalysisRefundCode => {

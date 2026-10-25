@@ -337,3 +337,53 @@ for (const mode of ['account', 'guest', 'full'] as const) {
   });
 }
 }
+
+for (const providerStatus of [400, 429]) {
+  Deno.test(`legacy full analysis refunds Gemini provider HTTP ${providerStatus} after image retries`, async () => {
+    const { handleAnalyzeDreamFull } = await import('./dreams.ts');
+    const originalFetch = globalThis.fetch;
+    const names = ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY'] as const;
+    const saved = names.map(name => Deno.env.get(name));
+    const refunds: unknown[] = [];
+    let imageCalls = 0;
+    try {
+      names.forEach(name => Deno.env.set(name, 'synthetic'));
+      globalThis.fetch = async (input, init) => {
+        const request = new Request(input, init);
+        const url = new URL(request.url);
+        const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), {
+          status, headers: { 'Content-Type': 'application/json' },
+        });
+        if (url.hostname === 'api.anthropic.com') return json({
+          id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-haiku-5-5', stop_reason: 'end_turn',
+          usage: { input_tokens: 1, output_tokens: 1 }, content: [{ type: 'text', text: JSON.stringify({
+            title: 'A door', interpretation: 'A door opens.', imagePrompt: 'A blue door',
+          }) }],
+        });
+        if (url.hostname === 'generativelanguage.googleapis.com') {
+          imageCalls++;
+          return json({ error: { code: providerStatus, message: 'Synthetic provider rejection',
+            status: providerStatus === 429 ? 'RESOURCE_EXHAUSTED' : 'INVALID_ARGUMENT' } }, providerStatus);
+        }
+        assertEquals(url.hostname, 'supabase.test');
+        const rpc = url.pathname.split('/rpc/')[1];
+        if (rpc === 'release_authenticated_text_analysis') refunds.push((await request.json()).p_failure_code);
+        return json(rpc === 'get_effective_subscription_tier' ? 'free'
+          : { allowed: true, claimed: true, claim_id: '11111111-1111-4111-8111-111111111111', new_count: 1 });
+      };
+      const response = await handleAnalyzeDreamFull({
+        req: new Request('https://api.test/api/analyzeDreamFull', { method: 'POST', body: JSON.stringify({
+          transcript: 'A door.', remoteDreamId: 42, analysisRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e',
+        }) }),
+        user: { id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' }, supabase: null,
+        supabaseUrl: 'https://supabase.test', supabaseServiceRoleKey: 'synthetic', storageBucket: 'dream-images',
+      });
+      assertEquals(response.status, 502);
+      assertEquals(providerStatus === 429 ? imageCalls >= 3 : imageCalls === 1, true);
+      assertEquals(refunds, [providerStatus === 429 ? 'ANALYSIS_PROVIDER_OVERLOADED' : 'ANALYSIS_PROVIDER_UNAVAILABLE']);
+    } finally {
+      globalThis.fetch = originalFetch;
+      names.forEach((name, index) => { const value = saved[index]; if (value === undefined) Deno.env.delete(name); else Deno.env.set(name, value); });
+    }
+  });
+}

@@ -314,7 +314,7 @@ export const normalizeDreamAnalysis = (
 
   const theme = normalizeDreamTheme(analysis.theme, themes);
 
-  return {
+  const result = {
     title: String(analysis.title ?? ''),
     interpretation: discloseAnalysisExcerpt(String(analysis.interpretation ?? ''), lang, options.truncatedForPrompt === true),
     shareableQuote: supportedPoeticQuote(analysis.shareableQuote, analysis.quoteSourceExcerpts, transcript, String(analysis.title)),
@@ -324,4 +324,18 @@ export const normalizeDreamAnalysis = (
     promptVersion: ANALYSIS_PROMPT_VERSION,
     ...sanitizeAnalysisDetails(analysis),
   };
+  // Match complete_dream_analysis_with_optional_image before any SQL call, including
+  // text added by normalization. Invalid provider output remains a service failure.
+  for (const [field, limit, required] of [
+    ['title', 500, true], ['interpretation', 20000, true],
+    ['shareableQuote', 2000, false], ['imagePrompt', 1000, true],
+    ['dreamType', 200, false],
+  ] as const) {
+    const value = result[field].trim();
+    result[field] = value;
+    if ((required && !value) || Array.from(value).length > limit) {
+      throw new ClaudeInvalidOutputError(`Invalid analysis field: ${field}`);
+    }
+  }
+  return result;
 };

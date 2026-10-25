@@ -13,7 +13,7 @@ import {
 } from '../api/services/analysisJobs.ts';
 import { keepStoredDreamClass, loadKnownDreamSymbols, runDreamAnalysis } from '../api/services/dreamAnalysis.ts';
 import { classifyClaudeError, textAnalysisFailureCode } from '../api/services/claude.ts';
-import { isRefundableTextAnalysisFailure } from '../api/lib/textAnalysisRefund.ts';
+import { isTerminalTextAnalysisFailure } from '../api/lib/textAnalysisRefund.ts';
 import { triggerImageJobWorker } from '../api/services/imageJobs.ts';
 
 const json = (body: unknown, status = 200) =>
@@ -141,12 +141,10 @@ export const requeueJob = async (
 
 export const serializeAnalysisJobError = (error: unknown) => {
   const classified = classifyClaudeError(error);
-  const candidate = error as Record<string, unknown> | null;
   const errorCode = textAnalysisFailureCode(error);
-  const retryable = isRefundableTextAnalysisFailure(errorCode) && (classified.canRetry
-    || classified.status === 429
-    || classified.status >= 500
-    || candidate?.isTransient === true);
+  // Retrying a service attempt is safe: every mutation is guarded on status=running.
+  // Refund authority remains the independent SQL allowlist at terminal failure.
+  const retryable = !isTerminalTextAnalysisFailure(errorCode);
   return {
     errorCode,
     errorMessage: classified.userMessage,

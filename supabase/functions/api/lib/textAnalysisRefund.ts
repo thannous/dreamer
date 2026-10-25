@@ -15,3 +15,15 @@ export type TextAnalysisRefundCode = typeof REFUNDABLE_TEXT_ANALYSIS_FAILURE_COD
 export const isRefundableTextAnalysisFailure = (code: unknown): code is TextAnalysisRefundCode =>
   typeof code === 'string'
   && (REFUNDABLE_TEXT_ANALYSIS_FAILURE_CODES as readonly string[]).includes(code);
+
+/** Explicit user/state failures are terminal; all other worker errors may be retried. */
+export const TERMINAL_TEXT_ANALYSIS_FAILURE_CODES = [
+  'ANALYSIS_TRANSCRIPT_CHANGED', 'ANALYSIS_TRANSCRIPT_MISMATCH',
+  'ANALYSIS_STATE_CONFLICT', 'ANALYSIS_REQUEST_STALE', 'DREAM_NOT_FOUND',
+  'ANALYSIS_CLIENT_CANCELLED', 'INVALID_TRANSCRIPT', 'ANALYSIS_REQUEST_REJECTED',
+  'ANALYSIS_ALREADY_CLAIMED', 'ANALYSIS_IDEMPOTENCY_KEY_REUSED',
+] as const;
+
+export const isTerminalTextAnalysisFailure = (code: unknown): boolean =>
+  typeof code === 'string'
+  && (TERMINAL_TEXT_ANALYSIS_FAILURE_CODES as readonly string[]).includes(code);

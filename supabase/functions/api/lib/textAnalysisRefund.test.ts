@@ -16,9 +16,17 @@ Deno.test('transport errors keep explicit state/refusal codes rather than trusti
   assertEquals(textAnalysisFailureCode({ status: 503 }), 'ANALYSIS_SERVER_ERROR');
   assertEquals(textAnalysisFailureCode({ status: 409 }), 'ANALYSIS_REQUEST_REJECTED');
   assertEquals(textAnalysisFailureCode({ name: 'AbortError' }), 'ANALYSIS_CLIENT_CANCELLED');
-  assertEquals(isRefundableTextAnalysisFailure(textAnalysisFailureCode(null)), false);
-  for (const code of ['ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND', 'UNKNOWN_FUTURE_FAILURE']) {
+  assertEquals(isRefundableTextAnalysisFailure(textAnalysisFailureCode(null)), true);
+  for (const code of ['ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND']) {
     assertEquals(textAnalysisFailureCode({ code, status: 500 }), code);
     assertEquals(isRefundableTextAnalysisFailure(textAnalysisFailureCode({ code, status: 500 })), false);
+  }
+});
+
+Deno.test('PostgREST and unstructured gateway errors become retryable service failures', () => {
+  for (const error of [null, { code: '', message: 'fetch failed' }, { code: '57014' },
+    { code: '40P01' }, { code: 'PGRST000' }, { code: 'PGRST000', status: 400 }, { code: 'P0001' },
+    { code: 'UNKNOWN_FUTURE_FAILURE' }, { message: '<html>Bad Gateway</html>' }]) {
+    assertEquals(textAnalysisFailureCode(error), 'ANALYSIS_SERVER_ERROR');
   }
 });

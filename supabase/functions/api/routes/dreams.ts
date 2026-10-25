@@ -5,7 +5,7 @@ import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '.
 import { CLAUDE_MODELS } from '../lib/models.ts';
 import { PLUS_DAILY_LIMITS, plusDailyLimitResponse } from '../lib/plusDailyLimits.ts';
 import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
-import { classifyClaudeError, textAnalysisFailureCode, requireAnthropicApiKey, requestClaudeJson, runClaudeOnly } from '../services/claude.ts';
+import { ClaudeRequestError, classifyClaudeError, textAnalysisFailureCode, requireAnthropicApiKey, requestClaudeJson, runClaudeOnly } from '../services/claude.ts';
 import { generateImageFromPrompt, resolveImageModel } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
@@ -497,6 +497,11 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       apiKey,
       model: imageModel,
       aspectRatio: '9:16',
+    }).catch((error: unknown) => {
+      // This is a provider response, never a rejection of the app user's request.
+      const status = (error as { status?: number; httpStatus?: number } | null);
+      throw new ClaudeRequestError(502, (status?.status ?? status?.httpStatus) === 429
+        ? 'ANALYSIS_PROVIDER_OVERLOADED' : 'ANALYSIS_PROVIDER_UNAVAILABLE');
     });
 
     if (!imageBase64) {

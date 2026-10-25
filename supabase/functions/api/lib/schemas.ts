@@ -4,16 +4,16 @@ export const ANALYZE_DREAM_SCHEMA = {
   type: 'object',
   additionalProperties: false,
   properties: {
-    title: { type: 'string' },
-    interpretation: { type: 'string' },
-    shareableQuote: { type: 'string' },
+    title: { type: 'string', maxLength: 500 },
+    interpretation: { type: 'string', maxLength: 20000 },
+    shareableQuote: { type: 'string', maxLength: 2000 },
     quoteSourceExcerpts: { type: 'array', minItems: 0, maxItems: 3, items: { type: 'string' } },
     theme: { type: 'string', enum: ['surreal', 'mystical', 'calm', 'noir'] },
     dreamType: {
       type: 'string',
       enum: DREAM_TYPE_VALUES,
     },
-    imagePrompt: { type: 'string' },
+    imagePrompt: { type: 'string', maxLength: 1000 },
     symbols: {
       type: 'array',
       minItems: 0,
@@ -66,13 +66,13 @@ export const ANALYZE_DREAM_SCHEMA = {
   ],
 };
 
-/** Claude structured outputs reject array length bounds; the app clamps counts itself. */
+/** Claude structured outputs omit length bounds; the app validates strings and clamps counts. */
 export const withoutArrayBounds = (schema: unknown): unknown => {
   if (Array.isArray(schema)) return schema.map(withoutArrayBounds);
   if (!schema || typeof schema !== 'object') return schema;
   return Object.fromEntries(
     Object.entries(schema as Record<string, unknown>)
-      .filter(([key]) => key !== 'minItems' && key !== 'maxItems')
+      .filter(([key]) => key !== 'minItems' && key !== 'maxItems' && key !== 'maxLength')
       .map(([key, value]) => [key, withoutArrayBounds(value)])
   );
 };

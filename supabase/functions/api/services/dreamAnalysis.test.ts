@@ -9,6 +9,7 @@ import {
   REFLECTION_POLICY,
   ANALYSIS_PROMPT_VERSION,
   discloseAnalysisExcerpt,
+  normalizeDreamAnalysis,
   normalizeAnalysisDreamType,
   sanitizeAnalysisDetails,
 } from './dreamAnalysis.ts';
@@ -293,4 +294,30 @@ Deno.test('the prompt lists the symbol index and the dreamer\'s own symbols as d
   for (const key of ['symbolId', 'key'] as const) {
     assertEquals(ANALYZE_DREAM_SCHEMA.properties.symbols.items.required.includes(key), true);
   }
+});
+
+Deno.test('oversized completion fields are provider output failures before SQL', async () => {
+  const original = globalThis.fetch;
+  try {
+    for (const [field, size] of [['title', 501], ['interpretation', 20001], ['imagePrompt', 1001]] as const) {
+      globalThis.fetch = () => Promise.resolve(claudeMessage(JSON.stringify({
+        title: 'Door', interpretation: 'A door opens.', imagePrompt: 'A blue door',
+        [field]: 'x'.repeat(size),
+      })));
+      const error = await assertRejects(() => runDreamAnalysis({
+        anthropicApiKey: 'synthetic', transcript: 'Door', lang: 'en', route: 'test',
+      }));
+      assertEquals((error as { code?: string }).code, 'ANALYSIS_INVALID_OUTPUT');
+    }
+  } finally { globalThis.fetch = original; }
+});
+
+Deno.test('completion receives the exact normalized strings whose bounds were validated', () => {
+  const result = normalizeDreamAnalysis({
+    title: 'x'.repeat(500) + '\n', interpretation: '\tA door opens.\n',
+    imagePrompt: 'x'.repeat(1000) + '\t',
+  }, { transcript: 'A door.', lang: 'en' });
+  assertEquals(result.title, 'x'.repeat(500));
+  assertEquals(result.interpretation, 'A door opens.');
+  assertEquals(result.imagePrompt, 'x'.repeat(1000));
 });

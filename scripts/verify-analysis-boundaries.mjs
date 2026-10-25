@@ -259,7 +259,8 @@ assert.equal((await db.query('select analysis_status from dreams where id=1')).r
 console.log('PASS client transcript changes close the request without refunding it');
 // Shared fail-closed policy: actual SQL RPCs and trigger must agree with TS.
 const refundPolicySource = readFileSync(new URL('../supabase/functions/api/lib/textAnalysisRefund.ts', import.meta.url), 'utf8');
-const refundableCodes = [...refundPolicySource.matchAll(/  '([A-Z_]+)',/g)].map(match => match[1]);
+const refundAllowlist = refundPolicySource.match(/REFUNDABLE_TEXT_ANALYSIS_FAILURE_CODES = \[([\s\S]*?)\] as const/)?.[1] ?? '';
+const refundableCodes = [...refundAllowlist.matchAll(/'([A-Z_]+)'/g)].map(match => match[1]);
 assert.equal(refundableCodes.length, 8);
 const retainedCodes = ['ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND', 'ANALYSIS_REQUEST_STALE',
   'ANALYSIS_STATE_CONFLICT', 'INVALID_TRANSCRIPT', 'ANALYSIS_CLIENT_CANCELLED', 'ANALYSIS_JOB_FAILED',
