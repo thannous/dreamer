@@ -59,7 +59,7 @@ test('Plus reanalysis survives reload and completes once while preserving its im
     try {
       await page.getByRole('button', { name: 'Update', exact: true }).click();
       await expect.poll(() => consentPrompts.length).toBe(1);
-      expect(consentPrompts[0]).toContain('Anthropic');
+      expect(consentPrompts[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
     } finally {
       offConsent();
     }

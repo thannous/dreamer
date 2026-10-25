@@ -88,8 +88,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await input.fill(question);
       let consentPrompts = 0;
       const stopConsent = await browser.onDialog(async dialog => {
-        expect(dialog.message).toContain('Anthropic (Claude)');
-        expect(dialog.message).toContain('Google (Gemini)');
+        expect(dialog.message).toMatch(/Noctalia (relies on artificial intelligence|s’appuie sur une intelligence artificielle)/);
         consentPrompts++;
         await dialog.accept();
       });

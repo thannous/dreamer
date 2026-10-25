@@ -68,6 +68,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'mic.slash.fill': 'mic-off',
   'pause.fill': 'pause',
   'play.fill': 'play-arrow',
+  'paintbrush.pointed.fill': 'brush',
   paintpalette: 'palette',
   'paintpalette.fill': 'palette',
   photo: 'photo',

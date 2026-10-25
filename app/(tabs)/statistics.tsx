@@ -18,6 +18,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { sparklePath } from '@/components/journal/story/sparkle';
 import { PressableScale } from '@/components/motion';
 import { getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
+import { GuestAccountRow } from '@/components/guest/GuestAccountRow';
 import { PeriodSeal, PERIOD_SEAL_SIZE } from '@/components/trends/PeriodSeal';
 import { TrendsConstellations } from '@/components/trends/TrendsConstellations';
 import { TrendsFigures } from '@/components/trends/TrendsFigures';
@@ -408,12 +409,12 @@ function StatisticsScreen() {
     </View>
   );
 
-  // Letters are kept with an account.
+  // Letters are kept with an account; a guest is told what one would add to the trends.
   const moonLettersSection = user ? (
     <View className="border-t border-line pt-7">
       <TrendsMoonLetters t={t} chevron={noctalia.text.tertiary} onOpen={() => router.push(MOON_LETTER_ROUTE)} />
     </View>
-  ) : null;
+  ) : <GuestAccountRow reason="trends" />;
 
   return (
     <View className="flex-1 bg-ink" testID="screen.trends">

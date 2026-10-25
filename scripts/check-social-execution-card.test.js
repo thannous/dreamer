@@ -41,22 +41,22 @@ describe('social execution card guard', () => {
     expect(entries[0]).toMatchObject({ master: 'video-1.mp4', slot: 1 });
   });
 
-  it('parses compact table cards and resolves their durable directory', () => {
+  it.each(['output', 'outputs'])('parses compact table cards and resolves their %s durable directory', (directory) => {
     const header = '| Créneau | Asset | SHA-256 | TikTok | Instagram | X | Légende exacte |\n|---|---|---|---|---|---|---|\n';
     const rows = [1, 2, 3].map((slot) =>
-      `| ${slot} | \`video-${slot}.mp4\` dans ${slot === 1 ? '\`output/video/noctalia-social-execution-2026-08-16/\`' : 'le même dossier'} | \`${'a'.repeat(64)}\` | ok | ok | ok | \`Dream ${slot}. #Noctalia\` |`
+      `| ${slot} | \`video-${slot}.mp4\` dans ${slot === 1 ? `\`${directory}/video/noctalia-social-execution-2026-08-16/\`` : 'le même dossier'} | \`${'a'.repeat(64)}\` | ok | ok | ok | \`Dream ${slot}. #Noctalia\` |`
     ).join('\n');
     const entries = parseExecutionCard(`${header}${rows}`);
     expect(entries).toHaveLength(3);
-    expect(entries[2].master).toBe('output/video/noctalia-social-execution-2026-08-16/video-3.mp4');
+    expect(entries[2].master).toBe(`${directory}/video/noctalia-social-execution-2026-08-16/video-3.mp4`);
   });
 
-  it('parses compact table cards with complete master paths', () => {
+  it.each(['output', 'outputs'])('parses compact table cards with complete %s master paths', (directory) => {
     const header = '| Créneau | Master durable | SHA-256 | TikTok | Instagram | X | Légende exacte |\n|---|---|---|---|---|---|---|\n';
     const rows = [1, 2, 3].map((slot) =>
-      `| ${slot} | \`output/video/day/video-${slot}.mp4\` | \`${'a'.repeat(64)}\` | ok | ok | ok | \`Dream ${slot}. #Noctalia\` |`
+      `| ${slot} | \`${directory}/video/day/video-${slot}.mp4\` | \`${'a'.repeat(64)}\` | ok | ok | ok | \`Dream ${slot}. #Noctalia\` |`
     ).join('\n');
-    expect(parseExecutionCard(`${header}${rows}`)[1].master).toBe('output/video/day/video-2.mp4');
+    expect(parseExecutionCard(`${header}${rows}`)[1].master).toBe(`${directory}/video/day/video-2.mp4`);
   });
 
   it('rejects unsafe caption text', () => {

@@ -4,7 +4,7 @@ import { useContentWindow } from '@/context/ContentWindowContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey, matchesDreamTarget } from '@/lib/dreamIdentity';
-import { UpsellCard } from '@/components/guest/UpsellCard';
+import { GuestAccountRow } from '@/components/guest/GuestAccountRow';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { PageHeaderContent } from '@/components/inspiration/PageHeader';
 import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal/AdvancedFilterSheet';
@@ -453,7 +453,7 @@ function JournalListScreen() {
   ) : null;
   const listFooter = (
     <View>
-      <View className="px-4 py-2"><UpsellCard /></View>
+      <View className="px-4 py-2"><GuestAccountRow reason="journal" /></View>
       {paginationFooter}
     </View>
   );

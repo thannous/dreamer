@@ -180,7 +180,7 @@ if (process.env.E2E_PERSONAS === '1') {
       if (platform === 'android') await device.dismissKeyboard();
       await tap(screen, 'chat.button.send');
       // Native Alert is visible UI, unlike the browser's dialog callback.
-      await expect(screen.getByText(/Anthropic \(Claude\).*Google \(Gemini\)/, { visible: true })).toBeVisible();
+      await expect(screen.getByText(/Noctalia (relies on artificial intelligence|s’appuie sur une intelligence artificielle)/, { visible: true })).toBeVisible();
       const consent = screen.getByRole('button', /^Accepter et continuer$/i, { visible: true });
       await consent.tap();
       await expect(consent).toHaveCount(0);

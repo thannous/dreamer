@@ -31,6 +31,14 @@ const NIGHT_GROUND = NIGHT.screen.background;
 const VEIL = [`${NIGHT_GROUND}00`, `${NIGHT_GROUND}99`, `${NIGHT_GROUND}E0`, `${NIGHT_GROUND}F2`] as const;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+// Dedicated portrait paintings keep each door recognizable across themes:
+// an amber lantern, a teal waterfall and a violet dream book.
+const DISCOVER_ARTWORK = {
+  ritual: require('@/assets/images/dreamer/discover/ritual-v2.webp'),
+  sleep: require('@/assets/images/dreamer/discover/sleep-v2.webp'),
+  guides: require('@/assets/images/dreamer/discover/guides-v2.webp'),
+} as const;
+
 // Gentle symbols most dreamers share: Today greets a sleepy reader, never with a nightmare.
 const DAILY_SYMBOLS = [
   'moon', 'stars', 'sky', 'light', 'clouds', 'rainbow', 'sun', 'water', 'ocean', 'river', 'lake',
@@ -89,21 +97,21 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
     }] : []),
     {
       key: 'ritual',
-      art: getDreamerArtwork('ritual', artMode),
+      art: DISCOVER_ARTWORK.ritual,
       title: t('inspiration.ritual.title'),
       onPress: () => router.push(`/ritual/${selectedRitualId}` as any),
       testID: TID.Button.HomeResourcesRitual,
     },
     ...(sleepSoundsAvailable ? [{
       key: 'sleep',
-      art: getDreamerArtwork('sleep', artMode),
+      art: DISCOVER_ARTWORK.sleep,
       title: sleepCopy.screenTitle,
       onPress: () => router.push('/sleep-sounds' as any),
       testID: TID.Button.HomeSleepSounds,
     }] : []),
     {
       key: 'guides',
-      art: getDreamerArtwork('path', artMode),
+      art: DISCOVER_ARTWORK.guides,
       title: guideCopy.screenTitle,
       onPress: () => router.push('/dream-guides' as any),
       testID: TID.Button.HomeResourcesGuides,

@@ -29,10 +29,11 @@ import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
 import { SavedDreamMoment, type SavedDreamAction, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
 import { CoverFlight } from '@/components/journal/story/CoverFlight';
-import { SEAL_EMBLEMS, SEAL_MEASURES, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
+import { SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
 import { WrittenTitle } from '@/components/journal/story/WrittenTitle';
 import { DreamPaintedArtwork } from '@/components/journal/story/DreamPaintedArtwork';
 import { DreamPaintingWait } from '@/components/journal/story/DreamPaintingWait';
+import { PaintingCanvas } from '@/components/journal/story/PaintingCanvas';
 import { DREAM_STORY } from '@/components/journal/story/dreamStoryMotion';
 import { useJournalSpread } from '@/components/journal/useJournalSpread';
 import { WaitingStars } from '@/components/journal/story/WaitingStars';
@@ -1953,6 +1954,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
   // Act III starts on the tap: a request in flight already paints, before the job reports.
   const paintingRequested = illustrationSidecar === 'pending' || (isRetryingImage && !dream?.imageUrl);
   const paintingInProgress = paintingRequested || (artworkAtArrival === false && artworkResolving);
+  // A plate painted again keeps its picture until the new one lands, painted over meanwhile.
+  const repaintingCover = hasIllustratedCover && (isRetryingImage
+    || dream?.imageJobStatus === 'queued' || dream?.imageJobStatus === 'running');
   const [artworkLanded, setArtworkLanded] = useState(false);
   const artworkLanding = artworkAtArrival === false && Boolean(paintedArtwork) && !artworkLanded;
   useEffect(() => {
@@ -2134,6 +2138,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     const timer = setTimeout(landed, 700);
     return () => clearTimeout(timer);
   }, [coverShown, plateUnderFlight]);
+
+  if (!dream && isDeleting) {
+    // The dream is gone from the store before router.replace lands: show the plain
+    // ground, not the "not found" page, for those few frames.
+    return <View className="flex-1 bg-ink" />;
+  }
 
   if (!dream) {
     return (
@@ -2549,23 +2559,24 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
     && (visiblePrimaryAction === 'analyze' || readingInFlight);
   // Whatever page it is on, the seal says while the dream is being read; the dock need not.
   const sealShowsReading = sealVisible && readingInFlight;
-  // Once read, the seal offers the dream's illustration, which it then paints in its own window.
-  // Asked there, it keeps its words while it paints, so the seal stays the same button meanwhile.
+  // Once read, the seal offers the dream's illustration, which it then paints in its own window,
+  // and says so under it however the painting was asked. Asked there, it keeps its words while
+  // it paints, so the seal stays the same button meanwhile.
   const sealSettled = sealVisible && !readingInFlight && !sealReads;
-  const sealPaints = sealSettled && illustrationAskedOnSeal && paintingInProgress && !plateRevealed;
+  const sealPaints = sealSettled && paintingInProgress && !plateRevealed;
   // Only a dream with no illustration yet: a failed one keeps its own card and its own step.
   const sealIllustrates = sealSettled && illustrationSidecar === 'empty' && !paintingInProgress
     && (visibleIllustrationCta === 'illustrate' || visibleIllustrationCta === 'upgrade');
   const sealAction: SavedDreamAction | null = !sealVisible ? null
     : readingInFlight ? { label: t('loading.analyzing') }
-      : sealPaints ? {
-        label: t('analysis.reading.image_generating'),
-        icon: 'sparkles',
+      : sealPaints ? (illustrationAskedOnSeal ? {
+        label: t('journal.detail.image.generating_title'),
+        icon: 'paintbrush.pointed.fill',
         onPress: () => {},
         disabled: true,
         testID: TID.Button.JournalIllustrate,
         emphasis: 'secondary',
-      }
+      } : { label: t('journal.detail.image.generating_title'), icon: 'paintbrush.pointed.fill' })
         : sealIllustrates ? (visibleIllustrationCta === 'upgrade' ? {
           label: t('journal.detail.image.seal_upgrade'),
           icon: 'sparkles',
@@ -2915,6 +2926,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio }
       </PaintingTilt>
       </Animated.View>
       </Animated.View>
+      {repaintingCover ? (
+        <PaintingCanvas testID={TID.Component.CoverPainting} travel={coverViewport?.width ?? windowSize.width}
+          ink={SEAL_GOLD} brush={30} label={t('journal.detail.image.generating_title')}
+          centre={{ bottom: (coverIntroHeight ?? 0) + insets.bottom }} />
+      ) : null}
     </PressableScale>
   );
 

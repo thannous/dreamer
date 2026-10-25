@@ -55,7 +55,7 @@ import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
 import { isDreamTextTooLong } from '@/lib/dreamTextLimit';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
-import { hasAiConsent } from '@/lib/aiConsent';
+import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
 import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { formatCaptureNarrative } from '@/services/captureConversation';
 import {
@@ -255,7 +255,9 @@ function RecordingScreen() {
     transcript: persistedDraftValue,
     onRestore: handleRestoreDraft,
   });
-  const conversation = useCaptureConversation({ language, t, scope: onboardingScope });
+  // The guided questions need the AI: ask for consent when the first one is due, not before.
+  const requestCaptureConsent = useCallback(() => requestAiConsent(t), [t]);
+  const conversation = useCaptureConversation({ language, t, scope: onboardingScope, requestConsent: requestCaptureConsent });
   const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
   useEffect(() => {
     // Preparing a review cannot outlive its screen or account scope.

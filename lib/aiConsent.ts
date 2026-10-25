@@ -11,9 +11,7 @@ import { Alert, Platform } from 'react-native';
  * silent background work) before calling the service. Writing and reading the journal
  * never need it. Guests are asked too: their dreams reach the same providers.
  *
- * v2 (2026-10-19): the dialog names Anthropic and Google. A v1 grant accepted a text that
- * named no provider, so it no longer counts and the user is asked once more (founder
- * decision 2026-10-19). A v2 grant is never asked again.
+ * v2 (2026-10-19): a v1 grant is asked once more; a v2 grant is never asked again.
  *
  * The web E2E fixtures pre-grant this key outside the consent journey.
  */
@@ -23,8 +21,31 @@ const GRANTED = 'granted';
 
 type Translate = (key: string) => string;
 
+export type AiConsentPromptHandler = {
+  show: () => Promise<boolean>;
+};
+
 let granted: boolean | null = null;
 let pending: Promise<boolean> | null = null;
+let promptHandler: AiConsentPromptHandler | null = null;
+
+/**
+ * Register the Noctalia-themed AI consent modal host.
+ * Returns a cleanup that restores the previous handler if still current.
+ */
+export function registerAiConsentPromptHandler(handler: AiConsentPromptHandler | null): () => void {
+  const previousHandler = promptHandler;
+  promptHandler = handler;
+
+  let cleanedUp = false;
+  return () => {
+    if (cleanedUp) return;
+    cleanedUp = true;
+    if (promptHandler === handler) {
+      promptHandler = previousHandler;
+    }
+  };
+}
 
 export async function hasAiConsent(): Promise<boolean> {
   if (granted) return true;
@@ -47,8 +68,17 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
       void AsyncStorage.setItem(STORAGE_KEY, GRANTED).catch(() => undefined);
       resolve(true);
     };
-    // react-native-web's Alert is a no-op, which would leave AI features waiting
-    // forever in the browser: use the browser's own confirmation dialog there.
+    if (promptHandler) {
+      void promptHandler
+        .show()
+        .then((accepted) => {
+          if (accepted) accept();
+          else resolve(false);
+        })
+        .catch(() => resolve(false));
+      return;
+    }
+    // Fallback when no modal host is mounted (isolated unit tests or headless environments).
     if (Platform.OS === 'web') {
       const confirmed = typeof window !== 'undefined' && typeof window.confirm === 'function'
         && window.confirm(`${t('ai_consent.title')}\n\n${t('ai_consent.message')}`);

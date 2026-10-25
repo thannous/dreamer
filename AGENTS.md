@@ -72,6 +72,10 @@ and canonical `data/` inputs, rebuild ignored `docs/`, and never commit generate
 output. Keep reusable procedures in current guides and dated results in their existing
 evidence locations; age alone is not removal proof.
 
+Project artifacts belong in the canonical ignored `outputs/` directory. Keep
+native tooling outputs (for example `tools/e2e/.e2e/`) canonical for their runs;
+reference them instead of copying complete media for handoffs.
+
 ## Subproject routing
 
 - Dreamer uses `app/`. Lucid shares the root package and uses only `routes/lucid/`
@@ -155,6 +159,20 @@ builds/submissions/deployments; compare SQL, migration history and schema before
 Follow [candidate continuity](doc_web_interne/docs/repository-operations.md#candidate-and-qa-continuity),
 [EAS counter synchronization](doc_web_interne/docs/mobile-build-version-sync.md) and
 [TalkBack's pilot/restoration protocol](doc_web_interne/docs/qualification-talkback.md).
+
+For shell-created task checkouts, use `npm run workspace` from the primary
+repository under `~/Projects`; follow [local workspace maintenance](scripts/README.md#maintenance-rules)
+for creation, reuse and release. Keep compact evidence in the canonical artifact directory.
+
+Disk space is limited on the owner's Mac. Before producing large local artifacts,
+check available space and the existing task output. Reuse verified unchanged image
+archives rather than generating another ZIP partition of the same files. A handoff
+keeps a compact receipt and references the canonical media; preserve useful failure
+evidence and unique source originals. Before proposing removal of a local archive
+claimed to be on Drive, verify its exact remote identity and size, and compare
+checksums when available. Do not download another full copy just to check it.
+List the exact cleanup candidates for approval; never automatically remove original
+assets or the only retained evidence, and never empty Trash without authorization.
 
 ## Livraison
 

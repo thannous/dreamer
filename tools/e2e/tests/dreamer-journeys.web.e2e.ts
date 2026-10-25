@@ -212,6 +212,22 @@ test('Plus user signs out and returns to guest without exposing the account jour
   await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
 });
 
+test('guest with a dream opens account creation from the journal, and the offer leaves once signed in', async ({ page }) => {
+  await startGuest(page);
+  await page.getByTestId('input.dreamTranscript').fill('E2E guest dream kept only on this device.');
+  await page.getByTestId('btn.saveDream').click();
+  await expect(page.getByTestId('component.transcriptCard')).toBeVisible();
+  await journal(page);
+  await page.getByTestId('btn.guest.account.journal').click();
+  await expect(page.getByTestId('screen.account')).toBeVisible();
+  await expect(page.getByTestId('btn.auth.signUp').filter({ visible: true })).toHaveCount(1);
+  await page.getByTestId('btn.mockProfile.existing').click();
+  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await journal(page);
+  await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true }).first()).toBeVisible();
+  await expect(page.getByTestId('btn.guest.account.journal')).toHaveCount(0);
+});
+
 test('free user adds and removes a favorite through the filtered journal', async ({ page }) => {
   await selectProfile(page, 'existing');
   await journal(page);

@@ -669,10 +669,16 @@ test('Dreamer release opt-in feature story bridges capture to exploration', {
   await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
   await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
+  await expect(screen.getByTestId('component.onboarding.story.explore.3', { visible: true })).toBeVisible();
+  // Product change (owner, 2026-10-24): the Explorer example waits for the reader's answer;
+  // Noctalia replies, then the button to the door arrives.
+  await screen.getByTestId('btn.onboarding.dialogue.home', { visible: true }).tap();
+  await expect(screen.getByTestId('component.onboarding.dialogue.followup', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('btn.onboarding.story.continue', { visible: true })).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.continue', { visible: true }).tap();
   await expect(screen.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
-  await expect(screen.getByTestId('component.onboarding.intro', { visible: true })).toBeVisible();
+  // The last story ends through the blue door, which opens on the path step.
+  await expect(screen.getByTestId('component.onboarding.path', { visible: true })).toBeVisible();
   await app.screenshot('release-story-complete');
 });
 

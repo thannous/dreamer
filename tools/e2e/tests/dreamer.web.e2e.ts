@@ -81,7 +81,7 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
   expect(consentPrompts).toHaveLength(1);
-  expect(consentPrompts[0]).toContain('Anthropic (Claude) and Google (Gemini)');
+  expect(consentPrompts[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
   await offConsent();
   await app.screenshot('guest-saved-analysis');
 });
@@ -219,7 +219,7 @@ test('plus account watches its saved dream being read, then lit as a constellati
   await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
   await expect(screen.getByTestId('component.dreamDetail.readingZone', { visible: true })).toContainText('Symbols');
   expect(consentPrompts).toHaveLength(1);
-  expect(consentPrompts[0]).toContain('Anthropic (Claude) and Google (Gemini)');
+  expect(consentPrompts[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
   await offConsent();
   await settledMotion(browser);
   const landed = await constellation.boundingBox();

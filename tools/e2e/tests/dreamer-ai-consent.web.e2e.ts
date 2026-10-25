@@ -26,8 +26,7 @@ test('declining AI preserves the saved dream and accepting later analyzes it onc
     await screen.getByTestId('btn.saveDream').tap();
     await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
     await expect.poll(() => dialogs.length).toBe(1);
-    expect(dialogs[0]).toContain('Anthropic (Claude)');
-    expect(dialogs[0]).toContain('Google (Gemini)');
+    expect(dialogs[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
     await expect(screen.getByTestId('component.dreamDetail.readingZone')).toBeHidden();
     expect(await browser.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBeNull();
     answer = 'accept';

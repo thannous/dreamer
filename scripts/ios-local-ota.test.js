@@ -2,9 +2,101 @@
 /* global describe, expect, it */
 
 const plist = require('plist');
-const { assertBuildReady, assertPrivateServe, validateManifest, validateProfile } = require('./ios-local-ota');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const {
+  assertBuildEnvironment, assertBuildReady, assertPrivateServe, getExplicitDeviceUdid,
+  prepareBuildEnvironment, readDevice, validateManifest, validateProfile,
+} = require('./ios-local-ota');
+
+const googleEnv = {
+  EXPO_PUBLIC_MOCK_MODE: 'false',
+  EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '123-web.apps.googleusercontent.com',
+  EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '123-ios.apps.googleusercontent.com',
+  EXPO_PUBLIC_REVENUECAT_IOS_KEY: 'appl_fixture',
+};
+const googleScheme = 'com.googleusercontent.apps.123-ios';
 
 describe('local iOS OTA prerequisites', () => {
+  it('rejects absent or blank Google IDs before invoking native build tools', () => {
+    for (const key of ['EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID', 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID']) {
+      expect(() => assertBuildEnvironment({ ...googleEnv, [key]: '  ' }, [googleScheme]))
+        .toThrow(key);
+    }
+    expect(() => prepareBuildEnvironment(undefined, {
+      env: { EXPO_PUBLIC_MOCK_MODE: 'false' }, cwd: '/checkout-without-ios',
+      readFileSync: () => { throw new Error('Native project is unavailable'); },
+    })).toThrow('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID is required');
+    const result = spawnSync(process.execPath, [
+      path.join(__dirname, 'ios-local-ota.js'), 'build', '--team', 'TEAM123456',
+      '--device', '00000001-0000000000000001',
+    ], { env: { PATH: '', EXPO_PUBLIC_MOCK_MODE: 'false' }, encoding: 'utf8' });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID is required');
+    expect(result.stdout).toBe('');
+  });
+
+  it('accepts complete real configuration and explicit mock builds without Google IDs', () => {
+    expect(() => assertBuildEnvironment(googleEnv, [googleScheme])).not.toThrow();
+    expect(() => assertBuildEnvironment({ EXPO_PUBLIC_MOCK_MODE: 'true' }, [])).not.toThrow();
+    expect(() => assertBuildEnvironment({}, [])).toThrow('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
+  });
+
+  it('rejects missing or incompatible Apple purchase keys before reading the native project', () => {
+    for (const apiKey of [undefined, '', '  ', 'goog_fixture', 'test_fixture', 'sk_fixture', 'appl_']) {
+      const env = { ...googleEnv, EXPO_PUBLIC_REVENUECAT_IOS_KEY: apiKey };
+      expect(() => assertBuildEnvironment(env, [googleScheme]))
+        .toThrow('EXPO_PUBLIC_REVENUECAT_IOS_KEY');
+      expect(() => prepareBuildEnvironment(undefined, {
+        env, cwd: '/checkout-without-ios',
+        readFileSync: () => { throw new Error('Native project is unavailable'); },
+      })).toThrow('EXPO_PUBLIC_REVENUECAT_IOS_KEY');
+    }
+    expect(() => assertBuildEnvironment(googleEnv, [googleScheme])).not.toThrow();
+    expect(() => prepareBuildEnvironment(undefined, {
+      env: { EXPO_PUBLIC_MOCK_MODE: 'true' }, cwd: '/checkout-without-ios',
+      readFileSync: () => { throw new Error('Native project is unavailable'); },
+    })).not.toThrow();
+  });
+
+  it('refuses a Google iOS client whose callback is absent from the native project', () => {
+    expect(() => assertBuildEnvironment(googleEnv, ['com.googleusercontent.apps.another-client']))
+      .toThrow(/must match a Google URL scheme/);
+    expect(() => assertBuildEnvironment({ ...googleEnv, EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: 'invalid' }, [googleScheme]))
+      .toThrow(/must match a Google URL scheme/);
+  });
+
+  it('loads the selected profile and prevents a later dotenv overlay', () => {
+    const env = { EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_NO_DOTENV: '0' };
+    prepareBuildEnvironment('.env.playstore', {
+      cwd: '/repo', env,
+      readFileSync: (filePath) => {
+        if (filePath === path.resolve('/repo', '.env.playstore')) {
+          return Object.entries(googleEnv).map(([key, value]) => `${key}=${value}`).join('\n');
+        }
+        expect(filePath).toBe(path.join('/repo', 'ios/Noctalia/Info.plist'));
+        return plist.build({ CFBundleURLTypes: [{ CFBundleURLSchemes: [googleScheme] }] });
+      },
+    });
+    expect(env.EXPO_PUBLIC_MOCK_MODE).toBe('false');
+    expect(env.EXPO_NO_DOTENV).toBe('1');
+    const inheritedEnv = { ...googleEnv, EXPO_NO_DOTENV: '0' };
+    prepareBuildEnvironment(undefined, {
+      env: inheritedEnv,
+      readFileSync: () => plist.build({ CFBundleURLTypes: [{ CFBundleURLSchemes: [googleScheme] }] }),
+    });
+    expect(inheritedEnv.EXPO_NO_DOTENV).toBe('1');
+  });
+
+  it('accepts explicit modern and legacy device UDIDs without CoreDevice discovery', () => {
+    for (const udid of ['00000001-0000000000000001', '0123456789abcdef0123456789abcdef01234567']) {
+      expect(getExplicitDeviceUdid(udid)).toBe(udid);
+      expect(readDevice(udid)).toBe(udid);
+    }
+    expect(getExplicitDeviceUdid('iPhone')).toBeUndefined();
+    expect(getExplicitDeviceUdid('00000001-000000000000001')).toBeUndefined();
+  });
+
   it('refuses a native build without a signing identity or team', () => {
     expect(() => assertBuildReady({ nativeProject: true, signingIdentities: 0 }, 'TEAM123456'))
       .toThrow(/signing/);

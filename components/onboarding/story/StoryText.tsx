@@ -5,6 +5,19 @@ import Animated, { useReducedMotion } from 'react-native-reanimated';
 import { DURATION, EASE } from '@/components/motion/motion';
 
 /**
+ * The words of a sentence as they are revealed. French sets a space before `?`,
+ * `!`, `:`, `;` and inside guillemets: those marks stay with their word, joined by
+ * a non-breaking space, so a line never starts with a lone `?`.
+ */
+const revealWords = (text: string) => text.split(/\s+/).filter(Boolean).reduce<string[]>((words, word) => {
+  const previous = words.at(-1);
+  if (previous !== undefined && /^[?!:;»]+$/.test(word)) words[words.length - 1] = `${previous}\u00A0${word}`;
+  else if (previous === '«') words[words.length - 1] = `${previous}\u00A0${word}`;
+  else words.push(word);
+  return words;
+}, []);
+
+/**
  * Words that arrive one after another, as if spoken or typed. Assistive
  * technology reads the sentence once, whole; reduced motion shows it at once.
  * Each word rises on a view around its text: on native, animating a text node
@@ -16,10 +29,13 @@ export function WordReveal({ text, delay = 0, stagger = 90, style, align = 'cent
   align?: 'center' | 'left' | 'right'; caret?: string; caretUntil?: number;
 }) {
   const reduced = useReducedMotion();
-  const words = text.split(/\s+/).filter(Boolean);
+  const words = revealWords(text);
   const justifyContent = align === 'center' ? 'center' : align === 'right' ? 'flex-end' : 'flex-start';
+  // The space between words is a gap, not a trailing space in each word: iOS measured the space
+  // before a sentence's last word narrower than the others ("porte bleue" read "portebleue").
+  const fontSize = StyleSheet.flatten(style)?.fontSize ?? 16;
   const caretDelay = delay + words.length * stagger;
-  return <View accessible accessibilityLabel={text} style={[styles.words, { justifyContent }]}>
+  return <View accessible accessibilityLabel={text} style={[styles.words, { justifyContent, columnGap: fontSize * WORD_SPACE }]}>
     {words.map((word, index) => <Animated.View key={`${index}-${word}`} accessible={false} style={{
       animationName: {
         from: { opacity: 0, ...(!reduced ? { transform: [{ translateY: 6 }] } : {}) },
@@ -30,12 +46,15 @@ export function WordReveal({ text, delay = 0, stagger = 90, style, align = 'cent
       animationTimingFunction: EASE.out,
       animationFillMode: 'both',
     }}>
-      <Text accessible={false} style={style}>{index < words.length - 1 ? `${word} ` : word}</Text>
+      <Text accessible={false} style={style}>{word}</Text>
     </Animated.View>)}
     {caret && !reduced ? <Caret color={caret} delay={caretDelay}
       blinks={caretUntil === undefined ? 'infinite' : loopsUntil(caretUntil - caretDelay, DURATION.slow)} /> : null}
   </View>;
 }
+
+/** A word space in the story's sans-serif, as a share of the font size. */
+const WORD_SPACE = 0.26;
 
 /** Enough iterations of `period` to cover `span` ms, so a loop never outlives what hides it. */
 export const loopsUntil = (span: number, period: number) => Math.max(1, Math.ceil(span / period) + 1);
@@ -86,7 +105,7 @@ export function TypingDots({ color, hideAt, style }: { color: string; hideAt: nu
 
 /** How long a sentence takes to arrive once its words start. */
 export const wordRevealDuration = (text: string, stagger = 90) =>
-  text.split(/\s+/).filter(Boolean).length * stagger + DURATION.normal;
+  revealWords(text).length * stagger + DURATION.normal;
 
 /** When a message hidden behind typing dots should start to appear. */
 export const afterTyping = (hideAt: number) => hideAt + 80;

@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { requestCaptureQuestion } from '@/services/captureConversation';
-import { getDreamRecallQuestion } from '@/lib/dreamRecallQuestions';
+import { getCaptureFallbackQuestion } from '@/lib/dreamRecallQuestions';
 import { hasAiConsent } from '@/lib/aiConsent';
 
 export const CAPTURE_MAX_QUESTIONS = 3;
 
-type Options = { language: string; t: (key: string) => string; scope?: string };
+type Options = {
+  language: string;
+  t: (key: string) => string;
+  scope?: string;
+  /** Asks the narrator for AI consent. Called at most once per account scope, when the first question is due. */
+  requestConsent?: () => Promise<boolean>;
+};
 
 /** Network results belong to one draft revision. The editor persists answered questions with their answers. */
-export function useCaptureConversation({ language, t, scope }: Options) {
+export function useCaptureConversation({ language, t, scope, requestConsent }: Options) {
   const [question, setQuestion] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
@@ -19,6 +25,7 @@ export function useCaptureConversation({ language, t, scope }: Options) {
   const requested = useRef('');
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
+  const consentRequest = useRef<Promise<boolean> | null>(null);
 
   const cancel = useCallback(() => {
     if (controller.current) requested.current = '';
@@ -91,15 +98,22 @@ export function useCaptureConversation({ language, t, scope }: Options) {
     const askLocally = (failed: boolean) => {
       // A general local question keeps capture usable, without pretending it was personalized.
       // Only a failed request says help is unavailable: without consent nothing has failed.
-      const fallback = getDreamRecallQuestion(previous.current.length, t).text;
+      const fallback = getCaptureFallbackQuestion(text, previous.current.length, t).text;
       setQuestion(fallback);
       setUnavailable(failed);
       previous.current.push(fallback);
     };
     try {
-      // The transcript goes to the AI provider: without prior consent stay local.
-      // Never prompt here, a dialog would interrupt voice capture.
-      if (!(await hasAiConsent())) {
+      // The transcript goes to the AI provider: without consent stay local. A question is only
+      // due once the microphone has stopped, so asking here interrupts no capture. Ask once:
+      // a narrator who declines keeps the general questions without being asked again, and a
+      // revision arriving while the dialog is open waits for the same answer.
+      let consented = await hasAiConsent();
+      if (!consented && requestConsent && generation.current === owner) {
+        consentRequest.current ??= requestConsent().catch(() => false);
+        consented = await consentRequest.current;
+      }
+      if (!consented) {
         if (generation.current !== owner) return;
         askLocally(false);
         return;
@@ -121,12 +135,13 @@ export function useCaptureConversation({ language, t, scope }: Options) {
         setLoading(false);
       }
     }
-  }, [language, rememberQuestions, t]);
+  }, [language, rememberQuestions, requestConsent, t]);
 
   useEffect(() => {
     // Account identity is external state: cancel its pending request and clear its visible question together.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     reset();
+    consentRequest.current = null;
     return () => { generation.current += 1; controller.current?.abort(); };
   }, [scope, reset]);
   return { question, loading, unavailable, done, needsDecision, ask, reset, cancel, invalidateSource };

@@ -1,0 +1,43 @@
+{
+  "description": "Subject-focused crops of existing Noctalia artwork for the Today discovery cards. Fixed subjects across themes: warm lantern, blue night lake, ivory dream notebook. Original paintings are preserved.",
+  "transform": {
+    "width": 444,
+    "height": 552,
+    "fit": "cover",
+    "position": "centre",
+    "format": "webp",
+    "quality": 84
+  },
+  "assets": [
+    {
+      "file": "ritual-v1.webp",
+      "source": "assets/images/dreamer/ritual-light-v1.webp",
+      "extract": {
+        "left": 1140,
+        "top": 545,
+        "width": 396,
+        "height": 479
+      }
+    },
+    {
+      "file": "sleep-v1.webp",
+      "source": "assets/images/dreamer/sleep-v1.webp",
+      "extract": {
+        "left": 780,
+        "top": 0,
+        "width": 756,
+        "height": 940
+      }
+    },
+    {
+      "file": "guides-v1.webp",
+      "source": "assets/images/dreamer/journal-light-v1.webp",
+      "extract": {
+        "left": 1010,
+        "top": 690,
+        "width": 526,
+        "height": 334
+      }
+    }
+  ]
+}

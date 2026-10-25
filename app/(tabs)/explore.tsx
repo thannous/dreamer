@@ -2,6 +2,7 @@ import type { ViewInstance } from 'react-native';
 import { useContentWindow } from '@/context/ContentWindowContext';
 import { useQuickSettings } from '@/context/QuickSettingsContext';
 import { CollectionEntryCard } from '@/components/badges/CollectionEntry';
+import { GuestAccountRow } from '@/components/guest/GuestAccountRow';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { RitualPickerSheet } from '@/components/ritual/RitualPickerSheet';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -201,6 +202,8 @@ function ExploreScreen() {
         <ScreenContainer key="resources">
           <View className="gap-5 px-4 pt-3">
             <CollectionEntryCard testID="btn.explore.collection" />
+            {/* A guest's cards stay on this device until an account keeps them. */}
+            <GuestAccountRow reason="explore" divider={false} className="-mt-2" />
             <View className="border-t border-line">
               <ExplorerRow
                 icon="book.closed.fill"

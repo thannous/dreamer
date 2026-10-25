@@ -92,6 +92,7 @@ docs-src/img-tmp/*
 maestro-results/
 tmp-stage/
 tmp-stage-index/
+/outputs/
 /output/
 
 # Exclude web-only docs from mobile EAS uploads, except the curated guide data

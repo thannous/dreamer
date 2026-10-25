@@ -1,6 +1,6 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
-import type { Page } from 'playwright/test';
+import type { Locator, Page } from 'playwright/test';
 const test = createParityTest();
 const defaultFeatureTest = createParityTest();
 
@@ -18,6 +18,17 @@ async function readToExample(page: Page, feature: string) {
 async function openDemo(page: Page, feature: string) {
   await page.getByTestId(`btn.onboarding.feature.${feature}`).click();
   await readToExample(page, feature);
+}
+
+// Noctalia's reply arrives word by word, spaced by a gap rather than space characters, so
+// the DOM text runs the words together; the whole sentence is the reveal's accessible label.
+const reply = (followup: Locator, text: string) => followup.getByLabel(text, { exact: true });
+
+// The Explorer example waits for the reader's answer: Noctalia replies, then the button arrives.
+async function answerExample(page: Page) {
+  await page.getByTestId('btn.onboarding.dialogue.home').click();
+  await expect(reply(page.getByTestId('component.onboarding.dialogue.followup'), 'What do you miss about that house?')).toBeVisible();
+  await expect(page.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
 }
 
 // The cross means "I want out": it asks before leaving the introduction for the path.
@@ -291,19 +302,124 @@ test.describe('feature sheet previews', () => {
     }
   });
 
-  test('a story only moves forward, and its button waits for the scene', async ({ page }) => {
+  // Product change (owner, 2026-10-24): pages turn both ways. The header's back control
+  // returns one page, and from a chapter's first page it reopens the previous chapter's
+  // example; the stories' very first page has nothing behind it. A page already read
+  // has its button ready at once when the reader comes back to it.
+  test('a story turns back page by page and across chapters, and its button waits for the scene', async ({ page }) => {
     await page.getByTestId('btn.onboarding.feature.capture').click();
     await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
     // The button names what comes next and stays inactive until the scene has told its part.
     const next = page.getByTestId('btn.onboarding.story.next');
+    const back = page.getByTestId('btn.onboarding.story.back');
     await expect(next).toBeDisabled();
     await expect(next).toBeEnabled();
     await expect(next).toHaveAccessibleName('And on waking?');
-    // One way through: the close button, not a back link, leaves the story.
-    await expect(page.getByTestId('btn.onboarding.story.previous')).toHaveCount(0);
-    await readToExample(page, 'capture');
+    await expect(back).toHaveCount(0);
+    await next.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.1')).toBeVisible();
+    await next.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.2')).toBeVisible();
+    await expect(back).toHaveAccessibleName('Back');
+    await back.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.1')).toBeVisible();
+    // Read once, the page does not make the reader wait again: its scene takes more than 2.6 s.
+    await expect(next).toBeEnabled({ timeout: 500 });
+    // The skip fades out where the button is ready: still in place, no longer taking taps.
+    await expect(page.getByTestId('btn.onboarding.story.skip')).toBeDisabled({ timeout: 500 });
+    await next.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.2')).toBeVisible();
+    await next.click();
     await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
-    await expect(page.getByTestId('btn.onboarding.story.previous')).toHaveCount(0);
+    await page.getByTestId('btn.onboarding.story.continue').click();
+    await expect(page.getByTestId('component.onboarding.story.connect.0')).toBeVisible();
+    // Back from the next chapter's first page is the example read just before it.
+    await back.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.3')).toBeVisible();
+    await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
+    for (const step of [2, 1, 0]) {
+      await back.click();
+      await expect(page.getByTestId(`component.onboarding.story.capture.${step}`)).toBeVisible();
+    }
+    await expect(back).toHaveCount(0);
+    await expect(page.getByTestId('sheet.onboarding.feature')).toBeVisible();
+    await leaveStories(page);
+  });
+
+  // Product change (owner, 2026-10-24): while a told page's scene plays, the skip turns one
+  // page at once; it gives way to the button when it arrives. An example has nothing to skip,
+  // except Explorer's unanswered one, where skipping ends the stories through the door.
+  test('skipping turns one told page without waiting, and the unanswered Explorer example ends on the path', async ({ page }) => {
+    await page.getByTestId('btn.onboarding.feature.capture').click();
+    const next = page.getByTestId('btn.onboarding.story.next');
+    const continueButton = page.getByTestId('btn.onboarding.story.continue');
+    const skip = page.getByTestId('btn.onboarding.story.skip');
+    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
+    // The scene is still telling its part: the button waits, the skip does not.
+    await expect(next).toBeDisabled();
+    await skip.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.1')).toBeVisible();
+    await expect(page.getByTestId('component.onboarding.story.connect.0')).toHaveCount(0);
+    await expect(next).toBeDisabled();
+    // Once the button arrives, the skip fades out and no longer takes taps.
+    await expect(next).toBeEnabled();
+    await expect(skip).toBeDisabled();
+    await next.click();
+    await expect(page.getByTestId('component.onboarding.story.capture.2')).toBeVisible();
+    await next.click();
+    await expect(page.getByTestId('component.onboarding.dreamGlobe')).toBeVisible();
+    // A chapter's example has nothing to skip: its button is the way on.
+    await expect(skip).toHaveCount(0);
+    await continueButton.click();
+    for (const feature of ['connect', 'explore']) {
+      for (const step of [1, 2, 3]) {
+        await skip.click();
+        await expect(page.getByTestId(`component.onboarding.story.${feature}.${step}`)).toBeVisible();
+      }
+      if (feature === 'connect') await continueButton.click();
+    }
+    // Unanswered, Explorer's example waits for the reader; skipping goes on without an answer.
+    await expect(continueButton).toBeDisabled();
+    await skip.click();
+    await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
+    await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
+  });
+
+  // Product change (owner, 2026-10-24): "À toi" chooses nothing in advance. The story waits
+  // for the reader's answer and Noctalia's reply, and returning to the page asks again.
+  test('the Explorer example waits for an answer, then forgets it when the page is turned back', async ({ page }) => {
+    await openDemo(page, 'explore');
+    const continueButton = page.getByTestId('btn.onboarding.story.continue');
+    const followup = page.getByTestId('component.onboarding.dialogue.followup');
+    const start = page.getByTestId('btn.onboarding.dialogue.start');
+    const home = page.getByTestId('btn.onboarding.dialogue.home');
+    const expectUnanswered = async () => {
+      await expect(page.getByTestId('component.onboarding.story.explore.3')).toBeVisible();
+      await expect(page.getByTestId('text.onboarding.dialogue.question')).toBeVisible();
+      for (const choice of [start, home]) {
+        await expect(choice).toHaveRole('radio');
+        await expect(choice).toHaveAttribute('aria-checked', 'false');
+      }
+      await expect(followup).toHaveCount(0);
+      await expect(page.getByTestId('text.onboarding.dialogue.closing')).toHaveCount(0);
+      await expect(continueButton).toBeDisabled();
+      // Until the reader answers, the last chapter can still be skipped.
+      await expect(page.getByTestId('btn.onboarding.story.skip')).toBeEnabled();
+    };
+    await expectUnanswered();
+    await home.click();
+    await expect(home).toHaveAttribute('aria-checked', 'true');
+    await expect(start).toHaveAttribute('aria-checked', 'false');
+    // Noctalia is still answering: the button waits for the reply and its closing line.
+    await expect(continueButton).toBeDisabled();
+    await expect(reply(followup, 'What do you miss about that house?')).toBeVisible();
+    await expect(page.getByTestId('text.onboarding.dialogue.closing')).toBeVisible();
+    await expect(continueButton).toBeEnabled();
+    await expect(page.getByTestId('btn.onboarding.story.skip')).toHaveCount(0);
+    await page.getByTestId('btn.onboarding.story.back').click();
+    await expect(page.getByTestId('component.onboarding.story.explore.2')).toBeVisible();
+    await page.getByTestId('btn.onboarding.story.next').click();
+    await expectUnanswered();
     await leaveStories(page);
   });
 
@@ -340,29 +456,28 @@ test.describe('feature sheet previews', () => {
     await openDemo(page, 'explore');
     const followup = page.getByTestId('component.onboarding.dialogue.followup');
     await page.getByTestId('btn.onboarding.dialogue.home').click();
-    await expect(followup).toContainText('What do you miss about that house?');
+    await expect(reply(followup, 'What do you miss about that house?')).toBeVisible();
     await page.getByTestId('btn.onboarding.dialogue.start').click();
-    await expect(followup).toContainText('What would make you want to walk through that door?');
+    await expect(reply(followup, 'What would make you want to walk through that door?')).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('explore-personal-association.png') });
     await leaveStories(page);
   });
 
 
   // Product change (owner, 2026-10-10): the last story ends at the blue door, which opens
-  // on the path, with a way to start the stories over.
+  // on the path. Product change (owner, 2026-10-24): the "Start over" link under it is gone.
   test('the three chapters continue in order within the feature sheet and end through the door', async ({ page }, testInfo) => {
     await page.getByTestId('btn.onboarding.feature.capture').click();
     for (const feature of ['capture', 'connect', 'explore']) {
       await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
       await expectCloseButton(page);
       await readToExample(page, feature);
+      // Product change (owner, 2026-10-24): the door opens once the reader has answered.
+      if (feature === 'explore') await answerExample(page);
       await page.getByTestId('btn.onboarding.story.continue').scrollIntoViewIfNeeded();
       await page.screenshot({ path: testInfo.outputPath(`chapter-${feature}.png`) });
       if (feature === 'explore') {
         await expect(page.getByTestId('btn.onboarding.story.continue')).toContainText('Step through the door');
-        await expect(page.getByTestId('btn.onboarding.story.restart')).toContainText('Start over');
-      } else {
-        await expect(page.getByTestId('btn.onboarding.story.restart')).toHaveCount(0);
       }
       await page.getByTestId('btn.onboarding.story.continue').click();
     }
@@ -370,20 +485,15 @@ test.describe('feature sheet previews', () => {
     await expect(page.getByTestId('component.onboarding.path')).toBeVisible();
   });
 
-  test('starting over from the last story returns to the first one', async ({ page }) => {
-    await page.getByTestId('btn.onboarding.feature.explore').click();
-    await readToExample(page, 'explore');
-    await page.getByTestId('btn.onboarding.story.restart').click();
-    await expect(page.getByTestId('component.onboarding.story.capture.0')).toBeVisible();
-    await expect(page.getByTestId('sheet.onboarding.feature')).toBeVisible();
-  });
-
   test('Commencer tells the three stories in order, then continues to the path', async ({ page }) => {
     await page.getByTestId('btn.onboarding.intro.next').click();
     for (const feature of ['capture', 'connect', 'explore']) {
       await expect(page.getByTestId(`component.onboarding.story.${feature}.0`)).toBeVisible();
       await readToExample(page, feature);
-      if (feature === 'explore') await expect(page.getByTestId('btn.onboarding.story.continue')).toContainText('Step through the door');
+      if (feature === 'explore') {
+        await answerExample(page);
+        await expect(page.getByTestId('btn.onboarding.story.continue')).toContainText('Step through the door');
+      }
       await page.getByTestId('btn.onboarding.story.continue').click();
     }
     await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
@@ -403,18 +513,20 @@ test.describe('feature sheet previews', () => {
     await expect(page.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
   });
 
+  // Layout position only: offsetTop ignores the button's rise into place and the sheet's own motion.
+  const footerOffset = (page: Page, id: string) => page.evaluate((testId) => {
+    const top = (node: HTMLElement | null) => {
+      let y = 0;
+      for (let current = node; current; current = current.offsetParent as HTMLElement | null) y += current.offsetTop;
+      return y;
+    };
+    const sheet = document.querySelector<HTMLElement>('[data-testid="sheet.onboarding.feature"]');
+    const button = document.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
+    return top(button) - top(sheet);
+  }, id);
+
   test('turning a page never moves the button under the thumb', async ({ page }) => {
-    // Layout position only: offsetTop ignores the button's rise into place and the sheet's own motion.
-    const offset = (id: string) => page.evaluate((testId) => {
-      const top = (node: HTMLElement | null) => {
-        let y = 0;
-        for (let current = node; current; current = current.offsetParent as HTMLElement | null) y += current.offsetTop;
-        return y;
-      };
-      const sheet = document.querySelector<HTMLElement>('[data-testid="sheet.onboarding.feature"]');
-      const button = document.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
-      return top(button) - top(sheet);
-    }, id);
+    const offset = (id: string) => footerOffset(page, id);
     await page.getByTestId('btn.onboarding.feature.capture').click();
     await expectCloseButton(page);
     const next = page.getByTestId('btn.onboarding.story.next');
@@ -429,6 +541,43 @@ test.describe('feature sheet previews', () => {
     await expect(page.getByTestId('component.onboarding.story.capture.3')).toBeVisible();
     await expect(page.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
     expect(Math.abs(await offset('btn.onboarding.story.continue') - first)).toBeLessThanOrEqual(1);
+    await leaveStories(page);
+  });
+
+  // The Explorer example waits for an answer: its button keeps the pages' place before it
+  // arrives and once it has, so "Step through the door" lands where "Next" was.
+  test('the Explorer example keeps the button where the pages had it, before and after the answer', async ({ page }) => {
+    const offset = (id: string) => footerOffset(page, id);
+    await page.getByTestId('btn.onboarding.feature.explore').click();
+    const next = page.getByTestId('btn.onboarding.story.next');
+    for (const step of [1, 2]) {
+      await next.click();
+      await expect(page.getByTestId(`component.onboarding.story.explore.${step}`)).toBeVisible();
+    }
+    await expect(next).toBeEnabled();
+    const told = await offset('btn.onboarding.story.next');
+    await next.click();
+    await expect(page.getByTestId('component.onboarding.story.explore.3')).toBeVisible();
+    expect(Math.abs(await offset('btn.onboarding.story.continue') - told)).toBeLessThanOrEqual(1);
+    await answerExample(page);
+    expect(Math.abs(await offset('btn.onboarding.story.continue') - told)).toBeLessThanOrEqual(1);
+    await leaveStories(page);
+  });
+
+  // Product change (owner, 2026-10-24): once answered, the door stays in view where the screen
+  // has room for it, smaller, and the closing line still clears the button.
+  test('the answered Explorer example keeps its door on a tall screen, above the button', async ({ page }) => {
+    await page.setViewportSize({ width: 430, height: 932 });
+    await page.reload();
+    await openDemo(page, 'explore');
+    await answerExample(page);
+    const box = (id: string) => page.getByTestId(id).boundingBox();
+    await expect.poll(async () => {
+      const [door, closing, button] = await Promise.all([
+        box('component.onboarding.dialogue.door'), box('text.onboarding.dialogue.closing'), box('btn.onboarding.story.continue'),
+      ]);
+      return door && closing && button ? { door: door.height >= 48, clearsButton: closing.y + closing.height <= button.y } : null;
+    }).toEqual({ door: true, clearsButton: true });
     await leaveStories(page);
   });
 

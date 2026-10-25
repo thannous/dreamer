@@ -1,6 +1,5 @@
 import * as Haptics from 'expo-haptics';
 import { Image, type ImageSource } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useMemo, useRef, useState, type ComponentProps } from 'react';
 import { AccessibilityInfo, Image as Mark, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
@@ -15,8 +14,9 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import { useLiveTestID } from './DecorativeCopy';
 
-import { DREAM_STORY, entrance, paintSettle, paintSweep, twinkle } from './story/dreamStoryMotion';
+import { DREAM_STORY, entrance, paintSettle, twinkle } from './story/dreamStoryMotion';
 import { GlintedWords } from './story/GlintedWords';
+import { PaintingCanvas } from './story/PaintingCanvas';
 import {
   SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SealChoice, SealLegend, type SealMark,
 } from './story/sealMarks';
@@ -172,7 +172,6 @@ export function SavedDreamMoment({
     () => READING_STARS.map((_, index) => twinkle(index, READING_STARS.length, reduced)),
     [reduced]
   );
-  const sweep = useMemo(() => paintSweep(MEDALLION, reduced), [reduced]);
   // The strike: the chosen sign meets the window and is pressed into it; the sky dims a
   // little under it, so the mark reads over the night, and the rim's ink spreads once.
   const strike = useMemo(() => {
@@ -237,6 +236,7 @@ export function SavedDreamMoment({
   }, [ceremonyLeft, reduced, sealing, struckBefore, struck]);
   const settled = struckBefore || ceremonyLeft;
   const settle = useMemo(() => (landArtwork ? paintSettle(reduced) : null), [landArtwork, reduced]);
+  const canvas = painting && !artwork;
 
   const medallion = (
     <Animated.View
@@ -248,21 +248,15 @@ export function SavedDreamMoment({
         <Animated.View pointerEvents="none" className="absolute inset-0 bg-black"
           style={(settled ? { opacity: 0.32 } : strike.wash) as StyleProp<ViewStyle>} />
       ) : null}
-      {seal ? (
+      {/* While the window is painted it is a canvas: the struck sign gives way to the brush. */}
+      {seal && !canvas ? (
         <Animated.View testID={tid('component.savedDream.sealEmblem')} className="absolute" style={[{
           left: (MEDALLION - EMBLEM) / 2, top: (MEDALLION - EMBLEM) / 2, width: EMBLEM, height: EMBLEM,
         }, settled ? null : strike.emblem] as StyleProp<ViewStyle>}>
           <Mark source={SEAL_EMBLEMS[seal.theme]} tintColor={SEAL_GOLD} resizeMode="contain" style={{ width: EMBLEM, height: EMBLEM }} />
         </Animated.View>
       ) : null}
-      {painting && !artwork ? (
-        <Animated.View className="absolute" style={[{
-          top: -MEDALLION * 0.25, left: MEDALLION * 0.25, width: MEDALLION * 0.5, height: MEDALLION * 1.5,
-        }, sweep] as StyleProp<ViewStyle>}>
-          <LinearGradient start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}
-            colors={[`${accent}00`, `${accent}59`, `${accent}00`]} style={{ width: '100%', height: '100%' }} />
-        </Animated.View>
-      ) : null}
+      {canvas ? <PaintingCanvas testID={tid(TID.Component.SavedDreamPainting)} travel={MEDALLION} ink={SEAL_GOLD} brush={32} /> : null}
       {artwork ? (
         // Kept in place once gone, only unseen: the window does not change what it holds.
         <View collapsable={false} className="absolute inset-0" style={{ opacity: artworkAway ? 0 : 1 }}>

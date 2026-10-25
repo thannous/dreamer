@@ -27,7 +27,9 @@ export type LoopConstellationProps = {
   renderNode?: (node: LoopNode, children: React.ReactNode) => React.ReactNode;
 };
 
-const NODE = 48;
+const NODE = 60;
+/** The icon fills about half its star, so the three steps read at a glance. */
+const ICON = 28;
 
 /**
  * Raconter → Repérer → Relier, drawn as a constellation: the product loop told as a
@@ -108,7 +110,7 @@ function NodeView({ node, index, accent, text, muted, play, reduced }: {
     <View style={styles.node}>
       <Animated.View style={[styles.star, { borderColor: accent }, ignite] as StyleProp<ViewStyle>}>
         <View style={[styles.starCore, { backgroundColor: accent }]} />
-        <IconSymbol name={node.icon} size={20} color={accent} />
+        <IconSymbol name={node.icon} size={ICON} color={accent} />
       </Animated.View>
       <Animated.View style={[styles.copy, label] as StyleProp<ViewStyle>}>
         <Text

@@ -107,6 +107,8 @@ jest.mock('@/components/NoctaliaScreenHeader', () => ({
 jest.mock('@/components/badges/CollectionEntry', () => ({
   CollectionEntryCard: ({ testID }: { testID?: string }) => <button data-testid={testID} />,
 }));
+// The guest's account row needs auth and dreams providers this screen test does not mount.
+jest.mock('@/components/guest/GuestAccountRow', () => ({ GuestAccountRow: () => null }));
 
 jest.mock('@/components/ScreenContainer', () => ({
   ScreenContainer: ({ children }: any) => <div>{children}</div>,
