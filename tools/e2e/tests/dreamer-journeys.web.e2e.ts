@@ -112,6 +112,14 @@ test('free user searches, sees no match, and recovers the journal', async ({ pag
   await page.screenshot({ path: info.outputPath('journal-mobile-entry.png') });
   await search(page, 'E2E no such dream 93f82');
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(0);
+  const clear = page.getByTestId('component.searchBar').getByRole('button', { name: 'Clear', exact: true });
+  await clear.focus();
+  await page.keyboard.press('Enter');
+  const field = page.getByRole('textbox', { name: 'Search dreams…' });
+  await expect(field).toHaveValue('');
+  await expect(field).toBeFocused();
+  await expect.poll(() => page.getByTestId(/^dream\.item\./).count()).toBeGreaterThan(1);
+  await expect(clear).toHaveCount(0);
   await search(page, 'The Infinite Library');
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
 });

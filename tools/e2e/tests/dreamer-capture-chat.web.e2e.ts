@@ -130,3 +130,68 @@ test('chat finishes automatically and keeps a single card and reply reachable in
     await page.screenshot({ path: info.outputPath(`chat-${viewport.width}x${viewport.height}.png`) });
   }
 });
+
+for (const scenario of [
+  {
+    kind: 'fragment',
+    opening: 'Un phare bleu.',
+    questions: ['Qu’est-ce que tu revois le mieux ?', 'Ça se passait où ?', 'Qu’est-ce qui te revient d’autre ?'],
+  },
+  {
+    kind: 'story',
+    opening: story,
+    questions: ['Qu’est-ce qui te revient d’autre ?', 'Il y avait quelqu’un d’autre ?', 'Qu’est-ce que tu revois le mieux ?'],
+  },
+] as const) {
+  test(`chat asks for consent at the first question and keeps a ${scenario.kind} saveable with local recall after declining`, async ({ page }, info) => {
+    await startChat(page);
+    // The historical fixture grants consent in storage. Remove it before this
+    // capture's first AI request to exercise the real modal and local questions.
+    await page.evaluate(() => localStorage.removeItem('noctalia.aiConsent.v2'));
+    const modal = page.getByTestId('modal.aiConsent');
+    const reply = page.getByTestId('recording-conversation-answer');
+    const question = page.getByTestId('recording-conversation-question');
+    let browserDialogs = 0;
+    await withDialog(page, async dialog => {
+      browserDialogs += 1;
+      await dialog.dismiss();
+    }, async () => {
+      await reply.fill(scenario.opening);
+      await expect(modal).toHaveCount(0);
+      await page.getByTestId('recording-conversation-submit').click();
+      await expect(modal).toBeVisible();
+      await expect(page.getByTestId('capture-chat-user')).toHaveText(scenario.opening);
+      await page.screenshot({ path: info.outputPath(`${scenario.kind}-recall-consent.png`) });
+      await page.getByTestId('btn.aiConsent.decline').click();
+      const answers = [detail, 'Je ne sais plus.', 'C’est tout ce qui me revient.'];
+      for (const [index, expected] of scenario.questions.entries()) {
+        // The order distinguishes an image fragment from a longer story and
+        // guards against repeating the same general question after refusal.
+        await expect(question).toHaveText(expected);
+        await expect(modal).toHaveCount(0);
+        await expect(reply).toBeEditable();
+        await send(page, answers[index]);
+      }
+      const narrative = [scenario.opening, ...answers].join('\n\n');
+      const card = page.getByTestId('capture-review-card');
+      await expect(card).toHaveCount(1);
+      await expect(card.getByTestId('capture-review-narrative')).toHaveText(narrative, { useInnerText: true });
+      await expect(page.getByTestId('capture-review-woven')).toHaveCount(0);
+      expect(await page.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBeNull();
+      await card.getByTestId('btn.saveDream').click();
+      // Saving is local; the separate optional reading may ask again, and can
+      // also be declined without losing any of the narrator's words.
+      await expect(modal).toBeVisible();
+      await page.getByTestId('btn.aiConsent.decline').click();
+      for (const paragraph of [scenario.opening, ...answers]) {
+        await expect(page.getByTestId('component.transcriptCard')).toContainText(paragraph);
+      }
+      await expect(page.getByTestId('component.dreamDetail.readingZone')).toBeHidden();
+      await page.getByTestId('btn.navigateJournal').click();
+      await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(1);
+      expect(browserDialogs).toBe(0);
+      expect(await page.evaluate(() => localStorage.getItem('noctalia.aiConsent.v2'))).toBeNull();
+      await page.screenshot({ path: info.outputPath(`${scenario.kind}-local-recall-saved.png`) });
+    });
+  });
+}
