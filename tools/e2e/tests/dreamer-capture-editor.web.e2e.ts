@@ -50,14 +50,13 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   await expect(count).toHaveCount(0);
   await expect(save).toBeEnabled();
 
+  // Without a counter under a short dream, the action follows the editor directly.
   const editorBox = await editor.boundingBox();
-  const countBox = await count.boundingBox();
   const saveBox = await save.boundingBox();
   expect(editorBox).not.toBeNull();
-  expect(countBox).not.toBeNull();
   expect(saveBox).not.toBeNull();
   expect(editorBox!.height, 'The story has a substantial writing area').toBeGreaterThanOrEqual(260);
-  expect(countBox!.y - (editorBox!.y + editorBox!.height), 'The counter stays attached to its editor').toBeLessThanOrEqual(20);
+  expect(saveBox!.y, 'The main action sits below the editor').toBeGreaterThanOrEqual(editorBox!.y + editorBox!.height);
   expect(saveBox!.width, 'The main action spans the reading width').toBeGreaterThanOrEqual(340);
 
   for (const mode of ['light', 'dark'] as const) {
