@@ -393,7 +393,7 @@ Current delivered native evidence and retained limits: [retrospective qualificat
 Requested native implementation/QA includes necessary local generation in its
 isolated worktree after SDK/profile checks; reuse compatible existing native
 projects first and prefer explicit `prebuild --no-install` when generation is needed.
-Do not regenerate the primary or another task's project or ask for this same scope
+Do not regenerate another task's project or ask for this same scope
 again. Data ownership, signing, providers/budgets, EAS/Store and publication remain
 separate boundaries. The build runner below still requires an existing native project.
 `run.mjs <product> <platform> build` runs the installed Expo SDK dependency check

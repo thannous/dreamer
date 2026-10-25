@@ -165,8 +165,8 @@ supported entry points rather than assuming an older Play build supports current
 deep links. Check SDK/dependency compatibility before costly builds and pilot a
 measurement method on one sample before scaling it. Necessary requested native
 work uses isolated generation, preferably explicit `prebuild --no-install`, and
-compatible existing projects. Do not regenerate the primary checkout or another
-task's native project. `script/build_and_run.sh` start modes do not prebuild.
+compatible existing projects. Do not regenerate another task's native project;
+a stale primary project (for example after an Expo SDK upgrade) may be regenerated. `script/build_and_run.sh` start modes do not prebuild.
 
 TI-429's physical Motorola VNext/Maestro base-app harness was retired with Maestro
 on 2026-10-14. Its base-app-only rule ended; owned emulator/Simulator TesterArmy

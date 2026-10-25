@@ -46,7 +46,8 @@ replacing a personal app, resetting unowned data or increasing a budget.
 - Start with `git status --short`; preserve unrelated WIP and personal app data. Use the
   existing checkout, isolating conflicts with a worktree. Reuse compatible dependencies
   and patterns; check compatibility before expensive builds and typecheck changed tests
-  before a push. Do not regenerate the primary checkout's native projects.
+  before a push. Regenerate a stale native project (for example after an Expo
+  SDK upgrade) in the checkout that uses it, including the primary one.
 - Preserve secrets and private formative feedback. Never commit `.env`,
   `CLAUDE.local.md`, `settings.local.json`, credentials or temporary logs. Every
   `EXPO_PUBLIC_*` value is client-visible. Do not send private project content to free
