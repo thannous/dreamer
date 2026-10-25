@@ -21,6 +21,21 @@ $$;
 revoke all on function private.is_refundable_text_analysis_failure(text) from public, anon, authenticated;
 grant execute on function private.is_refundable_text_analysis_failure(text) to postgres;
 
+-- Keep anti-abuse buckets on refund, but discard any free transport replay.
+-- The keyed admission table is introduced by the following migration.
+create function private.invalidate_refunded_analysis_admission(p_actor_key text, p_request_id uuid)
+returns void language plpgsql security definer set search_path = '' as $$
+begin
+  if to_regclass('private.ai_analysis_admissions') is not null then
+    delete from private.ai_analysis_admissions
+      where actor_hash = encode(sha256(convert_to(p_actor_key, 'UTF8')), 'hex')
+        and request_hash = encode(sha256(convert_to(p_request_id::text, 'UTF8')), 'hex');
+  end if;
+end;
+$$;
+revoke all on function private.invalidate_refunded_analysis_admission(text, uuid) from public, anon, authenticated;
+grant execute on function private.invalidate_refunded_analysis_admission(text, uuid) to postgres;
+
 create function public.reserve_guest_text_analysis(
   p_fingerprint text, p_analysis_request_id uuid, p_limit integer, p_transcript_sha256 text
 ) returns jsonb language plpgsql security definer set search_path = '' as $$
@@ -41,6 +56,7 @@ $$;
 
 create function public.release_guest_text_analysis(p_fingerprint text, p_reservation_id uuid, p_failure_code text default null)
 returns boolean language plpgsql security definer set search_path = '' as $$
+declare request_id uuid;
 begin
   if coalesce(auth.jwt()->>'role', '') not in ('service_role', 'supabase_admin') then
     raise exception using errcode = '42501', message = 'Service role required';
@@ -49,8 +65,10 @@ begin
   -- Same lock order as admission. A repeated refund cannot release a later retry.
   perform 1 from public.guest_usage where fingerprint_hash = p_fingerprint for update;
   delete from public.guest_analysis_quota_claims
-    where fingerprint_hash = p_fingerprint and reservation_id = p_reservation_id;
+    where fingerprint_hash = p_fingerprint and reservation_id = p_reservation_id
+    returning analysis_request_id into request_id;
   if not found then return false; end if;
+  perform private.invalidate_refunded_analysis_admission('guest:' || p_fingerprint, request_id);
   update public.guest_usage set analysis_count = greatest(analysis_count - 1, 0)
     where fingerprint_hash = p_fingerprint;
   return true;
@@ -73,7 +91,9 @@ begin
   perform pg_advisory_xact_lock(hashtextextended(format('quota:analysis:all:%s', p_user_id::text), 0));
   delete from public.quota_usage where id = p_claim_id and user_id = p_user_id
     and quota_type = 'analysis' and metadata->>'source' = 'api_pre_provider';
-  return found;
+  if not found then return false; end if;
+  perform private.invalidate_refunded_analysis_admission('user:' || p_user_id::text, (receipt.metadata->>'analysis_request_id')::uuid);
+  return true;
 end;
 $$;
 
