@@ -1577,8 +1577,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, [dream, reflectionJourney.primary.resume]);
 
   const showAnalysisNotice = useCallback(
-    (title: string, message: string, tone: AnalysisNotice['tone'] = 'info') => {
-      const notice = { title, message, tone };
+    (title: string, message: string, tone: AnalysisNotice['tone'] = 'info', retryable = false) => {
+      const notice = { title, message, tone, retryable };
       setLastAnalysisNotice(notice);
       setAnalysisNotice(notice);
     },
@@ -1652,8 +1652,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, []);
 
   const runAnalyze = useCallback(
-    (replaceImage: boolean, skipAllowanceCheck = false): Promise<void> => {
-      if (!dream || isAnalysisLaunchBlocked || analysisLaunchInFlightRef.current) return Promise.resolve();
+    (replaceImage: boolean, skipAllowanceCheck = false, resumePending = false): Promise<void> => {
+      const canObservePending = resumePending && isAnalysisPending && !isAnalyzing;
+      if (!dream || (isAnalysisLaunchBlocked && !canObservePending) || analysisLaunchInFlightRef.current) return Promise.resolve();
       // Lock synchronously, including the asynchronous quota check and consent.
       analysisLaunchInFlightRef.current = true;
       const consented = skipAllowanceCheck || isResumableAnalysisRequest(dream)
@@ -1707,7 +1708,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           }
         } else {
           const classified = classifyError(error as Error, t);
-          showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error');
+          showAnalysisNotice(t('analysis_error.title'), classified.userMessage, 'error', classified.canRetry);
         }
       }).finally(() => {
         analysisLaunchInFlightRef.current = false;
@@ -1719,6 +1720,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       dream,
       ensureAnalyzeAllowed,
       isAnalysisLaunchBlocked,
+      isAnalysisPending,
+      isAnalyzing,
       isPlus,
       language,
       onboardingState.pendingRecordingIntent,
@@ -3507,6 +3510,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           visible={Boolean(analysisNotice)}
           onClose={handleDismissAnalysisNotice}
           notice={displayedAnalysisNotice}
+          onRetry={() => { setAnalysisNotice(null); void runAnalyze(false, false, true); }}
         />
         <ReplaceImageSheet
           visible={showReplaceImageSheet}

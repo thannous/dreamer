@@ -16,7 +16,8 @@ export const NETWORK_REQUEST_POLICIES = {
   default: createPolicy(30000, 0, 2000),
 
   // Auth / session
-  guestSessionCreate: createPolicy(10000, 1, 750),
+  // Challenges/attestations are single-use unkeyed writes, so never replay a lost reply.
+  guestSessionCreate: createPolicy(10000, 0, 750),
   guestQaCommand: createPolicy(10000, 0, 1000),
   authMarkUpgrade: createPolicy(10000, 2, 1000),
   // No auto-retry: deletion must not be replayed after an ambiguous failure.

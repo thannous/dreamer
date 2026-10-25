@@ -1,6 +1,9 @@
 import Anthropic from 'npm:@anthropic-ai/sdk@0.132.1';
 import { type TextAnalysisRefundCode, isRefundableTextAnalysisFailure, isTerminalTextAnalysisFailure } from '../lib/textAnalysisRefund.ts';
+import { ProviderCircuit, ProviderCircuitOpenError } from '../lib/providerCircuit.ts';
 import { toClaudeSchema } from '../lib/schemas.ts';
+
+export const claudeProviderCircuit = new ProviderCircuit();
 
 export type ClaudeEffort = 'low' | 'medium' | 'high';
 
@@ -48,7 +51,7 @@ export const requestClaudeJson = async (options: {
   schema: unknown;
   timeoutMs?: number;
 }): Promise<{ text: string; usage: ClaudeUsage | null }> => {
-  const response = await createClient(options.apiKey, options.timeoutMs ?? 45_000).messages.create({
+  const response = await claudeProviderCircuit.run(() => createClient(options.apiKey, options.timeoutMs ?? 45_000).messages.create({
     model: options.model,
     max_tokens: 16000,
     system: options.system,
@@ -58,7 +61,7 @@ export const requestClaudeJson = async (options: {
       effort: options.effort,
       format: { type: 'json_schema', schema: toClaudeSchema(options.schema) as Record<string, unknown> },
     },
-  });
+  }), isProviderAvailabilityFailure);
   if (response.stop_reason !== 'end_turn') {
     throw new ClaudeStopError(response.stop_reason);
   }
@@ -100,14 +103,14 @@ type ClaudeTextOptions = {
 
 /** One plain-text reply. Throws on any non-final stop or an empty answer. */
 export const requestClaudeText = async (options: ClaudeTextOptions): Promise<{ text: string; usage: ClaudeUsage | null }> => {
-  const response = await createClient(options.apiKey, options.timeoutMs).messages.create({
+  const response = await claudeProviderCircuit.run(() => createClient(options.apiKey, options.timeoutMs).messages.create({
     model: options.model,
     max_tokens: options.maxTokens ?? 16000,
     system: options.system,
     messages: options.messages,
     thinking: { type: 'adaptive' },
     output_config: { effort: options.effort },
-  });
+  }), isProviderAvailabilityFailure);
   if (response.stop_reason !== 'end_turn') throw new ClaudeStopError(response.stop_reason);
   const text = textOf(response.content).trim();
   if (!text) throw new ClaudeStopError('empty');
@@ -123,14 +126,21 @@ export type ClaudeTextStream = { deltas: AsyncGenerator<string>; usage: () => Cl
  * a stall after the first text.
  */
 export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise<ClaudeTextStream> => {
-  const stream = createClient(options.apiKey, options.timeoutMs).messages.stream({
+  const permit = claudeProviderCircuit.enter();
+  let stream: ReturnType<ReturnType<typeof createClient>['messages']['stream']>;
+  try {
+    stream = createClient(options.apiKey, options.timeoutMs).messages.stream({
     model: options.model,
     max_tokens: options.maxTokens ?? 16000,
     system: options.system,
     messages: options.messages,
     thinking: { type: 'adaptive' },
     output_config: { effort: options.effort },
-  });
+    });
+  } catch (error) {
+    permit.failure(isProviderAvailabilityFailure(error));
+    throw error;
+  }
   const iterator = (stream as AsyncIterable<any>)[Symbol.asyncIterator]();
   const textDelta = (event: any): string | null =>
     event?.type === 'content_block_delta' && event.delta?.type === 'text_delta' && event.delta.text ? event.delta.text : null;
@@ -149,6 +159,7 @@ export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise
   } catch (error) {
     clearTimeout(timer);
     stream.abort();
+    permit.failure(isProviderAvailabilityFailure(error));
     throw error;
   }
   let usage: ClaudeUsage | null = null;
@@ -165,7 +176,12 @@ export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise
       const final = await stream.finalMessage();
       usage = (final?.usage as ClaudeUsage | undefined) ?? null;
       if (final?.stop_reason !== 'end_turn') throw new ClaudeStopError(final?.stop_reason ?? null);
+      permit.success();
+    } catch (error) {
+      permit.failure(isProviderAvailabilityFailure(error));
+      throw error;
     } finally {
+      permit.cancel();
       clearTimeout(timer);
       stream.abort();
     }
@@ -214,6 +230,7 @@ export const textAnalysisFailureCode = (error: unknown): string => {
 };
 
 const claudeProviderFailureCode = (error: unknown): TextAnalysisRefundCode => {
+  if (error instanceof ProviderCircuitOpenError) return error.code;
   if (error instanceof ClaudeConfigurationError) return error.code;
   if (error instanceof ClaudeRequestError) return error.code;
   if (error instanceof ClaudeStopError) {
@@ -227,6 +244,17 @@ const claudeProviderFailureCode = (error: unknown): TextAnalysisRefundCode => {
   return 'ANALYSIS_PROVIDER_UNAVAILABLE';
 };
 
+/** Only provider transport/availability failures affect health, never content or configuration. */
+export const isProviderAvailabilityFailure = (error: unknown): boolean => {
+  if (error instanceof ClaudeStopError || error instanceof SyntaxError || error instanceof ClaudeInvalidOutputError
+    || error instanceof ClaudeConfigurationError || error instanceof ProviderCircuitOpenError) return false;
+  const candidate = error as { status?: number; code?: unknown } | null;
+  if (candidate?.status !== undefined && candidate.status >= 400 && candidate.status < 500
+    && candidate.status !== 408 && candidate.status !== 429) return false;
+  return ['ANALYSIS_PROVIDER_UNAVAILABLE', 'ANALYSIS_PROVIDER_OVERLOADED', 'ANALYSIS_TIMEOUT']
+    .includes(claudeProviderFailureCode(error));
+};
+
 export const requireAnthropicApiKey = (value = Deno.env.get('ANTHROPIC_API_KEY')): string => {
   const key = value?.trim();
   if (!key) throw new ClaudeConfigurationError();
@@ -235,11 +263,11 @@ export const requireAnthropicApiKey = (value = Deno.env.get('ANTHROPIC_API_KEY')
 
 /** Provider credentials/errors are never exposed or mistaken for app authentication. */
 export const classifyClaudeError = (error: unknown) => {
-  if (error instanceof ClaudeConfigurationError) return { status: 503, userMessage: error.message, canRetry: true };
+  if (error instanceof ClaudeConfigurationError) return { status: 503, code: error.code, userMessage: error.message, canRetry: true, retryAfter: undefined };
   const candidate = error as { name?: string; status?: number } | null;
-  const status = error instanceof ClaudeRequestError ? error.status
+  const status = error instanceof ProviderCircuitOpenError ? 503 : error instanceof ClaudeRequestError ? error.status
     : error instanceof Anthropic.APIConnectionTimeoutError || /timeout|abort/i.test(candidate?.name ?? '') || candidate?.status === 504 ? 504 : 502;
-  return { status, userMessage: status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry', canRetry: true };
+  return { status, code: claudeProviderFailureCode(error), retryAfter: error instanceof ProviderCircuitOpenError ? error.retryAfterSeconds : undefined, userMessage: status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry', canRetry: true };
 };
 
 /** Parse and validate inside the callback: unusable output is also a retryable error. */
@@ -258,6 +286,7 @@ export const runClaudeOnly = async <T>(options: {
     // Categorical diagnostics only: errors and responses may contain private dreams.
     const info = classifyClaudeError(error);
     console.warn('[api] text request failed', { route: options.route, status: info.status });
+    if (error instanceof ProviderCircuitOpenError) throw error;
     throw new ClaudeRequestError(info.status, claudeProviderFailureCode(error));
   }
 };

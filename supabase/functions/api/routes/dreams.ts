@@ -430,7 +430,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       .catch(() => console.error('[api] analysis refund unavailable'));
     console.error('[api] /analyzeDream failed');
     const errorInfo = classifyClaudeError(e);
-    return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+    return new Response(JSON.stringify({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter }), {
       status: errorInfo.status,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
@@ -551,7 +551,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     const errorInfo = classifyClaudeError(e);
     return new Response(
       JSON.stringify({
-        error: errorInfo.userMessage,
+        error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter,
       }),
       {
         status: errorInfo.status,
@@ -652,7 +652,7 @@ export async function handleCategorizeDream(ctx: ApiContext): Promise<Response> 
   } catch (e) {
     console.error('[api] /categorizeDream failed');
     const errorInfo = classifyClaudeError(e);
-    return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+    return new Response(JSON.stringify({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter }), {
       status: errorInfo.status,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

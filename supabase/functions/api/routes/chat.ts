@@ -778,7 +778,7 @@ export async function handleChat(
             console.error('[api] /chat stream failed');
             await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_STREAM_FAILED');
             const errorInfo = classifyClaudeError(streamError);
-            send({ error: errorInfo.userMessage, status: errorInfo.status });
+            send({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter, status: errorInfo.status });
           } finally {
             controller.close();
           }
@@ -824,7 +824,7 @@ export async function handleChat(
     await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_REQUEST_FAILED');
     console.error('[api] /chat request failed');
     const errorInfo = classifyClaudeError(e);
-    return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
+    return new Response(JSON.stringify({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter }), {
       status: errorInfo.status,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });

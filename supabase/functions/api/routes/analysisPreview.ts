@@ -269,7 +269,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
     const anthropicApiKey = deps.anthropicApiKey === undefined ? Deno.env.get('ANTHROPIC_API_KEY')?.trim() : deps.anthropicApiKey;
     try { requireAnthropicApiKey(anthropicApiKey ?? ''); } catch (error) {
       const info = classifyClaudeError(error);
-      return jsonResponse({ error: info.userMessage, code: 'PREVIEW_UNAVAILABLE' }, info.status);
+      return jsonResponse({ error: info.userMessage, code: 'PREVIEW_UNAVAILABLE', providerCode: info.code, retryAfter: info.retryAfter }, info.status);
     }
     if (!apiKey) return refused('PREVIEW_UNAVAILABLE', 503);
 
@@ -316,7 +316,7 @@ export async function handleAnalysisPreview(ctx: ApiContext, deps: Dependencies 
       } catch (error) {
         // Dream content and provider payloads must not enter logs.
         const info = classifyClaudeError(error);
-        return jsonResponse({ error: info.userMessage, code: 'PREVIEW_FAILED' }, info.status);
+        return jsonResponse({ error: info.userMessage, code: 'PREVIEW_FAILED', providerCode: info.code, retryAfter: info.retryAfter }, info.status);
       }
       // A reading the analysis job could not save is no preview.
       if (!isPreparedReading(reading)) return refused('PREVIEW_FAILED', 502);

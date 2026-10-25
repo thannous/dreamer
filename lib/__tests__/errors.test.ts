@@ -502,3 +502,26 @@ it.each([
   expect(result.type).toBe(ErrorType.CLIENT);
   expect(result.userMessage).toContain('remain');
 });
+
+
+describe('provider availability messages', () => {
+  it.each(['ANALYSIS_PROVIDER_UNAVAILABLE', 'ANALYSIS_PROVIDER_OVERLOADED', 'ANALYSIS_TIMEOUT'])('%s stays retryable and has a complete message', (code: string) => {
+    for (const error of [Object.assign(new Error('job failed'), { code }),
+      Object.assign(new Error('HTTP 503'), { status: 503, body: { code } })]) {
+      expect(classifyError(error)).toEqual(expect.objectContaining({ canRetry: true,
+        userMessage: 'The analysis service is temporarily unavailable. Try again in a few moments.' }));
+    }
+  });
+  it.each(['en', 'fr', 'de', 'es', 'it', 'pt'])('defines the complete unavailable message in %s', (lang: string) => {
+    const source = readFileSync(join(__dirname, '..', 'i18n', `${lang}.ts`), 'utf8');
+    expect(source).toMatch(/'error.provider_unavailable': '[^']{20,}'/);
+  });
+});
+
+
+it.each(['ANALYSIS_REQUEST_REJECTED', 'ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND', 'ANALYSIS_ACCESS_DENIED', '42501'])('never retries request-state failure %s even behind HTTP 500', (code: string) => {
+  expect(classifyError(Object.assign(new Error('request failed'), { status: 500, body: { code } })).canRetry).toBe(false);
+});
+it.each(['AiConsentWithdrawnError', 'AbortError'])('never retries user cancellation %s', (name: string) => {
+  expect(classifyError(Object.assign(new Error('cancelled'), { name })).canRetry).toBe(false);
+});

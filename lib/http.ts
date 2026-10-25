@@ -17,6 +17,7 @@ export class HttpError<TBody = unknown> extends Error {
   public readonly url: string;
   public readonly bodyText: string;
   public readonly body?: TBody;
+  public readonly retryAfterMs?: number;
 
   constructor(options: {
     status: number;
@@ -24,6 +25,7 @@ export class HttpError<TBody = unknown> extends Error {
     url: string;
     bodyText: string;
     body?: TBody;
+    retryAfterMs?: number;
   }) {
     // Security: avoid including response bodies in `Error.message` (often logged and shown to users),
     // since they can contain sensitive/internal details from the backend (e.g., stack traces).
@@ -33,6 +35,7 @@ export class HttpError<TBody = unknown> extends Error {
     this.url = options.url;
     this.bodyText = options.bodyText;
     this.body = options.body;
+    this.retryAfterMs = options.retryAfterMs;
   }
 }
 
@@ -45,6 +48,8 @@ export type HttpOptions = {
   timeoutMs?: number;
   /** Pure read implemented with POST (for example a job status RPC). */
   readOnly?: boolean;
+  /** Explicitly idempotent server mutation, never a generation or one-use auth code. */
+  idempotent?: boolean;
   retries?: number; // Number of automatic retries (default: 0)
   retryDelay?: number; // Delay between retries in ms (default: 2000)
   signal?: AbortSignal;
@@ -313,7 +318,11 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
       if (!res.ok) {
         const bodyText = await readResponseText(res).catch(() => '');
         const body = parseJsonSafely(bodyText);
+        const retryAfter = getHeaderValue(res, 'retry-after')
+          ?? (body && typeof body === 'object' && 'retryAfter' in body ? body.retryAfter : undefined);
+        const retrySeconds = Number(retryAfter);
         throw new HttpError({
+          ...(Number.isFinite(retrySeconds) && retrySeconds > 0 ? { retryAfterMs: Math.min(30_000, retrySeconds * 1000) } : {}),
           status: res.status,
           statusText: res.statusText,
           url,
@@ -365,7 +374,7 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
   const hasRequestKey = [body.clientRequestId, body.analysisRequestId,
     ...Object.entries(options.headers ?? {}).filter(([key]) => key.toLowerCase() === 'idempotency-key').map(([, value]) => value),
   ].some(value => typeof value === 'string' && value.trim().length > 0);
-  const canReplay = (options.method ?? 'GET') === 'GET' || options.readOnly === true || hasRequestKey;
+  const canReplay = (options.method ?? 'GET') === 'GET' || options.readOnly === true || options.idempotent === true || hasRequestKey;
   // Never manufacture a key here: retries must reuse the caller's admitted command.
   const retries = canReplay && Number.isFinite(options.retries)
     ? Math.max(0, Math.min(3, Math.trunc(options.retries ?? 0))) : 0;
@@ -399,10 +408,10 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
         if (classified.canRetry !== false && classified.type !== ErrorType.CLIENT) {
           // Exponential backoff with jitter to avoid thundering herd
           const jitter = 0.8 + Math.random() * 0.5; // 0.8-1.3 multiplier
-          const delay = Math.min(
+          const delay = Math.min(30_000, Math.max(
             retryDelay * Math.pow(2, attempt) * jitter,
-            30000 // Cap at 30 seconds max
-          );
+            (lastError as HttpError).retryAfterMs ?? 0,
+          ));
           await sleep(delay, signal);
           continue;
         } else {

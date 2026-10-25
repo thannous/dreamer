@@ -85,11 +85,11 @@ Deno.test('an async analysis cannot spend its receipt on a changed transcript', 
 Deno.test('Claude configuration and generation failures keep the worker retryable', async () => {
   const { serializeAnalysisJobError } = await import('./index.ts');
   const { ClaudeConfigurationError, ClaudeRequestError } = await import('../api/services/claude.ts');
-  for (const error of [new ClaudeConfigurationError(), new ClaudeRequestError(502), new ClaudeRequestError(504)]) {
+  for (const error of [new ClaudeConfigurationError(), new ClaudeRequestError(502), new ClaudeRequestError(504), new ClaudeRequestError(502, 'ANALYSIS_PROVIDER_OVERLOADED')]) {
     const result = serializeAnalysisJobError(error);
     assertEquals(result.retryable, true);
     assertEquals(result.errorCode, error instanceof ClaudeConfigurationError ? 'ANALYSIS_CONFIGURATION_ERROR'
-      : error.status === 504 ? 'ANALYSIS_TIMEOUT' : 'ANALYSIS_PROVIDER_UNAVAILABLE');
+      : error.code);
   }
 });
 
@@ -171,4 +171,13 @@ Deno.test('permission failures are terminal while unrecognized failures remain r
   for (const error of [{ status: 503 }, { code: '40P01' }, { code: '57014' }, { message: 'unknown' }]) {
     assertEquals(serializeAnalysisJobError(error).retryable, true);
   }
+});
+
+Deno.test('an open provider breaker defers the next worker attempt until cooldown instead of burning its budget', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  const { ProviderCircuitOpenError } = await import('../api/lib/providerCircuit.ts');
+  const error = serializeAnalysisJobError(new ProviderCircuitOpenError(10));
+  assertEquals(error.errorCode, 'ANALYSIS_PROVIDER_UNAVAILABLE');
+  assertEquals(error.retryable, true);
+  assertEquals(error.retryAfterMs, 10000);
 });

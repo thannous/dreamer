@@ -77,6 +77,6 @@ Return JSON {question:string|null, anchor:string}; anchor must be a verbatim sho
   } catch (error) {
     // Never log a dream, prompt, provider response, or credentials.
     const info = classifyClaudeError(error);
-    return jsonResponse({ error: info.userMessage }, info.status);
+    return jsonResponse({ error: info.userMessage, code: info.code, retryAfter: info.retryAfter }, info.status);
   }
 }

@@ -48,16 +48,19 @@ export type AnalysisNotice = {
   title: string;
   message: string;
   tone?: AnalysisNoticeTone;
+  retryable?: boolean;
 };
 
 export function AnalysisNoticeSheet({
   visible,
   onClose,
   notice,
+  onRetry,
 }: {
   visible: boolean;
   onClose: () => void;
   notice?: AnalysisNotice | null;
+  onRetry?: () => void;
 }) {
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -108,7 +111,7 @@ export function AnalysisNoticeSheet({
         {notice?.message}
       </Text>
       <BottomSheetActions>
-        <BottomSheetPrimaryAction label={t('common.ok')} onPress={onClose} />
+        <BottomSheetPrimaryAction label={t(notice?.retryable && onRetry ? 'error.try_again' : 'common.ok')} onPress={notice?.retryable && onRetry ? onRetry : onClose} />
       </BottomSheetActions>
     </BottomSheet>
   );

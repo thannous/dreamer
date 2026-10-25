@@ -400,6 +400,31 @@ describe('http', () => {
       expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
+    it('respects the provider cooldown while retaining a single keyed retry', async () => {
+      global.fetch = jest.fn().mockResolvedValueOnce({ ok: false, status: 503, statusText: 'Unavailable',
+        json: () => Promise.resolve({ code: 'ANALYSIS_PROVIDER_UNAVAILABLE', retryAfter: 10 }),
+      }).mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ ok: true }) });
+      const result = fetchJSON('https://api.example.com/analyzeDream', {
+        method: 'POST', body: { analysisRequestId: 'same-key' }, retries: 1, retryDelay: 1000,
+      });
+      await jest.advanceTimersByTimeAsync(9999);
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+      await jest.advanceTimersByTimeAsync(1);
+      await expect(result).resolves.toEqual({ ok: true });
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
+
+    it('preserves retries for an explicitly idempotent reconciliation mutation', async () => {
+      global.fetch = jest.fn().mockRejectedValueOnce(new Error('Unknown transport failure'))
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ ok: true }) });
+      const result = fetchJSON('https://api.example.com/subscription/refresh', {
+        method: 'POST', body: { source: 'app_launch' }, idempotent: true, retries: 1,
+      });
+      await jest.runAllTimersAsync();
+      await expect(result).resolves.toEqual({ ok: true });
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
+
     it('given all retries exhausted when fetching then throws last error', async () => {
       mockClassifyError.mockReturnValue({ type: 'network', canRetry: true });
 

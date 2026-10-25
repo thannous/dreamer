@@ -1664,7 +1664,7 @@ export const useDreamJournal = () => {
           }
           if (status.status === 'failed') {
             serverJobTerminalFailure = true;
-            throw new Error(status.errorMessage || 'Dream analysis failed');
+            throw Object.assign(new Error(status.errorMessage || 'Dream analysis failed'), { code: status.errorCode });
           }
 
           let latestDream = resolveCurrentDream(syncedDream);

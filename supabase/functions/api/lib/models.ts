@@ -44,3 +44,17 @@ export const RETIRED_IMAGE_MODELS: ReadonlySet<string> = new Set([
   'gemini-3.1-flash-image-preview',
   'gemini-3-pro-image-preview',
 ]);
+
+/**
+ * Per-function-instance Claude availability breaker, shared by JSON/text/streams.
+ * Five consecutive availability failures within 30 s open it for 10 s. Exactly
+ * one probe is admitted afterwards; success closes it, failure reopens for 10 s.
+ * Worker requeues and keyed HTTP retries honor this cooldown within their existing
+ * budgets; no keys/content are retained, no shared table, no extra provider attempt.
+ * Configuration, refusals and invalid output do not count as unavailability.
+ */
+export const TEXT_PROVIDER_CIRCUIT = {
+  failureThreshold: 5,
+  failureWindowMs: 30_000,
+  cooldownMs: 10_000,
+} as const;

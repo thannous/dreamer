@@ -23,6 +23,7 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.daily_ai_limit': 'You reached today’s limit that protects Noctalia from abuse. This feature will be available again by tomorrow, and your dreams stay saved.',
   'error.exploration_limit': 'You have reached the exploration limit for your current plan. Your dream and existing conversation remain available.',
   'error.chat_safety_limit': 'This dream has reached its chat safety limit. Its interpretation remains available in your journal.',
+  'error.provider_unavailable': 'The analysis service is temporarily unavailable. Try again in a few moments.',
   'error.server': 'Server error. The service is temporarily unavailable. Please try again in a few moments.',
   'error.client': 'Invalid request. Please check your input and try again.',
   'error.owner_agent_limit_reached': 'You have reached the maximum number of saved keys ({limit}). Delete one before adding another.',
@@ -187,6 +188,22 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
   };
 
   const httpDetails = getHttpErrorDetails(error);
+  const providerCode = httpDetails?.body?.providerCode ?? httpDetails?.body?.code
+    ?? (error as Error & { code?: unknown }).code;
+  if (error.name === 'AiConsentWithdrawnError' || error.name === 'AbortError' || [
+    'ANALYSIS_TRANSCRIPT_CHANGED', 'ANALYSIS_TRANSCRIPT_MISMATCH', 'ANALYSIS_REQUEST_STALE',
+    'ANALYSIS_STATE_CONFLICT', 'DREAM_NOT_FOUND', 'INVALID_TRANSCRIPT', 'ANALYSIS_ACCESS_DENIED',
+    'ANALYSIS_REQUEST_REJECTED', 'ANALYSIS_CLIENT_CANCELLED', 'ANALYSIS_ALREADY_CLAIMED', 'ANALYSIS_IDEMPOTENCY_KEY_REUSED', '42501',
+  ].includes(String(providerCode))) {
+    return { type: ErrorType.CLIENT, message: error.message, originalError: error,
+      userMessage: translate('error.client'), canRetry: false };
+  }
+  if (typeof providerCode === 'string' && [
+    'ANALYSIS_PROVIDER_UNAVAILABLE', 'ANALYSIS_PROVIDER_OVERLOADED', 'ANALYSIS_TIMEOUT',
+  ].includes(providerCode)) {
+    return { type: ErrorType.SERVER, message: error.message, originalError: error,
+      userMessage: translate('error.provider_unavailable'), canRetry: true };
+  }
   const guestSessionCode =
     error instanceof GuestSessionError
       ? error.code

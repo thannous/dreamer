@@ -61,6 +61,6 @@ Keep the author's person, tense, vocabulary and all remembered details, includin
   } catch (error) {
     // Dream content and provider payloads must not enter logs.
     const info = classifyClaudeError(error);
-    return jsonResponse({ error: info.userMessage }, info.status);
+    return jsonResponse({ error: info.userMessage, code: info.code, retryAfter: info.retryAfter }, info.status);
   }
 }

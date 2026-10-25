@@ -265,7 +265,7 @@ Deno.test('a chat stream that fails before its first Claude text fails without G
   const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }), createAdminClient });
   assertEquals(response.status, 502);
   assertEquals(hosts, ['api.anthropic.com']);
-  assertEquals(await response.json(), { error: 'Text AI unavailable, please retry' });
+  assertEquals(await response.json(), { error: 'Text AI unavailable, please retry', code: 'ANALYSIS_PROVIDER_OVERLOADED' });
 }));
 
 Deno.test('guest history preserves long signed answers without widening legacy text limits', () => {
@@ -307,7 +307,7 @@ Deno.test('an interrupted Claude stream reports retryable failure without commit
   interrupt!();
   const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
   assertEquals(events[0].delta, 'Une réponse inachevée…');
-  assertEquals(events.at(-1), { error: 'Text AI unavailable, please retry', status: 502 });
+  assertEquals(events.at(-1), { error: 'Text AI unavailable, please retry', code: 'ANALYSIS_PROVIDER_UNAVAILABLE', status: 502 });
   assertEquals(events.some(event => event.done), false);
   assertEquals(writes, ['fail_authenticated_chat_turn']);
   assertEquals(hosts, ['api.anthropic.com']);

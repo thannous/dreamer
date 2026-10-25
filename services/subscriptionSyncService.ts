@@ -21,5 +21,6 @@ export async function syncSubscriptionFromServer(source: string = 'app_launch'):
     method: 'POST',
     body: { source },
     ...NETWORK_REQUEST_POLICIES.subscriptionRefresh,
+    idempotent: true, // Reconcile current server entitlement; never purchase.
   });
 }

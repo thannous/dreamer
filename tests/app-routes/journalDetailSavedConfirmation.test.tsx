@@ -324,7 +324,7 @@ jest.mock('@/components/journal/JournalDetailSheets', () => ({
       <button onClick={onClose}>Dismiss offer</button>
     </div>
   ) : null,
-  AnalysisNoticeSheet: ({ visible, notice }: any) => visible ? <div role="alert">{notice.message}</div> : null,
+  AnalysisNoticeSheet: ({ visible, notice, onRetry }: any) => visible ? <div role="alert">{notice.message}{notice.retryable && <button onClick={onRetry}>Notice retry</button>}</div> : null,
   DeleteConfirmSheet: ({ visible, onConfirm }: any) => visible ? <button onClick={onConfirm}>Confirm delete</button> : null,
   ImageErrorSheet: () => null,
   QuotaLimitSheet: ({ visible }: any) => visible ? <div data-testid="quota-limit" /> : null,
@@ -1168,6 +1168,23 @@ describe('journal detail saved confirmation route', () => {
     expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockUpdateDream).not.toHaveBeenCalled();
+  });
+
+  it('resumes the same pending request from Retry after an ambiguous transport failure', async () => {
+    const requestId = 'aabbccdd-0000-4000-8000-000000000001';
+    mockAnalyzeDream.mockImplementationOnce(async () => {
+      mockDreams = [{ ...mockDreams[0], analysisStatus: 'pending', analysisRequestId: requestId,
+        clientUpdatedAt: Date.now() }];
+      throw new Error('Network request failed');
+    });
+    const view = render(<JournalDetailScreen />);
+    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
+    view.rerender(<JournalDetailScreen />);
+    expect(screen.getByRole('alert')).toBeTruthy();
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(1);
+    await act(async () => { fireEvent.click(screen.getByText('Notice retry')); });
+    expect(mockAnalyzeDream).toHaveBeenCalledTimes(2);
+    expect(mockAnalyzeDream.mock.calls[1][0].analysisRequestId).toBe(requestId);
   });
 
   it('shows an analysis failure and leaves the saved transcript available for retry', async () => {

@@ -4,6 +4,7 @@ import {
   claimGuestAnalysisQuota,
   isAuthenticatedAnalysisQuotaRetry,
 } from '../lib/analysisQuota.ts';
+import { claudeProviderCircuit } from '../services/claude.ts';
 import { handleAnalyzeDream, quotaBlockedResponse, runDreamCategorization } from './dreams.ts';
 
 Deno.test('authenticated quota recognizes a spent request before another provider call', () => {
@@ -288,6 +289,7 @@ Deno.test('a failed guest analysis refunds its exact reservation token without a
 for (const mode of ['account', 'guest', 'full'] as const) {
   for (const clientCancelled of [false, true]) {
   Deno.test(`${mode} admission ${clientCancelled ? 'retains quota after client cancellation' : 'refunds a service failure'}`, async () => {
+    claudeProviderCircuit.reset(); // independent transport/refund fixture, not an outage campaign
     const { createGuestToken } = await import('../lib/guestToken.ts');
     const { handleAnalyzeDreamFull } = await import('./dreams.ts');
     const originalFetch = globalThis.fetch;
@@ -340,6 +342,7 @@ for (const mode of ['account', 'guest', 'full'] as const) {
 
 for (const providerStatus of [400, 429]) {
   Deno.test(`legacy full analysis refunds Gemini provider HTTP ${providerStatus} after image retries`, async () => {
+    claudeProviderCircuit.reset();
     const { handleAnalyzeDreamFull } = await import('./dreams.ts');
     const originalFetch = globalThis.fetch;
     const names = ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY'] as const;

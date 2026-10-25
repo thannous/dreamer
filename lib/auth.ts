@@ -309,6 +309,7 @@ async function markFingerprintUpgraded(
       },
       body: { fingerprint },
       ...NETWORK_REQUEST_POLICIES.authMarkUpgrade,
+      idempotent: true, // Same fingerprint is marked upgraded only once.
     });
 
     log.debug('Successfully marked fingerprint as upgraded');
@@ -746,6 +747,7 @@ async function storeAppleAuthorizationCode(authorizationCode: string): Promise<v
     },
     body: { authorizationCode },
     ...NETWORK_REQUEST_POLICIES.authMarkUpgrade,
+    retries: 0, // Apple authorizationCode is single-use; an ambiguous exchange cannot be replayed.
   });
 }
 

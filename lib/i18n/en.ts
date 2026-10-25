@@ -64,6 +64,7 @@ const translations: Record<string, string> = {
     'error.daily_analysis_limit': 'You started {limit} analyses in 24 hours, the limit that protects Noctalia from abuse. Your dream stays saved, and you can analyze it by tomorrow.',
     'error.daily_image_limit': 'You created {limit} illustrations in 24 hours, the limit that protects Noctalia from abuse. Your dream and its analysis stay saved, and you can illustrate it by tomorrow.',
     'error.chat_safety_limit': 'This dream has reached its safety limit. Its analysis remains available in your journal.',
+    'error.provider_unavailable': 'The analysis service is temporarily unavailable. Try again in a few moments.',
     'error.server': 'Noctalia isn’t responding right now. Try again in a few moments.',
     'error.screen_crashed': 'Something went wrong on this screen.',
     'error.screen_message': 'Try again, or go back to the home screen.',

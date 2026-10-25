@@ -153,6 +153,7 @@ export const serializeAnalysisJobError = (error: unknown) => {
     errorCode,
     errorMessage: classified.userMessage,
     retryable,
+    retryAfterMs: Math.min(30_000, Math.max(0, (classified.retryAfter ?? 0) * 1000)),
   };
 };
 
@@ -334,7 +335,7 @@ export const processAnalysisJob = async (input: {
 
     const serialized = serializeAnalysisJobError(error);
     if (serialized.retryable && job.attempt_count < job.max_attempts) {
-      const delay = analysisRetryDelayMs(job.attempt_count, timing.random());
+      const delay = Math.max(analysisRetryDelayMs(job.attempt_count, timing.random()), serialized.retryAfterMs);
       await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage, timing.now() + delay);
       // Persist the deadline first: polling/scheduler invocations must not bypass backoff.
       await timing.sleep(delay);

@@ -254,7 +254,7 @@ export async function handleMoonLetter(ctx: ApiContext, deps: Dependencies = {})
       await release();
       // Dream content and provider payloads must not enter logs.
       const info = classifyClaudeError(error);
-      return jsonResponse({ error: info.userMessage }, info.status);
+      return jsonResponse({ error: info.userMessage, code: info.code, retryAfter: info.retryAfter }, info.status);
     }
 
     const { data: saved, error: saveError } = await letters()
