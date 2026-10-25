@@ -1,7 +1,13 @@
 import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
-import { handleGuestSession, handleIosGuestChallenge } from './guestSession.ts';
+import {
+  handleGuestSession,
+  handleIosGuestChallenge,
+  toLoggedAttestationConfigResult,
+  toLoggedIosGuestReason,
+} from './guestSession.ts';
 import { handleAnalyticsGuestSession } from './analyticsSession.ts';
+import { AppAttestProofError } from '../lib/appleAppAttest.ts';
 import type { AppAttestStore } from '../lib/appleAppAttestStore.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
 
@@ -398,4 +404,271 @@ Deno.test('/guest/session logs the Play Integrity verdict code without the token
   for (const secret of [integrityToken, requestHash, fingerprint]) {
     assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
   }
+});
+
+// Values that must never reach a log line in the reject-reason tests below.
+const SECRET_FINGERPRINT = '5ec7e7f1'.repeat(8);
+const SECRET_KEY_ID = 'SECRETkeyIdValue' + 'q'.repeat(27) + '=';
+const SECRET_CHALLENGE_ID = 'secretChallengeHead.secretChallengeTail';
+const SECRET_CHALLENGE = 'secret-server-challenge-value';
+const SECRET_PROOF = 'secret-apple-proof-object';
+const SECRET_IP = '198.51.100.23';
+const SECRET_VALUES = [SECRET_FINGERPRINT, SECRET_KEY_ID, SECRET_CHALLENGE_ID, SECRET_CHALLENGE,
+  SECRET_PROOF, SECRET_IP, 'secretChallengeHead', 'SECRETkeyIdValue'];
+
+async function captureLogs(run: () => Promise<void>): Promise<unknown[][]> {
+  const logged: unknown[][] = [];
+  const originals = { warn: console.warn, log: console.log, error: console.error };
+  const capture = (...args: unknown[]) => {
+    logged.push(args);
+  };
+  console.warn = capture;
+  console.log = capture;
+  console.error = capture;
+  try {
+    await run();
+  } finally {
+    console.warn = originals.warn;
+    console.log = originals.log;
+    console.error = originals.error;
+  }
+  return logged;
+}
+
+function assertNoSecrets(logged: unknown[][]) {
+  const serialized = JSON.stringify(logged);
+  for (const secret of SECRET_VALUES) {
+    assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
+  }
+}
+
+function iosRequest(path: string, body: unknown): Request {
+  return new Request(`https://example.supabase.co/functions/v1/api${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': SECRET_IP, 'CF-Connecting-IP': SECRET_IP },
+    body: typeof body === 'string' ? body : JSON.stringify(body),
+  });
+}
+
+type ChallengeRow = NonNullable<Awaited<ReturnType<AppAttestStore['challenge']>>>;
+type KeyRow = NonNullable<Awaited<ReturnType<AppAttestStore['key']>>>;
+
+function secretChallenge(overrides: Record<string, unknown> = {}): ChallengeRow {
+  return {
+    id: SECRET_CHALLENGE_ID,
+    challenge: SECRET_CHALLENGE,
+    key_id: SECRET_KEY_ID,
+    fingerprint_hash: SECRET_FINGERPRINT,
+    kind: 'attestation',
+    expires_at: new Date(Date.now() + 60_000).toISOString(),
+    consumed_at: null,
+    ...overrides,
+  } as ChallengeRow;
+}
+
+const DREAMER_APP_ID = 'ABCDEFGHIJ.com.tanuki75.noctalia';
+
+function secretKey(overrides: Record<string, unknown> = {}): KeyRow {
+  return {
+    key_id: SECRET_KEY_ID,
+    fingerprint_hash: SECRET_FINGERPRINT,
+    public_key_pem: 'secret-public-key',
+    environment: 'development',
+    app_id: DREAMER_APP_ID,
+    assertion_counter: 0,
+    ...overrides,
+  } as KeyRow;
+}
+
+function fakeStore(overrides: Partial<AppAttestStore> = {}): AppAttestStore {
+  return {
+    issue: () => Promise.resolve(secretChallenge()),
+    challenge: () => Promise.resolve(secretChallenge()),
+    key: () => Promise.resolve(secretKey()),
+    completeAttestation: () => Promise.resolve(true),
+    completeAssertion: () => Promise.resolve(true),
+    ...overrides,
+  };
+}
+
+const iosRejects = (logged: unknown[][], label: string) =>
+  logged.filter((args) => args[0] === label).map((args) => args[1]);
+
+Deno.test('iOS challenge rejects log an allowlisted reason code and no request values', async () => {
+  const cases: { name: string; body: unknown; store?: AppAttestStore; configured?: boolean;
+    status: number; reason: string }[] = [
+    { name: 'unconfigured', body: { fingerprint: SECRET_FINGERPRINT, keyId: SECRET_KEY_ID },
+      configured: false, status: 503, reason: 'config_unavailable' },
+    { name: 'not json', body: `{"fingerprint":"${SECRET_FINGERPRINT}"`, status: 400, reason: 'body_invalid' },
+    { name: 'array body', body: [SECRET_FINGERPRINT], status: 400, reason: 'body_invalid' },
+    { name: 'bad fingerprint', body: { fingerprint: SECRET_FINGERPRINT + 'z', keyId: SECRET_KEY_ID },
+      status: 400, reason: 'fingerprint_malformed' },
+    { name: 'bad keyId', body: { fingerprint: SECRET_FINGERPRINT, keyId: SECRET_KEY_ID.slice(1) },
+      status: 400, reason: 'key_id_malformed' },
+    { name: 'issue refused', body: { fingerprint: SECRET_FINGERPRINT, keyId: SECRET_KEY_ID },
+      store: fakeStore({ issue: () => Promise.resolve(null) }), status: 503, reason: 'challenge_issue_failed' },
+    { name: 'issue throws', body: { fingerprint: SECRET_FINGERPRINT, keyId: SECRET_KEY_ID },
+      store: fakeStore({ issue: () => Promise.reject(new Error(`db down ${SECRET_KEY_ID}`)) }),
+      status: 503, reason: 'challenge_error' },
+  ];
+  for (const testCase of cases) {
+    const run = async () => {
+      const logged = await captureLogs(async () => {
+        const response = await handleIosGuestChallenge(iosRequest('/guest/session/challenge', testCase.body),
+          { appAttestStore: testCase.store ?? fakeStore() });
+        assertEquals(response.status, testCase.status, testCase.name);
+        await response.body?.cancel();
+      });
+      assertEquals(iosRejects(logged, '[api] /guest/session/challenge rejected'),
+        [{ reason: testCase.reason, status: testCase.status }], testCase.name);
+      assertNoSecrets(logged);
+    };
+    if (testCase.configured === false) await run();
+    else await withAppAttestConfig(run);
+  }
+});
+
+Deno.test('every iOS guest session reject logs an allowlisted reason code and no request values', async () => {
+  const proofBody = (extra: Record<string, unknown> = {}) => ({
+    fingerprint: SECRET_FINGERPRINT, platform: 'ios', keyId: SECRET_KEY_ID,
+    challengeId: SECRET_CHALLENGE_ID, attestationObject: SECRET_PROOF, ...extra,
+  });
+  const assertionBody = (extra: Record<string, unknown> = {}) => ({
+    fingerprint: SECRET_FINGERPRINT, platform: 'ios', keyId: SECRET_KEY_ID,
+    challengeId: SECRET_CHALLENGE_ID, assertionObject: SECRET_PROOF, ...extra,
+  });
+  const assertionStore = (overrides: Partial<AppAttestStore> = {}) => fakeStore({
+    challenge: () => Promise.resolve(secretChallenge({ kind: 'assertion' })), ...overrides,
+  });
+  const rejectedProof = () => {
+    throw new AppAttestProofError();
+  };
+  const cases: { name: string; body: Record<string, unknown>; dependencies?: Dependencies;
+    configured?: boolean; status?: number; reason: string }[] = [
+    { name: 'unconfigured', body: proofBody(), configured: false, status: 503, reason: 'config_unavailable' },
+    { name: 'legacy body without proof', body: { fingerprint: SECRET_FINGERPRINT, platform: 'ios' },
+      reason: 'proof_missing' },
+    { name: 'bad fingerprint', body: proofBody({ fingerprint: SECRET_FINGERPRINT.slice(2) }),
+      reason: 'fingerprint_malformed' },
+    { name: 'bad keyId', body: proofBody({ keyId: 'x' + SECRET_KEY_ID }), reason: 'key_id_malformed' },
+    { name: 'missing keyId', body: proofBody({ keyId: undefined }), reason: 'key_id_malformed' },
+    { name: 'bad challengeId', body: proofBody({ challengeId: 'secretChallengeHead' }),
+      reason: 'challenge_id_malformed' },
+    { name: 'unknown challenge', body: proofBody(),
+      dependencies: { appAttestStore: fakeStore({ challenge: () => Promise.resolve(null) }) },
+      reason: 'challenge_not_found' },
+    { name: 'consumed challenge', body: proofBody(), dependencies: { appAttestStore: fakeStore({
+      challenge: () => Promise.resolve(secretChallenge({ consumed_at: new Date().toISOString() })) }) },
+      reason: 'challenge_consumed' },
+    { name: 'expired challenge', body: proofBody(), dependencies: { appAttestStore: fakeStore({
+      challenge: () => Promise.resolve(secretChallenge({ expires_at: new Date(Date.now() - 1).toISOString() })) }) },
+      reason: 'challenge_expired' },
+    { name: 'challenge for another key', body: proofBody(), dependencies: { appAttestStore: fakeStore({
+      challenge: () => Promise.resolve(secretChallenge({ key_id: 'B'.repeat(43) + '=' })) }) },
+      reason: 'challenge_key_mismatch' },
+    { name: 'challenge for another fingerprint', body: proofBody(), dependencies: { appAttestStore: fakeStore({
+      challenge: () => Promise.resolve(secretChallenge({ fingerprint_hash: 'b'.repeat(64) })) }) },
+      reason: 'challenge_fingerprint_mismatch' },
+    { name: 'unknown challenge kind', body: proofBody(), dependencies: { appAttestStore: fakeStore({
+      challenge: () => Promise.resolve(secretChallenge({ kind: 'other' as ChallengeRow['kind'] })) }) },
+      reason: 'challenge_kind_unknown' },
+    { name: 'attestation with assertion', body: proofBody({ assertionObject: SECRET_PROOF }),
+      reason: 'attestation_shape_invalid' },
+    { name: 'attestation refused', body: proofBody(),
+      dependencies: { verifyAppAttestation: rejectedProof }, reason: 'attestation_unverified' },
+    { name: 'attestation store refused', body: proofBody(), dependencies: {
+      appAttestStore: fakeStore({ completeAttestation: () => Promise.resolve(false) }),
+      verifyAppAttestation: () => ({ publicKeyPem: 'k', receiptBase64: 'r', environment: 'development',
+        appId: DREAMER_APP_ID }) }, reason: 'attestation_store_rejected' },
+    { name: 'assertion with attestation', body: assertionBody({ attestationObject: SECRET_PROOF }),
+      dependencies: { appAttestStore: assertionStore() }, reason: 'assertion_shape_invalid' },
+    { name: 'assertion for unknown key', body: assertionBody(), dependencies: {
+      appAttestStore: assertionStore({ key: () => Promise.resolve(null) }) }, reason: 'assertion_key_unknown' },
+    { name: 'assertion for unconfigured app', body: assertionBody(), dependencies: {
+      appAttestStore: assertionStore({ key: () => Promise.resolve(secretKey({ environment: 'production' })) }) },
+      reason: 'assertion_config_mismatch' },
+    { name: 'assertion from another fingerprint', body: assertionBody(), dependencies: {
+      appAttestStore: assertionStore({ key: () => Promise.resolve(secretKey({ fingerprint_hash: 'c'.repeat(64) })) }) },
+      reason: 'assertion_fingerprint_mismatch' },
+    { name: 'assertion refused', body: assertionBody(), dependencies: {
+      appAttestStore: assertionStore(), verifyAppAssertion: rejectedProof }, reason: 'assertion_unverified' },
+    { name: 'assertion verifier crashed', body: assertionBody(), dependencies: {
+      appAttestStore: assertionStore(),
+      verifyAppAssertion: () => { throw new TypeError(`bad ${SECRET_PROOF}`); } },
+      reason: 'assertion_verifier_error' },
+    { name: 'assertion store refused', body: assertionBody(), dependencies: {
+      appAttestStore: assertionStore({ completeAssertion: () => Promise.resolve(false) }),
+      verifyAppAssertion: () => 1 }, reason: 'assertion_store_rejected' },
+    { name: 'store failure during verification', body: assertionBody(), dependencies: {
+      appAttestStore: assertionStore({ key: () => Promise.reject(new Error(`db ${SECRET_KEY_ID}`)) }) },
+      reason: 'verification_error' },
+  ];
+  for (const testCase of cases) {
+    const status = testCase.status ?? 401;
+    const run = async () => {
+      const logged = await captureLogs(async () => {
+        const response = await handleGuestSession(iosRequest('/guest/session', testCase.body), {
+          appAttestStore: fakeStore(), resolveQaPassport: () => Promise.resolve(null),
+          ...testCase.dependencies,
+        });
+        assertEquals(response.status, status, testCase.name);
+        await response.body?.cancel();
+      });
+      const rejects = iosRejects(logged, '[api] /guest/session ios rejected') as Record<string, unknown>[];
+      assertEquals(rejects.length, 1, testCase.name);
+      assertEquals(rejects[0].reason, testCase.reason, testCase.name);
+      assertEquals(rejects[0].status, status, testCase.name);
+      assertNoSecrets(logged);
+    };
+    if (testCase.configured === false) await run();
+    else await withAppAttestConfig(run);
+  }
+});
+
+Deno.test('iOS attestation reject keeps one error class per configured app identity', async () => {
+  await withAppAttestConfig(async () => {
+    Deno.env.set('IOS_APP_ATTEST_ALLOWED_APPS', JSON.stringify([
+      { teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia', environment: 'production',
+        allowedBundleVersions: ['42'] },
+      { teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia.qa', environment: 'development',
+        allowedBundleVersions: ['43'] },
+      { teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia.lucid', environment: 'production',
+        allowedBundleVersions: ['1'] },
+    ]));
+    let calls = 0;
+    const logged = await captureLogs(async () => {
+      const response = await handleGuestSession(iosRequest('/guest/session', {
+        fingerprint: SECRET_FINGERPRINT, platform: 'ios', keyId: SECRET_KEY_ID,
+        challengeId: SECRET_CHALLENGE_ID, attestationObject: SECRET_PROOF,
+      }), {
+        appAttestStore: fakeStore(),
+        verifyAppAttestation: (input) => {
+          calls += 1;
+          if (input.expectedAppId.endsWith('.noctalia')) throw new AppAttestProofError();
+          if (input.expectedAppId.endsWith('.qa')) throw new RangeError(`decoder ${SECRET_PROOF}`);
+          return { publicKeyPem: 'k', receiptBase64: 'r', environment: 'development',
+            appId: 'ABCDEFGHIJ.com.tanuki75.noctalia.evil' };
+        },
+      });
+      assertEquals(response.status, 401);
+      assertEquals((await response.json()).error, 'Invalid App Attest proof');
+    });
+    assertEquals(calls, 3);
+    assertEquals(iosRejects(logged, '[api] /guest/session ios rejected'), [{
+      reason: 'attestation_unverified',
+      status: 401,
+      attestationConfigResults: ['proof_rejected', 'verifier_error', 'identity_mismatch'],
+    }]);
+    assertNoSecrets(logged);
+  });
+});
+
+Deno.test('iOS reason helpers map anything outside the allowlist to unknown', () => {
+  assertEquals(toLoggedIosGuestReason('proof_missing'), 'proof_missing');
+  assertEquals(toLoggedIosGuestReason('challenge_expired'), 'challenge_expired');
+  assertEquals(toLoggedIosGuestReason(`leak:${SECRET_KEY_ID}`), 'unknown');
+  assertEquals(toLoggedIosGuestReason(undefined), 'unknown');
+  assertEquals(toLoggedIosGuestReason(42), 'unknown');
+  assertEquals(toLoggedAttestationConfigResult('verifier_error'), 'verifier_error');
+  assertEquals(toLoggedAttestationConfigResult(SECRET_FINGERPRINT), 'unknown');
 });

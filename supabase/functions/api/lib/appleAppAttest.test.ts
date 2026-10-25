@@ -3,6 +3,7 @@ import { createHash, generateKeyPairSync, sign, X509Certificate } from 'node:cry
 import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import {
+  AppAttestProofError,
   certificateValidityWindow,
   isValidAppAttestAaguid,
   verifyAppleAppAssertion,
@@ -136,4 +137,49 @@ Deno.test('assertion verifies signed challenge and strictly increasing counter',
   assertThrows(() => verifyAppleAppAssertion({ ...input, expectedAppId: '1234567890.com.other.app' }));
   assertThrows(() => verifyAppleAppAssertion({ ...input,
     assertionObject: encodeAssertion(sign('sha256', signed, privateKey)) }));
+});
+
+Deno.test('malformed proof bytes are rejected as AppAttestProofError, not as runtime errors', () => {
+  // A CBOR text string holding invalid UTF-8 (0xff): the fatal decoder throws.
+  const badUtf8 = 'Yf8=';
+  assertThrows(() => verifyAppleAppAssertion({
+    assertionObject: badUtf8, challenge: 'fresh_server_challenge_12345', publicKeyPem: 'unused',
+    expectedAppId: appId, expectedEnvironment: 'production', allowedBundleVersions: ['1'], previousCounter: 0,
+  }), AppAttestProofError);
+  assertThrows(() => verifyAppleAppAttestationWithClientDataHash({ ...fixtureInput, attestationObject: badUtf8 },
+    fixtureHash), AppAttestProofError);
+
+  // A credential certificate whose DER no longer parses as X.509.
+  const raw = Buffer.from(APPLE_OFFICIAL_ATTESTATION_OBJECT, 'base64');
+  const certStart = raw.indexOf(Buffer.from([0x30, 0x82]), raw.indexOf(Buffer.from('x5c')));
+  const badCertificate = Buffer.from(raw);
+  badCertificate[certStart + 4] = 0x05;
+  badCertificate[certStart + 5] = 0x05;
+  assertThrows(() => verifyAppleAppAttestationWithClientDataHash({ ...fixtureInput,
+    attestationObject: badCertificate.toString('base64') }, fixtureHash), AppAttestProofError);
+});
+
+Deno.test('assertion keeps a corrupt stored key distinct from a rejected proof', () => {
+  const authData = Buffer.alloc(37);
+  createHash('sha256').update(appId).digest().copy(authData, 0);
+  authData.writeUInt32BE(1, 33);
+  const junkSignature = Buffer.alloc(70, 0x30);
+  const assertionObject = Buffer.concat([
+    Buffer.from([0xa2, 0x69]), Buffer.from('signature'),
+    Buffer.from([0x58, junkSignature.length]), junkSignature,
+    Buffer.from([0x71]), Buffer.from('authenticatorData'),
+    Buffer.from([0x58, authData.length]), authData,
+  ]).toString('base64');
+  const { publicKey } = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const input = {
+    assertionObject, challenge: 'fresh_server_challenge_12345',
+    publicKeyPem: publicKey.export({ format: 'pem', type: 'spki' }).toString(),
+    expectedAppId: appId, expectedEnvironment: 'production' as const,
+    allowedBundleVersions: ['1'], previousCounter: 0,
+  };
+  // An unparseable client signature is a rejected proof.
+  assertThrows(() => verifyAppleAppAssertion(input), AppAttestProofError);
+  // A stored key that does not parse is a server fault, not a proof verdict.
+  const error = assertThrows(() => verifyAppleAppAssertion({ ...input, publicKeyPem: 'not a key' }));
+  assertEquals(error instanceof AppAttestProofError, false);
 });
