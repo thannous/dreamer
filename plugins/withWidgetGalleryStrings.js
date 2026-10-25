@@ -105,13 +105,24 @@ function addKnownRegions(project, languages) {
 }
 
 /**
+ * English as a language of its own, each text standing for itself: without en.lproj an
+ * iPhone set to English then French would take the French names, iOS choosing among the
+ * extension's .lproj folders before it falls back to the development language.
+ */
+function withEnglish(translations) {
+  const english = Object.fromEntries(Object.values(translations).flatMap(Object.keys).map((text) => [text, text]));
+  return { en: english, ...translations };
+}
+
+/**
  * Writes `<language>.lproj/Localizable.strings` in the extension's folder and adds them to
  * the extension target as one localized resource. Without the extension (Lucid), nothing.
  */
-function applyWidgetGalleryStrings(project, { iosRoot, translations }) {
+function applyWidgetGalleryStrings(project, { iosRoot, translations: given }) {
   const targetKey = project.findTargetKey(TARGET_NAME);
   const groupKey = project.findPBXGroupKey({ name: TARGET_NAME });
   if (!targetKey || !groupKey) return project;
+  const translations = withEnglish(given);
   const languages = Object.keys(translations).sort();
   for (const language of languages) {
     const directory = path.join(iosRoot, TARGET_NAME, `${language}.lproj`);

@@ -125,6 +125,15 @@ describe('withWidgetGalleryStrings', () => {
     expect(fs.existsSync(path.join(made.iosRoot, 'ExpoWidgetsTarget/pt.lproj/Localizable.strings'))).toBe(true);
   });
 
+  it('gives English its own strings, so an English iPhone keeps the English names', () => {
+    made = setUp();
+    applyWidgetGalleryStrings(made.project, { iosRoot: made.iosRoot, translations: TRANSLATIONS });
+
+    expect(fs.readFileSync(path.join(made.iosRoot, 'ExpoWidgetsTarget/en.lproj/Localizable.strings'), 'utf8')).toBe(
+      stringsFileContent({ 'Tell my dream': 'Tell my dream', 'Your latest dream\'s painting.': 'Your latest dream\'s painting.' }),
+    );
+  });
+
   it('adds them to the extension only, as one localized resource', () => {
     made = setUp();
     applyWidgetGalleryStrings(made.project, { iosRoot: made.iosRoot, translations: TRANSLATIONS });
@@ -136,6 +145,7 @@ describe('withWidgetGalleryStrings', () => {
     const [variantKey, variant] = variants[0];
     const references = variant.children.map(({ value }) => objects.PBXFileReference[value]);
     expect(references.map(({ name, path: filePath }) => [name, filePath.replace(/"/g, '')])).toEqual([
+      ['en', 'en.lproj/Localizable.strings'],
       ['fr', 'fr.lproj/Localizable.strings'],
       ['pt', 'pt.lproj/Localizable.strings'],
     ]);
