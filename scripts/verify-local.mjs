@@ -1653,21 +1653,25 @@ export function githubSlug(url) {
 }
 
 /** The commit status of a verify result: success only for exit status 0. */
-export function commitStatusFor(kind, { status, proof }, sha) {
-  // Success only for exit 0 with a passed proof: anything else is a failure.
-  if (status === 0 && proof?.result !== 'passed') status = 1;
-  const checks = Array.isArray(proof?.checks) ? proof.checks : [];
+export function commitStatusFor(kind, { status, proof, run }, sha) {
+  // This invocation's own record, never a kept earlier proof (a rerun that
+  // reuses every check keeps the old proof, whose counts are not this run's).
+  const current = run ?? proof;
+  // Success only for exit 0 with a passed run: anything else is a failure.
+  if (status === 0 && current?.result !== 'passed') status = 1;
+  const checks = Array.isArray(current?.checks) ? current.checks : [];
   const names = (result) => checks.filter((check) => check.result === result).map((check) => check.name);
   const head = `verify:${kind} ${status === 0 ? 'passed' : status === 2 ? 'incomplete' : 'failed'} on ${sha.slice(0, 12)}`;
   let detail;
   if (status === 0) {
-    const reused = checks.filter((check) => check.result === 'passed' && check.reused).length;
-    const ran = checks.filter((check) => check.result === 'passed' && !check.reused).length;
-    detail = `${ran} ran, ${reused} reused, ${names('skipped').length} skipped`;
+    // The same counts as the run's own summary line.
+    const ran = checks.filter((check) => check.durationMs !== undefined).length;
+    const reused = checks.filter((check) => check.reused).length;
+    detail = `${ran} ran, ${reused} reused, ${names('skipped').length} out of scope`;
   } else if (status === 2) {
     detail = `could not run here: ${names('unavailable').join(', ') || 'see the local run'}`;
   } else {
-    detail = names('failed').join(', ') || (proof ? 'see the local run' : 'no proof written');
+    detail = names('failed').join(', ') || (current ? 'see the local run' : 'no proof written');
   }
   const description = `${head}: ${detail}`;
   return {
@@ -2044,7 +2048,9 @@ async function runVerify(kind, argv = [], {
   if (incomplete && !failed) {
     log(`${PREFIX} incomplete: run the unavailable checks on a machine that can run them (or a listed external CI, on demand), then rerun with --external <check>=<evidence> from the machine that ran the check.`);
   }
-  return { status: failed ? 1 : incomplete ? 2 : 0, proof: kept ?? proof };
+  // proof: the tree's proof as it now stands (an earlier one when kept);
+  // run: what this invocation itself did.
+  return { status: failed ? 1 : incomplete ? 2 : 0, proof: kept ?? proof, run: proof };
 }
 
 // ---------------------------------------------------------------- deploy guard
