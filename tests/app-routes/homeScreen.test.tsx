@@ -27,6 +27,8 @@ let mockBottomInset = 0;
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 24, bottom: mockBottomInset, left: 0, right: 0 }),
 }));
+let mockInSideColumn = false;
+jest.mock('@/context/SideColumnTabBarContext', () => ({ useTabBarInSideColumn: () => mockInSideColumn }));
 let mockPlatformOS: 'web' | 'ios' | 'android' = 'web';
 let mockSleepSoundsAvailable = false;
 let mockForeground: (() => void) | undefined;
@@ -342,6 +344,7 @@ describe('Home Accueil Aujourd’hui', () => {
   beforeEach(() => {
     mockHomeFocused = true;
     mockBottomInset = 0;
+    mockInSideColumn = false;
     mockWidth = 390;
     mockHeight = 844;
     mockFontScale = 1;
@@ -514,6 +517,18 @@ describe('Home Accueil Aujourd’hui', () => {
     // above the bar (bar height + inset floor) at both scales, taller at fontScale 2.
     expect(expected).toBeGreaterThan(base.barHeight + base.minimumBottomInset + ThemeLayout.spacing.lg);
     expect(expected).toBeGreaterThanOrEqual(layout.barHeight + layout.minimumBottomInset);
+  });
+
+  it('scrolls to the bottom safe area when the navigation stands in the iPhone Duo side column', async () => {
+    mockPlatformOS = 'ios';
+    mockInSideColumn = true;
+    mockBottomInset = 34;
+    mockWidth = 382;
+    mockHeight = 678;
+    await renderHome([]);
+
+    const { ThemeLayout } = require('@/constants/journalTheme');
+    expect(screen.getByTestId('home-scroll').getAttribute('data-padding-bottom')).toBe(String(34 + ThemeLayout.spacing.lg));
   });
 
   it('exposes mobile settings with dictionary and inspiration in resources', async () => {

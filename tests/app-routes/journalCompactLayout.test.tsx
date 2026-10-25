@@ -90,6 +90,8 @@ jest.mock('react-native-reanimated', () => {
   };
 });
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
+let mockInSideColumn = false;
+jest.mock('@/context/SideColumnTabBarContext', () => ({ useTabBarInSideColumn: () => mockInSideColumn }));
 jest.mock('react-native', () => {
   const React = require('react');
   const element = (tag: string) => function MockNativeElement({ children, testID, onPress, accessibilityLabel }: any) {
@@ -476,6 +478,7 @@ afterEach(() => {
   cleanup();
   mockDreams.length = 0;
   Object.assign(mockWindow, { width: 390, height: 844, fontScale: 1 });
+  mockInSideColumn = false;
   mockPush.mockClear();
   mockPlatform = 'android';
   mockKeyboardListeners.clear();
@@ -945,6 +948,14 @@ describe('Journal on an iPhone Duo', () => {
     Object.assign(mockWindow, { width, height });
     render(<JournalScreen />);
     expect(mockListProps.numColumns).toBe(columns);
+  });
+
+  it('lets the dreams scroll to the bottom safe area when the navigation stands in the side column', () => {
+    mockInSideColumn = true;
+    Object.assign(mockWindow, { width: 382, height: 678 });
+    render(<JournalScreen />);
+    // No floating bar to clear: the last dream stops above the home indicator only.
+    expect(listNavigationPadding()).toBe(MOCK_INSETS.bottom);
   });
 
   it('opens the new columns on the dream at the top when the Duo folds', () => {

@@ -30,6 +30,7 @@ import {
 } from "@/constants/layout";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { useContentWindow } from "@/context/ContentWindowContext";
+import { useTabBarInSideColumn } from "@/context/SideColumnTabBarContext";
 import { useDreamsData } from "@/context/DreamsContext";
 import { useTheme } from "@/context/ThemeContext";
 import { ScrollPerfProvider } from "@/context/ScrollPerfContext";
@@ -142,13 +143,17 @@ function InspirationScreen() {
   const isDesktopLayout = Platform.OS === "web" && width >= DESKTOP_BREAKPOINT;
   const navigationLayout = getBottomNavigationLayout(width, height, fontScale);
   const scrollHeader = !isDesktopLayout && navigationLayout.compact && navigationLayout.largeText;
-  const navigationClearance = navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
+  const tabBarInSideColumn = useTabBarInSideColumn();
+  // In the iPhone Duo's side column the navigation leaves the bottom free but for the safe area.
+  const navigationClearance = tabBarInSideColumn
+    ? insets.bottom
+    : navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
 
   const scrollContentBottomPadding = isDesktopLayout
     ? ThemeLayout.spacing.xl
-    : scrollHeader ? ThemeLayout.spacing.lg : navigationLayout.barHeight
-      + navigationLayout.minimumBottomInset
-      + ThemeLayout.spacing.lg;
+    : scrollHeader ? ThemeLayout.spacing.lg : (tabBarInSideColumn
+      ? navigationClearance
+      : navigationLayout.barHeight + navigationLayout.minimumBottomInset) + ThemeLayout.spacing.lg;
   const personalReading = useMemo(
     () => (dreamsLoaded && dreams.length > 0 ? buildPersonalReading(dreams, now) : null),
     [dreams, dreamsLoaded, now]

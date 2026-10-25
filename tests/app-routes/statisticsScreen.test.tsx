@@ -13,6 +13,7 @@ const mockFiguresProps = jest.fn();
 const mockUseDreams = jest.fn();
 const mockWindow = { width: 390, height: 844, scale: 1, fontScale: 1 };
 let mockBottomInset = 0;
+let mockInSideColumn = false;
 let mockUser: { id: string } | null = null;
 let mockQuota: { tier: string; usage?: unknown; loading: boolean; error: Error | null } = { tier: 'guest', loading: false, error: null };
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
@@ -22,6 +23,7 @@ jest.mock('@/components/trends/useTrendsReveal', () => jest.requireActual('@/com
 jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 24, bottom: mockBottomInset, left: 0, right: 0 }),
 }));
+jest.mock('@/context/SideColumnTabBarContext', () => ({ useTabBarInSideColumn: () => mockInSideColumn }));
 
 const NOW = new Date(2026, 7, 29, 18, 0, 0).getTime();
 const localDay = (year: number, monthIndex: number, day: number, hour = 9): number =>
@@ -38,6 +40,7 @@ afterEach(() => {
   mockWindow.height = 844;
   mockWindow.fontScale = 1;
   mockBottomInset = 0;
+  mockInSideColumn = false;
   mockUser = null;
   mockQuota = { tier: 'guest', loading: false, error: null };
 });
@@ -450,6 +453,18 @@ describe('Tendances screen', () => {
     const expected = layout.barHeight + layout.minimumBottomInset + ThemeLayout.spacing.lg;
     const scroller = screen.getByTestId('trends.section.seal').closest('[data-content-container-style]');
     expect(scroller?.getAttribute('data-content-container-style')).toContain(`"paddingBottom":${expected}`);
+  });
+
+  it('scrolls to the bottom safe area when the navigation stands in the iPhone Duo side column', () => {
+    mockInSideColumn = true;
+    mockBottomInset = 34;
+    mockWindow.width = 382;
+    mockWindow.height = 678;
+    renderJournal([analyzed(nightsAgo(1), { theme: 'calm' })]);
+
+    const { ThemeLayout } = require('@/constants/journalTheme');
+    const scroller = screen.getByTestId('trends.section.seal').closest('[data-content-container-style]');
+    expect(scroller?.getAttribute('data-content-container-style')).toContain(`"paddingBottom":${34 + ThemeLayout.spacing.lg}`);
   });
 
   it('fits the seal and keeps every section at 320 dp', () => {

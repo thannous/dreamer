@@ -25,6 +25,11 @@ let mockFontScale = 1;
 let mockRouteCommitted = true;
 let mockSegments: string[] = ['(tabs)', 'index'];
 let mockActiveAnalysis: { dreamId: number } | null = null;
+let capturedTabBar: unknown = 'unset';
+let mockInSideColumn = false;
+let mockSideColumnBar: { activeKey: string; onSelect: (key: string) => void } | null = null;
+const mockRouterPush = jest.fn();
+const mockRouterNavigate = jest.fn();
 
 afterEach(cleanup);
 
@@ -32,9 +37,11 @@ jest.doMock('expo-router', () => {
   const Tabs = ({
     children,
     screenOptions,
+    tabBar,
   }: {
     children?: React.ReactNode;
     screenOptions?: { tabBarStyle?: unknown };
+    tabBar?: unknown;
   }) => {
     const React = require('react');
     const [note, setNote] = React.useState('initial');
@@ -45,6 +52,7 @@ jest.doMock('expo-router', () => {
       };
     }, []);
     capturedTabBarStyle = screenOptions?.tabBarStyle ?? null;
+    capturedTabBar = tabBar;
     return (
       <div>
         <span data-testid="mock-tabs-note">{note}</span>
@@ -68,7 +76,10 @@ jest.doMock('expo-router', () => {
 
   return {
     Tabs,
-    router: { push: jest.fn() },
+    router: {
+      push: (...args: unknown[]) => mockRouterPush(...args),
+      navigate: (...args: unknown[]) => mockRouterNavigate(...args),
+    },
     useSegments: () => mockSegments,
   };
 });
@@ -236,6 +247,13 @@ jest.doMock('@/context/AnalysisActivityContext', () => ({
     activeAnalysis: mockActiveAnalysis,
     lastAnalysisOutcome: null,
   }),
+}));
+
+jest.doMock('@/context/SideColumnTabBarContext', () => ({
+  useSideColumnTabBar: (owner: string, bar: typeof mockSideColumnBar) => {
+    if (owner === 'tabs') mockSideColumnBar = bar;
+    return mockInSideColumn;
+  },
 }));
 
 jest.doMock('@/hooks/useTranslation', () => ({
@@ -602,5 +620,73 @@ describe('TabLayout StatefulTabs', () => {
     expect(screen.getByTestId('mock-tabs-note').textContent).toBe('edited');
     expect(screen.getByText(/^nav\.explore(?:_compact)?$/)).toBeTruthy();
     view.unmount();
+  });
+});
+
+describe('TabLayout beside the iPhone Duo side column', () => {
+  beforeEach(() => {
+    capturedTabBarStyle = null;
+    capturedTabBar = 'unset';
+    capturedScreens = [];
+    mockPlatformOS = 'ios';
+    // The folded Duo's page, its 84 pt status bar column on the right.
+    mockWindowWidth = 466;
+    mockWindowHeight = 678;
+    mockFontScale = 1;
+    mockRouteCommitted = true;
+    mockSegments = ['(tabs)', 'journal'];
+    mockActiveAnalysis = null;
+    mockInSideColumn = true;
+    mockSideColumnBar = null;
+    mockRouterPush.mockClear();
+    mockRouterNavigate.mockClear();
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  });
+
+  afterEach(() => {
+    mockInSideColumn = false;
+  });
+
+  it('hands the navigation to the column and draws none at the bottom', () => {
+    render(<TabLayout />);
+
+    expect(typeof capturedTabBar).toBe('function');
+    expect((capturedTabBar as () => unknown)()).toBeNull();
+    expect(screen.queryByTestId('tab.addDream.overhang')).toBeNull();
+    expect(mockSideColumnBar?.activeKey).toBe('journal');
+
+    mockSideColumnBar?.onSelect('stats');
+    expect(mockRouterNavigate).toHaveBeenCalledWith('/(tabs)/statistics');
+    mockSideColumnBar?.onSelect('addDream');
+    expect(mockRouterPush).toHaveBeenCalledWith('/recording');
+  });
+
+  it('names the open tab as the column bar\'s active one', () => {
+    mockSegments = ['(tabs)'];
+    const view = render(<TabLayout />);
+    expect(mockSideColumnBar?.activeKey).toBe('home');
+    mockSegments = ['(tabs)', 'statistics'];
+    view.rerender(<TabLayout />);
+    expect(mockSideColumnBar?.activeKey).toBe('stats');
+  });
+
+  it('gives the column no navigation while authentication is required or before the tabs are shown', () => {
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
+    const view = render(<TabLayout />);
+    expect(mockSideColumnBar).toBeNull();
+    view.unmount();
+
+    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockRouteCommitted = false;
+    render(<TabLayout />);
+    expect(mockSideColumnBar).toBeNull();
+  });
+
+  it('keeps its own bar where there is no column', () => {
+    mockInSideColumn = false;
+    render(<TabLayout />);
+
+    expect(capturedTabBar).toBeUndefined();
+    expect(screen.getByTestId('tab.addDream.overhang')).toBeTruthy();
   });
 });

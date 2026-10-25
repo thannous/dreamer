@@ -11,6 +11,7 @@ import {
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useContentWindow } from '@/context/ContentWindowContext';
+import type { NavigationKey } from '@/context/SideColumnTabBarContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
@@ -29,10 +30,9 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconName = Parameters<typeof IconSymbol>[0]['name'];
-type BottomNavKey = 'home' | 'journal' | 'addDream' | 'stats' | 'explore';
 
 type BottomNavItem = {
-  key: BottomNavKey;
+  key: NavigationKey;
   label: string;
   accessibilityLabel: string;
   icon: IconName;
@@ -42,7 +42,7 @@ type BottomNavItem = {
 };
 
 type NoctaliaBottomNavProps = {
-  activeKey: BottomNavKey;
+  activeKey: NavigationKey;
   addDreamIcon?: IconName;
   /** Pressing Capture while already on Capture; without it the press does nothing. */
   onCapturePress?: () => void;
@@ -52,11 +52,74 @@ type NoctaliaBottomNavProps = {
 };
 
 /**
+ * Where each destination lives. Explore keeps the nested tab state explicit: from Capture,
+ * a resource route can then return to Explorer instead of the default Today tab.
+ */
+export const BOTTOM_NAV_HREFS: Record<NavigationKey, Href> = {
+  home: '/(tabs)',
+  journal: '/(tabs)/journal',
+  addDream: '/recording',
+  stats: '/(tabs)/statistics',
+  explore: '/(tabs)/explore',
+};
+
+/** The five destinations as every navigation bar shows them; short labels where full ones may not fit. */
+export function getBottomNavItems(
+  t: ReturnType<typeof useTranslation>['t'],
+  { compactLabels, addDreamIcon }: { compactLabels: boolean; addDreamIcon: IconName },
+): BottomNavItem[] {
+  return [
+    {
+      key: 'home',
+      label: t(compactLabels ? 'nav.home_compact' : 'nav.home'),
+      accessibilityLabel: t('nav.home'),
+      icon: 'house',
+      activeIcon: 'house.fill',
+      href: BOTTOM_NAV_HREFS.home,
+      testID: TID.Tab.Home,
+    },
+    {
+      key: 'journal',
+      label: t('nav.journal'),
+      accessibilityLabel: t('nav.journal'),
+      icon: 'book',
+      activeIcon: 'book.fill',
+      href: BOTTOM_NAV_HREFS.journal,
+      testID: TID.Tab.Journal,
+    },
+    {
+      key: 'addDream',
+      label: t(compactLabels ? 'nav.capture_dream_compact' : 'nav.capture_dream'),
+      accessibilityLabel: t('nav.capture_dream_accessibility'),
+      icon: addDreamIcon,
+      href: BOTTOM_NAV_HREFS.addDream,
+      testID: TID.Tab.AddDream,
+    },
+    {
+      key: 'stats',
+      label: t(compactLabels ? 'nav.stats_compact' : 'nav.stats'),
+      accessibilityLabel: t('nav.stats'),
+      icon: 'chart.line.uptrend.xyaxis',
+      href: BOTTOM_NAV_HREFS.stats,
+      testID: TID.Tab.Stats,
+    },
+    {
+      key: 'explore',
+      label: t(compactLabels ? 'nav.explore_compact' : 'nav.explore'),
+      accessibilityLabel: t('nav.explore'),
+      icon: 'sparkles',
+      href: BOTTOM_NAV_HREFS.explore,
+      testID: TID.Tab.Explore,
+    },
+  ];
+}
+
+/**
  * Shadows have no `global.css` token — RN spreads a shadow over five properties
  * (`shadowColor/Offset/Opacity/Radius` plus Android `elevation`) that Tailwind's single
  * `box-shadow` does not map onto without changing how Android draws it. They stay here.
  */
-const BAR_SHADOW: ViewStyle = {
+export const BAR_SHADOW: ViewStyle = {
   shadowColor: '#000000',
   shadowOffset: { width: 0, height: 12 },
   shadowOpacity: 0.22,
@@ -119,52 +182,7 @@ export function NoctaliaBottomNav({
       ? 'text-[11px]'
       : 'text-caption';
 
-  const items: BottomNavItem[] = [
-    {
-      key: 'home',
-      label: t(navigationLayout.compactLabels ? 'nav.home_compact' : 'nav.home'),
-      accessibilityLabel: t('nav.home'),
-      icon: 'house',
-      activeIcon: 'house.fill',
-      href: '/(tabs)',
-      testID: TID.Tab.Home,
-    },
-    {
-      key: 'journal',
-      label: t('nav.journal'),
-      accessibilityLabel: t('nav.journal'),
-      icon: 'book',
-      activeIcon: 'book.fill',
-      href: '/(tabs)/journal',
-      testID: TID.Tab.Journal,
-    },
-    {
-      key: 'addDream',
-      label: t(navigationLayout.compactLabels ? 'nav.capture_dream_compact' : 'nav.capture_dream'),
-      accessibilityLabel: t('nav.capture_dream_accessibility'),
-      icon: addDreamIcon,
-      href: '/recording',
-      testID: TID.Tab.AddDream,
-    },
-    {
-      key: 'stats',
-      label: t(navigationLayout.compactLabels ? 'nav.stats_compact' : 'nav.stats'),
-      accessibilityLabel: t('nav.stats'),
-      icon: 'chart.line.uptrend.xyaxis',
-      href: '/(tabs)/statistics',
-      testID: TID.Tab.Stats,
-    },
-    {
-      key: 'explore',
-      label: t(navigationLayout.compactLabels ? 'nav.explore_compact' : 'nav.explore'),
-      accessibilityLabel: t('nav.explore'),
-      icon: 'sparkles',
-      // Keep the nested tab state explicit. When this bar is used from Capture,
-      // a resource route can now return to Explorer instead of the default Today tab.
-      href: '/(tabs)/explore',
-      testID: TID.Tab.Explore,
-    },
-  ];
+  const items = getBottomNavItems(t, { compactLabels: navigationLayout.compactLabels, addDreamIcon });
 
   return (
     <View pointerEvents="box-none" className="absolute inset-0 z-[45]">

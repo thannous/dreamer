@@ -5,6 +5,7 @@ import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View, ViewSty
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
+import { BOTTOM_NAV_HREFS } from '@/components/navigation/NoctaliaBottomNav';
 import { ActiveTabPill, TabBarGlass, type BlurTarget } from '@/components/navigation/TabBarGlass';
 import { CAPTURE_GLOW, getActivePillFrame, getCaptureAction, getCaptureOverhang, getIconSlotSize, getTabBarFrame } from '@/components/navigation/tabBarMetrics';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -21,6 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useStartupRoute } from '@/context/StartupRouteContext';
 import { useContentWindow } from '@/context/ContentWindowContext';
+import { useSideColumnTabBar, type NavigationKey } from '@/context/SideColumnTabBarContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -54,6 +56,14 @@ type TabGeometry = {
 
 // Five destinations; the active background reaches into its neighbours by index.
 const TAB_COUNT = 5;
+/** Each tab route's destination in the navigation. */
+const TAB_KEYS: Record<string, NavigationKey> = {
+  index: 'home',
+  journal: 'journal',
+  'add-dream': 'addDream',
+  statistics: 'stats',
+  explore: 'explore',
+};
 // Each cell keeps 1 point on both sides and drops the navigator's vertical
 // padding, so the active background can fill the bar's height.
 const TAB_CELL_INSET = 1;
@@ -245,6 +255,16 @@ export default function TabLayout() {
     return target;
   };
 
+  // The iPhone Duo's side column takes the navigation once the tabs are on show and have one.
+  const tabsShown = hasEnteredTabs || (routeCommitted && isTabsDestination);
+  const barInSideColumn = useSideColumnTabBar('tabs', tabsShown && !returningGuestBlocked && !keyboardVisible ? {
+    activeKey: TAB_KEYS[focusedTab] ?? 'home',
+    onSelect: (key) => {
+      if (key === 'addDream') router.push('/recording');
+      else router.navigate(BOTTOM_NAV_HREFS[key]);
+    },
+  } : null);
+
   useEffect(() => {
     if (routeCommitted && isTabsDestination) {
       // Navigation-lifetime latch: once tabs are actually entered, keep that
@@ -333,6 +353,8 @@ export default function TabLayout() {
 
   const tabs = (
     <Tabs
+      // In the Duo's side column the root shell draws the navigation; none at the bottom.
+      tabBar={barInSideColumn ? () => null : undefined}
       screenLayout={Platform.OS === 'android' ? ({ children, route }) => (
         <BlurTargetView ref={blurTargetFor(route.name)} collapsable={false} style={{ flex: 1 }}>
           {children}
@@ -475,7 +497,7 @@ export default function TabLayout() {
   return (
     <View className="flex-1" style={{ flex: 1, backgroundColor: noctalia.screen.background }}>
       {tabs}
-      {!isDesktopWeb && !returningGuestBlocked && !keyboardVisible && getCaptureAction(navigationLayout).raised ? (
+      {!isDesktopWeb && !returningGuestBlocked && !keyboardVisible && !barInSideColumn && getCaptureAction(navigationLayout).raised ? (
         // This touch surface is inside the full-screen parent, so Android can hit
         // the artwork above the tab row. hitSlop on that row is clipped by its bounds.
         <Pressable accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
