@@ -185,6 +185,13 @@ console.log('PASS bound receipts reject changed transcripts and repeat spend; le
 await db.exec('alter table public.dreams add column revision_id uuid, add column updated_at timestamptz');
 await db.exec(readFileSync(new URL('../supabase/migrations/20261025160000_refund_failed_text_analysis.sql', import.meta.url), 'utf8'));
 await db.exec("select set_config('test.jwt_role','service_role',false)");
+// Migration-first rollout: the previous API still calls this unchanged RPC,
+// inserting no reservation_id. Its default must keep that contract usable.
+const legacyGuestClaim = (await db.query("select public.claim_guest_analysis_quota('legacy-after-refund',$1,1,$2) result", [rid,hashA])).rows[0].result;
+assert.equal(legacyGuestClaim.allowed, true);
+assert.equal((await db.query("select count(*)::integer n from guest_analysis_quota_claims where fingerprint_hash='legacy-after-refund' and reservation_id is not null")).rows[0].n, 1);
+assert.equal((await db.query("select public.claim_guest_analysis_quota('legacy-after-refund',$1,1,$2) result", [rid,hashA])).rows[0].result.code, 'ANALYSIS_ALREADY_CLAIMED');
+console.log('PASS migration-first legacy guest RPC and insert compatibility');
 const refundGuest = async token => (await db.query("select public.release_guest_text_analysis('refund-guest',$1) result", [token])).rows[0].result;
 const reserveGuest = async () => (await db.query("select public.reserve_guest_text_analysis('refund-guest',$1,1,$2) result", [rid,hashA])).rows[0].result;
 const firstReservation = await reserveGuest();
