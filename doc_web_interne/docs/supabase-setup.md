@@ -180,11 +180,37 @@ can differ from the checked-in `app.json` value.
 Qualify attestation, refresh assertion, quota access and refusal paths on an
 owned physical iOS device against a matching non-production backend before
 production activation. A Simulator cannot provide App Attest proof. The new
-Edge route rejects old iOS v1 guest tokens immediately, while a new binary
-needs its challenge endpoint; coordinate Edge activation and binary
-availability with an explicit expectation that old iOS builds lose guest AI
-until updated. Local dream recording remains separate. Local fixture and
+Edge route rejects old iOS v1 guest tokens unless the pre-3.7.0 bridge below
+is open, while a new binary needs its challenge endpoint; coordinate Edge
+activation and binary availability, and without the bridge expect old iOS
+builds to lose guest AI until updated. Local dream recording remains separate. Local fixture and
 database tests do not establish native or production qualification.
+
+Pre-3.7.0 iOS bridge. Builds released before 3.7.0 request a guest session
+with only `{ fingerprint, platform: "ios" }` and an analytics session with
+only `{ platform: "ios" }`, as the api accepted before App Attest. The server
+keeps accepting exactly that, for those builds only, while two variables are
+set and valid:
+
+- `IOS_LEGACY_GUEST_UNTIL`: ISO 8601 end date with an explicit zone (for
+  example `Z` or `+01:00`), at most 120 days ahead. After it, or when unset,
+  the legacy flow is refused and outstanding legacy guest tokens stop working.
+- `IOS_LEGACY_GUEST_MAX_BUILD`: the highest iOS store build number
+  (`CFBundleVersion`) released before 3.7.0. It must be lower than every 3.7.0
+  build number.
+
+The old builds send no app version field, so the build number is read from
+the default iOS User-Agent `Noctalia/<CFBundleVersion> CFNetwork/... Darwin/...`.
+A missing or unreadable User-Agent, a build above the maximum, or a build
+listed in an App Attest `allowedBundleVersions` is treated as 3.7.0 or later
+and must present App Attest. A legacy token is the old v1 token: Dreamer
+routes only, never Lucid analytics. Every decision is logged as
+`[api] ios legacy guest` with a reason code (`legacy_accepted`,
+`legacy_disabled`, `legacy_config_invalid`, `legacy_expired`,
+`legacy_version_unknown`, `legacy_version_too_new`, `legacy_build_attested`)
+and, when accepted, the build number; never the fingerprint, token or IP. The
+User-Agent can be forged, which gives nothing beyond the pre-App Attest flow;
+the end date bounds it.
 
 Apple references: [validating App Attest objects](https://developer.apple.com/documentation/devicecheck/validating-apps-that-connect-to-your-server),
 [App Attest environment](https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.devicecheck.appattest-environment).

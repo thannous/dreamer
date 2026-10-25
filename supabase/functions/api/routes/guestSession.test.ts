@@ -4,6 +4,7 @@ import { handleGuestSession, handleIosGuestChallenge } from './guestSession.ts';
 import { handleAnalyticsGuestSession } from './analyticsSession.ts';
 import type { AppAttestStore } from '../lib/appleAppAttestStore.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
+import { IOS_LEGACY_GUEST_MAX_BUILD_ENV, IOS_LEGACY_GUEST_UNTIL_ENV } from '../lib/iosLegacyGuest.ts';
 
 type Dependencies = Parameters<typeof handleGuestSession>[1];
 
@@ -37,7 +38,8 @@ Deno.test('/guest/session refuses iOS fingerprint without App Attest proof', asy
     fingerprint: 'a'.repeat(64),
     platform: 'ios',
   });
-  assertEquals(response.status, 503); // Missing server configuration fails closed.
+  // No proof and no legacy window configured: refused as a 3.7.0+ client.
+  assertEquals(response.status, 401);
 });
 
 async function withAppAttestConfig<T>(run: () => Promise<T>): Promise<T> {
@@ -398,4 +400,193 @@ Deno.test('/guest/session logs the Play Integrity verdict code without the token
   for (const secret of [integrityToken, requestHash, fingerprint]) {
     assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
   }
+});
+
+const LEGACY_UA = 'Noctalia/14 CFNetwork/3896.100.1.2.1 Darwin/27.0.0';
+const LEGACY_FINGERPRINT = 'legacy-secret-fingerprint-value';
+const LEGACY_IP = '198.51.100.77';
+
+async function withLegacyWindow<T>(values: { until?: string; maxBuild?: string }, run: () => Promise<T>): Promise<T> {
+  const keys = [IOS_LEGACY_GUEST_UNTIL_ENV, IOS_LEGACY_GUEST_MAX_BUILD_ENV];
+  const previous = Object.fromEntries(keys.map((key) => [key, Deno.env.get(key)]));
+  const next: Record<string, string | undefined> = {
+    [IOS_LEGACY_GUEST_UNTIL_ENV]: values.until,
+    [IOS_LEGACY_GUEST_MAX_BUILD_ENV]: values.maxBuild,
+  };
+  for (const key of keys) {
+    const value = next[key];
+    if (value == null) Deno.env.delete(key);
+    else Deno.env.set(key, value);
+  }
+  try {
+    return await run();
+  } finally {
+    for (const [key, value] of Object.entries(previous)) {
+      if (value == null) Deno.env.delete(key);
+      else Deno.env.set(key, value);
+    }
+  }
+}
+
+const openLegacy = () => ({ until: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), maxBuild: '14' });
+
+function legacyRequest(body: Record<string, unknown>, userAgent: string | null = LEGACY_UA): Request {
+  return new Request('https://example.supabase.co/functions/v1/api/guest/session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Forwarded-For': LEGACY_IP,
+      ...(userAgent ? { 'User-Agent': userAgent } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+async function captureAll(run: () => Promise<void>): Promise<unknown[][]> {
+  const logged: unknown[][] = [];
+  const originals = { warn: console.warn, log: console.log, error: console.error };
+  const capture = (...args: unknown[]) => {
+    logged.push(args);
+  };
+  console.warn = capture;
+  console.log = capture;
+  console.error = capture;
+  try {
+    await run();
+  } finally {
+    console.warn = originals.warn;
+    console.log = originals.log;
+    console.error = originals.error;
+  }
+  return logged;
+}
+
+const legacyEntries = (logged: unknown[][]) => logged
+  .filter((args) => typeof args[0] === 'string' && args[0].startsWith('[api] ios legacy guest'))
+  .map((args) => [args[0], args[1]]);
+
+function assertNoLegacySecrets(logged: unknown[][]) {
+  const serialized = JSON.stringify(logged);
+  for (const secret of [LEGACY_FINGERPRINT, LEGACY_IP]) {
+    assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
+  }
+}
+
+Deno.test('a pre-3.7.0 iOS build gets the v120 guest flow before the end date', async () => {
+  await withGuestSecret(() => withLegacyWindow(openLegacy(), async () => {
+    let issued: { token: string } | null = null;
+    const logged = await captureAll(async () => {
+      const response = await handleGuestSession(legacyRequest({ fingerprint: LEGACY_FINGERPRINT, platform: 'ios' }),
+        { resolveQaPassport: () => Promise.resolve(null) });
+      assertEquals(response.status, 200);
+      issued = await response.json();
+    });
+    assertEquals(legacyEntries(logged), [
+      ['[api] ios legacy guest', { route: 'guest_session', reason: 'legacy_accepted', build: 14 }],
+    ]);
+    assertNoLegacySecrets(logged);
+
+    const token = issued!.token;
+    const verified = await verifyGuestToken(token, LEGACY_FINGERPRINT, 'ios');
+    assertEquals(verified.ok, true);
+    assertEquals(verified.payload?.v, 1);
+    assertEquals(verified.payload?.appId, undefined);
+    // A legacy token never works as a Lucid analytics proof.
+    assertEquals((await verifyGuestToken(token, LEGACY_FINGERPRINT, 'ios', 'analytics')).ok, false);
+
+    // Closing the window also stops outstanding legacy tokens.
+    await withLegacyWindow({ ...openLegacy(), until: new Date(Date.now() - 1000).toISOString() }, async () => {
+      assertEquals(await verifyGuestToken(token, LEGACY_FINGERPRINT, 'ios'),
+        { ok: false, reason: 'legacy_closed' });
+    });
+    await withLegacyWindow({}, async () => {
+      assertEquals((await verifyGuestToken(token, LEGACY_FINGERPRINT, 'ios')).reason, 'legacy_closed');
+    });
+  }));
+});
+
+Deno.test('the iOS legacy flow is refused after the end date, when unset, for 3.7.0+ and for unknown versions', async () => {
+  const past = new Date(Date.now() - 60_000).toISOString();
+  const cases: { name: string; window: { until?: string; maxBuild?: string }; userAgent: string | null;
+    reason: string }[] = [
+    { name: 'after the end date', window: { ...openLegacy(), until: past }, userAgent: LEGACY_UA,
+      reason: 'legacy_expired' },
+    { name: 'flags unset', window: {}, userAgent: LEGACY_UA, reason: 'legacy_disabled' },
+    { name: 'end date without max build', window: { until: openLegacy().until }, userAgent: LEGACY_UA,
+      reason: 'legacy_config_invalid' },
+    { name: '3.7.0 build without proof', window: openLegacy(),
+      userAgent: 'Noctalia/15 CFNetwork/3896.100.1.2.1 Darwin/27.0.0', reason: 'legacy_version_too_new' },
+    { name: 'no User-Agent', window: openLegacy(), userAgent: null, reason: 'legacy_version_unknown' },
+    { name: 'foreign User-Agent', window: openLegacy(), userAgent: 'Expo/2.33.0 CFNetwork/3896 Darwin/27.0.0',
+      reason: 'legacy_version_unknown' },
+  ];
+  await withGuestSecret(async () => {
+    for (const testCase of cases) {
+      await withLegacyWindow(testCase.window, async () => {
+        const logged = await captureAll(async () => {
+          const response = await handleGuestSession(
+            legacyRequest({ fingerprint: LEGACY_FINGERPRINT, platform: 'ios' }, testCase.userAgent),
+            { resolveQaPassport: () => Promise.resolve(null) });
+          assertEquals(response.status, 401, testCase.name);
+          assertEquals((await response.json()).error, 'Invalid App Attest proof', testCase.name);
+        });
+        assertEquals(legacyEntries(logged), [
+          ['[api] ios legacy guest rejected', { route: 'guest_session', reason: testCase.reason }],
+        ], testCase.name);
+        assertNoLegacySecrets(logged);
+      });
+    }
+  });
+});
+
+Deno.test('a build listed for App Attest never gets the legacy flow, even with a high max build', async () => {
+  await withAppAttestConfig(() => withGuestSecret(() => withLegacyWindow({ ...openLegacy(), maxBuild: '99' }, async () => {
+    const logged = await captureAll(async () => {
+      const response = await handleGuestSession(legacyRequest({ fingerprint: 'a'.repeat(64), platform: 'ios' }),
+        { resolveQaPassport: () => Promise.resolve(null) });
+      assertEquals(response.status, 401);
+      await response.body?.cancel();
+    });
+    assertEquals(legacyEntries(logged), [
+      ['[api] ios legacy guest rejected', { route: 'guest_session', reason: 'legacy_build_attested' }],
+    ]);
+  })));
+});
+
+Deno.test('an iOS request carrying any App Attest field never falls back to the legacy flow', async () => {
+  await withAppAttestConfig(() => withGuestSecret(() => withLegacyWindow(openLegacy(), async () => {
+    for (const extra of [{ keyId: 'A'.repeat(43) + '=' }, { challengeId: 'signed.challenge' },
+      { attestationObject: 'proof' }, { assertionObject: 'proof' }]) {
+      let verifierCalls = 0;
+      const logged = await captureAll(async () => {
+        const response = await handleGuestSession(
+          legacyRequest({ fingerprint: 'a'.repeat(64), platform: 'ios', ...extra }), {
+            resolveQaPassport: () => Promise.resolve(null),
+            appAttestStore: {
+              issue: () => Promise.resolve(null),
+              challenge: () => Promise.resolve(null),
+              key: () => Promise.resolve(null),
+              completeAttestation: () => Promise.resolve(false),
+              completeAssertion: () => Promise.resolve(false),
+            },
+            verifyAppAttestation: () => { verifierCalls += 1; throw new Error('no'); },
+          });
+        assertEquals(response.status, 401, JSON.stringify(Object.keys(extra)));
+        await response.body?.cancel();
+      });
+      assertEquals(legacyEntries(logged), []);
+      assertEquals(verifierCalls, 0);
+    }
+  })));
+});
+
+Deno.test('the legacy bridge never opens Android or unknown platforms', async () => {
+  await withGuestSecret(() => withLegacyWindow(openLegacy(), async () => {
+    const android = await handleGuestSession(legacyRequest({ fingerprint: LEGACY_FINGERPRINT, platform: 'android' }));
+    assertEquals(android.status, 401);
+    assertEquals((await android.json()).error, 'Missing integrity token');
+    const unknown = await handleGuestSession(legacyRequest({ fingerprint: LEGACY_FINGERPRINT, platform: 'desktop' }));
+    assertEquals(unknown.status, 401);
+    assertEquals((await unknown.json()).error, 'Guest sessions disabled for this platform');
+  }));
 });

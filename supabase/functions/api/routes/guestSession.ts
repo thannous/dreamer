@@ -5,6 +5,7 @@ import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
 import { getRemoteIp, isTurnstileConfigured, verifyTurnstileToken } from '../lib/turnstile.ts';
 import { verifyAppleAppAssertion, verifyAppleAppAttestation } from '../lib/appleAppAttest.ts';
 import { createAppAttestStore, type AppAttestStore } from '../lib/appleAppAttestStore.ts';
+import { decideIosLegacyGuest, logIosLegacyDecision } from '../lib/iosLegacyGuest.ts';
 
 type GuestSessionBody = {
   fingerprint?: string;
@@ -101,6 +102,14 @@ function appAttestConfigs(): IosAppAttestConfig[] | null {
   return single ? [single] : null;
 }
 
+/**
+ * Bundle versions configured for App Attest. A build listed here is a 3.7.0 or
+ * later build, so the legacy bridge never applies to it.
+ */
+export function appAttestBundleVersions(): string[] {
+  return appAttestConfigs()?.flatMap((config) => config.allowedBundleVersions) ?? [];
+}
+
 /** A signed challenge is short-lived and bound to this key and quota identity. */
 export async function handleIosGuestChallenge(
   req: Request,
@@ -155,6 +164,24 @@ export async function handleGuestSession(
       hasRequestHash: !!requestHash,
       hasIntegrityToken: !!integrityToken,
     });
+
+    // An iOS request without any App Attest field is the v120 flow. Only a
+    // pre-3.7.0 build inside the legacy window may still use it (it then skips
+    // the App Attest branch below and gets a v120 token). Every other caller,
+    // including any build whose version cannot be read, is treated as 3.7.0 or
+    // later and refused.
+    let legacyIos = false;
+    if (platform === 'ios' && body?.keyId == null && body?.challengeId == null &&
+        body?.attestationObject == null && body?.assertionObject == null) {
+      const decision = decideIosLegacyGuest({
+        userAgent: req.headers.get('user-agent'),
+        now: Date.now(),
+        attestedBuilds: appAttestBundleVersions(),
+      });
+      logIosLegacyDecision('guest_session', decision);
+      if (!decision.accepted) return response('Invalid App Attest proof', 401);
+      legacyIos = true;
+    }
 
     if (platform === 'android') {
       if (!requestHash || !integrityToken) {
@@ -216,7 +243,7 @@ export async function handleGuestSession(
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
       }
-    } else if (platform === 'ios') {
+    } else if (platform === 'ios' && !legacyIos) {
       const configs = appAttestConfigs();
       const keyId = body?.keyId;
       const challengeId = body?.challengeId;
@@ -295,7 +322,7 @@ export async function handleGuestSession(
       } catch {
         return response('Invalid App Attest proof', 401);
       }
-    } else {
+    } else if (!legacyIos) {
       // Android and web retain their own proofs. Unknown platforms stay closed.
       return new Response(JSON.stringify({ error: 'Guest sessions disabled for this platform' }), {
         status: 401,
@@ -309,6 +336,7 @@ export async function handleGuestSession(
     const qaPassport = await (dependencies.resolveQaPassport ?? resolveGuestQaPassport)(fingerprint);
     const token = await createGuestToken(fingerprint, platform, {
       ...(iosAppId ? { appId: iosAppId } : {}),
+      ...(legacyIos ? { legacyIos: true } : {}),
       ...(qaPassport?.active
         ? { quotaSubject: qaPassport.quotaSubject, validUntil: qaPassport.validUntil }
         : {}),

@@ -1,3 +1,5 @@
+import { readIosLegacyWindow } from './iosLegacyGuest.ts';
+
 const encoder = new TextEncoder();
 
 type GuestTokenPayload = {
@@ -68,10 +70,14 @@ const sign = async (data: string, secret: string): Promise<string> => {
 export const createGuestToken = async (
   fingerprint: string,
   platform: string,
-  options?: { quotaSubject?: string; validUntil?: string; appId?: string }
+  options?: { quotaSubject?: string; validUntil?: string; appId?: string; legacyIos?: boolean }
 ) => {
   const appId = options?.appId;
-  if (platform === 'ios' && !APP_ID.test(appId ?? '')) {
+  // A legacy iOS token is the v120 token (v1, no app identity). Only the
+  // pre-3.7.0 bridge in iosLegacyGuest.ts may ask for one, and it is accepted
+  // back only while that bridge is open.
+  const legacyIos = platform === 'ios' && options?.legacyIos === true && appId === undefined;
+  if (platform === 'ios' && !legacyIos && !APP_ID.test(appId ?? '')) {
     throw new Error('Verified iOS App ID is required');
   }
   const now = Date.now();
@@ -82,10 +88,10 @@ export const createGuestToken = async (
   const payload: GuestTokenPayload = {
     // v3 binds an attested iOS app identity. Earlier iOS tokens either lacked
     // App Attest (v1) or could cross from Lucid analytics into Dreamer AI (v2).
-    v: platform === 'ios' ? 3 : 1,
+    v: platform === 'ios' && !legacyIos ? 3 : 1,
     fingerprint,
     platform,
-    ...(platform === 'ios' ? { appId } : {}),
+    ...(platform === 'ios' && !legacyIos ? { appId } : {}),
     ...(options?.quotaSubject ? { quotaSubject: options.quotaSubject } : {}),
     iat: Math.floor(now / 1000),
     exp: Math.floor(expiresAt / 1000),
@@ -133,15 +139,25 @@ export const verifyGuestToken = async (
     return { ok: false, reason: 'bad_payload' };
   }
 
-  if (payload.v !== (payload.platform === 'ios' ? 3 : 1)) {
+  const legacyIos = payload.platform === 'ios' && payload.v === 1;
+  if (legacyIos) {
+    // Pre-3.7.0 iOS token: Dreamer only, no app identity, and only while the
+    // legacy bridge is configured and before its end date.
+    if (purpose !== 'dreamer' || payload.appId !== undefined) {
+      return { ok: false, reason: 'version_mismatch' };
+    }
+    if (!readIosLegacyWindow(Date.now()).open) {
+      return { ok: false, reason: 'legacy_closed' };
+    }
+  } else if (payload.v !== (payload.platform === 'ios' ? 3 : 1)) {
     return { ok: false, reason: 'version_mismatch' };
   }
 
-  if (payload.platform === 'ios' && !APP_ID.test(payload.appId ?? '')) {
+  if (!legacyIos && payload.platform === 'ios' && !APP_ID.test(payload.appId ?? '')) {
     return { ok: false, reason: 'app_id_mismatch' };
   }
 
-  if (purpose === 'dreamer' && payload.platform === 'ios' &&
+  if (!legacyIos && purpose === 'dreamer' && payload.platform === 'ios' &&
       !DREAMER_APP_ID.test(payload.appId ?? '')) {
     return { ok: false, reason: 'app_id_mismatch' };
   }
