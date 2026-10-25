@@ -55,48 +55,44 @@ test('plus opens a symbols question once and resumes the saved exchange from its
   await startPlus(app, screen, browser);
   await openLibrary(screen);
 
-  const consentPrompts: string[] = [];
-  const unsubscribe = await browser.onDialog(async dialog => {
-    consentPrompts.push(dialog.message);
-    await dialog.accept();
-  });
-  try {
-    await screen.getByTestId('btn.dreamCategory.symbols', { visible: true }).tap();
-    const question = screen.getByText(symbolsQuestion, { exact: true, visible: true });
-    await expect(question).toHaveCount(1);
-    const reply = screen.getByText(mockReply, { visible: true });
-    await expect(reply).toHaveCount(1);
-    // This action is enabled only after the complete successful exchange has
-    // been saved and the send lock has been released, including streaming.
-    await expect(screen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
-    const replyText = (await reply.textContent())?.trim();
-    expect(replyText).toBeTruthy();
-    expect(replyText!.length).toBeGreaterThan(80);
-    await expect(question).toHaveCount(1);
-    await app.screenshot('symbols-question-and-complete-reply');
+  await screen.getByTestId('btn.dreamCategory.symbols', { visible: true }).tap();
+  // The first exchange asks the AI permission in Noctalia's modal; accepting sends the question.
+  const consent = screen.getByTestId('modal.aiConsent', { visible: true });
+  await expect(consent).toBeVisible();
+  await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+  await expect(consent).toBeHidden();
+  const question = screen.getByText(symbolsQuestion, { exact: true, visible: true });
+  await expect(question).toHaveCount(1);
+  const reply = screen.getByText(mockReply, { visible: true });
+  await expect(reply).toHaveCount(1);
+  // This action is enabled only after the complete successful exchange has
+  // been saved and the send lock has been released, including streaming.
+  await expect(screen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
+  const replyText = (await reply.textContent())?.trim();
+  expect(replyText).toBeTruthy();
+  expect(replyText!.length).toBeGreaterThan(80);
+  await expect(question).toHaveCount(1);
+  await app.screenshot('symbols-question-and-complete-reply');
 
-    await screen.getByRole('button', 'Back', { exact: true, visible: true }).tap();
-    await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
-    await expect(screen.getByTestId('text.reflection.exchangeSaved', { visible: true })).toBeVisible();
-    const resume = screen.getByTestId('btn.dreamCategory.symbols', { visible: true });
-    await expect(resume).toContainText('Resume');
-    await resume.tap();
+  await screen.getByRole('button', 'Back', { exact: true, visible: true }).tap();
+  await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('text.reflection.exchangeSaved', { visible: true })).toBeVisible();
+  const resume = screen.getByTestId('btn.dreamCategory.symbols', { visible: true });
+  await expect(resume).toContainText('Resume');
+  await resume.tap();
 
-    // Completed category links reopen the conversation without a category or
-    // messageId parameter. This proves that supported UI path; the explicit
-    // messageId gate and the 500 ms replacement race have isolated coverage.
-    const resumed = new URL(await browser.url());
-    expect(resumed.searchParams.has('category')).toBe(false);
-    expect(resumed.searchParams.has('messageId')).toBe(false);
-    await expect(screen.getByTestId('chat.input.message', { visible: true })).toBeVisible();
-    await expect(screen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
-    await expect(question).toHaveCount(1);
-    await expect(screen.getByText(replyText!, { exact: true, visible: true })).toHaveCount(1);
-    await expect(reply).toHaveCount(1);
-    expect(consentPrompts).toHaveLength(1);
-    expect(consentPrompts[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
-    await app.screenshot('symbols-category-resumes-one-exchange');
-  } finally {
-    await unsubscribe();
-  }
+  // Completed category links reopen the conversation without a category or
+  // messageId parameter. This proves that supported UI path; the explicit
+  // messageId gate and the 500 ms replacement race have isolated coverage.
+  const resumed = new URL(await browser.url());
+  expect(resumed.searchParams.has('category')).toBe(false);
+  expect(resumed.searchParams.has('messageId')).toBe(false);
+  await expect(screen.getByTestId('chat.input.message', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
+  await expect(question).toHaveCount(1);
+  await expect(screen.getByText(replyText!, { exact: true, visible: true })).toHaveCount(1);
+  await expect(reply).toHaveCount(1);
+  // Resuming does not ask again.
+  await expect(consent).toBeHidden();
+  await app.screenshot('symbols-category-resumes-one-exchange');
 });
