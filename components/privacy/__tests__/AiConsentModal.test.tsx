@@ -44,6 +44,7 @@ jest.mock('react-native', () => {
       select: (values: Record<string, unknown>) => values.ios ?? values.default,
     },
     Pressable: createNativeElement('Pressable'),
+    ScrollView: createNativeElement('ScrollView'),
     StyleSheet: {
       absoluteFill: { position: 'absolute', inset: 0 },
       absoluteFillObject: { position: 'absolute', inset: 0 },
@@ -123,6 +124,12 @@ const mockCopy: Record<string, string> = {
   'ai_consent.message': fr['ai_consent.message'],
   'ai_consent.accept': 'Accepter et continuer',
   'ai_consent.decline': 'Pas maintenant',
+  'ai_consent.details_show': fr['ai_consent.details_show'],
+  'ai_consent.details_hide': fr['ai_consent.details_hide'],
+  'ai_consent.details_sent_title': fr['ai_consent.details_sent_title'],
+  'ai_consent.details_sent_body': fr['ai_consent.details_sent_body'],
+  'ai_consent.details_when_title': fr['ai_consent.details_when_title'],
+  'ai_consent.details_when_body': fr['ai_consent.details_when_body'],
   'settings.legal.privacyPolicy': 'Politique de confidentialité',
 };
 
@@ -157,6 +164,23 @@ describe('AiConsentModal', () => {
 
     fireEvent.press(view.getByTestId(TID.Button.AiConsentDecline));
     expect(onDecline).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the details folded until asked, then names what is sent and when', () => {
+    const view = render(<AiConsentModal visible onAccept={jest.fn()} onDecline={jest.fn()} />);
+
+    expect(view.queryByTestId(TID.Component.AiConsentDetails)).toBeNull();
+
+    fireEvent.press(view.getByTestId(TID.Button.AiConsentDetailsToggle));
+    expect(view.getByText(fr['ai_consent.details_sent_title'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_sent_body'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_when_title'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_when_body'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_hide'])).toBeTruthy();
+
+    fireEvent.press(view.getByTestId(TID.Button.AiConsentDetailsToggle));
+    expect(view.queryByTestId(TID.Component.AiConsentDetails)).toBeNull();
+    expect(view.getByText(fr['ai_consent.details_show'])).toBeTruthy();
   });
 
   it('connects requestAiConsent to AiConsentModalHost and persists acceptance', async () => {

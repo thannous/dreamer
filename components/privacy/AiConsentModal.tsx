@@ -7,6 +7,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   type StyleProp,
@@ -300,6 +301,62 @@ type AiConsentModalProps = {
   onDecline: () => void;
 };
 
+/** Folded by default; lives inside the Modal content so it closes again on every new prompt. */
+function AiConsentDetails() {
+  const { t } = useTranslation();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const toggleDetails = useCallback(() => setDetailsOpen((open) => !open), []);
+
+  return (
+    <>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded: detailsOpen }}
+        hitSlop={8}
+        onPress={toggleDetails}
+        style={({ pressed }) => [styles.privacyLinkButton, pressed && styles.pressed]}
+        testID={TID.Button.AiConsentDetailsToggle}
+      >
+        <Text style={[styles.privacyLinkText, styles.detailsToggleText, { color: noctalia.accent.text }]}>
+          {t(detailsOpen ? 'ai_consent.details_hide' : 'ai_consent.details_show')}
+        </Text>
+        <IconSymbol
+          name={detailsOpen ? 'chevron.up' : 'chevron.down'}
+          size={15}
+          color={noctalia.accent.text}
+        />
+      </Pressable>
+
+      {detailsOpen ? (
+        <ScrollView
+          nestedScrollEnabled
+          style={styles.details}
+          testID={TID.Component.AiConsentDetails}
+        >
+          <View style={styles.detailsItem}>
+            <Text style={[styles.detailsTitle, { color: noctalia.text.primary }]}>
+              {t('ai_consent.details_sent_title')}
+            </Text>
+            <Text style={[styles.detailsBody, { color: noctalia.text.secondary }]}>
+              {t('ai_consent.details_sent_body')}
+            </Text>
+          </View>
+          <View style={styles.detailsItem}>
+            <Text style={[styles.detailsTitle, { color: noctalia.text.primary }]}>
+              {t('ai_consent.details_when_title')}
+            </Text>
+            <Text style={[styles.detailsBody, { color: noctalia.text.secondary }]}>
+              {t('ai_consent.details_when_body')}
+            </Text>
+          </View>
+        </ScrollView>
+      ) : null}
+    </>
+  );
+}
+
 export function AiConsentModal({ visible, onAccept, onDecline }: AiConsentModalProps) {
   const { colors, mode, shadows } = useTheme();
   const { t, currentLang } = useTranslation();
@@ -411,6 +468,8 @@ export function AiConsentModal({ visible, onAccept, onDecline }: AiConsentModalP
           <Text style={[styles.message, { color: noctalia.text.secondary }]}>
             {t('ai_consent.message')}
           </Text>
+
+          <AiConsentDetails />
 
           <Pressable
             accessibilityRole="link"
@@ -577,6 +636,28 @@ const styles = StyleSheet.create({
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
     textDecorationLine: 'underline',
+  },
+  detailsToggleText: {
+    textDecorationLine: 'none',
+  },
+  details: {
+    width: '100%',
+    maxHeight: 220,
+    marginTop: 4,
+  },
+  detailsItem: {
+    gap: 2,
+    marginBottom: 12,
+  },
+  detailsTitle: {
+    fontFamily: Fonts.outfit.bold,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
+  },
+  detailsBody: {
+    fontFamily: Fonts.outfit.regular,
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
   },
   primaryButton: {
     width: '100%',
