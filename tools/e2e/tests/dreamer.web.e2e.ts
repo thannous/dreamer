@@ -4,6 +4,10 @@ import { fileURLToPath } from 'node:url';
 import { isolateWeb } from '../web-fixtures';
 import type { App, Screen } from 'e2e';
 
+// The mock paints with remote placeholder images, which isolation blocks. Serve one of
+// the app's own paintings instead so the landing is deterministic and actually visible.
+const MOCK_PAINTING = fileURLToPath(new URL('../../../assets/images/onboarding-reverie-background.webp', import.meta.url));
+
 async function leaveGuidedStories(browser: Browser, screen: Screen) {
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true') return;
   const unsubscribe = await browser.onDialog('accept');
@@ -70,9 +74,29 @@ async function openDream(screen: Screen, title: string) {
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toBeVisible();
 }
 
-test('guest saves the exact story and reads its simulated analysis inline', async ({ app, screen, browser }) => {
+/** Whether the decoded image inside the element with this testID is shown to the reader. */
+function imageShown(browser: Browser, testID: string) {
+  return browser.evaluate((id) => {
+    const image = document.querySelector(`[data-testid="${id}"] img`) as HTMLImageElement | null;
+    return Boolean(image?.complete && image.naturalWidth > 0);
+  }, testID);
+}
+
+// Owner rule (2026-10-25): only a guest's first dream is read and illustrated unasked, once
+// the AI is allowed; each later dream waits for the guest, the seal offering its reading.
+test('guest reads and sees its first dream illustrated unasked, then is offered the next reading', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
+  await browser.route('https://picsum.photos/**', route => route.fulfill({ path: MOCK_PAINTING, contentType: 'image/webp' }));
   await startGuest(app, screen, browser);
+  // Remember whether the journal ever asks to read, however briefly: the first dream is not asked.
+  await browser.evaluate(() => {
+    const w = window as unknown as { __readingAsked: boolean };
+    w.__readingAsked = false;
+    new MutationObserver(() => {
+      w.__readingAsked ||= Boolean(document.querySelector('[data-testid="btn.dreamCaptureSeal.readNow"]'));
+    }).observe(document.body, { childList: true, subtree: true });
+    return null;
+  });
   const story = 'E2E moonlit harbor with a golden lighthouse.';
   // Revised 2026-10-19 (was: guests are not asked, owner decision 2026-10-10): App Review
   // guideline 5.1.2(i) needs permission before a guest's dream reaches the AI providers too.
@@ -90,6 +114,48 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   // Asked once: the reading does not ask again.
   await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
   await app.screenshot('guest-saved-analysis');
+  // Its illustration is painted in the seal's window, unasked, then shown on the page's plate.
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment.artwork')).toHaveCount(1);
+  await expect.poll(() => imageShown(browser, 'component.dreamDetail.savedMoment.artwork')).toBe(true);
+  // It waits in the seal until the reader has the seal in sight, then leaves it for the plate.
+  await screen.getByTestId('component.dreamDetail.savedMoment').scrollIntoView();
+  const plate = screen.getByTestId('btn.journal.illustration.expand');
+  await expect(plate).toHaveCount(1);
+  await expect.poll(() => imageShown(browser, 'btn.journal.illustration.expand')).toBe(true);
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment.painting')).toHaveCount(0);
+  expect(await browser.evaluate(() => (window as unknown as { __readingAsked: boolean }).__readingAsked)).toBe(false);
+  await plate.scrollIntoView();
+  await app.screenshot('guest-first-dream-illustrated-unasked');
+
+  // The second dream is sealed with the offer of its reading, and nothing reads it meanwhile.
+  await journal(screen);
+  await screen.getByTestId('tab.addDream', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  const next = 'E2E second dream of a paper boat crossing a silver river.';
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(next);
+  await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  await expect(screen.getByTestId('component.recording.dreamSeal')).toHaveCount(1);
+  await expect(screen.getByRole('heading', 'Run an analysis to understand this dream?', { visible: true })).toBeVisible();
+  const readNow = screen.getByTestId('btn.dreamCaptureSeal.readNow', { visible: true });
+  await expect(readNow).toBeEnabled();
+  // The seal holds on its question: the page does not open, the dream is not read.
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await expect(readNow).toBeEnabled();
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment')).toHaveCount(0);
+  await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
+  await app.screenshot('guest-second-dream-offered');
+  await screen.getByTestId('btn.dreamCaptureSeal.readLater', { visible: true }).tap();
+  const moment = screen.getByTestId('component.dreamDetail.savedMoment', { visible: true });
+  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(next);
+  // The page keeps the offer on the seal and stays unread.
+  await expect(moment.getByTestId('btn.dream.primaryCta')).toContainText(/analyze this dream/i);
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
+  await expect(screen.getByTestId('component.dreamDetail.constellation')).toHaveCount(0);
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment.painting')).toHaveCount(0);
+  await expect(screen.getByTestId('component.dreamDetail.savedMoment.artwork')).toHaveCount(0);
+  await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
+  await app.screenshot('guest-second-dream-unread');
 });
 
 // App Review (2026-10-19): each card leads with the amount billed, and a guest reads why to
@@ -513,10 +579,6 @@ test('Quick Settings keeps interior taps open and accepts every sign-in button e
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   }
 });
-
-// The mock paints with remote placeholder images, which isolation blocks. Serve one of
-// the app's own paintings instead so the landing is deterministic and actually visible.
-const MOCK_PAINTING = fileURLToPath(new URL('../../../assets/images/onboarding-reverie-background.webp', import.meta.url));
 
 // Act III and the epilogue: the illustration is painted in the seal's window, then leaves
 // it for the plate at the top of the page without moving what the reader sees (PR #358);
