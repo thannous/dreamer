@@ -949,7 +949,8 @@ rédige **dans le dossier privé de preuves** `purchase-attestation.json`, avec 
 - `transactionId` de la transaction Apple effectivement confirmée ;
 - `sheetObservedAt`, `confirmedAt` en millisecondes UTC, dans la fenêtre de tentative ;
 - `noChargeSheetVerified: true`, `ownerSideButtonConfirmed: true`, seulement si réellement observés ;
-- `sheetEvidence` (chemin privé de capture) et `sheetEvidenceSha256` (empreinte de ses octets).
+- `sheetEvidence` (chemin absolu privé de capture : la valeur `sheetCapture` de
+  `physical-flow-state.json`, telle quelle depuis e2e 0.21.3) et `sheetEvidenceSha256` (empreinte de ses octets).
 
 Ne pas produire cette attestation à partir d’un reçu seul. Le test exige une transaction native
 `PURCHASE`, même identifiant que `store_transaction_id` RevenueCat, compte/produit/environnement

@@ -2,7 +2,7 @@ import { test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { currentOwner, assertPendingAttempt, verifyPurchase, nativeTransactions, ATTEMPT_TTL_MS, type Attempt, type Attestation, type Subscription } from '../iphone-sandbox-guards';
 type F = TestFixtures & { device: Device };
@@ -142,6 +142,9 @@ test('Physical iPhone prepares Sandbox confirmation visual inspection', async (f
   phase('awaiting-sandbox-sheet-visual-inspection', { purchaseAttempt, purchaseStartedAt: startedAt });
   await buy.tap();
   await expect(f.screen.getByText(/environment\s*:\s*sandbox|environnement\s*:\s*sandbox|environnement\s+(?:de\s+)?test|test environment|(?:à|a) des fins de test uniquement|ne serez pas (?:factur|débité)|won.t be charged/i, { visible: true })).toBeVisible({ timeout: 60_000 });
+  // e2e 0.21.3 returns the absolute path of the file it wrote (#1326), so the
+  // attestation's sheetEvidence takes this value as is, whatever the cwd.
   const sheetCapture = await f.app.screenshot('theme-apple-sheet-needs-visual-verification');
+  assert.ok(isAbsolute(sheetCapture), 'The sheet capture path must be absolute.');
   phase('sandbox-sheet-awaiting-visual-verification', { sheetCapture, purchaseQualified: false });
 });

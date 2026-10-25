@@ -238,11 +238,37 @@ export async function nativeJournal(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
 }
 
+// e2e mobile 0.12.4 (#1305) refuses the generic iPhone keyboard drag when every
+// point above the keyboard is a control, which is the case once Capture has text.
+// Capture's scroll view uses keyboardShouldPersistTaps="handled", so a tap on its
+// static header title, which stays above the keyboard, closes it like a dreamer
+// would. Content lower on the screen can sit under the keyboard and type a key.
+// After a fill the keyboard can still be sliding in: a title tap before it is up
+// closes nothing and the editor keeps focus. So the helper waits for the
+// keyboard's own Return key, taps once, and requires that key gone. Callers that
+// did not type (an empty Capture just opened) pass `afterFill: false`: no keyboard
+// is expected there, only an unfocused editor.
+export async function nativeDismissCaptureKeyboard(fixtures: NativeFixtures, { afterFill = true } = {}) {
+  const { screen, device, platform } = fixtures;
+  if (platform !== 'ios') {
+    await device.dismissKeyboard();
+    return;
+  }
+  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+  const keyboardReturn = screen.getByTestId('Return', { visible: true });
+  const before = await editor.inputValue();
+  if (afterFill) await expect(keyboardReturn).toBeVisible();
+  await screen.getByText(/^Capture$/, { visible: true }).tap();
+  await expect(keyboardReturn).toBeHidden();
+  await expect(editor).not.toBeFocused();
+  await expect(editor).toHaveValue(before);
+}
+
 export async function nativeSave(fixtures: NativeFixtures, story: string) {
-  const { screen, device } = fixtures;
+  const { screen } = fixtures;
   await nativeCapture(screen);
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
-  await device.dismissKeyboard();
+  await nativeDismissCaptureKeyboard(fixtures);
   await nativeTap(screen, 'btn.saveDream');
   const later = screen.getByTestId('btn.dreamCaptureSeal.readLater', { visible: true });
   const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
