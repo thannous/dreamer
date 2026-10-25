@@ -1033,7 +1033,7 @@ const translations: Record<string, string> = {
     'recording.guide.next': 'Próximo',
     'recording.guide.done': 'Concluir',
     'recording.guide.dismiss': 'Fechar guia',
-    'recording.categorization.error': 'O título e a classificação automáticos estão indisponíveis. O sonho está guardado com as tuas palavras. Podes editá-lo ou tentar a análise mais tarde.',
+    'recording.categorization.error': 'O título e a classificação automáticos estão indisponíveis. O sonho foi salvo com as suas palavras. Você pode editá-lo ou tentar a análise mais tarde.',
     'recording.analysis_offer.title': 'Seu sonho está salvo',
     'recording.analysis_offer.quota_remaining': 'Uma análise incluída será usada · restam {remaining}',
     'recording.analysis_offer.unlimited': 'Análise incluída no Noctalia Plus',
