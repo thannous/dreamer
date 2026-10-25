@@ -1,4 +1,5 @@
 import Anthropic from 'npm:@anthropic-ai/sdk@0.132.1';
+import type { TextAnalysisRefundCode } from '../lib/textAnalysisRefund.ts';
 import { toClaudeSchema } from '../lib/schemas.ts';
 
 export type ClaudeEffort = 'low' | 'medium' | 'high';
@@ -185,12 +186,44 @@ export const logClaudeSpend = (route: string, model: string, effort: string, usa
 
 /** Missing server configuration must never become a provider switch. */
 export class ClaudeConfigurationError extends Error {
+  readonly code = 'ANALYSIS_CONFIGURATION_ERROR';
   constructor() { super('Text AI is not configured: ANTHROPIC_API_KEY is required'); }
 }
 
 export class ClaudeRequestError extends Error {
-  constructor(readonly status: number) { super(status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry'); }
+  constructor(
+    readonly status: number,
+    readonly code: TextAnalysisRefundCode = status === 504 ? 'ANALYSIS_TIMEOUT' : 'ANALYSIS_PROVIDER_UNAVAILABLE'
+  ) { super(status === 504 ? 'Request timeout, please retry' : 'Text AI unavailable, please retry'); }
 }
+
+export class ClaudeInvalidOutputError extends Error {}
+
+/** Preserve explicit client/unknown codes; HTTP presentation is not refund authority. */
+export const textAnalysisFailureCode = (error: unknown): string => {
+  const candidate = error as { code?: unknown; status?: unknown; name?: unknown } | null;
+  if (typeof candidate?.code === 'string') return candidate.code;
+  if (candidate?.name === 'AbortError') return 'ANALYSIS_CLIENT_CANCELLED';
+  if (candidate?.name === 'TimeoutError' || candidate?.status === 504) return 'ANALYSIS_TIMEOUT';
+  if (typeof candidate?.status === 'number') {
+    return candidate.status >= 500 && candidate.status <= 599 ? 'ANALYSIS_SERVER_ERROR' : 'ANALYSIS_REQUEST_REJECTED';
+  }
+  return error instanceof Error ? 'ANALYSIS_SERVER_ERROR' : 'ANALYSIS_JOB_FAILED';
+};
+
+const claudeProviderFailureCode = (error: unknown): TextAnalysisRefundCode => {
+  if (error instanceof ClaudeConfigurationError) return error.code;
+  if (error instanceof ClaudeRequestError) return error.code;
+  if (error instanceof ClaudeStopError) {
+    return error.stopReason === 'refusal' ? 'ANALYSIS_PROVIDER_REFUSED' : 'ANALYSIS_INVALID_OUTPUT';
+  }
+  if (error instanceof SyntaxError || error instanceof ClaudeInvalidOutputError) return 'ANALYSIS_INVALID_OUTPUT';
+  const candidate = error as { status?: number; name?: string } | null;
+  if (candidate?.status === 429 || candidate?.status === 529) return 'ANALYSIS_PROVIDER_OVERLOADED';
+  if (candidate?.status === 401 || candidate?.status === 403) return 'ANALYSIS_CONFIGURATION_ERROR';
+  if (error instanceof Anthropic.APIConnectionTimeoutError || /timeout|abort/i.test(candidate?.name ?? '') || candidate?.status === 504) return 'ANALYSIS_TIMEOUT';
+  return 'ANALYSIS_PROVIDER_UNAVAILABLE';
+};
 
 export const requireAnthropicApiKey = (value = Deno.env.get('ANTHROPIC_API_KEY')): string => {
   const key = value?.trim();
@@ -223,6 +256,6 @@ export const runClaudeOnly = async <T>(options: {
     // Categorical diagnostics only: errors and responses may contain private dreams.
     const info = classifyClaudeError(error);
     console.warn('[api] text request failed', { route: options.route, status: info.status });
-    throw new ClaudeRequestError(info.status);
+    throw new ClaudeRequestError(info.status, claudeProviderFailureCode(error));
   }
 };

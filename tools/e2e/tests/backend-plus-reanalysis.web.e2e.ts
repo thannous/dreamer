@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { test, expect, admin } from '../backend-fixtures';
+import { test, expect, admin, client } from '../backend-fixtures';
 
 // Admission and completion use the real service-only RPCs, with synthetic
 // analysis output. No worker/provider is dispatched; UI recovery covers those.
@@ -41,7 +41,7 @@ test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundar
   };
   const failTerminally = async (jobId: string) => {
     const result = await admin.from('ai_jobs').update({
-      status: 'failed', attempt_count: 3, error_code: 'LOCAL_PROVIDER_FAILURE',
+      status: 'failed', attempt_count: 3, error_code: 'ANALYSIS_PROVIDER_UNAVAILABLE',
     }).eq('id', jobId);
     expect(result.error).toBeNull();
   };
@@ -174,4 +174,78 @@ test('Plus reanalysis keeps ownership, idempotency, Free and daily quota boundar
   expect(await complete(firstSuccess!.jobId)).toMatchObject({ duplicate: true });
   expect(await usage(accounts.plus.id)).toEqual(receiptsBeforeLimit);
   expect(await jobs(accounts.plus.id)).toHaveLength(11);
+});
+
+// This is an exact DB/HTTP journey with synthetic model output. The completion
+// race and its refund trigger use the same RPCs as the worker, without paid AI.
+test('Free analyses refund service failures but charge edited and deleted dreams', {
+  tags: ['plus-reanalysis'], timeout: 90_000,
+}, async ({ accounts }) => {
+  const owner = client();
+  expect((await owner.auth.signInWithPassword(accounts.free)).error).toBeNull();
+  const usage = async () => {
+    const result = await admin.from('quota_usage').select('id,metadata')
+      .eq('user_id', accounts.free.id).eq('quota_type', 'analysis').order('id');
+    expect(result.error).toBeNull();
+    return result.data!;
+  };
+  const createAndAdmit = async () => {
+    const requestId = randomUUID();
+    const dream = await owner.from('dreams').insert({
+      user_id: accounts.free.id, transcript: 'A lighthouse with a blue door.', title: 'Refund policy',
+      interpretation: '', shareable_quote: '', dream_type: 'Everyday Dream', theme: 'calm',
+      client_request_id: randomUUID(), analysis_status: 'none', is_analyzed: false,
+    }).select('id').single();
+    expect(dream.error).toBeNull();
+    const admitted = await admin.rpc('admit_authenticated_analysis_job', {
+      p_job_id: randomUUID(), p_user_id: accounts.free.id, p_dream_id: dream.data!.id,
+      p_analysis_request_id: requestId, p_lang: 'en', p_replace_existing_image: false,
+      p_max_attempts: 3, p_max_active_per_actor: 1, p_window_seconds: 600,
+      p_max_created_in_window: 4, p_max_global_active: 1000,
+    });
+    expect(admitted.error).toBeNull();
+    expect(admitted.data).toMatchObject({ allowed: true });
+    const started = await admin.from('ai_jobs').update({ status: 'running', attempt_count: 3 })
+      .eq('id', admitted.data.job.id).eq('status', 'queued').select('id').single();
+    expect(started.error).toBeNull();
+    return { dreamId: dream.data!.id, jobId: admitted.data.job.id, requestId };
+  };
+  const fail = async (jobId: string, errorCode: string) => {
+    const result = await admin.from('ai_jobs').update({ status: 'failed', error_code: errorCode })
+      .eq('id', jobId).eq('status', 'running');
+    expect(result.error).toBeNull();
+  };
+  const before = await usage();
+  const service = await createAndAdmit();
+  expect(await usage()).toHaveLength(before.length + 1);
+  await fail(service.jobId, 'ANALYSIS_PROVIDER_OVERLOADED');
+  expect(await usage()).toEqual(before);
+
+  const edited = await createAndAdmit();
+  const afterAdmission = await usage();
+  const changed = await owner.from('dreams').update({ transcript: 'The client changed the story during Claude generation.' }).eq('id', edited.dreamId);
+  expect(changed.error).toBeNull();
+  const completion = await admin.rpc('complete_authenticated_analysis_job', {
+    p_job_id: edited.jobId,
+    p_analysis_result: { title: 'Stale output', interpretation: 'A synthetic result for the original text.', shareableQuote: '', theme: 'calm', dreamType: 'Everyday Dream', imagePrompt: 'A lighthouse', symbols: [], emotions: [], reflectionQuestions: [] },
+    p_image_job_id: randomUUID(), p_image_max_attempts: 3, p_image_max_active_per_actor: 1,
+    p_image_window_seconds: 600, p_image_max_created_in_window: 4, p_max_global_active: 1000,
+  });
+  expect(completion.error).toBeNull();
+  expect(completion.data).toMatchObject({ completed: false, code: 'ANALYSIS_TRANSCRIPT_CHANGED' });
+  await fail(edited.jobId, completion.data.code);
+  expect(await usage()).toEqual(afterAdmission);
+  const terminal = await owner.from('dreams').select('analysis_status,transcript').eq('id', edited.dreamId).single();
+  expect(terminal.error).toBeNull();
+  expect(terminal.data).toMatchObject({ analysis_status: 'failed', transcript: 'The client changed the story during Claude generation.' });
+
+  const deleted = await createAndAdmit();
+  const beforeDelete = await usage();
+  const deletion = await owner.from('dreams').delete().eq('id', deleted.dreamId);
+  expect(deletion.error).toBeNull();
+  const gone = await admin.from('ai_jobs').select('id').eq('id', deleted.jobId);
+  expect(gone.error).toBeNull();
+  expect(gone.data).toEqual([]); // FK cascade removes the job, never its receipt
+  expect(await usage()).toEqual(beforeDelete);
+  expect((await usage()).filter(row => [edited.requestId, deleted.requestId].includes(row.metadata?.analysis_request_id))).toHaveLength(2);
 });

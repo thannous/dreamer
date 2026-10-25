@@ -12,7 +12,8 @@ import {
   type AnalysisJobRow,
 } from '../api/services/analysisJobs.ts';
 import { keepStoredDreamClass, loadKnownDreamSymbols, runDreamAnalysis } from '../api/services/dreamAnalysis.ts';
-import { classifyClaudeError } from '../api/services/claude.ts';
+import { classifyClaudeError, textAnalysisFailureCode } from '../api/services/claude.ts';
+import { isRefundableTextAnalysisFailure } from '../api/lib/textAnalysisRefund.ts';
 import { triggerImageJobWorker } from '../api/services/imageJobs.ts';
 
 const json = (body: unknown, status = 200) =>
@@ -141,12 +142,13 @@ export const requeueJob = async (
 export const serializeAnalysisJobError = (error: unknown) => {
   const classified = classifyClaudeError(error);
   const candidate = error as Record<string, unknown> | null;
-  const retryable = classified.canRetry
+  const errorCode = textAnalysisFailureCode(error);
+  const retryable = isRefundableTextAnalysisFailure(errorCode) && (classified.canRetry
     || classified.status === 429
     || classified.status >= 500
-    || candidate?.isTransient === true;
+    || candidate?.isTransient === true);
   return {
-    errorCode: retryable ? 'ANALYSIS_TRANSIENT' : 'ANALYSIS_JOB_FAILED',
+    errorCode,
     errorMessage: classified.userMessage,
     retryable,
   };

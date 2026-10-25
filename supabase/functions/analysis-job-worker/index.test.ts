@@ -88,7 +88,8 @@ Deno.test('Claude configuration and generation failures keep the worker retryabl
   for (const error of [new ClaudeConfigurationError(), new ClaudeRequestError(502), new ClaudeRequestError(504)]) {
     const result = serializeAnalysisJobError(error);
     assertEquals(result.retryable, true);
-    assertEquals(result.errorCode, 'ANALYSIS_TRANSIENT');
+    assertEquals(result.errorCode, error instanceof ClaudeConfigurationError ? 'ANALYSIS_CONFIGURATION_ERROR'
+      : error.status === 504 ? 'ANALYSIS_TIMEOUT' : 'ANALYSIS_PROVIDER_UNAVAILABLE');
   }
 });
 
@@ -137,4 +138,17 @@ Deno.test('worker failure and retry still transition a running attempt', async (
   await requeueJob(retry.client as any, runningSnapshot, 'TRANSIENT', 'Retry');
   assertEquals(retry.rows.ai_jobs.status, 'queued');
   assertEquals(retry.rows.dreams.analysis_status, 'pending');
+});
+
+Deno.test('worker preserves client and unknown failure codes instead of relabelling them as refundable service errors', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  for (const code of ['ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND', 'ANALYSIS_STATE_CONFLICT', 'ANALYSIS_REQUEST_STALE', 'ANALYSIS_CLIENT_CANCELLED', 'UNKNOWN_FUTURE_FAILURE']) {
+    const result = serializeAnalysisJobError(Object.assign(new Error('State changed'), { code, status: 409 }));
+    assertEquals(result.errorCode, code);
+    assertEquals(result.retryable, false);
+    const { client, rows } = createStatusClient('running');
+    await failJob(client as any, runningSnapshot, result.errorCode, result.errorMessage);
+    assertEquals(rows.ai_jobs.error_code, code);
+    assertEquals(rows.ai_jobs.status, 'failed');
+  }
 });

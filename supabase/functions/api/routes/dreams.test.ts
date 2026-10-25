@@ -217,7 +217,7 @@ Deno.test('a Claude failure releases only its synchronous analysis reservation; 
     assertEquals(url.hostname, 'supabase.test'); // any Gemini request fails this control
     const rpc = url.pathname.split('/rpc/')[1];
     calls.push(rpc);
-    if (rpc === 'release_authenticated_text_analysis') assertEquals((await request.json()).p_claim_id, claimId);
+    if (rpc === 'release_authenticated_text_analysis') assertEquals(await request.json(), { p_user_id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', p_claim_id: claimId, p_failure_code: 'ANALYSIS_PROVIDER_OVERLOADED' });
     const data = rpc === 'get_effective_subscription_tier' ? 'free'
       : rpc === 'claim_authenticated_analysis_quota_bound' ? { allowed: true, claimed: true, claim_id: claimId, new_count: 1 }
       : { allowed: true };
@@ -266,7 +266,7 @@ Deno.test('a failed guest analysis refunds its exact reservation token without a
       assertEquals(url.hostname, 'supabase.test');
       const rpc = url.pathname.split('/rpc/')[1];
       calls.push(rpc);
-      if (rpc === 'release_guest_text_analysis') assertEquals(await request.json(), { p_fingerprint: fingerprint, p_reservation_id: reservationId });
+      if (rpc === 'release_guest_text_analysis') assertEquals(await request.json(), { p_fingerprint: fingerprint, p_reservation_id: reservationId, p_failure_code: 'ANALYSIS_PROVIDER_OVERLOADED' });
       const data = rpc === 'reserve_guest_text_analysis' ? { allowed: true, claimed: true, reservation_id: reservationId, new_count: 1 } : { allowed: true };
       return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
     };
@@ -284,3 +284,56 @@ Deno.test('a failed guest analysis refunds its exact reservation token without a
     names.forEach((name, index) => { const value = saved[index]; if (value === undefined) Deno.env.delete(name); else Deno.env.set(name, value); });
   }
 });
+
+for (const mode of ['account', 'guest', 'full'] as const) {
+  for (const clientCancelled of [false, true]) {
+  Deno.test(`${mode} admission ${clientCancelled ? 'retains quota after client cancellation' : 'refunds a service failure'}`, async () => {
+    const { createGuestToken } = await import('../lib/guestToken.ts');
+    const { handleAnalyzeDreamFull } = await import('./dreams.ts');
+    const originalFetch = globalThis.fetch;
+    const names = ['ANTHROPIC_API_KEY', 'GUEST_SESSION_SECRET', 'GEMINI_API_KEY'] as const;
+    const saved = names.map(name => Deno.env.get(name));
+    const calls: string[] = [];
+    const controller = new AbortController();
+    const fingerprint = 'a'.repeat(64);
+    try {
+      Deno.env.set('ANTHROPIC_API_KEY', 'synthetic-key');
+      Deno.env.set('GEMINI_API_KEY', 'synthetic-key');
+      Deno.env.set('GUEST_SESSION_SECRET', 'synthetic-secret-with-sufficient-entropy');
+      const { token } = await createGuestToken(fingerprint, 'android');
+      globalThis.fetch = async (input, init) => {
+        const request = new Request(input, init);
+        const url = new URL(request.url);
+        if (url.hostname === 'api.anthropic.com') {
+          calls.push('claude');
+          if (clientCancelled) controller.abort(); // after its reservation
+          return new Response('{}', { status: 529, headers: { 'Content-Type': 'application/json' } });
+        }
+        assertEquals(url.hostname, 'supabase.test');
+        const rpc = url.pathname.split('/rpc/')[1];
+        calls.push(rpc);
+        const data = rpc === 'get_effective_subscription_tier' ? 'free'
+          : { allowed: true, claimed: true, claim_id: '11111111-1111-4111-8111-111111111111', reservation_id: '11111111-1111-4111-8111-111111111111', new_count: 1 };
+        return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
+      };
+      const response = await (mode === 'full' ? handleAnalyzeDreamFull : handleAnalyzeDream)({
+        req: new Request('https://api.test/api/analyzeDream', {
+          method: 'POST', signal: controller.signal,
+          headers: { 'x-guest-fingerprint': fingerprint, 'x-guest-token': token, 'x-guest-platform': 'android' },
+          body: JSON.stringify({ transcript: 'A door.', remoteDreamId: 42, analysisRequestId: '3f73ab45-9a14-4db9-94a3-d24724457d9e' }),
+        }),
+        user: mode === 'guest' ? null : { id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' },
+        supabase: null, supabaseUrl: 'https://supabase.test', supabaseServiceRoleKey: 'synthetic-key', storageBucket: 'dream-images',
+      });
+      assertEquals(response.status, 502);
+      assertEquals(calls.includes(mode === 'guest' ? 'reserve_guest_text_analysis' : 'claim_authenticated_analysis_quota_bound'), true);
+      assertEquals(calls.at(-1), clientCancelled ? 'claude'
+        : mode === 'guest' ? 'release_guest_text_analysis' : 'release_authenticated_text_analysis');
+      assertEquals(calls.some(call => call.startsWith('release_')), !clientCancelled);
+    } finally {
+      globalThis.fetch = originalFetch;
+      names.forEach((name, index) => { const value = saved[index]; if (value === undefined) Deno.env.delete(name); else Deno.env.set(name, value); });
+    }
+  });
+}
+}

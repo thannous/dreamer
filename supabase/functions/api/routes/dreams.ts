@@ -5,7 +5,7 @@ import { describeDreamThemes, LEGACY_DREAM_THEMES, normalizeDreamTheme } from '.
 import { CLAUDE_MODELS } from '../lib/models.ts';
 import { PLUS_DAILY_LIMITS, plusDailyLimitResponse } from '../lib/plusDailyLimits.ts';
 import { CATEGORIZE_DREAM_SCHEMA, DREAM_TYPE_VALUES, withDreamThemes } from '../lib/schemas.ts';
-import { classifyClaudeError, requireAnthropicApiKey, requestClaudeJson, runClaudeOnly } from '../services/claude.ts';
+import { classifyClaudeError, textAnalysisFailureCode, requireAnthropicApiKey, requestClaudeJson, runClaudeOnly } from '../services/claude.ts';
 import { generateImageFromPrompt, resolveImageModel } from '../services/geminiImages.ts';
 import { optimizeImage } from '../services/image.ts';
 import { createStorageHelpers } from '../services/storage.ts';
@@ -14,6 +14,7 @@ import {
   claimGuestAnalysisQuota,
   isAuthenticatedAnalysisQuotaRetry,
 } from '../lib/analysisQuota.ts';
+import { isRefundableTextAnalysisFailure } from '../lib/textAnalysisRefund.ts';
 import type { ApiContext } from '../types.ts';
 import {
   aiInputErrorResponse,
@@ -219,7 +220,7 @@ async function claimAuthenticatedAnalysisQuota({
   transcript: string;
   transcriptSha256: string;
   userId: string;
-}): Promise<{ response?: Response; quotaUsed?: { analysis: number }; tier?: string; release?: () => Promise<void> }> {
+}): Promise<{ response?: Response; quotaUsed?: { analysis: number }; tier?: string; release?: (failureCode: string) => Promise<void> }> {
   if (!supabaseServiceRoleKey) {
     console.error(`[api] ${route}: authenticated quota unavailable before provider work`, {
       hasServiceRoleKey: false,
@@ -279,8 +280,9 @@ async function claimAuthenticatedAnalysisQuota({
   return {
     quotaUsed: claim.new_count === undefined ? undefined : { analysis: toCount(claim.new_count) },
     tier: claim.tier,
-    release: async () => {
-      const { error } = await adminClient.rpc('release_authenticated_text_analysis', { p_user_id: userId, p_claim_id: claim.claim_id });
+    release: async (failureCode) => {
+      if (!isRefundableTextAnalysisFailure(failureCode)) return;
+      const { error } = await adminClient.rpc('release_authenticated_text_analysis', { p_user_id: userId, p_claim_id: claim.claim_id, p_failure_code: failureCode });
       if (error) console.error('[api] analysis refund failed', { code: error.code });
     },
   };
@@ -289,7 +291,7 @@ async function claimAuthenticatedAnalysisQuota({
 export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
-  let releaseQuota: (() => Promise<void>) | undefined;
+  let releaseQuota: ((failureCode: string) => Promise<void>) | undefined;
   try {
     const body = (await req.json()) as AnalyzeDreamBody;
     const guestCheck = await requireGuestSession(req, body, user);
@@ -402,8 +404,9 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       }
 
       quotaUsed = { analysis: toCount((quotaResult as any)?.new_count) };
-      releaseQuota = async () => {
-        const { error } = await adminClient.rpc('release_guest_text_analysis', { p_fingerprint: fingerprint, p_reservation_id: quotaResult.reservation_id });
+      releaseQuota = async (failureCode) => {
+        if (!isRefundableTextAnalysisFailure(failureCode)) return;
+        const { error } = await adminClient.rpc('release_guest_text_analysis', { p_fingerprint: fingerprint, p_reservation_id: quotaResult.reservation_id, p_failure_code: failureCode });
         if (error) console.error('[api] guest analysis refund failed', { code: error.code });
       };
     }
@@ -423,7 +426,8 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch (e) {
-    await releaseQuota?.().catch(() => console.error('[api] analysis refund unavailable'));
+    await releaseQuota?.(req.signal.aborted ? 'ANALYSIS_CLIENT_CANCELLED' : textAnalysisFailureCode(e))
+      .catch(() => console.error('[api] analysis refund unavailable'));
     console.error('[api] /analyzeDream failed');
     const errorInfo = classifyClaudeError(e);
     return new Response(JSON.stringify({ error: errorInfo.userMessage }), {
@@ -436,7 +440,7 @@ export async function handleAnalyzeDream(ctx: ApiContext): Promise<Response> {
 export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
-  let releaseQuota: (() => Promise<void>) | undefined;
+  let releaseQuota: ((failureCode: string) => Promise<void>) | undefined;
   try {
     const authCheck = requireUser(user);
     if (authCheck) {
@@ -496,7 +500,7 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
     });
 
     if (!imageBase64) {
-      await releaseQuota?.();
+      await releaseQuota?.(req.signal.aborted ? 'ANALYSIS_CLIENT_CANCELLED' : 'ANALYSIS_INVALID_OUTPUT');
       return new Response(
         JSON.stringify({
           error: 'No image returned',
@@ -536,7 +540,8 @@ export async function handleAnalyzeDreamFull(ctx: ApiContext): Promise<Response>
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch (e) {
-    await releaseQuota?.().catch(() => console.error('[api] analysis refund unavailable'));
+    await releaseQuota?.(req.signal.aborted ? 'ANALYSIS_CLIENT_CANCELLED' : textAnalysisFailureCode(e))
+      .catch(() => console.error('[api] analysis refund unavailable'));
     console.error('[api] /analyzeDreamFull failed');
     const errorInfo = classifyClaudeError(e);
     return new Response(

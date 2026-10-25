@@ -9,7 +9,7 @@ import {
   normalizePersonalSymbolKey,
   type KnownDreamSymbol,
 } from '../lib/dreamSymbols.ts';
-import { requestClaudeJson, runClaudeOnly } from './claude.ts';
+import { ClaudeInvalidOutputError, requestClaudeJson, runClaudeOnly } from './claude.ts';
 
 const ANALYSIS_SYSTEM_INSTRUCTIONS: Record<AiLanguage, string> = {
   en: 'You are an empathetic assistant helping people reflect on their own dream accounts. Return ONLY valid JSON.',
@@ -309,7 +309,7 @@ export const normalizeDreamAnalysis = (
 ): StructuredDreamAnalysis => {
   const { transcript, lang, themes = LEGACY_DREAM_THEMES } = options;
   if (!analysis.title || !analysis.interpretation) {
-    throw new Error('Missing required fields in model response');
+    throw new ClaudeInvalidOutputError('Missing required fields in model response');
   }
 
   const theme = normalizeDreamTheme(analysis.theme, themes);

@@ -182,7 +182,7 @@ await db.query(`update public.dreams set exploration_started_at='2000-01-01' whe
 assert.equal(new Date((await db.query(`select exploration_started_at from public.dreams where id=2`)).rows[0].exploration_started_at).getTime(),new Date(marker).getTime());
 console.log('PASS bound receipts reject changed transcripts and repeat spend; legacy receipts denied; every AI language admitted to queued analysis; direct backdate stripped; service-only chat failure and completion; immutable server marker');
 // Exact reservation refunds are necessary when Claude fails with no alternate provider.
-await db.exec('alter table public.dreams add column revision_id uuid, add column updated_at timestamptz');
+await db.exec('alter table public.dreams add column revision_id uuid, add column updated_at timestamptz; alter table public.ai_jobs add column error_code text');
 await db.exec(readFileSync(new URL('../supabase/migrations/20261025160000_refund_failed_text_analysis.sql', import.meta.url), 'utf8'));
 await db.exec("select set_config('test.jwt_role','service_role',false)");
 // Migration-first rollout: the previous API still calls this unchanged RPC,
@@ -192,7 +192,7 @@ assert.equal(legacyGuestClaim.allowed, true);
 assert.equal((await db.query("select count(*)::integer n from guest_analysis_quota_claims where fingerprint_hash='legacy-after-refund' and reservation_id is not null")).rows[0].n, 1);
 assert.equal((await db.query("select public.claim_guest_analysis_quota('legacy-after-refund',$1,1,$2) result", [rid,hashA])).rows[0].result.code, 'ANALYSIS_ALREADY_CLAIMED');
 console.log('PASS migration-first legacy guest RPC and insert compatibility');
-const refundGuest = async token => (await db.query("select public.release_guest_text_analysis('refund-guest',$1) result", [token])).rows[0].result;
+const refundGuest = async token => (await db.query("select public.release_guest_text_analysis('refund-guest',$1,'ANALYSIS_PROVIDER_UNAVAILABLE') result", [token])).rows[0].result;
 const reserveGuest = async () => (await db.query("select public.reserve_guest_text_analysis('refund-guest',$1,1,$2) result", [rid,hashA])).rows[0].result;
 const firstReservation = await reserveGuest();
 assert.equal(firstReservation.allowed, true);
@@ -208,9 +208,9 @@ assert.equal(await refundGuest(firstReservation.reservation_id), false); // a la
 assert.equal((await db.query("select analysis_count from guest_usage where fingerprint_hash='refund-guest'")).rows[0].analysis_count, 1);
 const receiptId = '75000000-0000-4000-8000-000000000001';
 await db.query("insert into quota_usage(id,user_id,dream_id,quota_type,metadata) values($1,$2,1,'analysis','{\"source\":\"api_pre_provider\"}')",[receiptId,uid]);
-assert.equal((await db.query('select release_authenticated_text_analysis($1,$2) result',['bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',receiptId])).rows[0].result,false);
-assert.equal((await db.query('select release_authenticated_text_analysis($1,$2) result',[uid,receiptId])).rows[0].result,true);
-assert.equal((await db.query('select release_authenticated_text_analysis($1,$2) result',[uid,receiptId])).rows[0].result,false);
+assert.equal((await db.query("select release_authenticated_text_analysis($1,$2,'ANALYSIS_PROVIDER_UNAVAILABLE') result",['bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',receiptId])).rows[0].result,false);
+assert.equal((await db.query("select release_authenticated_text_analysis($1,$2,'ANALYSIS_PROVIDER_UNAVAILABLE') result",[uid,receiptId])).rows[0].result,true);
+assert.equal((await db.query("select release_authenticated_text_analysis($1,$2,'ANALYSIS_PROVIDER_UNAVAILABLE') result",[uid,receiptId])).rows[0].result,false);
 const jobId = '75000000-0000-4000-8000-000000000002';
 const workerRequest = '75000000-0000-4000-8000-000000000003';
 await db.query("update dreams set analysis_status='pending',analysis_request_id=$1 where id=1",[workerRequest]);
@@ -219,22 +219,22 @@ await db.query("insert into quota_usage(id,user_id,dream_id,quota_type,metadata)
 await db.query("insert into ai_jobs(id,user_id,dream_id,job_type,status,client_request_id) values($1,$2,1,'analyze_dream','running',$3)",[jobId,uid,workerRequest]);
 await db.query("update ai_jobs set status='queued' where id=$1",[jobId]);
 assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1',[receiptId])).rows[0].n,1);
-await db.query("update ai_jobs set status='failed' where id=$1",[jobId]);
+await db.query("update ai_jobs set status='failed',error_code='ANALYSIS_PROVIDER_UNAVAILABLE' where id=$1",[jobId]);
 assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1',[receiptId])).rows[0].n,0);
 assert.equal((await db.query("select analysis_status from dreams where id=1")).rows[0].analysis_status,'failed');
 assert.equal((await db.query("select public.claim_authenticated_analysis_quota_bound($1,1,$2,$3) result",[uid,workerRequest,workerHash])).rows[0].result.code,'ANALYSIS_NOT_PENDING');
 await db.query("update dreams set analysis_status='pending',analysis_request_id=$1 where id=1",[rid2]);
 // Repeated failed status and an image job must not refund unrelated quota.
 await db.query("insert into quota_usage(id,user_id,dream_id,quota_type,metadata) values($1,$2,1,'analysis',jsonb_build_object('source','analysis_job_admission','analysis_request_id',$3::text))",[receiptId,uid,workerRequest]);
-await db.query("update ai_jobs set status='failed' where id=$1",[jobId]);
+await db.query("update ai_jobs set status='failed',error_code='ANALYSIS_PROVIDER_UNAVAILABLE' where id=$1",[jobId]);
 assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1',[receiptId])).rows[0].n,1);
 assert.equal((await db.query("select analysis_status from dreams where id=1")).rows[0].analysis_status,'pending');
 await db.query("update ai_jobs set job_type='generate_image',status='running' where id=$1",[jobId]);
-await db.query("update ai_jobs set status='failed' where id=$1",[jobId]);
+await db.query("update ai_jobs set status='failed',error_code='ANALYSIS_PROVIDER_UNAVAILABLE' where id=$1",[jobId]);
 assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1',[receiptId])).rows[0].n,1);
 assert.equal((await db.query("select analysis_status from dreams where id=1")).rows[0].analysis_status,'pending');
 await db.query("update ai_jobs set job_type='analyze_dream',status='running' where id=$1",[jobId]);
-await db.query("update ai_jobs set status='failed' where id=$1",[jobId]);
+await db.query("update ai_jobs set status='failed',error_code='ANALYSIS_PROVIDER_UNAVAILABLE' where id=$1",[jobId]);
 assert.equal((await db.query("select analysis_status,analysis_request_id from dreams where id=1")).rows[0].analysis_request_id,rid2);
 assert.equal((await db.query("select analysis_status from dreams where id=1")).rows[0].analysis_status,'pending');
 assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1',[receiptId])).rows[0].n,0);
@@ -244,16 +244,53 @@ for (const priorStatus of ['succeeded', 'queued', 'running']) {
   await db.query("update ai_jobs set status=$2 where id=$1", [jobId, priorStatus]);
   await db.query("update dreams set analysis_status='done',is_analyzed=true,analysis_request_id=$1 where id=1", [workerRequest]);
   await db.query("insert into quota_usage(id,user_id,dream_id,quota_type,metadata) values($1,$2,1,'analysis',jsonb_build_object('source','analysis_job_admission','analysis_request_id',$3::text)) on conflict(id) do nothing", [receiptId,uid,workerRequest]);
-  await db.query("update ai_jobs set status='failed' where id=$1", [jobId]);
+  await db.query("update ai_jobs set status='failed',error_code='ANALYSIS_PROVIDER_UNAVAILABLE' where id=$1", [jobId]);
   assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1', [receiptId])).rows[0].n, 1, `completed reading keeps receipt after ${priorStatus}->failed`);
   assert.equal((await db.query('select analysis_status from dreams where id=1')).rows[0].analysis_status, 'done');
 }
 console.log('PASS completed readings keep receipts across succeeded, queued and running failure writes');
+// A model call whose completion is rejected because the client edited its
+// transcript has already consumed its reservation. Repeating it cannot be free.
+await db.query("update ai_jobs set status='running' where id=$1", [jobId]);
+await db.query("update dreams set analysis_status='pending',is_analyzed=false where id=1");
+await db.query("update ai_jobs set status='failed',error_code='ANALYSIS_TRANSCRIPT_CHANGED' where id=$1", [jobId]);
+assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1', [receiptId])).rows[0].n, 1, 'client transcript changes must retain the consumed receipt');
+assert.equal((await db.query('select analysis_status from dreams where id=1')).rows[0].analysis_status, 'failed');
+console.log('PASS client transcript changes close the request without refunding it');
+// Shared fail-closed policy: actual SQL RPCs and trigger must agree with TS.
+const refundPolicySource = readFileSync(new URL('../supabase/functions/api/lib/textAnalysisRefund.ts', import.meta.url), 'utf8');
+const refundableCodes = [...refundPolicySource.matchAll(/  '([A-Z_]+)',/g)].map(match => match[1]);
+assert.equal(refundableCodes.length, 8);
+const retainedCodes = ['ANALYSIS_TRANSCRIPT_CHANGED', 'DREAM_NOT_FOUND', 'ANALYSIS_REQUEST_STALE',
+  'ANALYSIS_STATE_CONFLICT', 'INVALID_TRANSCRIPT', 'ANALYSIS_CLIENT_CANCELLED', 'ANALYSIS_JOB_FAILED',
+  'ANALYSIS_TRANSIENT', 'UNKNOWN_FUTURE_FAILURE', null];
+for (const code of [...refundableCodes, ...retainedCodes]) {
+  const refundable = refundableCodes.includes(code);
+  assert.equal((await db.query('select private.is_refundable_text_analysis_failure($1) allowed', [code])).rows[0].allowed, refundable, `SQL/TS policy drift for ${code}`);
+  await db.query("update dreams set analysis_status='pending' where id=1");
+  await db.query("update ai_jobs set status='running' where id=$1", [jobId]);
+  await db.query("insert into quota_usage(id,user_id,dream_id,quota_type,metadata) values($1,$2,1,'analysis',jsonb_build_object('source','analysis_job_admission','analysis_request_id',$3::text)) on conflict(id) do nothing", [receiptId,uid,workerRequest]);
+  await db.query("update ai_jobs set status='failed',error_code=$2 where id=$1", [jobId,code]);
+  assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1', [receiptId])).rows[0].n, refundable ? 0 : 1, `job refund policy: ${code}`);
+  assert.equal((await db.query('select analysis_status from dreams where id=1')).rows[0].analysis_status, 'failed');
+  await db.query('delete from quota_usage where id=$1', [receiptId]);
+  await db.query("insert into quota_usage(id,user_id,dream_id,quota_type,metadata) values($1,$2,1,'analysis','{\"source\":\"api_pre_provider\"}')", [receiptId,uid]);
+  assert.equal((await db.query('select public.release_authenticated_text_analysis($1,$2,$3) released', [uid,receiptId,code])).rows[0].released, refundable, `account refund policy: ${code}`);
+  assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1', [receiptId])).rows[0].n, refundable ? 0 : 1);
+  await db.query('delete from quota_usage where id=$1', [receiptId]);
+  const reservation = await reserveGuest();
+  const token = reservation.reservation_id ?? retryReservation.reservation_id;
+  assert.equal((await db.query("select public.release_guest_text_analysis('refund-guest',$1,$2) released", [token,code])).rows[0].released, refundable, `guest refund policy: ${code}`);
+  assert.equal((await db.query("select analysis_count from guest_usage where fingerprint_hash='refund-guest'")).rows[0].analysis_count, refundable ? 0 : 1);
+  // Restore quota for the next negative control without changing its token.
+  if (!refundable) assert.equal((await db.query("select public.release_guest_text_analysis('refund-guest',$1,'ANALYSIS_PROVIDER_UNAVAILABLE') released", [token])).rows[0].released, true);
+}
+console.log('PASS all eight service codes refund; client, unknown, legacy generic and missing codes retain quota across jobs, account and guest RPCs');
 await db.exec("select set_config('test.jwt_role','authenticated',false)");
 await assert.rejects(reserveGuest, /Service role required/);
 await assert.rejects(() => refundGuest(retryReservation.reservation_id), /Service role required/);
-await assert.rejects(() => db.query('select release_authenticated_text_analysis($1,$2)',[uid,receiptId]), /Service role required/);
-assert.equal((await db.query("select has_function_privilege('authenticated','public.release_authenticated_text_analysis(uuid,uuid)','execute') allowed")).rows[0].allowed,false);
-console.log('PASS text analysis refunds: service-only, owner-bound, idempotent, stale-token safe; retries hold quota; terminal text failures atomically close pending state and refund; newer requests and image failures unchanged');
+await assert.rejects(() => db.query("select release_authenticated_text_analysis($1,$2,'ANALYSIS_PROVIDER_UNAVAILABLE')",[uid,receiptId]), /Service role required/);
+assert.equal((await db.query("select has_function_privilege('authenticated','public.release_authenticated_text_analysis(uuid,uuid,text)','execute') allowed")).rows[0].allowed,false);
+console.log('PASS text analysis refunds: service-only, owner-bound, idempotent, stale-token safe; retries hold quota; terminal service failures refund; client failures only close pending state; newer requests and image failures unchanged');
 
 await db.close();
