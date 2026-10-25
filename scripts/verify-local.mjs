@@ -65,10 +65,13 @@
 //
 // --post-status (pr only, opt-in) then posts the result as a GitHub commit
 // status (context verify-local/pr, success or failure, a short description)
-// with `gh api`, for the verified commit only. The checkout must be clean and
-// at that commit when the run starts (else usage error, nothing runs), and
-// still be so when it ends (else nothing is posted). Only the owner/repo of
-// the origin remote and the SHA are sent; never a host, path or user.
+// with `gh api` on github.com, for the verified commit only. The checkout must
+// be clean and at that commit when the run starts (else usage error, nothing
+// runs), still be so when it ends, and github.com must already know the commit
+// (push it first; a rerun reuses the passed checks), else nothing is posted.
+// Success needs exit 0 and a passed proof; a thrown error posts nothing.
+// Only the owner/repo of the origin remote and the SHA are sent; never a host,
+// path or user.
 //
 // Exit codes: 0 passed, 1 failed, 2 incomplete (a required specialised check
 // could not run here; see --external), 3 passed but --post-status posted
@@ -1651,6 +1654,8 @@ export function githubSlug(url) {
 
 /** The commit status of a verify result: success only for exit status 0. */
 export function commitStatusFor(kind, { status, proof }, sha) {
+  // Success only for exit 0 with a passed proof: anything else is a failure.
+  if (status === 0 && proof?.result !== 'passed') status = 1;
   const checks = Array.isArray(proof?.checks) ? proof.checks : [];
   const names = (result) => checks.filter((check) => check.result === result).map((check) => check.name);
   const head = `verify:${kind} ${status === 0 ? 'passed' : status === 2 ? 'incomplete' : 'failed'} on ${sha.slice(0, 12)}`;
@@ -1687,23 +1692,31 @@ export function statusRefusal(state, sha) {
   return null;
 }
 
+const ghFailure = (result) => {
+  if (result.error) return `gh could not start (${result.error.code ?? 'error'})`;
+  const http = /HTTP (\d{3})/.exec(`${result.stderr ?? ''}`);
+  return `gh api exited ${result.status}${http ? ` (HTTP ${http[1]})` : ''}`;
+};
+
 /**
- * Posts <commitStatus> for <sha> with `gh api`. Returns { posted, reason }.
- * gh's own output (it names the account) is never printed.
+ * Posts <commitStatus> for <sha> with `gh api` on github.com, once github.com
+ * knows the commit. Returns { posted, reason }. gh's own output (it names the
+ * account) is never printed. The host is explicit, whatever GH_HOST says.
  */
 export function postCommitStatus({ slug, sha, commitStatus, cwd, env, execute = spawnSync }) {
+  const options = { cwd, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] };
+  const known = execute('gh', ['api', '--hostname', 'github.com', `repos/${slug}/commits/${sha}`, '--silent'], options);
+  if (known.error || known.status !== 0) {
+    return { posted: false, reason: `github.com does not know the commit yet (${ghFailure(known)}); push it, then run again (passed checks are reused)` };
+  }
   const result = execute('gh', [
-    'api', '-X', 'POST', `repos/${slug}/statuses/${sha}`,
+    'api', '--hostname', 'github.com', '-X', 'POST', `repos/${slug}/statuses/${sha}`,
     '-f', `state=${commitStatus.state}`,
     '-f', `context=${commitStatus.context}`,
     '-f', `description=${commitStatus.description}`,
     '--silent',
-  ], { cwd, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-  if (result.error) return { posted: false, reason: `gh could not start (${result.error.code ?? 'error'})` };
-  if (result.status !== 0) {
-    const http = /HTTP (\d{3})/.exec(`${result.stderr ?? ''}`);
-    return { posted: false, reason: `gh api exited ${result.status}${http ? ` (HTTP ${http[1]})` : ''}` };
-  }
+  ], options);
+  if (result.error || result.status !== 0) return { posted: false, reason: ghFailure(result) };
   return { posted: true, reason: null };
 }
 

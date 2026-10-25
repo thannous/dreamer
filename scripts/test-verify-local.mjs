@@ -548,14 +548,22 @@ describe('verify:pr', () => {
 });
 
 describe('verify:pr --post-status', () => {
-  // gh is never run: a fake records the call and answers like gh would.
-  const fakeGh = (answer = { status: 0, stdout: '', stderr: '' }) => {
+  // gh is never run: a fake records each call and answers like gh would.
+  // `calls` holds the status POSTs, `lookups` the "does github.com know the
+  // commit" requests that come first.
+  const ok = { status: 0, stdout: '', stderr: '' };
+  const fakeGh = ({ post = ok, known = ok } = {}) => {
     const calls = [];
+    const lookups = [];
     const execute = (program, args) => {
-      calls.push({ program, args });
-      return answer;
+      if (args.includes('POST')) {
+        calls.push({ program, args });
+        return post;
+      }
+      lookups.push({ program, args });
+      return known;
     };
-    return { calls, execute };
+    return { calls, lookups, execute };
   };
   const field = (call, name) => call.args.find((arg) => arg.startsWith(`${name}=`))?.slice(name.length + 1);
   const githubRepository = () => {
@@ -580,7 +588,7 @@ describe('verify:pr --post-status', () => {
 
   test('state mapping: success only for a pass; a failure or an incomplete run is a failure', () => {
     const sha = 'a'.repeat(40);
-    const proof = { checks: [
+    const proof = { result: 'passed', checks: [
       { name: 'lint', result: 'passed' }, { name: 'test', result: 'passed', reused: true }, { name: 'db', result: 'skipped' },
     ] };
     assert.deepEqual(commitStatusFor('pr', { status: 0, proof }, sha), {
@@ -593,6 +601,10 @@ describe('verify:pr --post-status', () => {
     assert.equal(incomplete.state, 'failure');
     assert.equal(incomplete.description, 'verify:pr incomplete on aaaaaaaaaaaa: could not run here: db');
     assert.equal(commitStatusFor('pr', { status: 1, proof: null }, sha).description, 'verify:pr failed on aaaaaaaaaaaa: no proof written');
+    // Exit 0 alone is not enough: success needs a passed proof too.
+    assert.equal(commitStatusFor('pr', { status: 0, proof: null }, sha).state, 'failure');
+    assert.equal(commitStatusFor('pr', { status: 0, proof: { result: 'failed', checks: [{ name: 'lint', result: 'failed' }] } }, sha).state, 'failure');
+    assert.equal(commitStatusFor('pr', { status: 0, proof: { result: 'incomplete', checks: [] } }, sha).state, 'failure');
     const long = commitStatusFor('pr', { status: 1, proof: { checks: Array.from({ length: 40 }, (_, i) => ({ name: `check-${i}`, result: 'failed' })) } }, sha);
     assert.equal(long.description.length, STATUS_DESCRIPTION_MAX);
     assert.ok(long.description.endsWith('...'));
@@ -616,7 +628,8 @@ describe('verify:pr --post-status', () => {
     assert.equal(gh.calls.length, 1);
     const [call] = gh.calls;
     assert.equal(call.program, 'gh');
-    assert.deepEqual(call.args.slice(0, 4), ['api', '-X', 'POST', `repos/acme/fixture/statuses/${sha}`]);
+    assert.deepEqual(call.args.slice(0, 6), ['api', '--hostname', 'github.com', '-X', 'POST', `repos/acme/fixture/statuses/${sha}`], 'github.com explicitly, whatever GH_HOST says');
+    assert.deepEqual(gh.lookups.map((lookup) => lookup.args.slice(0, 4)), [['api', '--hostname', 'github.com', `repos/acme/fixture/commits/${sha}`]], 'the commit is looked up on github.com first');
     assert.equal(field(call, 'state'), 'success');
     assert.equal(field(call, 'context'), 'verify-local/pr');
     assert.match(field(call, 'description'), new RegExp(`^verify:pr passed on ${sha.slice(0, 12)}: `));
@@ -668,13 +681,41 @@ describe('verify:pr --post-status', () => {
   test('a gh failure posts nothing, exits 3 after a pass, and never prints what gh said', async () => {
     const repo = githubRepository();
     repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
-    const gh = fakeGh({ status: 1, stdout: '{"creator":{"login":"someone"}}', stderr: 'gh: Not Found (HTTP 404) secret-detail' });
+    const gh = fakeGh({ post: { status: 1, stdout: '{"creator":{"login":"someone"}}', stderr: 'gh: Not Found (HTTP 404) secret-detail' } });
     const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
     assert.equal(result.status, STATUS_NOT_POSTED);
     assert.equal(gh.calls.length, 1);
     const text = repo.lines.join('\n');
     assert.match(text, /no commit status posted for [0-9a-f]{12}: gh api exited 1 \(HTTP 404\)/);
     assert.ok(!text.includes('secret-detail') && !text.includes('someone'), 'gh output stays out of the log');
+  });
+
+  test('a killed check or a run that throws never posts success', async () => {
+    const repo = githubRepository();
+    repo.commit('killed', { 'verify-local.config.mjs': withLint('kill -KILL $$') });
+    const gh = fakeGh();
+    const killed = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(killed.status, 1);
+    assert.equal(gh.calls.length, 1);
+    assert.equal(field(gh.calls[0], 'state'), 'failure');
+    assert.match(field(gh.calls[0], 'description'), /failed on [0-9a-f]{12}: lint$/);
+
+    repo.commit('broken config', { 'verify-local.config.mjs': 'export default { checks: [ { name: 1 } ] };\n' });
+    const thrown = fakeGh();
+    await assert.rejects(verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: thrown.execute }));
+    assert.equal(thrown.calls.length, 0, 'a run that throws posts nothing');
+  });
+
+  test('a commit github.com does not know yet posts nothing, and says to push then run again', async () => {
+    const repo = githubRepository();
+    const sha = repo.commit('feature', { 'src/b.js': 'export const b = 1;\n' });
+    const gh = fakeGh({ known: { status: 1, stdout: '', stderr: 'gh: No commit found for SHA (HTTP 422)' } });
+    const result = await verify('pr', ['--post-status'], { ...repo.options, postStatusExecute: gh.execute });
+    assert.equal(result.status, STATUS_NOT_POSTED);
+    assert.equal(result.proof.result, 'passed', 'the proof itself stands');
+    assert.equal(gh.lookups.length, 1);
+    assert.equal(gh.calls.length, 0, 'no status POST');
+    assert.ok(repo.lines.some((line) => line.includes(`no commit status posted for ${sha.slice(0, 12)}: github.com does not know the commit yet (gh api exited 1 (HTTP 422)); push it, then run again`)), repo.lines.join('\n'));
   });
 
   test('pr only, never with --plan, and only for a github.com origin; without the flag nothing is posted', async () => {
