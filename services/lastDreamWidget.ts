@@ -69,6 +69,8 @@ type LastDreamUpdate = {
   /** The dream's title, or its untitled wording, in the app's language. */
   title: string;
   date: string | null;
+  /** The same day without its weekday, for the small widget. */
+  shortDate?: string | null;
   empty: string;
   /** The coming days that show an anniversary instead, oldest first. */
   anniversaries?: readonly WidgetAnniversary[];
@@ -85,7 +87,7 @@ let shown: { userId: string | null; dream: Pick<DreamAnalysis, 'id' | 'remoteId'
 let latest = 0;
 let queue: Promise<unknown> = Promise.resolve();
 
-async function publish({ dream, userId, title, date, empty, anniversaries = [] }: LastDreamUpdate, current: () => boolean): Promise<boolean> {
+async function publish({ dream, userId, title, date, shortDate, empty, anniversaries = [] }: LastDreamUpdate, current: () => boolean): Promise<boolean> {
   const found = getNoctaliaWidgets();
   if (!found) return false;
   const clear = () => {
@@ -111,7 +113,14 @@ async function publish({ dream, userId, title, date, empty, anniversaries = [] }
     if (!kept) clear();
     return false;
   }
-  const last: LastDreamWidgetProps = { image, title, ...(date ? { date } : {}), url: dreamLink(dream), empty };
+  const last: LastDreamWidgetProps = {
+    image,
+    title,
+    ...(date ? { date } : {}),
+    ...(shortDate ? { shortDate } : {}),
+    url: dreamLink(dream),
+    empty,
+  };
   // An anniversary whose painting cannot be fetched now leaves its day to the last dream.
   const days: { from: number; until: number; props: LastDreamWidgetProps & { image: string } }[] = [];
   for (const day of anniversaries) {
