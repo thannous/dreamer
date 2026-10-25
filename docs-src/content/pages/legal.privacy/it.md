@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-it-1200x630.jpg",
   "twitterImageAlt": "Informativa sulla privacy",
   "publishedTime": "",
-  "modifiedTime": "2026-10-18",
+  "modifiedTime": "2026-10-25",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Informativa sulla privacy</h1>
-<p class="text-lg text-purple-200/80 mb-10">In vigore dal 18 ottobre 2026</p>
+<p class="text-lg text-purple-200/80 mb-10">In vigore dal 25 ottobre 2026</p>
 
 <div class="space-y-8 text-gray-300 leading-relaxed">
   <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -117,7 +117,7 @@
                 <p class="mt-4">La misurazione facoltativa dell’uso dell’app si basa sul tuo consenso, indipendentemente dalle operazioni tecniche necessarie a fornire e proteggere il servizio.</p>
     <ul class="list-disc pl-5 mt-4 space-y-2">
       <li><strong>Fornire l’app:</strong> account, diario, analisi, immagini e funzioni principali sulla base dell’esecuzione del contratto.</li>
-      <li><strong>Trascrizione e analisi:</strong> trattamento basato sul tuo consenso esplicito, soprattutto se i sogni contengono dati sensibili.</li>
+      <li><strong>Trascrizione e analisi:</strong> trattamento basato sul tuo consenso esplicito, soprattutto se i sogni contengono dati sensibili. Puoi revocarlo in qualsiasi momento disattivando l’interruttore “IA per esplorare e illustrare i miei sogni” (Impostazioni → Note legali) o eliminando i sogni interessati e/o il tuo account. Con l’interruttore disattivato, da quel dispositivo non viene più inviato nulla ai servizi di IA; sogni, letture e immagini già prodotti restano conservati.</li>
       <li><strong>Sicurezza, stabilità e miglioramento:</strong> legittimo interesse a mantenere un servizio affidabile senza profilazione marketing.</li>
       <li><strong>Misurazione aggregata e senza cookie con Ahrefs:</strong> legittimo interesse a migliorare i contenuti pubblici, senza pubblicità mirata né tracciamento tra siti.</li>
       <li><strong>Mappe di calore e registrazioni di sessione con Microsoft Clarity:</strong> trattamento basato esclusivamente sul tuo <strong>consenso</strong> alle analisi, che puoi rifiutare o revocare in qualsiasi momento.</li>
@@ -183,7 +183,7 @@
 
   <section>
     <h2 class="text-2xl font-serif text-white mb-4 mt-8">9. I tuoi diritti</h2>
-    <p>Ai sensi del GDPR puoi chiedere accesso, rettifica, cancellazione, limitazione, opposizione, portabilità e revoca del consenso. Puoi cambiare la scelta Clarity e Google Analytics tramite “Preferenze analytics” nel footer.</p>
+    <p>Ai sensi del GDPR puoi chiedere accesso, rettifica, cancellazione, limitazione, opposizione, portabilità e revoca del consenso. Puoi cambiare la scelta Clarity e Google Analytics tramite “Preferenze analytics” nel footer. Puoi revocare il consenso all’IA nell’app con l’interruttore “IA per esplorare e illustrare i miei sogni” (Impostazioni → Note legali).</p>
     <p class="mt-4">Scrivi a <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a> indicando l’email del tuo account. Se vivi nello SEE o nel Regno Unito puoi presentare reclamo all’autorità locale di protezione dati.</p>
   </section>
 

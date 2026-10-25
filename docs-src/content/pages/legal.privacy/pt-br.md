@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-en-1200x630.jpg",
   "twitterImageAlt": "Política de Privacidade",
   "publishedTime": "",
-  "modifiedTime": "2026-10-18",
+  "modifiedTime": "2026-10-25",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de Privacidade</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última atualização: 18 de outubro de 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última atualização: 25 de outubro de 2026</p>
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
                 <p class="text-dream-salmon font-medium flex gap-2 items-start">
@@ -118,7 +118,7 @@
                 <p>Tratamos seus dados pessoais para as seguintes finalidades e com base nas seguintes bases legais:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Fornecimento do aplicativo e de suas funcionalidades</strong> (diário de sonhos, análises, imagens geradas, criação e gestão da conta): tratamento necessário à <strong>execução do contrato</strong> (aceitação dos Termos de Uso) entre você e a Noctalia.</li>
-                    <li><strong>Transcrição e análise dos seus sonhos, inclusive quando contêm informações sensíveis:</strong> tratamento fundamentado no seu <strong>consentimento explícito</strong>, que você pode retirar a qualquer momento excluindo os sonhos em questão e/ou sua conta.</li>
+                    <li><strong>Transcrição e análise dos seus sonhos, inclusive quando contêm informações sensíveis:</strong> tratamento fundamentado no seu <strong>consentimento explícito</strong>, que você pode retirar a qualquer momento desativando o interruptor «&nbsp;IA para explorar e ilustrar meus sonhos&nbsp;» (Ajustes&nbsp;→ Informações legais), ou excluindo os sonhos em questão e/ou sua conta. Com o interruptor desativado, nada mais é enviado aos serviços de IA a partir desse dispositivo; os sonhos, leituras e imagens já produzidos são conservados.</li>
                     <li><strong>Medição da estabilidade técnica, prevenção de abusos e segurança:</strong> tratamento fundamentado no nosso <strong>interesse legítimo</strong> em garantir o bom funcionamento, a segurança e a evolução do serviço, sem perfilhamento de marketing.</li>
                     <li><strong>Medição agregada e sem cookie da frequência do site com a Ahrefs:</strong> tratamento fundamentado no nosso <strong>interesse legítimo</strong> em melhorar nossos conteúdos públicos, sem publicidade direcionada nem rastreamento entre sites.</li>
                     <li><strong>Mapas de calor e gravações de sessão com o Microsoft Clarity:</strong> tratamento fundamentado apenas no seu <strong>consentimento</strong> aos analytics, que você pode recusar ou retirar a qualquer momento.</li>
@@ -198,7 +198,7 @@
                     <li><strong>Portabilidade:</strong> solicitar a portabilidade dos seus dados a outro fornecedor de serviço, observados os segredos comercial e industrial, na forma da regulamentação.</li>
                     <li><strong>Eliminação dos dados tratados com consentimento:</strong> solicitar a eliminação dos dados pessoais tratados com base no seu consentimento (incluindo a exclusão da sua conta e do seu diário de sonhos), ressalvadas as hipóteses legais de conservação.</li>
                     <li><strong>Informação sobre compartilhamento:</strong> obter informação sobre as entidades públicas e privadas com as quais compartilhamos seus dados.</li>
-                    <li><strong>Revogação do consentimento:</strong> quando o tratamento se baseia no seu consentimento (em particular para certos dados sensíveis), você pode revogá-lo a qualquer momento, sem comprometer a licitude do tratamento anterior. A escolha referente ao Clarity e ao Google Analytics pode ser alterada em «&nbsp;Preferências de analytics&nbsp;» no rodapé do site.</li>
+                    <li><strong>Revogação do consentimento:</strong> quando o tratamento se baseia no seu consentimento (em particular para certos dados sensíveis), você pode revogá-lo a qualquer momento, sem comprometer a licitude do tratamento anterior. A escolha referente ao Clarity e ao Google Analytics pode ser alterada em «&nbsp;Preferências de analytics&nbsp;» no rodapé do site. O consentimento à IA pode ser revogado no app com o interruptor «&nbsp;IA para explorar e ilustrar meus sonhos&nbsp;» (Ajustes&nbsp;→ Informações legais).</li>
                 </ul>
                 <p class="mt-4">Como a Noctalia é publicada por uma empresa sediada na França, o Regulamento Geral sobre a Proteção de Dados (RGPD) europeu também se aplica aos tratamentos descritos nesta política. Ele lhe confere direitos equivalentes, incluindo o direito de oposição a certos tratamentos baseados no nosso interesse legítimo e o direito à limitação do tratamento.</p>
                 <p class="mt-4">Você pode exercer seus direitos entrando em contato conosco pelo endereço: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>, indicando o endereço de e-mail usado para criar sua conta. Poderemos solicitar informações complementares para verificar sua identidade.</p>

@@ -23,7 +23,7 @@
   "twitterImage": "https://noctalia.app/img/og/noctalia-es-1200x630.jpg",
   "twitterImageAlt": "Política de privacidad",
   "publishedTime": "",
-  "modifiedTime": "2026-10-18",
+  "modifiedTime": "2026-10-25",
   "author": "",
   "prevPath": "",
   "nextPath": "",
@@ -36,7 +36,7 @@
 }
 ---
 <h1 class="font-serif text-4xl md:text-5xl mb-6 text-dream-cream">Política de privacidad</h1>
-        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 18 de octubre de 2026</p>
+        <p class="text-lg text-purple-200/80 mb-10">Última actualización: 25 de octubre de 2026</p>
 
         <div class="space-y-8 text-gray-300 leading-relaxed">
             <div class="p-6 rounded-2xl bg-dream-salmon/5 border border-dream-salmon/20">
@@ -119,7 +119,7 @@
                 <p>Tratamos tus datos personales para las siguientes finalidades y bases legales:</p>
                 <ul class="list-disc pl-5 mt-4 space-y-2">
                     <li><strong>Proporcionar la aplicación y sus funcionalidades</strong> (diario de sueños, análisis, imágenes generadas, creación y gestión de cuenta): tratamiento necesario para la <strong>ejecución del contrato</strong> (aceptación de los Términos de Servicio) entre tú y Noctalia.</li>
-                    <li><strong>Transcripción y análisis de tus sueños, incluso cuando contienen información sensible:</strong> tratamiento basado en tu <strong>consentimiento explícito</strong>, que puedes retirar en cualquier momento eliminando los sueños relevantes y/o tu cuenta.</li>
+                    <li><strong>Transcripción y análisis de tus sueños, incluso cuando contienen información sensible:</strong> tratamiento basado en tu <strong>consentimiento explícito</strong>, que puedes retirar en cualquier momento desactivando el interruptor «IA para explorar e ilustrar mis sueños» (Configuración → Legal), o eliminando los sueños relevantes y/o tu cuenta. Con el interruptor desactivado, desde ese dispositivo ya no se envía nada a los servicios de IA; los sueños, lecturas e imágenes ya producidos se conservan.</li>
                     <li><strong>Medición de estabilidad técnica, prevención de abusos y seguridad:</strong> tratamiento basado en nuestro <strong>interés legítimo</strong> en asegurar el correcto funcionamiento, seguridad y desarrollo del servicio, sin perfilado de marketing.</li>
                     <li><strong>Medición agregada y sin cookies del tráfico con Ahrefs:</strong> tratamiento basado en nuestro <strong>interés legítimo</strong> en mejorar nuestros contenidos públicos, sin publicidad dirigida ni seguimiento entre sitios.</li>
                     <li><strong>Mapas de calor y grabaciones de sesión con Microsoft Clarity:</strong> tratamiento basado únicamente en tu <strong>consentimiento</strong> para analítica, que puedes rechazar o retirar en cualquier momento.</li>
@@ -198,7 +198,7 @@
                     <li><strong>Derecho a la limitación del tratamiento:</strong> solicitar la suspensión temporal de ciertos tratamientos.</li>
                     <li><strong>Derecho de oposición:</strong> oponerte a ciertos tratamientos basados en nuestro interés legítimo.</li>
                     <li><strong>Derecho a la portabilidad de datos:</strong> recibir los datos que nos has proporcionado en un formato estructurado, de uso común y lectura mecánica, o solicitar su transmisión a otro responsable cuando sea técnicamente factible.</li>
-                    <li><strong>Derecho a retirar el consentimiento:</strong> cuando el tratamiento se base en tu consentimiento (principalmente para ciertos datos sensibles), puedes retirarlo en cualquier momento, sin afectar la licitud del tratamiento anterior. Puedes cambiar la opción de Clarity y Google Analytics desde «Preferencias de analítica» en el pie de página.</li>
+                    <li><strong>Derecho a retirar el consentimiento:</strong> cuando el tratamiento se base en tu consentimiento (principalmente para ciertos datos sensibles), puedes retirarlo en cualquier momento, sin afectar la licitud del tratamiento anterior. Puedes cambiar la opción de Clarity y Google Analytics desde «Preferencias de analítica» en el pie de página. Puedes retirar tu consentimiento a la IA en la app con el interruptor «IA para explorar e ilustrar mis sueños» (Configuración → Legal).</li>
                 </ul>
                 <p class="mt-4">Puedes ejercer tus derechos contactándonos en: <a href="mailto:contact@noctalia.app" class="text-dream-salmon hover:underline">contact@noctalia.app</a>, especificando la dirección de email utilizada para crear tu cuenta. Podemos necesitar pedirte información adicional para verificar tu identidad.</p>
                 <p class="mt-4">Si resides en el Espacio Económico Europeo o el Reino Unido, también tienes derecho a presentar una reclamación ante tu autoridad de control local (en España: la AEPD).</p>
