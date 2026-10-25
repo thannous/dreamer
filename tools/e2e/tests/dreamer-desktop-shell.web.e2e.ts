@@ -33,7 +33,8 @@ test('desktop sidebar leads to every destination and Capture saves under its edi
   expect(save.y - (editor.y + editor.height)).toBeLessThan(120);
   expect(save.y + save.height).toBeLessThan(900 / 1.4);
   await page.getByTestId('input.dreamTranscript').fill('A lantern floats over a quiet lake.');
-  await expect(page.getByTestId('component.recording.draftProgress.count')).toHaveText('35 characters');
+  // A short dream carries no character count.
+  await expect(page.getByTestId('component.recording.draftProgress.count')).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('desktop-capture.png') });
 
   for (const [tab, marker] of [['tab.journal', 'screen.journal'], ['tab.stats', 'screen.trends'], ['tab.explore', 'screen.explore'], ['tab.home', 'screen.home']]) {

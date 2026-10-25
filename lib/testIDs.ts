@@ -176,6 +176,7 @@ export const TID = {
     AnalyzePromptJournal: 'btn.analyzePrompt.journal',
     FirstValueBackupCta: 'btn.firstValueBackup.cta',
     QuotaLimitCtaGuest: 'btn.quotaLimit.ctaGuest',
+    QuotaLimitDiscoverPlus: 'btn.quotaLimit.discoverPlus',
     QuotaLimitCtaFree: 'btn.quotaLimit.ctaFree',
     QuotaLimitJournal: 'btn.quotaLimit.journal',
     QuotaLimitResetMock: 'btn.quotaLimit.resetMock',

@@ -672,6 +672,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
   }, []);
+  const handleDiscoverPlus = useCallback(() => {
+    router.push(buildPaywallHref('analysis_limit'));
+  }, []);
   useEffect(() => {
     if (dream?.analysisStatus !== 'pending' || isAnalyzing) return undefined;
 
@@ -942,7 +945,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, []);
   const visibleIllustrationCta =
     quotaLoading && illustrationCta === 'quota' ? 'none' : illustrationCta;
-  const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade';
+  // A guest out of illustrations goes to Plus too: a free account adds none of its own.
+  const canOfferImageUpgrade = visibleIllustrationCta === 'upgrade' || visibleIllustrationCta === 'quota';
 
   useEffect(() => {
     if (
@@ -2579,6 +2583,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             emphasis: 'primary',
           };
 
+  // A guest out of readings is asked for an account first; Plus stays one quiet step away.
+  const renderDiscoverPlus = () => guestNeedsAccount && savedAnalysisAction === 'signup' ? (
+    <PressableScale accessibilityRole="button" onPress={handleDiscoverPlus}
+      testID={TID.Button.QuotaLimitDiscoverPlus}
+      className="min-h-[44px] items-center justify-center px-4">
+      <Text className="font-sans-medium text-[15px] text-champagne-on">
+        {t('journal.detail.quota_limit.discover_plus')}
+      </Text>
+    </PressableScale>
+  ) : null;
+
   const renderReturnToJournal = (quiet: boolean) => (
     <PressableScale accessibilityRole="button" onPress={handleBackPress}
       testID="btn.savedDream.returnToJournal"
@@ -2616,10 +2631,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             {arrivalMessage}
           </Text>
         ) : guestNeedsAccount ? null : renderQuotaHint('center');
+      // A guest out of readings is invited to the account the seal offers, not back to the journal.
       return (
         <View testID={TID.Component.DreamDetailActionCard} className="gap-1">
           {caption ? <View className="px-2">{caption}</View> : null}
-          {renderReturnToJournal(true)}
+          {guestNeedsAccount ? renderDiscoverPlus() : renderReturnToJournal(true)}
         </View>
       );
     }
@@ -2672,8 +2688,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     if (isSavedArrival && !isStalePrimaryAction) {
       // Act I ends on one clear next step: the story continues into the analysis when the
       // permission allows it, otherwise the journal is the way out and the offer stays secondary.
+      // A guest out of readings is led to create an account rather than back to the journal.
       const analysisFirst = visiblePrimaryAction === 'analyze' && !analysisAccessLabel
-        && (savedAnalysisAction === 'analyze' || canResumeAnalysis);
+        && (savedAnalysisAction === 'analyze' || canResumeAnalysis || guestNeedsAccount);
       // One caption at most: the explanation of the offer, otherwise the allowance.
       const quotaCaption = guestNeedsAccount || arrivalMessage ? null : renderQuotaHint('center');
       const captions = arrivalMessage || quotaCaption ? (
@@ -2707,12 +2724,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           </Text>
         </PressableScale>
       );
-      const returnButton = renderReturnToJournal(analysisFirst);
+      const returnButton = guestNeedsAccount ? null : renderReturnToJournal(analysisFirst);
 
       return (
         <View testID={TID.Component.DreamDetailActionCard} className={analysisFirst ? 'gap-2.5' : 'gap-1.5'}>
           {analysisFirst
-            ? <>{analysisButton}{captions}{returnButton}</>
+            ? <>{analysisButton}{captions}{returnButton}{renderDiscoverPlus()}</>
             : <>{returnButton}{analysisButton}{captions}</>}
         </View>
       );
@@ -2774,6 +2791,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             {analysisAccessLabel ?? detailActionCard.cta}
           </Text>
         </PressableScale>
+        {renderDiscoverPlus()}
       </View>
     );
   };
@@ -3004,7 +3022,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             </Text>
             {!isRetryingImage && !isImageJobPending && (
               <View className="w-full items-center gap-3">
-                {visibleIllustrationCta === 'upgrade' && (
+                {canOfferImageUpgrade && (
                   <PressableScale
                     onPress={handleImageUpgrade}
                     accessibilityRole="button"
@@ -3579,6 +3597,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           tier={tier}
           mode={quotaSheetMode}
           usageLimit={usage?.analysis.limit}
+          onDiscoverPlus={() => {
+            setShowQuotaLimitSheet(false);
+            handleDiscoverPlus();
+          }}
         />
         <ImageErrorSheet
           visible={Boolean(imageErrorMessage)}

@@ -46,7 +46,8 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   await expect(page.getByTestId('recording-guest-remaining')).toHaveCount(0);
   await editor.fill(story);
   await expectCaptureDraftSaved(page, story);
-  await expect(count).toHaveText(`${story.length} caractères`);
+  // A short dream carries no character count.
+  await expect(count).toHaveCount(0);
   await expect(save).toBeEnabled();
 
   const editorBox = await editor.boundingBox();
@@ -118,7 +119,7 @@ test('capture stops a dream at 20,000 characters and its count shows the maximum
   const editor = page.getByTestId('input.dreamTranscript');
   const counter = page.getByTestId('component.recording.draftProgress.count');
   await editor.fill('r'.repeat(17999));
-  await expect(counter).toHaveText(/^17\s999 caractères$/);
+  await expect(counter).toHaveCount(0);
   await editor.fill('r'.repeat(18500));
   await expect(counter).toHaveText(/^18\s500 \/ 20\s000 caractères$/);
   await editor.fill('r'.repeat(20000));

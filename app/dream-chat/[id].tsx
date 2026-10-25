@@ -1084,7 +1084,9 @@ function DreamChatContent() {
           </Text>
           <Pressable
             style={[styles.upgradeButton, shadows.lg, { backgroundColor: noctalia.action.primary }]}
-            onPress={() => router.push(buildPaywallHref('exploration_limit'))}
+            onPress={() => router.push(tier === 'guest'
+              ? '/settings?section=account&auth=signup'
+              : buildPaywallHref('exploration_limit'))}
           >
             <IconSymbol name="arrow.up.circle" size={24} color={noctalia.action.primaryText} />
             <Text style={[styles.upgradeButtonText, { color: noctalia.action.primaryText }]}>

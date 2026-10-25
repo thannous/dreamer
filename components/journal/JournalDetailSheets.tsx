@@ -351,6 +351,7 @@ export function QuotaLimitSheet({
   tier,
   mode,
   usageLimit,
+  onDiscoverPlus,
 }: {
   visible: boolean;
   onClose: () => void;
@@ -359,6 +360,8 @@ export function QuotaLimitSheet({
   tier: SubscriptionTier;
   mode: QuotaMode;
   usageLimit?: number | null;
+  /** A guest asked for an account can also look at Plus. */
+  onDiscoverPlus?: () => void;
 }) {
   const { colors, mode: themeMode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
@@ -417,6 +420,13 @@ export function QuotaLimitSheet({
           onPress={onSecondary}
           testID={TID.Button.QuotaLimitJournal}
         />
+        {tier === 'guest' && mode !== 'login' && onDiscoverPlus ? (
+          <BottomSheetLinkAction
+            label={t('journal.detail.quota_limit.discover_plus')}
+            onPress={onDiscoverPlus}
+            testID={TID.Button.QuotaLimitDiscoverPlus}
+          />
+        ) : null}
       </BottomSheetActions>
     </BottomSheet>
   );

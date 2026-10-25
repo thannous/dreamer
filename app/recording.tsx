@@ -54,7 +54,7 @@ import { resolveDreamTarget } from '@/lib/dreamIdentity';
 import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { markDreamNamed } from '@/lib/dreamNaming';
 import { markDreamStoryHandoff } from '@/lib/dreamStoryPrologue';
-import { isDreamTextTooLong } from '@/lib/dreamTextLimit';
+import { isDreamTextTooLong, shouldShowDreamLengthCounter } from '@/lib/dreamTextLimit';
 import { classifyError, GuestDreamLimitError } from '@/lib/errors';
 import { hasAiConsent, requestAiConsent } from '@/lib/aiConsent';
 import { recordBadgeEvent } from '@/services/badgeLedgerStore';
@@ -1438,7 +1438,8 @@ function RecordingScreen() {
       insets.bottom,
     ]
   );
-  const showsDraftProgress = hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice';
+  const showsDraftProgress = hydrationStatus === 'ready' && !editableCapture && inputMode !== 'voice'
+    && shouldShowDreamLengthCounter((captureReview?.text ?? transcript).length);
   // With the keyboard up the screen shows the document's end: the editor and its border (2), the
   // draft count and its gap (12) and the end's padding (16), below a margin that keeps the
   // editor's top clear of the status bar's veil. On a short window (the folded iPhone Duo, a small
