@@ -1252,7 +1252,7 @@ export const useDreamJournal = () => {
             const merged = mergeServerDreamWithLocalState(remoteDream, current);
             const recovered = remoteDream.analysisStatus === 'done'
               ? stampDreamAnalysisTranscript(merged, merged.transcript)
-              : merged;
+              : { ...merged, analysisRequestId: undefined };
             recoveredSnapshot = recovered;
             return upsertDream(previous, recovered);
           });
@@ -1525,14 +1525,17 @@ export const useDreamJournal = () => {
         throw new Error(`Dream with id ${dreamId} not found`);
       }
 
+      const shouldUseServerAnalysis =
+        isAnalysisJobsEnabled() && canUseRemoteSync && Boolean(user) && !isMockMode;
       const inMemoryRequestId = analysisRequestIdsRef.current.get(getDreamIdentityKey(dream));
+      // An accepted job stays pending through transport failures. A server-backed
+      // failed dream is terminal: its refunded receipt needs a new admission.
       const persistedRequestId = isResumableAnalysisRequest(dream)
+        && !(shouldUseServerAnalysis && dream.analysisStatus === 'failed')
         ? dream.analysisRequestId
         : undefined;
       const isResumingAnalysis = Boolean(inMemoryRequestId || persistedRequestId);
       const requestId = inMemoryRequestId ?? persistedRequestId ?? generateUUID();
-      const shouldUseServerAnalysis =
-        isAnalysisJobsEnabled() && canUseRemoteSync && Boolean(user) && !isMockMode;
       // Reserve synchronously before the first await so rapid duplicate calls
       // share one server idempotency key.
       analysisRequestIdsRef.current.set(getDreamIdentityKey(dream), requestId);
@@ -1839,11 +1842,14 @@ export const useDreamJournal = () => {
         setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         if (serverJobAccepted) {
           if (serverJobTerminalFailure) {
+            analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+            quotaService.invalidate(user);
             analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'failed');
             const latestDream = resolveCurrentDream(currentDreamState);
             await persistDreamClientState({
               ...latestDream,
               analysisStatus: 'failed',
+              analysisRequestId: undefined,
             });
           }
           // A timeout or network error is not a server failure. Keep the

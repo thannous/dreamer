@@ -2807,7 +2807,7 @@ describe('useDreamJournal', () => {
       await waitFor(() => expect(result.current.dreams[0]?.analysisStatus).toBe(status), { timeout: 2500 });
       expect(result.current.dreams[0]).toMatchObject({
         title: 'Recovered server result', captureOriginalTranscript: 'Original voice capture',
-        analysisRequestId: requestId,
+        analysisRequestId: status === 'done' ? requestId : undefined,
       });
       if (status === 'done') expect(getDreamAnalysisFreshness(result.current.dreams[0])).toBe('fresh');
       expect(mockFetchDreamFromSupabase).toHaveBeenCalledWith(101, 'user-1');
@@ -2972,7 +2972,7 @@ describe('useDreamJournal', () => {
       expect(mockSubmitImageGenerationJob).not.toHaveBeenCalled();
       expect(mockSubmitDreamAnalysisJob).toHaveBeenCalledWith({
         dreamId: 101,
-        analysisRequestId: requestId,
+        analysisRequestId: expect.any(String),
         lang: 'fr',
         replaceExistingImage: false,
       });
@@ -3045,7 +3045,7 @@ describe('useDreamJournal', () => {
 
       expect(mockSubmitDreamAnalysisJob).toHaveBeenCalledWith({
         dreamId: 101,
-        analysisRequestId: requestId,
+        analysisRequestId: expect.any(String),
         lang: 'fr',
         replaceExistingImage: true,
       });
@@ -3227,7 +3227,7 @@ describe('useDreamJournal', () => {
         id: 1,
         remoteId: 101,
         isAnalyzed: false,
-        analysisStatus: 'failed',
+        analysisStatus: 'pending',
         analysisRequestId: requestId,
       });
       mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
@@ -3331,9 +3331,18 @@ describe('useDreamJournal', () => {
       expect(observedError).toEqual(expect.objectContaining({ message: 'Dream analysis failed' }));
       expect(result.current.dreams[0]).toEqual(expect.objectContaining({
         analysisStatus: 'failed',
-        analysisRequestId: requestId,
+        analysisRequestId: undefined,
       }));
       expect(mockSubmitDreamAnalysisJob).toHaveBeenCalledTimes(1);
+      const firstRequest = mockSubmitDreamAnalysisJob.mock.calls[0][0] as { analysisRequestId: string };
+      // A terminal server failure was refunded; an explicit retry reserves anew.
+      await act(async () => {
+        await expect(result.current.analyzeDream(1, existingDream.transcript)).rejects.toThrow('Dream analysis failed');
+      });
+      const retryRequest = mockSubmitDreamAnalysisJob.mock.calls[1][0] as { analysisRequestId: string };
+      expect(retryRequest.analysisRequestId).not.toBe(firstRequest.analysisRequestId);
+      expect(firstRequest.analysisRequestId).not.toBe(requestId);
+      expect(mockInvalidateQuota).toHaveBeenCalled();
     });
 
     it('checks quota before analyzing', async () => {
