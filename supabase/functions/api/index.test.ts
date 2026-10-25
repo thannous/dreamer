@@ -285,14 +285,13 @@ Deno.test('a scoped bearer without a valid user logs an allowlisted reason code 
       const response = await handler(request('/analyzeDream', {
         headers: { Authorization: `Bearer ${token}`, 'X-Forwarded-For': '203.0.113.7' },
       }));
-      assertEquals(response.status, 401);
+      assertEquals(response.status, mode === 'lookup-throws' ? 503 : 401);
       await response.body?.cancel();
     }
   });
 
   assertEquals(warnings, [
     ['[api] scoped bearer rejected', { reason: 'scoped_bearer_no_user', method: 'POST' }],
-    ['[api] scoped bearer rejected', { reason: 'scoped_bearer_lookup_failed', method: 'POST' }],
   ]);
   const serialized = JSON.stringify(warnings);
   for (const secret of [token, 'secret-user-id', 'secret-client-id', '203.0.113.7']) {
@@ -311,4 +310,19 @@ Deno.test('router reason and route helpers map anything outside the allowlist to
   assertEquals(toLoggedRoute('POST', '/', known), { method: 'POST', route: '/' });
   assertEquals(toLoggedRoute('GET', '/users/someone@example.com/x9', known), { method: 'GET', route: '/users/:param/:param' });
   assertEquals(toLoggedRoute('GET', '/users/secret-user-id', known), { method: 'GET', route: '/users/:param' });
+});
+
+Deno.test('auth transport failures return 503 for ordinary bearers before dispatch', async () => {
+  for (const error of [{ name: 'AuthRetryableFetchError', status: 0 }, { name: 'AuthApiError', status: 503 }]) {
+    let dispatched = false;
+    const createClient = (() => ({ auth: { getUser: async () => ({ data: { user: null }, error }) } })) as unknown as ApiHandlerDependencies['createClient'];
+    const handler = createApiHandler({ readEnv, createClient, routes: new Map([['POST /analyzeDream', async () => {
+      dispatched = true;
+      return new Response('guest');
+    }]]) });
+    const response = await handler(request('/analyzeDream', { authenticated: true }));
+    assertEquals(response.status, 503);
+    assertEquals(dispatched, false);
+    await response.body?.cancel();
+  }
 });

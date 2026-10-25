@@ -3303,6 +3303,35 @@ describe('useDreamJournal', () => {
       }));
     });
 
+    it.each([
+      [401, undefined, false], [408, undefined, false], [400, undefined, false],
+      [403, 'UNKNOWN', false], [503, 'AI_ADMISSION_UNAVAILABLE', false],
+      [429, 'QUOTA_EXCEEDED', true], [429, 'DAILY_ANALYSIS_LIMIT', true],
+      [409, 'ANALYSIS_IDEMPOTENCY_KEY_REUSED', true], [404, 'DREAM_NOT_FOUND', true],
+      [400, 'INVALID_INPUT', true], [429, 'AI_ADMISSION_DENIED', true],
+      [503, 'AI_GLOBAL_BACKLOG_LIMIT', true],
+    ])('retains ambiguous admission keys and clears confirmed rejections (%s/%s)', async (status: number, code: string | undefined, rejected: boolean) => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101, isAnalyzed: false, analysisStatus: 'none' });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      const error = Object.assign(new Error('submission response'), { status, body: { code } });
+      mockSubmitDreamAnalysisJob.mockRejectedValueOnce(error);
+      const { result } = await renderLoadedDreamJournal();
+      await act(async () => { await result.current.analyzeDream(1, existingDream.transcript).catch(() => undefined); });
+      const key = mockSubmitDreamAnalysisJob.mock.calls[0][0].analysisRequestId;
+      expect(result.current.dreams[0].analysisStatus).toBe(rejected ? 'failed' : 'pending');
+      expect(result.current.dreams[0].analysisRequestId).toBe(rejected ? undefined : key);
+      if (!rejected) {
+        expect(result.current.lastAnalysisOutcome).toBeNull();
+        mockGetDreamAnalysisJobStatus.mockRejectedValueOnce(new Error('offline'));
+        await act(async () => { await result.current.analyzeDream(1, existingDream.transcript).catch(() => undefined); });
+        expect(mockSubmitDreamAnalysisJob.mock.calls[1][0].analysisRequestId).toBe(key);
+        expect(mockUpdateDreamInSupabase.mock.calls.some(([dream]: [DreamAnalysis]) => dream.analysisStatus === 'failed')).toBe(false);
+      }
+    });
+
     it('surfaces a durable analysis quota denial as an upgrade error', async () => {
       mockEnvState.analysisJobsEnabled = true;
       setMockUser({ id: 'user-1' });

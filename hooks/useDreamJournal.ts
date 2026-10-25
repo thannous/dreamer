@@ -1851,8 +1851,16 @@ export const useDreamJournal = () => {
             || responseBody.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED');
         const responseStatus = error && typeof error === 'object' && 'status' in error
           && typeof error.status === 'number' ? error.status : undefined;
+        const admissionCode = responseBody && typeof responseBody === 'object' && 'code' in responseBody
+          && typeof responseBody.code === 'string' ? responseBody.code : undefined;
+        // Only admission answers emitted after the idempotent lookup prove that
+        // no job owns this key. Auth/gateway failures may follow a committed POST.
         const confirmedSubmissionRejection = serverJobSubmissionStarted && !serverJobAccepted
-          && responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500;
+          && ((responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500
+            && responseStatus !== 401 && responseStatus !== 408 && admissionCode !== undefined
+            && (['QUOTA_EXCEEDED', 'DAILY_ANALYSIS_LIMIT', 'ANALYSIS_IDEMPOTENCY_KEY_REUSED',
+              'DREAM_NOT_FOUND', 'INVALID_INPUT'].includes(admissionCode) || admissionCode.startsWith('AI_')))
+            || (responseStatus === 503 && admissionCode === 'AI_GLOBAL_BACKLOG_LIMIT'));
         if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection) {
           // The POST may have committed before its reply was lost. Persist the same
           // key across restarts, just as for an acknowledged job awaiting its result.
