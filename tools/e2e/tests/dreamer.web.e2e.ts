@@ -1,7 +1,7 @@
 import { test, type Browser } from '@e2e-dev/web';
 import { expect } from 'e2e';
 import { fileURLToPath } from 'node:url';
-import { isolateWeb } from '../web-fixtures';
+import { aiConsentDisclosure, isolateWeb } from '../web-fixtures';
 import type { App, Screen } from 'e2e';
 
 // The mock paints with remote placeholder images, which isolation blocks. Serve one of
@@ -46,11 +46,9 @@ async function selectProfile(app: App, screen: Screen, browser: Browser, profile
 
 // The Noctalia modal asks for AI consent once its host is mounted, as in the app; only the
 // onboarding's leave confirmation is still the browser's own dialog.
-const AI_CONSENT_MESSAGE = 'To explore and illustrate your dream, Noctalia relies on artificial intelligence.';
-
 async function answerAiConsent(screen: Screen, answer: 'accept' | 'decline') {
   // A read waits for the modal to appear, like an action does.
-  expect(await screen.getByTestId('modal.aiConsent', { visible: true }).textContent()).toContain(AI_CONSENT_MESSAGE);
+  expect(await screen.getByTestId('modal.aiConsent', { visible: true }).textContent()).toContain(aiConsentDisclosure);
   await screen.getByTestId(`btn.aiConsent.${answer}`, { visible: true }).tap();
   await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
 }
