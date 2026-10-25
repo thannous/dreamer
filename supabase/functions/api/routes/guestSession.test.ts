@@ -495,8 +495,8 @@ const iosRejects = (logged: unknown[][], label: string) =>
   logged.filter((args) => args[0] === label).map((args) => args[1]);
 
 Deno.test('iOS challenge rejects log an allowlisted reason code and no request values', async () => {
-  const cases: Array<{ name: string; body: unknown; store?: AppAttestStore; configured?: boolean;
-    status: number; reason: string }> = [
+  const cases: { name: string; body: unknown; store?: AppAttestStore; configured?: boolean;
+    status: number; reason: string }[] = [
     { name: 'unconfigured', body: { fingerprint: SECRET_FINGERPRINT, keyId: SECRET_KEY_ID },
       configured: false, status: 503, reason: 'config_unavailable' },
     { name: 'not json', body: `{"fingerprint":"${SECRET_FINGERPRINT}"`, status: 400, reason: 'body_invalid' },
@@ -543,8 +543,8 @@ Deno.test('every iOS guest session reject logs an allowlisted reason code and no
   const rejectedProof = () => {
     throw new AppAttestProofError();
   };
-  const cases: Array<{ name: string; body: Record<string, unknown>; dependencies?: Dependencies;
-    configured?: boolean; status?: number; reason: string }> = [
+  const cases: { name: string; body: Record<string, unknown>; dependencies?: Dependencies;
+    configured?: boolean; status?: number; reason: string }[] = [
     { name: 'unconfigured', body: proofBody(), configured: false, status: 503, reason: 'config_unavailable' },
     { name: 'legacy body without proof', body: { fingerprint: SECRET_FINGERPRINT, platform: 'ios' },
       reason: 'proof_missing' },
@@ -614,7 +614,7 @@ Deno.test('every iOS guest session reject logs an allowlisted reason code and no
         assertEquals(response.status, status, testCase.name);
         await response.body?.cancel();
       });
-      const rejects = iosRejects(logged, '[api] /guest/session ios rejected') as Array<Record<string, unknown>>;
+      const rejects = iosRejects(logged, '[api] /guest/session ios rejected') as Record<string, unknown>[];
       assertEquals(rejects.length, 1, testCase.name);
       assertEquals(rejects[0].reason, testCase.reason, testCase.name);
       assertEquals(rejects[0].status, status, testCase.name);
