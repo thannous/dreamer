@@ -1642,18 +1642,62 @@ export const useDreamJournal = () => {
       let serverJobAccepted = false;
       let serverJobTerminalFailure = false;
 
+      const finishServerAnalysis = async (remoteDream: DreamAnalysis, latestDream: DreamAnalysis) => {
+        assertAnalysisScope();
+        // Only the read result may mark it done: a failed read keeps it pending
+        // for an image registered before a retry or recovery.
+        analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
+        const mergedDream = mergeServerDreamWithLocalState(remoteDream, latestDream);
+        const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
+        await updateDream(stampedDream);
+        await syncPendingMutations({ target: stampedDream });
+        const refreshedDream = resolveCurrentDream(stampedDream);
+
+        void trackProductEvent('analysis_completed', {
+          duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
+          generated_image: Boolean(refreshedDream.imageUrl),
+          tier,
+        });
+        analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
+        analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+        quotaService.invalidate(user);
+        emitProgress(AnalysisStep.COMPLETE);
+        setLastAnalysisOutcome({ dreamId, status: 'done', completedAt: Date.now() });
+        return refreshedDream;
+      };
+
       setActiveAnalysis({ dreamId });
       try {
         if (useServerAnalysisJob) {
           assertAnalysisScope();
           markPerformance('analysis.http_started', { trace: analysisTrace });
           serverJobSubmissionStarted = true;
-          const command = await submitDreamAnalysisJob({
-            dreamId: syncedDream.remoteId!,
-            analysisRequestId: requestId,
-            lang: options?.lang,
-            replaceExistingImage: shouldReplaceImage,
-          });
+          let command;
+          try {
+            command = await submitDreamAnalysisJob({
+              dreamId: syncedDream.remoteId!,
+              analysisRequestId: requestId,
+              lang: options?.lang,
+              replaceExistingImage: shouldReplaceImage,
+            });
+          } catch (error) {
+            const response = error as { status?: number; body?: { code?: string } } | null;
+            if (response?.status === 409 && response.body?.code === 'ANALYSIS_ALREADY_COMPLETE') {
+              // A synchronous request may have finished after consent withdrawal.
+              // Recover its persisted reading without issuing another analysis.
+              let completedDream: DreamAnalysis | undefined;
+              try {
+                completedDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
+              } catch (readError) {
+                logger.warn('[useDreamJournal] Completed analysis recovery read failed', readError);
+              }
+              assertAnalysisScope();
+              if (completedDream?.isAnalyzed && completedDream.analysisStatus === 'done') {
+                return await finishServerAnalysis(completedDream, resolveCurrentDream(syncedDream));
+              }
+            }
+            throw error;
+          }
           serverJobAccepted = true;
           markPerformance('analysis.job_accepted', { trace: analysisTrace });
 
@@ -1692,27 +1736,7 @@ export const useDreamJournal = () => {
 
           emitProgress(AnalysisStep.FINALIZING);
           const remoteDream = await fetchDreamFromSupabase(syncedDream.remoteId!, user?.id);
-          assertAnalysisScope();
-          // Only the read result may mark it done: a failed read keeps it pending
-          // for an image registered before a retry or recovery.
-          analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'done');
-          const mergedDream = mergeServerDreamWithLocalState(remoteDream, latestDream);
-          const stampedDream = stampDreamAnalysisTranscript(mergedDream, mergedDream.transcript);
-          await updateDream(stampedDream);
-          await syncPendingMutations({ target: stampedDream });
-          const refreshedDream = resolveCurrentDream(stampedDream);
-
-          void trackProductEvent('analysis_completed', {
-            duration_ms_bucket: getDurationMsBucket(Date.now() - analysisStartedAt),
-            generated_image: Boolean(refreshedDream.imageUrl),
-            tier,
-          });
-          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
-          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
-          quotaService.invalidate(user);
-          emitProgress(AnalysisStep.COMPLETE);
-          setLastAnalysisOutcome({ dreamId, status: 'done', completedAt: Date.now() });
-          return refreshedDream;
+          return await finishServerAnalysis(remoteDream, latestDream);
         }
 
         assertAnalysisScope();
@@ -1869,9 +1893,7 @@ export const useDreamJournal = () => {
         // no job owns this key. Auth/gateway failures may follow a committed POST.
         const confirmedSubmissionRejection = serverJobSubmissionStarted && !serverJobAccepted
           && ((responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500
-            && responseStatus !== 401 && responseStatus !== 408 && admissionCode !== undefined
-            && (['QUOTA_EXCEEDED', 'DAILY_ANALYSIS_LIMIT', 'ANALYSIS_IDEMPOTENCY_KEY_REUSED',
-              'DREAM_NOT_FOUND', 'INVALID_INPUT'].includes(admissionCode) || admissionCode.startsWith('AI_')))
+            && responseStatus !== 401 && responseStatus !== 408 && Boolean(admissionCode))
             || (responseStatus === 503 && admissionCode === 'AI_GLOBAL_BACKLOG_LIMIT'));
         if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection) {
           // The POST may have committed before its reply was lost. Persist the same
