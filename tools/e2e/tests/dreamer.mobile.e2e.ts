@@ -819,3 +819,79 @@ test('Dreamer native security recovery keeps a synthetic token-hash form inert',
   await expect(screen.getByTestId('input.auth.newPassword')).toBeVisible();
   await expect(screen.getByTestId('btn.auth.updatePassword')).toBeDisabled();
 });
+
+// The home screen widgets open Capture with the link they carry. It must land there from
+// another screen, keeping the draft left in it, and from a closed app.
+const CAPTURE_WIDGET_LINK = 'noctalia://recording';
+
+async function onboardToCapture({ app, screen }: Pick<NativeBackgroundFixtures, 'app' | 'screen'>) {
+  await app.open();
+  await acceptDreamerLink({ screen });
+  // The guarded runner owns a disposable simulator and this synthetic profile.
+  await app.clearState();
+  await screen.getByTestId('btn.onboarding.intro.next', { visible: true }).tap();
+  await leaveGuidedStories(screen);
+  await screen.getByTestId('btn.onboarding.skip', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+}
+
+test('Dreamer release capture widget link opens Capture from Today and keeps the draft', { tags: ['widget-links'] }, async ({ app, screen, device }) => {
+  await onboardToCapture({ app, screen });
+  await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
+  const draft = 'Widget fixture: a paper boat crossing a dark pond.';
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(draft);
+  await device.dismissKeyboard();
+  await billingHome(screen);
+  await device.openLink(CAPTURE_WIDGET_LINK);
+  await acceptDreamerLink({ screen });
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue(draft);
+  await app.screenshot('widget-link-from-today');
+});
+
+test('Dreamer release capture widget link starts a closed app on Capture', { tags: ['widget-links'] }, async ({ app, screen, device }) => {
+  await onboardToCapture({ app, screen });
+  await billingHome(screen);
+  await device.closeApp();
+  await device.openLink(CAPTURE_WIDGET_LINK);
+  await acceptDreamerLink({ screen });
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('screen.onboarding')).toHaveCount(0);
+  await app.screenshot('widget-link-cold-start');
+});
+
+// Folded, the iPhone Duo puts iOS's own bars in a column beside the screen; ours stands there
+// too, and goes back under the screen on the open inner display.
+const onIphoneDuo = /Duo/.test(process.env.E2E_DEVICE ?? '');
+
+test('Dreamer release iPhone Duo keeps the tab bar in the folded side column and under the open screen', {
+  platforms: ['ios'], tags: ['iphone-duo'], timeout: 300_000,
+  skip: onIphoneDuo ? false : 'Requires an iPhone Duo simulator named by E2E_DEVICE.',
+}, async ({ app, screen, device }) => {
+  await device.fold('closed');
+  await onboardToCapture({ app, screen });
+  await billingHome(screen);
+  const column = screen.getByTestId('component.sideColumnTabBar', { visible: true });
+  await expect(column).toBeVisible();
+  const folded = await screen.getByTestId('screen.home', { visible: true }).boundingBox();
+  const bar = await column.boundingBox();
+  if (!folded || !bar) throw new Error('The folded layout is unavailable.');
+  // A narrow, tall column on the camera's side, not a bar across the bottom.
+  expect(bar.width).toBeLessThan(folded.width / 3);
+  expect(bar.height).toBeGreaterThan(folded.height / 2);
+  expect(bar.x + bar.width / 2).toBeGreaterThan(folded.x + folded.width / 2);
+  await screen.getByTestId('tab.journal', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
+  await app.screenshot('duo-folded-side-column');
+
+  await device.fold('open');
+  await expect(screen.getByTestId('component.sideColumnTabBar', { visible: true })).toHaveCount(0);
+  const open = await screen.getByTestId('screen.journal', { visible: true }).boundingBox();
+  const tab = await screen.getByTestId('tab.home', { visible: true }).boundingBox();
+  if (!open || !tab) throw new Error('The open layout is unavailable.');
+  expect(tab.y).toBeGreaterThan(open.y + open.height / 2);
+  await screen.getByTestId('tab.home', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+  await app.screenshot('duo-open-bottom-bar');
+  await device.fold('closed');
+});
