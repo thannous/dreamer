@@ -36,6 +36,21 @@ let decided = false;
 // Writes run in order: a withdrawal never lands before the grant it withdraws.
 let storageWrites: Promise<void> = Promise.resolve();
 const listeners = new Set<() => void>();
+let stopStorageListener: (() => void) | null = null;
+
+function listenForWebDecisions(): void {
+  if (Platform.OS !== 'web' || typeof window === 'undefined' || stopStorageListener) return;
+  const onStorage = (event: StorageEvent) => {
+    if (event.key !== STORAGE_KEY && event.key !== null) return;
+    if (event.storageArea && event.storageArea !== window.localStorage) return;
+    // A persisted external decision also invalidates older reads and prompts.
+    // Do not echo it to storage: local writes retain their existing FIFO order.
+    pending = null;
+    decide(event.newValue === GRANTED);
+  };
+  window.addEventListener('storage', onStorage);
+  stopStorageListener = () => window.removeEventListener('storage', onStorage);
+}
 
 function writeStorage(write: () => Promise<void>): Promise<void> {
   const next = storageWrites.then(write);
@@ -52,6 +67,7 @@ function decide(value: boolean): void {
 
 /** Notifies after each grant or withdrawal, so a visible setting follows the decision. */
 export function subscribeAiConsent(listener: () => void): () => void {
+  listenForWebDecisions();
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
@@ -77,6 +93,7 @@ export function registerAiConsentPromptHandler(handler: AiConsentPromptHandler |
 }
 
 export async function hasAiConsent(): Promise<boolean> {
+  listenForWebDecisions();
   if (granted || decided) return granted === true;
   const asked = decision;
   let stored = false;
@@ -154,6 +171,8 @@ export async function withdrawAiConsent(): Promise<void> {
 
 /** Test helper: forget the in-memory decision. */
 export function resetAiConsentCacheForTests(): void {
+  stopStorageListener?.();
+  stopStorageListener = null;
   granted = null;
   pending = null;
   decision += 1;
