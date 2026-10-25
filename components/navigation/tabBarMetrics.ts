@@ -76,7 +76,7 @@ export const CAPTURE_GLOW = {
   elevation: 10,
 } satisfies ViewStyle;
 
-/** The top of the side column keeps the status bar and the camera clear. */
+/** Kept free at the top of the side column for the status bar and the camera (estimated). */
 const SIDE_COLUMN_STATUS_HEIGHT = 120;
 const SIDE_BAR_MARGIN = 6;
 const SIDE_BAR_MAX_WIDTH = 76;
@@ -88,9 +88,9 @@ const SIDE_LABEL_LINE_HEIGHT = 14;
 /**
  * The navigation standing in the iPhone Duo's side column: one cell per destination, top
  * to bottom in reading order, the bar resting on the column's bottom like the floating
- * bar on the screen's. Cells shrink in a short window (the Duo folded on its side) so the
- * bar stays below the status bar; Capture is a disc inside its cell, never raised over
- * the page beside it.
+ * bar on the screen's. In a short window (the Duo folded on its side) the cells shrink, down
+ * to 52 pt, to leave the top of the column to the status bar; Capture is a disc inside its
+ * cell, never raised over the page beside it.
  */
 export function getSideColumnBarLayout({ columnWidth, height, bottomInset, fontScale }: {
   columnWidth: number;

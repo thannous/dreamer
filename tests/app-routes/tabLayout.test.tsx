@@ -27,7 +27,8 @@ let mockSegments: string[] = ['(tabs)', 'index'];
 let mockActiveAnalysis: { dreamId: number } | null = null;
 let capturedTabBar: unknown = 'unset';
 let mockInSideColumn = false;
-let mockSideColumnBar: { activeKey: string; onSelect: (key: string) => void } | null = null;
+let mockSideColumnBar: { onSelect: (key: string) => void } | null = null;
+let mockKeyboardVisible = false;
 const mockRouterPush = jest.fn();
 const mockRouterNavigate = jest.fn();
 
@@ -93,7 +94,7 @@ jest.doMock('react-native', () => {
   };
 
   return {
-    Keyboard: { isVisible: () => false, addListener: () => ({ remove: () => undefined }) },
+    Keyboard: { isVisible: () => mockKeyboardVisible, addListener: () => ({ remove: () => undefined }) },
     Pressable: ({ onPress, testID, accessible, style }: { onPress?: () => void; testID?: string; accessible?: boolean; style?: unknown }) => (
       <button data-testid={testID} aria-hidden={accessible === false} onClick={onPress}
         data-native-style={JSON.stringify(flattenStyle(style))} />
@@ -645,6 +646,7 @@ describe('TabLayout beside the iPhone Duo side column', () => {
 
   afterEach(() => {
     mockInSideColumn = false;
+    mockKeyboardVisible = false;
   });
 
   it('hands the navigation to the column and draws none at the bottom', () => {
@@ -653,7 +655,7 @@ describe('TabLayout beside the iPhone Duo side column', () => {
     expect(typeof capturedTabBar).toBe('function');
     expect((capturedTabBar as () => unknown)()).toBeNull();
     expect(screen.queryByTestId('tab.addDream.overhang')).toBeNull();
-    expect(mockSideColumnBar?.activeKey).toBe('journal');
+    expect(mockSideColumnBar).not.toBeNull();
 
     mockSideColumnBar?.onSelect('stats');
     expect(mockRouterNavigate).toHaveBeenCalledWith('/(tabs)/statistics');
@@ -661,16 +663,13 @@ describe('TabLayout beside the iPhone Duo side column', () => {
     expect(mockRouterPush).toHaveBeenCalledWith('/recording');
   });
 
-  it('names the open tab as the column bar\'s active one', () => {
-    mockSegments = ['(tabs)'];
-    const view = render(<TabLayout />);
-    expect(mockSideColumnBar?.activeKey).toBe('home');
-    mockSegments = ['(tabs)', 'statistics'];
-    view.rerender(<TabLayout />);
-    expect(mockSideColumnBar?.activeKey).toBe('stats');
-  });
+  it('gives the column no navigation with the keyboard up, while authentication is required or before the tabs are shown', () => {
+    mockKeyboardVisible = true;
+    const typing = render(<TabLayout />);
+    expect(mockSideColumnBar).toBeNull();
+    typing.unmount();
+    mockKeyboardVisible = false;
 
-  it('gives the column no navigation while authentication is required or before the tabs are shown', () => {
     mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
     const view = render(<TabLayout />);
     expect(mockSideColumnBar).toBeNull();

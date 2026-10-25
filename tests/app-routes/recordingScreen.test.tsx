@@ -57,7 +57,7 @@ let mockPendingRecordingIntent: {
   phase: string;
 } | null = null;
 let mockTransitionOnboarding = jest.fn().mockResolvedValue(undefined);
-let mockPlatformOS: 'android' | 'web' = 'web';
+let mockPlatformOS: 'android' | 'ios' | 'web' = 'web';
 let mockRecordingPermissionState: 'unknown' | 'granted' | 'denied' = 'unknown';
 let mockViewportWidth = 390;
 let mockViewportHeight = 844;
@@ -68,7 +68,6 @@ let mockFooterLayout: ((event: any) => void) | undefined;
 let mockBottomNavLayout: ((event: any) => void) | undefined;
 let mockInSideColumn = false;
 let mockSideColumnBar: {
-  activeKey: string;
   onSelect: (key: string) => void;
   captureIcon?: string;
   onCapturePress?: () => void;
@@ -79,7 +78,7 @@ let mockScrollLayout: ((event: any) => void) | undefined;
 let mockProgressLayout: ((event: any) => void) | undefined;
 const mockScrollToEnd = jest.fn();
 let mockKeyboardListeners: Record<string, () => void> = {};
-let mockKeyboardSubscribers: Record<string, Set<() => void>> = {};
+let mockKeyboardSubscribers: Record<string, Set<(event: { duration: number }) => void>> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
@@ -243,10 +242,11 @@ jest.doMock('react-native', () => {
     Keyboard: {
       isVisible: () => false,
       // Every subscriber hears the event, as on a device.
-      addListener: (event: string, listener: () => void) => {
+      addListener: (event: string, listener: (event: { duration: number }) => void) => {
         const listeners = (mockKeyboardSubscribers[event] ??= new Set());
         listeners.add(listener);
-        mockKeyboardListeners[event] = () => { for (const subscriber of [...listeners]) subscriber(); };
+        // iOS reports the keyboard's animation; none here.
+        mockKeyboardListeners[event] = () => { for (const subscriber of [...listeners]) subscriber({ duration: 0 }); };
         return { remove: () => { listeners.delete(listener); } };
       },
       dismiss: jest.fn(),
@@ -2607,7 +2607,7 @@ describe('Recording screen', () => {
   });
 
   it('hands its navigation to the iPhone Duo side column and gives the bottom to Save', async () => {
-    mockPlatformOS = 'android';
+    mockPlatformOS = 'ios';
     mockBottomInset = 34;
     // Open upright, the Duo keeps the bar at the bottom; folded, its page sits beside the
     // 84 pt status bar column.
@@ -2630,7 +2630,6 @@ describe('Recording screen', () => {
     // Save and the bottom safe area only: no room kept for a bar at the bottom.
     expect(Object.assign({}, ...styles.filter(Boolean)).marginBottom).toBe(96 + 34);
     expect(mockSideColumnBar).toEqual(expect.objectContaining({
-      activeKey: 'addDream',
       captureIcon: 'pencil',
       capturePressHint: 'nav.capture_focus_hint',
     }));
@@ -2639,12 +2638,12 @@ describe('Recording screen', () => {
     expect(mockDismissTo).toHaveBeenCalledWith('/(tabs)/journal');
 
     // Keyboard up, the column shows no navigation, as the bottom bar hides.
-    act(() => mockKeyboardListeners.keyboardDidShow?.());
+    act(() => mockKeyboardListeners.keyboardWillShow?.());
     expect(mockSideColumnBar).toBeNull();
   });
 
   it('lets the side column\'s Capture button start a Tell reply', async () => {
-    mockPlatformOS = 'android';
+    mockPlatformOS = 'ios';
     mockInSideColumn = true;
     mockRecordingPermissionState = 'granted';
     mockGetInputModePreference.mockResolvedValue('voice');

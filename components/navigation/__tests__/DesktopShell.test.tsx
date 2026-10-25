@@ -66,14 +66,14 @@ function ContentWidth() {
   return <span data-testid="content-width">{useContentWindow().width}</span>;
 }
 
-function Navigation({ owner, activeKey, onSelect, onCapturePress, hint }: {
+function Navigation({ owner, shown, onSelect, onCapturePress, hint }: {
   owner: SideColumnTabBarOwner;
-  activeKey: NavigationKey | null;
+  shown: boolean;
   onSelect: (key: NavigationKey) => void;
   onCapturePress?: () => void;
   hint?: string;
 }) {
-  const inColumn = useSideColumnTabBar(owner, activeKey ? { activeKey, onSelect, onCapturePress, capturePressHint: hint } : null);
+  const inColumn = useSideColumnTabBar(owner, shown ? { onSelect, onCapturePress, capturePressHint: hint } : null);
   return <span data-testid={`in-column-${owner}`}>{String(inColumn)}</span>;
 }
 
@@ -135,15 +135,15 @@ describe('the navigation in the iPhone Duo side column', () => {
   const bar = () => screen.queryByTestId('side-column-bar');
 
   function Screens(props: {
-    tabs: NavigationKey | null;
-    recording: NavigationKey | null;
+    tabs: boolean;
+    recording: boolean;
     onTabSelect?: (key: NavigationKey) => void;
     onCapturePress?: () => void;
   }) {
     return (
       <DesktopShell>
-        <Navigation owner="tabs" activeKey={props.tabs} onSelect={props.onTabSelect ?? jest.fn()} />
-        <Navigation owner="recording" activeKey={props.recording} onSelect={jest.fn()}
+        <Navigation owner="tabs" shown={props.tabs} onSelect={props.onTabSelect ?? jest.fn()} />
+        <Navigation owner="recording" shown={props.recording} onSelect={jest.fn()}
           onCapturePress={props.onCapturePress} hint="focus" />
         <FreedBottom />
       </DesktopShell>
@@ -158,16 +158,20 @@ describe('the navigation in the iPhone Duo side column', () => {
     expect(getSideColumn({ left: 0, right: 0 }, 'ios')).toBeNull();
     expect(getSideColumn({ left: 62, right: 62 }, 'ios')).toBeNull();
     expect(getSideColumn({ left: 84, right: 84 }, 'ios')).toBeNull();
-    // Too narrow for the labels, and Android's side insets are its navigation bar or camera.
+    // Too narrow for the labels; Android's side insets are its navigation bar or camera, the web has none.
     expect(getSideColumn({ left: 0, right: 54 }, 'ios')).toBeNull();
     expect(getSideColumn({ left: 0, right: 84 }, 'android')).toBeNull();
+    expect(getSideColumn({ left: 0, right: 84 }, 'web')).toBeNull();
   });
 
   it('draws the navigation of the screen on show in the folded Duo column, and none above the tabs', () => {
     mockInsets = duo;
     const onTabSelect = jest.fn();
     const onCapturePress = jest.fn();
-    const { rerender } = render(<Screens tabs="journal" recording="addDream" onTabSelect={onTabSelect} onCapturePress={onCapturePress} />);
+    const screens = (tabs: boolean, recording: boolean) => (
+      <Screens tabs={tabs} recording={recording} onTabSelect={onTabSelect} onCapturePress={onCapturePress} />
+    );
+    const { rerender } = render(screens(true, true));
 
     expect(bar()?.getAttribute('data-active')).toBe('journal');
     expect(JSON.parse(bar()?.getAttribute('data-column') ?? '{}')).toEqual({ side: 'right', width: 84 });
@@ -180,21 +184,26 @@ describe('the navigation in the iPhone Duo side column', () => {
 
     // Capture sits above the tabs: its own bar, its own Capture press.
     mockPathname = '/recording';
-    rerender(<Screens tabs="journal" recording="addDream" onTabSelect={onTabSelect} onCapturePress={onCapturePress} />);
+    rerender(screens(true, true));
     expect(bar()?.getAttribute('data-active')).toBe('addDream');
     expect(bar()?.getAttribute('aria-description')).toBe('focus');
     fireEvent.click(bar()!);
     expect(onCapturePress).toHaveBeenCalledTimes(1);
 
+    // Back from Capture to a tab, Capture gone in the same render: that tab is the active one at once.
+    mockPathname = '/statistics';
+    rerender(screens(true, false));
+    expect(bar()?.getAttribute('data-active')).toBe('stats');
+
     // A dream pushed above the tabs, or Capture with the keyboard up: the column keeps only the status bar.
     mockPathname = '/journal/12';
-    rerender(<Screens tabs="journal" recording="addDream" />);
+    rerender(screens(true, true));
     expect(bar()).toBeNull();
     mockPathname = '/recording';
-    rerender(<Screens tabs="journal" recording={null} />);
+    rerender(screens(true, false));
     expect(bar()).toBeNull();
     mockPathname = '/';
-    rerender(<Screens tabs="home" recording={null} />);
+    rerender(screens(true, false));
     expect(bar()?.getAttribute('data-active')).toBe('home');
   });
 
@@ -203,7 +212,7 @@ describe('the navigation in the iPhone Duo side column', () => {
     ['a phone on its side', { top: 0, right: 62, bottom: 21, left: 62 }],
   ])('keeps the bar at the bottom on %s', (_name: string, insets: typeof duo) => {
     mockInsets = insets;
-    render(<Screens tabs="journal" recording="addDream" />);
+    render(<Screens tabs recording />);
     expect(bar()).toBeNull();
     expect(screen.getByTestId('in-column-tabs').textContent).toBe('false');
     expect(screen.getByTestId('freed-bottom').textContent).toBe('false');

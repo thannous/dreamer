@@ -160,12 +160,12 @@ function JournalListScreen() {
   // on short viewports the measured chrome can collapse as the list scrolls.
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(getInitialKeyboardVisibility);
   const tabBarInSideColumn = useTabBarInSideColumn();
-  // In the iPhone Duo's side column the navigation leaves the bottom free but for the safe area.
   const navigationClearance = tabBarInSideColumn
     ? insets.bottom
     : navigationLayout.barHeight + Math.max(insets.bottom, navigationLayout.minimumBottomInset);
   // The tab bar in app/(tabs)/_layout.tsx is position:absolute glass, so dreams scroll
-  // behind it and the list's bottom padding clears it for the last one. On phones the header and search stay
+  // behind it and the list's bottom padding clears it for the last one; in the iPhone Duo's
+  // side column it leaves the list's foot to the bottom safe area. On phones the header and search stay
   // mounted outside the column-keyed list but float over it: a header spacer and a
   // scroll translation carry them away with the first dreams, so the list gets the
   // whole screen once it scrolls.

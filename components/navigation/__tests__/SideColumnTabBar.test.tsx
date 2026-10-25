@@ -111,12 +111,13 @@ it('stands the five destinations on end at the bottom of the folded Duo column',
     position: 'absolute', top: 0, bottom: 0, width: 84, right: 0,
   });
   // Five 64 pt cells, top to bottom in reading order, resting on the bottom safe area.
-  expect(styleOf(screen.getByRole('tablist'))).toMatchObject({ bottom: 34, left: 6, width: 72, height: 328 });
+  const frame = styleOf(screen.getByRole('tablist'));
+  expect(frame).toMatchObject({ bottom: 34, left: 6, width: 72, height: 328 });
   const tabs = screen.getAllByRole('tab');
   expect(tabs.map((tab) => tab.getAttribute('data-testid'))).toEqual(TAB_IDS);
   tabs.forEach((tab) => expect(styleOf(tab).height).toBe(64));
-  // The bar's top stays below the status bar and the camera at the top of the column.
-  expect(678 - 34 - 328).toBeGreaterThanOrEqual(120);
+  // The bar's top leaves the top of the column to the status bar and the camera.
+  expect(678 - frame.bottom - frame.height).toBeGreaterThanOrEqual(120);
   expect(tabs.map((tab) => tab.querySelector('span')?.textContent)).toEqual([
     'nav.home', 'nav.journal', 'nav.capture_dream', 'nav.stats', 'nav.explore',
   ]);

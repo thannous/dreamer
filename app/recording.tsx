@@ -1839,7 +1839,6 @@ function RecordingScreen() {
     ? t('nav.capture_focus_hint')
     : t(isVoiceListening ? 'recording.conversation.mute' : 'recording.mode.switch_to_voice');
   useSideColumnTabBar('recording', showsNavigation ? {
-    activeKey: 'addDream',
     // Capture sits above the tab navigator: return to that instance, as the bottom bar does.
     onSelect: (key) => router.dismissTo(BOTTOM_NAV_HREFS[key]),
     captureIcon: inputMode === 'voice' ? 'mic' : 'pencil',

@@ -22,7 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useStartupRoute } from '@/context/StartupRouteContext';
 import { useContentWindow } from '@/context/ContentWindowContext';
-import { useSideColumnTabBar, type NavigationKey } from '@/context/SideColumnTabBarContext';
+import { useSideColumnTabBar } from '@/context/SideColumnTabBarContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useKeyboardVisible } from '@/hooks/useKeyboardVisible';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -56,14 +56,6 @@ type TabGeometry = {
 
 // Five destinations; the active background reaches into its neighbours by index.
 const TAB_COUNT = 5;
-/** Each tab route's destination in the navigation. */
-const TAB_KEYS: Record<string, NavigationKey> = {
-  index: 'home',
-  journal: 'journal',
-  'add-dream': 'addDream',
-  statistics: 'stats',
-  explore: 'explore',
-};
 // Each cell keeps 1 point on both sides and drops the navigator's vertical
 // padding, so the active background can fill the bar's height.
 const TAB_CELL_INSET = 1;
@@ -258,7 +250,6 @@ export default function TabLayout() {
   // The iPhone Duo's side column takes the navigation once the tabs are on show and have one.
   const tabsShown = hasEnteredTabs || (routeCommitted && isTabsDestination);
   const barInSideColumn = useSideColumnTabBar('tabs', tabsShown && !returningGuestBlocked && !keyboardVisible ? {
-    activeKey: TAB_KEYS[focusedTab] ?? 'home',
     onSelect: (key) => {
       if (key === 'addDream') router.push('/recording');
       else router.navigate(BOTTOM_NAV_HREFS[key]);
