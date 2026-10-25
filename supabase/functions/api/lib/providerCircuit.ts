@@ -1,4 +1,4 @@
-import { TEXT_PROVIDER_CIRCUIT } from './models.ts';
+import { CLAUDE_MODELS, TEXT_PROVIDER_CIRCUIT } from './models.ts';
 
 /** Same refundable/retryable provider code as an ordinary availability failure. */
 export class ProviderCircuitOpenError extends Error {
@@ -17,6 +17,7 @@ export class ProviderCircuit {
   private windowStart: number | null = null;
   private openUntil: number | null = null;
   private probeInFlight = false;
+  private probeDeadline = 0;
   private epoch = 0;
 
   constructor(private options: CircuitOptions = TEXT_PROVIDER_CIRCUIT, private now = Date.now) {}
@@ -26,16 +27,21 @@ export class ProviderCircuit {
     this.windowStart = null;
     this.openUntil = null;
     this.probeInFlight = false;
+    this.probeDeadline = 0;
     this.epoch++;
   }
 
-  enter() {
+  enter(timeoutMs: number = CLAUDE_MODELS.analysis.timeoutMs) {
     const time = this.now();
     const probe = this.openUntil !== null;
     if (probe && (time < this.openUntil! || this.probeInFlight)) {
-      throw new ProviderCircuitOpenError(Math.max(1, Math.ceil(((this.openUntil ?? time) - time) / 1000)));
+      const retryAt = this.probeInFlight ? this.probeDeadline : this.openUntil!;
+      throw new ProviderCircuitOpenError(Math.min(30, Math.max(1, Math.ceil((retryAt - time) / 1000))));
     }
-    if (probe) this.probeInFlight = true;
+    if (probe) {
+      this.probeInFlight = true;
+      this.probeDeadline = time + timeoutMs;
+    }
     const epoch = this.epoch;
     let settled = false;
     const settle = (availabilityFailure: boolean) => {
@@ -70,8 +76,8 @@ export class ProviderCircuit {
     };
   }
 
-  async run<T>(request: () => PromiseLike<T>, isAvailabilityFailure: (error: unknown) => boolean): Promise<T> {
-    const permit = this.enter();
+  async run<T>(request: () => PromiseLike<T>, isAvailabilityFailure: (error: unknown) => boolean, timeoutMs: number = CLAUDE_MODELS.analysis.timeoutMs): Promise<T> {
+    const permit = this.enter(timeoutMs);
     try {
       const result = await request();
       permit.success();

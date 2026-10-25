@@ -54,3 +54,16 @@ Deno.test('concurrent requests failing after an ordinary success still count con
   for (const permit of inFlight.slice(1)) permit.failure(true);
   throws(() => circuit.enter(), ProviderCircuitOpenError);
 });
+
+Deno.test('an in-flight probe advertises its remaining timeout capped at thirty seconds', () => {
+  let now = 0;
+  const circuit = new ProviderCircuit({ failureThreshold: 1, failureWindowMs: 30000, cooldownMs: 10000 }, () => now);
+  circuit.enter().failure(true);
+  now = 10000;
+  const probe = circuit.enter(35000);
+  throws(() => circuit.enter(), (error: unknown) => error instanceof ProviderCircuitOpenError && error.retryAfterSeconds === 30);
+  now += 30000;
+  throws(() => circuit.enter(), (error: unknown) => error instanceof ProviderCircuitOpenError && error.retryAfterSeconds === 5);
+  probe.success();
+  circuit.enter().success();
+});

@@ -400,18 +400,21 @@ describe('http', () => {
       expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
-    it('respects the provider cooldown while retaining a single keyed retry', async () => {
+    it.each([10, 30])('respects the provider cooldown/probe wait of %s seconds with the same key', async (seconds: number) => {
       global.fetch = jest.fn().mockResolvedValueOnce({ ok: false, status: 503, statusText: 'Unavailable',
-        json: () => Promise.resolve({ code: 'ANALYSIS_PROVIDER_UNAVAILABLE', retryAfter: 10 }),
+        json: () => Promise.resolve({ code: 'ANALYSIS_PROVIDER_UNAVAILABLE', retryAfter: seconds }),
       }).mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ ok: true }) });
       const result = fetchJSON('https://api.example.com/analyzeDream', {
         method: 'POST', body: { analysisRequestId: 'same-key' }, retries: 1, retryDelay: 1000,
       });
-      await jest.advanceTimersByTimeAsync(9999);
+      await jest.advanceTimersByTimeAsync(seconds * 1000 - 1);
       expect(global.fetch).toHaveBeenCalledTimes(1);
       await jest.advanceTimersByTimeAsync(1);
       await expect(result).resolves.toEqual({ ok: true });
       expect(global.fetch).toHaveBeenCalledTimes(2);
+      for (const [, options] of (global.fetch as jest.Mock).mock.calls) {
+        expect((options as RequestInit).body).toBe(JSON.stringify({ analysisRequestId: 'same-key' }));
+      }
     });
 
     it('preserves retries for an explicitly idempotent reconciliation mutation', async () => {

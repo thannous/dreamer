@@ -13,6 +13,7 @@ import {
 } from '../api/services/analysisJobs.ts';
 import { keepStoredDreamClass, loadKnownDreamSymbols, runDreamAnalysis } from '../api/services/dreamAnalysis.ts';
 import { classifyClaudeError, textAnalysisFailureCode } from '../api/services/claude.ts';
+import { ProviderCircuitOpenError } from '../api/lib/providerCircuit.ts';
 import { isTerminalTextAnalysisFailure } from '../api/lib/textAnalysisRefund.ts';
 import { triggerImageJobWorker } from '../api/services/imageJobs.ts';
 
@@ -132,10 +133,12 @@ export const requeueJob = async (
   job: AnalysisJobRow,
   errorCode: string,
   errorMessage: string,
-  retryAt?: number
+  retryAt?: number,
+  providerDeferred = false
 ) => {
   await updateJob(adminClient, job.id, {
     status: 'queued',
+    ...(providerDeferred ? { attempt_count: Math.max(0, job.attempt_count - 1) } : {}),
     ...(retryAt === undefined ? {} : { request_payload: { ...job.request_payload, retry_not_before: new Date(retryAt).toISOString() } }),
     error_code: errorCode,
     error_message: errorMessage,
@@ -334,9 +337,10 @@ export const processAnalysisJob = async (input: {
     if (!job || job.status !== 'running') return;
 
     const serialized = serializeAnalysisJobError(error);
-    if (serialized.retryable && job.attempt_count < job.max_attempts) {
+    const providerDeferred = error instanceof ProviderCircuitOpenError;
+    if (serialized.retryable && (providerDeferred || job.attempt_count < job.max_attempts)) {
       const delay = Math.max(analysisRetryDelayMs(job.attempt_count, timing.random()), serialized.retryAfterMs);
-      await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage, timing.now() + delay);
+      await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage, timing.now() + delay, providerDeferred);
       // Persist the deadline first: polling/scheduler invocations must not bypass backoff.
       await timing.sleep(delay);
       try {

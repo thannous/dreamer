@@ -181,3 +181,69 @@ Deno.test('an open provider breaker defers the next worker attempt until cooldow
   assertEquals(error.retryable, true);
   assertEquals(error.retryAfterMs, 10000);
 });
+
+Deno.test('an in-flight provider probe defers even the last worker slot without consuming a provider attempt', async () => {
+  const { ProviderCircuit } = await import('../api/lib/providerCircuit.ts');
+  const { claudeProviderCircuit } = await import('../api/services/claude.ts');
+  const { processAnalysisJob } = await import('./index.ts');
+  let now = 0;
+  const circuit = new ProviderCircuit({ failureThreshold: 1, failureWindowMs: 30000, cooldownMs: 10000 }, () => now);
+  circuit.enter().failure(true);
+  now = 10000;
+  const probe = circuit.enter(35000);
+  const originalEnter = claudeProviderCircuit.enter;
+  claudeProviderCircuit.enter = timeout => circuit.enter(timeout);
+  const originalFetch = globalThis.fetch;
+  const originalKey = Deno.env.get('ANTHROPIC_API_KEY');
+  Deno.env.set('ANTHROPIC_API_KEY', 'synthetic');
+  const transcript = 'A door opened.';
+  const job = { ...queuedJob, status: 'queued', user_id: 'owner', dream_id: 1,
+    client_request_id: 'request', attempt_count: 2,
+    request_payload: { transcript_sha256: await hashAnalysisTranscript(transcript) } };
+  let requeued: Record<string, any> | undefined;
+  let providerCalls = 0;
+  globalThis.fetch = async (input, init) => {
+    const request = new Request(input, init);
+    const url = new URL(request.url);
+    const json = (body: unknown) => new Response(JSON.stringify(body), { headers: { 'Content-Type': 'application/json' } });
+    if (url.hostname !== 'supabase.test') { providerCalls++; throw new Error('provider must not be called'); }
+    if (url.pathname === '/functions/v1/analysis-job-worker') return json({ ok: true });
+    if (url.pathname === '/rest/v1/rpc/get_effective_subscription_tier') return json('free');
+    if (url.pathname === '/rest/v1/analysis_previews') return json([]);
+    if (url.pathname === '/rest/v1/ai_jobs') {
+      if (request.method === 'GET') return json([job]);
+      const body = await request.json();
+      if (body.status === 'running') return json(request.headers.get('Accept')?.includes('vnd.pgrst.object') ? { ...job, ...body } : [{ ...job, ...body }]);
+      requeued = body;
+      return new Response(null, { status: 204 });
+    }
+    if (url.pathname === '/rest/v1/dreams') return json([{
+      id: 1, user_id: 'owner', transcript, analysis_request_id: 'request', analysis_status: 'pending', is_analyzed: false,
+    }]);
+    throw new Error('unexpected backend call');
+  };
+  try {
+    await processAnalysisJob({ supabaseUrl: 'https://supabase.test', serviceRoleKey: 'synthetic', storageBucket: 'dream-images', jobId: job.id }, {
+      now: () => now, random: () => 0,
+      sleep: async ms => {
+        assertEquals(ms, 30000);
+        assertEquals(requeued?.attempt_count, 2);
+        assertEquals(requeued?.status, 'queued');
+        now += ms;
+        probe.success();
+      },
+    });
+    assertEquals(requeued?.error_code, 'ANALYSIS_PROVIDER_UNAVAILABLE');
+    assertEquals(requeued?.request_payload.retry_not_before, new Date(40000).toISOString());
+    assertEquals(providerCalls, 0);
+    // The resumed worker can claim its third actual provider attempt after the probe succeeds.
+    const pending = { ...job, ...requeued } as AnalysisJobRow;
+    const attempt = createClient(pending, { ...pending, status: 'running', attempt_count: 3 });
+    assertEquals((await claimSpecificJob(attempt.client as any, job.id, now))?.attempt_count, 3);
+    circuit.enter().success();
+  } finally {
+    globalThis.fetch = originalFetch;
+    claudeProviderCircuit.enter = originalEnter;
+    if (originalKey === undefined) Deno.env.delete('ANTHROPIC_API_KEY'); else Deno.env.set('ANTHROPIC_API_KEY', originalKey);
+  }
+});

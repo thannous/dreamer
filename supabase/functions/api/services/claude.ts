@@ -61,7 +61,7 @@ export const requestClaudeJson = async (options: {
       effort: options.effort,
       format: { type: 'json_schema', schema: toClaudeSchema(options.schema) as Record<string, unknown> },
     },
-  }), isProviderAvailabilityFailure);
+  }), isProviderAvailabilityFailure, options.timeoutMs ?? 45_000);
   if (response.stop_reason !== 'end_turn') {
     throw new ClaudeStopError(response.stop_reason);
   }
@@ -110,7 +110,7 @@ export const requestClaudeText = async (options: ClaudeTextOptions): Promise<{ t
     messages: options.messages,
     thinking: { type: 'adaptive' },
     output_config: { effort: options.effort },
-  }), isProviderAvailabilityFailure);
+  }), isProviderAvailabilityFailure, options.timeoutMs);
   if (response.stop_reason !== 'end_turn') throw new ClaudeStopError(response.stop_reason);
   const text = textOf(response.content).trim();
   if (!text) throw new ClaudeStopError('empty');
@@ -126,7 +126,7 @@ export type ClaudeTextStream = { deltas: AsyncGenerator<string>; usage: () => Cl
  * a stall after the first text.
  */
 export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise<ClaudeTextStream> => {
-  const permit = claudeProviderCircuit.enter();
+  const permit = claudeProviderCircuit.enter(options.timeoutMs);
   let stream: ReturnType<ReturnType<typeof createClient>['messages']['stream']>;
   try {
     stream = createClient(options.apiKey, options.timeoutMs).messages.stream({
