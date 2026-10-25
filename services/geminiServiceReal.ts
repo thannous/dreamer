@@ -137,9 +137,13 @@ async function fetchWithSessionHeaders<T>(
   options: HttpOptions & { signal?: AbortSignal }
 ): Promise<T> {
   const base = getApiBaseUrl();
-  // These commands follow potentially slow dream synchronization. Check at the
-  // transport boundary, including auth refreshes and automatic HTTP retries.
-  const requiresConsent = ['/analyzeDream', '/analyzeDreamFull', '/analysis-jobs', '/chat'].includes(path);
+  // Commands that send dream content to an AI provider can follow slow dream
+  // synchronization. Check at the transport boundary, including auth refreshes
+  // and automatic HTTP retries; status reads stay available after withdrawal.
+  const requiresConsent = [
+    '/analyzeDream', '/analyzeDreamFull', '/analysis-jobs', '/chat',
+    '/categorizeDream', '/generateImage', '/image-jobs',
+  ].includes(path);
   return fetchJSONWithSession<T>(`${base}${path}`, {
     ...options,
     ...(requiresConsent ? { beforeRequest: assertAiConsent } : {}),
@@ -294,7 +298,7 @@ export async function generateImageForDream(prompt: string, previousImageUrl?: s
 export async function submitImageGenerationJob(
   request: ImageJobCommandRequest
 ): Promise<ImageJobCommandResponse> {
-  return fetchJSONWithSession<ImageJobCommandResponse>(`${getApiBaseUrl()}/image-jobs`, {
+  return fetchWithSessionHeaders<ImageJobCommandResponse>('/image-jobs', {
     method: 'POST',
     body: { ...request, previousImageUrl: cleanupImageUrl(request.previousImageUrl) },
     ...NETWORK_REQUEST_POLICIES.imageJobCommand,
