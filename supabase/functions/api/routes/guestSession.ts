@@ -102,12 +102,20 @@ function appAttestConfigs(): IosAppAttestConfig[] | null {
   return single ? [single] : null;
 }
 
+// The legacy User-Agent belongs to the main Noctalia app only. Lucid and QA
+// identities have their own build counters, so their numbers say nothing
+// about a Noctalia build.
+const LEGACY_APP_ID = /^[A-Z0-9]{10}\.com\.tanuki75\.noctalia$/;
+
 /**
- * Bundle versions configured for App Attest. A build listed here is a 3.7.0 or
- * later build, so the legacy bridge never applies to it.
+ * Bundle versions configured for App Attest on the main Noctalia app (any
+ * environment, one build counter). A build listed here is a 3.7.0 or later
+ * build, so the legacy bridge never applies to it.
  */
 export function appAttestBundleVersions(): string[] {
-  return appAttestConfigs()?.flatMap((config) => config.allowedBundleVersions) ?? [];
+  return appAttestConfigs()
+    ?.filter((config) => LEGACY_APP_ID.test(config.appId))
+    .flatMap((config) => config.allowedBundleVersions) ?? [];
 }
 
 /** A signed challenge is short-lived and bound to this key and quota identity. */

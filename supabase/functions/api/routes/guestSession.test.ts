@@ -590,3 +590,33 @@ Deno.test('the legacy bridge never opens Android or unknown platforms', async ()
     assertEquals((await unknown.json()).error, 'Guest sessions disabled for this platform');
   }));
 });
+
+Deno.test('only the main Noctalia App Attest builds exclude a build from the legacy flow', async () => {
+  await withAppAttestConfig(() => withGuestSecret(() => withLegacyWindow(openLegacy(), async () => {
+    Deno.env.set('IOS_APP_ATTEST_ALLOWED_APPS', JSON.stringify([
+      { teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia', environment: 'production',
+        allowedBundleVersions: ['15'] },
+      { teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia.lucid', environment: 'production',
+        allowedBundleVersions: ['14'] },
+      { teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia.qa', environment: 'development',
+        allowedBundleVersions: ['13'] },
+    ]));
+    const logged = await captureAll(async () => {
+      for (const [userAgent, status] of [
+        [LEGACY_UA, 200],
+        ['Noctalia/13 CFNetwork/3896.100.1.2.1 Darwin/27.0.0', 200],
+        ['Noctalia/15 CFNetwork/3896.100.1.2.1 Darwin/27.0.0', 401],
+      ] as const) {
+        const response = await handleGuestSession(legacyRequest({ fingerprint: 'a'.repeat(64), platform: 'ios' }, userAgent),
+          { resolveQaPassport: () => Promise.resolve(null) });
+        assertEquals(response.status, status, userAgent);
+        await response.body?.cancel();
+      }
+    });
+    assertEquals(legacyEntries(logged), [
+      ['[api] ios legacy guest', { route: 'guest_session', reason: 'legacy_accepted', build: 14 }],
+      ['[api] ios legacy guest', { route: 'guest_session', reason: 'legacy_accepted', build: 13 }],
+      ['[api] ios legacy guest rejected', { route: 'guest_session', reason: 'legacy_build_attested' }],
+    ]);
+  })));
+});
