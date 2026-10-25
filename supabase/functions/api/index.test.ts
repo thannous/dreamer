@@ -5,6 +5,7 @@ import {
   type ApiHandlerDependencies,
   createApiHandler,
   type RouteHandler,
+  routeSegmentAllowlist,
   toLoggedRoute,
   toLoggedRouterReason,
 } from './router.ts';
@@ -233,7 +234,8 @@ const captureWarnings = async (run: () => Promise<void>): Promise<unknown[][]> =
 };
 
 Deno.test('an anonymous unmatched route logs only the method and route shape', async () => {
-  const handler = buildHandler({});
+  const unused = () => Promise.reject(new Error('must not be called'));
+  const handler = buildHandler({ 'POST /guest/session': unused, 'POST /dreams/share': unused, 'GET /a/b': unused });
   const secretId = '7f3c2a10-1111-4222-8333-944455556666';
   const secretToken = 'eyJhbGciOiJIUzI1NiJ9.secret-token-value';
   const warnings = await captureWarnings(async () => {
@@ -246,18 +248,22 @@ Deno.test('an anonymous unmatched route logs only the method and route shape', a
     }));
     assertEquals(withIds.status, 401);
     await withIds.body?.cancel();
-    const odd = await handler(request('/a/b/c/d/e/f/g/h', { method: 'PROPFIND' }));
+    const odd = await handler(request('/a/b/a/b/a/b/a/b', { method: 'PROPFIND' }));
     assertEquals(odd.status, 401);
     await odd.body?.cancel();
+    const username = await handler(request('/users/secret-user-id', { method: 'GET' }));
+    assertEquals(username.status, 401);
+    await username.body?.cancel();
   });
 
   assertEquals(warnings, [
-    ['[api] unmatched route without user', { method: 'POST', route: '/guest/session/challenge' }],
+    ['[api] unmatched route without user', { method: 'POST', route: '/guest/session/:param' }],
     ['[api] unmatched route without user', { method: 'GET', route: '/dreams/:param/share/:param' }],
-    ['[api] unmatched route without user', { method: 'OTHER', route: '/a/b/c/d/e/f/:more' }],
+    ['[api] unmatched route without user', { method: 'OTHER', route: '/a/b/a/b/a/b/:more' }],
+    ['[api] unmatched route without user', { method: 'GET', route: '/:param/:param' }],
   ]);
   const serialized = JSON.stringify(warnings);
-  for (const secret of [secretId, secretToken, '203.0.113.7', 'f'.repeat(64)]) {
+  for (const secret of [secretId, secretToken, '203.0.113.7', 'f'.repeat(64), 'secret-user-id', 'users']) {
     assertEquals(serialized.includes(secret), false, `log must not contain ${secret}`);
   }
 });
@@ -299,7 +305,10 @@ Deno.test('router reason and route helpers map anything outside the allowlist to
   assertEquals(toLoggedRouterReason('scoped_bearer_lookup_failed'), 'scoped_bearer_lookup_failed');
   assertEquals(toLoggedRouterReason('leak:token'), 'unknown');
   assertEquals(toLoggedRouterReason(undefined), 'unknown');
-  assertEquals(toLoggedRoute('DELETE', '/account'), { method: 'DELETE', route: '/account' });
-  assertEquals(toLoggedRoute('POST', '/'), { method: 'POST', route: '/' });
-  assertEquals(toLoggedRoute('GET', '/users/someone@example.com/x9'), { method: 'GET', route: '/users/:param/:param' });
+  const known = routeSegmentAllowlist(['DELETE /account', 'POST /guest/session', 'GET /users/me']);
+  assertEquals([...known].sort(), ['account', 'guest', 'me', 'session', 'users']);
+  assertEquals(toLoggedRoute('DELETE', '/account', known), { method: 'DELETE', route: '/account' });
+  assertEquals(toLoggedRoute('POST', '/', known), { method: 'POST', route: '/' });
+  assertEquals(toLoggedRoute('GET', '/users/someone@example.com/x9', known), { method: 'GET', route: '/users/:param/:param' });
+  assertEquals(toLoggedRoute('GET', '/users/secret-user-id', known), { method: 'GET', route: '/users/:param' });
 });

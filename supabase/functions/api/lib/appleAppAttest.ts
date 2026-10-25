@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { createHash, verify as verifySignature, X509Certificate } from 'node:crypto';
+import { createHash, createPublicKey, verify as verifySignature, X509Certificate } from 'node:crypto';
 
 import { APPLE_APP_ATTEST_ROOT_PEM, APPLE_APP_RECEIPT_ROOT_G3_PEM } from './appleAppAttestRoot.ts';
 
@@ -27,13 +27,55 @@ const CMS_DATA_OID = Uint8Array.from([0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 
 const SHA256_OID = Uint8Array.from([0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01]);
 const APP_ATTEST_RECEIPT_SIGNING_OID = Uint8Array.from([0x2a, 0x86, 0x48, 0x86, 0xf7, 0x63, 0x64, 0x0c, 0x0f]);
 
+/**
+ * Thrown for every proof that fails verification. Callers use the class to
+ * tell a rejected proof apart from an unexpected runtime error when they log
+ * a reject reason. The message is fixed and never carries request data.
+ */
+export class AppAttestProofError extends Error {
+  constructor() {
+    super('Invalid Apple App Attest proof');
+    this.name = 'AppAttestProofError';
+  }
+}
+
+function invalid(): never {
+  throw new AppAttestProofError();
+}
+
+// Parsing a caller's bytes can make a platform decoder throw its own error
+// (a fatal TextDecoder, an X509 or DER signature parser). Those are rejected
+// proofs, not runtime failures, so they become AppAttestProofError here.
+function decodeUtf8(value: Uint8Array): string {
+  try {
+    return new TextDecoder('utf-8', { fatal: true }).decode(value);
+  } catch {
+    invalid();
+  }
+}
+
+type VerifyKey = Parameters<typeof createPublicKey>[0] | ReturnType<typeof createPublicKey>;
+
+function verifyProofSignature(digest: string, data: Buffer, key: VerifyKey, signature: Buffer): boolean {
+  try {
+    return verifySignature(digest, data, key, signature);
+  } catch {
+    invalid();
+  }
+}
+
 // Supabase Edge Runtime can parse an X509Certificate while leaving its `raw`
 // getter unimplemented. Retain the exact DER input for all cryptographic checks.
 const CERTIFICATE_DER = new WeakMap<X509Certificate, Uint8Array>();
 
 function certificateFromDer(raw: Uint8Array): X509Certificate {
   const der = new Uint8Array(raw);
-  const certificate = new X509Certificate(Buffer.from(der));
+  let certificate: X509Certificate;
+  try {
+    certificate = new X509Certificate(Buffer.from(der));
+  } catch {
+    invalid();
+  }
   CERTIFICATE_DER.set(certificate, der);
   return certificate;
 }
@@ -52,22 +94,6 @@ function certificateDer(certificate: X509Certificate): Uint8Array {
 
 const ROOT_CERTIFICATE = certificateFromPem(APPLE_APP_ATTEST_ROOT_PEM);
 const RECEIPT_ROOT_CERTIFICATE = certificateFromPem(APPLE_APP_RECEIPT_ROOT_G3_PEM);
-
-/**
- * Thrown for every proof that fails verification. Callers use the class to
- * tell a rejected proof apart from an unexpected runtime error when they log
- * a reject reason. The message is fixed and never carries request data.
- */
-export class AppAttestProofError extends Error {
-  constructor() {
-    super('Invalid Apple App Attest proof');
-    this.name = 'AppAttestProofError';
-  }
-}
-
-function invalid(): never {
-  throw new AppAttestProofError();
-}
 
 function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
   if (a.length !== b.length) return false;
@@ -117,7 +143,7 @@ function readCbor(reader: Reader, depth = 0): CborValue {
     if (reader.offset + length > reader.bytes.length) invalid();
     const value = reader.bytes.slice(reader.offset, reader.offset + length);
     reader.offset += length;
-    return major === 2 ? value : new TextDecoder('utf-8', { fatal: true }).decode(value);
+    return major === 2 ? value : decodeUtf8(value);
   }
   if (major === 4) {
     if (length > 1000) invalid();
@@ -249,7 +275,7 @@ function verifyCertificateSignature(certificate: X509Certificate, issuer: X509Ce
   const digest = equalBytes(oid, ECDSA_SHA256_OID) ? 'sha256'
     : equalBytes(oid, ECDSA_SHA384_OID) ? 'sha384' : null;
   if (!digest || bytes[fields[2].valueStart] !== 0) invalid();
-  return verifySignature(
+  return verifyProofSignature(
     digest,
     Buffer.from(bytes.slice(fields[0].start, fields[0].end)),
     issuer.publicKey,
@@ -483,7 +509,7 @@ function verifyAppleReceipt(input: {
       !signing.keyUsage?.includes('DigitalSignature') ||
       !certificateHasExtension(signing, APP_ATTEST_RECEIPT_SIGNING_OID)) invalid();
   validateReceiptChain(signing, certificates, input.now);
-  if (!verifySignature('sha256', Buffer.from(content), signing.publicKey,
+  if (!verifyProofSignature('sha256', Buffer.from(content), signing.publicKey,
     Buffer.from(berValue(bytes, signerFields[4])))) invalid();
 
   const payload = readBer(content, 0);
@@ -500,7 +526,7 @@ function verifyAppleReceipt(input: {
   const asText = (id: number) => {
     const value = attributes.get(id);
     if (!value) invalid();
-    return new TextDecoder('utf-8', { fatal: true }).decode(value);
+    return decodeUtf8(value);
   };
   if (asText(2) !== input.appId ||
       !equalBytes(attributes.get(3) ?? new Uint8Array(), certificateDer(input.credentialCertificate)) ||
@@ -683,6 +709,9 @@ export function verifyAppleAppAssertion(input: {
   // App Attest signs the nonce as the ECDSA-SHA256 message, not the
   // authenticator data concatenation itself.
   const nonce = sha256(data);
-  if (!verifySignature('sha256', Buffer.from(nonce), input.publicKeyPem, Buffer.from(signature))) invalid();
+  // The stored key is parsed outside the proof boundary: a corrupt stored key
+  // is a server fault and must stay distinguishable from a rejected proof.
+  const storedKey = createPublicKey(input.publicKeyPem);
+  if (!verifyProofSignature('sha256', Buffer.from(nonce), storedKey, Buffer.from(signature))) invalid();
   return counter;
 }

@@ -21,17 +21,31 @@ export function toLoggedRouterReason(reason: unknown): RouterRejectReason | 'unk
 }
 
 const LOGGED_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE']);
-// A segment is logged as-is only when it reads like a route word: letters,
-// '_' or '-', no digits, bounded length. Ids, tokens, emails or anything else
-// a caller can put in a path become ':param', so the log never carries them.
-const LOGGED_SEGMENT = /^[A-Za-z][A-Za-z_-]{0,47}$/;
 const MAX_LOGGED_SEGMENTS = 6;
 
-/** Method and route shape of a request, safe to log. */
-export function toLoggedRoute(method: string, subPath: string): { method: string; route: string } {
+/** Every literal path segment of the route table: the only segments ever logged. */
+export function routeSegmentAllowlist(routes: Iterable<string>): ReadonlySet<string> {
+  const segments = new Set<string>();
+  for (const route of routes) {
+    const path = route.split(' ')[1] ?? '';
+    for (const segment of path.split('/')) if (segment) segments.add(segment);
+  }
+  return segments;
+}
+
+/**
+ * Method and route shape of a request, safe to log. A segment is kept only
+ * when it is a literal of the route table; ids, usernames, tokens, emails or
+ * anything else a caller can put in a path become ':param'.
+ */
+export function toLoggedRoute(
+  method: string,
+  subPath: string,
+  knownSegments: ReadonlySet<string>
+): { method: string; route: string } {
   const segments = subPath.split('/').filter(Boolean);
   const shown = segments.slice(0, MAX_LOGGED_SEGMENTS)
-    .map((segment) => (LOGGED_SEGMENT.test(segment) ? segment : ':param'));
+    .map((segment) => (knownSegments.has(segment) ? segment : ':param'));
   if (segments.length > MAX_LOGGED_SEGMENTS) shown.push(':more');
   return {
     method: LOGGED_METHODS.has(method) ? method : 'OTHER',
@@ -51,6 +65,7 @@ export type ApiHandlerDependencies = {
 // global error boundary — can be unit-tested with an injected route table.
 export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
   const { routes } = dependencies;
+  const knownRouteSegments = routeSegmentAllowlist(routes.keys());
   const createSupabaseClient = dependencies.createClient ?? createClient;
   const readEnv = dependencies.readEnv ?? ((name: string) => Deno.env.get(name));
 
@@ -85,7 +100,7 @@ export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
           // Reason code and method only: never the bearer, its claims or the caller.
           console.warn('[api] scoped bearer rejected', {
             reason: toLoggedRouterReason(userLookupFailed ? 'scoped_bearer_lookup_failed' : 'scoped_bearer_no_user'),
-            method: toLoggedRoute(req.method, subPath).method,
+            method: toLoggedRoute(req.method, subPath, knownRouteSegments).method,
           });
           return errorResponse('Unauthorized', 401);
         }
@@ -107,7 +122,7 @@ export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
       if (!handler) {
         if (!user) {
           // Route shape and method only: path ids, headers and tokens stay out.
-          console.warn('[api] unmatched route without user', toLoggedRoute(req.method, subPath));
+          console.warn('[api] unmatched route without user', toLoggedRoute(req.method, subPath, knownRouteSegments));
           return errorResponse('Unauthorized', 401);
         }
 
