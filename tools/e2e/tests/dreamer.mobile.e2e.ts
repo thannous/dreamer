@@ -874,12 +874,23 @@ test('Dreamer release iPhone Duo keeps the tab bar in the folded side column and
   const column = screen.getByTestId('component.sideColumnTabBar', { visible: true });
   await expect(column).toBeVisible();
   const folded = await screen.getByTestId('screen.home', { visible: true }).boundingBox();
-  const bar = await column.boundingBox();
-  if (!folded || !bar) throw new Error('The folded layout is unavailable.');
-  // A narrow, tall column on the camera's side, not a bar across the bottom.
-  expect(bar.width).toBeLessThan(folded.width / 3);
-  expect(bar.height).toBeGreaterThan(folded.height / 2);
-  expect(bar.x + bar.width / 2).toBeGreaterThan(folded.x + folded.width / 2);
+  const area = await column.boundingBox();
+  // The column spans the screen's height; the tabs themselves show where the bar stands.
+  const first = await screen.getByTestId('tab.home', { visible: true }).boundingBox();
+  const last = await screen.getByTestId('tab.explore', { visible: true }).boundingBox();
+  if (!folded || !area || !first || !last) throw new Error('The folded layout is unavailable.');
+  const middle = (box: { x: number; width: number }) => box.x + box.width / 2;
+  // Five tabs stacked down a narrow column on the camera's side, not laid across the bottom.
+  expect(area.width).toBeLessThan(folded.width / 3);
+  expect(middle(area)).toBeGreaterThan(folded.x + folded.width / 2);
+  for (const tab of [first, last]) {
+    expect(tab.x).toBeGreaterThanOrEqual(area.x);
+    expect(tab.x + tab.width).toBeLessThanOrEqual(area.x + area.width);
+  }
+  expect(Math.abs(middle(first) - middle(last))).toBeLessThan(2);
+  expect(last.y).toBeGreaterThan(first.y + first.height * 3);
+  // Standing at the bottom of the column, within thumb's reach.
+  expect(last.y + last.height).toBeGreaterThan(folded.y + folded.height / 2);
   await screen.getByTestId('tab.journal', { visible: true }).tap();
   await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
   await app.screenshot('duo-folded-side-column');
