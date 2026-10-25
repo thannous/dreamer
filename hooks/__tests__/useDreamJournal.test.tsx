@@ -3347,7 +3347,8 @@ describe('useDreamJournal', () => {
 
     it.each([
       [401, undefined, false], [408, undefined, false], [400, undefined, false],
-      [403, 'UNKNOWN', true], [503, 'AI_ADMISSION_UNAVAILABLE', false],
+      // Gateway-shaped codes do not prove the preceding POST was rejected.
+      [403, 'UNKNOWN', false], [404, 'NOT_FOUND', false], [503, 'AI_ADMISSION_UNAVAILABLE', false],
       [429, 'QUOTA_EXCEEDED', true], [429, 'DAILY_ANALYSIS_LIMIT', true],
       [409, 'ANALYSIS_IDEMPOTENCY_KEY_REUSED', true], [404, 'DREAM_NOT_FOUND', true],
       [409, 'ANALYSIS_ALREADY_CLAIMED', true], [409, 'ANALYSIS_TRANSCRIPT_MISMATCH', true],
@@ -3432,6 +3433,36 @@ describe('useDreamJournal', () => {
       expect(mockGetDreamAnalysisJobStatus).not.toHaveBeenCalled();
       expect(mockAnalyzeDreamText).not.toHaveBeenCalled();
       expect(mockUpdateDreamInSupabase.mock.calls.some(([dream]: [DreamAnalysis]) => dream.analysisStatus === 'failed')).toBe(false);
+    });
+
+    it('keeps the key when fetchJSON loses a reply then receives an unknown gateway 404', async () => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101, isAnalyzed: false, analysisStatus: 'none' });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => ({ ...dream }));
+      const originalFetch = global.fetch;
+      global.fetch = jest.fn()
+        .mockRejectedValueOnce(new TypeError('Reply lost'))
+        .mockResolvedValueOnce({ ok: false, status: 404, statusText: 'Not Found', headers: { get: () => 'application/json' }, text: async () => '{"code":"NOT_FOUND","message":"Requested function was not found"}' }) as any;
+      mockSubmitDreamAnalysisJob.mockImplementationOnce(async (request: any) => {
+        const { fetchJSON } = require('@/lib/http') as typeof import('@/lib/http');
+        return fetchJSON('https://example.test/analysis-jobs', { method: 'POST', body: request, retries: 1, retryDelay: 0 });
+      });
+      try {
+        const { result } = await renderLoadedDreamJournal();
+        await act(async () => { await result.current.analyzeDream(1, existingDream.transcript).catch(() => undefined); });
+        const requestId = mockSubmitDreamAnalysisJob.mock.calls[0][0].analysisRequestId;
+        expect(global.fetch).toHaveBeenCalledTimes(2);
+        expect(result.current.dreams[0]).toEqual(expect.objectContaining({
+          analysisStatus: 'pending', analysisRequestId: requestId,
+        }));
+        expect(result.current.lastAnalysisOutcome).toBeNull();
+        expect(mockUpdateDreamInSupabase.mock.calls.some(([dream]: [DreamAnalysis]) => dream.analysisStatus === 'failed')).toBe(false);
+        mockGetDreamAnalysisJobStatus.mockRejectedValueOnce(new Error('Still offline'));
+        await act(async () => { await result.current.analyzeDream(1, existingDream.transcript).catch(() => undefined); });
+        expect(mockSubmitDreamAnalysisJob.mock.calls[1][0].analysisRequestId).toBe(requestId);
+      } finally { global.fetch = originalFetch; }
     });
 
     it('recovers an already completed synchronous reading on job resume', async () => {

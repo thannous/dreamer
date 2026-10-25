@@ -1903,11 +1903,14 @@ export const useDreamJournal = () => {
           && typeof error.status === 'number' ? error.status : undefined;
         const admissionCode = responseBody && typeof responseBody === 'object' && 'code' in responseBody
           && typeof responseBody.code === 'string' ? responseBody.code : undefined;
+        const isApiAdmissionCode = admissionCode !== undefined
+          && (/^(AI_|ANALYSIS_)/.test(admissionCode)
+            || ['QUOTA_EXCEEDED', 'DAILY_ANALYSIS_LIMIT', 'DREAM_NOT_FOUND', 'INVALID_INPUT'].includes(admissionCode));
         // Only admission answers emitted after the idempotent lookup prove that
         // no job owns this key. Auth/gateway failures may follow a committed POST.
         const confirmedSubmissionRejection = serverJobSubmissionStarted && !serverJobAccepted
           && ((responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500
-            && responseStatus !== 401 && responseStatus !== 408 && Boolean(admissionCode))
+            && responseStatus !== 401 && responseStatus !== 408 && isApiAdmissionCode)
             || (responseStatus === 503 && admissionCode === 'AI_GLOBAL_BACKLOG_LIMIT'));
         if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection) {
           // The POST may have committed before its reply was lost. Persist the same
