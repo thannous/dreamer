@@ -40,6 +40,17 @@ async function selectProfile(app: App, screen: Screen, browser: Browser, profile
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
 }
 
+// The Noctalia modal asks for AI consent once its host is mounted, as in the app; only the
+// onboarding's leave confirmation is still the browser's own dialog.
+const AI_CONSENT_MESSAGE = 'To explore and illustrate your dream, Noctalia relies on artificial intelligence.';
+
+async function answerAiConsent(screen: Screen, answer: 'accept' | 'decline') {
+  // A read waits for the modal to appear, like an action does.
+  expect(await screen.getByTestId('modal.aiConsent', { visible: true }).textContent()).toContain(AI_CONSENT_MESSAGE);
+  await screen.getByTestId(`btn.aiConsent.${answer}`, { visible: true }).tap();
+  await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
+}
+
 async function journal(screen: Screen) {
   const back = screen.getByTestId('btn.navigateJournal', { visible: true });
   if (await back.isVisible()) await back.tap();
@@ -65,13 +76,9 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   const story = 'E2E moonlit harbor with a golden lighthouse.';
   // Revised 2026-10-19 (was: guests are not asked, owner decision 2026-10-10): App Review
   // guideline 5.1.2(i) needs permission before a guest's dream reaches the AI providers too.
-  const consentPrompts: string[] = [];
-  const offConsent = await browser.onDialog(async (dialog) => {
-    consentPrompts.push(dialog.message);
-    await dialog.accept();
-  });
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+  await answerAiConsent(screen, 'accept');
   await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toContainText(story);
   const reading = screen.getByTestId('component.dreamDetail.readingZone', { visible: true });
   // Revised 2026-10-16 (was 'Analysis'): the page is set as a book, its section names in
@@ -80,9 +87,8 @@ test('guest saves the exact story and reads its simulated analysis inline', asyn
   await expect(reading).toContainText('Symbols');
   expect((await reading.textContent() ?? '').length).toBeGreaterThan(100);
   await expect(screen.getByTestId('analysis.reading.modal')).toHaveCount(0);
-  expect(consentPrompts).toHaveLength(1);
-  expect(consentPrompts[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
-  await offConsent();
+  // Asked once: the reading does not ask again.
+  await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
   await app.screenshot('guest-saved-analysis');
 });
 
@@ -196,17 +202,13 @@ async function settledMotion(browser: Parameters<typeof isolateWeb>[0]) {
 test('plus account watches its saved dream being read, then lit as a constellation', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await selectProfile(app, screen, browser, 'plus');
-  // A signed-in user's first analysis asks once for permission, naming both AI providers.
-  const consentPrompts: string[] = [];
-  const offConsent = await browser.onDialog(async (dialog) => {
-    consentPrompts.push(dialog.message);
-    await dialog.accept();
-  });
   const story = 'E2E lantern drifting over dark water toward a doorway of light.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   // The journal asks during the seal; yes opens the page already reading the dream.
   await screen.getByTestId('btn.dreamCaptureSeal.readNow', { visible: true }).tap();
+  // A signed-in user's first analysis asks once for permission.
+  await answerAiConsent(screen, 'accept');
   await expect(screen.getByTestId('component.dreamDetail.savedMoment', { visible: true })).toBeVisible();
   const wait = screen.getByTestId('component.dreamDetail.readingWait');
   await expect(wait).toContainText('Noctalia is reading your dream…');
@@ -218,9 +220,7 @@ test('plus account watches its saved dream being read, then lit as a constellati
   for (const symbol of ['Water', 'Light', 'Doorway']) await expect(constellation).toContainText(symbol);
   await expect(screen.getByTestId('component.dreamDetail.readingWait')).toHaveCount(0);
   await expect(screen.getByTestId('component.dreamDetail.readingZone', { visible: true })).toContainText('Symbols');
-  expect(consentPrompts).toHaveLength(1);
-  expect(consentPrompts[0]).toContain('To explore and illustrate your dream, Noctalia relies on artificial intelligence.');
-  await offConsent();
+  await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
   await settledMotion(browser);
   const landed = await constellation.boundingBox();
   // The reading lands under the seal, above the story, where the reader already is.
@@ -367,6 +367,9 @@ test('onboarding prevents an empty save and capture preserves the draft', async 
   const story = 'E2E lighthouse above a quiet sea.';
   await screen.getByTestId('input.dreamTranscript').fill(story);
   await screen.getByTestId('btn.recording.inputMode.voice').tap();
+  // Telling continues the draft as a conversation: its first question asks for AI consent.
+  // Declining keeps the draft and the general questions.
+  await answerAiConsent(screen, 'decline');
   await screen.getByTestId('btn.recording.inputMode.text').tap();
   await expect(screen.getByTestId('input.dreamTranscript')).toHaveValue(story);
   await expect(screen.getByTestId('btn.saveDream')).toBeEnabled();
@@ -458,6 +461,8 @@ test('the onboarding story bridges capture to understanding and exploration', {
   await screen.getByTestId('btn.onboarding.story.next').tap();
   await expect(screen.getByTestId('btn.onboarding.story.next')).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.next').tap();
+  // The Explorer example waits for the reader's answer before its door opens (owner, 2026-10-24).
+  await screen.getByTestId('btn.onboarding.dialogue.home').tap();
   await expect(screen.getByTestId('btn.onboarding.story.continue')).toBeEnabled();
   await screen.getByTestId('btn.onboarding.story.continue').tap();
   await expect(screen.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
@@ -520,13 +525,12 @@ test('plus account watches its dream painted into the window, then finds it glow
   await isolateWeb(browser, app);
   await browser.route('https://picsum.photos/**', route => route.fulfill({ path: MOCK_PAINTING, contentType: 'image/webp' }));
   await selectProfile(app, screen, browser, 'plus');
-  const offConsent = await browser.onDialog(async (dialog) => { await dialog.accept(); });
   const story = 'E2E painted harbor where the lanterns float above the tide.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   await screen.getByTestId('btn.dreamCaptureSeal.readNow', { visible: true }).tap();
+  await answerAiConsent(screen, 'accept');
   await expect(screen.getByTestId('component.dreamDetail.constellation', { visible: true })).toContainText('Doorway');
-  await offConsent();
   await settledMotion(browser);
   await screen.getByTestId('btn.journal.illustrate').scrollIntoView();
   // The seal offers the illustration itself; the page below keeps only the dreamer's own picture.
