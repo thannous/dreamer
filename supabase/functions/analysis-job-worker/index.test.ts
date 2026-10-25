@@ -2,7 +2,7 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { AnalysisJobRow } from '../api/services/analysisJobs.ts';
 import { hashAnalysisTranscript } from '../api/lib/analysisTranscriptHash.ts';
-import { claimSpecificJob, failJob, requeueJob, hasAuthorizedAnalysisTranscript } from './index.ts';
+import { analysisRetryDelayMs, claimSpecificJob, failJob, requeueJob, hasAuthorizedAnalysisTranscript } from './index.ts';
 
 const queuedJob = {
   id: '11111111-1111-4111-8111-111111111111',
@@ -150,5 +150,25 @@ Deno.test('worker keeps explicit client and state failures terminal', async () =
     await failJob(client as any, runningSnapshot, result.errorCode, result.errorMessage);
     assertEquals(rows.ai_jobs.error_code, code);
     assertEquals(rows.ai_jobs.status, 'failed');
+  }
+});
+
+Deno.test('retry backoff grows with jitter, stays bounded, and cannot be bypassed by polling', async () => {
+  assertEquals(analysisRetryDelayMs(1, 0), 800);
+  assertEquals(analysisRetryDelayMs(1, 1), 1300);
+  assertEquals(analysisRetryDelayMs(2, 0), 1600);
+  assertEquals(analysisRetryDelayMs(20, 1), 30000);
+  const pending = { ...queuedJob, request_payload: { retry_not_before: new Date(2000).toISOString() } };
+  const attempt = createClient(pending, { ...pending, status: 'running' });
+  assertEquals(await claimSpecificJob(attempt.client as any, queuedJob.id, 1999), null);
+  assertEquals(attempt.updateCount, 0);
+  assertEquals((await claimSpecificJob(attempt.client as any, queuedJob.id, 2000))?.status, 'running');
+});
+
+Deno.test('permission failures are terminal while unrecognized failures remain retryable', async () => {
+  const { serializeAnalysisJobError } = await import('./index.ts');
+  assertEquals(serializeAnalysisJobError({ code: '42501' }).retryable, false);
+  for (const error of [{ status: 503 }, { code: '40P01' }, { code: '57014' }, { message: 'unknown' }]) {
+    assertEquals(serializeAnalysisJobError(error).retryable, true);
   }
 });

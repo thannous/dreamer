@@ -203,6 +203,7 @@ export class ClaudeInvalidOutputError extends Error {}
 export const textAnalysisFailureCode = (error: unknown): string => {
   const candidate = error as { code?: unknown; status?: unknown; name?: unknown } | null;
   if (isRefundableTextAnalysisFailure(candidate?.code) || isTerminalTextAnalysisFailure(candidate?.code)) return candidate!.code as string;
+  if (candidate?.code === '42501') return 'ANALYSIS_ACCESS_DENIED';
   if (typeof candidate?.code === 'string') return 'ANALYSIS_SERVER_ERROR';
   if (candidate?.name === 'AbortError') return 'ANALYSIS_CLIENT_CANCELLED';
   if (candidate?.name === 'TimeoutError' || candidate?.status === 504) return 'ANALYSIS_TIMEOUT';

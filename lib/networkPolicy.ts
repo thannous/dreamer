@@ -26,8 +26,13 @@ export const NETWORK_REQUEST_POLICIES = {
   quotaStatus: createPolicy(10000, 1, 750),
   subscriptionRefresh: createPolicy(10000, 1, 1000),
 
-  // Analysis + chat
-  analyzeDream: createPolicy(45000, 0, 1200),
+  // Analysis + chat. Keep budgets unchanged: durable commands/reads retry once;
+  // non-durable generations and streams require explicit user retry. fetchJSON
+  // enforces the existing command key (or an explicitly read-only POST).
+  // One bounded recovery for transcript-bound receipts, as requested in F.
+  // This is the sole increased budget (0→1); fetchJSON disables it without the
+  // existing analysisRequestId. A consumed receipt prevents a second generation.
+  analyzeDream: createPolicy(45000, 1, 1200),
   analysisJobCommand: createPolicy(15000, 1, 1000),
   analysisJobStatus: createPolicy(10000, 1, 1000),
   categorizeDream: createPolicy(30000, 0, 1200),

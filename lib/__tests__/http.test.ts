@@ -350,15 +350,54 @@ describe('http', () => {
       expect(global.fetch).toHaveBeenCalledTimes(1);
     });
 
-    it('given rate limit error when fetching then does not retry automatically', async () => {
+    it('retries a transient rate limit within the configured budget', async () => {
       mockClassifyError.mockReturnValue({ type: 'rate_limit', canRetry: true });
+      global.fetch = jest.fn().mockRejectedValueOnce(new Error('HTTP 429'))
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ ok: true }) });
+      const result = fetchJSON('https://api.example.com/data', { retries: 1 });
+      await jest.runAllTimersAsync();
+      await expect(result).resolves.toEqual({ ok: true });
+      expect(global.fetch).toHaveBeenCalledTimes(2);
+    });
 
-      global.fetch = jest.fn().mockRejectedValue(new Error('HTTP 429 Too Many Requests'));
+    it('retries unrecognized failures with exponential jitter and an unchanged request key', async () => {
+      const random = jest.spyOn(Math, 'random').mockReturnValueOnce(0).mockReturnValueOnce(1);
+      const times: number[] = [];
+      global.fetch = jest.fn().mockImplementation(() => {
+        times.push(Date.now());
+        return times.length < 3 ? Promise.reject(new Error('Unrecognized failure'))
+          : Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+      });
+      try {
+        const result = fetchJSON('https://api.example.com/analysis-jobs', {
+          method: 'POST', body: { analysisRequestId: 'existing-key' }, retries: 2, retryDelay: 1000,
+        });
+        await jest.runAllTimersAsync();
+        await result;
+        expect(times.slice(1).map((time, i) => time - times[i])).toEqual([800, 2600]);
+        for (const [, options] of (global.fetch as jest.Mock).mock.calls) {
+          expect((options as RequestInit).body).toBe(JSON.stringify({ analysisRequestId: 'existing-key' }));
+        }
+      } finally { random.mockRestore(); }
+    });
 
-      const resultPromise = fetchJSON('https://api.example.com/data', { retries: 3 });
-
-      await expect(resultPromise).rejects.toThrow('HTTP 429 Too Many Requests');
+    it('never replays an unkeyed write even if a caller requests retries', async () => {
+      global.fetch = jest.fn().mockRejectedValue(new Error('Unknown transport failure'));
+      await expect(fetchJSON('https://api.example.com/analyzeDream', {
+        method: 'POST', body: { transcript: 'A door.' }, retries: 3,
+      })).rejects.toThrow('Unknown transport failure');
       expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('allows a POST explicitly declared read-only to recover from transient errors', async () => {
+      global.fetch = jest.fn().mockRejectedValueOnce(new Error('Unknown transport failure'))
+        .mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ status: 'running' }) });
+      const result = fetchJSON('https://api.example.com/analysis-jobs/status', {
+        method: 'POST', body: { jobId: 'job' }, readOnly: true, retries: 1,
+      });
+      await jest.runAllTimersAsync();
+      await expect(result).resolves.toEqual({ status: 'running' });
+      expect(global.fetch).toHaveBeenCalledTimes(2);
     });
 
     it('given all retries exhausted when fetching then throws last error', async () => {

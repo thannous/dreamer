@@ -306,6 +306,7 @@ export async function getImageGenerationJobStatus(jobId: string): Promise<ImageJ
     method: 'POST',
     body: { jobId },
     ...NETWORK_REQUEST_POLICIES.imageJobStatus,
+    readOnly: true,
   });
 }
 
@@ -326,6 +327,7 @@ export async function getDreamAnalysisJobStatus(
     method: 'POST',
     body: { jobId },
     ...NETWORK_REQUEST_POLICIES.analysisJobStatus,
+    readOnly: true,
   });
 }
 

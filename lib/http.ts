@@ -43,6 +43,8 @@ export type HttpOptions = {
   headers?: Record<string, string>;
   body?: unknown;
   timeoutMs?: number;
+  /** Pure read implemented with POST (for example a job status RPC). */
+  readOnly?: boolean;
   retries?: number; // Number of automatic retries (default: 0)
   retryDelay?: number; // Delay between retries in ms (default: 2000)
   signal?: AbortSignal;
@@ -359,7 +361,14 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
  * Fetches JSON with automatic retry logic
  */
 export async function fetchJSON<T = unknown>(url: string, options: HttpOptions = {}): Promise<T> {
-  const retries = options.retries ?? 0;
+  const body = options.body && typeof options.body === 'object' ? options.body as Record<string, unknown> : {};
+  const hasRequestKey = [body.clientRequestId, body.analysisRequestId,
+    ...Object.entries(options.headers ?? {}).filter(([key]) => key.toLowerCase() === 'idempotency-key').map(([, value]) => value),
+  ].some(value => typeof value === 'string' && value.trim().length > 0);
+  const canReplay = (options.method ?? 'GET') === 'GET' || options.readOnly === true || hasRequestKey;
+  // Never manufacture a key here: retries must reuse the caller's admitted command.
+  const retries = canReplay && Number.isFinite(options.retries)
+    ? Math.max(0, Math.min(3, Math.trunc(options.retries ?? 0))) : 0;
   const retryDelay = options.retryDelay ?? 2000;
   const signal = options.signal;
 
@@ -385,12 +394,9 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
       if (attempt < retries) {
         const classified = classifyError(lastError);
 
-        // Only retry on network, timeout, or server errors
-        if (
-          classified.type === ErrorType.NETWORK ||
-          classified.type === ErrorType.TIMEOUT ||
-          classified.type === ErrorType.SERVER
-        ) {
+        // Unknown failures are transient too. Explicit request/permission failures,
+        // quota denials and consent withdrawal remain terminal.
+        if (classified.canRetry !== false && classified.type !== ErrorType.CLIENT) {
           // Exponential backoff with jitter to avoid thundering herd
           const jitter = 0.8 + Math.random() * 0.5; // 0.8-1.3 multiplier
           const delay = Math.min(
@@ -400,7 +406,7 @@ export async function fetchJSON<T = unknown>(url: string, options: HttpOptions =
           await sleep(delay, signal);
           continue;
         } else {
-          // For other errors (rate limit, client errors), don't retry automatically
+          // Explicit request failures must be corrected before another attempt
           throw lastError;
         }
       }

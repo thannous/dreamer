@@ -41,7 +41,8 @@ const isAuthorized = (req: Request, serviceRoleKey: string): boolean => {
 
 export const claimSpecificJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
-  jobId: string
+  jobId: string,
+  now = Date.now()
 ): Promise<AnalysisJobRow | null> => {
   const { data: current, error: currentError } = await adminClient
     .from('ai_jobs')
@@ -53,7 +54,8 @@ export const claimSpecificJob = async (
   if (currentError) throw currentError;
 
   const job = (current ?? null) as AnalysisJobRow | null;
-  if (!job || job.status !== 'queued' || job.attempt_count >= job.max_attempts) {
+  if (!job || job.status !== 'queued' || job.attempt_count >= job.max_attempts
+    || Date.parse(job.request_payload?.retry_not_before ?? '') > now) {
     return null;
   }
 
@@ -129,10 +131,12 @@ export const requeueJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
   job: AnalysisJobRow,
   errorCode: string,
-  errorMessage: string
+  errorMessage: string,
+  retryAt?: number
 ) => {
   await updateJob(adminClient, job.id, {
     status: 'queued',
+    ...(retryAt === undefined ? {} : { request_payload: { ...job.request_payload, retry_not_before: new Date(retryAt).toISOString() } }),
     error_code: errorCode,
     error_message: errorMessage,
     finished_at: null,
@@ -163,12 +167,21 @@ export const hasAuthorizedAnalysisTranscript = async (
     && (await hashAnalysisTranscript(transcript)) === expectedHash;
 };
 
+/** Equal budgets, bounded exponential delay with 0.8–1.3 jitter. Attempts remain 3. */
+export const analysisRetryDelayMs = (attempt: number, random = Math.random()): number =>
+  Math.min(30_000, 1_000 * 2 ** Math.max(0, attempt - 1) * (0.8 + random * 0.5));
+
+type RetryTiming = { now: () => number; random: () => number; sleep: (ms: number) => Promise<void> };
+const retryTiming: RetryTiming = {
+  now: Date.now, random: Math.random, sleep: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
+};
+
 export const processAnalysisJob = async (input: {
   supabaseUrl: string;
   serviceRoleKey: string;
   storageBucket: string;
   jobId: string;
-}) => {
+}, timing: RetryTiming = retryTiming) => {
   const adminClient = createAnalysisAdminClient(input.supabaseUrl, input.serviceRoleKey);
   let job: AnalysisJobRow | null = null;
   let attachedPainting: AttachedPainting | null = null;
@@ -191,7 +204,7 @@ export const processAnalysisJob = async (input: {
   };
 
   try {
-    job = await claimSpecificJob(adminClient, input.jobId);
+    job = await claimSpecificJob(adminClient, input.jobId, timing.now());
     if (!job || job.status !== 'running') return;
 
     const { data: dream, error: dreamError } = await adminClient
@@ -321,7 +334,10 @@ export const processAnalysisJob = async (input: {
 
     const serialized = serializeAnalysisJobError(error);
     if (serialized.retryable && job.attempt_count < job.max_attempts) {
-      await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage);
+      const delay = analysisRetryDelayMs(job.attempt_count, timing.random());
+      await requeueJob(adminClient, job, serialized.errorCode, serialized.errorMessage, timing.now() + delay);
+      // Persist the deadline first: polling/scheduler invocations must not bypass backoff.
+      await timing.sleep(delay);
       try {
         await triggerAnalysisWorker({
           supabaseUrl: input.supabaseUrl,

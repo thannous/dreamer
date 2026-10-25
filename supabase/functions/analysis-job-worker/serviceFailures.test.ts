@@ -15,13 +15,18 @@ const job = {
 
 const run = async (failure: unknown, attempt: number) => {
   const currentJob = { ...job, attempt_count: attempt - 1 };
+  let retryDeadline: string | undefined;
+  let delayed = false;
   const writes: { table: string; body: Record<string, unknown>; query: string }[] = [];
   const original = globalThis.fetch;
   globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const request = new Request(input, init);
     const url = new URL(request.url);
     const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
-    if (url.pathname === '/functions/v1/analysis-job-worker') return json({ ok: true }, 202);
+    if (url.pathname === '/functions/v1/analysis-job-worker') {
+      assertEquals(delayed, true);
+      return json({ ok: true }, 202);
+    }
     if (url.pathname === '/rest/v1/ai_jobs' && request.method === 'GET') return json([currentJob]);
     if (url.pathname === '/rest/v1/ai_jobs' && request.method === 'PATCH') {
       const body = await request.json();
@@ -29,6 +34,7 @@ const run = async (failure: unknown, attempt: number) => {
         const row = { ...currentJob, ...body };
         return request.headers.get('Accept')?.includes('vnd.pgrst.object') ? json(row) : json([row]);
       }
+      if (body.status === 'queued') retryDeadline = body.request_payload.retry_not_before;
       writes.push({ table: 'ai_jobs', body, query: url.search });
       return new Response(null, { status: 204 });
     }
@@ -47,7 +53,7 @@ const run = async (failure: unknown, attempt: number) => {
     throw new Error(`unexpected ${request.method} ${url.pathname}`);
   };
   try {
-    await processAnalysisJob({ supabaseUrl: 'https://supabase.test', serviceRoleKey: 'synthetic', storageBucket: 'dream-images', jobId: job.id });
+    await processAnalysisJob({ supabaseUrl: 'https://supabase.test', serviceRoleKey: 'synthetic', storageBucket: 'dream-images', jobId: job.id }, { now: () => 1000, random: () => 0.5, sleep: (ms) => { assertEquals(ms, 1050); assertEquals(retryDeadline, new Date(2050).toISOString()); delayed = true; return Promise.resolve(); } });
   } finally { globalThis.fetch = original; }
   return writes.filter(w => w.table === 'ai_jobs').map(w => ({ status: w.body.status, error_code: w.body.error_code, guardedOnRunning: w.query.includes('status=eq.running') }));
 };
