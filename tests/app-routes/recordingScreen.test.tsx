@@ -78,7 +78,8 @@ let mockScrollLayout: ((event: any) => void) | undefined;
 let mockProgressLayout: ((event: any) => void) | undefined;
 const mockScrollToEnd = jest.fn();
 let mockKeyboardListeners: Record<string, () => void> = {};
-let mockKeyboardSubscribers: Record<string, Set<(event: { duration: number }) => void>> = {};
+type MockKeyboardEvent = { duration: number; endCoordinates: { screenX: number; screenY: number; width: number; height: number } };
+let mockKeyboardSubscribers: Record<string, Set<(event: MockKeyboardEvent) => void>> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
@@ -242,11 +243,15 @@ jest.doMock('react-native', () => {
     Keyboard: {
       isVisible: () => false,
       // Every subscriber hears the event, as on a device.
-      addListener: (event: string, listener: (event: { duration: number }) => void) => {
+      addListener: (event: string, listener: (event: MockKeyboardEvent) => void) => {
         const listeners = (mockKeyboardSubscribers[event] ??= new Set());
         listeners.add(listener);
-        // iOS reports the keyboard's animation; none here.
-        mockKeyboardListeners[event] = () => { for (const subscriber of [...listeners]) subscriber({ duration: 0 }); };
+        // iOS reports the keyboard's animation; none here. A 300 pt keyboard.
+        mockKeyboardListeners[event] = () => {
+          for (const subscriber of [...listeners]) {
+            subscriber({ duration: 0, endCoordinates: { screenX: 0, screenY: 544, width: 390, height: 300 } });
+          }
+        };
         return { remove: () => { listeners.delete(listener); } };
       },
       dismiss: jest.fn(),

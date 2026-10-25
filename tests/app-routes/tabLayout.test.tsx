@@ -26,9 +26,11 @@ let mockRouteCommitted = true;
 let mockSegments: string[] = ['(tabs)', 'index'];
 let mockActiveAnalysis: { dreamId: number } | null = null;
 let capturedTabBar: unknown = 'unset';
+let capturedHideOnKeyboard: unknown = 'unset';
 let mockInSideColumn = false;
 let mockSideColumnBar: { onSelect: (key: string) => void } | null = null;
 let mockKeyboardVisible = false;
+let mockKeyboardHeight = 336;
 const mockRouterPush = jest.fn();
 const mockRouterNavigate = jest.fn();
 
@@ -41,7 +43,7 @@ jest.doMock('expo-router', () => {
     tabBar,
   }: {
     children?: React.ReactNode;
-    screenOptions?: { tabBarStyle?: unknown };
+    screenOptions?: { tabBarStyle?: unknown; tabBarHideOnKeyboard?: boolean };
     tabBar?: unknown;
   }) => {
     const React = require('react');
@@ -54,6 +56,7 @@ jest.doMock('expo-router', () => {
     }, []);
     capturedTabBarStyle = screenOptions?.tabBarStyle ?? null;
     capturedTabBar = tabBar;
+    capturedHideOnKeyboard = screenOptions?.tabBarHideOnKeyboard;
     return (
       <div>
         <span data-testid="mock-tabs-note">{note}</span>
@@ -94,7 +97,11 @@ jest.doMock('react-native', () => {
   };
 
   return {
-    Keyboard: { isVisible: () => mockKeyboardVisible, addListener: () => ({ remove: () => undefined }) },
+    Keyboard: {
+      isVisible: () => mockKeyboardVisible,
+      metrics: () => (mockKeyboardVisible ? { screenX: 0, screenY: 874 - mockKeyboardHeight, width: 402, height: mockKeyboardHeight } : undefined),
+      addListener: () => ({ remove: () => undefined }),
+    },
     Pressable: ({ onPress, testID, accessible, style }: { onPress?: () => void; testID?: string; accessible?: boolean; style?: unknown }) => (
       <button data-testid={testID} aria-hidden={accessible === false} onClick={onPress}
         data-native-style={JSON.stringify(flattenStyle(style))} />
@@ -647,6 +654,7 @@ describe('TabLayout beside the iPhone Duo side column', () => {
   afterEach(() => {
     mockInSideColumn = false;
     mockKeyboardVisible = false;
+    mockKeyboardHeight = 336;
   });
 
   it('hands the navigation to the column and draws none at the bottom', () => {
@@ -686,6 +694,30 @@ describe('TabLayout beside the iPhone Duo side column', () => {
     render(<TabLayout />);
 
     expect(capturedTabBar).toBeUndefined();
+    expect(capturedHideOnKeyboard).toBe(false);
     expect(screen.getByTestId('tab.addDream.overhang')).toBeTruthy();
+  });
+
+  it('keeps the navigation through a fold, which reports a keyboard of no height', () => {
+    // Folded: React Native is left with a keyboard shown, of no height, and never hidden.
+    mockKeyboardVisible = true;
+    mockKeyboardHeight = 0;
+    const folded = render(<TabLayout />);
+    expect(mockSideColumnBar).not.toBeNull();
+    folded.unmount();
+
+    // Without a column, the bar at the bottom shows as well.
+    mockInSideColumn = false;
+    const upright = render(<TabLayout />);
+    expect(capturedTabBar).toBeUndefined();
+    expect(capturedHideOnKeyboard).toBe(false);
+    expect(screen.getByTestId('tab.addDream.overhang')).toBeTruthy();
+    upright.unmount();
+
+    // A real keyboard still hides it.
+    mockKeyboardHeight = 336;
+    render(<TabLayout />);
+    expect(capturedHideOnKeyboard).toBe(true);
+    expect(screen.queryByTestId('tab.addDream.overhang')).toBeNull();
   });
 });
