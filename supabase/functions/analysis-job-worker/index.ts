@@ -82,7 +82,7 @@ const updateJob = async (
   jobId: string,
   values: Partial<AnalysisJobRow>
 ) => {
-  const { error } = await adminClient.from('ai_jobs').update(values).eq('id', jobId);
+  const { error } = await adminClient.from('ai_jobs').update(values).eq('id', jobId).eq('status', 'running');
   if (error) throw error;
 };
 
@@ -109,7 +109,7 @@ const markDreamAnalysisFailed = async (
   }
 };
 
-const failJob = async (
+export const failJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
   job: AnalysisJobRow,
   errorCode: string,
@@ -124,7 +124,7 @@ const failJob = async (
   await markDreamAnalysisFailed(adminClient, job);
 };
 
-const requeueJob = async (
+export const requeueJob = async (
   adminClient: ReturnType<typeof createAnalysisAdminClient>,
   job: AnalysisJobRow,
   errorCode: string,

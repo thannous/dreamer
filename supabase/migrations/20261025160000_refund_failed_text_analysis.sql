@@ -62,8 +62,14 @@ $$;
 create function private.refund_failed_text_analysis_job()
 returns trigger language plpgsql security definer set search_path = '' as $$
 begin
-  if new.job_type = 'analyze_dream' and new.status = 'failed' and old.status <> 'failed' then
+  if new.job_type = 'analyze_dream' and new.status = 'failed' and old.status in ('queued', 'running') then
     perform 1 from public.dreams where id = new.dream_id and user_id = new.user_id for update;
+    -- A legacy worker can requeue after completion committed but its reply was lost.
+    -- Under the dream lock, retain the receipt for this already-saved reading.
+    if exists (select 1 from public.dreams where id = new.dream_id and user_id = new.user_id
+      and analysis_request_id::text = new.client_request_id and analysis_status = 'done') then
+      return new;
+    end if;
     perform pg_advisory_xact_lock(hashtextextended(format('quota:analysis:all:%s', new.user_id::text), 0));
     -- Close the old pending request before making its quota available again.
     -- A synchronous retry must not start between refund and the worker's later

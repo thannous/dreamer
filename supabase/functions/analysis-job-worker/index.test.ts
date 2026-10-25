@@ -2,7 +2,7 @@ import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { AnalysisJobRow } from '../api/services/analysisJobs.ts';
 import { hashAnalysisTranscript } from '../api/lib/analysisTranscriptHash.ts';
-import { claimSpecificJob, hasAuthorizedAnalysisTranscript } from './index.ts';
+import { claimSpecificJob, failJob, requeueJob, hasAuthorizedAnalysisTranscript } from './index.ts';
 
 const queuedJob = {
   id: '11111111-1111-4111-8111-111111111111',
@@ -90,4 +90,51 @@ Deno.test('Claude configuration and generation failures keep the worker retryabl
     assertEquals(result.retryable, true);
     assertEquals(result.errorCode, 'ANALYSIS_TRANSIENT');
   }
+});
+
+// Exercise the actual catch-path mutations with a conditional-update client.
+// The job snapshot is still running when completion commits but its reply is lost.
+const createStatusClient = (status: string) => {
+  const rows: Record<string, Record<string, unknown>> = {
+    ai_jobs: { id: queuedJob.id, status },
+    dreams: { id: 1, user_id: 'owner', analysis_request_id: 'request', analysis_status: status === 'succeeded' ? 'done' : 'pending' },
+  };
+  const client = {
+    from: (table: string) => ({
+      update: (values: Record<string, unknown>) => {
+        const filters: Record<string, unknown> = {};
+        const query = {
+          eq: (key: string, value: unknown) => { filters[key] = value; return query; },
+          then: (resolve: (result: { error: null }) => unknown) => {
+            const row = rows[table];
+            if (Object.entries(filters).every(([key, value]) => row[key] === value)) Object.assign(row, values);
+            return Promise.resolve(resolve({ error: null }));
+          },
+        };
+        return query;
+      },
+    }),
+  };
+  return { client, rows };
+};
+const runningSnapshot = { ...queuedJob, user_id: 'owner', dream_id: 1, client_request_id: 'request', status: 'running' } as AnalysisJobRow;
+
+Deno.test('lost completion replies cannot fail or requeue a succeeded job through worker catch paths', async () => {
+  for (const mutate of [failJob, requeueJob]) {
+    const { client, rows } = createStatusClient('succeeded');
+    await mutate(client as any, runningSnapshot, 'LOST_REPLY', 'Reply lost');
+    assertEquals(rows.ai_jobs.status, 'succeeded');
+    assertEquals(rows.dreams.analysis_status, 'done');
+  }
+});
+
+Deno.test('worker failure and retry still transition a running attempt', async () => {
+  const failed = createStatusClient('running');
+  await failJob(failed.client as any, runningSnapshot, 'PROVIDER_FAILED', 'Failed');
+  assertEquals(failed.rows.ai_jobs.status, 'failed');
+  assertEquals(failed.rows.dreams.analysis_status, 'failed');
+  const retry = createStatusClient('running');
+  await requeueJob(retry.client as any, runningSnapshot, 'TRANSIENT', 'Retry');
+  assertEquals(retry.rows.ai_jobs.status, 'queued');
+  assertEquals(retry.rows.dreams.analysis_status, 'pending');
 });

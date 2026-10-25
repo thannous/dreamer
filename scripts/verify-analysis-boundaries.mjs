@@ -231,6 +231,17 @@ await db.query("update ai_jobs set status='failed' where id=$1",[jobId]);
 assert.equal((await db.query("select analysis_status,analysis_request_id from dreams where id=1")).rows[0].analysis_request_id,rid2);
 assert.equal((await db.query("select analysis_status from dreams where id=1")).rows[0].analysis_status,'pending');
 assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1',[receiptId])).rows[0].n,0);
+// A committed reading must retain its receipt, even after a lost reply or
+// a legacy worker's unconditional requeue. Check the trigger as defense in depth.
+for (const priorStatus of ['succeeded', 'queued', 'running']) {
+  await db.query("update ai_jobs set status=$2 where id=$1", [jobId, priorStatus]);
+  await db.query("update dreams set analysis_status='done',is_analyzed=true,analysis_request_id=$1 where id=1", [workerRequest]);
+  await db.query("insert into quota_usage(id,user_id,dream_id,quota_type,metadata) values($1,$2,1,'analysis',jsonb_build_object('source','analysis_job_admission','analysis_request_id',$3::text)) on conflict(id) do nothing", [receiptId,uid,workerRequest]);
+  await db.query("update ai_jobs set status='failed' where id=$1", [jobId]);
+  assert.equal((await db.query('select count(*)::integer n from quota_usage where id=$1', [receiptId])).rows[0].n, 1, `completed reading keeps receipt after ${priorStatus}->failed`);
+  assert.equal((await db.query('select analysis_status from dreams where id=1')).rows[0].analysis_status, 'done');
+}
+console.log('PASS completed readings keep receipts across succeeded, queued and running failure writes');
 await db.exec("select set_config('test.jwt_role','authenticated',false)");
 await assert.rejects(reserveGuest, /Service role required/);
 await assert.rejects(() => refundGuest(retryReservation.reservation_id), /Service role required/);
