@@ -3351,7 +3351,7 @@ describe('useDreamJournal', () => {
       [429, 'QUOTA_EXCEEDED', true], [429, 'DAILY_ANALYSIS_LIMIT', true],
       [409, 'ANALYSIS_IDEMPOTENCY_KEY_REUSED', true], [404, 'DREAM_NOT_FOUND', true],
       [409, 'ANALYSIS_ALREADY_CLAIMED', true], [409, 'ANALYSIS_TRANSCRIPT_MISMATCH', true],
-      [409, 'ANALYSIS_ALREADY_COMPLETE', true], [409, 'ANALYSIS_REQUEST_CONFLICT', true],
+      [409, 'ANALYSIS_REQUEST_CONFLICT', true],
       [429, 'ANALYSIS_REQUEST_MISMATCH', true], [401, 'UNAUTHORIZED', false], [408, 'TIMEOUT', false],
       [400, 'INVALID_INPUT', true], [429, 'AI_ADMISSION_DENIED', true],
       [503, 'AI_GLOBAL_BACKLOG_LIMIT', true],
@@ -3380,7 +3380,7 @@ describe('useDreamJournal', () => {
 
     it.each([
       [409, 'ANALYSIS_ALREADY_CLAIMED'], [409, 'ANALYSIS_TRANSCRIPT_MISMATCH'],
-      [409, 'ANALYSIS_ALREADY_COMPLETE'], [409, 'ANALYSIS_REQUEST_CONFLICT'],
+      [409, 'ANALYSIS_REQUEST_CONFLICT'],
       [429, 'ANALYSIS_REQUEST_MISMATCH'], [409, 'ANALYSIS_IDEMPOTENCY_KEY_REUSED'],
     ])('R4-A jobs path, post-lookup rejection %s/%s over three taps', async (status: number, code: string) => {
       mockEnvState.analysisJobsEnabled = true;
@@ -3400,6 +3400,38 @@ describe('useDreamJournal', () => {
       expect(d.analysisRequestId).toBeUndefined();
       expect(new Set(keys).size).toBe(3);
       expect(result.current.lastAnalysisOutcome?.status).toBe('failed');
+    });
+
+    it('restores a Free stale reading locally and remotely when reanalysis is refused', async () => {
+      mockEnvState.analysisJobsEnabled = true;
+      setMockUser({ id: 'user-1' });
+      mockSubscriptionStatus = { tier: 'free' };
+      const { getDreamAnalysisState } = require('@/lib/dreamUsage') as typeof import('@/lib/dreamUsage');
+      // Analyzed for an earlier transcript, then edited: freshness says stale, the UI offers re-analysis.
+      const analyzed = buildDream({ id: 1, remoteId: 101, transcript: 'Edited transcript', interpretation: 'Old reading',
+        isAnalyzed: true, analysisStatus: 'done', analysisTranscriptHash: hashDreamTranscript('Original transcript') });
+      mockFetchDreamsFromSupabase.mockResolvedValue([analyzed]);
+      // The server applies the client's own pending write (coalesce), so the recovery read sees it.
+      let serverCopy: DreamAnalysis = { ...analyzed };
+      mockUpdateDreamInSupabase.mockImplementation(async (dream: DreamAnalysis) => { serverCopy = { ...serverCopy, ...dream }; return { ...serverCopy }; });
+      mockFetchDreamFromSupabase.mockImplementation(async () => ({ ...serverCopy }));
+      mockSubmitDreamAnalysisJob.mockRejectedValue(Object.assign(new Error('already complete'), { status: 409, body: { code: 'ANALYSIS_ALREADY_COMPLETE' } }));
+      const { result } = await renderLoadedDreamJournal();
+      expect(getDreamAnalysisFreshness(result.current.dreams[0])).toBe('stale');
+      for (let i = 0; i < 2; i++) {
+        await act(async () => { await result.current.analyzeDream(1, analyzed.transcript).catch(() => undefined); });
+      }
+      const d = result.current.dreams[0];
+      expect(d).toEqual(expect.objectContaining({ analysisStatus: 'done', isAnalyzed: true,
+        interpretation: analyzed.interpretation, analysisTranscriptHash: analyzed.analysisTranscriptHash }));
+      expect(getDreamAnalysisFreshness(d)).toBe('stale');
+      expect(getDreamAnalysisState(d).isAnalyzed).toBe(true);
+      expect(serverCopy).toEqual(expect.objectContaining({ analysisStatus: 'done', isAnalyzed: true,
+        interpretation: analyzed.interpretation, analysisTranscriptHash: analyzed.analysisTranscriptHash }));
+      expect(result.current.lastAnalysisOutcome).toBeNull();
+      expect(mockGetDreamAnalysisJobStatus).not.toHaveBeenCalled();
+      expect(mockAnalyzeDreamText).not.toHaveBeenCalled();
+      expect(mockUpdateDreamInSupabase.mock.calls.some(([dream]: [DreamAnalysis]) => dream.analysisStatus === 'failed')).toBe(false);
     });
 
     it('recovers an already completed synchronous reading on job resume', async () => {

@@ -1878,6 +1878,20 @@ export const useDreamJournal = () => {
         const quotaError = coerceQuotaError(error, tier);
         const responseBody = error && typeof error === 'object' && 'body' in error
           ? error.body : null;
+        if (serverJobSubmissionStarted && !serverJobAccepted
+          && error && typeof error === 'object' && 'status' in error && error.status === 409
+          && responseBody && typeof responseBody === 'object' && 'code' in responseBody
+          && responseBody.code === 'ANALYSIS_ALREADY_COMPLETE') {
+          // Free cannot reanalyse an existing reading. Our optimistic pending
+          // write may be what the recovery read saw: restore the saved reading,
+          // including its original transcript hash, rather than hiding it as failed.
+          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
+          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
+          setLastAnalysisOutcome(null);
+          quotaService.invalidate(user);
+          await updateDream(analysisBase);
+          throw error;
+        }
         const nonReusableRequest = error && typeof error === 'object'
           && 'status' in error && error.status === 409
           && responseBody && typeof responseBody === 'object'

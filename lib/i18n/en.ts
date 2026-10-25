@@ -680,6 +680,7 @@ const translations: Record<string, string> = {
     'journal.detail.zone.actions': 'Actions',
     'journal.detail.stale.label': 'Analysis may be outdated',
     'journal.detail.stale.banner': 'This analysis was made from an earlier version of the dream. The previous analysis is still here.',
+    'error.reanalysis_requires_plus': 'Updating an existing analysis requires Noctalia Plus. Your previous analysis is still available.',
     'journal.detail.stale.cta': 'Update analysis',
     'journal.detail.stale.dismiss': 'Close and don’t show this reminder again',
     'journal.detail.image.expand_accessibility': 'View illustration full screen',

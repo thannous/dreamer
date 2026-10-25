@@ -328,7 +328,7 @@ jest.mock('@/components/journal/JournalDetailSheets', () => ({
   DeleteConfirmSheet: ({ visible, onConfirm }: any) => visible ? <button onClick={onConfirm}>Confirm delete</button> : null,
   ImageErrorSheet: () => null,
   QuotaLimitSheet: ({ visible }: any) => visible ? <div data-testid="quota-limit" /> : null,
-  ReanalyzeSheet: () => null,
+  ReanalyzeSheet: ({ visible }: { visible: boolean }) => visible ? <div>journal.detail.reanalyze_prompt.title</div> : null,
   ReplaceImageSheet: () => null,
 }));
 
@@ -926,6 +926,27 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByTestId(TID.Text.DreamDetailQuotaHint)).toBeNull();
     expect(screen.queryByText('Analyze saved dream')).toBeNull();
     await act(async () => { finish(); });
+  });
+
+  it.each(['free', 'plus'] as const)('routes a stale %s reading to its eligible action', async (tier: 'free' | 'plus') => {
+    mockTier = tier;
+    mockSearchParams = { id: '42' };
+    mockDreams = [buildDream({ isAnalyzed: true, analysisStatus: 'done',
+      interpretation: 'Previous reading', analyzedAt: 1_700_000_000_000, analysisTranscriptHash: 'v1:00000000' })];
+    await act(async () => { render(<JournalDetailScreen />); });
+    const action = screen.getByTestId(TID.Button.AnalysisStaleCta);
+    expect(action.textContent).toContain(tier === 'plus' ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus');
+    if (tier === 'free') expect(screen.getByText('error.reanalysis_requires_plus')).toBeTruthy();
+    await act(async () => { fireEvent.click(action); });
+    const { router } = require('expo-router');
+    if (tier === 'free') {
+      expect(router.push).toHaveBeenCalledWith({ pathname: '/paywall', params: { trigger: 'analysis_limit' } });
+      expect(screen.queryByText('journal.detail.reanalyze_prompt.title')).toBeNull();
+    } else {
+      expect(screen.getByText('journal.detail.reanalyze_prompt.title')).toBeTruthy();
+      expect(router.push).not.toHaveBeenCalled();
+    }
+    expect(mockAnalyzeDream).not.toHaveBeenCalled();
   });
 
   it('closes the outdated-analysis banner for good and keeps the update action', async () => {

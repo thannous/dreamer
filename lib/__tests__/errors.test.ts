@@ -19,6 +19,15 @@ import {
 } from '../errors';
 
 describe('classifyError', () => {
+  it('explains the Plus requirement without offering to retry a refused reanalysis', () => {
+    const error = Object.assign(new Error('Analysis state conflict'), { status: 409,
+      body: { code: 'ANALYSIS_ALREADY_COMPLETE' } });
+    const translate = jest.fn((key: string) => key === 'error.reanalysis_requires_plus' ? 'Plus required; previous reading preserved' : key);
+    expect(classifyError(error, translate)).toMatchObject({ type: ErrorType.CLIENT,
+      userMessage: 'Plus required; previous reading preserved', canRetry: false });
+    expect(classifyError(error).userMessage).toContain('Noctalia Plus');
+  });
+
   it('should classify network errors correctly', () => {
     const error = new Error('Network request failed');
     const result = classifyError(error);

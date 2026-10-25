@@ -1056,9 +1056,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       return {
         icon: 'arrow.clockwise' as const,
         title: t('journal.detail.stale.label'),
-        message: t('journal.detail.stale.banner'),
+        message: t(isPlus ? 'journal.detail.stale.banner' : 'error.reanalysis_requires_plus'),
         step: t('journal.detail.action.analyze.step'),
-        cta: t('journal.detail.stale.cta'),
+        cta: t(isPlus ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus'),
         disabled: false,
       };
     }
@@ -1135,7 +1135,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       cta: t('journal.detail.explore_button.new'),
       disabled: false,
     };
-  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
+  }, [awaitingPurchasedAnalysis, canRecoverPendingAnalysis, canResumeAnalysis, dream, guestNeedsAccount, isAnalyzing, isAnalysisPending, isPlus, isStalePrimaryAction, primaryAction, primaryKind, savedAnalysisAction, t, user]);
   const isAnalysisLaunchBlocked = !!dream && (isAnalysisPending || isAnalyzing);
   const isAnalysisLocked = isAnalysisLaunchBlocked || awaitingPurchasedAnalysis;
   // Act II of the dream story follows the dream's real state: waiting while an analysis
@@ -1864,9 +1864,13 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
   const handleStaleReanalyze = useCallback(() => {
     if (isAnalysisLocked) return;
+    if (!isPlus) {
+      handleDiscoverPlus();
+      return;
+    }
     setReanalyzeImagePolicy('keep');
     setShowReanalyzeSheet(true);
-  }, [isAnalysisLocked]);
+  }, [handleDiscoverPlus, isAnalysisLocked, isPlus]);
 
   const handleDismissReplaceSheet = useCallback(() => {
     setShowReplaceImageSheet(false);

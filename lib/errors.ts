@@ -17,6 +17,7 @@ const DEFAULT_ERROR_MESSAGES: Record<string, string> = {
   'error.network': 'No internet connection. Please check your network and try again.',
   'error.timeout': 'Request timed out. The server is taking too long to respond. Please try again.',
   'error.rate_limit': 'Too many requests. Please wait a moment and try again.',
+  'error.reanalysis_requires_plus': 'Updating an existing analysis requires Noctalia Plus. Your previous analysis is still available.',
   'error.interpretation_limit': 'You have used your included interpretations. Your dream remains saved in the journal.',
   'error.daily_analysis_limit': 'You started {limit} analyses in 24 hours, the limit that protects Noctalia from abuse. Your dream stays saved, and you can analyze it by tomorrow.',
   'error.daily_image_limit': 'You created {limit} illustrations in 24 hours, the limit that protects Noctalia from abuse. Your dream and its analysis stay saved, and you can illustrate it by tomorrow.',
@@ -191,6 +192,10 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
   const httpDetails = getHttpErrorDetails(error);
   const providerCode = httpDetails?.body?.providerCode ?? httpDetails?.body?.code
     ?? (error as Error & { code?: unknown }).code;
+  if (providerCode === 'ANALYSIS_ALREADY_COMPLETE') {
+    return { type: ErrorType.CLIENT, message: error.message, originalError: error,
+      userMessage: translate('error.reanalysis_requires_plus'), canRetry: false };
+  }
   if (error.name === 'AiConsentWithdrawnError' || error.name === 'AbortError' || [
     'ANALYSIS_TRANSCRIPT_CHANGED', 'ANALYSIS_TRANSCRIPT_MISMATCH', 'ANALYSIS_REQUEST_STALE',
     'ANALYSIS_STATE_CONFLICT', 'DREAM_NOT_FOUND', 'INVALID_TRANSCRIPT', 'ANALYSIS_ACCESS_DENIED',
