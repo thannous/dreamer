@@ -748,3 +748,9 @@ export class GuestDreamLimitError extends Error {
     this.name = 'GuestDreamLimitError';
   }
 }
+
+/** A withdrawn permission cancels unsent work without opening another prompt. */
+export class AiConsentWithdrawnError extends Error {
+  readonly name = 'AiConsentWithdrawnError';
+  constructor() { super('AI consent withdrawn'); }
+}

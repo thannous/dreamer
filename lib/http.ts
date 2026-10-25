@@ -37,6 +37,8 @@ export class HttpError<TBody = unknown> extends Error {
 }
 
 export type HttpOptions = {
+  /** Recheck a caller precondition after auth and before every network attempt. */
+  beforeRequest?: () => Promise<void>;
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   headers?: Record<string, string>;
   body?: unknown;
@@ -298,6 +300,7 @@ async function fetchJSONOnce<T = unknown>(url: string, options: HttpOptions = {}
     }
 
     try {
+      if (options.beforeRequest) await options.beforeRequest();
       const res = await fetch(url, {
         method: options.method ?? 'GET',
         headers,

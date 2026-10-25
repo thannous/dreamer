@@ -1,3 +1,4 @@
+import { hasAiConsent } from '@/lib/aiConsent';
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { createStreamingTextPublisher } from '@/lib/chat/streamingTextPublisher';
 // Backend proxy integration for RN app. Configure base URL via EXPO_PUBLIC_API_URL
@@ -15,6 +16,7 @@ import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSONWithSession, getSessionAuthHeaders } from '@/lib/apiSession';
 import { HttpError, type HttpOptions } from '@/lib/http';
 import {
+  AiConsentWithdrawnError,
   classifyImageError,
   type ImageGenerationErrorResponse,
 } from '@/lib/errors';
@@ -126,12 +128,22 @@ export type AnalysisJobStatusResponse = {
   errorMessage?: string | null;
 };
 
+const assertAiConsent = async (): Promise<void> => {
+  if (!(await hasAiConsent())) throw new AiConsentWithdrawnError();
+};
+
 async function fetchWithSessionHeaders<T>(
   path: string,
   options: HttpOptions & { signal?: AbortSignal }
 ): Promise<T> {
   const base = getApiBaseUrl();
-  return fetchJSONWithSession<T>(`${base}${path}`, options);
+  // These commands follow potentially slow dream synchronization. Check at the
+  // transport boundary, including auth refreshes and automatic HTTP retries.
+  const requiresConsent = ['/analyzeDream', '/analyzeDreamFull', '/analysis-jobs', '/chat'].includes(path);
+  return fetchJSONWithSession<T>(`${base}${path}`, {
+    ...options,
+    ...(requiresConsent ? { beforeRequest: assertAiConsent } : {}),
+  });
 }
 
 function buildAnalysisRequestBody(
@@ -432,6 +444,7 @@ async function streamChatRequest(
     ...(await getSessionAuthHeaders()),
   };
 
+  await assertAiConsent();
   const res = await streamingFetch(url, {
     method: 'POST',
     headers,

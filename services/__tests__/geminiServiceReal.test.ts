@@ -3,6 +3,11 @@ import { TextEncoder, TextDecoder } from 'node:util';
 
 import { DREAM_THEMES } from '@/lib/dreamThemes';
 
+const mockHasAiConsent = jest.fn(async () => true);
+jest.mock('@/lib/aiConsent', () => ({
+  hasAiConsent: () => mockHasAiConsent(),
+}));
+
 const mockStreamingFetch = jest.fn();
 jest.mock('expo/fetch', () => ({ fetch: (...args: unknown[]) => mockStreamingFetch(...args) }));
 
@@ -103,6 +108,7 @@ describe('geminiServiceReal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockHasAiConsent.mockResolvedValue(true);
     mockApiBaseUrl = 'https://api.example.com';
     mockGetAccessToken.mockResolvedValue(null);
     mockGetGuestHeaders.mockResolvedValue({});
@@ -113,6 +119,29 @@ describe('geminiServiceReal', () => {
   afterEach(() => {
     global.fetch = originalFetch;
   });
+
+  it.each(['analysis', 'full analysis', 'analysis job', 'chat', 'streaming chat'])(
+    'does not send %s when permission is withdrawn during async preparation', async (kind: string) => {
+      let finishAuth!: (value: string) => void;
+      mockGetAccessToken.mockImplementationOnce(() => new Promise(resolve => { finishAuth = resolve; }));
+      (global.fetch as ReturnType<typeof jest.fn>).mockReturnValue(mockFetchResponse(buildAnalysisResult()));
+      mockStreamingFetch.mockResolvedValue({ ok: true, body: null, text: async () => '' });
+      const request = kind === 'analysis' ? analyzeDream('Private dream')
+        : kind === 'full analysis' ? analyzeDreamWithImage('Private dream')
+        : kind === 'analysis job' ? submitDreamAnalysisJob({ dreamId: 1, analysisRequestId: 'request' })
+        : startOrContinueChat('1', 'Private question', 'en', undefined, undefined,
+          kind === 'streaming chat' ? { onDelta: jest.fn() } : undefined);
+      // Authentication and caller synchronization are allowed to finish; no AI
+      // transport may start using the permission read before that work.
+      const rejected = expect(request).rejects.toMatchObject({ name: 'AiConsentWithdrawnError' });
+      await Promise.resolve();
+      mockHasAiConsent.mockResolvedValue(false);
+      finishAuth('user-token');
+      await rejected;
+      expect(global.fetch).not.toHaveBeenCalled();
+      expect(mockStreamingFetch).not.toHaveBeenCalled();
+    }
+  );
 
   it.each(['prompt', 'transcript', 'job'])('keeps stable image cleanup compatible before media resolution: %s', async (mode: string) => {
     const previousOrigin = process.env.EXPO_PUBLIC_SUPABASE_URL;

@@ -27,7 +27,7 @@ import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
 import { isChatDebugEnabled, isMockModeEnabled } from '@/lib/env';
-import { classifyError, coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { AiConsentWithdrawnError, classifyError, coerceQuotaError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { canUseExploration360Synthesis, getExploration360SynthesisStatus } from '@/lib/exploration360';
 import { HttpError } from '@/lib/http';
 import { getImageConfig } from '@/lib/imageUtils';
@@ -635,6 +635,10 @@ function DreamChatContent() {
           } catch (error) {
             if (!isMountedRef.current) return;
             setIsLoading(false);
+            if (error instanceof AiConsentWithdrawnError) {
+              composerRef.current?.restoreUnsentText(textToSend);
+              return;
+            }
             if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
               router.push(buildPaywallHref('exploration_limit'));
               return;
@@ -785,6 +789,11 @@ function DreamChatContent() {
         quotaService.invalidate(user);
       } catch (error) {
         if (!isMountedRef.current) return;
+        if (error instanceof AiConsentWithdrawnError) {
+          setMessages(baseMessages);
+          composerRef.current?.restoreUnsentText(textToSend);
+          return;
+        }
         if (debugChat) {
           console.debug('[DreamChat] sendMessage error', {
             dreamId: dream.id,

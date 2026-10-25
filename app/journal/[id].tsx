@@ -93,7 +93,7 @@ import {
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isMockModeEnabled } from '@/lib/env';
 import { isFullMoonDream } from '@/lib/fullMoon';
-import { classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { AiConsentWithdrawnError, classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getDreamImageCacheKey, getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
   resolveJournalIllustrationAccess,
@@ -1682,6 +1682,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         });
         setAnalysisNotice(null);
       }).catch((error: unknown) => {
+        if (error instanceof AiConsentWithdrawnError) return;
         if (error instanceof QuotaError) {
           if (error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest') {
             setQuotaSheetMode('login');

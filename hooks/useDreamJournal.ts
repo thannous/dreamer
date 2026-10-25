@@ -56,7 +56,7 @@ import {
 } from '@/lib/dreamUtils';
 import { stampDreamAnalysisTranscript } from '@/lib/dreamAnalysisFreshness';
 import { collectKnownSymbols } from '@/lib/symbolLinks';
-import { coerceQuotaError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { AiConsentWithdrawnError, coerceQuotaError, GuestDreamLimitError, QuotaError, QuotaErrorCode } from '@/lib/errors';
 import { getThumbnailUrl } from '@/lib/imageUtils';
 import { getImageJobPollDelay } from '@/lib/imageJobPolling';
 import { logger } from '@/lib/logger';
@@ -1832,7 +1832,7 @@ export const useDreamJournal = () => {
         const quotaError = coerceQuotaError(error, tier);
         const responseBody = error && typeof error === 'object' && 'body' in error
           ? error.body : null;
-        const nonReusableRequest = error && typeof error === 'object'
+        const nonReusableRequest = error instanceof AiConsentWithdrawnError || error && typeof error === 'object'
           && 'status' in error && error.status === 409
           && responseBody && typeof responseBody === 'object'
           && 'code' in responseBody
