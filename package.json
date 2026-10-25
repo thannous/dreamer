@@ -271,7 +271,7 @@
     "react-native-edge-to-edge": "^1.8.1",
     "react-native-enriched-markdown": "1.0.2",
     "react-native-gesture-handler": "~3.3.0",
-    "react-native-keyboard-controller": "1.22.7",
+    "react-native-keyboard-controller": "1.22.8",
     "react-native-nitro-modules": "0.37.1",
     "react-native-purchases": "10.7.1",
     "react-native-reanimated": "4.7.1",
@@ -385,6 +385,7 @@
       "exclude": [
         "jest",
         "@types/jest",
+        "react-native-keyboard-controller",
         "react-native-view-shot"
       ]
     },
