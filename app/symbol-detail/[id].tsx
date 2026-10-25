@@ -1,6 +1,13 @@
 import { EASE } from '@/components/motion/motion';
 import { LivingPainting } from '@/components/symbols/LivingPainting';
 import { SymbolArtwork } from '@/components/symbols/SymbolArtwork';
+import {
+  SymbolInterpretation,
+  SymbolInterpretationUnavailable,
+  SymbolQuestions,
+  SymbolSection,
+  SymbolVariations,
+} from '@/components/symbols/SymbolReading';
 import { readScenes, SymbolScenes } from '@/components/symbols/SymbolScenes';
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -24,12 +31,11 @@ import { atlasPictureSources } from '@/lib/symbolAtlas';
 import { useBadgeReading } from '@/hooks/useBadgeReading';
 import { TID } from '@/lib/testIDs';
 import { recordBadgeEvent } from '@/services/badgeLedgerStore';
-import type { DreamSymbol, SymbolLanguage, SymbolVariation } from '@/lib/symbolTypes';
+import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
 import {
   getCategoryName,
   getRelatedSymbols,
   getSymbolById,
-  parseHtmlParagraphs,
 } from '@/services/symbolDictionaryService';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -66,6 +72,7 @@ const VEIL_DARK_SHARE = 0.4;
 // How far above the title the copy's own veil starts to darken.
 const COPY_VEIL_LEAD = 48;
 const BODY_GUTTER = 24;
+const BODY_MAX_WIDTH = 680;
 // The painted scenes keep a reading size on a wide window.
 const SCENES_MAX_WIDTH = 640;
 
@@ -227,9 +234,6 @@ export default function SymbolDetailScreen() {
   const content = symbol[lang] ?? symbol.en;
   const categoryName = getCategoryName(symbol.category, lang);
   const illustration = getSymbolIllustration(symbol.id, 'hero');
-  const paragraphs = extended?.fullInterpretation
-    ? parseHtmlParagraphs(extended.fullInterpretation)
-    : [];
   const background = noctalia.screen.background;
 
   return (
@@ -353,29 +357,17 @@ export default function SymbolDetailScreen() {
             bodyEnd.current = y + height;
             if (textLoaded) textEndY.set(bodyEnd.current);
           }}>
-            {paragraphs.length > 0 ? (
-              <Section label={t('symbols.interpretation')} noctalia={noctalia}>
-                {/* The opening paragraph reads as a lead, like the site's summary;
-                    the rest stays a quieter sans so the column has a rhythm. */}
-                <MarkdownText style={[styles.proseLead, { color: noctalia.text.primary }]}>
-                  {paragraphs[0]}
-                </MarkdownText>
-                {paragraphs.length > 1 ? (
-                  <MarkdownText containerStyle={styles.proseRest} style={[styles.prose, { color: noctalia.text.secondary }]}>
-                    {paragraphs.slice(1).join('\n\n')}
-                  </MarkdownText>
-                ) : null}
-              </Section>
+            {/* The hero has given the symbol's sense. The interpretation follows, closed on
+                its opening; then the reader finds their own dream (its scene, its
+                situation, a few questions). */}
+            {extended?.fullInterpretation ? (
+              <SymbolInterpretation html={extended.fullInterpretation} ink={noctalia} />
             ) : extendedStatus === 'unavailable' ? (
-              <Section label={t('symbols.interpretation')} noctalia={noctalia}>
-                <Text style={[styles.prose, { color: noctalia.text.secondary }]}>
-                  {t('symbols.interpretation_offline')}
-                </Text>
-              </Section>
+              <SymbolInterpretationUnavailable />
             ) : null}
 
             {living && sceneReadings.length > 0 ? (
-              <Section label={t('symbols.scenes')} noctalia={noctalia}>
+              <SymbolSection label={t('symbols.scenes')}>
                 <SymbolScenes
                   atlas={living.atlas}
                   symbolId={symbol.id}
@@ -383,46 +375,19 @@ export default function SymbolDetailScreen() {
                   width={Math.min(SCENES_MAX_WIDTH, bodyWidth - BODY_GUTTER * 2)}
                   noctalia={noctalia}
                 />
-              </Section>
+              </SymbolSection>
             ) : null}
 
             {extended?.variations && extended.variations.length > 0 ? (
-              <Section label={t('symbols.variations')} noctalia={noctalia}>
-                {extended.variations.map((variation, index) => (
-                  <VariationRow
-                    key={`${variation.context}-${variation.meaning}`}
-                    variation={variation}
-                    index={index}
-                    noctalia={noctalia}
-                  />
-                ))}
-              </Section>
+              <SymbolVariations variations={extended.variations} ink={noctalia} />
             ) : null}
 
             {content.askYourself.length > 0 ? (
-              <Section label={t('symbols.ask_yourself')} noctalia={noctalia}>
-                {content.askYourself.map((question, index) => (
-                  <View
-                    key={`${question}-${index}`}
-                    style={[
-                      styles.askRow,
-                      { borderTopColor: noctalia.surface.border },
-                    ]}
-                  >
-                    <MarkdownText
-                      selectable
-                      containerStyle={{ flex: 1 }}
-                      style={[styles.askText, { color: noctalia.text.primary }]}
-                    >
-                      {question}
-                    </MarkdownText>
-                  </View>
-                ))}
-              </Section>
+              <SymbolQuestions questions={content.askYourself} ink={noctalia} />
             ) : null}
 
             {relatedSymbols.length > 0 ? (
-              <Section label={t('symbols.related')} noctalia={noctalia}>
+              <SymbolSection label={t('symbols.related')}>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
@@ -433,7 +398,7 @@ export default function SymbolDetailScreen() {
                     <RelatedPoster key={related.id} symbol={related} lang={lang} noctalia={noctalia} />
                   ))}
                 </ScrollView>
-              </Section>
+              </SymbolSection>
             ) : null}
             {/* The entry's last line: reaching it is reading the entry to its end. */}
             <View testID="symbol.detail.end" />
@@ -471,43 +436,6 @@ export default function SymbolDetailScreen() {
         </View>
       </View>
     </ScrollPerfProvider>
-  );
-}
-
-function Section({ label, noctalia, children }: { label: string; noctalia: Tokens; children: React.ReactNode }) {
-  return (
-    <View style={[styles.section, { borderTopColor: noctalia.surface.border }]}>
-      <View style={[styles.sectionMark, { backgroundColor: noctalia.accent.text }]} />
-      <Text accessibilityRole="header" style={[styles.sectionTitle, { color: noctalia.text.primary }]}>
-        {label}
-      </Text>
-      {children}
-    </View>
-  );
-}
-
-function VariationRow({ variation, index, noctalia }: {
-  variation: SymbolVariation; index: number; noctalia: Tokens;
-}) {
-  return (
-    <View
-      style={[
-        styles.variationRow,
-        { borderTopColor: noctalia.surface.border },
-      ]}
-    >
-      <Text style={[styles.variationNumber, { color: noctalia.accent.text }]}>
-        {String(index + 1).padStart(2, '0')}
-      </Text>
-      <View style={styles.variationCopy}>
-        <Text selectable style={[styles.variationContext, { color: noctalia.text.primary }]}>
-          {variation.context}
-        </Text>
-        <MarkdownText selectable style={[styles.variationMeaning, { color: noctalia.text.secondary }]}>
-          {variation.meaning}
-        </MarkdownText>
-      </View>
-    </View>
   );
 }
 
@@ -590,21 +518,9 @@ const styles = StyleSheet.create({
     textShadowRadius: 18,
   },
   lede: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: 27 },
-  body: { paddingHorizontal: BODY_GUTTER, paddingTop: 8 },
+  // A reading measure on a wide window: lines stay short enough to follow.
+  body: { width: '100%', maxWidth: BODY_MAX_WIDTH, alignSelf: 'center', paddingHorizontal: BODY_GUTTER, paddingTop: 8 },
   backdropArt: { opacity: 0.75, transform: [{ scale: 1.2 }] },
-  section: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: 30, marginTop: 34 },
-  sectionMark: { width: 28, height: 2, borderRadius: 1, marginBottom: 14 },
-  sectionTitle: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h1.fontSize, lineHeight: TypeScale.h1.lineHeight, letterSpacing: -0.2, marginBottom: 18 },
-  proseLead: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: TypeScale.h3.lineHeight },
-  proseRest: { marginTop: 18 },
-  prose: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: 28 },
-  variationRow: { flexDirection: 'row', gap: 16, borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 18 },
-  variationNumber: { width: 26, paddingTop: 4, fontFamily: Fonts.outfit.medium, fontSize: TypeScale.caption.fontSize, lineHeight: 16, letterSpacing: 1.6, opacity: 0.8 },
-  variationCopy: { flex: 1, gap: 6 },
-  variationContext: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.h3.fontSize, lineHeight: 24 },
-  variationMeaning: { fontFamily: Fonts.outfit.regular, fontSize: TypeScale.body.fontSize, lineHeight: TypeScale.body.lineHeight },
-  askRow: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 16 },
-  askText: { fontFamily: Fonts.fraunces.regular, fontSize: TypeScale.h3.fontSize, lineHeight: 27 },
   relatedScroller: { marginHorizontal: -24 },
   relatedPosters: { gap: 12, paddingHorizontal: 24 },
   poster: { width: 140, height: 184, borderRadius: 16, borderCurve: 'continuous', borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden', justifyContent: 'flex-end', padding: 12, gap: 4 },
