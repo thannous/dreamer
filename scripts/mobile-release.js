@@ -265,6 +265,14 @@ function parseArgs(args) {
   return options;
 }
 
+function buildEnv(app, profile, base = process.env) {
+  // EAS Build sets EAS_BUILD_PROFILE on its workers but EAS CLI 25 does not set it when it
+  // fingerprints the app here, and app.config.ts picks the App Attest entitlement from it.
+  // Without it the local runtime version differs and EAS stops the build at expo-updates.
+  const variant = app === 'lucid' ? 'lucid' : 'noctalia';
+  return { ...base, EAS_BUILD_PROFILE: profile, EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: variant, EXPO_PUBLIC_APP_VARIANT: variant };
+}
+
 function internalSubmitArgs(platform, id) {
   if (!['android', 'ios'].includes(platform)) throw new Error('Internal submission needs --platform android|ios');
   if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(id ?? '')) throw new Error('Internal submission needs an explicit EAS build ID');
@@ -364,10 +372,11 @@ function main(args = process.argv.slice(2), root = ROOT) {
   }
   if (apps.length !== 1 || !['android', 'ios'].includes(options.platform)) throw new Error('Build needs one --app and --platform android|ios');
   const app = apps[0];
-  const env = { ...process.env, EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia', EXPO_PUBLIC_APP_VARIANT: app === 'lucid' ? 'lucid' : 'noctalia' };
+  const profile = app === 'lucid' ? 'lucid-production' : 'production';
+  const env = buildEnv(app, profile);
   const preflight = spawnSync(process.execPath, [path.join(root, 'scripts/check-eas-build-inputs.js'), '--app', app, '--platform', options.platform], { cwd: root, env, stdio: 'inherit' });
   if (preflight.error || preflight.status !== 0) throw new Error(`Local EAS build preflight failed; no build started: ${preflight.error?.message || preflight.status}`);
-  const result = spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['--yes', 'eas-cli@25.1.1', 'build', '--platform', options.platform, '--profile', app === 'lucid' ? 'lucid-production' : 'production'], {
+  const result = spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx', ['--yes', 'eas-cli@25.1.1', 'build', '--platform', options.platform, '--profile', profile], {
     cwd: app === 'meditation' ? path.join(root, 'apps/meditation') : root,
     env,
     stdio: 'inherit',
@@ -386,4 +395,4 @@ function main(args = process.argv.slice(2), root = ROOT) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main };
+module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main };

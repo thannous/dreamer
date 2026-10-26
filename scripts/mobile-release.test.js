@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main } = require('./mobile-release');
+const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -177,6 +177,12 @@ describe('release planning against real Git histories', () => {
     app.expo.ios = { infoPlist: { NSHealthShareUsageDescription: 'Reads sleep history', NSHealthUpdateUsageDescription: 'Does not write Health data' } };
     write(root, 'app.json', app);
     expect(verify(root, 'noctalia').version).toBe('3.1.0');
+  });
+  it('fingerprints a local Store build with the profile EAS Build will use', () => {
+    const base = { PATH: '/bin', EAS_BUILD_PROFILE: 'release-smoke' };
+    expect(buildEnv('noctalia', 'production', base)).toEqual({ PATH: '/bin', EAS_BUILD_PROFILE: 'production', EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: 'noctalia', EXPO_PUBLIC_APP_VARIANT: 'noctalia' });
+    expect(buildEnv('lucid', 'lucid-production', base)).toMatchObject({ EAS_BUILD_PROFILE: 'lucid-production', NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid' });
+    expect(base.EAS_BUILD_PROFILE).toBe('release-smoke');
   });
   it('selects the internal Play track and a Starter-compatible TestFlight submission', () => {
     const id = '12345678-1234-4234-8234-123456789abc';
