@@ -1828,6 +1828,7 @@ const translations: Record<string, string> = {
     'dream_chat.mic.start': 'Iniciar ditado',
     'dream_chat.mic.stop': 'Parar ditado',
     'dream_chat.send': 'Enviar mensagem',
+    'dream_chat.jump_to_latest': 'Ir para a última mensagem',
     'dream_chat.message_counter': '{used}/{limit} interações para este sonho',
     'dream_chat.retry_target.label': 'Retomar esta resposta que falhou',
     'dream_chat.retry_target.cta': 'Tentar esta resposta novamente',

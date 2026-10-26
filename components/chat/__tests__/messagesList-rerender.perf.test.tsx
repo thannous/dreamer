@@ -122,14 +122,16 @@ vi.mock('../../../context/ChatContext', () => ({
 
 vi.mock('../../../hooks/useChatList', () => ({
   useAutoScrollOnNewMessage: () => {},
-  useInitialScrollToEnd: () => {},
   useKeyboardAwareMessageList: () => {},
+  useKeyboardSpacer: () => ({ height: 0, onLayout: () => {} }),
+  useFollowComposerResize: () => () => {},
   useMessageListProps: () => ({
-    animatedProps: {},
     ref: { current: null },
     onContentSizeChange: () => {},
+    onLayout: () => {},
     onScroll: () => {},
   }),
+  useRevealLatestMessageOnOpen: () => {},
   useScrollWhenComposerSizeUpdates: () => {},
   useUpdateLastMessageIndex: () => {},
 }));

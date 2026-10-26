@@ -56,13 +56,14 @@ import {
   ActivityIndicator,
   Alert,
   findNodeHandle,
+  Keyboard,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { TypeScale } from '@/constants/typeScale';
 
 type CategoryType = DreamChatCategory;
@@ -171,6 +172,8 @@ function DreamChatContent() {
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
   const dreamIdentity = dream ? `${user?.id ?? 'guest'}:${getDreamIdentityKey(dream)}` : '';
+  // The request id outlives the first sync, when the dream gets its server id.
+  const draftKey = dream ? `${user?.id ?? 'guest'}:${dream.clientRequestId ? `client:${dream.clientRequestId}` : getDreamIdentityKey(dream)}` : '';
   const exploration360Status = useMemo(() => getExploration360SynthesisStatus(dream), [dream]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
   const networkState = useNetworkState();
@@ -1032,6 +1035,8 @@ function DreamChatContent() {
   const dreamImageUri = media.imageUrl;
 
   const handleBackPress = useCallback(() => {
+    // An open keyboard would otherwise take the first tap on the way out.
+    Keyboard.dismiss();
     if (router.canGoBack()) {
       router.back();
     } else {
@@ -1332,6 +1337,7 @@ function DreamChatContent() {
 
           <ChatComposer
             ref={composerRef}
+            draftKey={draftKey}
             onSendText={(text) => { void sendMessage(text, undefined, { userText: text }); }}
             placeholder={composerPlaceholder}
             isLoading={isInteractionLocked}
@@ -1380,6 +1386,18 @@ function ComposerFooter({
 }: ComposerFooterProps) {
   const { isKeyboardVisible } = useKeyboardStateContext();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  // A hidden pill keeps no room above the field, where the last message would leave a gap.
+  const [isKeyboardUp, setIsKeyboardUp] = useState(false);
+
+  useAnimatedReaction(
+    () => isKeyboardVisible.get(),
+    (current, previous) => {
+      if (current !== previous) {
+        runOnJS(setIsKeyboardUp)(current);
+      }
+    },
+    [isKeyboardVisible]
+  );
 
   const footerAnimatedStyle = useAnimatedStyle(() => {
     // Hide when keyboard is visible OR when not visible
@@ -1398,7 +1416,7 @@ function ComposerFooter({
 
   return (
     <Animated.View
-      style={[styles.footerWrapper, !visible && styles.footerWrapperHidden, footerAnimatedStyle]}
+      style={[styles.footerWrapper, isKeyboardUp && styles.footerWrapperCollapsed, !visible && styles.footerWrapperHidden, footerAnimatedStyle]}
       pointerEvents={visible ? 'box-none' : 'none'}
     >
       {!messageLimitReached && (
@@ -1805,6 +1823,12 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 6,
     alignItems: 'center',
+  },
+  footerWrapperCollapsed: {
+    height: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    overflow: 'hidden',
   },
   footerWrapperHidden: {
     display: 'none',

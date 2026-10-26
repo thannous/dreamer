@@ -1829,6 +1829,7 @@ const translations: Record<string, string> = {
     'dream_chat.mic.start': 'Commencer la dictée',
     'dream_chat.mic.stop': 'Arrêter la dictée',
     'dream_chat.send': 'Envoyer le message',
+    'dream_chat.jump_to_latest': 'Aller au dernier message',
     'dream_chat.message_counter': '{used}/{limit} échanges pour ce rêve',
     'dream_chat.retry_target.label': 'Reprendre cette réponse en échec',
     'dream_chat.retry_target.cta': 'Relancer cette réponse',

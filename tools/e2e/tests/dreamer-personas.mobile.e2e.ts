@@ -187,7 +187,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
       const savedQuestion = screen.getByText(question, { exact: true, visible: true });
       await expect(savedQuestion).toBeVisible();
-      const latest = screen.getByRole('button', 'Jump to latest', { exact: true, visible: true });
+      const latest = screen.getByRole('button', 'Aller au dernier message', { exact: true, visible: true });
       if (await latest.isVisible()) await latest.tap();
       const answer = screen.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/, { visible: true });
       await expect(answer).toBeVisible();

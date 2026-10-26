@@ -125,6 +125,7 @@ jest.mock('expo-router', () => ({
 }));
 
 const { AuthProvider, useAuth } = require('../AuthContext');
+const { getUnsentDraft, setUnsentDraft } = require('@/lib/chat/unsentDrafts');
 
 describe('AuthContext', () => {
   beforeEach(() => {
@@ -261,14 +262,46 @@ describe('AuthContext', () => {
 
     const handler = mockGetAuthChangeHandler();
     expect(typeof handler).toBe('function');
+    setUnsentDraft('user-1:client:dream-a', 'Pourquoi cette porte bleue ?');
 
     await act(async () => {
       await handler?.({ id: 'user-2', email: 'next@example.com', app_metadata: {}, user_metadata: {} }, { access_token: 'token' });
     });
 
     expect(mockClearRemoteDreamStorage).toHaveBeenCalled();
+    expect(getUnsentDraft('user-1:client:dream-a')).toBe('');
     expect(result.current.user?.id).toBe('user-2');
     expect(result.current.sessionReady).toBe(true);
+  });
+
+  it('given an unsent chat draft__when the user signs out__then the draft is gone', async () => {
+    mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <AuthProvider>{children}</AuthProvider>
+    );
+
+    const { result } = renderHook(() => useAuth(), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    const handler = mockGetAuthChangeHandler();
+    expect(typeof handler).toBe('function');
+    setUnsentDraft('user-1:client:dream-a', 'Pourquoi cette porte bleue ?');
+
+    await act(async () => {
+      await handler?.({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} }, { access_token: 'token' });
+    });
+    expect(getUnsentDraft('user-1:client:dream-a')).toBe('Pourquoi cette porte bleue ?');
+
+    await act(async () => {
+      await handler?.(null);
+    });
+
+    expect(getUnsentDraft('user-1:client:dream-a')).toBe('');
+    expect(result.current.user).toBeNull();
   });
 
   it('given Lucid auth change to signed out__when onAuthChange fires__then keeps Journal storage untouched', async () => {

@@ -1,12 +1,14 @@
 /**
  * ScrollToBottomButton - Floating button to scroll to the bottom of the chat
- * Appears when user has scrolled up (not near the bottom)
+ * Appears when user has scrolled up (not near the bottom), just above the composer
  */
 
 import { Fonts } from '@/constants/theme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
-import { useScrollToBottomButton } from '@/hooks/useChatList';
+import { composerBottomOffset, useScrollToBottomButton } from '@/hooks/useChatList';
+import { useTranslation } from '@/hooks/useTranslation';
 import { isChatDebugEnabled } from '@/lib/env';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -17,6 +19,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TypeScale } from '@/constants/typeScale';
 
@@ -24,6 +27,11 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function ScrollToBottomButton() {
   const { shouldShowButton, scrollToBottom } = useScrollToBottomButton();
+  const { t } = useTranslation();
+  const label = t('dream_chat.jump_to_latest');
+  const { composerHeight } = useComposerHeightContext();
+  const { keyboardHeight } = useKeyboardStateContext();
+  const insets = useSafeAreaInsets();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const debugChat = __DEV__ && isChatDebugEnabled();
@@ -43,10 +51,11 @@ export function ScrollToBottomButton() {
     const translateY = interpolate(visibility.value, [0, 1], [8, 0]);
 
     return {
+      bottom: composerHeight.get() + composerBottomOffset(keyboardHeight.get(), insets.bottom) + 12,
       opacity: visibility.value,
       transform: [{ translateY }, { scale }],
     };
-  });
+  }, [insets.bottom]);
 
   const handlePress = useCallback(() => {
     if (debugChat) {
@@ -67,6 +76,8 @@ export function ScrollToBottomButton() {
         },
       ]}
       onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
       hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       disabled={!shouldShowButton}
       pointerEvents={shouldShowButton ? 'auto' : 'none'}
@@ -76,7 +87,7 @@ export function ScrollToBottomButton() {
     >
       <View style={styles.content}>
         <IconSymbol name="arrow.down" size={16} color={noctalia.action.primaryText} />
-        <Text style={[styles.text, { color: noctalia.action.primaryText }]}>Jump to latest</Text>
+        <Text style={[styles.text, { color: noctalia.action.primaryText }]}>{label}</Text>
       </View>
     </AnimatedPressable>
   );
@@ -85,7 +96,6 @@ export function ScrollToBottomButton() {
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    bottom: 160,
     alignSelf: 'center',
     borderRadius: 20,
     paddingHorizontal: 16,
