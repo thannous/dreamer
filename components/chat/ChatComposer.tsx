@@ -1,5 +1,6 @@
 import { Composer } from '@/components/chat/Composer';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
+import { getUnsentDraft, setUnsentDraft } from '@/lib/chat/unsentDrafts';
 import { TID } from '@/lib/testIDs';
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
@@ -20,28 +21,20 @@ type ChatComposerProps = {
   header: React.ReactNode;
 };
 
-// Unsent text by conversation for this app session: leaving a conversation keeps what was typed.
-const unsentDrafts = new Map<string, string>();
-
 export const ChatComposer = forwardRef<ChatComposerHandle, ChatComposerProps>(function ChatComposer(
   { draftKey, onSendText, placeholder, isLoading, isDisabled, transcriptionLocale, footer, header },
   ref
 ) {
-  const [draft, setDraft] = useState(() => (draftKey ? unsentDrafts.get(draftKey) ?? '' : ''));
+  const [draft, setDraft] = useState(() => (draftKey ? getUnsentDraft(draftKey) : ''));
   const storedKeyRef = useRef(draftKey);
 
   useEffect(() => {
     // A dream that gets its server id while open takes its draft to the new key.
     if (storedKeyRef.current && storedKeyRef.current !== draftKey) {
-      unsentDrafts.delete(storedKeyRef.current);
+      setUnsentDraft(storedKeyRef.current, '');
     }
     storedKeyRef.current = draftKey;
-    if (!draftKey) return;
-    if (draft) {
-      unsentDrafts.set(draftKey, draft);
-    } else {
-      unsentDrafts.delete(draftKey);
-    }
+    if (draftKey) setUnsentDraft(draftKey, draft);
   }, [draft, draftKey]);
 
   useImperativeHandle(ref, () => ({

@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { isMockModeEnabled } from '@/lib/env';
 import { getAuthReturnSnapshot } from '@/lib/authReturnIntent';
 import { getCurrentUser, onAuthChange } from '@/lib/auth';
+import { clearUnsentDrafts } from '@/lib/chat/unsentDrafts';
 import { createCircuitBreaker } from '@/lib/circuitBreaker';
 import { getPaywallTrigger } from '@/lib/analytics';
 import { clearStayOnSettingsIntent, consumeStayOnSettingsDestination, peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
@@ -206,6 +207,10 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       setDreamMediaScope(nextUser?.id ?? null);
       const previousUserId = previousUserIdRef.current;
       const nextUserId = nextUser?.id ?? null;
+      if (previousUserId !== nextUserId) {
+        // Text typed in a dream conversation stays with the account that typed it.
+        clearUnsentDrafts();
+      }
       if (!isLucidTrainer && previousUserId !== nextUserId) {
         try {
           await clearRemoteDreamStorage();
