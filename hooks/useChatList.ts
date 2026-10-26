@@ -37,6 +37,9 @@ const LONG_MESSAGE_THRESHOLD = 280;
  */
 const LATEST_MESSAGE_SLACK = 40;
 
+/** When the opening check looks again, in ms: rows measure late on a slow device. */
+const REVEAL_RETRY_DELAYS = [100, 200, 400, 700, 1000];
+
 /**
  * Distance from the window's bottom edge to the composer's. With a keyboard up, iOS's
  * KeyboardStickyView keeps the composer 8 above it; Android lifts the composer, still
@@ -218,6 +221,28 @@ export function useKeyboardSpacer() {
 }
 
 /**
+ * useFollowComposerResize - Layout handler for the composer's room in the list footer
+ * When the composer grows or shrinks (a second line, the thinking indicator), a reader
+ * at the end stays on the latest message once the footer has its new height. The
+ * distance is measured before the change, so a conversation opened on its header stays put.
+ */
+export function useFollowComposerResize() {
+  const { scrollToEnd, contentHeight, containerHeight, scrollY } = useMessageListContext();
+  const heightRef = useRef<number | null>(null);
+
+  return useCallback((event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    const previous = heightRef.current;
+    heightRef.current = height;
+    if (previous === null || previous === height || containerHeight.get() <= 0) return;
+    const distanceFromEnd = contentHeight.get() - (height - previous) - scrollY.get() - containerHeight.get();
+    if (distanceFromEnd < NEAR_BOTTOM_THRESHOLD) {
+      requestAnimationFrame(() => scrollToEnd({ animated: true }));
+    }
+  }, [containerHeight, contentHeight, scrollToEnd, scrollY]);
+}
+
+/**
  * useScrollWhenComposerSizeUpdates - Auto-scroll when composer height changes
  * Ensures content stays visible when typing multi-line messages
  * Respects isNearBottom to avoid unwanted scroll jumps
@@ -266,7 +291,7 @@ export function useUpdateLastMessageIndex(messageCount: number) {
  * useRevealLatestMessageOnOpen - Open a conversation on its latest message when the composer covers it
  * A short window (the folded iPhone Duo) or a long history would otherwise open on the
  * dream's header with the latest message under the composer. A conversation that
- * already shows it keeps the header in view. Handles dynamic heights with several tries.
+ * already shows it keeps the header in view.
  */
 export function useRevealLatestMessageOnOpen(hasMessages: boolean, hasUserScrolled: () => boolean) {
   const { scrollToEnd, contentHeight, containerHeight, scrollY } = useMessageListContext();
@@ -284,21 +309,10 @@ export function useRevealLatestMessageOnOpen(hasMessages: boolean, hasUserScroll
       }
     };
 
-    let frame = 0;
-    let retry: ReturnType<typeof setTimeout> | undefined;
-    // Wait for content to be measured, then try again once late rows have their height
-    const first = setTimeout(() => {
-      revealIfCovered();
-      frame = requestAnimationFrame(() => {
-        revealIfCovered();
-        retry = setTimeout(revealIfCovered, 200);
-      });
-    }, 100);
-    return () => {
-      clearTimeout(first);
-      cancelAnimationFrame(frame);
-      if (retry) clearTimeout(retry);
-    };
+    // Wait for content to be measured, then try again as late rows get their height
+    // (a slow cold open, a long history): each try only acts while the message is covered.
+    const tries = REVEAL_RETRY_DELAYS.map((delay) => setTimeout(revealIfCovered, delay));
+    return () => tries.forEach(clearTimeout);
   }, [containerHeight, contentHeight, hasMessages, hasUserScrolled, scrollToEnd, scrollY]);
 }
 

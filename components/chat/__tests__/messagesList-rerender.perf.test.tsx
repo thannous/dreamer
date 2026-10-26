@@ -124,6 +124,7 @@ vi.mock('../../../hooks/useChatList', () => ({
   useAutoScrollOnNewMessage: () => {},
   useKeyboardAwareMessageList: () => {},
   useKeyboardSpacer: () => ({ height: 0, onLayout: () => {} }),
+  useFollowComposerResize: () => () => {},
   useMessageListProps: () => ({
     ref: { current: null },
     onContentSizeChange: () => {},

@@ -19,6 +19,7 @@ import {
 } from '@/context/ChatContext';
 import { useTheme } from '@/context/ThemeContext';
 import {
+  useFollowComposerResize,
   useKeyboardAwareMessageList,
   useKeyboardSpacer,
   useMessageListProps,
@@ -180,6 +181,7 @@ function BottomSpacer() {
   const { composerHeight } = useComposerHeightContext();
   const insets = useSafeAreaInsets();
   const keyboardSpacer = useKeyboardSpacer();
+  const followComposerResize = useFollowComposerResize();
 
   const animatedStyle = useAnimatedStyle(() => {
     // Space for composer + safe area + extra padding
@@ -189,13 +191,13 @@ function BottomSpacer() {
 
   return (
     <>
-      <Animated.View style={animatedStyle} />
+      <Animated.View style={animatedStyle} onLayout={followComposerResize} />
       <View style={{ height: keyboardSpacer.height }} onLayout={keyboardSpacer.onLayout} />
     </>
   );
 }
 
-const MAINTAIN_SCROLL_AT_END = { onDataChange: true, onItemLayout: true };
+const MAINTAIN_SCROLL_AT_END = { onDataChange: true, onItemLayout: true, onLayout: true };
 
 const emptyStreamingReply = () => null;
 const subscribeToEmptyReply = () => () => {};
@@ -433,11 +435,12 @@ export function MessagesList({
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         // The iPhone keyboard has no key to hide it: a drag or a tap on the conversation does.
-        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+        // Not on web, where on-drag blurs the field on every scroll, even the list's own.
+        keyboardDismissMode={Platform.select({ ios: 'interactive', android: 'on-drag' })}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={[styles.contentContainer, { paddingTop: insets.top + 8 }, contentContainerStyle]}
         // LegendList specific props for chat UX
-        // A reader at the end follows a sent message and the reply streaming in.
+        // A reader at the end follows a sent message, the reply streaming in and a fold.
         maintainScrollAtEnd={MAINTAIN_SCROLL_AT_END}
         recycleItems
         estimatedItemSize={80}

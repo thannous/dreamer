@@ -1,7 +1,7 @@
 import { Composer } from '@/components/chat/Composer';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { TID } from '@/lib/testIDs';
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 export type ChatComposerHandle = {
   clearSentText: (sentText: string) => void;
@@ -9,7 +9,7 @@ export type ChatComposerHandle = {
 };
 
 type ChatComposerProps = {
-  /** The conversation the unsent text belongs to; it comes back when the conversation reopens. */
+  /** The account and dream the unsent text belongs to; it comes back when the conversation reopens. */
   draftKey?: string;
   onSendText: (text: string) => void;
   placeholder: string;
@@ -28,8 +28,14 @@ export const ChatComposer = forwardRef<ChatComposerHandle, ChatComposerProps>(fu
   ref
 ) {
   const [draft, setDraft] = useState(() => (draftKey ? unsentDrafts.get(draftKey) ?? '' : ''));
+  const storedKeyRef = useRef(draftKey);
 
   useEffect(() => {
+    // A dream that gets its server id while open takes its draft to the new key.
+    if (storedKeyRef.current && storedKeyRef.current !== draftKey) {
+      unsentDrafts.delete(storedKeyRef.current);
+    }
+    storedKeyRef.current = draftKey;
     if (!draftKey) return;
     if (draft) {
       unsentDrafts.set(draftKey, draft);

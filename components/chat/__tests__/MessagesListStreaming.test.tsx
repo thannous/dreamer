@@ -30,6 +30,7 @@ jest.mock('@/context/ChatContext', () => ({
 jest.mock('@/hooks/useChatList', () => ({
   useKeyboardAwareMessageList: () => {},
   useKeyboardSpacer: () => ({ height: 0, onLayout: () => {} }),
+  useFollowComposerResize: () => () => {},
   useRevealLatestMessageOnOpen: () => {},
   useUpdateLastMessageIndex: () => {},
   useMessageListProps: () => ({ ref: { current: null }, onContentSizeChange: () => {}, onLayout: () => {}, onScroll: () => {} }),

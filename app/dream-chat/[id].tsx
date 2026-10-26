@@ -172,6 +172,8 @@ function DreamChatContent() {
   const dreamId = useMemo(() => Number(id), [id]);
   const dream = useMemo(() => resolveDreamRoute(dreams, { id, remoteId, clientRequestId }), [dreams, id, remoteId, clientRequestId]);
   const dreamIdentity = dream ? `${user?.id ?? 'guest'}:${getDreamIdentityKey(dream)}` : '';
+  // The request id outlives the first sync, when the dream gets its server id.
+  const draftKey = dream ? `${user?.id ?? 'guest'}:${dream.clientRequestId ? `client:${dream.clientRequestId}` : getDreamIdentityKey(dream)}` : '';
   const exploration360Status = useMemo(() => getExploration360SynthesisStatus(dream), [dream]);
   const { quotaStatus, canExplore, canChat, tier } = useQuota({ dreamId, dream });
   const networkState = useNetworkState();
@@ -1334,9 +1336,8 @@ function DreamChatContent() {
           />
 
           <ChatComposer
-            key={dream.id}
             ref={composerRef}
-            draftKey={String(dream.id)}
+            draftKey={draftKey}
             onSendText={(text) => { void sendMessage(text, undefined, { userText: text }); }}
             placeholder={composerPlaceholder}
             isLoading={isInteractionLocked}

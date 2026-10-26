@@ -282,7 +282,7 @@ test('Plus user continues a reflection and sees the conversation on revisit', as
   const reply = page.getByText(response, { exact: true });
   await expect.poll(async () => {
     const [message, input] = await Promise.all([reply.boundingBox(), page.getByTestId('chat.input.message').boundingBox()]);
-    return message && input ? input.y - (message.y + message.height) : -1;
+    return message && input && message.y >= 0 ? input.y - (message.y + message.height) : -1;
   }).toBeGreaterThanOrEqual(0);
   await expect(page.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Back', exact: true }).click();
