@@ -16,6 +16,7 @@ import { Fonts } from '@/constants/theme';
 import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
 import { useScrollPerf } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useKeyboardUp } from '@/hooks/useChatList';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -60,6 +61,7 @@ import { TypeScale } from '@/constants/typeScale';
 const KeyboardStickyView: React.ComponentType<{
   offset?: { closed?: number; opened?: number };
   style?: ViewStyle;
+  pointerEvents?: 'box-none';
   children: React.ReactNode;
 }> | null = (() => {
   if (Platform.OS !== 'ios') return null;
@@ -438,6 +440,7 @@ function Root({
     };
   }, [keyboardHeight]);
 
+  // The composer's transparent margins let a drag or a tap reach the conversation under them.
   const composerContent = (
     <Animated.View
       ref={containerRef}
@@ -447,6 +450,7 @@ function Root({
         animatedContainerStyle,
       ]}
       onLayout={handleLayout}
+      pointerEvents="box-none"
     >
       <ComposerContext.Provider value={contextValue}>
         {children}
@@ -461,6 +465,7 @@ function Root({
         <KeyboardStickyView
           style={styles.stickyWrapper}
           offset={{ closed: -insets.bottom, opened: -8 }}
+          pointerEvents="box-none"
         >
           {composerContent}
         </KeyboardStickyView>
@@ -487,6 +492,7 @@ function Root({
     <>
       <Animated.View
         style={[styles.fallbackWrapper, { paddingBottom: insets.bottom }, animatedWrapperStyle]}
+        pointerEvents="box-none"
       >
         {composerContent}
       </Animated.View>
@@ -510,12 +516,18 @@ function Root({
 
 function Header({ children }: { children?: React.ReactNode }) {
   if (!children) return null;
-  return <View style={styles.headerContainer}>{children}</View>;
+  return <View style={styles.headerContainer} pointerEvents="box-none">{children}</View>;
 }
 
 function Footer({ children }: { children?: React.ReactNode }) {
+  const isKeyboardUp = useKeyboardUp();
   if (!children) return null;
-  return <View style={styles.footerContainer}>{children}</View>;
+  // The footer steps aside while typing and keeps no room above the field.
+  return (
+    <View style={[styles.footerContainer, isKeyboardUp && styles.footerContainerCollapsed]} pointerEvents="box-none">
+      {children}
+    </View>
+  );
 }
 
 function Body({ children }: { children: React.ReactNode }) {
@@ -714,6 +726,12 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 12,
     alignItems: 'center',
+  },
+  footerContainerCollapsed: {
+    height: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    overflow: 'hidden',
   },
   headerContainer: {
     marginBottom: 12,

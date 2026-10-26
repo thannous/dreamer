@@ -24,6 +24,7 @@ jest.mock('@/context/ChatContext', () => ({
     <div data-testid={`row-${messageId}`} data-new={String(isNew)}>{children}</div>
   ),
   useComposerHeightContext: () => ({ composerHeight: { get: () => 0 } }),
+  useKeyboardStateContext: () => ({ isKeyboardVisible: { get: () => false } }),
   useMessageListContext: () => ({ isNearBottom: { get: () => true } }),
   useNewMessageAnimationContext: () => ({ isStreaming: { get: () => true }, hasAnimatedMessages: mockAnimatedMessages }),
 }));

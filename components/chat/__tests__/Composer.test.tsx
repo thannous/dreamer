@@ -147,6 +147,7 @@ jest.mock('@/context/ChatContext', () => ({
   }),
   useKeyboardStateContext: () => ({
     keyboardHeight: { get: () => 0, set: jest.fn() },
+    isKeyboardVisible: { get: () => false, set: jest.fn() },
   }),
 }));
 
