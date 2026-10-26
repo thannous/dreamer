@@ -125,7 +125,9 @@ has `teamId` (the 10-character Apple App ID prefix), `bundleId`,
 `minimumBundleVersion` (a `CFBundleVersion` of one to three integers, such
 as `"15"`; that build and every later one pass). EAS increments the build
 number remotely, so a minimum lets a new build pass without editing the
-secret before each release; raise it to retire old builds. For example,
+secret before each release. Raising it retires the older builds, except
+those still named in `allowedBundleVersions`: an exact entry passes even
+below the minimum, so remove it as well. For example,
 replace every illustrative Team ID and build number before use:
 
 ```json
