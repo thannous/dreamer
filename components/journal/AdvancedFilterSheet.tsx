@@ -100,6 +100,7 @@ export function AdvancedFilterSheet({
       onPress={() => onPress(id)}
       accessibilityRole="button"
       accessibilityState={{ selected }}
+      aria-pressed={selected}
     >
       <Text
         className={`font-sans-medium text-[14px] ${selected ? 'text-on-champagne' : 'text-ivory'}`}
@@ -236,6 +237,7 @@ export function AdvancedFilterSheet({
                   onPress={() => onAnalysisStatusChange(status === 'all' ? null : status)}
                   accessibilityRole="button"
                   accessibilityState={{ selected }}
+                  aria-pressed={selected}
                   testID={testID}
                 >
                   <Text

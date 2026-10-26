@@ -119,7 +119,9 @@ describe('FilterBar', () => {
     );
 
     expect(screen.getByTestId(TID.Button.FilterAll)).toBeTruthy();
-    expect(screen.getByTestId(TID.Button.FilterFavorites)).toBeTruthy();
+    expect(screen.getByTestId(TID.Button.FilterAll).getAttribute('aria-pressed')).toBe('false');
+    expect(screen.getByTestId(TID.Button.FilterFavorites).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByTestId(TID.Button.FilterTheme).getAttribute('aria-pressed')).toBe('true');
     expect(screen.getByTestId(TID.Button.FilterToDeepen)).toBeTruthy();
     expect(screen.getByTestId(TID.Button.FilterTheme)).toBeTruthy();
     expect(screen.getByTestId(TID.Button.FilterRemembered)).toBeTruthy();

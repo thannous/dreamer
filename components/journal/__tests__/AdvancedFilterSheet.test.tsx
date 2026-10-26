@@ -9,8 +9,8 @@ jest.mock('react-native', () => {
   const React = require('react');
   return {
     Platform: { OS: 'web', select: (options: Record<string, unknown>) => options.web ?? options.default },
-    Pressable: ({ children, onPress, testID }: any) =>
-      React.createElement('button', { type: 'button', onClick: onPress, 'data-testid': testID }, children),
+    Pressable: ({ children, onPress, testID, 'aria-pressed': pressed }: any) =>
+      React.createElement('button', { type: 'button', onClick: onPress, 'data-testid': testID, 'aria-pressed': pressed }, children),
     ScrollView: ({ children }: { children?: React.ReactNode }) => React.createElement('div', null, children),
     StyleSheet: { create: (styles: Record<string, unknown>) => styles, flatten: (style: unknown) => style },
     Text: ({ children }: { children?: React.ReactNode }) => React.createElement('span', null, children),
@@ -89,6 +89,16 @@ describe('AdvancedFilterSheet sort order', () => {
     expect(screen.getByTestId(TID.Component.JournalSortOptions)).toBeTruthy();
     fireEvent.click(screen.getByText('journal.filter_sheet.sort.oldest'));
     expect(onSortOrderChange).toHaveBeenCalledWith('oldest');
+  });
+
+  it('says which order and status are chosen', () => {
+    render(<AdvancedFilterSheet {...baseProps} analysisStatus="analyzed" sortOrder="oldest" onSortOrderChange={jest.fn()} />);
+    const pressed = (label: string) => screen.getByText(label).closest('button')?.getAttribute('aria-pressed');
+
+    expect(pressed('journal.filter_sheet.sort.oldest')).toBe('true');
+    expect(pressed('journal.filter_sheet.sort.newest')).toBe('false');
+    expect(screen.getByTestId(TID.Button.FilterStatusAnalyzed).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByTestId(TID.Button.FilterStatusAll).getAttribute('aria-pressed')).toBe('false');
   });
 
   it('keeps Recurring Dream out of the type section and still offers a dedicated recurrence toggle', () => {
