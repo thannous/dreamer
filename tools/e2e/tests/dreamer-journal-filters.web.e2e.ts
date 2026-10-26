@@ -55,6 +55,9 @@ function shownTitles(page: Page) {
     .map(({ text }) => titles.find((title) => text.includes(title)) ?? text), TITLES);
 }
 
+// A filter is a toggle: a screen reader hears whether it is on.
+const expectPressed = (control: Locator, on: boolean) => expect(control).toHaveAttribute('aria-pressed', String(on));
+
 async function expectShown(page: Page, titles: string[]) {
   await expect.poll(() => shownTitles(page)).toEqual(titles);
 }
@@ -75,27 +78,43 @@ async function chooseInSheet(page: Page, choose: (filters: Locator) => Promise<u
 test('the bar keeps the favorite dreams or those left to deepen, and a second tap shows every dream again', async ({ page }) => {
   await openJournal(page);
   await expectEveryDream(page);
-  await journal(page).getByTestId('btn.filterFavorites').click();
+  const favorites = journal(page).getByTestId('btn.filterFavorites');
+  await expectPressed(favorites, false);
+  await favorites.click();
   await expectShown(page, ['The Infinite Library', 'Ocean of Stars', 'Meeting My Future Self']);
+  await expectPressed(favorites, true);
+  // Each card's heart says it is a favorite.
+  const library = await card(page, 'The Infinite Library').getAttribute('data-testid');
+  await expectPressed(journal(page).getByTestId(`journal.favorite.${library}`), true);
 
   // To deepen takes the place of Favorites: analyzed dreams without a reflection yet.
   const toDeepen = journal(page).getByTestId('btn.filterToDeepen');
   await toDeepen.click();
   await expectShown(page, ['The Infinite Library', 'Garden in the Clouds', 'Meeting My Future Self', 'The Singing Forest']);
+  await expectPressed(toDeepen, true);
+  await expectPressed(favorites, false);
+  const garden = await card(page, 'Garden in the Clouds').getAttribute('data-testid');
+  await expectPressed(journal(page).getByTestId(`journal.favorite.${garden}`), false);
 
   await toDeepen.click();
   await expectEveryDream(page);
+  await expectPressed(toDeepen, false);
 });
 
 test('the analysis status keeps the dreams not yet read, those read, or those already deepened', async ({ page }) => {
   await openJournal(page);
-  await journal(page).getByTestId('btn.filterMore').click();
+  const more = journal(page).getByTestId('btn.filterMore');
+  await expectPressed(more, false);
+  await more.click();
   const filters = sheet(page);
   await expect(filters).toContainText('Advanced filters');
+  await expectPressed(filters.getByTestId('btn.filterStatus.all'), true);
 
   // A failed or running analysis has not read the dream yet.
   await filters.getByTestId('btn.filterStatus.unanalyzed').click();
   await expectShown(page, ['The Shadowy Pursuer', 'The Forgotten Classroom', 'The Broken Mirror']);
+  await expectPressed(filters.getByTestId('btn.filterStatus.unanalyzed'), true);
+  await expectPressed(filters.getByTestId('btn.filterStatus.all'), false);
 
   await filters.getByTestId('btn.filterStatus.analyzed').click();
   await expectShown(page, ['The Infinite Library', 'Ocean of Stars', 'Garden in the Clouds', 'Meeting My Future Self', 'The Singing Forest']);
@@ -104,20 +123,28 @@ test('the analysis status keeps the dreams not yet read, those read, or those al
   await expectShown(page, ['Ocean of Stars']);
   await filters.getByRole('button', { name: 'Done', exact: true }).click();
   await expect(filters).not.toBeVisible();
+  // The button that opens the sheet shows an advanced filter is on.
+  await expectPressed(more, true);
 
   // The status stays on as a chip in the bar; tapping it lets every dream back.
   const chip = journal(page).getByTestId('btn.filterExplored');
   await expect(chip).toContainText('Deepened');
+  await expectPressed(chip, true);
   await chip.click();
   await expect(chip).toHaveCount(0);
   await expectEveryDream(page);
+  await expectPressed(more, false);
 });
 
 test('the oldest dream comes first on request, within a status filter, until the order is cleared', async ({ page }) => {
   await openJournal(page);
   await chooseInSheet(page, async (filters) => {
     await filters.getByTestId('btn.filterStatus.unanalyzed').click();
-    await filters.getByTestId('component.journal.sortOptions').getByRole('button', { name: 'Oldest first', exact: true }).click();
+    const order = filters.getByTestId('component.journal.sortOptions');
+    await expectPressed(order.getByRole('button', { name: 'Newest first', exact: true }), true);
+    await order.getByRole('button', { name: 'Oldest first', exact: true }).click();
+    await expectPressed(order.getByRole('button', { name: 'Oldest first', exact: true }), true);
+    await expectPressed(order.getByRole('button', { name: 'Newest first', exact: true }), false);
   });
   await expectShown(page, ['The Broken Mirror', 'The Forgotten Classroom', 'The Shadowy Pursuer']);
   const bar = journal(page).getByTestId('journal-filter-bar');

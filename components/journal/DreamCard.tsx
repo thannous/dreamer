@@ -440,7 +440,7 @@ export const DreamCard = memo(function DreamCard({
       {dateChip}
       <View className="flex-row gap-2">
       {onToggleFavorite ? (
-        <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }}
+        <Pressable accessibilityRole="button" accessibilityState={{ selected: isFavorite }} aria-pressed={isFavorite}
           accessibilityLabel={t('journal.badge.favorite')} hitSlop={4} onPress={(event) => { event.stopPropagation(); onToggleFavorite(dream); }}
           testID={testID && `journal.favorite.${testID}`} style={actionStyle}>
           <IconSymbol name={isFavorite ? 'heart.fill' : 'heart'} size={22} color={isFavorite ? noctalia.accent.text : labelIconColor} />

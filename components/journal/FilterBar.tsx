@@ -257,6 +257,7 @@ function FilterPill({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected: isActive }}
+      aria-pressed={isActive}
       accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
