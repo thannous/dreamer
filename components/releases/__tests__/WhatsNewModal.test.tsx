@@ -9,7 +9,7 @@ import {
 } from '@/components/releases/WhatsNewModal';
 import { TID } from '@/lib/testIDs';
 
-const mockPush = jest.fn();
+const mockNavigate = jest.fn();
 type AnyFunction = (...args: any[]) => any;
 const typedJestFn = <T extends AnyFunction>() => jest.fn() as jest.MockedFunction<T>;
 const mockGetLastSeenReleaseNotesVersion = typedJestFn<() => Promise<string | null>>();
@@ -18,6 +18,7 @@ const mockSaveLastSeenReleaseNotesVersion = typedJestFn<
 >();
 
 let mockMode: 'light' | 'dark' = 'dark';
+let mockPlatformOS: 'ios' | 'android' | 'web' = 'ios';
 let mockOnboardingStatus: 'not_started' | 'completed' | 'skipped' = 'completed';
 let mockOnboardingLoading = false;
 let mockOnboardingScope = 'guest:default';
@@ -46,8 +47,10 @@ jest.mock('react-native', () => {
     findNodeHandle: () => 1,
     Modal: MockModal,
     Platform: {
-      OS: 'ios',
-      select: (values: Record<string, unknown>) => values.ios ?? values.default,
+      get OS() {
+        return mockPlatformOS;
+      },
+      select: (values: Record<string, unknown>) => values[mockPlatformOS] ?? values.default,
     },
     Pressable: createNativeElement('Pressable'),
     ScrollView: createNativeElement('ScrollView'),
@@ -65,7 +68,7 @@ jest.mock('react-native', () => {
 });
 
 jest.mock('expo-router', () => ({
-  router: { push: (...args: unknown[]) => mockPush(...args) },
+  router: { navigate: (...args: unknown[]) => mockNavigate(...args) },
 }));
 
 jest.mock('@/components/ui/icon-symbol', () => ({
@@ -110,17 +113,18 @@ jest.mock('react-native-safe-area-context', () => ({
 
 const copy: Record<string, string> = {
   "release_notes.badge": "NOUVEAUTÉS · {version}",
-  "release_notes.title": "Noctalia 3.5 est là",
-  "release_notes.subtitle": "Des symboles illustrés pour mieux lire tes rêves.",
-  "release_notes.symbols.title": "160 symboles illustrés",
-  "release_notes.symbols.body": "Le dictionnaire des symboles est désormais illustré, comme sur noctalia.app.",
-  "release_notes.symbol_pages.title": "Des fiches plus lisibles",
-  "release_notes.symbol_pages.body": "Chaque fiche présente l’interprétation, les variations, des questions à te poser et les symboles liés.",
-  "release_notes.readability.title": "Grandes tailles de texte",
-  "release_notes.readability.body": "L’affichage est corrigé quand tu utilises de grandes tailles de texte.",
-  "release_notes.lucid.title": "Lucid Trainer a déménagé",
-  "release_notes.lucid.body": "L’entraînement se trouve désormais sur lucid.noctalia.app, accessible depuis le rituel Rêve lucide. Tes anciennes séances d’entraînement ne sont plus affichées dans Noctalia.",
-  "release_notes.primary": "Explorer les symboles",
+  "release_notes.title": "Noctalia 3.7 est là",
+  "release_notes.subtitle": "Voici ce qui change dans l’app.",
+  "release_notes.journal.title": "Tes rêves en images",
+  "release_notes.journal.body": "Chaque rêve s’affiche avec sa grande image. Tu peux aussi y ajouter une note ou le partager.",
+  "release_notes.widgets.title": "Noctalia sur ton écran",
+  "release_notes.widgets.body": "Ajoute Noctalia à ton écran d’accueil ou à ton écran verrouillé pour noter un rêve plus vite.",
+  "release_notes.today.title": "Un accueil plus clair",
+  "release_notes.full_moon.title": "La pleine lune",
+  "release_notes.sky.title": "Tes rêves en étoiles",
+  "release_notes.symbols.title": "240 symboles expliqués",
+  "release_notes.collection.title": "Des cartes à gagner",
+  "release_notes.primary": "Voir mon journal",
   "release_notes.later": "Plus tard",
   "release_notes.close": "Fermer les nouveautés"
 };
@@ -147,6 +151,7 @@ describe('WhatsNewModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockMode = 'dark';
+    mockPlatformOS = 'ios';
     mockOnboardingStatus = 'completed';
     mockOnboardingLoading = false;
     mockOnboardingScope = 'guest:default';
@@ -162,13 +167,17 @@ describe('WhatsNewModal', () => {
     );
 
     expect(view.getByText(`NOUVEAUTÉS · ${RELEASE_NOTES_VERSION}`)).toBeTruthy();
-    expect(view.getByText('160 symboles illustrés')).toBeTruthy();
-    expect(view.getByText('Des fiches plus lisibles')).toBeTruthy();
-    expect(view.getByText('Grandes tailles de texte')).toBeTruthy();
-    expect(view.getByText('Lucid Trainer a déménagé')).toBeTruthy();
+    expect(view.getByText('Noctalia 3.7 est là')).toBeTruthy();
+    expect(view.getByText('Tes rêves en images')).toBeTruthy();
+    expect(view.getByText('Un accueil plus clair')).toBeTruthy();
+    expect(view.getByText('La pleine lune')).toBeTruthy();
+    expect(view.getByText('Tes rêves en étoiles')).toBeTruthy();
+    expect(view.getByText('240 symboles expliqués')).toBeTruthy();
+    expect(view.getByText('Des cartes à gagner')).toBeTruthy();
+    expect(view.getByText('Noctalia sur ton écran')).toBeTruthy();
     expect(
       view.getByText(
-        'L’entraînement se trouve désormais sur lucid.noctalia.app, accessible depuis le rituel Rêve lucide. Tes anciennes séances d’entraînement ne sont plus affichées dans Noctalia.'
+        'Ajoute Noctalia à ton écran d’accueil ou à ton écran verrouillé pour noter un rêve plus vite.'
       )
     ).toBeTruthy();
 
@@ -180,14 +189,22 @@ describe('WhatsNewModal', () => {
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 
-  it('shows once after onboarding and persists the version before opening the symbol dictionary', async () => {
+  it('leaves the iPhone widgets out where the build has none', () => {
+    mockPlatformOS = 'android';
+    const view = render(<WhatsNewModal visible onClose={jest.fn()} onPrimary={jest.fn()} />);
+
+    expect(view.getByText('Des cartes à gagner')).toBeTruthy();
+    expect(view.queryByText('Noctalia sur ton écran')).toBeNull();
+  });
+
+  it('shows once after onboarding and persists the version before opening the journal', async () => {
     const view = render(<WhatsNewModalHost ready />);
 
     await waitFor(() => expect(view.getByTestId(TID.Modal.WhatsNew)).toBeTruthy());
     fireEvent.press(view.getByTestId(TID.Button.WhatsNewPrimary));
 
     expect(mockSaveLastSeenReleaseNotesVersion).toHaveBeenCalledWith(RELEASE_NOTES_VERSION);
-    expect(mockPush).toHaveBeenCalledWith('/symbol-dictionary');
+    expect(mockNavigate).toHaveBeenCalledWith('/(tabs)/journal');
   });
 
   it('does not show during onboarding or after this release was seen', async () => {
