@@ -256,7 +256,9 @@ function FilterPill({
       haptic="selection"
       onPress={onPress}
       accessibilityRole="button"
+      // react-native-web drops accessibilityState: the web reads the toggle from aria-pressed.
       accessibilityState={{ selected: isActive }}
+      aria-pressed={isActive}
       accessibilityLabel={accessibilityLabel}
       testID={testID}
     >

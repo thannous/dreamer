@@ -1124,6 +1124,7 @@ function JournalListScreen() {
               haptic="selection"
               accessibilityRole="button"
               accessibilityState={{ selected: hasActiveAdvancedFilter }}
+              aria-pressed={hasActiveAdvancedFilter}
               accessibilityLabel={t('journal.filter.accessibility.more')}
               testID={TID.Button.FilterMore}
               className={`h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-continuous ${
