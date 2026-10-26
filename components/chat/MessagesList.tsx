@@ -14,6 +14,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import {
   MessageContextProvider,
   useComposerHeightContext,
+  useKeyboardStateContext,
   useMessageListContext,
   useNewMessageAnimationContext,
 } from '@/context/ChatContext';
@@ -179,14 +180,15 @@ export { LoadingIndicator } from './LoadingIndicator';
  */
 function BottomSpacer() {
   const { composerHeight } = useComposerHeightContext();
+  const { isKeyboardVisible } = useKeyboardStateContext();
   const insets = useSafeAreaInsets();
   const keyboardSpacer = useKeyboardSpacer();
   const followComposerResize = useFollowComposerResize();
 
   const animatedStyle = useAnimatedStyle(() => {
-    // Space for composer + safe area + extra padding
-    const height = composerHeight.get() + insets.bottom + 40;
-    return { height };
+    // Space for composer + safe area + a gap, kept small while typing, when the window is shortest
+    const gap = isKeyboardVisible.get() ? COMPOSER_GAP_TYPING : COMPOSER_GAP;
+    return { height: composerHeight.get() + insets.bottom + gap };
   }, [insets.bottom]);
 
   return (
@@ -196,6 +198,10 @@ function BottomSpacer() {
     </>
   );
 }
+
+/** Room between the last message and the composer, at rest and with a keyboard up. */
+const COMPOSER_GAP = 40;
+const COMPOSER_GAP_TYPING = 8;
 
 const MAINTAIN_SCROLL_AT_END = { onDataChange: true, onItemLayout: true, onLayout: true };
 
