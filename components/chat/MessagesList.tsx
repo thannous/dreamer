@@ -20,7 +20,9 @@ import {
 import { useTheme } from '@/context/ThemeContext';
 import {
   useKeyboardAwareMessageList,
+  useKeyboardSpacer,
   useMessageListProps,
+  useRevealLatestMessageOnOpen,
   useUpdateLastMessageIndex,
 } from '@/hooks/useChatList';
 import { buildDisplayMessages } from '@/lib/chat/streamingDisplay';
@@ -31,6 +33,7 @@ import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import {
+  Platform,
   Pressable,
   StyleSheet,
   View,
@@ -171,11 +174,12 @@ export { LoadingIndicator } from './LoadingIndicator';
 
 /**
  * BottomSpacer - Adds space at the bottom of the list for the floating composer
- * Keyboard height is handled by animated list insets in useChatList
+ * and, while one is up, for the keyboard it rides on
  */
 function BottomSpacer() {
   const { composerHeight } = useComposerHeightContext();
   const insets = useSafeAreaInsets();
+  const keyboardSpacer = useKeyboardSpacer();
 
   const animatedStyle = useAnimatedStyle(() => {
     // Space for composer + safe area + extra padding
@@ -183,8 +187,15 @@ function BottomSpacer() {
     return { height };
   }, [insets.bottom]);
 
-  return <Animated.View style={animatedStyle} />;
+  return (
+    <>
+      <Animated.View style={animatedStyle} />
+      <View style={{ height: keyboardSpacer.height }} onLayout={keyboardSpacer.onLayout} />
+    </>
+  );
 }
+
+const MAINTAIN_SCROLL_AT_END = { onDataChange: true, onItemLayout: true };
 
 const emptyStreamingReply = () => null;
 const subscribeToEmptyReply = () => () => {};
@@ -247,10 +258,13 @@ export function MessagesList({
       (delta === 2 && messages.length >= 2 && messages[messages.length - 2].role === 'user'));
 
   // Apply composable hooks for chat behavior
+  const hasUserScrolledRef = useRef(false);
+  const hasUserScrolled = useCallback(() => hasUserScrolledRef.current, []);
   useKeyboardAwareMessageList();
   useUpdateLastMessageIndex(messages.length);
+  useRevealLatestMessageOnOpen(messages.length > 0, hasUserScrolled);
 
-  const { animatedProps, ref, onContentSizeChange, onScroll } = useMessageListProps();
+  const { ref, onContentSizeChange, onLayout, onScroll } = useMessageListProps();
   const { isStreaming, hasAnimatedMessages } = useNewMessageAnimationContext();
   const { isNearBottom } = useMessageListContext();
   const { colors, mode } = useTheme();
@@ -288,6 +302,7 @@ export function MessagesList({
   }, [didInitialHydrate, hasAnimatedMessages, messages]);
 
   const setScrolling = useCallback((next: boolean) => {
+    if (next) hasUserScrolledRef.current = true;
     if (scrollStateRef.current === next) return;
     scrollStateRef.current = next;
     setIsUserScrolling(next);
@@ -405,11 +420,11 @@ export function MessagesList({
     >
       <AnimatedLegendList
         ref={ref}
-        animatedProps={animatedProps}
         data={listData}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         onContentSizeChange={onContentSizeChange}
+        onLayout={onLayout}
         onScroll={onScroll}
         onScrollBeginDrag={() => setScrolling(true)}
         onScrollEndDrag={() => setScrolling(false)}
@@ -417,8 +432,13 @@ export function MessagesList({
         onMomentumScrollEnd={() => setScrolling(false)}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
+        // The iPhone keyboard has no key to hide it: a drag or a tap on the conversation does.
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={[styles.contentContainer, { paddingTop: insets.top + 8 }, contentContainerStyle]}
         // LegendList specific props for chat UX
+        // A reader at the end follows a sent message and the reply streaming in.
+        maintainScrollAtEnd={MAINTAIN_SCROLL_AT_END}
         recycleItems
         estimatedItemSize={80}
         ListHeaderComponent={ListHeaderComponent ?? null}
@@ -437,7 +457,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingTop: 0,
     paddingBottom: 16,
-    // paddingBottom is set dynamically via animatedProps in useChatList
+    // The composer's and the keyboard's room is the list footer (BottomSpacer)
   },
   messageRow: {
     flexDirection: 'row',

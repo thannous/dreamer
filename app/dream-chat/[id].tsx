@@ -56,6 +56,7 @@ import {
   ActivityIndicator,
   Alert,
   findNodeHandle,
+  Keyboard,
   Pressable,
   StyleSheet,
   Text,
@@ -1032,6 +1033,8 @@ function DreamChatContent() {
   const dreamImageUri = media.imageUrl;
 
   const handleBackPress = useCallback(() => {
+    // An open keyboard would otherwise take the first tap on the way out.
+    Keyboard.dismiss();
     if (router.canGoBack()) {
       router.back();
     } else {
@@ -1331,7 +1334,9 @@ function DreamChatContent() {
           />
 
           <ChatComposer
+            key={dream.id}
             ref={composerRef}
+            draftKey={String(dream.id)}
             onSendText={(text) => { void sendMessage(text, undefined, { userText: text }); }}
             placeholder={composerPlaceholder}
             isLoading={isInteractionLocked}

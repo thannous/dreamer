@@ -272,11 +272,19 @@ test('Plus user continues a reflection and sees the conversation on revisit', as
   const answer = page.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/);
   await expect(answer).toBeVisible();
   const response = await answer.innerText();
+  // Unsent text stays with its conversation when the reader leaves and comes back.
+  const draft = 'E2E: an unsent thought about the shelves';
+  await page.getByTestId('chat.input.message').fill(draft);
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByTestId('btn.dreamCategory.freeChat').click();
-  if (await latest.isVisible()) await latest.click();
+  await expect(page.getByTestId('chat.input.message')).toHaveValue(draft);
+  // The conversation reopens on its latest reply, above the composer, with no jump needed.
+  const reply = page.getByText(response, { exact: true });
+  await expect.poll(async () => {
+    const [message, input] = await Promise.all([reply.boundingBox(), page.getByTestId('chat.input.message').boundingBox()]);
+    return message && input ? input.y - (message.y + message.height) : -1;
+  }).toBeGreaterThanOrEqual(0);
   await expect(page.getByText('E2E: why did the library feel so familiar?', { exact: true })).toBeVisible();
-  await expect(page.getByText(response, { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   // Returning can restore the previous scroll position without a new scroll

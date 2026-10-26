@@ -1,7 +1,7 @@
 import { Composer } from '@/components/chat/Composer';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
 import { TID } from '@/lib/testIDs';
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
 export type ChatComposerHandle = {
   clearSentText: (sentText: string) => void;
@@ -9,6 +9,8 @@ export type ChatComposerHandle = {
 };
 
 type ChatComposerProps = {
+  /** The conversation the unsent text belongs to; it comes back when the conversation reopens. */
+  draftKey?: string;
   onSendText: (text: string) => void;
   placeholder: string;
   isLoading: boolean;
@@ -18,11 +20,23 @@ type ChatComposerProps = {
   header: React.ReactNode;
 };
 
+// Unsent text by conversation for this app session: leaving a conversation keeps what was typed.
+const unsentDrafts = new Map<string, string>();
+
 export const ChatComposer = forwardRef<ChatComposerHandle, ChatComposerProps>(function ChatComposer(
-  { onSendText, placeholder, isLoading, isDisabled, transcriptionLocale, footer, header },
+  { draftKey, onSendText, placeholder, isLoading, isDisabled, transcriptionLocale, footer, header },
   ref
 ) {
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(() => (draftKey ? unsentDrafts.get(draftKey) ?? '' : ''));
+
+  useEffect(() => {
+    if (!draftKey) return;
+    if (draft) {
+      unsentDrafts.set(draftKey, draft);
+    } else {
+      unsentDrafts.delete(draftKey);
+    }
+  }, [draft, draftKey]);
 
   useImperativeHandle(ref, () => ({
     restoreUnsentText: (text) => setDraft((current) => current || text),

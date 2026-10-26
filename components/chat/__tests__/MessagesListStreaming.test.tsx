@@ -29,8 +29,10 @@ jest.mock('@/context/ChatContext', () => ({
 }));
 jest.mock('@/hooks/useChatList', () => ({
   useKeyboardAwareMessageList: () => {},
+  useKeyboardSpacer: () => ({ height: 0, onLayout: () => {} }),
+  useRevealLatestMessageOnOpen: () => {},
   useUpdateLastMessageIndex: () => {},
-  useMessageListProps: () => ({ animatedProps: {}, ref: { current: null }, onContentSizeChange: () => {}, onScroll: () => {} }),
+  useMessageListProps: () => ({ ref: { current: null }, onContentSizeChange: () => {}, onLayout: () => {}, onScroll: () => {} }),
 }));
 jest.mock('@legendapp/list/reanimated', () => ({
   AnimatedLegendList: ({ data, renderItem, keyExtractor }: any) => {
