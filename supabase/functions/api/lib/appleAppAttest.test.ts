@@ -107,6 +107,22 @@ Deno.test('attestation rejects changed nonce, app, key, category, version, recei
     attestationObject: corrupted.toString('base64') }, fixtureHash));
 });
 
+Deno.test('a minimum bundle version admits the same or a later build and refuses an older one', () => {
+  // Apple's sample attestation carries apple_bundle_version_01 = "1".
+  const minimum = (minimumBundleVersion: string) => ({ ...fixtureInput,
+    allowedBundleVersions: [], minimumBundleVersion });
+  for (const value of ['1', '0.9', '1.0.0', '0']) {
+    assertEquals(verifyAppleAppAttestationWithClientDataHash(minimum(value), fixtureHash).appId, appId);
+  }
+  for (const value of ['2', '1.0.1', '10', '', 'abc', '1.0.0.0']) {
+    assertThrows(() => verifyAppleAppAttestationWithClientDataHash(minimum(value), fixtureHash),
+      AppAttestProofError);
+  }
+  // The exact list still admits a listed build below the minimum.
+  assertEquals(verifyAppleAppAttestationWithClientDataHash({ ...minimum('5'),
+    allowedBundleVersions: ['1'] }, fixtureHash).appId, appId);
+});
+
 Deno.test('assertion verifies signed challenge and strictly increasing counter', () => {
   const { privateKey, publicKey } = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
   const assertionChallenge = 'fresh_server_challenge_12345';

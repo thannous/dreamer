@@ -120,8 +120,12 @@ Configure the Edge Function with the existing `GUEST_SESSION_SECRET`,
 `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`. Set
 `IOS_APP_ATTEST_ALLOWED_APPS` to a JSON array of exact identities. Each entry
 has `teamId` (the 10-character Apple App ID prefix), `bundleId`,
-`environment` (`development` or `production`), and
-`allowedBundleVersions` (exact native `CFBundleVersion` strings). For example,
+`environment` (`development` or `production`), and at least one build rule:
+`allowedBundleVersions` (exact native `CFBundleVersion` strings) and/or
+`minimumBundleVersion` (a `CFBundleVersion` of one to three integers, such
+as `"15"`; that build and every later one pass). EAS increments the build
+number remotely, so a minimum lets a new build pass without editing the
+secret before each release; raise it to retire old builds. For example,
 replace every illustrative Team ID and build number before use:
 
 ```json
@@ -130,7 +134,7 @@ replace every illustrative Team ID and build number before use:
     "teamId": "AAAAAAAAAA",
     "bundleId": "com.tanuki75.noctalia",
     "environment": "production",
-    "allowedBundleVersions": ["123"]
+    "minimumBundleVersion": "123"
   },
   {
     "teamId": "AAAAAAAAAA",
@@ -160,14 +164,15 @@ An internal ad-hoc build of the main bundle needs its own exact
 `development` entry if it calls the same backend. The structured allowlist
 takes precedence over the older single-app variables
 `IOS_APP_ATTEST_TEAM_ID`, `IOS_APP_ATTEST_BUNDLE_ID`,
-`IOS_APP_ATTEST_ENVIRONMENT` and
-`IOS_APP_ATTEST_ALLOWED_BUNDLE_VERSIONS`; those four remain a fallback when
+`IOS_APP_ATTEST_ENVIRONMENT`,
+`IOS_APP_ATTEST_ALLOWED_BUNDLE_VERSIONS` and
+`IOS_APP_ATTEST_MIN_BUNDLE_VERSION`; those remain a fallback when
 the JSON variable is absent. An invalid or missing configuration fails closed.
 Keep all server secrets out of `EXPO_PUBLIC_*` and out of Git.
 Apple's authenticated bundle-version extension is absent on some supported
 iOS versions. In that case the verifier still checks the signed App ID and
-environment, but it cannot enforce `allowedBundleVersions`; do not use that
-list as a universal binary-version gate.
+environment, but it cannot enforce the build rule; do not use it as a
+universal binary-version gate.
 
 For a release, apply
 `supabase/migrations/20261021201025_ios_guest_app_attest.sql` after checking
