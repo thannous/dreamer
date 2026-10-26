@@ -37,6 +37,12 @@ const LONG_MESSAGE_THRESHOLD = 280;
  */
 const LATEST_MESSAGE_SLACK = 40;
 
+/**
+ * How long the reader stays away from the end before the jump button shows, in ms.
+ * A send or a reply streaming in moves the end faster than the list follows it.
+ */
+const JUMP_BUTTON_DELAY = 500;
+
 /** When the opening check looks again, in ms: rows measure late on a slow device. */
 const REVEAL_RETRY_DELAYS = [100, 200, 400, 700, 1000];
 
@@ -422,7 +428,20 @@ export function useHasNewMessages() {
 export function useScrollToBottomButton() {
   const { isNearBottom, scrollToEnd } = useMessageListContext();
   const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
+  const showTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const debugChat = __DEV__ && isChatDebugEnabled();
+
+  const updateNearBottom = useCallback((value: boolean) => {
+    clearTimeout(showTimerRef.current);
+    if (value) {
+      setIsNearBottomSnapshot(true);
+      return;
+    }
+    showTimerRef.current = setTimeout(() => setIsNearBottomSnapshot(false), JUMP_BUTTON_DELAY);
+  }, []);
+
+  useEffect(() => () => clearTimeout(showTimerRef.current), []);
+
   const debugLogNearBottom = useCallback(
     (value: boolean) => {
       if (!debugChat) return;
@@ -435,7 +454,7 @@ export function useScrollToBottomButton() {
     () => isNearBottom.get(),
     (current, prev) => {
       if (current !== prev) {
-        runOnJS(setIsNearBottomSnapshot)(current);
+        runOnJS(updateNearBottom)(current);
         if (debugChat) {
           runOnJS(debugLogNearBottom)(current);
         }
@@ -447,8 +466,7 @@ export function useScrollToBottomButton() {
     if (debugChat) {
       console.debug('[ChatList] scrollToBottom pressed', { ts: Date.now() });
     }
-    // Multiple scroll attempts to ensure we reach the bottom
-    // This matches the pattern in useInitialScrollToEnd for consistency
+    // Several tries: rows still measuring can move the end after the first one
     scrollToEnd({ animated: true });
     requestAnimationFrame(() => {
       scrollToEnd({ animated: true });

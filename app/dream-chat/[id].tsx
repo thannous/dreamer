@@ -63,7 +63,7 @@ import {
   View,
 } from 'react-native';
 import { Pressable as GesturePressable } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { runOnJS, useAnimatedReaction, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { TypeScale } from '@/constants/typeScale';
 
 type CategoryType = DreamChatCategory;
@@ -1386,6 +1386,18 @@ function ComposerFooter({
 }: ComposerFooterProps) {
   const { isKeyboardVisible } = useKeyboardStateContext();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  // A hidden pill keeps no room above the field, where the last message would leave a gap.
+  const [isKeyboardUp, setIsKeyboardUp] = useState(false);
+
+  useAnimatedReaction(
+    () => isKeyboardVisible.get(),
+    (current, previous) => {
+      if (current !== previous) {
+        runOnJS(setIsKeyboardUp)(current);
+      }
+    },
+    [isKeyboardVisible]
+  );
 
   const footerAnimatedStyle = useAnimatedStyle(() => {
     // Hide when keyboard is visible OR when not visible
@@ -1404,7 +1416,7 @@ function ComposerFooter({
 
   return (
     <Animated.View
-      style={[styles.footerWrapper, !visible && styles.footerWrapperHidden, footerAnimatedStyle]}
+      style={[styles.footerWrapper, isKeyboardUp && styles.footerWrapperCollapsed, !visible && styles.footerWrapperHidden, footerAnimatedStyle]}
       pointerEvents={visible ? 'box-none' : 'none'}
     >
       {!messageLimitReached && (
@@ -1811,6 +1823,12 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 6,
     alignItems: 'center',
+  },
+  footerWrapperCollapsed: {
+    height: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    overflow: 'hidden',
   },
   footerWrapperHidden: {
     display: 'none',
