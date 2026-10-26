@@ -214,6 +214,123 @@ Deno.test('iOS App Attest accepts only an exact configured Dreamer or QA app ide
   }));
 });
 
+Deno.test('iOS App Attest passes a configured minimum build to both verifiers', async () => {
+  await withAppAttestConfig(() => withGuestSecret(async () => {
+    const setApps = (apps: unknown[]) =>
+      Deno.env.set('IOS_APP_ATTEST_ALLOWED_APPS', JSON.stringify(apps));
+    const fingerprint = 'a'.repeat(64);
+    const keyId = 'A'.repeat(43) + '=';
+    const challengeId = 'signed.challenge';
+    const challenge = {
+      id: challengeId, challenge: 'fresh-server-signed-challenge',
+      key_id: keyId, fingerprint_hash: fingerprint,
+      kind: 'attestation' as const,
+      expires_at: new Date(Date.now() + 60_000).toISOString(), consumed_at: null,
+    };
+    const store: AppAttestStore = {
+      issue: () => Promise.resolve(challenge),
+      challenge: () => Promise.resolve(challenge),
+      key: () => Promise.resolve(null),
+      completeAttestation: () => Promise.resolve(true),
+      completeAssertion: () => Promise.resolve(false),
+    };
+    const request = { fingerprint, platform: 'ios', keyId, challengeId, attestationObject: 'apple-proof' };
+    const seen: { allowed: string; minimum?: string }[] = [];
+    const attest = () => requestGuestSession(request, {
+      appAttestStore: store,
+      resolveQaPassport: () => Promise.resolve(null),
+      verifyAppAttestation: (input) => {
+        seen.push({ allowed: input.allowedBundleVersions.join(','), minimum: input.minimumBundleVersion });
+        return { publicKeyPem: 'verified-key', receiptBase64: 'verified-receipt',
+          appId: input.expectedAppId, environment: input.expectedEnvironment };
+      },
+    });
+
+    setApps([{ teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia',
+      environment: 'production', minimumBundleVersion: '15' }]);
+    assertEquals((await attest()).status, 200);
+    setApps([{ teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia',
+      environment: 'production', allowedBundleVersions: ['14'], minimumBundleVersion: '15' }]);
+    assertEquals((await attest()).status, 200);
+    assertEquals(seen, [{ allowed: '', minimum: '15' }, { allowed: '14', minimum: '15' }]);
+
+    const assertionChallenge = { ...challenge, kind: 'assertion' as const };
+    const key = {
+      key_id: keyId, fingerprint_hash: fingerprint, public_key_pem: 'verified-key',
+      environment: 'production' as const,
+      app_id: 'ABCDEFGHIJ.com.tanuki75.noctalia', assertion_counter: 0,
+    };
+    let assertedMinimum: string | undefined;
+    const asserted = await requestGuestSession({
+      fingerprint, platform: 'ios', keyId, challengeId, assertionObject: 'apple-assertion',
+    }, {
+      appAttestStore: {
+        ...store,
+        issue: () => Promise.resolve(assertionChallenge),
+        challenge: () => Promise.resolve(assertionChallenge),
+        key: () => Promise.resolve(key),
+        completeAssertion: () => Promise.resolve(true),
+      },
+      resolveQaPassport: () => Promise.resolve(null),
+      verifyAppAssertion: (input) => {
+        assertedMinimum = input.minimumBundleVersion;
+        return 1;
+      },
+    });
+    assertEquals(asserted.status, 200);
+    assertEquals(assertedMinimum, '15');
+
+    // No build rule, an empty list, or a non-numeric minimum fails closed.
+    for (const apps of [
+      [{ teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia', environment: 'production' }],
+      [{ teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia', environment: 'production',
+        allowedBundleVersions: [], minimumBundleVersion: '15' }],
+      [{ teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia', environment: 'production',
+        minimumBundleVersion: '15b' }],
+      [{ teamId: 'ABCDEFGHIJ', bundleId: 'com.tanuki75.noctalia', environment: 'production',
+        minimumBundleVersion: 15 }],
+    ]) {
+      setApps(apps);
+      const refused = await handleIosGuestChallenge(new Request(
+        'https://example.com/guest/session/challenge', {
+          method: 'POST', body: JSON.stringify({ fingerprint, keyId }),
+        }), { appAttestStore: store });
+      assertEquals(refused.status, 503);
+    }
+  }));
+});
+
+Deno.test('iOS App Attest single-app fallback accepts a minimum build alone', async () => {
+  await withAppAttestConfig(() => withGuestSecret(async () => {
+    const previous = Deno.env.get('IOS_APP_ATTEST_MIN_BUNDLE_VERSION');
+    Deno.env.delete('IOS_APP_ATTEST_ALLOWED_BUNDLE_VERSIONS');
+    Deno.env.set('IOS_APP_ATTEST_MIN_BUNDLE_VERSION', '15');
+    try {
+      const store: AppAttestStore = {
+        issue: (fingerprint, keyId) => Promise.resolve({
+          id: 'signed.challenge', challenge: 'fresh-server-signed-challenge',
+          key_id: keyId, fingerprint_hash: fingerprint, kind: 'attestation',
+          expires_at: new Date(Date.now() + 60_000).toISOString(), consumed_at: null,
+        }),
+        challenge: () => Promise.resolve(null),
+        key: () => Promise.resolve(null),
+        completeAttestation: () => Promise.resolve(false),
+        completeAssertion: () => Promise.resolve(false),
+      };
+      const issue = () => handleIosGuestChallenge(new Request(
+        'https://example.com/guest/session/challenge', {
+          method: 'POST', body: JSON.stringify({ fingerprint: 'a'.repeat(64), keyId: 'A'.repeat(43) + '=' }),
+        }), { appAttestStore: store });
+      assertEquals((await issue()).status, 200);
+      Deno.env.delete('IOS_APP_ATTEST_MIN_BUNDLE_VERSION');
+      assertEquals((await issue()).status, 503);
+    } finally {
+      if (previous == null) Deno.env.delete('IOS_APP_ATTEST_MIN_BUNDLE_VERSION');
+      else Deno.env.set('IOS_APP_ATTEST_MIN_BUNDLE_VERSION', previous);
+    }
+  }));
+});
+
 Deno.test('Lucid App Attest issues an analytics-only iOS guest token', async () => {
   await withAppAttestConfig(() => withGuestSecret(async () => {
     const appId = 'ABCDEFGHIJ.com.tanuki75.noctalia.lucid';
