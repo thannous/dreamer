@@ -55,6 +55,7 @@ import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { clearReturnToPaywallIntent, peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { isLucidTrainer } from '@/lib/appVariant';
+import { installBrowserAlert } from '@/lib/browserAlert';
 import { isPasswordResetPath } from '@/lib/authRoutes';
 import { authReturnHref, completeAuthReturn, isAuthReturnObserved, type AuthReturnIntent } from '@/lib/authReturnIntent';
 import { loadTranslations } from '@/lib/i18n';
@@ -131,6 +132,9 @@ if (__DEV__) {
     }
   })();
 }
+
+// In a browser, the app's alerts speak through the browser's own dialogs.
+installBrowserAlert();
 
 // Prevent the splash screen from auto-hiding before fonts are loaded.
 void SplashScreen.preventAutoHideAsync().catch((error) => {
