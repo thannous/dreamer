@@ -835,12 +835,27 @@ async function onboardToCapture({ app, screen }: Pick<NativeBackgroundFixtures, 
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
 }
 
-test('Dreamer release capture widget link opens Capture from Today and keeps the draft', { tags: ['widget-links'] }, async ({ app, screen, device }) => {
+// The iOS keyboard has no key that hides it, so a person taps Capture's title instead.
+async function dismissCaptureKeyboard({ screen, device, platform }: Pick<NativeBackgroundFixtures, 'screen' | 'device' | 'platform'>) {
+  if (platform !== 'ios') {
+    await device.dismissKeyboard();
+    return;
+  }
+  const keyboardReturn = screen.getByTestId('Return', { visible: true });
+  const title = screen.getByText(/^(Capture|Capturer|Capturar|Cattura|Aufnehmen|Registrar)$/, { visible: true }).first();
+  await expect(keyboardReturn).toBeVisible();
+  // Just after typing, the editor can still be scrolling into view, and a tap then only stops it.
+  for (let tap = 0; tap < 3 && await keyboardReturn.count() > 0; tap += 1) await title.tap();
+  await expect(keyboardReturn).toBeHidden();
+  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).not.toBeFocused();
+}
+
+test('Dreamer release capture widget link opens Capture from Today and keeps the draft', { tags: ['widget-links'] }, async ({ app, screen, device, platform }) => {
   await onboardToCapture({ app, screen });
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   const draft = 'Widget fixture: a paper boat crossing a dark pond.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(draft);
-  await device.dismissKeyboard();
+  await dismissCaptureKeyboard({ screen, device, platform });
   await billingHome(screen);
   await device.openLink(CAPTURE_WIDGET_LINK);
   await acceptDreamerLink({ screen });
@@ -851,6 +866,12 @@ test('Dreamer release capture widget link opens Capture from Today and keeps the
 
 test('Dreamer release capture widget link starts a closed app on Capture', { tags: ['widget-links'] }, async ({ app, screen, device }) => {
   await onboardToCapture({ app, screen });
+  await billingHome(screen);
+  // iOS asks once before handing the link over. A closed app has no screen to answer it on,
+  // so it is answered while the app runs; the closed app then starts straight on the link.
+  await device.openLink(CAPTURE_WIDGET_LINK);
+  await acceptDreamerLink({ screen });
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   await billingHome(screen);
   await device.closeApp();
   await device.openLink(CAPTURE_WIDGET_LINK);
