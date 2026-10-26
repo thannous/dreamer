@@ -1701,6 +1701,7 @@ const translations: Record<string, string> = {
     'dream_chat.mic.start': 'Diktat starten',
     'dream_chat.mic.stop': 'Diktat stoppen',
     'dream_chat.send': 'Nachricht senden',
+    'dream_chat.jump_to_latest': 'Zur neuesten Nachricht',
     'dream_chat.message_counter': '{used}/{limit} Beiträge zu diesem Traum',
     'dream_chat.retry_target.label': 'Diese fehlgeschlagene Antwort fortsetzen',
     'dream_chat.retry_target.cta': 'Diese Antwort erneut versuchen',

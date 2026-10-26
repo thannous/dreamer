@@ -11,10 +11,9 @@ import {
 import { isChatDebugEnabled } from '@/lib/env';
 import type { ChatMessage } from '@/lib/types';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, NativeModules, Platform } from 'react-native';
+import { Keyboard, NativeModules, Platform, type LayoutChangeEvent } from 'react-native';
 import {
     runOnJS,
-    useAnimatedProps,
     useAnimatedReaction,
     useAnimatedScrollHandler,
 } from 'react-native-reanimated';
@@ -33,35 +32,38 @@ const NEAR_BOTTOM_THRESHOLD = 120;
 const LONG_MESSAGE_THRESHOLD = 280;
 
 /**
- * useMessageListProps - Returns animated props and handlers for the message list
- * Handles contentInset calculation based on composer height
+ * Room the latest message may take under the composer's top before a conversation
+ * opens on it: the bottom spacer keeps 40 between them once scrolled to the end.
+ */
+const LATEST_MESSAGE_SLACK = 40;
+
+/**
+ * How long the reader stays away from the end before the jump button shows, in ms.
+ * A send or a reply streaming in moves the end faster than the list follows it.
+ */
+const JUMP_BUTTON_DELAY = 500;
+
+/** When the opening check looks again, in ms: rows measure late on a slow device. */
+const REVEAL_RETRY_DELAYS = [100, 200, 400, 700, 1000];
+
+/**
+ * Distance from the window's bottom edge to the composer's. With a keyboard up, iOS's
+ * KeyboardStickyView keeps the composer 8 above it; Android lifts the composer, still
+ * padded by the safe area, by the keyboard's height.
+ */
+export function composerBottomOffset(keyboardHeight: number, safeAreaBottom: number) {
+  'worklet';
+  if (keyboardHeight <= 0) return safeAreaBottom;
+  return Platform.OS === 'ios' ? keyboardHeight + 8 : keyboardHeight + safeAreaBottom;
+}
+
+/**
+ * useMessageListProps - Returns the ref and handlers for the message list
+ * The floating composer's room is the list footer (BottomSpacer in MessagesList).
  */
 
 export function useMessageListProps() {
-  const { composerHeight } = useComposerHeightContext();
-  const { isKeyboardVisible, keyboardHeight } = useKeyboardStateContext();
   const { listRef, containerHeight, contentHeight, scrollY, isNearBottom, hasNewMessages } = useMessageListContext();
-  const insets = useSafeAreaInsets();
-
-  // Animated props for ScrollView/LegendList contentInset
-  // This keeps the composer floating on top while allowing scroll.
-  // On Android, also reserve keyboard space so the latest messages stay above the IME
-  // without animating layout on the outer container.
-  const animatedProps = useAnimatedProps(() => {
-    const keyboardInset = Platform.OS === 'android' && isKeyboardVisible.get()
-      ? keyboardHeight.get()
-      : 0;
-    const bottomInset = composerHeight.get() + insets.bottom + 40 + keyboardInset;
-    return {
-      contentInset: {
-        bottom: Platform.OS === 'ios' ? bottomInset : 0,
-      },
-      contentContainerStyle: {
-        // Ensure all platforms leave room for the floating composer
-        paddingBottom: bottomInset,
-      },
-    };
-  }, [insets.bottom]);
 
   // Track content size changes
   const onContentSizeChange = useCallback((_width: number, height: number) => {
@@ -89,10 +91,15 @@ export function useMessageListProps() {
     },
   });
 
+  // The viewport height before any scroll, for the opening check
+  const onLayout = useCallback((event: LayoutChangeEvent) => {
+    containerHeight.set(event.nativeEvent.layout.height);
+  }, [containerHeight]);
+
   return {
-    animatedProps,
     ref: listRef,
     onContentSizeChange,
+    onLayout,
     onScroll,
   };
 }
@@ -100,11 +107,10 @@ export function useMessageListProps() {
 /**
  * useKeyboardAwareMessageList - Handles keyboard show/hide events
  * Updates keyboard state context for other hooks to consume
- * Only auto-scrolls when user is near the bottom of the chat
+ * (useKeyboardSpacer keeps a reader at the end on the latest message)
  */
 export function useKeyboardAwareMessageList() {
   const { isKeyboardVisible, keyboardHeight } = useKeyboardStateContext();
-  const { scrollToEnd, isNearBottom } = useMessageListContext();
 
   // Try to use keyboard-controller if available
   useEffect(() => {
@@ -115,7 +121,7 @@ export function useKeyboardAwareMessageList() {
       const showSub = Keyboard.addListener(
         Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
         (e: { endCoordinates: { height: number } }) => {
-          isKeyboardVisible.set(true);
+          isKeyboardVisible.set(e.endCoordinates.height > 0);
           keyboardHeight.set(e.endCoordinates.height);
         }
       );
@@ -142,7 +148,8 @@ export function useKeyboardAwareMessageList() {
             const showSub = KeyboardController.KeyboardEvents.addListener(
               'keyboardWillShow',
               (e: { height: number }) => {
-                isKeyboardVisible.set(true);
+                // Folding the iPhone Duo reports a keyboard of no height, which covers nothing.
+                isKeyboardVisible.set(e.height > 0);
                 keyboardHeight.set(e.height);
               }
             );
@@ -175,18 +182,70 @@ export function useKeyboardAwareMessageList() {
       unsubscribe?.();
     };
   }, [isKeyboardVisible, keyboardHeight]);
+}
 
-  // Auto-scroll to end when keyboard shows, but ONLY if user is near bottom
+/**
+ * useKeyboardSpacer - Room for the keyboard under the last message
+ * The list keeps its height while the keyboard covers its bottom, so the footer grows
+ * by the distance the composer rides up. A reader at the end stays on the latest
+ * message as the keyboard comes and goes.
+ */
+export function useKeyboardSpacer() {
+  const { keyboardHeight } = useKeyboardStateContext();
+  const { scrollToEnd, isNearBottom } = useMessageListContext();
+  const insets = useSafeAreaInsets();
+  const [height, setHeight] = useState(0);
+  const heightRef = useRef(0);
+  const followRef = useRef(false);
+
+  const update = useCallback((keyboard: number) => {
+    const next = Math.max(0, composerBottomOffset(keyboard, insets.bottom) - insets.bottom);
+    if (next === heightRef.current) return;
+    heightRef.current = next;
+    followRef.current = isNearBottom.get();
+    setHeight(next);
+  }, [insets.bottom, isNearBottom]);
+
   useAnimatedReaction(
-    () => ({ visible: isKeyboardVisible.get(), nearBottom: isNearBottom.get() }),
+    () => keyboardHeight.get(),
     (current, previous) => {
-      const justBecameVisible = current.visible && !previous?.visible;
-      // Only auto-scroll if keyboard just appeared AND user was near bottom
-      if (justBecameVisible && current.nearBottom) {
-        runOnJS(scrollToEnd)({ animated: true });
+      if (current !== previous) {
+        runOnJS(update)(current);
       }
-    }
+    },
+    [update]
   );
+
+  const onLayout = useCallback(() => {
+    if (!followRef.current) return;
+    followRef.current = false;
+    // The list measures its footer in the same layout pass: scroll on the next frame.
+    requestAnimationFrame(() => scrollToEnd({ animated: true }));
+  }, [scrollToEnd]);
+
+  return { height, onLayout };
+}
+
+/**
+ * useFollowComposerResize - Layout handler for the composer's room in the list footer
+ * When the composer grows or shrinks (a second line, the thinking indicator), a reader
+ * at the end stays on the latest message once the footer has its new height. The
+ * distance is measured before the change, so a conversation opened on its header stays put.
+ */
+export function useFollowComposerResize() {
+  const { scrollToEnd, contentHeight, containerHeight, scrollY } = useMessageListContext();
+  const heightRef = useRef<number | null>(null);
+
+  return useCallback((event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    const previous = heightRef.current;
+    heightRef.current = height;
+    if (previous === null || previous === height || containerHeight.get() <= 0) return;
+    const distanceFromEnd = contentHeight.get() - (height - previous) - scrollY.get() - containerHeight.get();
+    if (distanceFromEnd < NEAR_BOTTOM_THRESHOLD) {
+      requestAnimationFrame(() => scrollToEnd({ animated: true }));
+    }
+  }, [containerHeight, contentHeight, scrollToEnd, scrollY]);
 }
 
 /**
@@ -235,30 +294,32 @@ export function useUpdateLastMessageIndex(messageCount: number) {
 }
 
 /**
- * useInitialScrollToEnd - Scroll to end when opening an existing chat
- * Handles dynamic heights with multiple scroll attempts
+ * useRevealLatestMessageOnOpen - Open a conversation on its latest message when the composer covers it
+ * A short window (the folded iPhone Duo) or a long history would otherwise open on the
+ * dream's header with the latest message under the composer. A conversation that
+ * already shows it keeps the header in view.
  */
-export function useInitialScrollToEnd(hasMessages: boolean) {
-  const { scrollToEnd, contentHeight } = useMessageListContext();
+export function useRevealLatestMessageOnOpen(hasMessages: boolean, hasUserScrolled: () => boolean) {
+  const { scrollToEnd, contentHeight, containerHeight, scrollY } = useMessageListContext();
 
   useEffect(() => {
     if (!hasMessages) return;
 
-    // Multiple scroll attempts to handle dynamic content
-    const scrollToEndMultiple = () => {
-      scrollToEnd({ animated: false });
-      requestAnimationFrame(() => {
+    const revealIfCovered = () => {
+      if (hasUserScrolled()) return;
+      const viewport = containerHeight.get();
+      if (viewport <= 0) return;
+      const distanceFromEnd = contentHeight.get() - scrollY.get() - viewport;
+      if (distanceFromEnd > LATEST_MESSAGE_SLACK) {
         scrollToEnd({ animated: false });
-        setTimeout(() => {
-          scrollToEnd({ animated: false });
-        }, 16);
-      });
+      }
     };
 
-    // Wait for content to be measured
-    const timeout = setTimeout(scrollToEndMultiple, 100);
-    return () => clearTimeout(timeout);
-  }, [hasMessages, scrollToEnd, contentHeight]);
+    // Wait for content to be measured, then try again as late rows get their height
+    // (a slow cold open, a long history): each try only acts while the message is covered.
+    const tries = REVEAL_RETRY_DELAYS.map((delay) => setTimeout(revealIfCovered, delay));
+    return () => tries.forEach(clearTimeout);
+  }, [containerHeight, contentHeight, hasMessages, hasUserScrolled, scrollToEnd, scrollY]);
 }
 
 /**
@@ -367,7 +428,20 @@ export function useHasNewMessages() {
 export function useScrollToBottomButton() {
   const { isNearBottom, scrollToEnd } = useMessageListContext();
   const [isNearBottomSnapshot, setIsNearBottomSnapshot] = useState(true);
+  const showTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const debugChat = __DEV__ && isChatDebugEnabled();
+
+  const updateNearBottom = useCallback((value: boolean) => {
+    clearTimeout(showTimerRef.current);
+    if (value) {
+      setIsNearBottomSnapshot(true);
+      return;
+    }
+    showTimerRef.current = setTimeout(() => setIsNearBottomSnapshot(false), JUMP_BUTTON_DELAY);
+  }, []);
+
+  useEffect(() => () => clearTimeout(showTimerRef.current), []);
+
   const debugLogNearBottom = useCallback(
     (value: boolean) => {
       if (!debugChat) return;
@@ -380,7 +454,7 @@ export function useScrollToBottomButton() {
     () => isNearBottom.get(),
     (current, prev) => {
       if (current !== prev) {
-        runOnJS(setIsNearBottomSnapshot)(current);
+        runOnJS(updateNearBottom)(current);
         if (debugChat) {
           runOnJS(debugLogNearBottom)(current);
         }
@@ -392,8 +466,7 @@ export function useScrollToBottomButton() {
     if (debugChat) {
       console.debug('[ChatList] scrollToBottom pressed', { ts: Date.now() });
     }
-    // Multiple scroll attempts to ensure we reach the bottom
-    // This matches the pattern in useInitialScrollToEnd for consistency
+    // Several tries: rows still measuring can move the end after the first one
     scrollToEnd({ animated: true });
     requestAnimationFrame(() => {
       scrollToEnd({ animated: true });

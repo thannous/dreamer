@@ -1,7 +1,8 @@
 import { Composer } from '@/components/chat/Composer';
 import { computeNextInputAfterSend } from '@/lib/chat/composerUtils';
+import { getUnsentDraft, setUnsentDraft } from '@/lib/chat/unsentDrafts';
 import { TID } from '@/lib/testIDs';
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 export type ChatComposerHandle = {
   clearSentText: (sentText: string) => void;
@@ -9,6 +10,8 @@ export type ChatComposerHandle = {
 };
 
 type ChatComposerProps = {
+  /** The account and dream the unsent text belongs to; it comes back when the conversation reopens. */
+  draftKey?: string;
   onSendText: (text: string) => void;
   placeholder: string;
   isLoading: boolean;
@@ -19,10 +22,20 @@ type ChatComposerProps = {
 };
 
 export const ChatComposer = forwardRef<ChatComposerHandle, ChatComposerProps>(function ChatComposer(
-  { onSendText, placeholder, isLoading, isDisabled, transcriptionLocale, footer, header },
+  { draftKey, onSendText, placeholder, isLoading, isDisabled, transcriptionLocale, footer, header },
   ref
 ) {
-  const [draft, setDraft] = useState('');
+  const [draft, setDraft] = useState(() => (draftKey ? getUnsentDraft(draftKey) : ''));
+  const storedKeyRef = useRef(draftKey);
+
+  useEffect(() => {
+    // A dream that gets its server id while open takes its draft to the new key.
+    if (storedKeyRef.current && storedKeyRef.current !== draftKey) {
+      setUnsentDraft(storedKeyRef.current, '');
+    }
+    storedKeyRef.current = draftKey;
+    if (draftKey) setUnsentDraft(draftKey, draft);
+  }, [draft, draftKey]);
 
   useImperativeHandle(ref, () => ({
     restoreUnsentText: (text) => setDraft((current) => current || text),
