@@ -113,6 +113,7 @@ vi.mock('../../../context/ThemeContext', () => ({
 vi.mock('../../../context/ChatContext', () => ({
   MessageContextProvider: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
   useComposerHeightContext: () => ({ composerHeight: { value: { value: 0 }, get: () => 0, set: () => {} } }),
+  useKeyboardStateContext: () => ({ isKeyboardVisible: { value: { value: false }, get: () => false, set: () => {} } }),
   useMessageListContext: () => ({ isNearBottom: { value: { value: true }, get: () => true, set: () => {} } }),
   useNewMessageAnimationContext: () => ({
     isStreaming: { value: { value: false }, get: () => streamingForTest, set: () => {} },

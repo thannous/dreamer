@@ -185,6 +185,27 @@ export function useKeyboardAwareMessageList() {
 }
 
 /**
+ * useKeyboardUp - Whether a keyboard covers the screen, as React state
+ * For layout that changes while typing (the composer's footer steps aside).
+ */
+export function useKeyboardUp() {
+  const { isKeyboardVisible } = useKeyboardStateContext();
+  const [isUp, setIsUp] = useState(false);
+
+  useAnimatedReaction(
+    () => isKeyboardVisible.get(),
+    (current, previous) => {
+      if (current !== previous) {
+        runOnJS(setIsUp)(current);
+      }
+    },
+    [isKeyboardVisible]
+  );
+
+  return isUp;
+}
+
+/**
  * useKeyboardSpacer - Room for the keyboard under the last message
  * The list keeps its height while the keyboard covers its bottom, so the footer grows
  * by the distance the composer rides up. A reader at the end stays on the latest
