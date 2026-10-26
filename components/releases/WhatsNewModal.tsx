@@ -34,7 +34,7 @@ import {
 } from '@/services/storageService';
 import { TypeScale } from '@/constants/typeScale';
 
-export const RELEASE_NOTES_VERSION = '3.5.0';
+export const RELEASE_NOTES_VERSION = '3.7.0';
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -71,24 +71,44 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
   const features = useMemo<Feature[]>(
     () => [
       {
+        icon: 'photo.on.rectangle',
+        title: t('release_notes.journal.title'),
+        body: t('release_notes.journal.body'),
+      },
+      // The widgets exist only in the iOS build.
+      ...(Platform.OS === 'ios'
+        ? [
+            {
+              icon: 'iphone',
+              title: t('release_notes.widgets.title'),
+              body: t('release_notes.widgets.body'),
+            } satisfies Feature,
+          ]
+        : []),
+      {
+        icon: 'sun.max.fill',
+        title: t('release_notes.today.title'),
+        body: t('release_notes.today.body'),
+      },
+      {
+        icon: 'moon.stars.fill',
+        title: t('release_notes.full_moon.title'),
+        body: t('release_notes.full_moon.body'),
+      },
+      {
+        icon: 'sparkles',
+        title: t('release_notes.sky.title'),
+        body: t('release_notes.sky.body'),
+      },
+      {
         icon: 'book.fill',
         title: t('release_notes.symbols.title'),
         body: t('release_notes.symbols.body'),
       },
       {
-        icon: 'list.bullet.rectangle.fill',
-        title: t('release_notes.symbol_pages.title'),
-        body: t('release_notes.symbol_pages.body'),
-      },
-      {
-        icon: 'checkmark.circle.fill',
-        title: t('release_notes.readability.title'),
-        body: t('release_notes.readability.body'),
-      },
-      {
-        icon: 'eye.fill',
-        title: t('release_notes.lucid.title'),
-        body: t('release_notes.lucid.body'),
+        icon: 'star.fill',
+        title: t('release_notes.collection.title'),
+        body: t('release_notes.collection.body'),
       },
     ],
     [t]
@@ -339,7 +359,7 @@ export function WhatsNewModalHost({ ready }: { ready: boolean }) {
 
   const handlePrimary = useCallback(() => {
     persistDismissal();
-    router.push('/symbol-dictionary');
+    router.navigate('/(tabs)/journal');
   }, [persistDismissal]);
 
   return (
