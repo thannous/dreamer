@@ -65,7 +65,10 @@ test('an account deletes itself from Settings after both questions and is signed
   const said = await deleteAccount(page, ['accept', 'accept', 'accept']);
   expect(said).toEqual([`confirm: ${QUESTION}`, `confirm: ${SUBSCRIPTION}`, `alert: ${DELETED}`]);
   expect(requests).toEqual(['DELETE']);
-  // Signed out: the account section offers to sign in again and the deletion row is gone.
+  // Signed out, the app opens Capture, as after any sign-out: a check made on Settings before
+  // that move could lose its screen. Back in Settings, it offers to sign in and the row is gone.
+  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
+  await page.getByTestId('tab.settings').filter({ visible: true }).click();
   await expect(page.getByTestId('settings-account-open-signin').filter({ visible: true })).toHaveCount(1);
   await expect(page.getByTestId('settings-delete-account')).toHaveCount(0);
 });
