@@ -819,3 +819,64 @@ test('Dreamer native security recovery keeps a synthetic token-hash form inert',
   await expect(screen.getByTestId('input.auth.newPassword')).toBeVisible();
   await expect(screen.getByTestId('btn.auth.updatePassword')).toBeDisabled();
 });
+
+// The home screen widgets open Capture with the link they carry. It must land there from
+// another screen, keeping the draft left in it, and from a closed app.
+const CAPTURE_WIDGET_LINK = 'noctalia://recording';
+
+async function onboardToCapture({ app, screen }: Pick<NativeBackgroundFixtures, 'app' | 'screen'>) {
+  await app.open();
+  await acceptDreamerLink({ screen });
+  // The guarded runner owns a disposable simulator and this synthetic profile.
+  await app.clearState();
+  await screen.getByTestId('btn.onboarding.intro.next', { visible: true }).tap();
+  await leaveGuidedStories(screen);
+  await screen.getByTestId('btn.onboarding.skip', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+}
+
+// The iOS keyboard has no key that hides it, so a person taps Capture's title instead.
+async function dismissCaptureKeyboard({ screen, device, platform }: Pick<NativeBackgroundFixtures, 'screen' | 'device' | 'platform'>) {
+  if (platform !== 'ios') {
+    await device.dismissKeyboard();
+    return;
+  }
+  const keyboardReturn = screen.getByTestId('Return', { visible: true });
+  const title = screen.getByText(/^(Capture|Capturer|Capturar|Cattura|Aufnehmen|Registrar)$/, { visible: true }).first();
+  await expect(keyboardReturn).toBeVisible();
+  // Just after typing, the editor can still be scrolling into view, and a tap then only stops it.
+  for (let tap = 0; tap < 3 && await keyboardReturn.count() > 0; tap += 1) await title.tap();
+  await expect(keyboardReturn).toBeHidden();
+  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).not.toBeFocused();
+}
+
+test('Dreamer release capture widget link opens Capture from Today and keeps the draft', { tags: ['widget-links'] }, async ({ app, screen, device, platform }) => {
+  await onboardToCapture({ app, screen });
+  await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
+  const draft = 'Widget fixture: a paper boat crossing a dark pond.';
+  await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(draft);
+  await dismissCaptureKeyboard({ screen, device, platform });
+  await billingHome(screen);
+  await device.openLink(CAPTURE_WIDGET_LINK);
+  await acceptDreamerLink({ screen });
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue(draft);
+  await app.screenshot('widget-link-from-today');
+});
+
+test('Dreamer release capture widget link starts a closed app on Capture', { tags: ['widget-links'] }, async ({ app, screen, device }) => {
+  await onboardToCapture({ app, screen });
+  await billingHome(screen);
+  // iOS asks once before handing the link over. A closed app has no screen to answer it on,
+  // so it is answered while the app runs; the closed app then starts straight on the link.
+  await device.openLink(CAPTURE_WIDGET_LINK);
+  await acceptDreamerLink({ screen });
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await billingHome(screen);
+  await device.closeApp();
+  await device.openLink(CAPTURE_WIDGET_LINK);
+  await acceptDreamerLink({ screen });
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('screen.onboarding')).toHaveCount(0);
+  await app.screenshot('widget-link-cold-start');
+});
