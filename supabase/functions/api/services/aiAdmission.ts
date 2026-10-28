@@ -1,6 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../lib/constants.ts';
 import { claimGuestQaPaidCall } from '../lib/guestQa.ts';
+import { sha256Hex } from '../lib/sha256.ts';
 import type { ApiContext } from '../types.ts';
 
 export type SynchronousAiCapability =
@@ -124,13 +125,7 @@ export const resolveSynchronousAiAdmissionPolicy = (
   };
 };
 
-export const hashAiActor = async (actorKey: string): Promise<string> => {
-  const encoded = new TextEncoder().encode(actorKey);
-  const digest = await crypto.subtle.digest('SHA-256', encoded);
-  return Array.from(new Uint8Array(digest))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
-};
+export const hashAiActor = (actorKey: string): Promise<string> => sha256Hex(actorKey);
 
 const jsonResponse = (body: Record<string, unknown>, status: number, retryAfter?: number) =>
   new Response(JSON.stringify(body), {

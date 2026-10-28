@@ -1,7 +1,12 @@
 import { corsHeaders } from '../lib/constants.ts';
 import { resolveGuestQaPassport } from '../lib/guestQa.ts';
 import { createGuestToken } from '../lib/guestToken.ts';
-import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
+import {
+  type AndroidIntegrityVerdict,
+  isFreshIntegrityToken,
+  requestHashBinding,
+  verifyAndroidIntegrity,
+} from '../lib/playIntegrity.ts';
 import { getRemoteIp, isTurnstileConfigured, verifyTurnstileToken } from '../lib/turnstile.ts';
 import {
   AppAttestProofError,
@@ -14,6 +19,7 @@ import { createAppAttestStore, type AppAttestStore } from '../lib/appleAppAttest
 type GuestSessionBody = {
   fingerprint?: string;
   requestHash?: string;
+  requestHashSeed?: unknown;
   integrityToken?: string;
   turnstileToken?: string;
   platform?: string;
@@ -41,11 +47,28 @@ const LOGGED_INTEGRITY_REASONS = new Set([
   'nonce_mismatch',
   'app_unrecognized',
   'device_not_integrity',
+  'request_hash_unbound',
+  'request_hash_seed_missing',
+  'token_stale',
 ]);
 
 export function toLoggedIntegrityReason(reason: string | undefined): string {
   if (!reason) return 'unknown';
   return LOGGED_INTEGRITY_REASONS.has(reason) ? reason : 'other';
+}
+
+// `true` ends the Play Integrity transition: Android clients must then bind the
+// token to their fingerprint and send a fresh one. Until then, builds released
+// before the hash seed keep opening sessions.
+const isPlayIntegrityStrict = () => Deno.env.get('PLAY_INTEGRITY_STRICT')?.trim() === 'true';
+
+function rejectAndroidIntegrity(reason: string | undefined): Response {
+  // Log the verdict code only. The token, request hash, fingerprint and
+  // caller identity never reach the log.
+  console.warn('[api] /guest/session integrity rejected', {
+    reason: toLoggedIntegrityReason(reason),
+  });
+  return response(`Integrity check failed (${reason ?? 'unknown'})`, 401);
 }
 
 // Reject reasons for the iOS guest challenge and session paths. Only these
@@ -279,7 +302,13 @@ export async function handleGuestSession(
         });
       }
 
-      let verdict: { ok: boolean; reason?: string };
+      // A seed that does not reproduce the hash is refused before Google is called.
+      const strict = isPlayIntegrityStrict();
+      const binding = await requestHashBinding(fingerprint, requestHash, body?.requestHashSeed);
+      if (binding === 'mismatch') return rejectAndroidIntegrity('request_hash_unbound');
+      if (binding === 'legacy' && strict) return rejectAndroidIntegrity('request_hash_seed_missing');
+
+      let verdict: AndroidIntegrityVerdict;
       try {
         verdict = await (dependencies.verifyIntegrity ?? verifyAndroidIntegrity)({
           integrityToken,
@@ -292,16 +321,18 @@ export async function handleGuestSession(
         });
         throw error;
       }
-      if (!verdict.ok) {
-        // Log the verdict code only. The token, request hash, fingerprint and
-        // caller identity never reach the log.
-        console.warn('[api] /guest/session integrity rejected', {
-          reason: toLoggedIntegrityReason(verdict.reason),
-        });
-        return new Response(JSON.stringify({ error: `Integrity check failed (${verdict.reason ?? 'unknown'})` }), {
-          status: 401,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        });
+      if (!verdict.ok) return rejectAndroidIntegrity(verdict.reason);
+
+      // Binding and token age are logged throughout the transition, so strict
+      // mode is switched on only once old builds and clock skew allow it.
+      console.log('[api] /guest/session android integrity', {
+        binding,
+        tokenAgeSeconds: verdict.requestedAtMs === undefined
+          ? null
+          : Math.round((Date.now() - verdict.requestedAtMs) / 1000),
+      });
+      if (strict && !isFreshIntegrityToken(verdict.requestedAtMs)) {
+        return rejectAndroidIntegrity('token_stale');
       }
     } else if (platform === 'web') {
       // Web guests are gated by a Cloudflare Turnstile challenge. Fail closed

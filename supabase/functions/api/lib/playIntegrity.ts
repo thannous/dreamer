@@ -1,3 +1,5 @@
+import { sha256Hex } from './sha256.ts';
+
 const encoder = new TextEncoder();
 
 type ServiceAccount = {
@@ -11,6 +13,8 @@ type IntegrityPayload = {
     requestPackageName?: string;
     nonce?: string;
     requestHash?: string;
+    // When the token was requested. Google encodes this int64 as a string.
+    timestampMillis?: string | number;
   };
   appIntegrity?: {
     appRecognitionVerdict?: string;
@@ -170,10 +174,40 @@ const verdictAllows = (verdicts?: string[]): boolean => {
   return verdicts.includes('MEETS_STRONG_INTEGRITY') || verdicts.includes('MEETS_DEVICE_INTEGRITY');
 };
 
+// Current Android clients hash `<fingerprint>:<seed>` and send the seed, so the
+// server can tie the token to the fingerprint it opens a session for. Builds
+// released before that send no seed.
+export const MAX_REQUEST_HASH_SEED_LENGTH = 256;
+
+export type RequestHashBinding = 'bound' | 'legacy' | 'mismatch';
+
+export function fingerprintRequestHash(fingerprint: string, seed: string): Promise<string> {
+  return sha256Hex(`${fingerprint}:${seed}`);
+}
+
+export async function requestHashBinding(
+  fingerprint: string,
+  requestHash: string,
+  seed: unknown
+): Promise<RequestHashBinding> {
+  if (seed == null) return 'legacy';
+  if (typeof seed !== 'string' || !seed || seed.length > MAX_REQUEST_HASH_SEED_LENGTH) return 'mismatch';
+  return await fingerprintRequestHash(fingerprint, seed) === requestHash.toLowerCase() ? 'bound' : 'mismatch';
+}
+
+// A token is fresh when Google stamped its request within this window of the
+// server clock, in either direction to absorb clock skew.
+export const MAX_INTEGRITY_TOKEN_AGE_MS = 10 * 60_000;
+
+export const isFreshIntegrityToken = (requestedAtMs: number | undefined, now = Date.now()): boolean =>
+  requestedAtMs !== undefined && Math.abs(now - requestedAtMs) <= MAX_INTEGRITY_TOKEN_AGE_MS;
+
+export type AndroidIntegrityVerdict = { ok: boolean; reason?: string; requestedAtMs?: number };
+
 export const verifyAndroidIntegrity = async (options: {
   integrityToken: string;
   requestHash: string;
-}): Promise<{ ok: boolean; reason?: string }> => {
+}): Promise<AndroidIntegrityVerdict> => {
   const packageName = Deno.env.get('PLAY_INTEGRITY_PACKAGE_NAME')?.trim();
   if (!packageName) {
     throw new Error('Missing PLAY_INTEGRITY_PACKAGE_NAME');
@@ -209,5 +243,6 @@ export const verifyAndroidIntegrity = async (options: {
     return { ok: false, reason: 'device_not_integrity' };
   }
 
-  return { ok: true };
+  const requestedAtMs = Number(requestDetails?.timestampMillis);
+  return Number.isFinite(requestedAtMs) ? { ok: true, requestedAtMs } : { ok: true };
 };

@@ -13,6 +13,7 @@ import {
   buildSubscriptionSnapshotFromTier,
 } from '../../lib/subscriptionState.ts';
 import { verifyRevenueCatWebhookAuthorization } from './auth.ts';
+import { readLimitedBody } from './body.ts';
 
 const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -406,21 +407,7 @@ serve(async (req: Request) => {
     });
   }
 
-  let rawBody = '';
-  try {
-    rawBody = await req.text();
-  } catch (e) {
-    console.error('[revenuecat-webhook] Failed to read request body', {
-      timestamp: new Date().toISOString(),
-      error: (e as Error).message,
-    });
-    // Security: don't echo internal error details to callers (webhook sender doesn't need them).
-    return new Response(JSON.stringify({ error: 'Failed to read request body' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders },
-    });
-  }
-
+  // The secret travels in a header: reject unauthenticated senders before reading any body.
   try {
     if (!verifyRevenueCatWebhookAuthorization(req, getWebhookSecret())) {
       return new Response(JSON.stringify({ error: 'Invalid webhook authentication' }), {
@@ -439,6 +426,21 @@ serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
+
+  const body = await readLimitedBody(req);
+  if (!body.ok) {
+    console.error('[revenuecat-webhook] Failed to read request body', {
+      timestamp: new Date().toISOString(),
+      reason: body.reason,
+    });
+    // Security: don't echo internal error details to callers (webhook sender doesn't need them).
+    const tooLarge = body.reason === 'too_large';
+    return new Response(JSON.stringify({ error: tooLarge ? 'Payload too large' : 'Failed to read request body' }), {
+      status: tooLarge ? 413 : 400,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+  const rawBody = body.text;
 
   let payload: any;
   try {

@@ -1,5 +1,6 @@
 import type { StructuredDreamAnalysis } from '../services/dreamAnalysis.ts';
 import { DREAM_THEME_VALUES } from './dreamThemes.ts';
+import { sha256Hex } from './sha256.ts';
 
 /**
  * A free account past its monthly analyses gets one new prepared analysis per rolling week.
@@ -16,9 +17,8 @@ const OPENING_MAX_CHARS = 280;
 const PREVIEW_SYMBOLS = 6;
 
 /** Fingerprint of the transcript a reading was written from: an edited dream is read again. */
-export async function transcriptSha256(text: string): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+export function transcriptSha256(text: string): Promise<string> {
+  return sha256Hex(text);
 }
 
 /**

@@ -7,6 +7,8 @@ import type { ApiContext } from '../types.ts';
 
 const STORAGE_LIST_PAGE_SIZE = 100;
 const STORAGE_LIST_MAX_PAGES = 100;
+// Storage policies accept any path under `<userId>/`, so nested folders are walked.
+const STORAGE_MAX_FOLDER_DEPTH = 8;
 
 function jsonResponse(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), {
@@ -30,7 +32,8 @@ const defaultAdminClientFactory: AdminClientFactory = (url, serviceRoleKey) =>
  * Removes every Storage object owned by the user. Generated dream images are
  * uploaded under the `<userId>/` prefix (see services/storage.ts), and the
  * paintings of prepared analyses under `previews/<userId>/`
- * (services/previewIllustration.ts), so two prefix-scoped listings cover all of them.
+ * (services/previewIllustration.ts), so two prefix-scoped walks cover all of them,
+ * including any nested path the Storage policies allow under the user's folder.
  */
 async function deleteUserStorageObjects(
   // SupabaseClient generics vary by jsr version; ApiContext already treats clients as `any`.
@@ -44,7 +47,16 @@ async function deleteUserStorageObjects(
   return true;
 }
 
-async function deleteStorageObjectsUnder(adminClient: any, bucket: string, prefix: string): Promise<boolean> {
+async function deleteStorageObjectsUnder(
+  adminClient: any,
+  bucket: string,
+  prefix: string,
+  depth = 0
+): Promise<boolean> {
+  if (depth > STORAGE_MAX_FOLDER_DEPTH) {
+    console.warn('[api] /account: storage cleanup hit the folder depth cap');
+    return false;
+  }
   for (let page = 0; page < STORAGE_LIST_MAX_PAGES; page += 1) {
     const { data, error } = await adminClient.storage.from(bucket).list(prefix, {
       limit: STORAGE_LIST_PAGE_SIZE,
@@ -53,14 +65,22 @@ async function deleteStorageObjectsUnder(adminClient: any, bucket: string, prefi
       console.warn('[api] /account: storage list failed', { message: error.message ?? 'unknown' });
       return false;
     }
-    const entries = (data ?? []) as StorageEntry[];
-    // Folder placeholders have a null id and cannot be removed directly.
-    const paths = entries.filter((entry) => entry.id && entry.name).map((entry) => `${prefix}${entry.name}`);
-    if (paths.length === 0) return true;
-    const { error: removeError } = await adminClient.storage.from(bucket).remove(paths);
-    if (removeError) {
-      console.warn('[api] /account: storage removal failed', { message: removeError.message ?? 'unknown' });
-      return false;
+    const entries = ((data ?? []) as StorageEntry[]).filter((entry) => entry.name);
+    if (entries.length === 0) return true;
+    const paths = entries.filter((entry) => entry.id).map((entry) => `${prefix}${entry.name}`);
+    if (paths.length > 0) {
+      const { error: removeError } = await adminClient.storage.from(bucket).remove(paths);
+      if (removeError) {
+        console.warn('[api] /account: storage removal failed', { message: removeError.message ?? 'unknown' });
+        return false;
+      }
+    }
+    // Folders have a null id: they cannot be removed directly and disappear once
+    // emptied, so a later listing of this prefix no longer returns them.
+    for (const folder of entries.filter((entry) => !entry.id)) {
+      if (!await deleteStorageObjectsUnder(adminClient, bucket, `${prefix}${folder.name}/`, depth + 1)) {
+        return false;
+      }
     }
   }
   console.warn('[api] /account: storage cleanup hit the pagination cap');

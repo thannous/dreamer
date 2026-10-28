@@ -10,14 +10,23 @@ Le passeport crée un sujet de quota temporaire `qa:<uuid>` signé dans le jeton
 invité. Le fingerprint réel reste lié à l'appareil et continue d'être vérifié
 par Play Integrity.
 
-## Limites fixes
+## Limites
+
+Depuis le 28 octobre 2026, les testeurs n'ont plus de plafond quotidien
+(`20261028090000_lift_guest_qa_daily_caps.sql`) :
 
 - un appareil actif par opérateur ;
 - validité de 24 heures ;
-- trois créations ou réinitialisations par jour UTC ;
-- dix admissions IA payantes par jour UTC ;
+- créations et réinitialisations sans plafond quotidien ;
+- admissions IA payantes sans plafond quotidien. Chacune reste inscrite au
+  journal d'audit, et une requête répétée avec la même clé n'est comptée
+  qu'une fois ;
 - aucune désactivation des quotas produit, du plafond du chat, de l'anti-rafale,
-  de l'idempotence ou de Play Integrity.
+  de l'idempotence ou de Play Integrity. Quand le quota invité d'un passeport
+  est épuisé, le testeur en crée un nouveau.
+
+Une limite nulle en base signifie « sans plafond ». Les fonctions acceptent
+encore une limite explicite si un plafond doit être rétabli.
 
 ## Autorisation serveur
 
@@ -32,7 +41,8 @@ dans le profil EAS `ai-internal`. Il ne donne aucun droit serveur.
 
 1. Confirmer que les migrations précédentes sont appliquées et que le reset
    local Supabase est sain.
-2. Appliquer `20260722152059_add_guest_qa_passports.sql`.
+2. Appliquer `20260722152059_add_guest_qa_passports.sql`, puis
+   `20261028090000_lift_guest_qa_daily_caps.sql`.
 3. Configurer `GUEST_QA_OPERATOR_USER_IDS` avec l'UUID Auth du compte opérateur.
 4. Déployer l'Edge Function `api`.
 5. Construire et distribuer le profil Android `ai-internal` via Google Play

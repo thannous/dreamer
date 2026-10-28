@@ -199,3 +199,65 @@ for (const results of [
     assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
   });
 }
+
+// A bucket that lists one folder level at a time, like Supabase Storage:
+// files carry an id, folders have a null id and vanish once emptied.
+function storageTree(paths: string[]) {
+  const objects = new Set(paths);
+  const listed: string[] = [];
+  const storage = {
+    from: (_bucket: string) => ({
+      list: (prefix: string, _options: unknown) => {
+        listed.push(prefix);
+        const entries = new Map<string, { id: string | null; name: string }>();
+        for (const path of objects) {
+          if (!path.startsWith(prefix)) continue;
+          const [name, ...rest] = path.slice(prefix.length).split('/');
+          entries.set(name, { id: rest.length ? null : `id:${path}`, name });
+        }
+        return Promise.resolve({ data: [...entries.values()], error: null });
+      },
+      remove: (removed: string[]) => {
+        removed.forEach((path) => objects.delete(path));
+        return Promise.resolve({ error: null });
+      },
+    }),
+  };
+  return { storage, objects, listed };
+}
+
+Deno.test('/account deletion removes objects nested in folders under the user prefix', async () => {
+  const otherUserObject = '00000000-0000-4000-8000-0000000000bb/kept.png';
+  const tree = storageTree([
+    `${USER_ID}/dream.png`,
+    `${USER_ID}/nested/a.png`,
+    `${USER_ID}/nested/deeper/b.png`,
+    `${USER_ID}/nested/deeper/c.png`,
+    `previews/${USER_ID}/painting.png`,
+    `previews/${USER_ID}/drafts/older.png`,
+    otherUserObject,
+  ]);
+  const { factory, calls } = fakeAdminClient();
+  const res = await handleDeleteAccount(
+    context() as never,
+    (url, key) => ({ ...factory(url, key), storage: tree.storage })
+  );
+  assertEquals(res.status, 200);
+  assertEquals(await res.json(), { deleted: true });
+  assertEquals([...tree.objects], [otherUserObject]);
+  assertEquals(tree.listed.includes(`${USER_ID}/nested/deeper/`), true);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), true);
+});
+
+Deno.test('/account deletion keeps the auth user when nesting exceeds the folder depth cap', async () => {
+  const tree = storageTree([`${USER_ID}/${'f/'.repeat(10)}deep.png`]);
+  const { factory, calls } = fakeAdminClient();
+  const res = await handleDeleteAccount(
+    context() as never,
+    (url, key) => ({ ...factory(url, key), storage: tree.storage })
+  );
+  assertEquals(res.status, 500);
+  assertEquals(await res.json(), { error: 'Deletion failed' });
+  assertEquals(tree.objects.size, 1);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+});

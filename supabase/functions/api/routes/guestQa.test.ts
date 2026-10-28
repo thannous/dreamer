@@ -52,7 +52,7 @@ Deno.test('guest QA status rejects authenticated users outside the server allowl
   assertEquals((await response.json()).code, 'QA_ACCESS_DENIED');
 });
 
-Deno.test('guest QA enrollment forwards the fixed 24h, 3-reset and 10-call policy', async () => {
+Deno.test('guest QA enrollment forwards the 24h validity and no daily cap', async () => {
   const calls: { name: string; params: Record<string, unknown> }[] = [];
   const response = await handleGuestQaEnroll(
     context('/qa/guest-device/enroll', {
@@ -84,8 +84,6 @@ Deno.test('guest QA enrollment forwards the fixed 24h, 3-reset and 10-call polic
       p_fingerprint: FINGERPRINT,
       p_request_id: '33333333-3333-4333-8333-333333333333',
       p_valid_hours: 24,
-      p_daily_reset_limit: 3,
-      p_daily_paid_call_limit: 10,
     },
   }]);
 });
