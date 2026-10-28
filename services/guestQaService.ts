@@ -4,15 +4,16 @@ import { getApiBaseUrl } from '@/lib/config';
 import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 
+// A null limit means the operator has no daily cap.
 export type GuestQaStatus = {
   active: boolean;
   deviceMatches: boolean;
   passportId?: string;
   validUntil?: string;
   resetsUsed: number;
-  resetLimit: number;
+  resetLimit: number | null;
   paidCallsUsed: number;
-  paidCallLimit: number;
+  paidCallLimit: number | null;
 };
 
 export type GuestQaEnrollment = {
@@ -21,9 +22,9 @@ export type GuestQaEnrollment = {
   passportId: string;
   validUntil: string;
   resetsUsed?: number;
-  resetLimit: number;
+  resetLimit: number | null;
   paidCallsUsed: number;
-  paidCallLimit: number;
+  paidCallLimit: number | null;
 };
 
 const command = async <T>(path: string, body: Record<string, unknown>): Promise<T> => {

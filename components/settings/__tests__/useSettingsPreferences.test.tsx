@@ -143,7 +143,40 @@ describe('settings preference controllers', () => {
       systemLanguage: 'fr',
       setPreference: mockSetLanguagePreference,
       ensureOfflineModel: expect.any(Function),
+      onOfflineModelPendingChange: expect.any(Function),
     });
+  });
+
+  it('keeps language settings usable while the optional speech model check is pending', async () => {
+    const { result } = renderHook(() => useLanguageSettingsPreference());
+    expect(result.current.offlineModelCheckedFor).toBeUndefined();
+    await act(async () => { await result.current.select('de'); });
+    const args = mockUpdateLanguagePreference.mock.calls[0][0] as {
+      onOfflineModelPendingChange: (pending: boolean) => void;
+    };
+    act(() => args.onOfflineModelPendingChange(true));
+    expect(result.current.offlineModelCheckedFor).toBeUndefined();
+    expect(result.current.saving).toBe(false);
+    act(() => args.onOfflineModelPendingChange(false));
+    expect(result.current.offlineModelCheckedFor).toBe('de');
+  });
+
+  it('does not report an older speech model check as ready for a newer language', async () => {
+    const { result } = renderHook(() => useLanguageSettingsPreference());
+    await act(async () => { await result.current.select('de'); });
+    const previous = mockUpdateLanguagePreference.mock.calls[0][0] as {
+      onOfflineModelPendingChange: (pending: boolean) => void;
+    };
+    act(() => previous.onOfflineModelPendingChange(true));
+    await act(async () => { await result.current.select('fr'); });
+    const current = mockUpdateLanguagePreference.mock.calls[1][0] as {
+      onOfflineModelPendingChange: (pending: boolean) => void;
+    };
+    act(() => current.onOfflineModelPendingChange(true));
+    act(() => previous.onOfflineModelPendingChange(false));
+    expect(result.current.offlineModelCheckedFor).toBeUndefined();
+    act(() => current.onOfflineModelPendingChange(false));
+    expect(result.current.offlineModelCheckedFor).toBe('fr');
   });
 
   it('persists journal layout through the existing preference hook', async () => {

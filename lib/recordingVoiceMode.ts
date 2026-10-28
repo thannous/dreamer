@@ -8,8 +8,6 @@ export type VoiceFallbackReason =
   | 'language_pack_missing'
   | 'no_speech'
   | 'start_failed'
-  /** Server transcription spent its daily budget; the phone's own recognition still runs. */
-  | 'daily_ai_limit'
   | null;
 
 export type VoiceCaptureFailure = Exclude<VoiceFallbackReason, null>;

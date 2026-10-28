@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
@@ -28,6 +28,8 @@ export type SettingsPreferenceController<T extends string> = {
   options: SettingsPreferenceOption<T>[];
   loading: boolean;
   saving: boolean;
+  /** The language whose optional speech model check has finished. */
+  offlineModelCheckedFor?: T;
   error: boolean;
   set: (value: T) => Promise<void>;
   select: (value: T) => Promise<void>;
@@ -90,6 +92,8 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
   const { loaded, preference, setPreference, systemLanguage } = useLanguage();
   const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
+  const [offlineModelCheckedFor, setOfflineModelCheckedFor] = useState<LanguagePreference>();
+  const offlineModelCheck = useRef(0);
   const [error, setError] = useState(false);
 
   const options = useMemo(
@@ -108,6 +112,8 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
   );
 
   const select = useCallback(async (value: LanguagePreference) => {
+    const check = ++offlineModelCheck.current;
+    setOfflineModelCheckedFor(undefined);
     setSaving(true);
     setError(false);
     try {
@@ -116,6 +122,9 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
         systemLanguage,
         setPreference,
         ensureOfflineModel: ensureOfflineSttModel,
+        onOfflineModelPendingChange: (pending) => {
+          if (!pending && offlineModelCheck.current === check) setOfflineModelCheckedFor(value);
+        },
       });
     } catch (cause) {
       setError(true);
@@ -135,6 +144,7 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
     options,
     loading: !loaded,
     saving,
+    offlineModelCheckedFor,
     error,
     set: select,
     select,

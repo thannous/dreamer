@@ -569,10 +569,19 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const [metadataRecoveryFailed, setMetadataRecoveryFailed] = useState(false);
   const metadataRecoveryInFlightRef = useRef(false);
   const [analysisRecoveryClock, setAnalysisRecoveryClock] = useState(() => Date.now());
-  const [showReplaceImageSheet, setShowReplaceImageSheet] = useState(false);
-  const [showReanalyzeSheet, setShowReanalyzeSheet] = useState(false);
+  // One decision at a time: image policy and quota cannot own competing sheets.
+  const [analysisPrompt, setAnalysisPrompt] = useState<
+    | { kind: 'closed' }
+    | { kind: 'replace_image' }
+    | { kind: 'reanalyze'; imagePolicy: 'keep' | 'regenerate' }
+    | { kind: 'quota'; mode: 'quota' | 'login' }
+  >({ kind: 'closed' });
+  const showReplaceImageSheet = analysisPrompt.kind === 'replace_image';
+  const showReanalyzeSheet = analysisPrompt.kind === 'reanalyze';
+  const reanalyzeImagePolicy = analysisPrompt.kind === 'reanalyze' ? analysisPrompt.imagePolicy : 'keep';
+  const showQuotaLimitSheet = analysisPrompt.kind === 'quota';
+  const quotaSheetMode = analysisPrompt.kind === 'quota' ? analysisPrompt.mode : 'quota';
   const [showDeleteSheet, setShowDeleteSheet] = useState(false);
-  const [reanalyzeImagePolicy, setReanalyzeImagePolicy] = useState<'keep' | 'regenerate'>('keep');
   const [isIllustrationFullscreen, setIsIllustrationFullscreen] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
   const [isShareModalVisible, setShareModalVisible] = useState(false);
@@ -580,8 +589,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [analysisNotice, setAnalysisNotice] = useState<AnalysisNotice | null>(null);
-  const [showQuotaLimitSheet, setShowQuotaLimitSheet] = useState(false);
-  const [quotaSheetMode, setQuotaSheetMode] = useState<'quota' | 'login'>('quota');
   const [imageErrorMessage, setImageErrorMessage] = useState<string | null>(null);
   const [imageErrorCanRetry, setImageErrorCanRetry] = useState(true);
   const [imageErrorNeedsSubscription, setImageErrorNeedsSubscription] = useState(false);
@@ -1623,8 +1630,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         router.push(quotaStatus?.isUpgraded
           ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
       } else {
-        setQuotaSheetMode('quota');
-        setShowQuotaLimitSheet(true);
+        setAnalysisPrompt({ kind: 'quota', mode: 'quota' });
       }
       return false;
     }).catch((error: unknown) => {
@@ -1641,11 +1647,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, [canAnalyze, canAnalyzeNow, dream, isPlus, quotaError, quotaLoading, quotaStatus, showAnalysisNotice, t, tier, usage, user]);
 
   const handleQuotaLimitDismiss = useCallback(() => {
-    setShowQuotaLimitSheet(false);
+    setAnalysisPrompt({ kind: 'closed' });
   }, []);
 
   const handleQuotaLimitPrimary = useCallback(() => {
-    setShowQuotaLimitSheet(false);
+    setAnalysisPrompt({ kind: 'closed' });
     if (tier === 'guest') {
       router.push(quotaSheetMode === 'login'
         ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
@@ -1682,7 +1688,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           });
         }
 
-        setShowReplaceImageSheet(false);
+        setAnalysisPrompt({ kind: 'closed' });
         await analyzeDream(dream, dream.transcript, {
           replaceExistingImage: replaceImage,
           lang: language,
@@ -1693,8 +1699,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         if (error instanceof AiConsentWithdrawnError) return;
         if (error instanceof QuotaError) {
           if (error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest') {
-            setQuotaSheetMode('login');
-            setShowQuotaLimitSheet(true);
+            setAnalysisPrompt({ kind: 'quota', mode: 'login' });
             return;
           }
           // Show quota limit sheet with upgrade CTA for non-paid users
@@ -1702,8 +1707,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             if (tier === 'free' && user) {
               router.push(buildAnalysisPaywallHref(dream, user.id));
             } else {
-              setQuotaSheetMode('quota');
-              setShowQuotaLimitSheet(true);
+              setAnalysisPrompt({ kind: 'quota', mode: 'quota' });
             }
           } else {
             // Plus users should never hit quota errors, but show a notice if they do.
@@ -1803,7 +1807,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       }
 
       if (hasExistingImage) {
-        setShowReplaceImageSheet(true);
+        setAnalysisPrompt({ kind: 'replace_image' });
         return;
       }
 
@@ -1850,16 +1854,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   }, [runAnalyze]);
 
   const handleDismissReanalyzeSheet = useCallback(() => {
-    setShowReanalyzeSheet(false);
-    setReanalyzeImagePolicy('keep');
+    setAnalysisPrompt({ kind: 'closed' });
   }, []);
 
   const handleReanalyzeImagePolicyChange = useCallback((next: 'keep' | 'regenerate') => {
-    setReanalyzeImagePolicy(next);
+    setAnalysisPrompt(current => current.kind === 'reanalyze' ? { ...current, imagePolicy: next } : current);
   }, []);
 
   const handleConfirmReanalyze = useCallback(() => {
-    setShowReanalyzeSheet(false);
+    setAnalysisPrompt({ kind: 'closed' });
     void runAnalyze(
       shouldReplaceExistingImage(reanalyzeImagePolicy === 'regenerate' ? 'regenerate' : 'keep')
     );
@@ -1871,12 +1874,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       handleDiscoverPlus();
       return;
     }
-    setReanalyzeImagePolicy('keep');
-    setShowReanalyzeSheet(true);
+    setAnalysisPrompt({ kind: 'reanalyze', imagePolicy: 'keep' });
   }, [handleDiscoverPlus, isAnalysisLocked, isPlus]);
 
   const handleDismissReplaceSheet = useCallback(() => {
-    setShowReplaceImageSheet(false);
+    setAnalysisPrompt({ kind: 'closed' });
   }, []);
 
   const displayedAnalysisNotice = analysisNotice ?? lastAnalysisNotice;
@@ -3605,7 +3607,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           mode={quotaSheetMode}
           usageLimit={usage?.analysis.limit}
           onDiscoverPlus={() => {
-            setShowQuotaLimitSheet(false);
+            setAnalysisPrompt({ kind: 'closed' });
             handleDiscoverPlus();
           }}
         />

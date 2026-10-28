@@ -53,7 +53,6 @@ export const NETWORK_REQUEST_POLICIES = {
   imageJobCommand: createPolicy(15000, 1, 1000),
   imageJobStatus: createPolicy(10000, 1, 1000),
   textToSpeech: createPolicy(60000, 0, 1200),
-  transcribeAudio: createPolicy(60000, 0, 1200),
 } as const;
 
 /** Runs a cancellable request (a Supabase query or RPC), aborting it after `timeoutMs`. */

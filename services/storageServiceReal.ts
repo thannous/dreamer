@@ -7,6 +7,7 @@ import { createJournalRecordStore } from './journalRecordStore';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
 import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { logger } from '@/lib/logger';
+import { createSerialLock } from '@/lib/serialLock';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import type {
   DreamAnalysis,
@@ -18,6 +19,7 @@ import type {
   NotificationSettings,
   PendingImageJob,
   RecordingDraftReadResult,
+  RecordingDraftScope,
   RecordingInputModePreference,
   RitualStepProgress,
   ThemePreference,
@@ -28,6 +30,8 @@ const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
 const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
 const IMAGE_JOBS_KEY = 'gemini_dream_journal_pending_image_jobs';
 const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
+// Unscoped values predate ownership: retain them as recovery data, never attribute them.
+const GUEST_RECORDING_DRAFT_KEY = `${RECORDING_TRANSCRIPT_KEY}:guest`;
 const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
 const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
 const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
@@ -91,8 +95,6 @@ let SQLiteKvStoreRef: AsyncStorageModule | null | undefined;
 let indexedDBStorage: IndexedDBStorage | null | undefined;
 let indexedDBInitPromise: Promise<IndexedDBStorage> | undefined;
 let indexedDBInitializationFailed = false;
-// Serialize kv-store access to avoid SQLite "database is locked" errors.
-let kvLock: Promise<void> = Promise.resolve();
 
 const KV_RETRY_LIMIT = 2;
 const KV_RETRY_DELAY_MS = 60;
@@ -370,14 +372,8 @@ async function getSQLiteKvStore(): Promise<AsyncStorageModule | null> {
   return SQLiteKvStoreRef;
 }
 
-async function withKvLock<T>(operation: () => Promise<T>): Promise<T> {
-  const run = kvLock.then(operation, operation);
-  kvLock = run.then(
-    () => undefined,
-    () => undefined,
-  );
-  return run;
-}
+// Serialize kv-store access to avoid SQLite "database is locked" errors.
+const withKvLock = createSerialLock();
 
 async function withKvRetry<T>(operation: () => Promise<T>): Promise<T> {
   for (let attempt = 0; attempt <= KV_RETRY_LIMIT; attempt += 1) {
@@ -935,11 +931,140 @@ export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   }
 }
 
-export async function getSavedTranscript(): Promise<string> {
-  // Preserve the legacy string-returning interface (e.g. the Home badge), but
-  // not its unsafe fallback migration after a primary read error.
-  const result = await getRecordingDraft();
+export async function getSavedTranscript(scope: RecordingDraftScope): Promise<string> {
+  // A badge read must not adopt a guest draft before Capture's final flush.
+  const result = await withRecordingDraftLock(() => readRecordingDraft(scope, false));
   return result.status === 'loaded' ? result.value : '';
+}
+
+const loadedRecordingDraft = (value: string | null): RecordingDraftReadResult =>
+  value == null ? { status: 'absent' } : { status: 'loaded', value };
+
+// Only a draft written to the explicit guest namespace may follow the next sign-in.
+// The old global key may belong to a different account and is left untouched.
+const recordingDraftKey = (scope: RecordingDraftScope): string =>
+  scope === 'guest' ? GUEST_RECORDING_DRAFT_KEY : scopedStorageKey(RECORDING_TRANSCRIPT_KEY, scope);
+
+type GuestRecordingDraft = RecordingDraftReadResult & { owner?: RecordingDraftScope };
+const GUEST_RECORDING_DRAFT_FORMAT = 'noctalia-recording-draft-v1';
+
+function encodeGuestRecordingDraft(value: string, owner: RecordingDraftScope = 'guest'): string {
+  return JSON.stringify({ format: GUEST_RECORDING_DRAFT_FORMAT, owner, value });
+}
+
+function decodeGuestRecordingDraft(result: RecordingDraftReadResult): GuestRecordingDraft {
+  if (result.status !== 'loaded') return result;
+  try {
+    const record = JSON.parse(result.value);
+    if (record?.format === GUEST_RECORDING_DRAFT_FORMAT) {
+      if (typeof record.value !== 'string' || typeof record.owner !== 'string'
+        || (record.owner !== 'guest' && !record.owner.startsWith('user:'))) return { status: 'error' };
+      return { status: 'loaded', value: record.value, owner: record.owner as RecordingDraftScope };
+    }
+  } catch {
+    // Read the earlier explicit guest namespace without attributing global data.
+  }
+  return { ...result, owner: 'guest' };
+}
+
+// Adoption reads one key and writes two: serialize draft operations so a
+// concurrent reader cannot replay a stale guest draft over a newer save.
+// A lock of its own: draft operations run inside `withKvRetry`, which takes the KV lock.
+const withRecordingDraftLock = createSerialLock();
+
+async function readGuestRecordingDraft(): Promise<RecordingDraftReadResult> {
+  if (Platform.OS !== 'web') {
+    // A failed module initialization is retryable, not proof of no draft.
+    if (SQLiteKvStoreRef === null) SQLiteKvStoreRef = undefined;
+    const kv = await getSQLiteKvStore();
+    if (!kv) return { status: 'error' };
+    return await withKvRetry(async () => {
+      const value = await kv.getItem(GUEST_RECORDING_DRAFT_KEY);
+      if (value != null) return loadedRecordingDraft(value);
+
+      if (AsyncStorageRef === null) AsyncStorageRef = undefined;
+      const legacy = await getLegacyAsyncStorage();
+      if (!legacy) return { status: 'error' };
+      const legacyValue = await legacy.getItem(GUEST_RECORDING_DRAFT_KEY);
+      if (legacyValue != null) {
+        await kv.setItem(GUEST_RECORDING_DRAFT_KEY, legacyValue);
+        try {
+          await legacy.removeItem(GUEST_RECORDING_DRAFT_KEY);
+        } catch {
+          // The primary copy is durable; cleanup can be retried later.
+        }
+      }
+      return loadedRecordingDraft(legacyValue);
+    });
+  }
+
+  const primary = await getIndexedDBStorage(true);
+  if (primary) {
+    const value = await primary.getItem(GUEST_RECORDING_DRAFT_KEY);
+    if (value != null) return loadedRecordingDraft(value);
+    if (!webStorage) return loadedRecordingDraft(null);
+    const legacyValue = webStorage.getItem(GUEST_RECORDING_DRAFT_KEY);
+    if (legacyValue != null) {
+      await primary.setItem(GUEST_RECORDING_DRAFT_KEY, legacyValue);
+      try {
+        webStorage.removeItem(GUEST_RECORDING_DRAFT_KEY);
+      } catch {
+        // Keep the confirmed primary copy even if legacy cleanup fails.
+      }
+    }
+    return loadedRecordingDraft(legacyValue);
+  }
+
+  // localStorage is authoritative only when IndexedDB is truly unavailable,
+  // not when opening or reading an existing IndexedDB database failed.
+  return webStorage ? loadedRecordingDraft(webStorage.getItem(GUEST_RECORDING_DRAFT_KEY)) : { status: 'error' };
+}
+
+// Account keys postdate the legacy stores: only the primary store holds them.
+async function readAccountRecordingDraft(key: string): Promise<RecordingDraftReadResult> {
+  if (Platform.OS !== 'web') {
+    if (SQLiteKvStoreRef === null) SQLiteKvStoreRef = undefined;
+    const kv = await getSQLiteKvStore();
+    if (!kv) return { status: 'error' };
+    return loadedRecordingDraft(await withKvRetry(() => kv.getItem(key)));
+  }
+  const primary = await getIndexedDBStorage(true);
+  if (primary) return loadedRecordingDraft(await primary.getItem(key));
+  return webStorage ? loadedRecordingDraft(webStorage.getItem(key)) : { status: 'error' };
+}
+
+async function writeRecordingDraft(key: string, transcript: string): Promise<void> {
+  // Match the readers' authority. An empty primary value is a durable
+  // tombstone: failed legacy cleanup cannot resurrect a journal-saved draft.
+  const hasLegacyCopy = key === GUEST_RECORDING_DRAFT_KEY;
+  if (Platform.OS !== 'web') {
+    if (SQLiteKvStoreRef === null) SQLiteKvStoreRef = undefined;
+    const kv = await getSQLiteKvStore();
+    if (!kv) throw new Error('Recording draft primary storage unavailable');
+    await withKvRetry(() => kv.setItem(key, transcript));
+    if (!hasLegacyCopy) return;
+    try {
+      const legacy = await getLegacyAsyncStorage();
+      await legacy?.removeItem(key);
+    } catch {
+      // The primary write is durable; legacy cleanup is optional.
+    }
+    return;
+  }
+
+  const primary = await getIndexedDBStorage(true);
+  if (primary) {
+    await primary.setItem(key, transcript);
+    if (!hasLegacyCopy) return;
+    try {
+      webStorage?.removeItem(key);
+    } catch {
+      // Keep the confirmed primary value even if legacy cleanup fails.
+    }
+    return;
+  }
+  if (!webStorage) throw new Error('Recording draft durable storage unavailable');
+  webStorage.setItem(key, transcript);
 }
 
 /**
@@ -948,92 +1073,76 @@ export async function getSavedTranscript(): Promise<string> {
  * This API distinguishes unreadable from absent. Neither transcript reader
  * reports an in-memory fallback as durable or exposes a legacy value after a
  * primary read failure.
+ *
+ * Each account reads only its own draft, so signing out never exposes it to the
+ * next guest or account. A guest draft follows the account that signs in, and
+ * only into an empty account draft: two texts are never merged or dropped.
  */
-export async function getRecordingDraft(): Promise<RecordingDraftReadResult> {
-  const loaded = (value: string | null): RecordingDraftReadResult =>
-    value == null ? { status: 'absent' } : { status: 'loaded', value };
+export function getRecordingDraft(scope: RecordingDraftScope): Promise<RecordingDraftReadResult> {
+  return withRecordingDraftLock(() => readRecordingDraft(scope));
+}
 
+async function readRecordingDraft(scope: RecordingDraftScope, adoptGuest = true): Promise<RecordingDraftReadResult> {
   try {
-    if (Platform.OS !== 'web') {
-      // A failed module initialization is retryable, not proof of no draft.
-      if (SQLiteKvStoreRef === null) SQLiteKvStoreRef = undefined;
-      const kv = await getSQLiteKvStore();
-      if (!kv) return { status: 'error' };
-      return await withKvRetry(async () => {
-        const value = await kv.getItem(RECORDING_TRANSCRIPT_KEY);
-        if (value != null) return loaded(value);
-
-        if (AsyncStorageRef === null) AsyncStorageRef = undefined;
-        const legacy = await getLegacyAsyncStorage();
-        if (!legacy) return { status: 'error' };
-        const legacyValue = await legacy.getItem(RECORDING_TRANSCRIPT_KEY);
-        if (legacyValue != null) {
-          await kv.setItem(RECORDING_TRANSCRIPT_KEY, legacyValue);
-          try {
-            await legacy.removeItem(RECORDING_TRANSCRIPT_KEY);
-          } catch {
-            // The primary copy is durable; cleanup can be retried later.
-          }
-        }
-        return loaded(legacyValue);
-      });
+    if (scope === 'guest') {
+      const guest = decodeGuestRecordingDraft(await readGuestRecordingDraft());
+      if (guest.status !== 'loaded') return guest;
+      return { status: 'loaded', value: guest.owner === 'guest' ? guest.value : '' };
     }
+    const key = recordingDraftKey(scope);
+    const own = await readAccountRecordingDraft(key);
+    if (!adoptGuest || own.status === 'error' || (own.status === 'loaded' && own.value)) return own;
 
-    const primary = await getIndexedDBStorage(true);
-    if (primary) {
-      const value = await primary.getItem(RECORDING_TRANSCRIPT_KEY);
-      if (value != null) return loaded(value);
-      if (!webStorage) return loaded(null);
-      const legacyValue = webStorage.getItem(RECORDING_TRANSCRIPT_KEY);
-      if (legacyValue != null) {
-        await primary.setItem(RECORDING_TRANSCRIPT_KEY, legacyValue);
-        try {
-          webStorage.removeItem(RECORDING_TRANSCRIPT_KEY);
-        } catch {
-          // Keep the confirmed primary copy even if legacy cleanup fails.
-        }
-      }
-      return loaded(legacyValue);
+    const guest = decodeGuestRecordingDraft(await readGuestRecordingDraft());
+    if (guest.status === 'error') return guest;
+    if (guest.status === 'absent' || !guest.value || (guest.owner !== 'guest' && guest.owner !== scope)) return own;
+    // Persist ownership in the same record as the text before copying it. A
+    // crash or failed cleanup cannot expose it to the next guest or account.
+    if (guest.owner === 'guest') {
+      await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, encodeGuestRecordingDraft(guest.value, scope));
     }
-
-    // localStorage is authoritative only when IndexedDB is truly unavailable,
-    // not when opening or reading an existing IndexedDB database failed.
-    return webStorage ? loaded(webStorage.getItem(RECORDING_TRANSCRIPT_KEY)) : { status: 'error' };
+    await writeRecordingDraft(key, guest.value);
+    try {
+      await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, '');
+    } catch {
+      // The account copy and its ownership claim are durable; retry cleanup later.
+    }
+    return { status: 'loaded', value: guest.value };
   } catch {
     return { status: 'error' };
   }
 }
 
-export async function saveTranscript(transcript: string): Promise<void> {
+export async function saveTranscript(transcript: string, scope: RecordingDraftScope): Promise<void> {
   try {
-    // Match getRecordingDraft's authority. An empty primary value is a durable
-    // tombstone: failed legacy cleanup cannot resurrect a journal-saved draft.
-    if (Platform.OS !== 'web') {
-      if (SQLiteKvStoreRef === null) SQLiteKvStoreRef = undefined;
-      const kv = await getSQLiteKvStore();
-      if (!kv) throw new Error('Recording draft primary storage unavailable');
-      await withKvRetry(() => kv.setItem(RECORDING_TRANSCRIPT_KEY, transcript));
-      try {
-        const legacy = await getLegacyAsyncStorage();
-        await legacy?.removeItem(RECORDING_TRANSCRIPT_KEY);
-      } catch {
-        // The primary write is durable; legacy cleanup is optional.
+    await withRecordingDraftLock(async () => {
+      if (scope !== 'guest') {
+        if (!transcript) {
+          const pending = decodeGuestRecordingDraft(await readGuestRecordingDraft());
+          if (pending.status === 'error') throw new Error('Recording draft ownership unavailable');
+          if (pending.status === 'loaded' && pending.owner === scope && pending.value) {
+            // Do not publish an account clear while its earlier claim could
+            // resurrect the journaled text. Preserve a failed initial copy first.
+            const own = await readAccountRecordingDraft(recordingDraftKey(scope));
+            if (own.status === 'error') throw new Error('Recording draft owner unavailable');
+            if (own.status === 'absent' || !own.value) await writeRecordingDraft(recordingDraftKey(scope), pending.value);
+            await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, '');
+          }
+        }
+        return writeRecordingDraft(recordingDraftKey(scope), transcript);
       }
-      return;
-    }
-
-    const primary = await getIndexedDBStorage(true);
-    if (primary) {
-      await primary.setItem(RECORDING_TRANSCRIPT_KEY, transcript);
-      try {
-        webStorage?.removeItem(RECORDING_TRANSCRIPT_KEY);
-      } catch {
-        // Keep the confirmed primary value even if legacy cleanup fails.
+      const pending = decodeGuestRecordingDraft(await readGuestRecordingDraft());
+      if (pending.status === 'error') throw new Error('Recording draft ownership unavailable');
+      if (pending.status === 'loaded' && pending.owner && pending.owner !== 'guest' && pending.value) {
+        // If copying a claimed draft failed, preserve that owner's recovery copy
+        // before a new guest can replace this record. A failure leaves both intact.
+        const ownerKey = recordingDraftKey(pending.owner);
+        const own = await readAccountRecordingDraft(ownerKey);
+        if (own.status === 'error') throw new Error('Recording draft owner unavailable');
+        if (own.status === 'absent' || !own.value) await writeRecordingDraft(ownerKey, pending.value);
       }
-      return;
-    }
-    if (!webStorage) throw new Error('Recording draft durable storage unavailable');
-    webStorage.setItem(RECORDING_TRANSCRIPT_KEY, transcript);
+      await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, encodeGuestRecordingDraft(transcript));
+    });
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save transcript:', error);
@@ -1042,9 +1151,9 @@ export async function saveTranscript(transcript: string): Promise<void> {
   }
 }
 
-export async function clearSavedTranscript(): Promise<void> {
+export async function clearSavedTranscript(scope: RecordingDraftScope): Promise<void> {
   try {
-    await removeItem(RECORDING_TRANSCRIPT_KEY);
+    await saveTranscript('', scope);
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to clear transcript:', error);

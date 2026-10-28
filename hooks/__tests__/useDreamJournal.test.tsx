@@ -3693,6 +3693,7 @@ describe('useDreamJournal', () => {
     it('reuses the analysis image prompt when queuing image generation', async () => {
       const existingDream = buildDream({
         id: 1,
+        transcript: 'My dream transcript',
         isAnalyzed: false,
         analysisStatus: 'none',
         imageUrl: '',
@@ -4055,6 +4056,30 @@ describe('useDreamJournal', () => {
       expect(result.current.dreams[0].interpretation).toBe('AI interpretation');
       expect(result.current.dreams[0].analysisStatus).toBe('done');
       expect(result.current.dreams[0].isAnalyzed).toBe(true);
+    });
+
+    it('keeps a story edited during analysis and marks the returned reading stale', async () => {
+      const original = buildDream({ id: 19, transcript: 'A quiet lake', isAnalyzed: false, analysisStatus: 'none' });
+      setSavedDreams([original]);
+      let finish!: (result: unknown) => void;
+      mockAnalyzeDreamText.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+      const { result } = await renderLoadedDreamJournal();
+      let analyzing!: Promise<DreamAnalysis>;
+      await act(async () => {
+        analyzing = result.current.analyzeDream(original.id, original.transcript);
+      });
+      await waitFor(() => expect(mockAnalyzeDreamText).toHaveBeenCalled());
+      await act(async () => {
+        await result.current.updateDream({ ...result.current.dreams[0], transcript: 'A quiet lake and a red boat' });
+      });
+      await act(async () => {
+        finish({ title: 'Lake', interpretation: 'A reading of the lake', shareableQuote: 'A verse',
+          theme: 'surreal', dreamType: 'Symbolic Dream', imagePrompt: 'Lake' });
+        await analyzing;
+      });
+      expect(result.current.dreams[0].transcript).toBe('A quiet lake and a red boat');
+      expect(getDreamAnalysisFreshness(result.current.dreams[0])).toBe('stale');
+      expect(result.current.dreams[0].analysisTranscriptHash).toBe(hashDreamTranscript(original.transcript));
     });
 
     it('passes language option to analysis', async () => {

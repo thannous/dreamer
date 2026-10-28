@@ -12,10 +12,10 @@ source assets, generated files, private QA and historical evidence;
 
 | Task | Screen or entry point | Logic and supporting guide |
 | --- | --- | --- |
-| Capture and save | [recording.tsx](../../app/recording.tsx) | `components/recording/`, `hooks/useCaptureConversation.ts`, `hooks/useRecordingDraftPersistence.ts`, `context/DreamsContext.tsx` |
+| Capture and save | [recording.tsx](../../app/recording.tsx) | `components/recording/`, `hooks/useCaptureConversation.ts`, `hooks/useRecordingDraftPersistence.ts`; `useCaptureSave` / `useCaptureReviewPreparation` bind the independent operations in `services/captureSave.ts` and `services/captureReviewPreparation.ts`. |
 | Journal, filters and storage | [journal.tsx](<../../app/(tabs)/journal.tsx>) | `hooks/useDreamJournal.ts`, `hooks/useDreamPersistence.ts`, `hooks/useRemoteJournalList.ts`, `services/storageService.ts` |
-| Dream detail and reading | [dream detail](<../../app/journal/[id].tsx>) | `components/journal/`, `components/analysis/`; [appearance guide](../../components/journal/README.md) |
-| Reflection and chat | [dream chat](<../../app/dream-chat/[id].tsx>) | `components/chat/MessagesList.tsx`, `context/ChatContext.tsx` |
+| Dream detail and reading | [dream detail](<../../app/journal/[id].tsx>) | `components/journal/`, `components/analysis/`; `services/journalAnalysis.ts` owns recovery decisions and result merging, called by `hooks/useDreamJournal.ts`; [appearance guide](../../components/journal/README.md). |
+| Reflection and chat | [dream chat](<../../app/dream-chat/[id].tsx>) | `components/chat/MessagesList.tsx`, `context/ChatContext.tsx`; `hooks/useDreamChatSend.ts` binds the send transaction in `services/dreamChatSend.ts`. |
 | Badge collection | [collection.tsx](../../app/collection.tsx) | `lib/badges/` ([counting rules](../../lib/badges/README.md)), `services/badgeLedgerStore.ts`, `components/badges/`; artwork in `assets/images/badges/` |
 | Settings and account controls | [settings.tsx](../../app/settings.tsx) | `components/settings/QuickSettingsProvider.tsx`, `context/QuickSettingsContext.tsx` |
 | Password recovery | [reset screen](../../components/auth/ResetPasswordScreen.tsx) | `lib/supabase.ts`, `lib/auth.web.ts`; [recovery rollout](password-recovery-rollout.md) |

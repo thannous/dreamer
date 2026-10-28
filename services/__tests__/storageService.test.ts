@@ -82,7 +82,7 @@ describe('storageService', () => {
     const selected = mockMode ? mockService : mockRealService;
     selected.getRecordingDraft.mockReturnValue(Promise.resolve({ status: 'error' }));
     const service = require('../storageService');
-    expect(await service.getRecordingDraft()).toEqual({ status: 'error' });
+    expect(await service.getRecordingDraft('guest')).toEqual({ status: 'error' });
     expect(selected.getRecordingDraft).toHaveBeenCalledTimes(1);
     expect((mockMode ? mockRealService : mockService).getRecordingDraft).not.toHaveBeenCalled();
   });

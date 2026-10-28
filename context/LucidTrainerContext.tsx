@@ -15,6 +15,7 @@ import { AppState } from 'react-native';
 
 import { useLocalLucidVoiceAvailability } from '@/hooks/useLocalLucidVoiceAvailability';
 import { useAuth } from '@/context/AuthContext';
+import { toAccountScope } from '@/lib/accountScope';
 import { projectLucidObservations, localLucidSignId, LUCID_LOCAL_SIGN_PREFIX, type LucidObservation } from '@/lib/lucid/observations';
 import { trackProductEvent } from '@/lib/analytics';
 import { isLucidTrainer } from '@/lib/appVariant';
@@ -392,7 +393,7 @@ function completeProgramSessionMutation(params: {
 export function LucidTrainerProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const userId = user?.id;
-  const userScope = userId ? `user:${userId}` : 'guest';
+  const userScope = toAccountScope(userId);
   const localVoiceExperimentIds = useLocalLucidVoiceAvailability(userScope);
   const deviceLocale = normalizeLucidLocale(getLocales()[0]?.languageTag);
   const [state, setState] = useState<LucidTrainerState | null>(null);

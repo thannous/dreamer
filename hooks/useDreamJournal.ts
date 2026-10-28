@@ -1,3 +1,4 @@
+import { applyJournalAnalysisResult, getAnalysisFailureDisposition, type AnalysisSubmission } from '@/services/journalAnalysis';
 import { markPerformance, performanceTraceId } from '../lib/performanceTrace';
 import { mergeServerDreamWithLocalState } from '@/lib/journalQueueTransitions';
 import { type DreamTarget, matchesDreamTarget, resolveDreamTarget, getDreamIdentityKey } from '../lib/dreamIdentity';
@@ -1638,9 +1639,7 @@ export const useDreamJournal = () => {
         }
       };
 
-      let serverJobSubmissionStarted = false;
-      let serverJobAccepted = false;
-      let serverJobTerminalFailure = false;
+      let submission: AnalysisSubmission = 'direct';
 
       const finishServerAnalysis = async (remoteDream: DreamAnalysis, latestDream: DreamAnalysis) => {
         assertAnalysisScope();
@@ -1671,7 +1670,7 @@ export const useDreamJournal = () => {
         if (useServerAnalysisJob) {
           assertAnalysisScope();
           markPerformance('analysis.http_started', { trace: analysisTrace });
-          serverJobSubmissionStarted = true;
+          submission = 'submitting';
           let command;
           try {
             command = await submitDreamAnalysisJob({
@@ -1698,7 +1697,7 @@ export const useDreamJournal = () => {
             }
             throw error;
           }
-          serverJobAccepted = true;
+          submission = 'accepted';
           markPerformance('analysis.job_accepted', { trace: analysisTrace });
 
           const status = await waitForAnalysisJob(command.jobId);
@@ -1708,7 +1707,7 @@ export const useDreamJournal = () => {
             throw new Error('Analysis is still running. Reopen the dream to refresh it.');
           }
           if (status.status === 'failed') {
-            serverJobTerminalFailure = true;
+            submission = 'terminal_failure';
             throw Object.assign(new Error(status.errorMessage || 'Dream analysis failed'), { code: status.errorCode });
           }
 
@@ -1760,37 +1759,12 @@ export const useDreamJournal = () => {
         // Text-only analysis must not touch in-flight or failed image state.
         // Never let an analysis payload overwrite the original transcript.
         const latestBeforeAnalysis = resolveCurrentDream(syncedDream);
-        const { transcript: _ignoredTranscript, ...safeAnalysisFields } = analysisFields as typeof analysisFields & {
-          transcript?: string;
-        };
-        let next: DreamAnalysis = {
-          ...latestBeforeAnalysis,
-          ...safeAnalysisFields,
-          // A guest's dream, or one its pre-analysis classed, keeps the name its seal gave it.
-          title: latestBeforeAnalysis.title?.trim() && (!user || latestBeforeAnalysis.theme)
-            ? latestBeforeAnalysis.title
-            : safeAnalysisFields.title,
-          // Its pre-analysis classed it, as its seal shows: the reading does not class it again.
-          ...(latestBeforeAnalysis.theme
-            ? { theme: latestBeforeAnalysis.theme, dreamType: latestBeforeAnalysis.dreamType }
-            : null),
-          transcript: latestBeforeAnalysis.transcript,
-          analysisStatus: 'done',
-          analyzedAt: Date.now(),
-          isAnalyzed: true,
-        };
-        next = stampDreamAnalysisTranscript(next, next.transcript);
-        if (shouldReplaceImage) {
-          next = {
-            ...next,
-            imageGenerationFailed: false,
-            imageJobId: undefined,
-            imageJobStatus: undefined,
-            imageJobRequestId: undefined,
-            imageJobErrorCode: undefined,
-            imageJobErrorMessage: undefined,
-          };
-        }
+        let next = applyJournalAnalysisResult(latestBeforeAnalysis, analysisFields, {
+          authenticated: Boolean(user),
+          replaceImage: shouldReplaceImage,
+          analyzedTranscript: transcript,
+          now: Date.now(),
+        });
         await updateDream(next);
         await syncPendingMutations({ target: dream });
         next = resolveCurrentDream(next);
@@ -1861,64 +1835,23 @@ export const useDreamJournal = () => {
         return next;
       } catch (error) {
         assertAnalysisScope();
-        if (error instanceof AiConsentWithdrawnError) {
-          setLastAnalysisOutcome(null);
-          if (wasHttpRequestDispatched(error) || serverJobAccepted || isResumingAnalysis) {
-            // Withdrawal stops future transport attempts, not work already admitted.
-            // Keep the revision and key intact so recovery observes that same job.
-            analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
-            await persistDreamClientState({
-              ...resolveCurrentDream(currentDreamState),
-              analysisStatus: 'pending', analysisRequestId: requestId,
-            });
-            throw error;
-          }
-          analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
-          analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
-          setLastAnalysisOutcome(null);
-          await updateDream(analysisBase);
-          throw error;
-        }
+        const disposition = getAnalysisFailureDisposition({
+          error, submission,
+          consentWithdrawn: error instanceof AiConsentWithdrawnError,
+          requestDispatched: wasHttpRequestDispatched(error),
+          resuming: isResumingAnalysis,
+        });
         const quotaError = coerceQuotaError(error, tier);
-        const responseBody = error && typeof error === 'object' && 'body' in error
-          ? error.body : null;
-        if (serverJobSubmissionStarted && !serverJobAccepted
-          && error && typeof error === 'object' && 'status' in error && error.status === 409
-          && responseBody && typeof responseBody === 'object' && 'code' in responseBody
-          && responseBody.code === 'ANALYSIS_ALREADY_COMPLETE') {
-          // Free cannot reanalyse an existing reading. Our optimistic pending
-          // write may be what the recovery read saw: restore the saved reading,
-          // including its original transcript hash, rather than hiding it as failed.
+        if (disposition.kind === 'restore') {
           analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
           analysisStatusOverridesRef.current.delete(getDreamIdentityKey(dream));
           setLastAnalysisOutcome(null);
-          quotaService.invalidate(user);
+          if (disposition.invalidateQuota) quotaService.invalidate(user);
           await updateDream(analysisBase);
           throw error;
         }
-        const nonReusableRequest = error && typeof error === 'object'
-          && 'status' in error && error.status === 409
-          && responseBody && typeof responseBody === 'object'
-          && 'code' in responseBody
-          && (responseBody.code === 'ANALYSIS_ALREADY_CLAIMED'
-            || responseBody.code === 'ANALYSIS_TRANSCRIPT_MISMATCH'
-            || responseBody.code === 'ANALYSIS_IDEMPOTENCY_KEY_REUSED');
-        const responseStatus = error && typeof error === 'object' && 'status' in error
-          && typeof error.status === 'number' ? error.status : undefined;
-        const admissionCode = responseBody && typeof responseBody === 'object' && 'code' in responseBody
-          && typeof responseBody.code === 'string' ? responseBody.code : undefined;
-        const isApiAdmissionCode = admissionCode !== undefined
-          && (/^(AI_|ANALYSIS_)/.test(admissionCode)
-            || ['QUOTA_EXCEEDED', 'DAILY_ANALYSIS_LIMIT', 'DREAM_NOT_FOUND', 'INVALID_INPUT'].includes(admissionCode));
-        // Only admission answers emitted after the idempotent lookup prove that
-        // no job owns this key. Auth/gateway failures may follow a committed POST.
-        const confirmedSubmissionRejection = serverJobSubmissionStarted && !serverJobAccepted
-          && ((responseStatus !== undefined && responseStatus >= 400 && responseStatus < 500
-            && responseStatus !== 401 && responseStatus !== 408 && isApiAdmissionCode)
-            || (responseStatus === 503 && admissionCode === 'AI_GLOBAL_BACKLOG_LIMIT'));
-        if (serverJobSubmissionStarted && !serverJobTerminalFailure && !confirmedSubmissionRejection) {
-          // The POST may have committed before its reply was lost. Persist the same
-          // key across restarts, just as for an acknowledged job awaiting its result.
+        if (disposition.kind === 'pending') {
+          if (disposition.clearOutcome) setLastAnalysisOutcome(null);
           analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'pending');
           await persistDreamClientState({
             ...resolveCurrentDream(currentDreamState),
@@ -1926,36 +1859,21 @@ export const useDreamJournal = () => {
           });
           throw quotaError ?? error;
         }
-        setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
-        if (serverJobAccepted) {
-          if (serverJobTerminalFailure) {
-            analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
-            quotaService.invalidate(user);
-            analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'failed');
-            const latestDream = resolveCurrentDream(currentDreamState);
-            await persistDreamClientState({
-              ...latestDream,
-              analysisStatus: 'failed',
-              analysisRequestId: undefined,
-            });
-          }
-          // A timeout or network error is not a server failure. Keep the
-          // durable request pending so a later retry observes the same job.
-          throw quotaError ?? error;
-        }
 
+        setLastAnalysisOutcome({ dreamId, status: 'failed', completedAt: Date.now() });
         analysisStatusOverridesRef.current.set(getDreamIdentityKey(dream), 'failed');
-        const latestDream = resolveCurrentDream(currentDreamState);
         const failedDream: DreamAnalysis = {
-          ...latestDream,
+          ...resolveCurrentDream(currentDreamState),
           analysisStatus: 'failed',
-          // A spent or transcript-mismatched receipt cannot fund another
-          // provider call. A later explicit retry needs a fresh quota claim.
-          ...(nonReusableRequest || confirmedSubmissionRejection ? { analysisRequestId: undefined } : {}),
+          ...(disposition.releaseRequest ? { analysisRequestId: undefined } : {}),
         };
-        if (nonReusableRequest || confirmedSubmissionRejection) {
+        if (disposition.releaseRequest) {
           analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
           quotaService.invalidate(user);
+        }
+        if (disposition.persistence === 'client') {
+          await persistDreamClientState(failedDream);
+          throw quotaError ?? error;
         }
         try {
           await updateDream(failedDream);

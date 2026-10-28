@@ -1143,13 +1143,16 @@ describe('DreamRecallAssistantCard', () => {
       expect(mockSubmitAnswer).not.toHaveBeenCalled();
     });
 
-    it('says when voice stopped because the day’s transcription budget is spent', async () => {
+    it('keeps the typed answer when the recognizer hears no speech', async () => {
       mockStopRecording.mockImplementation(async () => {
         mockRecording.isRecording = false;
         mockRecording.isRecordingRef.current = false;
-        return { transcript: '', error: 'daily_ai_limit' };
+        return { transcript: '', error: 'no_speech' };
       });
       renderActiveQuestion();
+      fireEvent.change(screen.getByTestId(TID.Input.DreamRecallAnswer), {
+        target: { value: 'Rain on the glass' },
+      });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
       await waitFor(() => {
         expect(mockStartRecording).toHaveBeenCalled();
@@ -1157,9 +1160,9 @@ describe('DreamRecallAssistantCard', () => {
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
 
       await waitFor(() => {
-        expect(screen.getByText('error.daily_ai_limit')).toBeTruthy();
+        expect(screen.getByText('dream_recall.session.voice_error')).toBeTruthy();
       });
-      expect(screen.queryByText('dream_recall.session.voice_error')).toBeNull();
+      expect((screen.getByTestId(TID.Input.DreamRecallAnswer) as HTMLTextAreaElement).value).toBe('Rain on the glass');
     });
 
     it('force-stops and clears the answer when the question changes, without mixing transcripts', async () => {

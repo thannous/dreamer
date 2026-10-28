@@ -15,8 +15,8 @@ their separate identified Release/device requirements. See the
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
 from the application's Playwright version. The locked runtime is `e2e` 0.21.3,
-`@e2e-dev/web` 0.15.3, `@e2e-dev/mobile` 0.12.4 and `agent-device` 0.21.29
-(the mobile engine's own exact dependency). `SDK_PINS` in `qualification.mjs`
+`@e2e-dev/web` 0.15.3, `@e2e-dev/mobile` 0.12.4 and `agent-device` 0.21.32
+(a direct pin with a matching override for the mobile engine). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
 a report from another runner or engine. The engine peer ranges accept e2e 0.21.3.
 Web 0.15.3 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
@@ -50,7 +50,9 @@ What 0.21.3 changes here:
   does not pass them through: a qualifying run keeps the config's timeouts.
 - The web engine drives Playwright 1.64.1 and its Chromium; `npm run
   test:testerarmy:browsers` installs it. `@e2e-dev/mobile` 0.12.4 uses
-  `agent-device` 0.21.29.
+  `agent-device` 0.21.29; this package overrides it with the pinned 0.21.32
+  for the upstream iOS toolbar-occlusion fixes. The native evidence identifies
+  the tested device and does not qualify every iPhone Duo layout.
   See the [official release notes](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.3).
 
 What 0.21.2 changes here:
@@ -600,8 +602,8 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package uses the engine's exact `agent-device` 0.21.29 dependency through its
-local CLI. A globally installed CLI may have a different version; the guarded
+package pins `agent-device` 0.21.32 for its local CLI and the mobile engine
+through a targeted dependency override. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured
 upgrade, not a floating `@latest` runtime or a global engine replacement.

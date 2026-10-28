@@ -31,11 +31,8 @@ export type NativeSpeechSession = {
     transcript: string;
     error?: string;
     errorCode?: string;
-    recordedUri?: string | null;
-    hasRecording?: boolean;
   }>;
   abort: () => void;
-  hasRecording?: boolean;
 };
 
 export const END_TIMEOUT_MS = 4000;
@@ -491,8 +488,7 @@ async function computeSpeechCapability(
   canRecordAudio: boolean
 ): Promise<DeviceSpeechCapability> {
   if (!speechModule) {
-    // No native module: dictation survives through the server transcription
-    // fallback as long as the device can still record audio.
+    // No native module means there is no system recognizer to use.
     return resolveSpeechCapability({
       platform: getCapabilityPlatform(),
       androidApiLevel: getAndroidApiLevel(),
@@ -561,8 +557,8 @@ async function computeSpeechCapability(
 /**
  * Resolves what dictation this device can deliver for `languageCode`.
  *
- * Pass `microphoneAvailable: false` once the recorder has proven the device has
- * no usable microphone — that is the only input that blocks voice entirely.
+ * Pass `microphoneAvailable: false` once the device is known to have no usable
+ * microphone. A missing recognizer also makes voice unavailable.
  */
 export async function resolveDeviceSpeechCapability(
   languageCode: string,
@@ -642,7 +638,6 @@ export async function startNativeSpeechSession(
 
     const qaAudioSource = await getNativeQaSpeechAudioSource();
     if (options?.signal?.aborted) return null;
-    const supportsRecording = speechModule.supportsRecording?.() ?? false;
     if (__DEV__) {
       const service = speechModule.getDefaultRecognitionService?.();
       const supportsOnDevice = speechModule.supportsOnDeviceRecognition?.();
@@ -653,7 +648,6 @@ export async function startNativeSpeechSession(
         supportsOnDevice,
         requiresOnDeviceRecognition,
         tier: capability.tier,
-        supportsRecording,
       });
     }
 
@@ -667,7 +661,6 @@ export async function startNativeSpeechSession(
     let lastPublishedPreview = '';
     let lastError: { code?: string; message?: string } | null = null;
     let finalChunks: string[] = [];
-    let recordedUri: string | null = null;
 
     let resolveEnd: (() => void) | null = null;
     const endPromise = new Promise<void>((resolve) => {
@@ -744,7 +737,7 @@ export async function startNativeSpeechSession(
       notifyUnexpectedEnd();
     });
 
-    const audioEndSub = speechModule.addListener('audioend', (event: { uri?: string | null }) => {
+    const audioEndSub = speechModule.addListener('audioend', () => {
       // Ignore events from old sessions
       if (sessionId !== globalSessionCounter) {
         if (__DEV__) {
@@ -754,9 +747,8 @@ export async function startNativeSpeechSession(
       }
 
       if (__DEV__) {
-        console.log('[nativeSpeech] audioend', { sessionId, hasUri: Boolean(event?.uri) });
+        console.log('[nativeSpeech] audioend', { sessionId });
       }
-      recordedUri = event?.uri ?? null;
       options?.onListeningChange?.(false);
     });
 
@@ -824,13 +816,6 @@ export async function startNativeSpeechSession(
         androidRecognitionServicePackage,
         ...(qaAudioSource ? { audioSource: qaAudioSource } : {}),
         volumeChangeEventOptions: { enabled: true, intervalMillis: 80 },
-        recordingOptions: supportsRecording
-          ? {
-              persist: true,
-              outputSampleRate: 16000,
-              outputEncoding: 'pcmFormatInt16',
-            }
-          : undefined,
       });
     } catch (error) {
       cleanup();
@@ -870,15 +855,12 @@ export async function startNativeSpeechSession(
           lastPartial,
           lastError,
           finalChunks,
-          recordedUri,
         });
       }
       return {
         transcript,
         error: lastError?.message,
         errorCode: lastError?.code,
-        recordedUri,
-        hasRecording: supportsRecording,
       };
     };
 
@@ -895,7 +877,7 @@ export async function startNativeSpeechSession(
       cleanup(); // Always cleanup, even after errors
     };
 
-    return { stop, abort, hasRecording: supportsRecording };
+    return { stop, abort };
   } catch (error) {
     if (error instanceof Error && error.message === 'speech_permission_denied') throw error;
     if (__DEV__) {

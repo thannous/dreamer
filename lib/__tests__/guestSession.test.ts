@@ -158,6 +158,40 @@ describe('guestSession bootstrap state', () => {
     expect(guestSession.getGuestBootstrapState()).toMatchObject({ status: 'degraded', reasonCode: 'guest_session_unavailable' });
   });
 
+  it('sends the Android hash seed so the server can bind the Play Integrity token to the fingerprint', async () => {
+    const now = 1_761_609_600_000;
+    jest.spyOn(Date, 'now').mockReturnValue(now);
+    const guestSession = loadGuestSessionModule('android');
+    (require('@/lib/env') as { getExpoPublicEnvValue: jest.Mock }).getExpoPublicEnvValue.mockReturnValue('123456789');
+    const crypto = require('expo-crypto') as { digestStringAsync: jest.Mock };
+    crypto.digestStringAsync.mockResolvedValue('bound-request-hash');
+    const appIntegrity = require('@expo/app-integrity') as { requestIntegrityCheckAsync: jest.Mock };
+    appIntegrity.requestIntegrityCheckAsync.mockResolvedValue('play-integrity-token');
+    const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+    fetchJSON.mockResolvedValue({
+      token: 'android-guest-token',
+      expiresAt: new Date(now + 3_600_000).toISOString(),
+    });
+
+    await guestSession.getGuestHeaders({ requireSession: true });
+
+    const requestHashSeed = `${now}:mock-uuid-1234`;
+    expect(crypto.digestStringAsync).toHaveBeenCalledWith('SHA256', `fingerprint:${requestHashSeed}`);
+    expect(appIntegrity.requestIntegrityCheckAsync).toHaveBeenCalledWith('bound-request-hash');
+    expect(fetchJSON).toHaveBeenCalledWith(
+      'https://example.com/guest/session',
+      expect.objectContaining({
+        body: {
+          fingerprint: 'fingerprint',
+          platform: 'android',
+          integrityToken: 'play-integrity-token',
+          requestHash: 'bound-request-hash',
+          requestHashSeed,
+        },
+      })
+    );
+  });
+
   it('attests an iOS key before requesting a guest session', async () => {
     const guestSession = loadGuestSessionModule('ios');
     const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };

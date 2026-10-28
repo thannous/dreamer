@@ -17,13 +17,13 @@ import { useLanguage } from '@/context/LanguageContext';
 import { createScrollActivity, ScrollPerfProvider } from '@/context/ScrollPerfContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useChatSendLock } from '@/hooks/useChatSendLock';
+import { useDreamChatSend } from '@/hooks/useDreamChatSend';
 import { useChatCategoryPrompt } from '@/hooks/useChatCategoryPrompt';
 import { useQuota } from '@/hooks/useQuota';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
 import { restoreUnsentChatText } from '@/lib/chat/unsentText';
 import { createStreamingReplyChannel } from '@/lib/chat/streamingReplyChannel';
-import { getDeviceFingerprint } from '@/lib/deviceFingerprint';
 import { QUOTAS } from '@/constants/limits';
 import { getDreamAnalysisState } from '@/lib/dreamUsage';
 import { generateUUID } from '@/lib/dreamUtils';
@@ -36,11 +36,9 @@ import { getTranscriptionLocale } from '@/lib/locale';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { TID } from '@/lib/testIDs';
 import { ChatMessage, DreamAnalysis, type DreamChatCategory, type ThemeMode } from '@/lib/types';
-import { startOrContinueChat } from '@/services/geminiService';
 import { incrementLocalExplorationCount } from '@/services/quota/GuestAnalysisCounter';
 import { markMockExploration } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
-import { createDreamInSupabase } from '@/services/supabaseDreamService';
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { FlatGlassCard } from '@/components/inspiration/GlassCard';
 import { IconSymbol } from '@/components/ui/icon-symbol';
@@ -95,26 +93,14 @@ const QUICK_CATEGORIES = [
 
 const QUOTA_CHECK_TIMEOUT_MS = 12000; // Fail gracefully if quota check hangs
 
-const createChatMessage = (
-  role: 'user' | 'model',
-  text: string,
-  options?: {
-    id?: string;
-    category?: Exclude<CategoryType, 'general'>;
-    meta?: ChatMessage['meta'];
-    parts?: ChatMessage['parts'];
-  }
-): ChatMessage => {
-  const meta = resolveChatMessageMeta(options);
-  return {
-    id: options?.id ?? generateUUID(),
-    role,
-    text,
-    ...(options?.parts ? { parts: options.parts } : {}),
-    createdAt: Date.now(),
-    ...(meta ? { meta } : {}),
-  };
-};
+// Sent turns and replies are built by the send operation; the screen adds its own notes.
+const createChatMessage = (role: 'user' | 'model', text: string, meta?: ChatMessage['meta']): ChatMessage => ({
+  id: generateUUID(),
+  role,
+  text,
+  createdAt: Date.now(),
+  ...(meta ? { meta } : {}),
+});
 
 const resolveChatMessageMeta = (options?: {
   category?: Exclude<CategoryType, 'general'>;
@@ -162,7 +148,7 @@ function DreamChatContent() {
   }>();
   const targetMessageId = Array.isArray(routeMessageId) ? routeMessageId[0] : routeMessageId;
   const { dreams } = useDreamsData();
-  const { updateDream, applyServerDreamState } = useDreamsActions();
+  const { updateDream } = useDreamsActions();
   const { colors, mode, shadows } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { user } = useAuth();
@@ -189,7 +175,7 @@ function DreamChatContent() {
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const composerRef = useRef<ChatComposerHandle>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isSending: isLoading, send: sendChat } = useDreamChatSend();
   const {
     activeCategory: activeSendCategory,
     isLocked: isSendStarting,
@@ -213,7 +199,6 @@ function DreamChatContent() {
   const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
   const lastSynthesisSentKeyRef = useRef<string | null>(null);
-  const requestAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -222,8 +207,6 @@ function DreamChatContent() {
       if (quotaCheckTimeoutRef.current) {
         clearTimeout(quotaCheckTimeoutRef.current);
       }
-      requestAbortRef.current?.abort();
-      requestAbortRef.current = null;
     };
   }, []);
 
@@ -454,7 +437,7 @@ function DreamChatContent() {
     ) => {
       const textToSend = messageText;
       if (!textToSend || !dream) return;
-      if (!(await requestAiConsent(t))) return;
+      if (!(await requestAiConsent(t)) || !isMountedRef.current) return;
       const resolvedDisplayText = displayText ?? textToSend;
       const messageMeta = resolveChatMessageMeta({
         category: options?.category,
@@ -540,6 +523,7 @@ function DreamChatContent() {
 
       // Check message quota before sending
       const canSendMessage = await canChat();
+      if (!isMountedRef.current) return;
       if (!canSendMessage) {
         showMessageLimitAlert();
         return;
@@ -557,234 +541,41 @@ function DreamChatContent() {
         streamingReply.end(replyId);
         setHasStreamingText(false);
       };
-      const startStreaming = () => {
-        streamingRequestIdRef.current = chatRequestId;
-      };
-
-      // ✅ GUARD: Ensure dream is synced before allowing chat
-      // If remoteId is missing, attempt auto-sync or show error
-      // Note: Guests have local-only dreams and don't require sync
-      if (user && !dream.remoteId && !isMockMode) {
-        if (hasNetwork) {
-          // Auto-sync the dream with idempotence
-          setIsLoading(true);
-          composerRef.current?.clearSentText(textToSend);
-          try {
-            const controller = new AbortController();
-            requestAbortRef.current = controller;
-            // Ensure clientRequestId for idempotence (prevent duplicates)
-            const dreamToSync = dream.clientRequestId
-              ? dream
-              : { ...dream, clientRequestId: generateUUID() };
-
-            if (!dream.clientRequestId) await updateDream(dreamToSync, dream);
-            if (!isMountedRef.current || controller.signal.aborted) return;
-            const synced = await createDreamInSupabase(dreamToSync, user.id);
-
-            // IMPORTANT: synced.id may differ from dream.id (reconstructed from server's created_at)
-            // Update with the returned dream which has correct id + remoteId
-            if (!isMountedRef.current || controller.signal.aborted) return;
-            await updateDream(synced, dreamToSync);
-
-            // Now proceed with chat using synced.remoteId
-            const dreamIdString = String(synced.remoteId);
-            startStreaming();
-            const aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
-              signal: controller.signal,
-              clientRequestId: chatRequestId,
-              messageMeta,
-              onDelta: onStreamDelta,
-            });
-
-            if (!isMountedRef.current || controller.signal.aborted) return;
-
-            // Add user message
-            const userMessage = createChatMessage('user', resolvedDisplayText, {
-              id: chatRequestId,
-              category: options?.category,
-              meta: options?.meta,
-            });
-            const updatedMessages = [...baseMessages, userMessage];
-
-            if (!isMountedRef.current || controller.signal.aborted) return;
-        const aiMessage = createChatMessage('model', aiResponse.text, {
-              id: aiResponse.message?.id,
-              parts: aiResponse.message?.parts,
-            });
-            const finalMessages = [...updatedMessages, aiMessage];
-
-            setMessages(finalMessages);
-            finishStreaming(aiMessage.id);
-
-            // Persist chat history to dream
-            const dreamUpdate: Partial<DreamAnalysis> = {
-              ...synced,
-              chatHistory: finalMessages,
-            };
-
-            await applyServerDreamState(dreamUpdate as DreamAnalysis);
-
-            // Invalidate quota cache if this was the first message
-            if (isFirstUserMessage) {
-              if (isMockMode) {
-                await markMockExploration({ id: dreamId });
-              }
-              if (!user && !isExistingExploration) {
-                incrementLocalExplorationCount().catch((err) => {
-                  if (__DEV__) console.warn('[DreamChat] Failed to increment exploration count', err);
-                });
-              }
-            }
-            quotaService.invalidate(user);
-            if (isMountedRef.current) router.setParams(getDreamRouteParams(synced));
-          } catch (error) {
-            if (!isMountedRef.current) return;
-            setIsLoading(false);
-            if (error instanceof AiConsentWithdrawnError) {
-              restoreUnsentChatText(composerRef.current, options?.userText);
-              return;
-            }
-            if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
-              router.push(buildPaywallHref('exploration_limit'));
-              return;
-            }
-            if (__DEV__) {
-              console.error('[DreamChat] Sync error:', error);
-            }
-            Alert.alert(
-              t('dream_chat.sync_failed_title'),
-              t('dream_chat.sync_failed_message'),
-              [{ text: t('common.ok') }]
-            );
-            return;
-          } finally {
-            setIsLoading(false);
-            finishStreaming();
-            if (requestAbortRef.current) {
-              requestAbortRef.current = null;
-            }
-          }
-          return;
-        } else {
-          // No network or not authenticated - cannot sync
-          Alert.alert(
-            t('dream_chat.not_synced_title'),
-            t('dream_chat.not_synced_message'),
-            [{ text: t('common.ok') }]
-          );
-          return;
-        }
-      }
-
-      // Add user message (use displayText if provided, otherwise use textToSend)
-      const userMessage = createChatMessage('user', resolvedDisplayText, {
-        id: chatRequestId,
-        category: options?.category,
-        meta: options?.meta,
-      });
-      const updatedMessages = [...baseMessages, userMessage];
-      setMessages(updatedMessages);
-      composerRef.current?.clearSentText(textToSend);
-      setIsLoading(true);
-
+      // A dream still being synced shows its turn only with the reply.
+      let syncing = false;
+      let updatedMessages = baseMessages;
       try {
-        const controller = new AbortController();
-        requestAbortRef.current = controller;
-        // ✅ PHASE 2: Get AI response with server-side quota enforcement
-        // Note: No longer send history - server reads from dreams.chat_history
-        // Server uses "claim before cost" pattern: message persisted BEFORE Gemini call
-
-        // For guests: send full dream context (no DB entry)
-        // For authenticated: send dreamId (server reads from DB)
-        let aiResponse: Awaited<ReturnType<typeof startOrContinueChat>>;
-        let guestFingerprint: string | undefined;
-        if (!user) {
-          try {
-            guestFingerprint = await getDeviceFingerprint();
-          } catch (err) {
-            if (__DEV__) {
-              console.warn('[DreamChat] Failed to get device fingerprint for guest chat', err);
+        const result = await sendChat({
+          dream, userId: user?.id, mock: isMockMode, text: textToSend,
+          displayText: resolvedDisplayText, language, requestId: chatRequestId,
+          meta: messageMeta, baseMessages,
+          onAccepted: pendingMessages => {
+            if (pendingMessages) {
+              updatedMessages = pendingMessages;
+              setMessages(pendingMessages);
             }
-          }
-        }
-        if (!user && !dream.remoteId) {
-          // Guest mode: send complete dream context
-          const dreamContext = {
-            transcript: dream.transcript,
-            title: dream.title,
-            interpretation: dream.interpretation,
-            shareableQuote: dream.shareableQuote,
-            dreamType: dream.dreamType,
-            theme: dream.theme,
-            chatHistory: updatedMessages,  // Current messages before AI response
-          };
-          startStreaming();
-          aiResponse = await startOrContinueChat(
-            String(dream.id),
-            textToSend,
-            language,
-            dreamContext,
-            guestFingerprint,
-            {
-              signal: controller.signal,
-              clientRequestId: chatRequestId,
-              messageMeta,
-              onDelta: onStreamDelta,
-            }
-          );
-        } else {
-          // Authenticated mode: send dreamId (current flow)
-          const dreamIdString = String(dream.remoteId ?? dream.id);
-          startStreaming();
-          aiResponse = await startOrContinueChat(dreamIdString, textToSend, language, undefined, undefined, {
-            signal: controller.signal,
-            clientRequestId: chatRequestId,
-            messageMeta,
-            onDelta: onStreamDelta,
-          });
-        }
-
-        if (!isMountedRef.current || controller.signal.aborted) return;
-        const aiMessage = createChatMessage('model', aiResponse.text, {
-          id: aiResponse.message?.id,
-          parts: aiResponse.message?.parts,
+            composerRef.current?.clearSentText(textToSend);
+            streamingRequestIdRef.current = chatRequestId;
+          },
+          onReply: (finalMessages, replyId) => {
+            setMessages(finalMessages);
+            finishStreaming(replyId);
+          },
+          onDelta: onStreamDelta,
         });
-        const finalMessages = [...updatedMessages, aiMessage];
-
-        setMessages(finalMessages);
-        finishStreaming(aiMessage.id);
+        if (result.status === 'cancelled' || result.status === 'ignored') return;
+        if (result.status === 'failed') {
+          updatedMessages = result.pendingMessages;
+          syncing = result.syncing;
+          throw result.error;
+        }
         if (debugChat) {
           console.debug('[DreamChat] sendMessage success', {
-            dreamId: dream.id,
-            userMessageCount: updatedMessages.length,
-            aiTextLength: aiResponse.text.length,
-            finalMessageCount: finalMessages.length,
-            ts: Date.now(),
+            dreamId: result.dream.id, finalMessageCount: result.messages.length, ts: Date.now(),
           });
         }
-
-        // Persist chat history to dream
-        // Note: exploration_started_at is set server-side by the DB trigger
-        // when it detects the first model message in chat_history
-        const dreamUpdate: Partial<DreamAnalysis> = {
-          ...dream,
-          chatHistory: finalMessages,
-        };
-
-        // Persist to dream
-        if (user && !isMockMode) {
-          // The atomic chat RPC already committed both messages. Update only
-          // the local cache to avoid a redundant full-dream write and revision race.
-          await applyServerDreamState(dreamUpdate as DreamAnalysis);
-        } else {
-          await updateDream(dreamUpdate as DreamAnalysis);
-        }
-
-        // Invalidate quota cache if this was the first message
         if (isFirstUserMessage) {
-          if (isMockMode) {
-            await markMockExploration({ id: dreamId });
-          }
+          if (isMockMode) await markMockExploration({ id: dreamId });
           if (!user && !isExistingExploration) {
             incrementLocalExplorationCount().catch((err) => {
               if (__DEV__) console.warn('[DreamChat] Failed to increment exploration count', err);
@@ -792,56 +583,41 @@ function DreamChatContent() {
           }
         }
         quotaService.invalidate(user);
+        if (result.synced && isMountedRef.current) router.setParams(getDreamRouteParams(result.dream));
       } catch (error) {
         if (!isMountedRef.current) return;
         if (error instanceof AiConsentWithdrawnError) {
-          setMessages(baseMessages);
+          if (!syncing) setMessages(baseMessages);
           restoreUnsentChatText(composerRef.current, options?.userText);
           return;
         }
-        if (debugChat) {
-          console.debug('[DreamChat] sendMessage error', {
-            dreamId: dream.id,
-            ts: Date.now(),
-            error,
-          });
-        }
         if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
-          setMessages(baseMessages);
+          if (!syncing) setMessages(baseMessages);
           router.push(buildPaywallHref('exploration_limit'));
           return;
         }
-        if (__DEV__) {
-          console.error('Chat error:', error);
+        if (syncing) {
+          if (__DEV__) console.error('[DreamChat] Sync error:', error);
+          Alert.alert(t('dream_chat.sync_failed_title'), t('dream_chat.sync_failed_message'), [{ text: t('common.ok') }]);
+          return;
         }
+        if (__DEV__) console.error('Chat error:', error);
         const classified = error instanceof Error ? classifyError(error, t) : null;
-        const userMessage = classified?.userMessage ?? t('dream_chat.error_message');
+        const errorText = classified?.userMessage ?? t('dream_chat.error_message');
         if (coerceQuotaError(error, tier)?.code === QuotaErrorCode.EXPLORATION_LIMIT_REACHED) {
           setExplorationBlocked(true);
           quotaService.invalidate(user);
         }
-        const errorMessage = createChatMessage('model', t('dream_chat.error_message'), {
-          meta: {
-            isError: true,
-            retry: classified?.canRetry === false ? undefined : {
-              messageText: textToSend,
-              displayText: resolvedDisplayText,
-              userText: options?.userText,
-              clientRequestId: chatRequestId,
-            },
+        const errorMessage = createChatMessage('model', errorText, {
+          isError: true,
+          retry: classified?.canRetry === false ? undefined : {
+            messageText: textToSend, displayText: resolvedDisplayText,
+            userText: options?.userText, clientRequestId: chatRequestId,
           },
         });
-        const enrichedErrorMessage =
-          userMessage === t('dream_chat.error_message')
-            ? errorMessage
-            : createChatMessage('model', userMessage, { meta: errorMessage.meta });
-        setMessages([...updatedMessages, enrichedErrorMessage]);
+        setMessages([...updatedMessages, errorMessage]);
       } finally {
-        setIsLoading(false);
         finishStreaming();
-        if (requestAbortRef.current) {
-          requestAbortRef.current = null;
-        }
       }
       } finally {
         releaseSendLock();
@@ -870,8 +646,7 @@ function DreamChatContent() {
       t,
       tier,
       tryAcquireSendLock,
-      applyServerDreamState,
-      updateDream,
+      sendChat,
       user,
     ]
   );

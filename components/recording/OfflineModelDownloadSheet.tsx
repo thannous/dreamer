@@ -60,6 +60,7 @@ export function OfflineModelDownloadSheet({
 
   return (
     <StandardBottomSheet
+      testID="sheet.offline-model-download"
       visible={visible}
       onClose={handleCancel}
       title={t('recording.alert.offline_model_vocal.title') || 'Pack de langue pour la reconnaissance vocale'}
@@ -73,6 +74,7 @@ export function OfflineModelDownloadSheet({
         primaryDisabled: isDownloading,
         primaryLoading: isDownloading,
         secondaryLabel: t('common.cancel') || 'Annuler',
+        secondaryTestID: 'btn.offline-model.cancel',
         onSecondary: handleCancel,
         secondaryDisabled: isDownloading,
       }}

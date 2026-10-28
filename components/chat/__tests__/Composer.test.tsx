@@ -389,16 +389,16 @@ describe('Composer', () => {
     });
   });
 
-  it('keeps the typed message and says when transcription spent its daily budget', async () => {
+  it('keeps the typed message when the recognizer hears no speech', async () => {
     mockIsRecording = true;
     mockBaseTranscriptRef.current = 'A blue room';
-    mockStopRecording.mockResolvedValueOnce({ transcript: '', error: 'daily_ai_limit' });
+    mockStopRecording.mockResolvedValueOnce({ transcript: '', error: 'no_speech' });
     const { onSend } = await renderComposer();
 
     fireEvent.click(screen.getByTestId('composer-send'));
 
     await waitFor(() => {
-      expect(mockAlert).toHaveBeenCalledWith('recording.alert.transcription_failed.title', 'error.daily_ai_limit');
+      expect(mockAlert).toHaveBeenCalledWith('recording.alert.no_speech.title', 'recording.alert.no_speech.message');
       expect(onSend).toHaveBeenCalledWith('A blue room');
     });
   });

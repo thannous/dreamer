@@ -82,18 +82,18 @@ describe('resolveSpeechCapability — API level ladder', () => {
 });
 
 describe('resolveSpeechCapability — degradation and blocking', () => {
-  it('keeps dictation alive through the server when no RecognitionService exists', () => {
+  it('marks dictation unavailable when no RecognitionService exists', () => {
     const capability = resolveSpeechCapability(
       baseInput({ recognitionAvailable: false, onDeviceRecognitionSupported: false })
     );
 
-    expect(capability.tier).toBe('server_only');
+    expect(capability.tier).toBe('unavailable');
     expect(capability.reason).toBe('no_recognition_service');
-    expect(canDictate(capability)).toBe(true);
-    expect(mayLeaveDevice(capability)).toBe(true);
+    expect(canDictate(capability)).toBe(false);
+    expect(mayLeaveDevice(capability)).toBe(false);
   });
 
-  it('blocks voice only when the device cannot capture audio', () => {
+  it('blocks voice when the device cannot capture audio', () => {
     const capability = resolveSpeechCapability(baseInput({ canRecordAudio: false }));
 
     expect(capability.tier).toBe('unavailable');

@@ -25,10 +25,11 @@ import {
   type BadgeEvent,
   type BadgeLedger,
 } from '@/lib/badges/ledger';
+import type { AccountScope } from '@/lib/accountScope';
 import type { DreamAnalysis } from '@/lib/types';
 import { getLucidKeyValueStorage } from '@/services/lucidKeyValueStorage';
 
-export type BadgeScope = 'guest' | `user:${string}`;
+export type BadgeScope = AccountScope;
 
 const STORAGE_PREFIX = 'noctalia_badge_ledger_v2:';
 const LEGACY_PREFIX = 'noctalia_badge_ledger_v1:';

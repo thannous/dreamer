@@ -7,7 +7,6 @@ describe('NETWORK_REQUEST_POLICIES', () => {
     expect(NETWORK_REQUEST_POLICIES.categorizeDream.retries).toBe(0);
     expect(NETWORK_REQUEST_POLICIES.chat.retries).toBe(0);
     expect(NETWORK_REQUEST_POLICIES.generateImage.retries).toBe(0);
-    expect(NETWORK_REQUEST_POLICIES.transcribeAudio.retries).toBe(0);
   });
 
   it('allows a single recovery for receipt-bound analysis and durable commands/reads', () => {

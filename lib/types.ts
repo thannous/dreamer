@@ -1,3 +1,4 @@
+import type { AccountScope } from './accountScope';
 import type { RitualId } from './inspirationRituals';
 
 export type DreamChatCategory = 'symbols' | 'emotions' | 'growth' | 'general';
@@ -238,6 +239,9 @@ export type RecordingDraftReadResult =
   | { status: 'loaded'; value: string }
   | { status: 'absent' }
   | { status: 'error' };
+
+/** Owner of a Capture draft; `guest` holds the draft typed while signed out. */
+export type RecordingDraftScope = AccountScope;
 
 export type DreamListReadResult =
   | { status: 'loaded'; value: DreamAnalysis[] }

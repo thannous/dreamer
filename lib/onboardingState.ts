@@ -1,5 +1,6 @@
 import type { Href } from 'expo-router';
 
+import type { AccountScope } from '@/lib/accountScope';
 import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
 import { logger } from '@/lib/logger';
 import {
@@ -14,7 +15,7 @@ export const ONBOARDING_SCHEMA_VERSION = 1 as const;
 export const ONBOARDING_EXPERIENCE_VERSION = 2 as const;
 export const ONBOARDING_INTENT_TTL_MS = 24 * 60 * 60 * 1000;
 
-export type OnboardingScope = 'guest' | `user:${string}`;
+export type OnboardingScope = AccountScope;
 export type OnboardingStep = 'intro' | 'path';
 export type OnboardingPath = 'analyze' | 'memory' | 'dictionary';
 export type PendingRecordingPhase =

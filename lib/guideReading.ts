@@ -1,10 +1,11 @@
+import type { AccountScope } from '@/lib/accountScope';
 import type { DreamGuideId } from '@/lib/dreamGuideTypes';
 
 export const GUIDE_READING_IDS: readonly DreamGuideId[] = [
   'understand-dreams', 'remember-dreams', 'dream-journal', 'lucid-dreaming',
   'most-common-dream-symbols', 'scary-dream-symbols', 'animal-dream-symbols', 'water-dream-symbols',
 ];
-export type GuideReadingScope = 'guest' | `user:${string}`;
+export type GuideReadingScope = AccountScope;
 export type GuideReadingEntry = { section: number; updatedAt: number; completedAt?: number };
 export type GuideReadingEntries = Partial<Record<DreamGuideId, GuideReadingEntry>>;
 export type GuideReadingStatus = 'new' | 'visited' | 'inProgress' | 'completed';

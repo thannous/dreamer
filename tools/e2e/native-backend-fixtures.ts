@@ -71,11 +71,26 @@ export const test = base.extend<{ backend: Backend }>({
 
 export async function nativeTap(screen: TestFixtures['screen'], id: string, direction: 'up' | 'down' = 'down') {
   const target = screen.getByTestId(id, { visible: true });
-  await screen.scrollUntilVisible(target, { direction });
+  if (id.startsWith('quick-settings.')) {
+    // On a wide screen the drawer occupies only the right side. A viewport
+    // swipe starts on its dimmed backdrop and closes it instead of scrolling.
+    const drawer = screen.getByTestId('quick-settings.drawer', { visible: true });
+    await expect(drawer).not.toBeHidden();
+    await drawer.scrollUntilVisible(target, { direction });
+  } else {
+    await screen.scrollUntilVisible(target, { direction });
+  }
   await target.tap();
 }
 
 export async function nativeHome(screen: TestFixtures['screen']) {
+  // A retained QA installation can show the current release notes on launch.
+  // Dismiss through its real control before touching the navigation underneath.
+  const releaseNotes = screen.getByTestId('modal.whatsNew', { visible: true });
+  if (await releaseNotes.count()) {
+    await screen.getByTestId('btn.whatsNew.close', { visible: true }).tap();
+    await expect(releaseNotes).toHaveCount(0);
+  }
   // The detail header scrolls with its page; its absence from the viewport
   // does not mean the tab bar is available. Reach its back control first.
   if (await screen.getByTestId('screen.dreamDetail', { visible: true }).count()) {
@@ -83,10 +98,17 @@ export async function nativeHome(screen: TestFixtures['screen']) {
   }
   const settingsBack = screen.getByTestId('settings.back', { visible: true });
   if (await settingsBack.count()) await settingsBack.tap();
-  const recordingHome = screen.getByTestId('btn.recording.home', { visible: true });
-  if (await recordingHome.count()) await recordingHome.tap();
-  else await screen.getByTestId('tab.home', { visible: true }).tap();
-  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+  const home = screen.getByTestId('screen.home', { visible: true });
+  // Native Modal can leave its accessibility tree before its fade finishes.
+  // Home navigation is idempotent, so confirm arrival instead of sleeping.
+  await expect.poll(async () => {
+    if (await home.count()) return true;
+    const recordingHome = screen.getByTestId('btn.recording.home', { visible: true });
+    const homeTab = screen.getByTestId('tab.home', { visible: true });
+    if (await recordingHome.count()) await recordingHome.tap();
+    else if (await homeTab.count()) await homeTab.tap();
+    return (await home.count()) === 1;
+  }).toBe(true);
 }
 
 export async function nativeSettings(screen: TestFixtures['screen']) {
@@ -102,7 +124,7 @@ async function nativeDestinationAfterPasswordPrompt(
   platform: TestFixtures['platform'],
   destinationCount: () => Promise<number>,
 ) {
-  // iOS may offer to store these disposable credentials after Return submits.
+  // iOS may offer to store these disposable credentials after sign-in submits.
   // Match the complete observed password-saving title, never a generic alert.
   const prompt = screen.getByText(/^Enregistrer le mot de passe\s*\?$/, { visible: true });
   await expect.poll(async () => await destinationCount()
@@ -152,6 +174,21 @@ export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures
     await screen.getByRole('button', 'Autoriser', { visible: true }).tap();
     await expect(pendingSpeechPermission).toHaveCount(0);
     await nativeDestinationAfterPasswordPrompt(screen, platform, destinationCount);
+  }
+  // An interrupted Tell draft can ask again on launch. Resolve its consent
+  // before navigating to sign-out; tapping a tab behind the modal only declines.
+  const initialConsent = screen.getByTestId('modal.aiConsent', { visible: true });
+  if (await initialConsent.count()) {
+    await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
+    await expect(initialConsent).toHaveCount(0);
+    const home = screen.getByTestId('screen.home', { visible: true });
+    const homeTab = screen.getByTestId('tab.home', { visible: true });
+    // Navigation is idempotent while the native modal finishes its fade.
+    await expect.poll(async () => {
+      if (await home.count()) return true;
+      if (await homeTab.count()) await homeTab.tap();
+      return (await home.count()) === 1;
+    }).toBe(true);
   }
   // Onboarding may belong to an authenticated account after an interrupted
   // login. Reach Settings before clearing the container, including on iOS.
@@ -206,14 +243,11 @@ export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | '
   await screen.getByTestId('input.auth.email', { visible: true }).fill(login.username);
   const password = screen.getByTestId('input.auth.password', { visible: true });
   await password.fill(login.password);
-  if (platform === 'ios') {
-    // The password field submits through onSubmitEditing. Its native Return
-    // avoids the generic keyboard drag, which cannot dismiss this iPhone sheet.
-    await password.press('Enter');
-  } else {
-    await device.dismissKeyboard();
-    await nativeTap(screen, 'btn.auth.signIn');
-  }
+  // Return can leave its native command waiting behind iOS's password-saving
+  // prompt even though sign-in was dispatched. Submit once through the normal
+  // button, then let the exact known-prompt handler verify the destination.
+  await device.dismissKeyboard();
+  await nativeTap(screen, 'btn.auth.signIn');
   await nativeRecordingAfterAuth(screen, platform);
   await nativeSettings(screen);
   const email = screen.getByTestId('text.auth.email', { visible: true });
@@ -241,7 +275,7 @@ export async function nativeJournal(screen: TestFixtures['screen']) {
 // e2e mobile 0.12.4 (#1305) refuses the generic iPhone keyboard drag when every
 // point above the keyboard is a control, which is the case once Capture has text.
 // Capture's scroll view uses keyboardShouldPersistTaps="handled", so a tap on its
-// static header title, which stays above the keyboard, closes it like a dreamer
+// static header title closes it like a dreamer
 // would. Content lower on the screen can sit under the keyboard and type a key.
 // After a fill the keyboard can still be sliding in: a title tap before it is up
 // closes nothing and the editor keeps focus. So the helper waits for the
@@ -258,7 +292,13 @@ export async function nativeDismissCaptureKeyboard(fixtures: NativeFixtures, { a
   const keyboardReturn = screen.getByTestId('Return', { visible: true });
   const before = await editor.inputValue();
   if (afterFill) await expect(keyboardReturn).toBeVisible();
-  await screen.getByText(/^Capture$/, { visible: true }).tap();
+  const title = screen.getByText(/^Capture$/, { visible: true });
+  // Filling the compact Duo editor can scroll its header out of view.
+  await screen.scrollUntilVisible(title, { direction: 'up' });
+  // A stable fresh observation retires the ref captured while the iOS keyboard
+  // was moving; agent-device refuses to dispatch that unconfirmed old frame.
+  await expect(title).not.toBeHidden();
+  await title.tap();
   await expect(keyboardReturn).toBeHidden();
   await expect(editor).not.toBeFocused();
   await expect(editor).toHaveValue(before);
@@ -280,11 +320,13 @@ export async function nativeSave(fixtures: NativeFixtures, story: string) {
 export async function nativeTranscript(screen: TestFixtures['screen'], story: string) {
   const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
   await expect(detail).toBeVisible();
-  // Android exposes the decorative drop cap's inline object as U+FFFC after
-  // the initial. Keep the entire story exact, permitting only that object.
+  // Native exposes the decorative drop cap's inline object as U+FFFC after
+  // the initial. e2e text matchers collapse Unicode whitespace, including
+  // paragraph breaks; preserve every word and allow only that inline object.
   const escape = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const first = Array.from(story)[0] ?? '';
-  const expected = new RegExp(`^${escape(first)}\\uFFFC?${escape(story.slice(first.length))}$`);
+  const normalizedStory = story.replace(/\s+/gu, ' ').trim();
+  const first = Array.from(normalizedStory)[0] ?? '';
+  const expected = new RegExp(`^${escape(first)}\\uFFFC?${escape(normalizedStory.slice(first.length))}$`);
   // A stable ID on the actual prose avoids both the identical title and
   // native flattening of the surrounding card's accessibility hierarchy.
   const text = screen.getByTestId('text.dreamDetail.transcript', { visible: true });

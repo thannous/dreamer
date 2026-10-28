@@ -1,23 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
+import { createSerialLock } from '@/lib/serialLock';
+import type { RecordingDraftScope } from '@/lib/types';
 import { getRecordingDraft, saveTranscript } from '@/services/storageService';
 
 export const RECORDING_DRAFT_AUTOSAVE_DELAY_MS = 300;
 
 // Keep replacement hydration behind every pending write, including the real
 // storage service's backoff and this hook's retry after the old screen unmounts.
-let draftStorageQueue: Promise<void> = Promise.resolve();
-
-function queueDraftStorage<T>(operation: () => Promise<T>): Promise<T> {
-  const result = draftStorageQueue.then(operation, operation);
-  draftStorageQueue = result.then(() => undefined, () => undefined);
-  return result;
-}
+const queueDraftStorage = createSerialLock();
 
 export type UseRecordingDraftPersistenceOptions = {
   transcript: string;
   onRestore: (savedTranscript: string) => void;
+  /** Owner of the draft; `null` while the signed-in account is still unknown. */
+  scope: RecordingDraftScope | null;
 };
 
 export type UseRecordingDraftPersistenceResult = {
@@ -42,10 +40,14 @@ export type UseRecordingDraftPersistenceResult = {
  * A pending debounce is flushed immediately on AppState background/inactive
  * and on unmount so a kill during the 300ms window cannot drop the draft.
  * Failed writes stay dirty: retry once automatically, then on a lifecycle flush.
+ * The draft belongs to one account: hydration waits for a known scope, and every
+ * write, including the unmount flush, goes to the scope that was hydrated. A later
+ * scope is ignored, so the owner remounts this hook when the account changes.
  */
 export function useRecordingDraftPersistence({
   transcript,
   onRestore,
+  scope,
 }: UseRecordingDraftPersistenceOptions): UseRecordingDraftPersistenceResult {
   const [hydrationStatus, setHydrationStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const hydrated = hydrationStatus === 'ready';
@@ -66,8 +68,11 @@ export function useRecordingDraftPersistence({
   const generationRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onRestoreRef = useRef(onRestore);
+  const draftScopeRef = useRef(scope);
 
   const enqueueWrite = useCallback((value: string, generation: number, reason?: 'flush' | 'clear') => {
+    const draftScope = draftScopeRef.current;
+    if (!draftScope) return;
     const pending = pendingWriteRef.current;
     if (pending?.value === value && pending.generation === generation) {
       // Remember a flush even when storage has not reported its failure yet.
@@ -89,7 +94,7 @@ export function useRecordingDraftPersistence({
         ) {
           if (retrying) automaticRetryRef.current = { value, generation };
           try {
-            await saveTranscript(value);
+            await saveTranscript(value, draftScope);
             if (generation === generationRef.current) {
               persistedRef.current = { value, generation };
               if (mountedRef.current) setLastPersistedValue(value);
@@ -190,7 +195,8 @@ export function useRecordingDraftPersistence({
   }, [onRestore]);
 
   const retryHydration = useCallback(() => {
-    if (!mountedRef.current || hydratedRef.current || hydrationAttemptRef.current !== null) return;
+    const draftScope = draftScopeRef.current;
+    if (!draftScope || !mountedRef.current || hydratedRef.current || hydrationAttemptRef.current !== null) return;
     const attempt = Symbol('draft hydration');
     hydrationAttemptRef.current = attempt;
     setHydrationStatus('loading');
@@ -198,7 +204,7 @@ export function useRecordingDraftPersistence({
       try {
         const result = await queueDraftStorage(async () => {
           if (!mountedRef.current || hydrationAttemptRef.current !== attempt) return null;
-          return getRecordingDraft();
+          return getRecordingDraft(draftScope);
         });
         if (!result || !mountedRef.current || hydrationAttemptRef.current !== attempt) return;
         if (result.status === 'error') {
@@ -231,6 +237,13 @@ export function useRecordingDraftPersistence({
       hydrationAttemptRef.current = null;
     };
   }, [retryHydration]);
+
+  useEffect(() => {
+    // Bind the first known account; until then the draft stays unread and locked.
+    if (!scope || draftScopeRef.current) return;
+    draftScopeRef.current = scope;
+    retryHydration();
+  }, [retryHydration, scope]);
 
   useEffect(() => {
     if (!hydrated) {
