@@ -84,6 +84,13 @@ export async function nativeTap(screen: TestFixtures['screen'], id: string, dire
 }
 
 export async function nativeHome(screen: TestFixtures['screen']) {
+  // A retained QA installation can show the current release notes on launch.
+  // Dismiss through its real control before touching the navigation underneath.
+  const releaseNotes = screen.getByTestId('modal.whatsNew', { visible: true });
+  if (await releaseNotes.count()) {
+    await screen.getByTestId('btn.whatsNew.close', { visible: true }).tap();
+    await expect(releaseNotes).toHaveCount(0);
+  }
   // The detail header scrolls with its page; its absence from the viewport
   // does not mean the tab bar is available. Reach its back control first.
   if (await screen.getByTestId('screen.dreamDetail', { visible: true }).count()) {
@@ -91,10 +98,17 @@ export async function nativeHome(screen: TestFixtures['screen']) {
   }
   const settingsBack = screen.getByTestId('settings.back', { visible: true });
   if (await settingsBack.count()) await settingsBack.tap();
-  const recordingHome = screen.getByTestId('btn.recording.home', { visible: true });
-  if (await recordingHome.count()) await recordingHome.tap();
-  else await screen.getByTestId('tab.home', { visible: true }).tap();
-  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+  const home = screen.getByTestId('screen.home', { visible: true });
+  // Native Modal can leave its accessibility tree before its fade finishes.
+  // Home navigation is idempotent, so confirm arrival instead of sleeping.
+  await expect.poll(async () => {
+    if (await home.count()) return true;
+    const recordingHome = screen.getByTestId('btn.recording.home', { visible: true });
+    const homeTab = screen.getByTestId('tab.home', { visible: true });
+    if (await recordingHome.count()) await recordingHome.tap();
+    else if (await homeTab.count()) await homeTab.tap();
+    return (await home.count()) === 1;
+  }).toBe(true);
 }
 
 export async function nativeSettings(screen: TestFixtures['screen']) {
@@ -281,6 +295,9 @@ export async function nativeDismissCaptureKeyboard(fixtures: NativeFixtures, { a
   const title = screen.getByText(/^Capture$/, { visible: true });
   // Filling the compact Duo editor can scroll its header out of view.
   await screen.scrollUntilVisible(title, { direction: 'up' });
+  // A stable fresh observation retires the ref captured while the iOS keyboard
+  // was moving; agent-device refuses to dispatch that unconfirmed old frame.
+  await expect(title).not.toBeHidden();
   await title.tap();
   await expect(keyboardReturn).toBeHidden();
   await expect(editor).not.toBeFocused();
