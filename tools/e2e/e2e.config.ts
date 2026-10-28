@@ -68,7 +68,7 @@ const managedCommand = !native && product !== 'site'
 
 export default {
   projectId: `noctalia-${product}`,
-  tests: nativeJourneys ? ['tests/dreamer-voice.mobile.e2e.ts', 'tests/dreamer-sync-account.mobile.e2e.ts', 'tests/dreamer-recovery.mobile.e2e.ts']
+  tests: nativeJourneys ? ['tests/dreamer-essential-capture.mobile.e2e.ts', 'tests/dreamer-voice.mobile.e2e.ts', 'tests/dreamer-sync-account.mobile.e2e.ts', 'tests/dreamer-recovery.mobile.e2e.ts']
     : branch ? 'tests/branch.web.e2e.ts' : backend ? 'tests/backend-*.web.e2e.ts' : personas ? `tests/dreamer-personas.${native ? 'mobile' : 'web'}.e2e.ts`
     : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
   ...(personas ? { agents: createDreamerPersonaAgents(process.env.E2E_PERSONA_MODEL?.trim() || undefined) } : {}),
