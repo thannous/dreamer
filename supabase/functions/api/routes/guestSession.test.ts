@@ -10,6 +10,7 @@ import { handleAnalyticsGuestSession } from './analyticsSession.ts';
 import { AppAttestProofError } from '../lib/appleAppAttest.ts';
 import type { AppAttestStore } from '../lib/appleAppAttestStore.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
+import { fingerprintRequestHash, MAX_INTEGRITY_TOKEN_AGE_MS } from '../lib/playIntegrity.ts';
 
 type Dependencies = Parameters<typeof handleGuestSession>[1];
 
@@ -422,6 +423,112 @@ Deno.test('/guest/session keeps Android gated on Play Integrity inputs', async (
 
   assertEquals(response.status, 401);
   assertEquals(body.error, 'Missing integrity token');
+});
+
+const ANDROID_FINGERPRINT = 'b'.repeat(64);
+const ANDROID_SEED = '1761609600000:0b7c4d4e-5d1e-4c55-9a3e-2b1f8f0c6a11';
+
+async function withPlayIntegrityStrict<T>(value: string | null, run: () => Promise<T>): Promise<T> {
+  const previous = Deno.env.get('PLAY_INTEGRITY_STRICT');
+  if (value == null) Deno.env.delete('PLAY_INTEGRITY_STRICT');
+  else Deno.env.set('PLAY_INTEGRITY_STRICT', value);
+  try {
+    return await run();
+  } finally {
+    if (previous == null) Deno.env.delete('PLAY_INTEGRITY_STRICT');
+    else Deno.env.set('PLAY_INTEGRITY_STRICT', previous);
+  }
+}
+
+// Runs one Android session request and reports what reached the verifier and the log.
+async function androidSession(
+  body: Record<string, unknown>,
+  requestedAtMs?: number
+): Promise<{ status: number; body: Record<string, unknown>; verifierCalls: number; logged: unknown[][] }> {
+  let verifierCalls = 0;
+  let response: Response | undefined;
+  const logged = await captureLogs(async () => {
+    response = await requestGuestSession(
+      { fingerprint: ANDROID_FINGERPRINT, platform: 'android', integrityToken: 'play-token', ...body },
+      {
+        resolveQaPassport: () => Promise.resolve(null),
+        verifyIntegrity: () => {
+          verifierCalls += 1;
+          return Promise.resolve(requestedAtMs === undefined ? { ok: true } : { ok: true, requestedAtMs });
+        },
+      }
+    );
+  });
+  return { status: response!.status, body: await response!.json(), verifierCalls, logged };
+}
+
+const integrityLog = (logged: unknown[][], label: string) =>
+  logged.filter((args) => args[0] === label).map((args) => args[1]);
+
+Deno.test('Android builds without the hash seed keep opening sessions during the transition', async () => {
+  await withGuestSecret(() => withPlayIntegrityStrict(null, async () => {
+    const legacy = await androidSession({ requestHash: 'c'.repeat(64) }, Date.now() - 3_000);
+
+    assertEquals(legacy.status, 200);
+    assertEquals((await verifyGuestToken(String(legacy.body.token), ANDROID_FINGERPRINT, 'android')).ok, true);
+    const [accepted] = integrityLog(legacy.logged, '[api] /guest/session android integrity') as
+      { binding: string; tokenAgeSeconds: number }[];
+    assertEquals(accepted.binding, 'legacy');
+    assertEquals(Math.abs(accepted.tokenAgeSeconds - 3) <= 1, true);
+  }));
+});
+
+Deno.test('a hash seed binds the Play Integrity token to the session fingerprint', async () => {
+  await withGuestSecret(() => withPlayIntegrityStrict(null, async () => {
+    const requestHash = await fingerprintRequestHash(ANDROID_FINGERPRINT, ANDROID_SEED);
+
+    const bound = await androidSession({ requestHash, requestHashSeed: ANDROID_SEED }, Date.now());
+    assertEquals(bound.status, 200);
+    assertEquals(
+      integrityLog(bound.logged, '[api] /guest/session android integrity')
+        .map((entry) => (entry as { binding: string }).binding),
+      ['bound']
+    );
+
+    // The same proof cannot open a session for another fingerprint.
+    const moved = await androidSession({
+      fingerprint: 'd'.repeat(64),
+      requestHash,
+      requestHashSeed: ANDROID_SEED,
+    }, Date.now());
+    assertEquals(moved.status, 401);
+    assertEquals(moved.body.error, 'Integrity check failed (request_hash_unbound)');
+    assertEquals(moved.verifierCalls, 0);
+    assertEquals(integrityLog(moved.logged, '[api] /guest/session integrity rejected'), [
+      { reason: 'request_hash_unbound' },
+    ]);
+    assertEquals(JSON.stringify(moved.logged).includes(ANDROID_SEED), false);
+    assertEquals(JSON.stringify(moved.logged).includes(requestHash), false);
+  }));
+});
+
+Deno.test('strict Play Integrity requires a bound and fresh token', async () => {
+  await withGuestSecret(() => withPlayIntegrityStrict('true', async () => {
+    const requestHash = await fingerprintRequestHash(ANDROID_FINGERPRINT, ANDROID_SEED);
+    const seeded = { requestHash, requestHashSeed: ANDROID_SEED };
+
+    const legacy = await androidSession({ requestHash: 'c'.repeat(64) }, Date.now());
+    assertEquals(legacy.status, 401);
+    assertEquals(legacy.body.error, 'Integrity check failed (request_hash_seed_missing)');
+    assertEquals(legacy.verifierCalls, 0);
+
+    const stale = await androidSession(seeded, Date.now() - MAX_INTEGRITY_TOKEN_AGE_MS - 60_000);
+    assertEquals(stale.status, 401);
+    assertEquals(stale.body.error, 'Integrity check failed (token_stale)');
+
+    const undated = await androidSession(seeded);
+    assertEquals(undated.status, 401);
+    assertEquals(undated.body.error, 'Integrity check failed (token_stale)');
+
+    const fresh = await androidSession(seeded, Date.now() - 5_000);
+    assertEquals(fresh.status, 200);
+    assertEquals(typeof fresh.body.token, 'string');
+  }));
 });
 
 Deno.test('/guest/session refuses unknown platforms', async () => {

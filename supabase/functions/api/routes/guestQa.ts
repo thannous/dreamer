@@ -19,8 +19,6 @@ type GuestQaDbResult = {
 
 const FINGERPRINT_PATTERN = /^[a-f0-9]{64}$/;
 const PASSPORT_VALID_HOURS = 24;
-const DAILY_RESET_LIMIT = 3;
-const DAILY_PAID_CALL_LIMIT = 10;
 
 export const parseGuestQaOperatorIds = (value: string | undefined): Set<string> =>
   new Set(
@@ -114,8 +112,8 @@ export async function handleGuestQaEnroll(
     p_fingerprint: fingerprint,
     p_request_id: requestId,
     p_valid_hours: PASSPORT_VALID_HOURS,
-    p_daily_reset_limit: DAILY_RESET_LIMIT,
-    p_daily_paid_call_limit: DAILY_PAID_CALL_LIMIT,
+    // Testers have no daily reset or paid-call cap: the RPC defaults leave both
+    // unset. A database still on the capped migration applies its old defaults.
   });
   if (error) return rpcFailure('/qa/guest-device/enroll', error.code);
 

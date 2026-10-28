@@ -46,6 +46,10 @@ Deno.test('AI actors are hashed deterministically before database admission', as
   assertEquals(first, second);
   assertMatch(first, /^[a-f0-9]{64}$/);
   assertEquals(first.includes('private-fingerprint'), false);
+  // The seed CLI clears buckets with Node's SHA-256 of `user:<id>`: keep stored keys compatible.
+  const user = await hashAiActor('user:00000000-0000-4000-8000-000000000001');
+  assertEquals(user, 'ddbc0cfe34ed0fd0c414497e8b06b19223215c8e3db348b42fb5415dd1761ea7');
+  assertEquals(user === await hashAiActor('guest:00000000-0000-4000-8000-000000000001'), false);
 });
 
 Deno.test('guest admission sends only a hashed actor and capability policy', async () => {

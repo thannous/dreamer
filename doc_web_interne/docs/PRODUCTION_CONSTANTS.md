@@ -51,6 +51,11 @@ restent bloquantes pour un build production fiable, sauf waiver explicite.
   - Pourquoi : valider que le token correspond au bon package.  
   - Valeur prod : `com.tanuki75.noctalia`.  
   - Où placer : secret Supabase Functions (plaintext).
+- [ ] `PLAY_INTEGRITY_STRICT` (transition ouverte le 2026-10-28, absent tant qu'elle dure)
+  - Pourquoi : les versions Android actuelles envoient `requestHashSeed`. Le serveur recalcule alors `sha256(fingerprint:seed)` et lie le jeton Play Integrity au fingerprint de la session. Les versions plus anciennes n'envoient pas cette graine et restent acceptées tant que ce secret est absent.
+  - Valeur : `true` met fin à la transition. Toute session invité Android doit alors fournir la graine et un jeton demandé il y a moins de 10 minutes (`request_hash_seed_missing`, `token_stale`).
+  - Avant de l'activer : dans les logs `[api] /guest/session android integrity`, vérifier que `binding: "legacy"` a disparu et que `tokenAgeSeconds` reste nettement sous 600. Les testeurs doivent aussi avoir une version qui envoie la graine.
+  - Où placer : secret Supabase Functions (plaintext).
 - [ ] `GUEST_SESSION_SECRET`  
   - Pourquoi : signer les tokens `x-guest-token`.  
   - Où placer : secret Supabase Functions (plaintext, long random).
