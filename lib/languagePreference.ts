@@ -6,6 +6,7 @@ type UpdateLanguagePreferenceParams = {
   systemLanguage: AppLanguage;
   setPreference: (preference: LanguagePreference) => Promise<void>;
   ensureOfflineModel?: (locale: string) => Promise<unknown>;
+  onOfflineModelPendingChange?: (pending: boolean) => void;
   getLocale?: (language: AppLanguage) => string;
 };
 
@@ -21,14 +22,18 @@ export const updateLanguagePreference = async ({
   systemLanguage,
   setPreference,
   ensureOfflineModel,
+  onOfflineModelPendingChange,
   getLocale = getTranscriptionLocale,
 }: UpdateLanguagePreferenceParams) => {
   const effectiveLanguage = resolveEffectiveLanguage(preference, systemLanguage);
   const locale = getLocale(effectiveLanguage);
 
-  ensureOfflineModel?.(locale).catch(() => {
-    // Best-effort offline model fetch; ignore failures.
-  });
+  if (ensureOfflineModel) {
+    onOfflineModelPendingChange?.(true);
+    void Promise.resolve().then(() => ensureOfflineModel(locale)).catch(() => {
+      // Best-effort offline model fetch; ignore failures.
+    }).finally(() => onOfflineModelPendingChange?.(false));
+  }
 
   await setPreference(preference);
 

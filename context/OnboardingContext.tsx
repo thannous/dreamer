@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
+import { toAccountScope } from '@/lib/accountScope';
 import {
   claimGuestOnboardingState,
   getDefaultOnboardingState,
@@ -65,10 +66,7 @@ const isRedundantEvent = (state: OnboardingState, event: OnboardingEvent): boole
 export function OnboardingProvider({ children }: React.PropsWithChildren) {
   const { user, loading: authLoading } = useAuth();
   const userId = user?.id;
-  const scope = useMemo<OnboardingScope>(
-    () => (userId ? `user:${userId}` : 'guest'),
-    [userId]
-  );
+  const scope = useMemo<OnboardingScope>(() => toAccountScope(userId), [userId]);
   const [state, setState] = useState<OnboardingState>(() => getDefaultOnboardingState());
   const [loadedScope, setLoadedScope] = useState<OnboardingScope | null>(null);
   const [loading, setLoading] = useState(true);

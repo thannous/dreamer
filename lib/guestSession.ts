@@ -175,9 +175,17 @@ export async function initGuestSession(): Promise<boolean> {
   return prepared;
 }
 
-const createRequestHash = async (fingerprint: string): Promise<string> => {
-  const seed = `${fingerprint}:${Date.now()}:${Crypto.randomUUID()}`;
-  return Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, seed);
+// The seed travels with the hash so the server can recompute it and tie the
+// Play Integrity token to this fingerprint.
+const createRequestHash = async (
+  fingerprint: string
+): Promise<{ requestHash: string; requestHashSeed: string }> => {
+  const requestHashSeed = `${Date.now()}:${Crypto.randomUUID()}`;
+  const requestHash = await Crypto.digestStringAsync(
+    Crypto.CryptoDigestAlgorithm.SHA256,
+    `${fingerprint}:${requestHashSeed}`
+  );
+  return { requestHash, requestHashSeed };
 };
 
 const getAppAttestKeyId = async (): Promise<string> => {
@@ -327,6 +335,7 @@ const fetchGuestSession = async (
     fingerprint: string;
     platform: string;
     requestHash?: string;
+    requestHashSeed?: string;
     integrityToken?: string;
     turnstileToken?: string;
     keyId?: string;
@@ -351,7 +360,7 @@ const fetchGuestSession = async (
   }
 
   if (Platform.OS === 'android') {
-    const requestHash = await createRequestHash(fingerprint);
+    const { requestHash, requestHashSeed } = await createRequestHash(fingerprint);
     const prepared = await initGuestSession();
     if (!prepared) {
       logger.warn('[guestSession] Play Integrity provider not ready');
@@ -361,6 +370,7 @@ const fetchGuestSession = async (
     try {
       body.integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
       body.requestHash = requestHash;
+      body.requestHashSeed = requestHashSeed;
     } catch (error) {
       if (isProviderInvalidError(error)) {
         preparePromise = null;
@@ -373,6 +383,7 @@ const fetchGuestSession = async (
         try {
           body.integrityToken = await AppIntegrity.requestIntegrityCheckAsync(requestHash);
           body.requestHash = requestHash;
+          body.requestHashSeed = requestHashSeed;
         } catch (retryError) {
           logger.warn('[guestSession] Play Integrity request failed after retry', retryError);
           updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);

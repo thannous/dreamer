@@ -144,7 +144,7 @@ export const isGuestSessionError = (error: Error): boolean => {
 };
 
 /** A recording or legacy AI route refused the request: its daily anti-abuse budget is spent. */
-export const isAiDailyLimitError = (error: unknown): boolean => {
+const isAiDailyLimitError = (error: unknown): boolean => {
   const details = getHttpErrorDetails(error);
   return details?.status === 429 && extractApiErrorInfo(details.body ?? {}).code === 'AI_DAILY_LIMIT';
 };

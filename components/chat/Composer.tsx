@@ -240,9 +240,8 @@ function Root({
     };
   }, [resolveOfflineModelPrompt]);
 
-  // Voice is blocked only when the device cannot capture speech at all — the
-  // same ladder the recording screen uses. Every other tier still dictates,
-  // through the network recognizer or server transcription.
+  // Dictation uses the same system-recognizer capability as the recording screen.
+  // If no recognizer is available, the composer remains usable with text.
   const [isVoiceSupported, setIsVoiceSupported] = useState(true);
 
   useEffect(() => {
@@ -336,11 +335,6 @@ function Root({
     if (result.error === 'rate_limited') {
       Alert.alert(t('common.error_title'), t('error.rate_limit'));
       return;
-    }
-
-    if (result.error === 'daily_ai_limit') {
-      Alert.alert(t('recording.alert.transcription_failed.title'), t('error.daily_ai_limit'));
-      return base;
     }
 
     if (result.error === 'language_pack_missing') {

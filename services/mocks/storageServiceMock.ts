@@ -13,6 +13,7 @@ import type {
   NotificationSettings,
   PendingImageJob,
   RecordingDraftReadResult,
+  RecordingDraftScope,
   RecordingInputModePreference,
   RitualStepProgress,
   ThemePreference,
@@ -147,32 +148,46 @@ export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   }
 }
 
+const MOCK_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
+const MOCK_GUEST_DRAFT_KEY = `${MOCK_TRANSCRIPT_KEY}:guest`;
+
+// Guest and account drafts have explicit namespaces; old unowned values stay unread.
+const mockTranscriptKey = (scope: RecordingDraftScope): string =>
+  scope === 'guest' ? MOCK_GUEST_DRAFT_KEY : `${MOCK_TRANSCRIPT_KEY}:${scope}`;
+
 /**
  * Mock get saved transcript
  */
-export async function getSavedTranscript(): Promise<string> {
+export async function getSavedTranscript(scope: RecordingDraftScope): Promise<string> {
   console.log('[MOCK STORAGE] getSavedTranscript called');
   try {
-    return (await getMockItem('gemini_dream_journal_recording_transcript')) || '';
+    return await getMockItem(mockTranscriptKey(scope)) ?? '';
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to retrieve transcript:', error);
     return '';
   }
 }
 
-export async function getRecordingDraft(): Promise<RecordingDraftReadResult> {
-  const value = await getMockItem('gemini_dream_journal_recording_transcript');
-  return value == null || value === '' ? { status: 'absent' } : { status: 'loaded', value };
+export async function getRecordingDraft(scope: RecordingDraftScope): Promise<RecordingDraftReadResult> {
+  const value = await getMockItem(mockTranscriptKey(scope));
+  if (value) return { status: 'loaded', value };
+  const guestValue = scope === 'guest' ? null : await getMockItem(MOCK_GUEST_DRAFT_KEY);
+  if (!guestValue) return { status: 'absent' };
+  // A guest draft follows the account that signs in, as in the real service.
+  await setMockItem(mockTranscriptKey(scope), guestValue);
+  await setMockItem(MOCK_GUEST_DRAFT_KEY, '');
+  return { status: 'loaded', value: guestValue };
 }
 
 /**
  * Mock save transcript
  */
-export async function saveTranscript(transcript: string): Promise<void> {
+export async function saveTranscript(transcript: string, scope: RecordingDraftScope): Promise<void> {
   console.log('[MOCK STORAGE] saveTranscript called with:', transcript.slice(0, 50) + '...');
+  const key = mockTranscriptKey(scope);
   try {
-    await setMockItem('gemini_dream_journal_recording_transcript', transcript);
-    if (!transcript) delete mockStorage['gemini_dream_journal_recording_transcript'];
+    await setMockItem(key, transcript);
+    if (!transcript) delete mockStorage[key];
     console.log('[MOCK STORAGE] Transcript saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save transcript:', error);
@@ -183,10 +198,10 @@ export async function saveTranscript(transcript: string): Promise<void> {
 /**
  * Mock clear saved transcript
  */
-export async function clearSavedTranscript(): Promise<void> {
+export async function clearSavedTranscript(scope: RecordingDraftScope): Promise<void> {
   console.log('[MOCK STORAGE] clearSavedTranscript called');
   try {
-    delete mockStorage['gemini_dream_journal_recording_transcript'];
+    delete mockStorage[mockTranscriptKey(scope)];
     console.log('[MOCK STORAGE] Transcript cleared');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to clear transcript:', error);

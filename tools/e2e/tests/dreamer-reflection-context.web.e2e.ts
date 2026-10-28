@@ -1,152 +1,183 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
-import path from 'node:path';
-import type { Page } from 'playwright/test';
-import { createParityTest, expect, expectIllustrationOnPlate, withDialog } from '../web-parity-fixtures';
-
-const artwork = path.resolve(process.cwd(), '../../e2e/fixtures/home-dream.png');
+import type { Browser } from '@e2e-dev/web';
+import { expect, type App, type Screen } from 'e2e';
+import { webLocale } from '../web-engine';
+import { test } from '../traced-parity-test';
+const options = { tags: ['historical-parity', 'locale-en-US'], skip: webLocale !== 'en-US' ? 'Requires the real en-US browser context; run E2E_WEB_LOCALE=en-US' : false, timeout: 180_000 };
+type Fixtures = { app: App; screen: Screen; browser: Browser };
+const artwork = '../../e2e/fixtures/home-dream.png';
 const dreamTitle = 'L’éléphant au sommet de la grande roue';
 const story = 'An elephant lands on top of a Ferris wheel among turquoise and coral clouds.';
 
-async function prepareReflection(page: Page, media: 'loaded' | 'failed' | 'absent' = 'loaded') {
-  await page.route('https://picsum.photos/**', route => media === 'failed' ? route.abort() : route.fulfill({ path: artwork }));
+async function prepareReflection({ app, screen, browser }: Fixtures, media: 'loaded' | 'failed' | 'absent' = 'loaded') {
+  await browser.route('https://picsum.photos/**', route => media === 'failed' ? route.abort() : route.fulfill({ path: artwork }));
   // Generated mock illustrations are the bundled 9:16 dream art, not picsum.
-  if (media === 'failed') await page.route(/mock-data(?:%2F|\/)assets(?:%2F|\/)dreams(?:%2F|\/)/, route => route.abort());
-  await page.goto('/');
-  await page.getByTestId('btn.onboarding.intro.next').click();
+  if (media === 'failed') await browser.route(/mock-data(?:%2F|\/)assets(?:%2F|\/)dreams(?:%2F|\/)/, route => route.abort());
+  await browser.setViewport(media === 'failed' ? { width: 320, height: 640 } : { width: 390, height: 844 });
+  await app.open();
+  await browser.emulateMedia({ reducedMotion: 'reduce' });
+  await browser.addInitScript(() => localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
+  await browser.reload();
+  await screen.getByTestId('btn.onboarding.intro.next').tap();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+    const stop = await browser.onDialog('accept');
+    try { await screen.getByTestId('btn.onboarding.feature.close').tap(); } finally { await stop(); }
   }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.profile').click();
-  await page.getByTestId('btn.mockProfile.plus').click();
-  await page.getByTestId('input.dreamTranscript').fill(story);
-  await page.getByTestId('btn.saveDream').click();
-  await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  await page.getByTestId('btn.dream.primaryCta').click();
-  await expect(page.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
+  await screen.getByTestId('btn.onboarding.skip').tap();
+  await screen.getByTestId('btn.recording.home', { visible: true }).or(screen.getByTestId('tab.home', { visible: true })).tap();
+  await screen.getByTestId('btn.header.home.settings').tap();
+  await screen.getByTestId('quick-settings.profile').tap();
+  await screen.getByTestId('btn.mockProfile.plus').tap();
+  await screen.getByTestId('input.dreamTranscript').fill(story);
+  await screen.getByTestId('btn.saveDream').tap();
+  await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
+  await screen.getByTestId('btn.dream.primaryCta').tap();
+  await expect(screen.getByTestId('component.dreamDetail.readingZone')).toContainText(/\S[\s\S]{80}/);
   if (media !== 'absent') {
-    await page.getByTestId('btn.journal.illustrate').click();
+    await screen.getByTestId('btn.journal.illustrate').tap();
     // Painted in the seal's window, the illustration leaves it for the plate at the top of the page.
-    if (media !== 'failed') await expectIllustrationOnPlate(page);
-    await expect(page.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
+    if (media !== 'failed') {
+      await screen.getByTestId('component.dreamDetail.savedMoment').scrollIntoView();
+      await expect(screen.getByTestId('btn.journal.illustration.expand')).toBeVisible();
+    }
+    await expect(screen.getByTestId('journal.detail.image.generation_dots')).toHaveCount(0);
     if (media === 'failed') {
-      await page.getByTestId('component.metadataCard').scrollIntoViewIfNeeded();
-      await expect(page.getByTestId('journal.detail.image.unavailable')).toBeVisible();
+      await screen.getByTestId('component.metadataCard').scrollIntoView();
+      await expect(screen.getByTestId('journal.detail.image.unavailable')).toBeVisible();
     }
   }
-  await page.getByTestId('btn.editDream').click();
-  await page.getByTestId('input.dreamTitle').fill(dreamTitle);
-  await page.getByTestId('btn.saveDreamEdit').click();
-  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
-  await page.getByTestId('component.dreamDetail.actionCard').click();
-  await expect(page.getByTestId('screen.dreamCategories')).toBeVisible();
+  await screen.getByTestId('btn.editDream').tap();
+  await screen.getByTestId('input.dreamTitle').fill(dreamTitle);
+  await screen.getByTestId('btn.saveDreamEdit').tap();
+  await screen.getByTestId('component.transcriptCard').scrollIntoView();
+  await screen.getByTestId('component.dreamDetail.actionCard').tap();
+  await expect(screen.getByTestId('screen.dreamCategories')).toBeVisible();
 }
 
-async function appearance(page: Page, mode: 'dark' | 'light') {
+async function appearance({ screen, browser }: Fixtures, mode: 'dark' | 'light') {
   // Mock dreams are session-scoped: navigate through the UI without reloading.
-  await page.goBack();
-  await page.goBack();
-  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.language').click();
-  await page.getByTestId('quick-settings.language.fr').click();
-  await page.getByTestId(`quick-settings.theme.${mode}`).click();
-  await page.getByTestId('quick-settings.close').click();
-  await page.getByTestId('btn.home.today.cta').click();
-  await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
-  await page.getByTestId('component.dreamDetail.actionCard').click();
-  await expect(page.getByTestId('screen.dreamCategories')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
+  await browser.back();
+  await browser.back();
+  await screen.getByTestId('btn.recording.home', { visible: true }).or(screen.getByTestId('tab.home', { visible: true })).tap();
+  await screen.getByTestId('btn.header.home.settings').tap();
+  await screen.getByTestId('quick-settings.language').tap();
+  await screen.getByTestId('quick-settings.language.fr').tap();
+  await screen.getByTestId(`quick-settings.theme.${mode}`).tap();
+  await screen.getByTestId('quick-settings.close').tap();
+  await screen.getByTestId('btn.home.today.cta').tap();
+  await screen.getByTestId('component.transcriptCard').scrollIntoView();
+  await screen.getByTestId('component.dreamDetail.actionCard').tap();
+  await expect.poll(() => background(browser)).toBe(mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');
 }
 
-const test = createParityTest({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+function background(browser: Browser) {
+  return browser.evaluate(() => {
+    const element = document.querySelector('[data-testid="screen.dreamCategories"]');
+    return element ? getComputedStyle(element).backgroundColor : null;
+  });
+}
+function viewportRatio(browser: Browser, id: string) {
+  return browser.evaluate(testId => {
+    const element = Array.from(document.querySelectorAll(`[data-testid="${testId}"]`)).find(node => node.getBoundingClientRect().width > 0);
+    if (!element) return 0;
+    return new Promise<number>(resolve => {
+      const observer = new IntersectionObserver(([entry]) => { observer.disconnect(); resolve(entry.intersectionRatio); }, { threshold: [0, 1] });
+      observer.observe(element);
+    });
+  }, id);
+}
+function imageWidth(browser: Browser) {
+  return browser.evaluate(() => document.querySelector<HTMLImageElement>('[data-testid="image.reflection.dream"] img')?.naturalWidth ?? 0);
+}
 
-test('reflection preserves the artwork across themes and offers a recap after one successful angle', async ({ page }, info) => {
-  await prepareReflection(page);
-  const categories = page.getByTestId('screen.dreamCategories');
-  const image = page.getByTestId('image.reflection.dream').locator('img');
+test('reflection preserves the artwork across themes and offers a recap after one successful angle', options, async fixtures => {
+  const { screen, browser, app } = fixtures;
+  await prepareReflection(fixtures);
+  const categories = screen.getByTestId('screen.dreamCategories');
+  const image = browser.locator('[data-testid="image.reflection.dream"] img');
   await expect(image).toBeVisible();
-  await expect.poll(() => image.evaluate(el => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await expect.poll(() => imageWidth(browser)).toBeGreaterThan(0);
   const originalSource = await image.getAttribute('src');
-  await expect(page.getByTestId('text.reflection.exchangeSaved')).toHaveCount(0);
-  await expect(page.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
+  await expect(screen.getByTestId('text.reflection.exchangeSaved')).toHaveCount(0);
+  await expect(screen.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
   for (const mode of ['dark', 'light'] as const) {
-    await page.emulateMedia({ colorScheme: mode === 'dark' ? 'light' : 'dark' });
-    await appearance(page, mode);
+    await browser.emulateMedia({ colorScheme: mode === 'dark' ? 'light' : 'dark' });
+    await appearance(fixtures, mode);
     await expect(image).toHaveAttribute('src', originalSource!);
-    await expect(page.getByTestId('text.reflection.exchangeSaved')).toHaveCount(0);
+    await expect(screen.getByTestId('text.reflection.exchangeSaved')).toHaveCount(0);
     for (const angle of ['symbols', 'emotions', 'growth']) {
-      await expect(page.getByTestId(`btn.dreamCategory.${angle}`)).toHaveCount(1);
+      await expect(screen.getByTestId(`btn.dreamCategory.${angle}`)).toHaveCount(1);
     }
-    await expect(page.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
-    await page.screenshot({ path: info.outputPath(`reflection-before-${mode}.png`) });
+    await expect(screen.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
+    await app.screenshot(`reflection-before-${mode}.png`);
   }
-  await page.getByTestId('btn.dreamCategory.readAnalysis').click();
-  await expect(page.getByTestId('analysis.reading.body')).toBeVisible();
-  await page.getByTestId('analysis.reading.close').click();
-  await page.getByTestId('btn.dreamCategory.symbols').click();
-  await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
-  await page.getByRole('button', { name: 'Retour', exact: true }).click();
+  await screen.getByTestId('btn.dreamCategory.readAnalysis').tap();
+  await expect(screen.getByTestId('analysis.reading.body')).toBeVisible();
+  await screen.getByTestId('analysis.reading.close').tap();
+  await screen.getByTestId('btn.dreamCategory.symbols').tap();
+  await expect(screen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
+  await screen.getByRole('button', { name: 'Retour', exact: true }).tap();
   await expect(categories).toBeVisible();
-  await expect(page.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
-  await expect(page.getByTestId('btn.dreamCategory.symbols')).toContainText('Reprendre');
-  await expect(page.getByTestId('btn.exploration360.synthesis')).toBeInViewport();
-  await page.screenshot({ path: info.outputPath('reflection-light.png') });
-  await page.getByTestId('btn.exploration360.synthesis').click();
-  await expect(page.getByTestId('text.reflection.recapCurrent').filter({ visible: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Retour', exact: true }).click();
+  await expect(screen.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
+  await expect(screen.getByTestId('btn.dreamCategory.symbols')).toContainText('Reprendre');
+  await expect.poll(() => viewportRatio(browser, 'btn.exploration360.synthesis')).toBeGreaterThan(0);
+  await app.screenshot('reflection-light.png');
+  await screen.getByTestId('btn.exploration360.synthesis').tap();
+  await expect(screen.getByTestId('text.reflection.recapCurrent', { visible: true })).toBeVisible();
+  await screen.getByRole('button', { name: 'Retour', exact: true }).tap();
   await expect(categories).toBeVisible();
-  await expect(page.getByTestId('btn.reflection.readRecap')).toBeVisible();
-  await expect(page.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
+  await expect(screen.getByTestId('btn.reflection.readRecap')).toBeVisible();
+  await expect(screen.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
 });
 
-test('reflection stays usable with failed artwork on a narrow screen', async ({ page }, info) => {
-  await page.setViewportSize({ width: 320, height: 640 });
-  await prepareReflection(page, 'failed');
-  await expect(page.getByTestId('image.reflection.dream')).toHaveCount(0);
+test('reflection stays usable with failed artwork on a narrow screen', options, async fixtures => {
+  const { screen, browser, app } = fixtures;
+  await prepareReflection(fixtures, 'failed');
+  await expect(screen.getByTestId('image.reflection.dream')).toHaveCount(0);
   for (const angle of ['symbols', 'emotions', 'growth']) {
-    await page.getByTestId(`btn.dreamCategory.${angle}`).scrollIntoViewIfNeeded();
-    await expect(page.getByTestId(`btn.dreamCategory.${angle}`)).toBeInViewport();
+    await screen.getByTestId(`btn.dreamCategory.${angle}`).scrollIntoView();
+    await expect.poll(() => viewportRatio(browser, `btn.dreamCategory.${angle}`)).toBeGreaterThan(0);
   }
-  await page.getByTestId('btn.dreamCategory.emotions').click();
-  await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await expect(page.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
-  await page.getByTestId('btn.exploration360.synthesis').scrollIntoViewIfNeeded();
-  await expect(page.getByTestId('btn.exploration360.synthesis')).toBeInViewport();
-  await page.screenshot({ path: info.outputPath('reflection-narrow.png') });
+  await screen.getByTestId('btn.dreamCategory.emotions').tap();
+  await expect(screen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
+  await screen.getByRole('button', { name: 'Back', exact: true }).tap();
+  await expect(screen.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
+  await screen.getByTestId('btn.exploration360.synthesis').scrollIntoView();
+  await expect.poll(() => viewportRatio(browser, 'btn.exploration360.synthesis')).toBeGreaterThan(0);
+  await app.screenshot('reflection-narrow.png');
 });
 
-test('reflection without an illustration keeps reading and all angles available before the first exchange', async ({ page }, info) => {
-  await prepareReflection(page, 'absent');
-  await expect(page.getByTestId('image.reflection.dream')).toHaveCount(0);
-  await expect(page.getByTestId('screen.dreamCategories').getByRole('heading', { name: dreamTitle, exact: true })).toBeVisible();
-  await expect(page.getByTestId('text.reflection.exchangeSaved')).toHaveCount(0);
-  await expect(page.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
-  await page.getByTestId('btn.dreamCategory.readAnalysis').click();
-  await expect(page.getByTestId('analysis.reading.body')).toBeVisible();
-  await page.getByTestId('analysis.reading.close').click();
+test('reflection without an illustration keeps reading and all angles available before the first exchange', options, async fixtures => {
+  const { screen, browser, app } = fixtures;
+  await prepareReflection(fixtures, 'absent');
+  await expect(screen.getByTestId('image.reflection.dream')).toHaveCount(0);
+  await expect(screen.getByTestId('screen.dreamCategories').getByRole('heading', { name: dreamTitle, exact: true })).toBeVisible();
+  await expect(screen.getByTestId('text.reflection.exchangeSaved')).toHaveCount(0);
+  await expect(screen.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
+  await screen.getByTestId('btn.dreamCategory.readAnalysis').tap();
+  await expect(screen.getByTestId('analysis.reading.body')).toBeVisible();
+  await screen.getByTestId('analysis.reading.close').tap();
   for (const angle of ['symbols', 'emotions', 'growth']) {
-    await expect(page.getByTestId(`btn.dreamCategory.${angle}`)).toBeEnabled();
+    await expect(screen.getByTestId(`btn.dreamCategory.${angle}`)).toBeEnabled();
   }
-  await page.screenshot({ path: info.outputPath('reflection-without-artwork.png') });
+  await app.screenshot('reflection-without-artwork.png');
 });
 
 // The completed-dream Home CTA opens Journal; its existing mobile FlashList
 // CSSStyleDeclaration baseline is outside this surface. Capture the dark state
 // independently instead of routing a completed dream through that broken list.
-test('reflection shows the completed exchange and original artwork in explicit dark mode', async ({ page }, info) => {
-  await prepareReflection(page);
-  await page.emulateMedia({ colorScheme: 'light' });
-  await appearance(page, 'dark');
-  await page.getByTestId('btn.dreamCategory.symbols').click();
-  await expect(page.getByTestId('btn.exploration360.synthesis').filter({ visible: true })).toBeEnabled();
-  await page.getByRole('button', { name: 'Retour', exact: true }).click();
-  await expect(page.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
-  await expect(page.getByTestId('btn.dreamCategory.symbols')).toContainText('Reprendre');
-  await expect(page.getByTestId('image.reflection.dream').locator('img')).toBeVisible();
-  await expect(page.getByTestId('btn.exploration360.synthesis')).toBeInViewport();
-  await page.screenshot({ path: info.outputPath('reflection-dark.png') });
+test('reflection shows the completed exchange and original artwork in explicit dark mode', options, async fixtures => {
+  const { screen, browser, app } = fixtures;
+  await prepareReflection(fixtures);
+  await browser.emulateMedia({ colorScheme: 'light' });
+  await appearance(fixtures, 'dark');
+  await screen.getByTestId('btn.dreamCategory.symbols').tap();
+  await expect(screen.getByTestId('btn.exploration360.synthesis', { visible: true })).toBeEnabled();
+  await screen.getByRole('button', { name: 'Retour', exact: true }).tap();
+  await expect(screen.getByTestId('text.reflection.exchangeSaved')).toBeVisible();
+  await expect(screen.getByTestId('btn.dreamCategory.symbols')).toContainText('Reprendre');
+  await expect(browser.locator('[data-testid="image.reflection.dream"] img')).toBeVisible();
+  await expect.poll(() => viewportRatio(browser, 'btn.exploration360.synthesis')).toBeGreaterThan(0);
+  await app.screenshot('reflection-dark.png');
 });

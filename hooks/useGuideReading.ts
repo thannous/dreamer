@@ -1,13 +1,14 @@
 import { useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
+import { toAccountScope } from '@/lib/accountScope';
 import type { GuideReadingScope } from '@/lib/guideReading';
 import { syncGuideReading, useGuideReadingSnapshot } from '@/services/guideReadingStore';
 
 /** Screens observe the permanent host's account scope; they do not own authentication. */
 export function useGuideReading() {
   const { user, loading } = useAuth();
-  const scope: GuideReadingScope = user?.id ? `user:${user.id}` : 'guest';
+  const scope: GuideReadingScope = toAccountScope(user?.id);
   const state = useGuideReadingSnapshot();
   const ready = !loading && state.scope === scope && state.ready;
   useFocusEffect(useCallback(() => {

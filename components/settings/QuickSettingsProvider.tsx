@@ -12,6 +12,7 @@ import { QuickSettingsContext } from '@/context/QuickSettingsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { buildPaywallHref } from '@/lib/paywallRoute';
+import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
@@ -64,6 +65,12 @@ function PreferenceChoices<T extends string>({ preference, id, showTitle = true 
           </Pressable>
         ))}
       </View>
+      {id === 'language' && Platform.OS === 'android' && isMockDogfoodPersistenceEnabled()
+        && preference.offlineModelCheckedFor ? (
+          <View accessible accessibilityLabel="QA speech model check complete" pointerEvents="none"
+            testID={`qa.language-offline-model.${preference.offlineModelCheckedFor}.ready`}
+            style={{ position: 'absolute', width: 1, height: 1 }} />
+        ) : null}
       {preference.error ? <Text accessibilityRole="alert" className="font-sans text-body-sm text-ivory">{t('error.unknown')}</Text> : null}
     </View>
   );

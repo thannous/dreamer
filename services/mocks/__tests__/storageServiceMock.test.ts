@@ -194,19 +194,29 @@ describe('storageServiceMock', () => {
   describe('transcript management', () => {
     it('distinguishes an absent draft from a saved draft through the strict API', async () => {
       resetMockStorage();
-      expect(await getRecordingDraft()).toEqual({ status: 'absent' });
-      await saveTranscript('  remembered dream  ');
-      expect(await getRecordingDraft()).toEqual({ status: 'loaded', value: '  remembered dream  ' });
-      await clearSavedTranscript();
-      expect(await getRecordingDraft()).toEqual({ status: 'absent' });
+      expect(await getRecordingDraft('guest')).toEqual({ status: 'absent' });
+      await saveTranscript('  remembered dream  ', 'guest');
+      expect(await getRecordingDraft('guest')).toEqual({ status: 'loaded', value: '  remembered dream  ' });
+      await clearSavedTranscript('guest');
+      expect(await getRecordingDraft('guest')).toEqual({ status: 'absent' });
+    });
+    it('keeps account drafts apart and moves a guest draft to the account that signs in', async () => {
+      resetMockStorage();
+      await saveTranscript('typed before signing in', 'guest');
+      expect(await getRecordingDraft('user:a')).toEqual({ status: 'loaded', value: 'typed before signing in' });
+      expect(await getRecordingDraft('guest')).toEqual({ status: 'absent' });
+      expect(await getRecordingDraft('user:b')).toEqual({ status: 'absent' });
+      await saveTranscript('private dream of A', 'user:a');
+      expect(await getSavedTranscript('user:b')).toBe('');
+      expect(await getSavedTranscript('user:a')).toBe('private dream of A');
     });
     it('given saved transcript when retrieving transcript then returns saved transcript', async () => {
       // Given
       const testTranscript = 'This is a test transcript for audio recording';
-      await saveTranscript(testTranscript);
+      await saveTranscript(testTranscript, 'guest');
 
       // When
-      const transcript = await getSavedTranscript();
+      const transcript = await getSavedTranscript('guest');
 
       // Then
       expect(transcript).toBe(testTranscript);
@@ -214,13 +224,13 @@ describe('storageServiceMock', () => {
 
     it('given empty transcript when saving then clears stored transcript', async () => {
       // Given
-      await saveTranscript('initial transcript');
+      await saveTranscript('initial transcript', 'guest');
 
       // When
-      await saveTranscript('');
+      await saveTranscript('', 'guest');
 
       // Then
-      const transcript = await getSavedTranscript();
+      const transcript = await getSavedTranscript('guest');
       expect(transcript).toBe('');
     });
 
@@ -229,7 +239,7 @@ describe('storageServiceMock', () => {
       resetMockStorage();
 
       // When
-      const transcript = await getSavedTranscript();
+      const transcript = await getSavedTranscript('guest');
 
       // Then
       expect(transcript).toBe('');
@@ -238,13 +248,13 @@ describe('storageServiceMock', () => {
     it('given saved transcript when clearing then removes transcript', async () => {
       // Given
       const testTranscript = 'This is a test transcript for audio recording';
-      await saveTranscript(testTranscript);
+      await saveTranscript(testTranscript, 'guest');
 
       // When
-      await clearSavedTranscript();
+      await clearSavedTranscript('guest');
 
       // Then
-      const transcript = await getSavedTranscript();
+      const transcript = await getSavedTranscript('guest');
       expect(transcript).toBe('');
     });
   });

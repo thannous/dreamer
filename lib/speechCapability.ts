@@ -1,7 +1,7 @@
 /**
  * Resolves what kind of voice dictation a device can actually deliver.
  *
- * The app must let users dictate a dream on every supported Android version.
+ * The app uses the system recognizer when one is available.
  * `android.speech` exposes its features at three different API levels, and the
  * lower ones simply return less information rather than failing:
  *
@@ -12,8 +12,8 @@
  *
  * So below API 33 we cannot prove a locale is installed locally, and we must
  * degrade to a recognizer that can reach the network instead of guessing.
- * The ladder below never blocks dictation because of an API level — it only
- * blocks when the device genuinely cannot capture audio at all.
+ * The ladder never blocks dictation merely because of an API level. If no
+ * recognizer is available, the user can still type their dream.
  */
 
 /** `isOnDeviceRecognitionAvailable` / `createOnDeviceSpeechRecognizer`. */
@@ -27,9 +27,7 @@ export type SpeechCapabilityTier =
   | 'on_device'
   /** Native recognizer, locale not proven local: recognizer may use the network. */
   | 'network'
-  /** No native recognizer: record audio and transcribe it server-side. */
-  | 'server_only'
-  /** No way to capture speech at all: the voice control must be hidden. */
+  /** No usable microphone or recognizer: the voice control must be hidden. */
   | 'unavailable';
 
 export type SpeechCapabilityReason =
@@ -87,7 +85,7 @@ export const isFullyOffline = (capability: SpeechCapability): boolean =>
  * default, which is usually but not always remote.
  */
 export const mayLeaveDevice = (capability: SpeechCapability): boolean =>
-  capability.tier === 'network' || capability.tier === 'server_only';
+  capability.tier === 'network';
 
 /**
  * Android SpeechRecognizer ends after silence. Hands-free dictation restarts
@@ -108,7 +106,7 @@ export function resolveSpeechCapability(input: SpeechCapabilityInput): SpeechCap
     return normalized !== requested && installed.includes(normalized);
   });
 
-  // Nothing can capture audio: this is the only case that blocks the feature.
+  // Nothing can capture audio.
   if (!input.canRecordAudio) {
     return {
       tier: 'unavailable',
@@ -119,10 +117,10 @@ export function resolveSpeechCapability(input: SpeechCapabilityInput): SpeechCap
   }
 
   // No RecognitionService installed (common on ROMs without Google services).
-  // We can still record and transcribe server-side, so dictation survives.
+  // Noctalia does not upload a recording as a fallback.
   if (!input.recognitionAvailable) {
     return {
-      tier: 'server_only',
+      tier: 'unavailable',
       reason: 'no_recognition_service',
       requiresOnDeviceRecognition: false,
       localAlternatives,

@@ -54,7 +54,7 @@ export async function expectIllustrationOnPlate(page: Page) {
  */
 export async function expectCaptureDraftSaved(page: Page, text: string) {
   await expect.poll(() => page.evaluate(() => (
-    localStorage.getItem('noctalia_mock_dogfood_v1:gemini_dream_journal_recording_transcript')
+    localStorage.getItem('noctalia_mock_dogfood_v1:gemini_dream_journal_recording_transcript:guest')
   )), { message: 'capture draft kept for a reload' }).toContain(text);
 }
 type Body = (fixtures: Fixtures, info: ParityInfo) => Promise<void>;

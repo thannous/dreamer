@@ -34,6 +34,9 @@ const mockGetInputModePreference = jest.fn();
 const mockGetSavedTranscript = jest.fn(async (): Promise<string> => '');
 const mockGetRecordingVoiceHintCompleted = jest.fn(async () => true);
 const mockSaveTranscript = jest.fn(async (_value: string): Promise<void> => undefined);
+// When set, drafts are stored per owner scope, as the real storage service does.
+let mockDraftStore: Map<string, string> | null = null;
+let mockAuthLoading = false;
 const mockBack = jest.fn();
 const mockCanGoBack = jest.fn(() => false);
 const mockPush = jest.fn();
@@ -500,7 +503,7 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
 }));
 
 jest.doMock('@/context/AuthContext', () => ({
-  useAuth: () => ({ user: mockCurrentUser }),
+  useAuth: () => ({ user: mockCurrentUser, loading: mockAuthLoading }),
 }));
 
 jest.doMock('@/context/DreamsContext', () => ({
@@ -729,13 +732,16 @@ jest.doMock('@/services/storageService', () => ({
   getRecordingInputModePreference: mockGetInputModePreference,
   getRecordingVoiceHintCompleted: mockGetRecordingVoiceHintCompleted,
   getSavedTranscript: mockGetSavedTranscript,
-  getRecordingDraft: async () => {
-    const value = await mockGetSavedTranscript();
+  getRecordingDraft: async (scope: string) => {
+    const value = mockDraftStore ? mockDraftStore.get(scope) : await mockGetSavedTranscript();
     return value ? { status: 'loaded', value } : { status: 'absent' };
   },
   saveRecordingInputModePreference: mockSaveInputModePreference,
   saveRecordingVoiceHintCompleted: jest.fn().mockResolvedValue(undefined),
-  saveTranscript: mockSaveTranscript,
+  saveTranscript: async (value: string, scope: string) => {
+    await mockSaveTranscript(value);
+    mockDraftStore?.set(scope, value);
+  },
 }));
 
 const { default: RecordingScreen } = require('@/app/recording');
@@ -941,6 +947,8 @@ describe('Recording screen', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     mockCurrentUser = { id: 'user-1' };
+    mockAuthLoading = false;
+    mockDraftStore = null;
     mockGetGuestRecordedDreamCount.mockResolvedValue(0);
     mockQuotaState = { tier: 'free', loading: false, error: null, usage: { analysis: { used: 0, limit: 3, remaining: 3 } } };
     mockDreams = [];
@@ -1141,31 +1149,19 @@ describe('Recording screen', () => {
     expect(mockAddDream).not.toHaveBeenCalled();
   });
 
-  it('says once, without an alert, that transcription spent its daily budget', async () => {
+  it('keeps the draft and offers text when system speech recognition is unavailable', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';
-    mockStopRecording.mockImplementation(async () => {
-      mockIsRecordingRef.current = false;
-      return { transcript: '', error: 'daily_ai_limit' };
-    });
+    mockGetSavedTranscript.mockResolvedValueOnce('Brouillon précédent.');
+    mockStartRecording.mockResolvedValue({ success: false, error: 'stt_unavailable' });
     render(<RecordingScreen />);
     await awaitEditorReady();
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
 
     await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
-      .toContain('recording.status.fallback.daily_ai_limit'));
-    expect(Alert.alert).not.toHaveBeenCalled();
-
-    // Once told, a later limited stop of the same visit stays quiet.
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
-    await waitFor(() => expect(screen.queryByTestId(TID.Text.RecordingFallbackNotice)).toBeNull());
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
-    await act(async () => { await jest.advanceTimersByTimeAsync(10); });
-    expect(mockStopRecording).toHaveBeenCalledTimes(2);
-    expect(screen.queryByTestId(TID.Text.RecordingFallbackNotice)).toBeNull();
+      .toContain('recording.status.fallback.stt_unavailable'));
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Brouillon précédent.');
   });
 
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {
@@ -1934,6 +1930,52 @@ describe('Recording screen', () => {
       ).toBe('a remembered dream');
     });
     expect(mockSaveTranscript).not.toHaveBeenCalledWith('');
+  });
+
+  it('keeps each account draft to itself when the account changes under Capture', async () => {
+    mockDraftStore = new Map();
+    const editorValue = () => (screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value;
+    const { rerender } = render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'my private dream' } });
+    await advancePastAutosaveWindow();
+    expect(mockDraftStore.get('user:user-1')).toBe('my private dream');
+
+    // Signing out from Settings leaves Capture mounted underneath.
+    mockCurrentUser = null;
+    rerender(<RecordingScreen />);
+    await awaitEditorReady();
+    expect(editorValue()).toBe('');
+    fireEvent.change(screen.getByTestId(TID.Input.DreamTranscript), { target: { value: 'a guest dream' } });
+    await advancePastAutosaveWindow();
+    expect(mockDraftStore.get('guest')).toBe('a guest dream');
+    expect(mockDraftStore.get('user:user-1')).toBe('my private dream');
+
+    mockCurrentUser = { id: 'user-2' };
+    rerender(<RecordingScreen />);
+    await awaitEditorReady();
+    expect(editorValue()).not.toContain('my private dream');
+
+    mockCurrentUser = { id: 'user-1' };
+    rerender(<RecordingScreen />);
+    await waitFor(() => expect(editorValue()).toBe('my private dream'));
+  });
+
+  it('reads no draft until the signed-in account is known', async () => {
+    mockDraftStore = new Map([['guest', 'a guest dream'], ['user:user-1', 'my private dream']]);
+    mockAuthLoading = true;
+    mockCurrentUser = null;
+    const { rerender } = render(<RecordingScreen />);
+    await act(async () => { await jest.advanceTimersByTimeAsync(RECORDING_DRAFT_AUTOSAVE_DELAY_MS); });
+    expect(screen.getByTestId(TID.Screen.Recording).getAttribute('aria-busy')).toBe('true');
+    expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
+
+    mockAuthLoading = false;
+    mockCurrentUser = { id: 'user-1' };
+    rerender(<RecordingScreen />);
+    await waitFor(() => {
+      expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('my private dream');
+    });
   });
 
   it.each([601, 10_000] as const)(

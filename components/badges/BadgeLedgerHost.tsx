@@ -4,6 +4,7 @@ import { BadgeSyncHost } from './BadgeSyncHost';
 
 import { useAuth } from '@/context/AuthContext';
 import { useDreamsData } from '@/context/DreamsContext';
+import { toAccountScope } from '@/lib/accountScope';
 import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import { activateBadgeScope, settleBadges, useBadgeLedger, type BadgeScope } from '@/services/badgeLedgerStore';
 
@@ -19,7 +20,7 @@ export function BadgeLedgerHost() {
   const { user, loading } = useAuth();
   const { dreams, loaded } = useDreamsData();
   const { scope: activeScope, ready } = useBadgeLedger();
-  const scope: BadgeScope = user?.id ? `user:${user.id}` : 'guest';
+  const scope: BadgeScope = toAccountScope(user?.id);
 
   useEffect(() => {
     if (!loading) void activateBadgeScope(scope);

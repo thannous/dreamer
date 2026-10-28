@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
+import { toAccountScope } from '@/lib/accountScope';
 import type { GuideReadingScope } from '@/lib/guideReading';
 import { recordBadgeEvent, useBadgeLedger } from '@/services/badgeLedgerStore';
 import { activateGuideReadingScope, suspendGuideReadingScope, syncGuideReading, useGuideReadingSnapshot } from '@/services/guideReadingStore';
@@ -8,7 +9,7 @@ import { activateGuideReadingScope, suspendGuideReadingScope, syncGuideReading, 
 /** Follows authentication even while no guide screen is mounted. */
 export function GuideReadingHost() {
   const { user, loading } = useAuth();
-  const scope: GuideReadingScope = user?.id ? `user:${user.id}` : 'guest';
+  const scope: GuideReadingScope = toAccountScope(user?.id);
   const previousScope = useRef<GuideReadingScope | null>(null);
   const reading = useGuideReadingSnapshot();
   const badges = useBadgeLedger();

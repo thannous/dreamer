@@ -346,6 +346,9 @@ describe('native speech module integration', () => {
     });
 
     expect(session).not.toBeNull();
+    expect(speechModule.start).toHaveBeenCalledWith(expect.not.objectContaining({
+      recordingOptions: expect.anything(),
+    }));
     expect(requestPermissionsAsync).not.toHaveBeenCalled();
     expect(speechModule.start).toHaveBeenCalledTimes(1);
     session?.abort();
@@ -465,8 +468,7 @@ describe('native speech module integration', () => {
       ['hello world'],
     ]);
     expect(result.transcript).toBe('hello world');
-    expect(result.recordedUri).toBe('file://audio.pcm');
-    expect(result.hasRecording).toBe(true);
+    expect(result).not.toHaveProperty('recordedUri');
     expect(clearTimeoutSpy).toHaveBeenCalled();
 
     const nextSession = await startNativeSpeechSession('en-US', { onPartial });
@@ -661,7 +663,7 @@ describe('resolveDeviceSpeechCapability — Android API levels down to minSdk 28
     expect(capability.localAlternatives).toEqual(['de-DE']);
   });
 
-  it('degrades to the server fallback when no recognition service exists', async () => {
+  it('reports unavailable when no recognition service exists', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 28;
@@ -671,10 +673,10 @@ describe('resolveDeviceSpeechCapability — Android API levels down to minSdk 28
 
     const capability = await resolveDeviceSpeechCapability('fr-FR');
 
-    expect(capability.tier).toBe('server_only');
+    expect(capability.tier).toBe('unavailable');
   });
 
-  it('degrades to the server fallback when the native module is missing', async () => {
+  it('reports unavailable when the native module is missing', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 28;
@@ -682,10 +684,10 @@ describe('resolveDeviceSpeechCapability — Android API levels down to minSdk 28
 
     const capability = await resolveDeviceSpeechCapability('fr-FR');
 
-    expect(capability.tier).toBe('server_only');
+    expect(capability.tier).toBe('unavailable');
   });
 
-  it('blocks voice only when the microphone is unusable', async () => {
+  it('blocks voice when the microphone is unusable', async () => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 34;
@@ -712,7 +714,7 @@ describe('resolveDeviceSpeechCapability — Android API levels down to minSdk 28
 
     const capability = await resolveDeviceSpeechCapability('fr-FR');
 
-    expect(capability.tier).toBe('server_only');
+    expect(capability.tier).toBe('unavailable');
   });
 });
 

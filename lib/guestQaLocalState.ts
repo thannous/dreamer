@@ -32,7 +32,7 @@ export async function prepareGuestQaLocalState(): Promise<void> {
     clearAccountCreatedOnDeviceForQa(),
     resetGuestAnalysisQuotaForQa(),
     resetGuestDreamRecordingCount(),
-    clearSavedTranscript(),
+    clearSavedTranscript('guest'),
     saveOnboardingStateSnapshot('guest', JSON.stringify(getDefaultOnboardingState())),
     invalidateGuestSession(),
   ]);

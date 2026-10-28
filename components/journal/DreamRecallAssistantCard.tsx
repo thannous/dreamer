@@ -80,7 +80,7 @@ export function DreamRecallAssistantCard({
   const [voiceSupportLocale, setVoiceSupportLocale] = useState<string | null>(null);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const [isVoiceTransitioning, setIsVoiceTransitioning] = useState(false);
-  const [voiceError, setVoiceError] = useState<false | 'voice' | 'daily_limit'>(false);
+  const [voiceError, setVoiceError] = useState(false);
 
   const inputRef = useRef<TextInputInstance>(null);
   const revealRequestedRef = useRef<string | null>(null);
@@ -216,7 +216,7 @@ export function DreamRecallAssistantCard({
     const result = await stopSessionRecording();
     if (questionKeyRef.current !== questionKey) return answerRef.current;
     const merged = mergeStoppedTranscript(result.transcript ?? '');
-    setVoiceError(!result.error ? false : result.error === 'daily_ai_limit' ? 'daily_limit' : 'voice');
+    setVoiceError(Boolean(result.error));
     return merged;
   }, [isPreparingRecording, isRecordingRef, mergeStoppedTranscript, stopSessionRecording]);
 
@@ -302,10 +302,10 @@ export function DreamRecallAssistantCard({
       const response = await startSessionRecording(typed);
       if (response.error === 'cancelled') return;
       if (!response.success) {
-        setVoiceError('voice');
+        setVoiceError(true);
       }
     } catch {
-      setVoiceError('voice');
+      setVoiceError(true);
     } finally {
       setIsPreparingRecording(false);
     }
@@ -614,7 +614,7 @@ export function DreamRecallAssistantCard({
 
       {voiceError && currentQuestion ? (
         <Text accessibilityLiveRegion="polite" className="font-sans text-body-sm text-danger-on">
-          {String(t(voiceError === 'daily_limit' ? 'error.daily_ai_limit' : 'dream_recall.session.voice_error'))}
+          {String(t('dream_recall.session.voice_error'))}
         </Text>
       ) : null}
 

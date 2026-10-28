@@ -56,6 +56,8 @@ import {
 } from "@/lib/ritualProgressUtils";
 import { resolveTodayState, type TodayState } from "@/lib/todayState";
 import { getRitualPreference, getRitualStepProgress, getSavedTranscript, saveRitualStepProgress } from "@/services/storageService";
+import type { RecordingDraftScope } from "@/lib/types";
+import { useRecordingDraftScope } from "@/hooks/useRecordingDraftScope";
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 
@@ -63,9 +65,11 @@ const DATE_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 
 // Storage reads of the Today screen live outside it: React Compiler does not compile a
 // component whose try/catch holds a conditional expression, and Home re-renders on focus.
-async function readDraftSaved(): Promise<boolean | null> {
+async function readDraftSaved(scope: RecordingDraftScope | null): Promise<boolean | null> {
+  // The badge reflects the current account's draft, never another one's.
+  if (!scope) return null;
   try {
-    const savedTranscript = await getSavedTranscript();
+    const savedTranscript = await getSavedTranscript(scope);
     return savedTranscript.trim().length > 0;
   } catch (error) {
     if (__DEV__) {
@@ -129,6 +133,7 @@ function InspirationScreen() {
   const scrollPerf = useScrollIdle();
   const { dreams, loaded: dreamsLoaded } = useDreamsData();
   const { user } = useAuth();
+  const draftScope = useRecordingDraftScope();
   const { tier, usage, loading: quotaLoading, error: quotaError } = useQuota();
   const freeAnalysesNudge = getFreeAnalysesNudge({
     tier, signedIn: Boolean(user), loading: quotaLoading, error: quotaError, usage, maxRemaining: 1,
@@ -277,10 +282,10 @@ function InspirationScreen() {
   }, [progressDate]);
 
   const refreshTodayDraft = useCallback(async (isActive?: () => boolean) => {
-    const draftSaved = await readDraftSaved();
+    const draftSaved = await readDraftSaved(draftScope);
     if (draftSaved === null || (isActive && !isActive())) return;
     setHasDraft(draftSaved);
-  }, []);
+  }, [draftScope]);
 
   const refreshTodayForOpenScreen = useCallback(() => {
     syncTodayClock();

@@ -12,7 +12,6 @@ describe('recording voice mode', () => {
     'language_pack_missing',
     'no_speech',
     'start_failed',
-    'daily_ai_limit',
   ];
 
   it.each(failures)('keeps voice UI and preference after %s', (failure: VoiceCaptureFailure) => {

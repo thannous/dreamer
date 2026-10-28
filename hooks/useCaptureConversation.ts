@@ -5,6 +5,14 @@ import { hasAiConsent } from '@/lib/aiConsent';
 
 export const CAPTURE_MAX_QUESTIONS = 3;
 
+type ConversationState =
+  | { status: 'idle' | 'asking' | 'decision' }
+  | { status: 'question'; question: string | null; unavailable: boolean }
+  | { status: 'done'; question: string | null };
+
+// One shared idle snapshot: resetting an idle conversation does not re-render the screen.
+const IDLE: ConversationState = { status: 'idle' };
+
 type Options = {
   language: string;
   t: (key: string) => string;
@@ -15,11 +23,7 @@ type Options = {
 
 /** Network results belong to one draft revision. The editor persists answered questions with their answers. */
 export function useCaptureConversation({ language, t, scope, requestConsent }: Options) {
-  const [question, setQuestion] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [unavailable, setUnavailable] = useState(false);
-  const [done, setDone] = useState(false);
-  const [needsDecision, setNeedsDecision] = useState(false);
+  const [state, setState] = useState<ConversationState>(IDLE);
   const finished = useRef(false);
   const previous = useRef<string[]>([]);
   const requested = useRef('');
@@ -32,7 +36,7 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     generation.current += 1;
     controller.current?.abort();
     controller.current = null;
-    setLoading(false);
+    setState(current => current.status === 'asking' ? IDLE : current);
   }, []);
 
   const reset = useCallback(() => {
@@ -40,11 +44,7 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     controller.current?.abort();
     requested.current = '';
     previous.current = [];
-    setQuestion(null);
-    setLoading(false);
-    setUnavailable(false);
-    setDone(false);
-    setNeedsDecision(false);
+    setState(IDLE);
     finished.current = false;
   }, []);
 
@@ -58,14 +58,11 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     rememberQuestions(transcript);
     cancel();
     requested.current = '';
-    setQuestion(null);
-    setUnavailable(false);
     if (finished.current || previous.current.length >= CAPTURE_MAX_QUESTIONS) {
       finished.current = true;
-      setDone(true);
-      setNeedsDecision(false);
+      setState({ status: 'done', question: null });
     } else {
-      setNeedsDecision(true);
+      setState({ status: 'decision' });
     }
   }, [cancel, rememberQuestions]);
 
@@ -80,27 +77,18 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     // Restored drafts already contain their answered questions; reopening must not reset the cap.
     rememberQuestions(text);
     if (previous.current.length >= CAPTURE_MAX_QUESTIONS) {
-      setQuestion(null);
       finished.current = true;
-      setDone(true);
-      setNeedsDecision(false);
-      setLoading(false);
-      setUnavailable(false);
+      setState({ status: 'done', question: null });
       return true;
     }
     const abort = new AbortController();
     controller.current = abort;
-    setNeedsDecision(false);
-    setLoading(true);
-    setQuestion(null);
-    setUnavailable(false);
-    setDone(false);
+    setState({ status: 'asking' });
     const askLocally = (failed: boolean) => {
       // A general local question keeps capture usable, without pretending it was personalized.
       // Only a failed request says help is unavailable: without consent nothing has failed.
       const fallback = getCaptureFallbackQuestion(text, previous.current.length, t).text;
-      setQuestion(fallback);
-      setUnavailable(failed);
+      setState({ status: 'question', question: fallback, unavailable: failed });
       previous.current.push(fallback);
     };
     try {
@@ -124,8 +112,9 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
       if (generation.current !== owner || abort.signal.aborted) return;
       const result = await requestCaptureQuestion(text, language, [...previous.current], abort.signal);
       if (generation.current !== owner) return;
-      setQuestion(result.question);
-      setDone(result.done);
+      setState(result.done
+        ? { status: 'done', question: result.question }
+        : { status: 'question', question: result.question, unavailable: false });
       finished.current = result.done;
       if (result.question) previous.current.push(result.question);
       return result.done;
@@ -135,7 +124,7 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     } finally {
       if (generation.current === owner) {
         controller.current = null;
-        setLoading(false);
+        setState(current => current.status === 'asking' ? IDLE : current);
       }
     }
   }, [language, rememberQuestions, requestConsent, t]);
@@ -147,5 +136,12 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     consentRequest.current = null;
     return () => { generation.current += 1; controller.current?.abort(); };
   }, [scope, reset]);
-  return { question, loading, unavailable, done, needsDecision, ask, reset, cancel, invalidateSource };
+  return {
+    question: 'question' in state ? state.question : null,
+    loading: state.status === 'asking',
+    unavailable: state.status === 'question' && state.unavailable,
+    done: state.status === 'done',
+    needsDecision: state.status === 'decision',
+    ask, reset, cancel, invalidateSource,
+  };
 }

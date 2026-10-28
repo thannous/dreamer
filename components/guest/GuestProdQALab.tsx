@@ -48,7 +48,7 @@ const getErrorMessage = (error: unknown): string => {
     case 'QA_ACCESS_DENIED':
       return 'Ce compte n’est pas autorisé comme opérateur QA.';
     case 'QA_DAILY_RESET_LIMIT':
-      return 'Les trois réinitialisations QA du jour ont déjà été utilisées.';
+      return 'La limite de réinitialisations QA du jour est atteinte.';
     case 'QA_DEVICE_LIMIT':
       return 'Un autre appareil possède déjà le passeport QA actif.';
     case 'QA_SERVICE_UNAVAILABLE':
@@ -58,6 +58,10 @@ const getErrorMessage = (error: unknown): string => {
       return 'Impossible de préparer le mode invité de production.';
   }
 };
+
+// Without a daily cap, only the count is shown.
+const formatUsage = (used: number, limit: number | null): string =>
+  limit == null ? String(used) : `${used}/${limit}`;
 
 const formatExpiry = (value?: string): string => {
   if (!value) return 'inactive';
@@ -178,7 +182,7 @@ export function GuestProdQALab() {
       <Text style={[styles.status, { color: noctalia.text.primary }]}>{passportState}</Text>
       {status ? (
         <Text style={[styles.metrics, { color: noctalia.text.secondary }]}>
-          Resets {status.resetsUsed}/{status.resetLimit} · IA {status.paidCallsUsed}/{status.paidCallLimit}
+          Resets {formatUsage(status.resetsUsed, status.resetLimit)} · IA {formatUsage(status.paidCallsUsed, status.paidCallLimit)}
         </Text>
       ) : null}
       <Text style={[styles.note, { color: noctalia.text.tertiary }]}>
