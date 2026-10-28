@@ -326,3 +326,14 @@ begin
   );
 end;
 $$;
+
+-- Replacing a function preserves existing ACLs. Restate this private contract
+-- here as well so a fresh installation and every migration audit fail closed.
+revoke execute on function public.enroll_guest_qa_passport(uuid, text, uuid, integer, integer, integer) from public, anon, authenticated;
+grant execute on function public.enroll_guest_qa_passport(uuid, text, uuid, integer, integer, integer) to service_role;
+
+revoke execute on function public.get_guest_qa_operator_status(uuid, text) from public, anon, authenticated;
+grant execute on function public.get_guest_qa_operator_status(uuid, text) to service_role;
+
+revoke execute on function public.claim_guest_qa_paid_call(text, text, text) from public, anon, authenticated;
+grant execute on function public.claim_guest_qa_paid_call(text, text, text) to service_role;

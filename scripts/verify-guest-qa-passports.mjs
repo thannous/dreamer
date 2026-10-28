@@ -73,14 +73,15 @@ try {
   assert.equal((await claim(`qa:${capped.passportId}`, 'capped-2')).code, 'QA_DAILY_BUDGET_EXCEEDED');
 
   const grants = (await db.query(`select p.proname, has_function_privilege('anon', p.oid, 'execute') anon,
+    has_function_privilege('authenticated', p.oid, 'execute') authenticated,
     has_function_privilege('service_role', p.oid, 'execute') service from pg_proc p
     join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public'
     and p.proname in ('enroll_guest_qa_passport','get_guest_qa_operator_status','claim_guest_qa_paid_call')
     order by p.proname`)).rows;
-  assert.deepEqual(grants.map(row => [row.proname, row.anon, row.service]), [
-    ['claim_guest_qa_paid_call', false, true],
-    ['enroll_guest_qa_passport', false, true],
-    ['get_guest_qa_operator_status', false, true],
+  assert.deepEqual(grants.map(row => [row.proname, row.anon, row.authenticated, row.service]), [
+    ['claim_guest_qa_paid_call', false, false, true],
+    ['enroll_guest_qa_passport', false, false, true],
+    ['get_guest_qa_operator_status', false, false, true],
   ], 'replaced RPCs keep service-role-only access');
   console.log('guest QA passport SQL checks passed');
 } finally {
