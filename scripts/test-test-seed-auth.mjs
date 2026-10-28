@@ -380,7 +380,8 @@ test('seed clears the two accounts\' images (paged list then remove) and AI buck
   assert.ok(!branch.state.bucketsDeleted.includes('eq.global'));
   const admission = fs.readFileSync(new URL('../supabase/functions/api/services/aiAdmission.ts', import.meta.url), 'utf8');
   assert.match(admission, /`user:\$\{ctx\.user\.id\}`/);
-  assert.match(admission, /crypto\.subtle\.digest\('SHA-256', encoded\)/);
+  // Hash parity is exercised through hashAiActor in the Deno admission tests;
+  // its implementation may live in the shared UTF-8 SHA-256 helper.
   const bucketMigration = fs.readFileSync(new URL('../supabase/migrations/20260722124500_add_ai_sync_admission_control.sql', import.meta.url), 'utf8');
   assert.match(bucketMigration, /create table if not exists public\.ai_rate_limit_buckets \(\s*actor_hash text not null/);
   assert.doesNotMatch(bucketMigration, /revoke[^;]*ai_rate_limit_buckets[^;]*service_role/);
