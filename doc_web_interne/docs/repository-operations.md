@@ -56,6 +56,9 @@ Data lives in ignored `outputs/dev-local/`; `--reset` destroys it.
 - The app keeps a separate guest session, App Attest key and refusal pause per plain-HTTP API
   (`backendStorageKey` in `lib/guestSession.ts`), so switching between production and the local
   backend carries neither server's state to the other. Production key names are unchanged.
+- Development builds send the signed-in session token over plain HTTP to a private-network
+  address as well as loopback (`lib/http.ts`), so a phone can use the local accounts; a release
+  build keeps cleartext tokens to loopback only.
 - Not available: Google/Apple sign-in, purchases and store sync (RevenueCat), e-mail delivery.
 - Opening a personal install against it with a local account can move that install's guest
   journal into the local account: prefer an owned QA install, the Simulator or the web.

@@ -203,6 +203,29 @@ describe('http', () => {
       expect(request.headers.apikey).toBeUndefined();
     });
 
+    it('given the local backend on a private address when fetching then attaches auth in development only', async () => {
+      const localBackend = 'http://192.168.1.9:31300';
+      process.env.EXPO_PUBLIC_SUPABASE_URL = localBackend;
+      jest.doMock('expo-constants', () => ({ __esModule: true, default: { expoConfig: { extra: {} } } }));
+      mockGetAccessToken.mockResolvedValue('user-access-token');
+      global.fetch = jest.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
+      const runtime = globalThis as unknown as { __DEV__: boolean };
+      const wasDev = runtime.__DEV__;
+      try {
+        runtime.__DEV__ = true;
+        jest.resetModules();
+        await require('../http').fetchJSON(`${localBackend}/rest/v1/dreams`);
+        expect((global.fetch as any).mock.calls[0][1].headers.Authorization).toBe('Bearer user-access-token');
+        // A release build never sends a session token in cleartext beyond loopback.
+        runtime.__DEV__ = false;
+        jest.resetModules();
+        await require('../http').fetchJSON(`${localBackend}/rest/v1/dreams`);
+        expect((global.fetch as any).mock.calls[1][1].headers.Authorization).toBeUndefined();
+      } finally {
+        runtime.__DEV__ = wasDev;
+      }
+    });
+
     it('given Supabase URL without user auth token when fetching then falls back to anon apikey only', async () => {
       mockGetAccessToken.mockResolvedValue(null);
       global.fetch = jest.fn().mockResolvedValue({
