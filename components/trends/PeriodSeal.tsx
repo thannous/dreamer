@@ -168,8 +168,6 @@ export type PeriodSealProps = {
   /** The theme the reader picked, which the ring turns to the top. */
   selected: DreamTheme | null;
   onSelect: (theme: DreamTheme) => void;
-  /** Engraved along the top of the rim: the theme and its count. */
-  legend: string | null;
   /** Engraved along the foot: the period's dates. */
   dates: string;
   medalLabel: (theme: DreamTheme) => string;
@@ -187,13 +185,13 @@ export type PeriodSealProps = {
  * The period's seal: the dream seal's astrolabe, holding the period's six themes. Each
  * sign rides the orbit with its count; an arc on the inner ring is as long as the share
  * of the period's dreams it carries. The theme that leads, or the one chosen, is turned
- * to the top and pressed into the window, with its count engraved above it and the
- * period's dates along the foot. On arrival the signs spin onto the orbit and slow, the
+ * to the top and pressed into the window, with the period's dates along its foot; the
+ * sentence under the seal gives the theme's count. On arrival the signs spin onto the orbit and slow, the
  * window is struck with a few sparks, and the arcs grow; afterwards a choice only turns
  * the ring. Under reduced motion the seal is drawn at rest.
  */
 export function PeriodSeal({
-  counts, shown, selected, onSelect, legend, dates, medalLabel, ink, glow, star, entrance, reduced,
+  counts, shown, selected, onSelect, dates, medalLabel, ink, glow, star, entrance, reduced,
   size = PERIOD_SEAL_SIZE,
 }: PeriodSealProps) {
   const animate = entrance && !reduced;
@@ -417,10 +415,6 @@ export function PeriodSeal({
 
         <View className="absolute" pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
           style={{ left: CENTER - LEGEND_BOX / 2, top: CENTER - LEGEND_BOX / 2, width: LEGEND_BOX, height: LEGEND_BOX }}>
-          {legend ? (
-            <SealLegend key={legend} text={legend} reduced={reduced}
-              from={settled ? 0 : PERIOD_SEAL_BEATS.press + 80} still={reduced} />
-          ) : null}
           <SealLegend key={dates} text={dates} side="bottom" reduced={reduced}
             from={settled ? 0 : PERIOD_SEAL_BEATS.press + 260} still={reduced} />
         </View>

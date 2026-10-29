@@ -298,8 +298,9 @@ function DreamChatContent() {
         }]),
     ];
     Alert.alert(
-      tier === 'free' ? t('dream_chat.limit_free.title', freeLimitCopy) : t('dream_chat.message_limit.title'),
-      tier === 'free' ? t('dream_chat.limit_free.body', freeLimitCopy) : t('dream_chat.limit_warning'),
+      tier === 'plus' ? t('dream_chat.message_limit.title') : t('dream_chat.limit_free.title', freeLimitCopy),
+      tier === 'plus' ? t('dream_chat.limit_warning')
+        : t(tier === 'guest' ? 'dream_chat.limit_guest.body' : 'dream_chat.limit_free.body', freeLimitCopy),
       actions
     );
   }, [freeLimitCopy, openMessageLimitUpgrade, t, tier]);
@@ -1056,9 +1057,8 @@ function DreamChatContent() {
     </>
   );
 
-  const composerPlaceholder = messageLimitReached
-    ? t(tier === 'free' ? 'dream_chat.input.limit_placeholder_free' : 'dream_chat.input.limit_placeholder')
-    : t('dream_chat.input.placeholder');
+  // At the limit the card under the input explains it; the disabled input stays blank.
+  const composerPlaceholder = messageLimitReached ? '' : t('dream_chat.input.placeholder');
 
   const shouldShowCounter = typeof messageLimit === 'number';
 
@@ -1201,7 +1201,8 @@ function ComposerFooter({
         </View>
       )}
 
-      {messageLimitReached && tier === 'free' && (
+      {/* Offered exchanges used up: guests need an account first, free accounts go to Plus. */}
+      {messageLimitReached && tier !== 'plus' && (
         <View
           testID={TID.Text.ChatLimitBanner}
           style={[styles.limitCard, { backgroundColor: noctalia.surface.raised, borderColor: noctalia.surface.borderStrong }]}
@@ -1215,7 +1216,7 @@ function ComposerFooter({
                 {t('dream_chat.limit_free.title', freeLimitCopy)}
               </Text>
               <Text style={[styles.limitCardBody, { color: noctalia.text.secondary }]}>
-                {t('dream_chat.limit_free.body', freeLimitCopy)}
+                {t(tier === 'guest' ? 'dream_chat.limit_guest.body' : 'dream_chat.limit_free.body', freeLimitCopy)}
               </Text>
             </View>
           </View>
@@ -1229,13 +1230,14 @@ function ComposerFooter({
             ]}
           >
             <Text style={[styles.limitCardCtaText, { color: noctalia.action.primaryText }]}>
-              {t('dream_chat.limit_cta_free')}
+              {t(tier === 'guest' ? 'dream_chat.limit_cta_guest' : 'dream_chat.limit_cta_free')}
             </Text>
           </GesturePressable>
         </View>
       )}
 
-      {messageLimitReached && tier !== 'free' && (
+      {/* Plus reaches only the safety limit, with nothing to buy. */}
+      {messageLimitReached && tier === 'plus' && (
         <View
           testID={TID.Text.ChatLimitBanner}
           style={[
@@ -1252,23 +1254,6 @@ function ComposerFooter({
               {t('dream_chat.limit_warning')}
             </Text>
           </View>
-          {tier !== 'plus' && (
-            <View>
-              <GesturePressable
-                onPress={onUpgrade}
-                testID={TID.Button.ChatLimitUpgrade}
-                accessibilityRole="button"
-                style={[
-                  styles.limitCtaButton,
-                  { backgroundColor: noctalia.status.danger.icon },
-                ]}
-              >
-                <Text style={[styles.limitCtaText, { color: noctalia.action.primaryText }]}>
-                  {t('dream_chat.limit_cta_guest')}
-                </Text>
-              </GesturePressable>
-            </View>
-          )}
         </View>
       )}
     </Animated.View>
@@ -1521,17 +1506,6 @@ const styles = StyleSheet.create({
     fontSize: TypeScale.bodySm.fontSize,
     flex: 1,
     lineHeight: TypeScale.bodySm.lineHeight,
-  },
-  limitCtaButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    alignSelf: 'flex-end',
-  },
-  limitCtaText: {
-    fontFamily: Fonts.outfit.medium,
-    fontSize: TypeScale.caption.fontSize,
-    fontWeight: '600',
   },
   limitCard: {
     width: '100%',

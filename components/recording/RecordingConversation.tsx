@@ -93,7 +93,7 @@ export function RecordingConversation(props: Props) {
     } else { props.onVoice(); }
   };
   const currentQuestion = props.loading ? t('recording.conversation.thinking')
-    : props.review ? t('recording.chat.gathered')
+    : props.review ? null
     : props.weaving ? t('recording.chat.weaving')
     : props.done ? t('recording.conversation.ready')
     : props.needsDecision ? t('recording.conversation.edited')
@@ -146,7 +146,7 @@ export function RecordingConversation(props: Props) {
     {/* Noctalia listening: a halo that follows the voice, above the reply. */}
     {listening ? <ListeningHalo label={t('recording.conversation.listening')} style={styles.listening} testID="recording-listening-status" /> : null}
     <RecordingTextInput chat compact autoFocus={false} value={props.answer} onChange={props.onAnswerChange}
-      disabled={locked || props.loading || listening} instructionText="" voiceSupported={props.voiceSupported}
+      disabled={locked || props.loading || listening} voiceSupported={props.voiceSupported}
       voiceStatus={props.voiceStatus} switchToVoiceLabel={t('recording.conversation.reply_voice')} onSwitchToVoice={() => { void onVoice(); }}
       placeholder={t(props.review ? 'recording.chat.add_detail' : 'recording.conversation.answer_placeholder')}
       inputAccessibilityLabel={t('recording.conversation.answer_placeholder')} inputTestID="recording-conversation-answer"

@@ -57,11 +57,6 @@ export function EmptyState({
           <Text className="text-center font-sans text-body text-ivory">
             {hasActiveFilter ? t('journal.empty.filtered') : t('journal.empty.default')}
           </Text>
-          {showRememberedAction ? (
-            <Text className="max-w-[320px] text-center font-sans text-body-sm text-ivory-muted">
-              {t('journal.empty.remembered_hint')}
-            </Text>
-          ) : null}
         </View>
         {showRememberedAction ? (
           <PressableScale

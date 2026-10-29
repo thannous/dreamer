@@ -124,7 +124,8 @@ describe('EmptyState', () => {
     );
 
     expect(screen.getByText('journal.empty.default')).toBeTruthy();
-    expect(screen.getByText('journal.empty.remembered_hint')).toBeTruthy();
+    // The button says it: no hint repeats it above (2026-10-29).
+    expect(screen.queryByText('journal.empty.remembered_hint')).toBeNull();
 
     fireEvent.click(screen.getByTestId(TID.Button.EmptyStartRememberedDream));
 
