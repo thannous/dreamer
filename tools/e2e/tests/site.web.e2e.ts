@@ -5,7 +5,7 @@ import { test } from '@e2e-dev/web';
 import type { Browser } from '@e2e-dev/web';
 import { expect } from 'e2e';
 
-const mediaPathname = (url: string) => new URL(url).pathname.replace(/^\/releases\/[a-f0-9]{64}(?=\/img\/)/, '');
+const mediaPathname = (url: string) => new URL(url, 'https://noctalia.app').pathname.replace(/^\/releases\/[a-f0-9]{64}(?=\/img\/)/, '');
 
 test('the generated English homepage opens a real internal destination', async ({ app, screen, browser }) => {
   await app.open('/en/');
@@ -828,7 +828,7 @@ test('the French atlas paintings each move two distinct raster effects, only on 
     // Explicit texture ids: on every painting, channel a is this page's own layer and channel b its own accent.
     for (const surface of config!.surfaces) {
       for (const [scene, { layers }] of Object.entries(surface.scenes)) {
-        expect(layers.map(layer => [layer.channel, layer.src.replace(/-\d+-[0-9a-f]{12}\.\w+$/, '')]), `${page.id} ${surface.name} ${scene}`)
+        expect(layers.map(layer => [layer.channel, mediaPathname(layer.src).replace(/-\d+-[0-9a-f]{12}\.\w+$/, '')]), `${page.id} ${surface.name} ${scene}`)
           .toEqual([['a', `/img/symbols/atlas-six-v2/${page.id}/layer`], ['b', `/img/symbols/atlas-six-v2/${page.id}/accent`]]);
       }
     }
@@ -1871,7 +1871,7 @@ for (const [lot, shots, pack] of [...LOT_08_PACKS.map(pack => ['lot 09', 'lot08-
       // On every painting, channel a is this pack's own layer and channel b its own accent.
       for (const surface of config!.surfaces) {
         for (const [scene, { layers }] of Object.entries(surface.scenes)) {
-          expect(layers.map(layer => [layer.channel, layer.src.replace(/-\d+-[0-9a-f]{12}\.\w+$/, '')]), `${path} ${surface.name} ${scene}`)
+          expect(layers.map(layer => [layer.channel, mediaPathname(layer.src).replace(/-\d+-[0-9a-f]{12}\.\w+$/, '')]), `${path} ${surface.name} ${scene}`)
             .toEqual([['a', `/img/symbols/atlas-six-v2/${pack.id}/layer`], ['b', `/img/symbols/atlas-six-v2/${pack.id}/accent`]]);
         }
       }
