@@ -1,5 +1,6 @@
-const { release } = require('../docs-src/config/site-media.json');
-const { publicOrigin } = require('../docs-src/config/site-media-storage.json');
+const path = require('node:path');
+const { publicUrl, readMedia } = require('./lib/site-media');
+const media = readMedia(path.resolve(__dirname, '..'));
 const {
   collectSchemaImageObjects,
   collectSchemaImageUrls,
@@ -67,7 +68,7 @@ describe('image SEO contract helpers', () => {
     const image = {
       '@context': 'https://schema.org',
       '@type': 'ImageObject',
-      contentUrl: `${publicOrigin}/releases/${release}/img/research/dream-journal-apps-feature-snapshot-2026.svg`,
+      contentUrl: publicUrl(media, 'img/research/dream-journal-apps-feature-snapshot-2026.svg'),
       copyrightNotice: '© 2026 Noctalia',
       license: 'https://noctalia.app/en/press#media-license',
       acquireLicensePage: 'https://noctalia.app/en/press#media-contact',

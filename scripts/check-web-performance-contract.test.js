@@ -2,8 +2,8 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const { release } = require('../docs-src/config/site-media.json');
-const { publicOrigin } = require('../docs-src/config/site-media-storage.json');
+const { publicUrl, readMedia } = require('./lib/site-media');
+const heroUrl = publicUrl(readMedia(path.resolve(__dirname, '..')), 'img/hero/noctalia-observatory-bg.webp');
 
 const { checkBlogPremiumHeroCss } = require('./check-web-performance-contract');
 
@@ -22,7 +22,7 @@ describe('web performance contract', () => {
     const cssPath = path.join(tmpRoot, 'blog-premium.css');
     fs.writeFileSync(
       cssPath,
-      `.blog-premium::before { background-image: url('${publicOrigin}/releases/${release}/img/hero/noctalia-observatory-bg.webp'); }`,
+      `.blog-premium::before { background-image: url('${heroUrl}'); }`,
       'utf8'
     );
 
