@@ -908,8 +908,11 @@ async function collection633Start(fixtures: NativeBackgroundFixtures) {
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
   await screen.getByTestId('btn.saveDream', { visible: true }).tap();
   await screen.getByTestId('btn.dreamCaptureSeal.readLater', { visible: true }).tap();
-  await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
-  await screen.getByTestId('btn.navigateJournal', { visible: true }).tap();
+  await expect(screen.getByText(story)).toBeVisible();
+  // iOS exposes a separate drop cap and an object-replacement marker in the transcript.
+  await expect(screen.getByTestId('text.dreamDetail.transcript')).toContainText(story.slice(1));
+  await screen.getByTestId('btn.savedDream.returnToJournal', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
 }
 
 async function collection633Open(screen: TestFixtures['screen']) {
