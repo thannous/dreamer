@@ -99,8 +99,10 @@ test('a guest at the chat limit is sent to create an account, not to Plus', asyn
   await saveAndRead(page, 'E2E guest crosses a glass orchard where every tree hums.');
   await openFirstDream(page);
   const { banner, upgrade } = await reachChatLimit(page);
-  await expect(banner).toContainText('This dream has reached its safety limit.');
-  await expect(banner).not.toContainText('Plus');
+  // Offered exchanges, not the safety limit (2026-10-29): the card says what continues them.
+  await expect(banner).toContainText('You’ve used the 10 included exchanges');
+  await expect(banner).toContainText('With an account and Noctalia Plus, this conversation continues.');
+  await expect(banner).not.toContainText('safety limit');
   await expect(upgrade).toHaveText('Create account');
   await upgrade.click();
   await expectSignupForm(page);

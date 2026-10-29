@@ -160,7 +160,8 @@ test('the chat message limit opens the Plus offer for a free account', async ({ 
   await expect(banner).toContainText('You’ve used the 10 included exchanges');
   await expect(banner).toContainText('With Plus, this conversation continues without limits.');
   await expect(banner).not.toContainText('safety limit');
-  await expect(input).toHaveAttribute('placeholder', 'Included exchanges used for this dream');
+  // The card says it once; the disabled input does not repeat it (2026-10-29).
+  await expect(input).not.toHaveAttribute('placeholder', /exchanges|limit/i);
   const upgrade = page.getByTestId('btn.chat.limitUpgrade');
   await expect(upgrade).toHaveText('Continue with Plus');
   await upgrade.click();
