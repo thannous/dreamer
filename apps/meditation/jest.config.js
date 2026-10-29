@@ -10,6 +10,9 @@ const expoCore = require.resolve('expo-modules-core', { paths: [path.dirname(req
  */
 module.exports = {
   preset: 'jest-expo',
+  // Local release checks share the host with other projects; avoid worker
+  // contention consuming async test deadlines. CI retains its half-core pool.
+  maxWorkers: process.env.CI ? '50%' : 2,
   // Reanimated 4 loads react-native-worklets at import time; without this
   // resolver every component that imports Reanimated dies on module load.
   resolver: '<rootDir>/tests/jestResolver.cjs',
