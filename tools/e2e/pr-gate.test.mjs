@@ -60,3 +60,45 @@ test('verify:pr scopes skip docs and keep the named app paths', async () => {
   assert.equal(matchesAny('tools/e2e/zones.mjs', PARCOURS_WHEN), true);
   assert.equal(matchesAny('tools/e2e/pr-gate.mjs', PARCOURS_WHEN), true);
 });
+
+test('a changed web journey runs its campaign even without a source zone', () => {
+  assert.deepEqual(decideParcours(['tools/e2e/tests/dreamer-billing.web.e2e.ts']).products, ['dreamer']);
+  assert.deepEqual(decideParcours(['tools/e2e/tests/lucid.web.e2e.ts']).products, ['lucid']);
+  assert.deepEqual(decideParcours(['tools/e2e/tests/meditation.web.e2e.ts']).products, ['meditation']);
+  // Native, bug bash, backend and support files are not web journeys of these campaigns.
+  for (const file of ['tools/e2e/tests/dreamer.mobile.e2e.ts', 'tools/e2e/tests/bugbash/example.e2e.ts',
+    'tools/e2e/tests/backend-sync.web.e2e.ts', 'tools/e2e/zones.mjs']) {
+    assert.equal(decideParcours([file]).launch, false, file);
+  }
+});
+
+test('verify:pr reaches the gate for every web journey the gate would run', async () => {
+  const { matchesAny } = await import(new URL('../../scripts/verify-local.mjs', import.meta.url).href);
+  const { PARCOURS_WHEN } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
+  const { readdirSync } = await import('node:fs');
+  // The engine skips parcours-touches when no path matches, before the gate runs:
+  // each journey the gate launches must also be in the check's scope.
+  const journeys = readdirSync(new URL('./tests/', import.meta.url))
+    .map(name => `tools/e2e/tests/${name}`)
+    .filter(file => decideParcours([file]).launch);
+  assert.ok(journeys.includes('tools/e2e/tests/lucid.web.e2e.ts'));
+  assert.ok(journeys.includes('tools/e2e/tests/meditation.web.e2e.ts'));
+  assert.ok(journeys.includes('tools/e2e/tests/dreamer-home-editorial.web.e2e.ts'));
+  for (const file of journeys) assert.equal(matchesAny(file, PARCOURS_WHEN), true, file);
+});
+
+test('a changed smoke journey runs in the smoke check, which verify:pr reaches', async () => {
+  const { matchesAny } = await import(new URL('../../scripts/verify-local.mjs', import.meta.url).href);
+  const { SMOKE_WHEN } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
+  const { parcoursExclude } = await import('./zones.mjs');
+  const file = 'tools/e2e/tests/dreamer-capture-save.web.e2e.ts';
+  // The parcours selection leaves its smoke test out by design...
+  const smokeTest = { id: 'save', tags: ['capture-save', 'smoke', 'zone-sauvegarde'], file };
+  assert.equal(parcoursExclude([smokeTest], [file]).exclude.save, 'la fumée PR joue ce parcours');
+  // ...so the smoke check must be in scope and launch for that diff alone.
+  assert.equal(matchesAny(file, SMOKE_WHEN), true);
+  assert.deepEqual(decideSmoke([file]).products, ['dreamer']);
+  // Lucid and Meditation journeys carry no smoke tag and do not start it.
+  assert.equal(decideSmoke(['tools/e2e/tests/lucid.web.e2e.ts']).launch, false);
+  assert.equal(matchesAny('tools/e2e/tests/meditation.web.e2e.ts', SMOKE_WHEN), false);
+});

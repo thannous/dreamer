@@ -278,6 +278,8 @@ const TESTERARMY = {
 export const SMOKE_WHEN = [
   'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/',
   '!routes/lucid/', '!components/lucid/', '!services/lucid*', '!apps/meditation/',
+  // A changed Dreamer journey: its smoke-tagged tests run only in this check.
+  'tools/e2e/tests/dreamer*.web.e2e.ts',
 ];
 
 // App paths plus the gate itself. A docs-only diff matches none of these, so
@@ -289,10 +291,8 @@ export const PARCOURS_WHEN = [
   'tools/e2e/pr-gate.mjs', 'tools/e2e/pr-gate.test.mjs', 'tools/e2e/e2e.config.ts', 'tools/e2e/e2e.bugbash.config.ts',
   'tools/e2e/run.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/persona-models.d.mts',
   'tools/e2e/bugbash-prerelease.mjs', 'tools/e2e/bugbash-prerelease.test.mjs', 'tools/e2e/web-parity-fixtures.ts',
-  'tools/e2e/tests/dreamer-journeys.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-save.web.e2e.ts',
-  'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts',
-  'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts', 'tools/e2e/tests/dreamer-billing.web.e2e.ts',
-  'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts', 'tools/e2e/tests/dreamer-account-deletion.web.e2e.ts',
+  // Every web journey of the three campaigns: a changed journey runs (pr-gate.mjs changedJourneyProduct).
+  'tools/e2e/tests/dreamer*.web.e2e.ts', 'tools/e2e/tests/lucid.web.e2e.ts', 'tools/e2e/tests/meditation.web.e2e.ts',
   'tools/e2e/tests/bugbash/', 'verify-local.config.mjs',
 ];
 
