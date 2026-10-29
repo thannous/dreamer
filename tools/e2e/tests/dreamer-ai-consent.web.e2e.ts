@@ -1,6 +1,6 @@
 import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
-import { isolateWeb } from '../web-fixtures';
+import { aiConsentDisclosure, isolateWeb } from '../web-fixtures';
 
 // Unique legacy coverage: refusing consent must retain the saved story, then
 // accepting a later request must produce a reading without losing that story.
@@ -28,6 +28,8 @@ test('declining AI preserves the saved dream and accepting later analyzes it onc
     await screen.getByTestId('btn.saveDream').tap();
     await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
     await expect(consent).toBeVisible();
+    // The disclosure itself: the modal names the external AI services and links the policy.
+    await expect(consent).toContainText(aiConsentDisclosure);
     await expect(screen.getByTestId('btn.aiConsent.privacyPolicy', { visible: true })).toBeVisible();
     // Capture the modal once its fade-in ends; the emblem's own loops never end.
     await expect.poll(() => browser.evaluate(() => document.getAnimations().filter(animation =>

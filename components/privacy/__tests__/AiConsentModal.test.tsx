@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { AiConsentModal, AiConsentModalHost } from '@/components/privacy/AiConsentModal';
 import { hasAiConsent, requestAiConsent, resetAiConsentCacheForTests } from '@/lib/aiConsent';
+import fr from '@/lib/i18n/fr';
 import { TID } from '@/lib/testIDs';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -43,6 +44,7 @@ jest.mock('react-native', () => {
       select: (values: Record<string, unknown>) => values.ios ?? values.default,
     },
     Pressable: createNativeElement('Pressable'),
+    ScrollView: createNativeElement('ScrollView'),
     StyleSheet: {
       absoluteFill: { position: 'absolute', inset: 0 },
       absoluteFillObject: { position: 'absolute', inset: 0 },
@@ -117,18 +119,24 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, right: 0, bottom: 0, left: 0 }),
 }));
 
-const copy: Record<string, string> = {
+const mockCopy: Record<string, string> = {
   'ai_consent.title': 'Donner vie à ton rêve ?',
-  'ai_consent.message': 'Pour explorer et illustrer ton rêve, Noctalia s’appuie sur une intelligence artificielle. Tes écrits restent privés et personnels.',
+  'ai_consent.message': fr['ai_consent.message'],
   'ai_consent.accept': 'Accepter et continuer',
   'ai_consent.decline': 'Pas maintenant',
+  'ai_consent.details_show': fr['ai_consent.details_show'],
+  'ai_consent.details_hide': fr['ai_consent.details_hide'],
+  'ai_consent.details_sent_title': fr['ai_consent.details_sent_title'],
+  'ai_consent.details_sent_body': fr['ai_consent.details_sent_body'],
+  'ai_consent.details_when_title': fr['ai_consent.details_when_title'],
+  'ai_consent.details_when_body': fr['ai_consent.details_when_body'],
   'settings.legal.privacyPolicy': 'Politique de confidentialité',
 };
 
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
     currentLang: 'fr',
-    t: (key: string) => copy[key] ?? key,
+    t: (key: string) => mockCopy[key] ?? key,
   }),
 }));
 
@@ -145,11 +153,8 @@ describe('AiConsentModal', () => {
     const view = render(<AiConsentModal visible onAccept={onAccept} onDecline={onDecline} />);
 
     expect(view.getByText('Donner vie à ton rêve ?')).toBeTruthy();
-    expect(
-      view.getByText(
-        'Pour explorer et illustrer ton rêve, Noctalia s’appuie sur une intelligence artificielle. Tes écrits restent privés et personnels.'
-      )
-    ).toBeTruthy();
+    // The shipped French message must name where the dream goes.
+    expect(view.getByText(/partenaires d’IA : Anthropic pour le texte, Google pour les images/)).toBeTruthy();
 
     fireEvent.press(view.getByTestId(TID.Button.AiConsentPrivacyPolicy));
     expect(mockOpenURL).toHaveBeenCalledWith('https://noctalia.app/fr/politique-confidentialite/');
@@ -161,11 +166,28 @@ describe('AiConsentModal', () => {
     expect(onDecline).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps the details folded until asked, then names what is sent and when', () => {
+    const view = render(<AiConsentModal visible onAccept={jest.fn()} onDecline={jest.fn()} />);
+
+    expect(view.queryByTestId(TID.Component.AiConsentDetails)).toBeNull();
+
+    fireEvent.press(view.getByTestId(TID.Button.AiConsentDetailsToggle));
+    expect(view.getByText(fr['ai_consent.details_sent_title'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_sent_body'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_when_title'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_when_body'])).toBeTruthy();
+    expect(view.getByText(fr['ai_consent.details_hide'])).toBeTruthy();
+
+    fireEvent.press(view.getByTestId(TID.Button.AiConsentDetailsToggle));
+    expect(view.queryByTestId(TID.Component.AiConsentDetails)).toBeNull();
+    expect(view.getByText(fr['ai_consent.details_show'])).toBeTruthy();
+  });
+
   it('connects requestAiConsent to AiConsentModalHost and persists acceptance', async () => {
     const view = render(<AiConsentModalHost />);
 
     let resolved: boolean | null = null;
-    const promise = requestAiConsent((key) => copy[key] ?? key).then((res) => {
+    const promise = requestAiConsent((key) => mockCopy[key] ?? key).then((res) => {
       resolved = res;
       return res;
     });
@@ -181,7 +203,7 @@ describe('AiConsentModal', () => {
   it('resolves false without granting when declined from AiConsentModalHost', async () => {
     const view = render(<AiConsentModalHost />);
 
-    const promise = requestAiConsent((key) => copy[key] ?? key);
+    const promise = requestAiConsent((key) => mockCopy[key] ?? key);
 
     await waitFor(() => expect(view.getByTestId(TID.Modal.AiConsent)).toBeTruthy());
     fireEvent.press(view.getByTestId(TID.Button.AiConsentDecline));
