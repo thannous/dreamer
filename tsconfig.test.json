@@ -21,6 +21,7 @@
   "exclude": [
     "apps/**",
     "supabase/functions/**",
+    "tools/dev-local/**",
     ".expo/types/router.d.ts"
   ]
 }

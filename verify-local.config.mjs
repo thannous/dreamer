@@ -178,7 +178,7 @@ const MOBILE_VERSIONS = [
 ];
 
 // Deno runtime sources; the Edge tests also read supabase/migrations.
-const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'deno.lock'];
+const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'deno.lock', 'tools/dev-local/'];
 
 // The EAS workflow contracts. These suites read .eas/workflows and eas.json as
 // files, so Jest's related-test selection (jest-changed) never picks them when
@@ -262,6 +262,10 @@ const EDGE_CHECKS = [
   'cd supabase/functions',
   'deno check --frozen api/index.ts analysis-job-worker/index.ts image-job-worker/index.ts revenuecat-webhook/index.ts',
   'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook image-job-worker analysis-job-worker',
+  // The local development backend imports these routes; its guards and fixed answers are tested with them.
+  'cd ../..',
+  'deno check --no-config tools/dev-local/api-server.ts',
+  'deno test --no-config --allow-read tools/dev-local',
 ].join(' && ');
 const DENO = {
   command: 'deno --version',

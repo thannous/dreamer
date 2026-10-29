@@ -34,10 +34,23 @@ export type GuestBootstrapState = {
 
 // iOS v3 tokens bind the signed App ID as well as the attested key. Never load
 // a cached v1/v2 token that the server no longer accepts for Dreamer routes.
-const STORAGE_KEY = Platform.OS === 'ios' ? 'guest-session-v3' : 'guest-session-v1';
-const APP_ATTEST_KEY_STORAGE_KEY = 'guest-app-attest-key-v1';
-const APP_ATTEST_RETRY_STORAGE_KEY = 'guest-app-attest-retry-v1';
-const APP_ATTEST_PAUSE_STORAGE_KEY = 'guest-app-attest-pause-v1';
+const SESSION_STORAGE_BASE = Platform.OS === 'ios' ? 'guest-session-v3' : 'guest-session-v1';
+const APP_ATTEST_KEY_STORAGE_BASE = 'guest-app-attest-key-v1';
+const APP_ATTEST_RETRY_STORAGE_BASE = 'guest-app-attest-retry-v1';
+const APP_ATTEST_PAUSE_STORAGE_BASE = 'guest-app-attest-pause-v1';
+
+/**
+ * A local development backend (plain HTTP, tools/dev-local) keeps its own
+ * guest session, App Attest key and refusal pause. Switching between it and
+ * production then carries neither server's key nor refusal to the other.
+ * Production names are unchanged, so installed apps keep their stored session.
+ */
+export const backendStorageKey = (base: string, apiBaseUrl = getApiBaseUrl()): string => {
+  if (!apiBaseUrl.startsWith('http://')) return base;
+  let hash = 5381;
+  for (const char of apiBaseUrl) hash = ((hash * 33) ^ char.charCodeAt(0)) >>> 0;
+  return `${base}.local-${hash.toString(36)}`;
+};
 const APP_ATTEST_PAUSE_MIN_MS = 60 * 60_000;
 const APP_ATTEST_PAUSE_MAX_MS = 24 * 60 * 60_000;
 // The server accepts its signed challenge for three minutes. Leave time for
@@ -191,12 +204,12 @@ const createRequestHash = async (
 const getAppAttestKeyId = async (): Promise<string> => {
   if (appAttestKeyPromise) return appAttestKeyPromise;
   const inFlight = (async () => {
-    const stored = await SecureStore.getItemAsync(APP_ATTEST_KEY_STORAGE_KEY).catch(() => null);
+    const stored = await SecureStore.getItemAsync(backendStorageKey(APP_ATTEST_KEY_STORAGE_BASE)).catch(() => null);
     if (stored) return stored;
     const keyId = await AppIntegrity.generateKeyAsync();
     // Apple's private key stays in the Secure Enclave. Without this identifier
     // the app cannot use it again after a restart.
-    await SecureStore.setItemAsync(APP_ATTEST_KEY_STORAGE_KEY, keyId);
+    await SecureStore.setItemAsync(backendStorageKey(APP_ATTEST_KEY_STORAGE_BASE), keyId);
     return keyId;
   })();
   appAttestKeyPromise = inFlight;
@@ -220,14 +233,14 @@ type PendingAppAttestRetry = {
 
 const clearAppAttestRetry = async (): Promise<void> => {
   pendingAppAttestRetry = null;
-  await SecureStore.deleteItemAsync(APP_ATTEST_RETRY_STORAGE_KEY).catch(() => {});
+  await SecureStore.deleteItemAsync(backendStorageKey(APP_ATTEST_RETRY_STORAGE_BASE)).catch(() => {});
 };
 
 const readAppAttestRetry = async (): Promise<PendingAppAttestRetry | null> => {
   if (appAttestRetryLoaded) return pendingAppAttestRetry;
   appAttestRetryLoaded = true;
   try {
-    const raw = await SecureStore.getItemAsync(APP_ATTEST_RETRY_STORAGE_KEY);
+    const raw = await SecureStore.getItemAsync(backendStorageKey(APP_ATTEST_RETRY_STORAGE_BASE));
     if (!raw) return null;
     const stored = JSON.parse(raw) as PendingAppAttestRetry;
     if (typeof stored.fingerprint !== 'string' || typeof stored.keyId !== 'string' ||
@@ -245,7 +258,7 @@ const saveAppAttestRetry = async (retry: PendingAppAttestRetry): Promise<boolean
   pendingAppAttestRetry = retry;
   appAttestRetryLoaded = true;
   try {
-    await SecureStore.setItemAsync(APP_ATTEST_RETRY_STORAGE_KEY, JSON.stringify(retry));
+    await SecureStore.setItemAsync(backendStorageKey(APP_ATTEST_RETRY_STORAGE_BASE), JSON.stringify(retry));
     return true;
   } catch {
     return false;
@@ -254,14 +267,14 @@ const saveAppAttestRetry = async (retry: PendingAppAttestRetry): Promise<boolean
 
 const discardAppAttestKey = async (): Promise<void> => {
   await clearAppAttestRetry();
-  await SecureStore.deleteItemAsync(APP_ATTEST_KEY_STORAGE_KEY).catch(() => {});
+  await SecureStore.deleteItemAsync(backendStorageKey(APP_ATTEST_KEY_STORAGE_BASE)).catch(() => {});
 };
 
 type AppAttestPause = { until: number; delayMs: number };
 
 const readAppAttestPause = async (): Promise<AppAttestPause | null> => {
   try {
-    const raw = await SecureStore.getItemAsync(APP_ATTEST_PAUSE_STORAGE_KEY);
+    const raw = await SecureStore.getItemAsync(backendStorageKey(APP_ATTEST_PAUSE_STORAGE_BASE));
     if (!raw) return null;
     const stored = JSON.parse(raw) as AppAttestPause;
     if (typeof stored.until !== 'number' || !Number.isFinite(stored.until) ||
@@ -287,13 +300,13 @@ const pauseAppAttestation = async (): Promise<void> => {
     ? Math.min(Math.max(previous.delayMs, APP_ATTEST_PAUSE_MIN_MS) * 2, APP_ATTEST_PAUSE_MAX_MS)
     : APP_ATTEST_PAUSE_MIN_MS;
   await SecureStore.setItemAsync(
-    APP_ATTEST_PAUSE_STORAGE_KEY,
+    backendStorageKey(APP_ATTEST_PAUSE_STORAGE_BASE),
     JSON.stringify({ until: Date.now() + delayMs, delayMs })
   ).catch(() => {});
 };
 
 const clearAppAttestPause = async (): Promise<void> => {
-  await SecureStore.deleteItemAsync(APP_ATTEST_PAUSE_STORAGE_KEY).catch(() => {});
+  await SecureStore.deleteItemAsync(backendStorageKey(APP_ATTEST_PAUSE_STORAGE_BASE)).catch(() => {});
 };
 
 const isAppAttestError = (error: unknown, code: string): boolean => {
@@ -402,7 +415,7 @@ const fetchGuestSession = async (
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
       return null;
     }
-    const storedKeyId = await SecureStore.getItemAsync(APP_ATTEST_KEY_STORAGE_KEY).catch(() => null);
+    const storedKeyId = await SecureStore.getItemAsync(backendStorageKey(APP_ATTEST_KEY_STORAGE_BASE)).catch(() => null);
     if (!storedKeyId && isAppAttestPaused(await readAppAttestPause())) {
       logger.warn('[guestSession] App Attest paused after a server refusal');
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
@@ -564,7 +577,7 @@ const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
   const inFlight = (async () => {
     let stored: GuestSessionRecord | null = null;
     try {
-      stored = decodeStored(await SecureStore.getItemAsync(STORAGE_KEY));
+      stored = decodeStored(await SecureStore.getItemAsync(backendStorageKey(SESSION_STORAGE_BASE)));
     } catch {
       stored = null;
     }
@@ -586,7 +599,7 @@ const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
     cached = fresh;
     try {
       await SecureStore.setItemAsync(
-        STORAGE_KEY,
+        backendStorageKey(SESSION_STORAGE_BASE),
         JSON.stringify({ token: fresh.token, expiresAt: new Date(fresh.expiresAt).toISOString(), fingerprint })
       );
     } catch {
@@ -639,7 +652,7 @@ export async function getGuestMediaOwner(): Promise<string | null> {
     if (!fingerprint) return null;
     let session = cached;
     if (!session) {
-      try { session = decodeStored(await SecureStore.getItemAsync(STORAGE_KEY)); } catch { /* SecureStore is unavailable on web. */ }
+      try { session = decodeStored(await SecureStore.getItemAsync(backendStorageKey(SESSION_STORAGE_BASE))); } catch { /* SecureStore is unavailable on web. */ }
     }
     if (session?.fingerprint === fingerprint) {
       // This claim selects local ownership, not authorization. Storage still verifies its signed URL.
@@ -690,7 +703,7 @@ export async function invalidateGuestSession(): Promise<void> {
   sessionPromise = null;
   updateGuestBootstrapState('degraded', GuestSessionErrorCode.EXPIRED);
   try {
-    await SecureStore.deleteItemAsync(STORAGE_KEY);
+    await SecureStore.deleteItemAsync(backendStorageKey(SESSION_STORAGE_BASE));
   } catch {
     // Ignore storage failures; session will remain cleared in memory.
   }

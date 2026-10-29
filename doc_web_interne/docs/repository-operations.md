@@ -25,6 +25,41 @@ lockfile and additionally requires `mise exec -- npm ci` in `apps/meditation`.
 Backend URL resolution uses `EXPO_PUBLIC_API_URL`, then `app.json` `expo.extra.apiUrl`; see
 `lib/config.ts`. Use `lib/http.ts` for network requests and its timeout/auth conventions.
 
+### Local development backend
+
+Production stays production: for daily work on a phone, the Simulator or the web, run a
+persistent local backend instead (macOS 14+ on Apple silicon or Linux glibc 2.35+, no Docker):
+
+```sh
+mise exec -- node tools/dev-local/dev-local.mjs            # Ctrl-C stops and keeps the data
+mise exec -- node scripts/expo-safe-runner.js --profile outputs/dev-local/expo.env start --dev-client --lan --port 8081
+mise exec -- node tools/dev-local/check.mjs                # guest and signed-in proof through the real API
+```
+
+It starts the native Supabase runtime on the tracked migrations (copies with production URLs
+neutralised and scheduled jobs disabled), creates `dev-free@noctalia.test` and
+`dev-plus@noctalia.test` (Plus through `apply_subscription_state_update`; passwords printed at
+start and kept in `outputs/dev-local/secrets.json`), and serves Auth, Data API, Storage and the
+real `api`/`capture-recall` routes and job workers on this machine's LAN address, port 31300
+(`--port`, `--host`). Data lives in ignored `outputs/dev-local/`; `--reset` destroys it.
+
+- **AI** answers are fixed and built from each route's JSON schema
+  (`tools/dev-local/deterministic-ai.ts`): nothing is sent to a provider or billed. Streamed
+  Gemini replies are not simulated. Real-provider quality stays with the manual
+  `reflection:eval:*` evaluations.
+- **Guests** keep the real session flow with local verifiers, only in this never-deployed server:
+  App Attest in its development environment for this team's builds (physical iPhone Debug
+  builds; the Simulator has no App Attest), any Play Integrity token on Android, and
+  Cloudflare's always-pass Turnstile test keys on the web. The server refuses to start unless its
+  backend is an identified native stack on loopback and its public origin a private HTTP address.
+- The app keeps a separate guest session, App Attest key and refusal pause per plain-HTTP API
+  (`backendStorageKey` in `lib/guestSession.ts`), so switching between production and the local
+  backend carries neither server's state to the other. Production key names are unchanged.
+- Not available: Google/Apple sign-in, purchases and store sync (RevenueCat), e-mail delivery.
+- Opening a personal install against it with a local account can move that install's guest
+  journal into the local account: prefer an owned QA install, the Simulator or the web.
+- No npm script: `package.json` scripts feed the runtime fingerprint.
+
 The canonical desktop/runtime entry point is `script/build_and_run.sh`, which keeps
 Metro in the foreground. An optional local `.codex/environments/environment.toml`
 can delegate desktop Run actions to it; this checkout does not ship that file.

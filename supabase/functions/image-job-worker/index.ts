@@ -666,7 +666,7 @@ const runInBackground = (task: Promise<void>): boolean => {
   return true;
 };
 
-const handleImageJobWorkerRequest = async (req: Request): Promise<Response> => {
+export const handleImageJobWorkerRequest = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
