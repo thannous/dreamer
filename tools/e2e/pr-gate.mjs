@@ -16,9 +16,23 @@ import { isDreamerAppPath, isNativeJourney, zonesForFiles } from './zones.mjs';
 const here = dirname(fileURLToPath(import.meta.url));
 const PINNED_NODE = 'v24.22.1';
 
+/** The web product whose campaign holds a changed journey file, if any. */
+export function changedJourneyProduct(file) {
+  if (!file.startsWith('tools/e2e/tests/') || !file.endsWith('.web.e2e.ts') || isNativeJourney(file)) return null;
+  const name = file.slice('tools/e2e/tests/'.length);
+  if (name.includes('/')) return null;
+  if (name.startsWith('dreamer')) return 'dreamer';
+  if (name === 'lucid.web.e2e.ts') return 'lucid';
+  if (name === 'meditation.web.e2e.ts') return 'meditation';
+  return null;
+}
+
 export function decideParcours(files) {
   const zones = zonesForFiles(files).filter(zone => zone.platform === 'web');
-  if (zones.length === 0) {
+  // A changed journey runs even when no source zone matched: the decision
+  // filter keeps it too, so a fixed or retagged journey is proved in the PR.
+  const journeyProducts = files.map(changedJourneyProduct).filter(Boolean);
+  if (zones.length === 0 && journeyProducts.length === 0) {
     if (files.some(isNativeJourney) && !files.some(isDreamerAppPath)) {
       return {
         launch: false,
@@ -30,7 +44,7 @@ export function decideParcours(files) {
       reason: 'PARCOURS SAUTE: aucun parcours nomme (capture, sauvegarde, journal, paiement, connexion, lucid, meditation) dans le diff. Une PR documentation, ou un fichier applicatif sans zone, ne lance pas de navigateur.',
     };
   }
-  return { launch: true, products: [...new Set(zones.map(zone => zone.product))] };
+  return { launch: true, products: [...new Set([...zones.map(zone => zone.product), ...journeyProducts])] };
 }
 
 export function decideSmoke(files) {

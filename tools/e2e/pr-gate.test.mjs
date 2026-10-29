@@ -60,3 +60,14 @@ test('verify:pr scopes skip docs and keep the named app paths', async () => {
   assert.equal(matchesAny('tools/e2e/zones.mjs', PARCOURS_WHEN), true);
   assert.equal(matchesAny('tools/e2e/pr-gate.mjs', PARCOURS_WHEN), true);
 });
+
+test('a changed web journey runs its campaign even without a source zone', () => {
+  assert.deepEqual(decideParcours(['tools/e2e/tests/dreamer-billing.web.e2e.ts']).products, ['dreamer']);
+  assert.deepEqual(decideParcours(['tools/e2e/tests/lucid.web.e2e.ts']).products, ['lucid']);
+  assert.deepEqual(decideParcours(['tools/e2e/tests/meditation.web.e2e.ts']).products, ['meditation']);
+  // Native, bug bash, backend and support files are not web journeys of these campaigns.
+  for (const file of ['tools/e2e/tests/dreamer.mobile.e2e.ts', 'tools/e2e/tests/bugbash/example.e2e.ts',
+    'tools/e2e/tests/backend-sync.web.e2e.ts', 'tools/e2e/zones.mjs']) {
+    assert.equal(decideParcours([file]).launch, false, file);
+  }
+});
