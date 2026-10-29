@@ -1,6 +1,8 @@
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { hasAiConsent, requestAiConsent, resetAiConsentCacheForTests, withdrawAiConsent } from '@/lib/aiConsent';
+import {
+  hasAiConsent, registerAiConsentPromptHandler, requestAiConsent, resetAiConsentCacheForTests, withdrawAiConsent,
+} from '@/lib/aiConsent';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
@@ -107,5 +109,39 @@ describe('requestAiConsent', () => {
     await expect(attempt).resolves.toBe(false);
     await expect(hasAiConsent()).resolves.toBe(false);
     await expect(AsyncStorage.getItem('noctalia.aiConsent.v2')).resolves.toBeNull();
+  });
+});
+
+// Android needs no separate AI disclosure since 2026-10-29; iOS and the web keep the prompt.
+describe('requestAiConsent on Android', () => {
+  const os = Platform.OS;
+  beforeEach(async () => {
+    jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    resetAiConsentCacheForTests();
+    await AsyncStorage.clear();
+    Platform.OS = 'android';
+  });
+
+  afterEach(() => {
+    Platform.OS = os;
+    jest.restoreAllMocks();
+  });
+
+  it('grants and remembers the AI action without showing any prompt', async () => {
+    const show = jest.fn(async () => false);
+    const unregister = registerAiConsentPromptHandler({ show });
+    await expect(requestAiConsent(t)).resolves.toBe(true);
+    unregister();
+    expect(show).not.toHaveBeenCalled();
+    expect(Alert.alert).not.toHaveBeenCalled();
+    await expect(AsyncStorage.getItem('noctalia.aiConsent.v2')).resolves.toBe('granted');
+  });
+
+  it('keeps a withdrawal from Settings until the next AI action', async () => {
+    await requestAiConsent(t);
+    await withdrawAiConsent();
+    await expect(hasAiConsent()).resolves.toBe(false);
+    await expect(requestAiConsent(t)).resolves.toBe(true);
+    expect(Alert.alert).not.toHaveBeenCalled();
   });
 });

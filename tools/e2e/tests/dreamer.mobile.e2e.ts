@@ -231,14 +231,26 @@ async function leaveGuidedStories(screen: TestFixtures['screen']) {
   await screen.getByRole('button', /^(Quitter|Leave|Sair|Salir|Esci|Verlassen)$/i, { visible: true }).tap();
 }
 
-/** Dreamer's root layout mounts the Noctalia consent host, so this is `modal.aiConsent`, not `Alert.alert`. */
-async function acceptAiConsent(screen: TestFixtures['screen']) {
+/**
+ * Dreamer's root layout mounts the Noctalia consent host, so this is `modal.aiConsent`, not `Alert.alert`.
+ * Android asks nothing since 2026-10-29: the AI action itself records the grant.
+ */
+async function acceptAiConsent(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
+  if (platform === 'android') {
+    await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
+    return;
+  }
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
 }
 
-async function declineAiConsent(screen: TestFixtures['screen']) {
+/** iOS only: Android has no consent to decline. */
+async function declineAiConsent(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
+  if (platform === 'android') {
+    await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
+    return;
+  }
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
@@ -372,8 +384,8 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
     await app.screenshot(`native-reflection-${mode}`);
     await screen.getByTestId('btn.dreamCategory.symbols', { visible: true }).tap();
-    await acceptAiConsent(screen);
-    // Native first-use consent precedes the composer. An initial conversation
+    await acceptAiConsent(screen, fixtures.platform);
+    // Native first-use consent (iOS) precedes the composer. An initial conversation
     // has no synthesis yet; that action is outside this background inspection.
     await expect(screen.getByTestId('chat.input.message', { visible: true })).toBeEnabled();
     await expect(screen.getByTestId('quick-category-symbols', { visible: true })).toBeEnabled();
@@ -498,7 +510,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
   });
 }
 
-test('Dreamer release onboarding reaches capture and rejects an empty save', async ({ app, screen, device }) => {
+test('Dreamer release onboarding reaches capture and rejects an empty save', async ({ app, screen, device, platform }) => {
   await app.open();
   await app.clearState();
   await expect(screen.getByTestId('screen.onboarding')).toBeVisible();
@@ -514,9 +526,9 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
   await device.dismissKeyboard();
   await screen.scrollUntilVisible(screen.getByTestId('btn.recording.inputMode.voice', { visible: true }), { direction: 'up' });
   await screen.getByTestId('btn.recording.inputMode.voice', { visible: true }).tap();
-  // Speech with a draft owes its first question: the host asks before any provider call.
-  // Declining keeps that question local, so the draft itself is not rewritten.
-  await declineAiConsent(screen);
+  // Speech with a draft owes its first question: iOS asks before any provider call, and
+  // declining keeps that question local. Either way the draft itself is not rewritten.
+  await declineAiConsent(screen, platform);
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue(draft);
   await expect(screen.getByTestId('btn.saveDream')).toBeEnabled();

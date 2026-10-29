@@ -18,7 +18,7 @@ test('Dreamer native first capture survives a mode switch and restart with exact
   tags: ['native-essential-capture', 'native-real-backend'],
   timeout: 300_000,
 }, async fixtures => {
-  const { app, screen, device, backend } = fixtures;
+  const { app, screen, device, backend, platform } = fixtures;
   void backend; // Acquire the guarded local-backend fixture and its owned app state.
   await app.open();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -32,8 +32,11 @@ test('Dreamer native first capture survives a mode switch and restart with exact
   await nativeDismissCaptureKeyboard(fixtures);
   await nativeTap(screen, 'btn.recording.inputMode.voice', 'up');
   const consent = screen.getByTestId('modal.aiConsent', { visible: true });
-  await expect(consent).toBeVisible();
-  await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
+  // iOS asks before the first question and is declined here; Android asks nothing (2026-10-29).
+  if (platform === 'ios') {
+    await expect(consent).toBeVisible();
+    await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
+  }
   await expect(consent).toHaveCount(0);
   const writing = screen.getByTestId('btn.recording.inputMode.text', { visible: true });
   await screen.scrollUntilVisible(writing, { direction: 'up' });
@@ -82,7 +85,7 @@ test('Dreamer native capture reviews its original story and saves an added detai
   tags: ['native-essential-capture', 'native-real-backend'],
   timeout: 300_000,
 }, async fixtures => {
-  const { app, screen, device, backend } = fixtures;
+  const { app, screen, device, backend, platform } = fixtures;
   void backend;
   await app.open();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -92,8 +95,12 @@ test('Dreamer native capture reviews its original story and saves an added detai
   await nativeDismissCaptureKeyboard(fixtures);
   await nativeTap(screen, 'btn.recording.inputMode.voice', 'up');
   const consent = screen.getByTestId('modal.aiConsent', { visible: true });
-  await expect(consent).toBeVisible();
-  await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
+  // iOS asks and is declined here; Android asks nothing (2026-10-29), so its first
+  // question may come from the local backend. The review below is the same either way.
+  if (platform === 'ios') {
+    await expect(consent).toBeVisible();
+    await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
+  }
   await expect(consent).not.toBeVisible();
 
   // Exercise the extracted preparation even when AI is declined: the review
