@@ -32,18 +32,21 @@ let widgets: NoctaliaWidgets | null | undefined;
 export function getNoctaliaWidgets(): NoctaliaWidgets | null {
   if (widgets !== undefined) return widgets;
   widgets = null;
-  if (Platform.OS !== 'ios' || isLucidTrainer || !requireOptionalNativeModule('ExpoWidgets')) return widgets;
-  try {
-    /* eslint-disable @typescript-eslint/no-require-imports */
-    widgets = {
-      capture: require('@/widgets/DreamCaptureWidget').default,
-      lastDream: require('@/widgets/LastDreamWidget').default,
-      sleepTimer: require('@/widgets/SleepTimerActivity').default,
-      directory: (require('expo-widgets') as typeof import('expo-widgets')).widgetsDirectory || null,
-    };
-    /* eslint-enable @typescript-eslint/no-require-imports */
-  } catch (error) {
-    log.warn('Widgets unavailable', error);
+  // A block rather than an early return, so Metro drops the widget layouts
+  // (and @expo/ui's SwiftUI views) from the Android bundle.
+  if (Platform.OS === 'ios' && !isLucidTrainer && requireOptionalNativeModule('ExpoWidgets')) {
+    try {
+      /* eslint-disable @typescript-eslint/no-require-imports */
+      widgets = {
+        capture: require('@/widgets/DreamCaptureWidget').default,
+        lastDream: require('@/widgets/LastDreamWidget').default,
+        sleepTimer: require('@/widgets/SleepTimerActivity').default,
+        directory: (require('expo-widgets') as typeof import('expo-widgets')).widgetsDirectory || null,
+      };
+      /* eslint-enable @typescript-eslint/no-require-imports */
+    } catch (error) {
+      log.warn('Widgets unavailable', error);
+    }
   }
   return widgets;
 }

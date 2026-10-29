@@ -28,6 +28,11 @@ const stubbedImportPaths = [
     message: 'Supabase Realtime is shimmed out of native bundles (scripts/metro-native-stubs.js).',
   },
   {
+    name: 'react-native-enriched-markdown',
+    importNames: ['EnrichedMarkdownTextInput'],
+    message: 'Metro stubs the Markdown editor on native (scripts/metro-native-stubs.js).',
+  },
+  {
     name: '@supabase/realtime-js',
     message: 'Supabase Realtime is shimmed out of native bundles (scripts/metro-native-stubs.js).',
   },

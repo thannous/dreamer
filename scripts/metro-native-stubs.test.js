@@ -185,6 +185,15 @@ describe('metro native stubs', () => {
     }
   });
 
+  it('stubs the unused enriched-markdown editor on native only', () => {
+    const origin = from('react-native-enriched-markdown/lib/module/index.js');
+    expect(fs.existsSync(path.join(NM, 'react-native-enriched-markdown/lib/module/EnrichedMarkdownTextInput.js'))).toBe(true);
+    expect(fs.readFileSync(origin.originModulePath, 'utf8')).toContain("from \"./EnrichedMarkdownTextInput.js\"");
+    expect(resolveNativeStub('./EnrichedMarkdownTextInput.js', 'ios', {}, origin)).toEqual(EMPTY);
+    expect(resolveNativeStub('./EnrichedMarkdownTextInput.js', 'web', {}, origin)).toBeNull();
+    expect(resolveNativeStub('./native/EnrichedMarkdownText.js', 'ios', {}, origin)).toBeNull();
+  });
+
   it('stubs dev-only tooling in release bundles and keeps it in development', () => {
     const cases = [
       ['../Libraries/Utilities/HMRClient', 'react-native/src/unstable-internals-do-not-use.js'],

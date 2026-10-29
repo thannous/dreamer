@@ -130,6 +130,11 @@ function resolveNativeStub(moduleName, platform, env = process.env, context = {}
   if (moduleName === 'iceberg-js' && originInsidePackage(originModulePath, '@supabase/storage-js')) {
     return EMPTY;
   }
+  // The package index re-exports the Markdown editor; the app only renders
+  // EnrichedMarkdownText (eslint.config.js bans importing the editor).
+  if (moduleName === './EnrichedMarkdownTextInput.js' && originIn(originModulePath, 'react-native-enriched-markdown/lib/module/index.js')) {
+    return EMPTY;
+  }
   // Uniwind's native runtime only parses hex/rgb/hsl colours and mixes them.
   // Its Node-side CSS compiler keeps the full culori.
   if (moduleName === 'culori' && originInsidePackage(originModulePath, 'uniwind')) {
