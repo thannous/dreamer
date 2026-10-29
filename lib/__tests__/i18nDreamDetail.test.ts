@@ -6,11 +6,8 @@ import italian from '@/lib/i18n/it';
 import pt from '@/lib/i18n/pt';
 
 const dreamImageProgressKeys = [
-  'journal.detail.image.preparing_title',
-  'journal.detail.image.preparing_subtitle',
   'journal.detail.image.generating_title',
   'journal.detail.image.queued_subtitle',
-  'journal.detail.image.running_subtitle',
   'journal.detail.image.generate_action',
   'journal.detail.image.quota_exceeded_message',
   'journal.detail.image.expand_accessibility',
@@ -37,7 +34,6 @@ describe('dream detail i18n', () => {
     expect(fr['journal.detail.image.generate_action']).toBe('Illustrer mon rêve');
 
     for (const translations of Object.values(packs)) {
-      expect(translations['journal.detail.image.preparing_subtitle']).not.toMatch(automaticStartPattern);
       expect(translations['journal.detail.image.ai_locked_note']).not.toMatch(automaticStartPattern);
       expect(translations['journal.detail.image.quota_exceeded_message']).not.toMatch(interpretationQuotaPattern);
       expect(translations['journal.detail.image.quota_exceeded_message'].toLowerCase()).toMatch(
