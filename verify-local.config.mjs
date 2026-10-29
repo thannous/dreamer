@@ -648,6 +648,9 @@ export default {
     // verify:release, which web:deploy:prod requires); npm run
     // verify:release:site, enough for the static site, leaves it out.
     { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true },
+    // The app's CDN paintings (assets/remote/app-media.json) must all be in the CDN
+    // read-back receipt before an app build or OTA references them.
+    { name: 'app-media-published', command: 'node --test scripts/app-media-release.test.mjs', kinds: ['release'], targets: ['app'] },
     {
       name: 'e2e-backend',
       command: 'npm run test:e2e:backend',
