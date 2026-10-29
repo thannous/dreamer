@@ -663,6 +663,15 @@ export default {
       requires: TESTERARMY,
     },
     { name: 'testerarmy-dreamer', command: DREAMER_PASSES, kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
+    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
+    {
+      name: 'testerarmy-meditation',
+      command: 'npm run test:testerarmy:meditation',
+      kinds: ['release'],
+      targets: ['app'],
+      specialised: true,
+      requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
+    },
     // Repros written by npm run test:bugbash:prerelease. Empty is a pass.
     // Not in the PR gate. Mock mode comes from e2e.config.ts; E2E_BUGBASH only
     // adds tests/bugbash to the glob.
@@ -673,15 +682,6 @@ export default {
       targets: ['app'],
       specialised: true,
       requires: TESTERARMY,
-    },
-    { name: 'testerarmy-lucid', command: 'npm run test:testerarmy:lucid', kinds: ['release'], targets: ['app'], specialised: true, requires: TESTERARMY },
-    {
-      name: 'testerarmy-meditation',
-      command: 'npm run test:testerarmy:meditation',
-      kinds: ['release'],
-      targets: ['app'],
-      specialised: true,
-      requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
     },
   ],
   hook: {
