@@ -29,7 +29,6 @@ export interface RecordingTextInputProps {
   disabled: boolean;
   /** The text is a whole dream: it stops at the dream's maximum length (the screen's draft count shows it). */
   limitDreamLength?: boolean;
-  instructionText: string;
   switchToVoiceLabel?: string;
   /** False when the device cannot capture speech at all: the mic is hidden, not just disabled. */
   voiceSupported?: boolean;
@@ -64,7 +63,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
       onSelectionChange,
       disabled,
       limitDreamLength = false,
-      instructionText,
       switchToVoiceLabel,
       voiceSupported = true,
       voiceStatus = 'idle',
@@ -86,7 +84,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
     const { colors, mode } = useTheme();
     const { t } = useTranslation();
     const { width, height, fontScale } = useContentWindow();
-    const controlFontScale = Math.min(1.3, Math.max(1, fontScale));
     const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
     const composerLayout = useMemo(
       () => getRecordingComposerLayout(width, height, fontScale),
@@ -379,28 +376,6 @@ export const RecordingTextInput = forwardRef<TextInputInstance, RecordingTextInp
 
     return (
       <View style={[styles.composer, expanded && styles.composerExpanded]}>
-        {instructionText ? <View
-          style={[
-            styles.recordingSection,
-            composerLayout.narrow && styles.recordingSectionNarrow,
-            compact && styles.recordingSectionCompact,
-            expanded && styles.recordingSectionExpanded,
-          ]}
-        >
-          <Text
-            key={`instruction-${fontScale}`}
-            allowFontScaling={false}
-            style={[
-              styles.instructionText,
-              composerLayout.narrow && styles.instructionTextNarrow,
-              compact && styles.instructionTextCompact,
-              expanded && styles.instructionTextExpanded,
-              { fontSize: (expanded ? 14 : compact ? 13 : 15) * controlFontScale, lineHeight: (expanded ? 20 : compact ? 18 : 21) * controlFontScale, color: noctalia.text.secondary },
-            ]}
-          >
-            {instructionText}
-          </Text>
-        </View> : null}
 
         <View
           nativeID={layout}
@@ -421,8 +396,6 @@ const styles = StyleSheet.create({
   chatActions: { bottom: 8, right: 8, left: 'auto', width: 96, minHeight: 44, paddingRight: 0, paddingBottom: 0 },
   composer: { gap: 16 },
   composerExpanded: { flex: 1, gap: 12, width: '100%', maxWidth: 512, alignSelf: 'center' },
-  recordingSectionExpanded: { marginTop: 0, alignItems: 'flex-start' },
-  instructionTextExpanded: { fontFamily: Fonts.outfit.regular, fontSize: 14, lineHeight: 20, textAlign: 'left' },
   textInputSectionExpanded: { flex: 1 },
   editorExpanded: { flex: 1, borderRadius: 16 },
   textInputExpanded: {
@@ -432,31 +405,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   inlineActionFooterExpanded: { borderBottomLeftRadius: 15, borderBottomRightRadius: 15 },
-  recordingSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 18,
-  },
-  recordingSectionCompact: {
-    marginTop: 0,
-  },
-  recordingSectionNarrow: {
-    marginTop: 10,
-  },
-  instructionText: {
-    fontSize: 23,
-    lineHeight: 32,
-    fontFamily: Fonts.lora.regularItalic,
-    textAlign: 'center',
-  },
-  instructionTextCompact: {
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  instructionTextNarrow: {
-    fontSize: 21,
-    lineHeight: 29,
-  },
   textInputSection: {
     width: '100%',
     maxWidth: 512,

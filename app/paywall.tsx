@@ -381,7 +381,10 @@ function PaywallScreen() {
   const headerSubtitle = isActive && !awaitingServerAccess
     ? t(`subscription.paywall.header.subtitle.${activeTierKey}` as const)
     : isDreamAnalysisOffer ? t('subscription.paywall.saved_dream.message')
-      : t(paywallVariant.headerSubtitleKey, { ...QUOTA_COPY, date: resetDate });
+      // A guest's two analyses never come back: only an account brings more.
+      : !user && paywallVariant.trigger === 'analysis_limit'
+        ? t('subscription.paywall.variant.analysis_limit.subtitle_guest', QUOTA_COPY)
+        : t(paywallVariant.headerSubtitleKey, { ...QUOTA_COPY, date: resetDate });
 
   const formattedExpiryDate = useMemo(() => {
     const expiryDate = subscriptionStatus?.expiryDate;
@@ -574,17 +577,6 @@ function PaywallScreen() {
                   {translateWithFallback(paywallVariant.primaryLabelKey)}
                 </Text>
               </PressableScale>
-
-              <Pressable
-                style={({ pressed }) => [styles.secondaryButton, pressed && styles.secondaryButtonPressed]}
-                onPress={handleClose}
-                disabled={busy}
-                accessibilityRole="button"
-              >
-                <Text style={[styles.secondaryLabel, { color: noctalia.text.secondary }]}>
-                  {t('subscription.paywall.button.close')}
-                </Text>
-              </Pressable>
             </View>
           </ScreenContainer>
         </HeaderScrollView>
@@ -908,7 +900,7 @@ function PaywallScreen() {
                 </Text>
               </Pressable>
             ) : null}
-            {!isActive && isDreamAnalysisOffer ? (
+            {!isActive && isDreamAnalysisOffer && user ? (
               <Text style={[styles.notice, { color: noctalia.text.secondary }]}>
                 {t('subscription.paywall.saved_dream.reset', { date: resetDate })}
               </Text>

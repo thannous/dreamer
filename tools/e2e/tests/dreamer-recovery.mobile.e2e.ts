@@ -40,7 +40,12 @@ async function openDream(screen: TestFixtures['screen'], journalId: number) {
   await expect(screen.getByTestId('screen.dreamDetail', { visible: true })).toBeVisible();
 }
 
-async function acceptAi(screen: TestFixtures['screen']) {
+async function acceptAi(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
+  // Android asks nothing since 2026-10-29: the AI action itself records the grant.
+  if (platform === 'android') {
+    await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
+    return;
+  }
   // AiConsentModalHost is mounted for Dreamer, so consent is the Noctalia modal, not a system alert.
   // Do not scroll: a swipe on the dimmed overlay declines.
   const modal = screen.getByTestId('modal.aiConsent', { visible: true });
@@ -74,7 +79,7 @@ test('Dreamer queued real analysis survives process restart and completes once w
     await nativeLogin(fixtures);
     await openDream(screen, journalId);
     await tap(screen, 'btn.dream.primaryCta');
-    await acceptAi(screen);
+    await acceptAi(screen, fixtures.platform);
     await expect.poll(async () => (await control(token)).analysisDispatches, { timeout: 30_000 }).toBeGreaterThan(0);
     const pending = await admin.from('ai_jobs').select('id,status,client_request_id,quota_claimed').eq('dream_id', dreamId);
     expect(pending.error).toBeNull();
@@ -154,7 +159,7 @@ test('Dreamer real chat retries a lost completion without duplicate messages or 
   // The iPhone composer keeps Send above its open keyboard.
   if (platform === 'android') await device.dismissKeyboard();
   await tap(screen, 'chat.button.send');
-  await acceptAi(screen);
+  await acceptAi(screen, platform);
   const retry = screen.getByRole('button', 'Try again', { visible: true });
   await expect(retry).toBeVisible({ timeout: 45_000 });
   const interrupted = await control(token);

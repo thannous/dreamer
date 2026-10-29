@@ -182,7 +182,7 @@ export function verifyReport(document, options) {
       || result.platform !== options.platform || !Number.isSafeInteger(result.repeat) || result.repeat < 0
       || typeof result.selected !== 'boolean' || !Array.isArray(result.attempts)
       || typeof result.agent !== 'string' || (options.personaModel !== undefined
-        ? result.file !== `tests/dreamer-personas.${options.platform === 'web' ? 'web' : 'mobile'}.e2e.ts` || !['morning', 'archivist', 'explorer', 'free'].includes(result.agent)
+        ? result.file !== `tests/dreamer-personas.${options.platform === 'web' ? 'web' : 'mobile'}.e2e.ts` || !['morning', 'archivist', 'explorer', 'guest', 'free'].includes(result.agent)
           || !result.tags?.includes(`persona-${result.agent}`)
         : result.agent !== (options.agent ?? 'default'))) fail('RESULT_IDENTITY');
     const row = { targetId: result.targetId, testId: result.testId, repeat: result.repeat, agent: result.agent };

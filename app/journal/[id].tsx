@@ -1064,8 +1064,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     if (isStalePrimaryAction) {
       return {
         icon: 'arrow.clockwise' as const,
-        title: t('journal.detail.stale.label'),
-        message: t(isPlus ? 'journal.detail.stale.banner' : 'error.reanalysis_requires_plus'),
+        title: t('journal.detail.stale.action_title'),
+        message: t(isPlus ? 'journal.detail.stale.action_message' : 'error.reanalysis_requires_plus'),
         step: t('journal.detail.action.analyze.step'),
         cta: t(isPlus ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus'),
         disabled: false,
@@ -1089,7 +1089,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           title: t('recording.saved_analysis.title'),
           message: t(savedAnalysisAction === 'login'
             ? 'journal.detail.quota_limit.message_login'
-            : 'recording.saved_analysis.guest_exhausted'),
+            : 'journal.detail.quota_limit.message_guest'),
           step: t('journal.detail.action.analyze.step'),
           cta: t(savedAnalysisAction === 'login'
             ? 'journal.detail.quota_limit.cta_login'
@@ -2539,8 +2539,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const analysisIcon = guestNeedsAccount ? 'person.fill' : visiblePrimaryAction === 'analyze'
     ? (isStalePrimaryAction ? 'arrow.clockwise' : 'sparkles') : 'arrow.right';
   // The saved moment already confirms the save; only a message explaining the offer remains.
-  const arrivalMessage = !detailActionCard || analysisAccessLabel
-    || detailActionCard.message === t('journal.detail.action.analyze.message') ? null : detailActionCard.message;
+  // The arrival has no card title, so a guest out of readings is told so in the caption itself.
+  const arrivalMessage = guestNeedsAccount && savedAnalysisAction === 'signup'
+    ? t('recording.saved_analysis.guest_exhausted')
+    : !detailActionCard || analysisAccessLabel
+      || detailActionCard.message === t('journal.detail.action.analyze.message') ? null : detailActionCard.message;
   // After a capture the struck seal offers the dream's reading itself, then shows it read.
   const sealReads = sealVisible && isSavedArrival && !isStalePrimaryAction && Boolean(detailActionCard)
     && (visiblePrimaryAction === 'analyze' || readingInFlight);
@@ -3024,11 +3027,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             <Text className="text-center font-sans-bold text-[16px] text-ivory">
               {t('journal.detail.image.no_image_title')}
             </Text>
-            <Text className="px-2 text-center font-sans text-[13px] leading-5 text-ivory-muted">
-              {visibleIllustrationCta === 'quota'
-                ? t('journal.detail.image.quota_exceeded_message')
-                : t('journal.detail.image.no_image_subtitle')}
-            </Text>
+            {visibleIllustrationCta === 'quota' ? (
+              <Text className="px-2 text-center font-sans text-[13px] leading-5 text-ivory-muted">
+                {t('journal.detail.image.quota_exceeded_message')}
+              </Text>
+            ) : null}
             {!isRetryingImage && !isImageJobPending && (
               <View className="w-full items-center gap-3">
                 {canOfferImageUpgrade && (

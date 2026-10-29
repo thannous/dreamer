@@ -218,7 +218,6 @@ const firstRunOnboardingKeys = [
 const rememberedDreamPromptKeys = [
   'recording.remembered.default_title',
   'recording.remembered.placeholder',
-  'recording.remembered.active_instruction',
   'recording.remembered.save_button',
   'recording.remembered.save_button_accessibility',
   'recording.remembered_prompt.eyebrow',

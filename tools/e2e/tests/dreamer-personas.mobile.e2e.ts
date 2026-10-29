@@ -179,11 +179,13 @@ if (process.env.E2E_PERSONAS === '1') {
       // The iPhone composer keeps its keyboard open; Send remains reachable.
       if (platform === 'android') await device.dismissKeyboard();
       await tap(screen, 'chat.button.send');
-      // The root host shows modal.aiConsent. Alert.alert is only the fallback when that host is absent.
-      // Do not scroll: a swipe on the dimmed overlay declines.
-      await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
-      await expect(screen.getByTestId('component.aiConsent.card', { visible: true })).toBeVisible();
-      await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+      // iOS: the root host shows modal.aiConsent (Alert.alert is only the fallback when that host is
+      // absent). Do not scroll: a swipe on the dimmed overlay declines. Android asks nothing (2026-10-29).
+      if (platform === 'ios') {
+        await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
+        await expect(screen.getByTestId('component.aiConsent.card', { visible: true })).toBeVisible();
+        await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+      }
       await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
       const savedQuestion = screen.getByText(question, { exact: true, visible: true });
       await expect(savedQuestion).toBeVisible();
