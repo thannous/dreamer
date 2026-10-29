@@ -607,17 +607,18 @@ export default {
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
     // Web only. A native diff, or a runner without Node 24.22.1 / Chromium,
     // prints PARCOURS SAUTE or FUMEE SAUTEE and exits 0. No model, no Actions.
+    // No `targets`: the engine applies targets on release only, so a target
+    // would drop these checks from verify:pr. On a master release the diff is
+    // empty and the commands exit without a browser.
     {
       name: 'parcours-touches',
       command: 'node --test tools/e2e/zone-filter.test.mjs tools/e2e/pr-gate.test.mjs tools/e2e/bugbash-prerelease.test.mjs && npm run test:e2e:parcours',
       when: PARCOURS_WHEN,
-      targets: ['app'],
     },
     {
       name: 'smoke-journeys',
       command: 'npm run test:e2e:smoke',
       when: SMOKE_WHEN,
-      targets: ['app'],
     },
 
     // ---- verify:release only: the full local validation, then the delivered builds.

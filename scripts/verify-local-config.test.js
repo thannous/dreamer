@@ -188,8 +188,6 @@ describe('verify-local.config.mjs', () => {
     expect(scripts['verify:release:site']).toBe('node scripts/verify-local.mjs release');
     const app = config.checks.filter((check) => check.targets).map((check) => [check.name, check.targets]);
     expect(app).toEqual([
-      ['parcours-touches', ['app']],
-      ['smoke-journeys', ['app']],
       ['web-build', ['app']],
       ['e2e-backend', ['app']],
       ['testerarmy-dreamer', ['app']],
@@ -197,6 +195,12 @@ describe('verify-local.config.mjs', () => {
       ['testerarmy-meditation', ['app']],
       ['bugbash-repros', ['app']],
     ]);
+    // targets apply on release only. A target here would drop the PR gates.
+    for (const name of ['parcours-touches', 'smoke-journeys']) {
+      const check = config.checks.find((entry) => entry.name === name);
+      expect(check.targets).toBeUndefined();
+      expect(check.kinds ?? ['pr', 'release']).toEqual(['pr', 'release']);
+    }
   });
 
   it('e2e-backend needs the native Supabase runtime, never Docker, and really runs the journeys', () => {
