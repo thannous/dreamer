@@ -2065,9 +2065,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
                   }}
                   disabled={interactionDisabled}
                   limitDreamLength
-                  instructionText={!keyboardVisible && captureIntent === 'remembered'
-                    ? t('recording.remembered.active_instruction')
-                    : ''}
                   switchToVoiceLabel={voiceControlLabel}
                   voiceSupported={isVoiceSupported}
                   voiceStatus={voiceControlStatus}
@@ -2164,7 +2161,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
         bodyScrollEnabled={false}
         onClose={() => setShowRememberedDetailsSheet(false)}
         title={t('recording.remembered_profile.accordion_title')}
-        subtitle={t('recording.remembered_profile.title')}
         actions={{
           primaryLabel: t('common.done'),
           onPrimary: () => setShowRememberedDetailsSheet(false),

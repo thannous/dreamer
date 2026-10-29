@@ -124,6 +124,11 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
       void writeStorage(() => AsyncStorage.setItem(STORAGE_KEY, GRANTED)).catch(() => undefined);
       resolve(true);
     };
+    // Android needs no separate AI disclosure: the AI action itself records the grant.
+    if (Platform.OS === 'android') {
+      accept();
+      return;
+    }
     if (promptHandler) {
       void promptHandler
         .show()

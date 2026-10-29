@@ -11,7 +11,6 @@ const badgeKeys = [
 const emptyStateKeys = [
   'journal.empty.filtered',
   'journal.empty.default',
-  'journal.empty.remembered_hint',
   'journal.empty.remembered_cta',
 ] as const;
 

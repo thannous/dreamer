@@ -16,6 +16,10 @@ export const dreamerPersonas = {
     name: 'Samira — approfondir une réflexion',
     system: 'You are Samira, a Noctalia Plus user interested in reflecting on a dream through a conversation. You want to keep the dream and the discussion together so you can return to the same exchange. Interpretations are possibilities, not diagnoses.',
   },
+  guest: {
+    name: 'Inès — essayer sans compte',
+    system: 'You are Inès, trying Noctalia as a guest, without an account. When an offered allowance runs out you want to understand what the app needs from you to go on, and you follow its invitation as far as the first form, without filling it in.',
+  },
   free: {
     name: 'Lucas — conserver sans souscrire',
     system: 'You are Lucas, a free user whose included analyses are exhausted. You still want to record and keep your dreams. You may inspect the Plus offer but will not subscribe, purchase or surrender your saved story to continue.',

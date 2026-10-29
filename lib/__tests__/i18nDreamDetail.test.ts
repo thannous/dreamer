@@ -13,7 +13,6 @@ const dreamImageProgressKeys = [
   'journal.detail.image.running_subtitle',
   'journal.detail.image.generate_action',
   'journal.detail.image.quota_exceeded_message',
-  'journal.detail.image.no_image_subtitle',
   'journal.detail.image.expand_accessibility',
   'journal.detail.image.close_fullscreen',
 ] as const;
@@ -38,7 +37,6 @@ describe('dream detail i18n', () => {
     expect(fr['journal.detail.image.generate_action']).toBe('Illustrer mon rêve');
 
     for (const translations of Object.values(packs)) {
-      expect(translations['journal.detail.image.no_image_subtitle']).not.toMatch(automaticStartPattern);
       expect(translations['journal.detail.image.preparing_subtitle']).not.toMatch(automaticStartPattern);
       expect(translations['journal.detail.image.ai_locked_note']).not.toMatch(automaticStartPattern);
       expect(translations['journal.detail.image.quota_exceeded_message']).not.toMatch(interpretationQuotaPattern);

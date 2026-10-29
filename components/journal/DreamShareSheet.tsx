@@ -147,7 +147,6 @@ export function DreamShareSheet({
       visible={visible}
       onClose={onClose}
       title={t('journal.detail.share_modal.title')}
-      subtitle={t('journal.detail.share_sheet.subtitle')}
       testID={TID.Sheet.DreamShare}
       // An illustration slow to sign or to show keeps the button waiting, never the dreamer
       // from leaving.

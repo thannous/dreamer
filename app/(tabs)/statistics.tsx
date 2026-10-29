@@ -319,11 +319,6 @@ function StatisticsScreen() {
         shown={shownTheme}
         selected={selectedTheme}
         onSelect={chooseTheme}
-        legend={shownTheme ? t('trends.seal.legend', {
-          theme: getDreamThemeLabel(shownTheme, t) ?? shownTheme,
-          count: formatNumber(shownCount),
-          total: formatNumber(trends.count),
-        }) : null}
         dates={sealDates}
         medalLabel={(theme) => {
           const count = trends.themes.counts[theme];

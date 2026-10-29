@@ -206,6 +206,7 @@ using the existing synthetic mock accounts:
 | Camille, just awake | New | Keep notes for later; reopen the one entry and recover the exact editable story without a reading or paywall. |
 | Alex, regular journaler | Existing free | Find a cloud-garden dream, add it to favourites, reopen it through that filter with its story intact. The fixture starts unfavourited. |
 | Samira, reflecting | Plus | Check the dream's title in the conversation, send one exact question, receive a simulated reply, then find the same dream, question and reply on revisit. |
+| Inès, guest without an account | Guest (no profile), AI pre-allowed | Web only. At the 10 offered chat exchanges, and with the 2 lifetime guest analyses spent, the page says so once and leads to the account form; Plus never promises the analyses back. From the empty journal, start a remembered dream with one invitation to write. |
 | Lucas, exhausted free quota | Existing free | Keep a dream, inspect the Plus offer, decline it and retain the story; verify free allowance and zero mock purchase/restore calls. |
 
 Definitions live in [dreamer-personas.ts](dreamer-personas.ts); journeys in
