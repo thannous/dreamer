@@ -3,19 +3,9 @@ import '@/global.css';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Fraunces_400Regular } from '@expo-google-fonts/fraunces/400Regular';
-import { Fraunces_500Medium } from '@expo-google-fonts/fraunces/500Medium';
-import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces/600SemiBold';
-import { Fraunces_700Bold } from '@expo-google-fonts/fraunces/700Bold';
-import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
-import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
-import { Lora_700Bold } from '@expo-google-fonts/lora/700Bold';
-import { Lora_700Bold_Italic } from '@expo-google-fonts/lora/700Bold_Italic';
-import { Outfit_400Regular } from '@expo-google-fonts/outfit/400Regular';
-import { Outfit_500Medium } from '@expo-google-fonts/outfit/500Medium';
-import { Outfit_700Bold } from '@expo-google-fonts/outfit/700Bold';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router/react-navigation';
 import { useFonts } from 'expo-font';
+import { APP_FONTS } from '@/constants/appFonts';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
@@ -995,19 +985,7 @@ function JournalRuntime({ children }: React.PropsWithChildren) {
  */
 function RootLayout() {
   const [fontsStartedAt] = useState(() => globalThis.performance?.now?.() ?? Date.now());
-  const [fontsLoaded, fontError] = useFonts({
-    Outfit_400Regular,
-    Outfit_500Medium,
-    Outfit_700Bold,
-    Lora_400Regular,
-    Lora_400Regular_Italic,
-    Lora_700Bold,
-    Lora_700Bold_Italic,
-    Fraunces_400Regular,
-    Fraunces_500Medium,
-    Fraunces_600SemiBold,
-    Fraunces_700Bold,
-  });
+  const [fontsLoaded, fontError] = useFonts(APP_FONTS);
   const [showCustomSplash, setShowCustomSplash] = useState(true);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);
