@@ -64,13 +64,15 @@ routes.set('POST /guest/session', async (ctx) => handleGuestSession(ctx.req, loc
 // Store sync needs RevenueCat. Locally the stored entitlement is the truth: report it
 // unchanged, so the Plus account stays Plus and the app gets no server error.
 const { createClient } = await import('jsr:@supabase/supabase-js@2');
+const { jsonResponse } = await import('../../supabase/functions/api/lib/http.ts');
 const storedSubscription: Handler = async (ctx) => {
-  if (!ctx.user) return Response.json({ error: 'Authentication required' }, { status: 401 });
+  // jsonResponse carries the CORS headers the web app needs, as the real route's responses do.
+  if (!ctx.user) return jsonResponse({ error: 'Authentication required' }, 401);
   const admin = createClient(ctx.supabaseUrl, ctx.supabaseServiceRoleKey!, { auth: { persistSession: false } });
   const { data, error } = await admin.from('subscription_state').select('tier,is_active,version')
     .eq('user_id', ctx.user.id).maybeSingle();
-  if (error) return Response.json({ error: 'Local subscription state unavailable' }, { status: 503 });
-  return Response.json({
+  if (error) return jsonResponse({ error: 'Local subscription state unavailable' }, 503);
+  return jsonResponse({
     ok: true, tier: data?.tier === 'plus' && data.is_active ? 'plus' : 'free', isActive: Boolean(data?.is_active),
     version: typeof data?.version === 'number' ? data.version : 0, updated: false, skipped: true, changed: false,
     outcome: 'local_backend',

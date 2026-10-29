@@ -221,6 +221,15 @@ describe('http', () => {
         jest.resetModules();
         await require('../http').fetchJSON(`${localBackend}/rest/v1/dreams`);
         expect((global.fetch as any).mock.calls[1][1].headers.Authorization).toBeUndefined();
+        // The same rule covers a Tailscale address (`--host` on the local backend), not a public one.
+        runtime.__DEV__ = true;
+        for (const [origin, expected] of [['http://100.94.216.42:31300', 'Bearer user-access-token'], ['http://203.0.113.4:31300', undefined]] as const) {
+          process.env.EXPO_PUBLIC_SUPABASE_URL = origin;
+          jest.resetModules();
+          const calls = (global.fetch as any).mock.calls.length;
+          await require('../http').fetchJSON(`${origin}/rest/v1/dreams`);
+          expect((global.fetch as any).mock.calls[calls][1].headers.Authorization).toBe(expected);
+        }
       } finally {
         runtime.__DEV__ = wasDev;
       }
