@@ -30,7 +30,7 @@ export function StatTile({
       className="flex-1"
       contentStyle={[styles.content, compact ? styles.compactContent : styles.regularContent]}
       style={featured ? { borderColor: Themes[appearance].accentLight } : undefined}>
-      <Text variant={compact ? 'h1' : 'display'}>{value}</Text>
+      <Text testID={testID ? `${testID}.value` : undefined} variant={compact ? 'h1' : 'display'}>{value}</Text>
       <Text variant="caption" className="text-center">
         {label}
       </Text>

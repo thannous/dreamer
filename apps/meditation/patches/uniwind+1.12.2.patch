@@ -1,0 +1,12 @@
+diff --git a/node_modules/uniwind/src/components/index.ts b/node_modules/uniwind/src/components/index.ts
+index 6fcad21..12a6cd3 100644
+--- a/node_modules/uniwind/src/components/index.ts
++++ b/node_modules/uniwind/src/components/index.ts
+@@ -307,4 +307,7 @@ module.exports = {
+     get XamlHost() {
+         return require('react-native').XamlHost
+     },
++    get AssetRegistry() {
++        return require('react-native').AssetRegistry
++    },
+ }

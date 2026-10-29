@@ -6,6 +6,7 @@ import React from 'react';
 import ProfileTab from '@/app/(drawer)/(tabs)/profile';
 import SearchTab from '@/app/(drawer)/(tabs)/search';
 import CategoryScreen from '@/app/category/[slug]';
+import HistoryScreen from '@/app/history';
 
 import { WORLD_BY_ID, type WorldId } from '@/constants/worlds';
 import { WorldProvider } from '@/context/WorldContext';
@@ -55,7 +56,7 @@ jest.mock('react-native-safe-area-context', () => {
 });
 
 jest.mock('@/context/LibraryContext', () => ({
-  useLibrary: () => mockLibraryState,
+  useLibrary: () => ({ ...mockLibraryState, progress: {} }),
   useLibraryMetadata: () => mockLibraryState,
 }));
 
@@ -71,7 +72,7 @@ jest.mock('uniwind', () => ({
 }));
 
 const renderInWorld = async (
-  screenName: 'search' | 'profile' | 'category',
+  screenName: 'search' | 'profile' | 'category' | 'history',
   worldId: WorldId
 ) => {
   await AsyncStorage.setItem(StorageKey.world, JSON.stringify(worldId));
@@ -80,6 +81,8 @@ const renderInWorld = async (
       <SearchTab />
     ) : screenName === 'profile' ? (
       <ProfileTab />
+    ) : screenName === 'history' ? (
+      <HistoryScreen />
     ) : (
       <CategoryScreen />
     ),
@@ -205,6 +208,18 @@ describe('Search and Profile world surfaces', () => {
     expect(screen.getByTestId('category.session.sleep-body-scan').props.accessibilityLabel).toEqual(
       expect.stringContaining('Noctalia Plus is active')
     );
+  });
+
+  it('announces the full history count even when rows can be virtualized', async () => {
+    const entry = { dateISO: '2026-08-24', sessionId: 'sleep-descent', seconds: 600 };
+    mockLibraryState.practiceLog = [entry];
+    const view = await renderInWorld('history', 'dawn');
+    expect(screen.getByLabelText(/^Practised once\./)).toBeTruthy();
+
+    mockLibraryState.practiceLog = [entry, entry];
+    view.rerender(<HistoryScreen />);
+    expect(screen.getByLabelText(/^Practised 2 times\./)).toBeTruthy();
+    expect(screen.queryByLabelText(/^Practised once\./)).toBeNull();
   });
 
 });
