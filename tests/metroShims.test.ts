@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const ROOT = path.resolve(__dirname, '../../..');
+const ROOT = path.resolve(__dirname, '..');
 
 // The part of culori Uniwind's native runtime calls (culori ships no types).
 type Culori = {
@@ -17,7 +17,7 @@ type Culori = {
 };
 
 describe('culori-lite (Uniwind native runtime)', () => {
-  const lite = require('../culori-lite') as Culori;
+  const lite = require('../scripts/metro-shims/culori-lite') as Culori;
   const full = jest.requireActual('culori') as Culori;
   const toHex8 = (color: string, culori: Culori) => {
     const parsed = culori.parse(color);
@@ -54,7 +54,7 @@ describe('culori-lite (Uniwind native runtime)', () => {
 describe('character-entities-lite (Markdown policy pass)', () => {
   beforeEach(() => {
     jest.resetModules();
-    jest.doMock('character-entities', () => jest.requireActual('../character-entities-lite'));
+    jest.doMock('character-entities', () => jest.requireActual('../scripts/metro-shims/character-entities-lite'));
   });
 
   it('decodes the common references and leaves rare ones to the renderer', () => {
@@ -75,11 +75,11 @@ describe('character-entities-lite (Markdown policy pass)', () => {
 describe('supabase-realtime shim', () => {
   beforeEach(() => {
     jest.resetModules();
-    jest.doMock('@supabase/realtime-js', () => jest.requireActual('../supabase-realtime'));
+    jest.doMock('@supabase/realtime-js', () => jest.requireActual('../scripts/metro-shims/supabase-realtime'));
   });
 
   it('lets supabase-js build a client and follow auth events without Realtime', async () => {
-    const { RealtimeClient } = require('../supabase-realtime') as { RealtimeClient: new () => unknown };
+    const { RealtimeClient } = require('../scripts/metro-shims/supabase-realtime') as { RealtimeClient: new () => unknown };
     const { createClient } = require('@supabase/supabase-js') as typeof import('@supabase/supabase-js');
     const client = createClient('https://example.supabase.co', 'anon-key', {
       auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
