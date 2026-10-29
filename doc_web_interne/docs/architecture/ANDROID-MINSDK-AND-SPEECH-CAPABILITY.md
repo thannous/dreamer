@@ -2,9 +2,9 @@
 
 ## Decision
 
-`minSdkVersion` moves from **33 to 28**. Voice dictation stays available on every
-supported Android version through an explicit capability ladder, and is blocked
-only when the device genuinely cannot capture audio.
+`minSdkVersion` moves from **33 to 28**. Voice dictation uses the available
+system recognizer through an explicit capability ladder. If the device has no
+recognizer or microphone, the user can continue with text.
 
 Set in [`app.json`](../../../app.json) under the `expo-build-properties` plugin.
 
@@ -52,10 +52,11 @@ resolved against the device in `resolveDeviceSpeechCapability()`
 |---|---|---|
 | `on_device` | API ≥ 33, on-device supported, requested locale installed | Dictation never leaves the device |
 | `network` | Recognizer present, local model unproven | Default recognizer, may use the network |
-| `server_only` | No `RecognitionService` on the device | Record audio, transcribe via `POST /transcribe` |
-| `unavailable` | Device cannot capture audio | Voice control hidden, text capture only |
+| `unavailable` | No `RecognitionService` or usable microphone | Voice control hidden, text capture only |
 
-Only the last tier blocks the feature. An old Android version never does.
+Noctalia no longer uploads a recording to its backend when recognition fails.
+An old Android version alone does not block dictation, but the system service
+must be present and available.
 
 ### Language substitution is offered, never applied
 
@@ -72,7 +73,7 @@ so mic-less devices can install the app. The `unavailable` tier exists for them.
 ### Surfaces that consult the ladder
 
 Every microphone in the app resolves the capability on mount and hides its
-control on the `unavailable` tier. Both skip the probe on web, where speech
+control on the `unavailable` tier. They skip the probe on web, where speech
 availability comes from the Web Speech API instead, and both keep the mic when
 the probe itself fails — a failed probe is not proof of a missing microphone.
 
@@ -110,8 +111,8 @@ npm run test:file -- lib/__tests__/speechCapability.test.ts services/__tests__/n
 ```
 
 The first two suites pin the ladder at API 28, 29, 30, 31, 32, 33 and 34, cover
-a native module that is missing or throws, and assert that voice is blocked only
-on microphone failure. The third covers the chat composer's mic across the
+a native module that is missing or throws, and assert that voice is unavailable
+when there is no recognizer or microphone. The third covers the chat composer's mic across the
 hidden, visible, and failed-probe cases.
 
 ## Open items
@@ -122,6 +123,7 @@ hidden, visible, and failed-probe cases.
 - **Physical testing on API 28–30 has not been done.** The code paths are
   covered by unit tests; ROMs without Google services and OEM recognizer
   variance are not.
-- **Privacy declaration.** The `network` and `server_only` tiers can send audio
-  off-device — the default recognizer to the system service, `/transcribe` to
-  Supabase. Confirm both are reflected in the Play Console Data safety form.
+- **Privacy declaration.** The `network` tier can send audio off-device through
+  the system recognizer. Older shipped Noctalia versions can also use the legacy
+  `/transcribe` backend route; keep their data flows in the Store declarations
+  until those versions are no longer active.
