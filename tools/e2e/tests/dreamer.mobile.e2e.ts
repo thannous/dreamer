@@ -57,7 +57,7 @@ async function billingGuest({ app, screen }: NativeBackgroundFixtures) {
   await billingTap(screen, 'quick-settings.language');
   await billingTap(screen, 'quick-settings.language.en');
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
-  await screen.getByTestId('quick-settings.close', { visible: true }).tap();
+  await screen.getByRole('button', 'Close quick settings', { visible: true }).tap();
 }
 
 async function billingFree(fixtures: NativeBackgroundFixtures) {
