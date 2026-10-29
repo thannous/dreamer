@@ -398,6 +398,12 @@
         "exclude": [
           "expo-widgets"
         ]
+      },
+      "ios": {
+        "buildFromSource": [
+          "ExpoImage",
+          "ExpoImageManipulator"
+        ]
       }
     }
   }
