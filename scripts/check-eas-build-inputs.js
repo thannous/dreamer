@@ -5,12 +5,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createRequire } = require('node:module');
 const { execFileSync } = require('node:child_process');
+const { iosLinksHealthKit, missingHealthPurposeKeys } = require('./lib/ios-healthkit-linking');
 
 const STORE_BUNDLES = {
   noctalia: 'com.tanuki75.noctalia',
   lucid: 'com.tanuki75.noctalia.lucid',
 };
-const HEALTH_PURPOSE_KEYS = ['NSHealthShareUsageDescription', 'NSHealthUpdateUsageDescription'];
 
 function assertPortableFingerprint(fingerprint) {
   if (!Array.isArray(fingerprint?.sources)) throw new Error('Expo did not return fingerprint sources. No EAS build started.');
@@ -48,7 +48,7 @@ function assertAndroidStoreConfig(config, app) {
   }
 }
 
-function assertIosStoreConfig(config, app) {
+function assertIosStoreConfig(config, app, healthKitLinked = true) {
   const expectedBundle = STORE_BUNDLES[app];
   if (!expectedBundle) throw new Error(`No iOS store identity configured for ${app}`);
   if (config?.ios?.bundleIdentifier !== expectedBundle) {
@@ -56,7 +56,8 @@ function assertIosStoreConfig(config, app) {
   }
   const plist = config?._internal?.modResults?.ios?.infoPlist;
   if (!plist || typeof plist !== 'object') throw new Error('Expo introspection did not return the final iOS Info.plist. No EAS build started.');
-  const missing = HEALTH_PURPOSE_KEYS.filter(key => typeof plist[key] !== 'string' || !plist[key].trim());
+  // Only a binary that links HealthKit needs its purpose strings; Dreamer no longer does.
+  const missing = healthKitLinked ? missingHealthPurposeKeys(plist) : [];
   if (missing.length) throw new Error(`Resolved iOS Info.plist is missing ${missing.join(', ')}; Apple can reject the upload with 90683. No EAS build started.`);
 }
 
@@ -89,7 +90,7 @@ async function checkBuildInputs(root, app, platform) {
       maxBuffer: 32 * 1024 * 1024,
     });
     const config = JSON.parse(output);
-    if (platform === 'ios') assertIosStoreConfig(config, app);
+    if (platform === 'ios') assertIosStoreConfig(config, app, iosLinksHealthKit(projectRoot, process.env.NOCTALIA_APP_VARIANT));
     else assertAndroidStoreConfig(config, app);
   }
   return { sourceCount, platform, app };
