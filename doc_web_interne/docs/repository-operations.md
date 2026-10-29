@@ -59,7 +59,9 @@ Data lives in ignored `outputs/dev-local/`; `--reset` destroys it.
 - Development builds send the signed-in session token over plain HTTP to a private-network
   address as well as loopback (`lib/http.ts`), so a phone can use the local accounts; a release
   build keeps cleartext tokens to loopback only.
-- Not available: Google/Apple sign-in, purchases and store sync (RevenueCat), e-mail delivery.
+- Store sync (`subscription/refresh`, `subscription/sync`) reports the stored entitlement without
+  calling RevenueCat, so the Plus account stays Plus.
+- Not available: Google/Apple sign-in, purchases, e-mail delivery.
 - Opening a personal install against it with a local account can move that install's guest
   journal into the local account: prefer an owned QA install, the Simulator or the web.
 - No npm script: `package.json` scripts feed the runtime fingerprint.

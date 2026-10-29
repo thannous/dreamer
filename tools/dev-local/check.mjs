@@ -89,6 +89,10 @@ for (const kind of ['free', 'plus']) {
     if (tier !== kind) throw new Error(`tier ${JSON.stringify(tier)} in ${JSON.stringify(quota).slice(0, 200)}`);
     return `tier ${tier}`;
   });
+  await step(`${kind} account store sync keeps the stored entitlement`, async () => {
+    const sync = await call('/functions/v1/api/subscription/refresh', { body: {}, headers });
+    if (sync.tier !== kind || sync.changed !== false) throw new Error(JSON.stringify(sync));
+  });
   await step(`${kind} account capture question`, async () => {
     const answer = await call('/functions/v1/api/recall-question', { body: dream, headers });
     if (!isQuestion(answer)) throw new Error(JSON.stringify(answer));

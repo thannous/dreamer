@@ -7,7 +7,8 @@
  * route table. Model calls get fixed answers (deterministic-ai.ts); every other
  * external destination is refused. Guest sessions keep the real flow with
  * local verifiers: App Attest in its development environment for this team's
- * builds, any Play Integrity token, any Turnstile token.
+ * builds, any Play Integrity token, any Turnstile token. Store sync reports the
+ * stored entitlement instead of calling RevenueCat.
  */
 import { parseDevLocalManifest } from './manifest.ts';
 import { answerProviderRequest } from './deterministic-ai.ts';
@@ -60,6 +61,23 @@ const localGuest = {
 type Handler = Parameters<typeof createApiHandler>[0]['routes'] extends Map<string, infer H> ? H : never;
 const routes = new Map<string, Handler>(apiRoutes);
 routes.set('POST /guest/session', async (ctx) => handleGuestSession(ctx.req, localGuest));
+// Store sync needs RevenueCat. Locally the stored entitlement is the truth: report it
+// unchanged, so the Plus account stays Plus and the app gets no server error.
+const { createClient } = await import('jsr:@supabase/supabase-js@2');
+const storedSubscription: Handler = async (ctx) => {
+  if (!ctx.user) return Response.json({ error: 'Authentication required' }, { status: 401 });
+  const admin = createClient(ctx.supabaseUrl, ctx.supabaseServiceRoleKey!, { auth: { persistSession: false } });
+  const { data, error } = await admin.from('subscription_state').select('tier,is_active,version')
+    .eq('user_id', ctx.user.id).maybeSingle();
+  if (error) return Response.json({ error: 'Local subscription state unavailable' }, { status: 503 });
+  return Response.json({
+    ok: true, tier: data?.tier === 'plus' && data.is_active ? 'plus' : 'free', isActive: Boolean(data?.is_active),
+    version: typeof data?.version === 'number' ? data.version : 0, updated: false, skipped: true, changed: false,
+    outcome: 'local_backend',
+  });
+};
+routes.set('POST /subscription/refresh', storedSubscription);
+routes.set('POST /subscription/sync', storedSubscription);
 const api = createApiHandler({ routes });
 const captureRecall = createApiHandler({ routes: new Map<string, Handler>([
   ['POST /recall-question', handleRecallQuestion], ['POST /format-recall', handleFormatRecall],
