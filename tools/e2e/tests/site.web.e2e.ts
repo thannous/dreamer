@@ -5,6 +5,8 @@ import { test } from '@e2e-dev/web';
 import type { Browser } from '@e2e-dev/web';
 import { expect } from 'e2e';
 
+const mediaPathname = (url: string) => new URL(url).pathname.replace(/^\/releases\/[a-f0-9]{64}(?=\/img\/)/, '');
+
 test('the generated English homepage opens a real internal destination', async ({ app, screen, browser }) => {
   await app.open('/en/');
   await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
@@ -54,7 +56,7 @@ async function measureHero() {
     objectPosition: getComputedStyle(img).objectPosition,
     viewportHeight: innerHeight,
     leadTop: document.querySelector('.symbol-summary')?.getBoundingClientRect().top ?? null,
-    paintings: performance.getEntriesByType('resource').map(entry => new URL(entry.name).pathname)
+    paintings: performance.getEntriesByType('resource').map(entry => new URL(entry.name).pathname.replace(/^\/releases\/[a-f0-9]{64}(?=\/img\/)/, ''))
       .filter(path => path.startsWith('/img/seo/symbols-v2/') || /\/tiger-mobile-v4-[0-9]+w\./.test(path)),
   };
 }
@@ -91,7 +93,7 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const image = await browser.evaluate(measureHero);
     if (atlasIds.includes(id)) {
-      expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/symbols/atlas-six-v2/' + id + '/hero-[0-9]+-[0-9a-f]{12}\\.(?:avif|webp)$'));
+      expect(mediaPathname(image.src)).toMatch(new RegExp('^/img/symbols/atlas-six-v2/' + id + '/hero-[0-9]+-[0-9a-f]{12}\\.(?:avif|webp)$'));
     } else {
       expect(image.src).toMatch(new RegExp('/' + id + '-v1-[0-9]+w\\.(?:webp|avif)$'));
     }
@@ -119,7 +121,7 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const image = await browser.evaluate(measureHero);
     expect(image.naturalWidth).toBeGreaterThan(0);
-    expect(new URL(image.src).pathname).toMatch(new RegExp('^/img/symbols/atlas-six-v2/' + id + '/portrait-[0-9]+-[0-9a-f]{12}\\.(?:webp|avif)$'));
+    expect(mediaPathname(image.src)).toMatch(new RegExp('^/img/symbols/atlas-six-v2/' + id + '/portrait-[0-9]+-[0-9a-f]{12}\\.(?:webp|avif)$'));
     expect([image.objectFit, image.objectPosition]).toEqual(['cover', position]);
     expect([image.heroTop, image.top, image.left]).toEqual([0, 0, 0]);
     expect(image.width).toBeCloseTo(image.available, 0);
@@ -139,7 +141,7 @@ test('symbol artwork fills the page from behind the navbar up to 2560px', { time
     await expect(screen.getByRole('heading', { level: 1 })).toBeVisible();
     const image = await browser.evaluate(measureHero);
     expect(image.src).toMatch(/\/tiger-mobile-v4-[0-9]+w\.(?:webp|avif)$/);
-    expect(image.paintings).toEqual([new URL(image.src).pathname]);
+    expect(image.paintings).toEqual([mediaPathname(image.src)]);
     expect(image.objectFit).toBe('cover');
     expect([image.heroTop, image.top, image.left]).toEqual([0, 0, 0]);
     expect(image.width).toBeCloseTo(image.available, 0);
@@ -1956,11 +1958,11 @@ test('site media keep their original pixels and two effects through the configur
       const images = Array.from(document.querySelectorAll<HTMLImageElement>('.symbol-hero-media img, .atlas-decor img, .atlas-scene-thumb img, .slp-t'));
       const urls = [...new Set(images.filter(img => img.complete && img.naturalWidth > 0 && img.currentSrc).map(img => img.currentSrc))];
       return Promise.all(urls.map(async original => {
-        const imagePath = new URL(original).pathname.replace(/^\//, '');
-        const response = await fetch(mediaBase ? mediaBase + imagePath : original, { mode: 'cors', credentials: 'omit' });
+        const imagePath = mediaBase && original.startsWith(mediaBase) ? original.slice(mediaBase.length) : new URL(original).pathname.replace(/^\//, '');
+        const response = await fetch(original, { mode: 'cors', credentials: 'omit' });
         const bytes = await response.arrayBuffer();
         const digest = await crypto.subtle.digest('SHA-256', bytes);
-        return { path: imagePath, origin: new URL(response.url).origin,
+        return { path: imagePath, direct: !mediaBase || original.startsWith(mediaBase), redirected: response.redirected, origin: new URL(response.url).origin,
           ok: response.ok, type: response.headers.get('content-type') ?? '', bytes: bytes.byteLength,
           digest: Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') };
       }));
@@ -1970,6 +1972,7 @@ test('site media keep their original pixels and two effects through the configur
       const entry = expected.get(image.path);
       expect(entry, image.path).toBeDefined();
       expect([image.ok, image.origin, image.bytes, image.digest], image.path).toEqual([true, origin, entry![1], entry![2]]);
+      expect([image.direct, image.redirected], image.path).toEqual([true, false]);
       expect(image.type.startsWith('image/')).toBe(true);
     }
     if (width < 768) expect(loaded.some(image => image.path.includes('/plate-'))).toBe(false);

@@ -19,7 +19,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { publishedMediaPaths } = require('./lib/site-media');
+const { publishedMediaPaths, readMedia, mediaRelativePath } = require('./lib/site-media');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 
 const DEFAULT_TIMEOUT_MS = 10_000;
@@ -151,13 +151,17 @@ function toExternalUrl(raw) {
   return trimmed;
 }
 
-function classifyUrl(raw) {
+function classifyUrl(raw, media = null) {
   const trimmed = String(raw || '').trim();
   if (isSkippableUrl(trimmed)) return { kind: 'skip' };
   if (trimmed.startsWith('#')) return { kind: 'internal-fragment', fragment: trimmed.slice(1) };
   if (isHttpUrl(trimmed)) {
     try {
       const u = new URL(toExternalUrl(trimmed));
+      // A versioned CDN URL still has to resolve to an actual image. Do not
+      // exempt it as an unchecked external URL (including misspelled paths).
+      const mediaPath = mediaRelativePath(media, u.href);
+      if (mediaPath) return { kind: 'internal', path: '/' + mediaPath, protocol: u.protocol };
       if (INTERNAL_HOSTS.has(u.hostname)) {
         const pathname = u.pathname || '/';
         if (isIgnoredPath(pathname)) return { kind: 'skip' };
@@ -370,6 +374,7 @@ async function main() {
 
   const ignoreDirs = new Set(['node_modules', '.git']);
   if (!includeTemplates) ignoreDirs.add('templates');
+  const media = readMedia(path.resolve(__dirname, '..'));
   const externalMedia = publishedMediaPaths(path.resolve(__dirname, '..'), docsDirAbs);
   const allFilesAbs = walkFiles(docsDirAbs, { ignoreDirs });
   const relativeFiles = allFilesAbs.map((abs) => toPosix(path.relative(docsDirAbs, abs)));
@@ -402,7 +407,7 @@ async function main() {
     totalLinkRefs += extracted.length;
 
     for (const link of extracted) {
-      const classified = classifyUrl(link.raw);
+      const classified = classifyUrl(link.raw, media);
       if (classified.kind === 'skip') continue;
 
       if (classified.kind === 'invalid') {
@@ -566,4 +571,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { checkExternalUrl };
+module.exports = { checkExternalUrl, classifyUrl };

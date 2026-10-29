@@ -75,6 +75,46 @@ function publicUrl(media, relative) {
   return `${media.config.publicOrigin.replace(/\/$/, '')}/releases/${media.manifest.release}/${relative}`;
 }
 
+
+// Only rewrite inventoried site assets. Source catalogs and the native atlas keep
+// their historical paths; published web documents resolve them to one verified release.
+function mediaUrl(media, value, baseUrl = 'https://noctalia.app/') {
+  if (!media || media.config.delivery !== 'cdn') return value;
+  let url;
+  try { url = new URL(value, baseUrl); } catch { return value; }
+  if (url.username || url.password || url.origin !== new URL(baseUrl).origin || !media.paths.has(url.pathname.slice(1))) return value;
+  return publicUrl(media, url.pathname.slice(1)) + url.search + url.hash;
+}
+
+function mediaRelativePath(media, value) {
+  if (!media || media.config.delivery !== 'cdn') return null;
+  const url = new URL(value);
+  const base = new URL(publicUrl(media, ''));
+  if (url.username || url.password || url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) return null;
+  const relative = url.pathname.slice(base.pathname.length);
+  return relative.startsWith('img/') ? relative : null;
+}
+
+function rewriteMediaReferences(content, media, baseUrl) {
+  // Consume the whole URL so another host's /img/ and an already-versioned URL
+  // cannot be mistaken for a root-relative reference. Queries/fragments stay intact.
+  return content.replace(/(?<![A-Za-z0-9_/:.\\-])(?:(?:https?:)?\/\/|(?:\.\.?\/)+img\/|\/img\/)(?:(?!&(?:quot|apos|#0?39|#x27);)[^\s"'`<>\\)])+/g,
+    value => mediaUrl(media, value, baseUrl));
+}
+
+function rewriteWebMedia(root, docsDir, siteOrigin = 'https://noctalia.app') {
+  const media = readMedia(root);
+  if (!media || media.config.delivery !== 'cdn') return;
+  assertRemoteReceipt(root, media);
+  for (const file of walkFiles(docsDir, file => /\.(?:html|css)$/.test(file) || file === path.join(docsDir, 'sitemap.xml'))) {
+    const relative = path.relative(docsDir, file).split(path.sep).join('/');
+    const original = fs.readFileSync(file, 'utf8');
+    const rendered = file.endsWith('.html') ? mediaCorsHtml(original) : original;
+    const published = rewriteMediaReferences(rendered, media, new URL(relative, siteOrigin + '/').href);
+    if (published !== original) fs.writeFileSync(file, published);
+  }
+}
+
 function validLocal(root, entry) {
   const file = localPath(root, entry[0]);
   if (!fs.existsSync(file)) return false;
@@ -201,4 +241,4 @@ function publishedMediaPaths(root, docsDir) {
 }
 
 module.exports = { CONFIG, MANIFEST, STATIC, MIME, sha256, readMedia, inventory, localPath,
-  entriesDigest, publicUrl, validLocal, parallel, download, hydrate, verifyLocal, assertRemoteReceipt, mediaCorsHtml, cdnRedirect, publishedMediaPaths };
+  entriesDigest, publicUrl, mediaUrl, mediaRelativePath, rewriteMediaReferences, rewriteWebMedia, validLocal, parallel, download, hydrate, verifyLocal, assertRemoteReceipt, mediaCorsHtml, cdnRedirect, publishedMediaPaths };

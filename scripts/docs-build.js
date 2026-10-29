@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { readMedia, hydrate, mediaCorsHtml, verifyLocal: verifyMediaLocal } = require('./lib/site-media');
+const { readMedia, hydrate, rewriteWebMedia, verifyLocal: verifyMediaLocal } = require('./lib/site-media');
 const { spawnSync } = require('child_process');
 const {
   DATA_DIR,
@@ -25,7 +25,6 @@ const {
   ensureDir,
   readJson,
   readSourceDocument,
-  walkFiles,
 } = require('./lib/docs-source-utils');
 const {
   markDocsBuildFailed,
@@ -47,6 +46,7 @@ function hashAssetFiles() {
     // move ?v= too, or the edge keeps serving the old immutable bundle.
     path.join(ROOT_DIR, 'scripts', 'lib', 'landing-stylesheet.js'),
     path.join(ROOT_DIR, 'scripts', 'lib', 'minify-static-stylesheets.js'),
+    path.join(ROOT_DIR, 'scripts', 'lib', 'site-media.js'),
   ];
 
   function hashInput(inputPath) {
@@ -275,15 +275,9 @@ async function main() {
 
   runNodeScript(path.join('docs', 'scripts', 'generate-symbol-pages.js'));
   runNodeScript(path.join('scripts', 'build-guides-pages.js'));
-  if (readMedia(ROOT_DIR)?.config.delivery === 'cdn') {
-    for (const file of walkFiles(DOCS_DIR, file => file.endsWith('.html'))) {
-      const original = fs.readFileSync(file, 'utf8');
-      const withCors = mediaCorsHtml(original);
-      if (withCors !== original) fs.writeFileSync(file, withCors);
-    }
-  }
-  runNodeScript(path.join('scripts', 'check-docs-shell.js'));
   runNodeScript(path.join('scripts', 'generate-sitemap-v2.js'));
+  rewriteWebMedia(ROOT_DIR, DOCS_DIR, siteConfig.domain);
+  runNodeScript(path.join('scripts', 'check-docs-shell.js'));
 
   verifyMediaLocal(ROOT_DIR);
   markDocsBuildSucceeded(ROOT_DIR, { version });

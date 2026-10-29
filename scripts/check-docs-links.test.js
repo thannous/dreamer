@@ -5,7 +5,14 @@
 // current policy: persistent 502/503/504 warn; missing pages and other errors still fail.
 // The real publication journey cannot reliably make third-party sites fail or recover on demand.
 const http = require('http');
-const { checkExternalUrl } = require('./check-docs-links');
+const { checkExternalUrl, classifyUrl } = require('./check-docs-links');
+
+it('checks current CDN image paths as internal targets, including misspellings', () => {
+  const media = { config: { delivery: 'cdn', publicOrigin: 'https://media.noctalia.app' }, manifest: { release: 'verified' } };
+  expect(classifyUrl('https://media.noctalia.app/releases/verified/img/missing.webp', media)).toEqual({ kind: 'internal', path: '/img/missing.webp', protocol: 'https:' });
+  expect(classifyUrl('https://elsewhere.example/releases/verified/img/missing.webp', media).kind).toBe('external');
+  expect(classifyUrl('https://media.noctalia.app/releases/another/img/gift.webp', media).kind).toBe('external');
+});
 
 describe('checkExternalUrl', () => {
   let server;

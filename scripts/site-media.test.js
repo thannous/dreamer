@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { inventory, readMedia, hydrate, sha256, localPath, cdnRedirect, publishedMediaPaths } = require('./lib/site-media');
+const { inventory, readMedia, hydrate, sha256, localPath, cdnRedirect, publishedMediaPaths, mediaUrl, rewriteMediaReferences, rewriteWebMedia } = require('./lib/site-media');
 const { detach, verifyRemote } = require('./site-media');
 const { createDeployStaging } = require('./lib/docs-deploy-staging');
 
@@ -25,6 +25,52 @@ describe('media preservation and recovery', () => {
     headers: new Map([['content-type', 'image/webp'], ['content-length', String(data.length)]]),
     body: (async function* () { yield data; })() });
   afterEach(() => { if (root) fs.rmSync(root, { recursive: true, force: true }); });
+
+
+  it('delivers only known site images directly, preserving external URLs, inline fallbacks, queries and source paths', () => {
+    setup({ delivery: 'cdn' });
+    const media = readMedia(root);
+    const cdn = mediaUrl(media, '/' + relative);
+    const input = `<picture><source srcset="/${relative} 480w"><img src="data:image/gif;base64,AA=="></picture>
+      <link as="image" href="/${relative}?v=1"><meta property="og:image" content="https://noctalia.app/${relative}">
+      <div data-textures="{&quot;src&quot;:&quot;/${relative}&quot;}"></div>
+      <script type="application/ld+json">{"image":"https://noctalia.app/${relative}"}</script>
+      <a href="https://elsewhere.example/${relative}">external</a><img src="/img/missing.webp">`;
+    const output = rewriteMediaReferences(input, media);
+    expect(output.match(new RegExp(cdn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'))).toHaveLength(5);
+    expect(output).toContain(cdn + '?v=1');
+    expect(output).toContain('data:image/gif;base64,AA==');
+    expect(output).toContain('https://elsewhere.example/' + relative);
+    expect(output).toContain('/img/missing.webp');
+    for (const untouched of [
+      `https://foreign.example/?url=/${relative}`,
+      `https://foreign.example/#/${relative}`,
+      `/${relative}%2Fother`,
+      `/${relative};other`,
+    ]) expect(rewriteMediaReferences(`<a href="${untouched}">keep</a>`, media)).toBe(`<a href="${untouched}">keep</a>`);
+    expect(rewriteMediaReferences(output, media)).toBe(output);
+    expect(rewriteMediaReferences(`url('../../${relative}')`, media, 'https://noctalia.app/fr/blog/article.html')).toBe(`url('${cdn}')`);
+    expect(rewriteMediaReferences(input, { ...media, config: { ...media.config, delivery: 'local' } })).toBe(input);
+  });
+
+  it('rewrites published HTML, CSS and sitemap while preserving the native atlas and original bytes', async () => {
+    setup({ delivery: 'cdn' });
+    await verifyRemote(root, { fetcher: async () => response(original) });
+    const docs = path.join(root, 'docs');
+    fs.mkdirSync(path.join(docs, 'content/symbols'), { recursive: true });
+    const native = JSON.stringify({ base: '/img/symbols', file: 'gift.webp' });
+    fs.writeFileSync(path.join(docs, 'content/symbols/atlas-v1.json'), native);
+    fs.writeFileSync(path.join(docs, 'index.html'), `<img src="/${relative}">`);
+    fs.writeFileSync(path.join(docs, 'styles.css'), `body{background:url('/${relative}')}`);
+    fs.writeFileSync(path.join(docs, 'sitemap.xml'), `<image:loc>https://noctalia.app/${relative}</image:loc>`);
+    rewriteWebMedia(root, docs);
+    const cdn = mediaUrl(readMedia(root), '/' + relative);
+    expect(fs.readFileSync(path.join(docs, 'index.html'), 'utf8')).toBe(`<img crossorigin="anonymous" src="${cdn}">`);
+    expect(fs.readFileSync(path.join(docs, 'styles.css'), 'utf8')).toContain(cdn);
+    expect(fs.readFileSync(path.join(docs, 'sitemap.xml'), 'utf8')).toContain(cdn);
+    expect(fs.readFileSync(path.join(docs, 'content/symbols/atlas-v1.json'), 'utf8')).toBe(native);
+    expect(fs.readFileSync(localPath(root, relative))).toEqual(original);
+  });
 
   it('restores a missing image byte-for-byte, then reuses it offline', async () => {
     setup();

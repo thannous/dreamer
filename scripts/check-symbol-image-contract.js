@@ -17,6 +17,12 @@ const {
   loadSymbolImageRegistry,
 } = require('./lib/symbol-image-assets');
 const { catalogKey } = require('./lib/symbol-locales');
+const { readMedia, mediaRelativePath } = require('./lib/site-media');
+const media = readMedia(path.resolve(__dirname, '..'));
+const imagePath = value => {
+  const relative = value && value.startsWith('https:') ? mediaRelativePath(media, value) : null;
+  return relative ? '/' + relative : value;
+};
 
 const SITE_ORIGIN = siteConfig.domain.replace(/\/$/, '');
 const CATALOG_PATH = path.join(DATA_DIR, 'dream-symbols.json');
@@ -198,7 +204,7 @@ function validateSymbolImageContract() {
     for (const [index, image] of images.entries()) {
       const label = `${lang}: dictionary card ${index + 1}`;
       dictionaryCardsChecked += 1;
-      if (!image.src?.startsWith(`${responsiveBase}/`) || !image.src.endsWith('-240w.webp')) {
+      if (!imagePath(image.src)?.startsWith(`${responsiveBase}/`) || !image.src.endsWith('-240w.webp')) {
         errors.push(`${label}: fallback src is not a 240w responsive symbol image`);
       }
       if (image.width !== '240' || !Number(image.height)) {

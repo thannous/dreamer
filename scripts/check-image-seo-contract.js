@@ -17,12 +17,15 @@ const {
   readPageIllustrationConfig,
 } = require('./lib/page-illustrations');
 const { readJson, walkFiles } = require('./lib/docs-source-utils');
+const { readMedia, mediaUrl } = require('./lib/site-media');
+const media = readMedia(ROOT_DIR);
+const deliveredImage = value => mediaUrl(media, value, siteConfig.domain + '/');
 
 const WARNING_BYTES = 180_000;
 const MAX_BYTES = 250_000;
 const LEGACY_SOCIAL_IMAGE = /\/img\/og\/noctalia-(?:en|fr|es|de|it)-1200x630\.jpg/i;
 const FEATURE_SNAPSHOT_METADATA = Object.freeze({
-  contentUrl: 'https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026.svg',
+  contentUrl: deliveredImage('https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026.svg'),
   copyrightNotice: '© 2026 Noctalia',
   license: 'https://noctalia.app/en/press#media-license',
   acquireLicensePage: 'https://noctalia.app/en/press#media-contact',
@@ -248,7 +251,7 @@ function validateSitewidePageIllustrations({ pageMap, sitemap, errors, warnings 
     }
 
     const image = getResponsiveImageData(registry, assetId, '16x9');
-    const imageUrl = `${siteConfig.domain}${image.src}`;
+    const imageUrl = deliveredImage(`${siteConfig.domain}${image.src}`);
     const match = findImageTagForAsset(rendered.html, assetId);
     if (!match.img) {
       errors.push(`${canonicalPath}: missing visible sitewide illustration ${assetId}`);
@@ -262,7 +265,7 @@ function validateSitewidePageIllustrations({ pageMap, sitemap, errors, warnings 
     if (match.figureAttrs['data-image-seo-role'] !== 'editorial') {
       errors.push(`${canonicalPath}: ${assetId} is missing its editorial role`);
     }
-    if (match.imgAttrs.src !== image.src) {
+    if (match.imgAttrs.src !== deliveredImage(image.src)) {
       errors.push(`${canonicalPath}: ${assetId} fallback src mismatch`);
     }
     if (!match.imgAttrs.srcset || !match.imgAttrs.sizes) {
@@ -364,7 +367,7 @@ function checkImageSeoContract(options = {}) {
     }
     const images = getPageResponsiveImages(registry, canonicalPath);
     const schemaImages = collectSchemaImageUrls(jsonLdBlocks(rendered.html, errors, canonicalPath));
-    const editorialUrl = `${siteConfig.domain}${images.editorial.src}`;
+    const editorialUrl = deliveredImage(`${siteConfig.domain}${images.editorial.src}`);
     const ogImage = findMeta(rendered.html, 'property', 'og:image');
     const twitterImage = findMeta(rendered.html, 'name', 'twitter:image');
     const ogWidth = Number(findMeta(rendered.html, 'property', 'og:image:width'));
@@ -405,7 +408,7 @@ function checkImageSeoContract(options = {}) {
       if (match.figureAttrs['data-image-seo-role'] !== role) {
         errors.push(`${canonicalPath}: ${image.assetId} has the wrong image role`);
       }
-      if (match.imgAttrs.src !== image.src) errors.push(`${canonicalPath}: ${image.assetId} fallback src mismatch`);
+      if (match.imgAttrs.src !== deliveredImage(image.src)) errors.push(`${canonicalPath}: ${image.assetId} fallback src mismatch`);
       if (!match.imgAttrs.srcset || !match.imgAttrs.sizes) {
         errors.push(`${canonicalPath}: ${image.assetId} is not responsive`);
       }
@@ -444,7 +447,7 @@ function checkImageSeoContract(options = {}) {
       }
 
       if (image.sitemap) {
-        const absolute = `${siteConfig.domain}${image.src}`;
+        const absolute = deliveredImage(`${siteConfig.domain}${image.src}`);
         if (!sitemap.includes(`<image:loc>${absolute}</image:loc>`)) {
           errors.push(`${canonicalPath}: ${image.src} missing from image sitemap`);
         }

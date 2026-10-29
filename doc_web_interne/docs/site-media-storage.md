@@ -77,6 +77,23 @@ d'image inventé reste une erreur. Les gardes de publication de `master` restent
 inchangées. Un build Git hébergé qui déposerait directement `docs/` ne passe pas
 par ce staging : conserver les publications manuelles canoniques.
 
+Le build convertit les références web vers les URL du snapshot CDN vérifié :
+images, préchargements, variantes responsives, métadonnées, données de textures,
+CSS et sitemap. Le bundle de l’accueil résout son poster avant le calcul des
+empreintes. Les chemins inconnus et les URL d’autres domaines restent inchangés.
+Les catalogues sources et `content/symbols/atlas-v1.json` conservent les chemins
+mobiles. Les anciennes URL `/img/*` et les anciens snapshots R2 restent disponibles.
+
+Le 29 octobre 2026, le réglage global Cloudflare « Browser Cache TTL » de quatre
+heures remplaçait le cache des alias prévu par le staging. Une règle ciblée active,
+« Noctalia legacy images — respect 300s origin TTL », respecte désormais le TTL
+origine uniquement pour `http.host eq "noctalia.app"` et un chemin commençant par
+`/img/`. Les trois alias contrôlés renvoient un 302 avec `max-age=300` ; les objets
+CDN restent immuables un an. La règle ne modifie pas le TTL global des autres
+ressources. Les navigateurs ayant déjà mis l’ancien 302 en cache peuvent le garder
+jusqu’à son expiration : une purge Cloudflare ne vide pas leur cache local.
+La modification de la génération des pages demande toujours un déploiement autorisé.
+
 ## Ajouter ou remplacer des illustrations
 
 ```sh
@@ -127,8 +144,6 @@ Un clone superficiel permet déjà de récupérer seulement la nouvelle version.
 ## Améliorations possibles après la migration
 
 - Réutiliser les objets identiques entre snapshots pour limiter la croissance R2.
-- Émettre directement les URL du CDN dans les pages pour éviter la première
-  redirection, tout en gardant celle-ci pour les anciens liens et applications.
 - Ajouter une alerte de budget au compte ; ne pas présenter une alerte comme un
   plafond de dépenses bloquant.
 - Retirer les variantes devenues inutilisées uniquement après inventaire des

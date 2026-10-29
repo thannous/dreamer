@@ -7,6 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const { DOCS_DIR, ROOT_DIR, getCollectionLanguages, siteConfig } = require('./lib/docs-site-config');
 const { MAX_OUTPUT_BYTES } = require('./optimize-homepage-hero');
+const { readMedia, mediaUrl } = require('./lib/site-media');
+const heroUrl = mediaUrl(readMedia(ROOT_DIR), '/img/hero/noctalia-observatory-bg.webp');
 
 const HERO_PATH = path.join(DOCS_DIR, 'img', 'hero', 'noctalia-observatory-bg.webp');
 const OBSERVATORY_CSS_PATH = path.join(DOCS_DIR, 'css', 'observatory.css');
@@ -22,7 +24,7 @@ function checkBlogPremiumHeroCss(cssPath = BLOG_PREMIUM_CSS_PATH) {
   }
 
   const css = fs.readFileSync(cssPath, 'utf8');
-  if (!css.includes("url('/img/hero/noctalia-observatory-bg.webp')")) {
+  if (!css.includes(`url('${heroUrl}')`)) {
     errors.push('[blog index LCP] blog-premium.css must use the optimized WebP hero');
   }
   if (css.includes("url('/img/hero/noctalia-observatory-bg.png')")) {
@@ -55,7 +57,7 @@ function checkWebPerformanceContract() {
     errors.push('[homepage LCP] missing observatory.css');
   } else {
     const css = fs.readFileSync(OBSERVATORY_CSS_PATH, 'utf8');
-    if (!css.includes("url('/img/hero/noctalia-observatory-bg.webp')")) {
+    if (!css.includes(`url('${heroUrl}')`)) {
       errors.push('[homepage LCP] observatory.css must use the optimized WebP hero');
     }
     if (css.includes("url('/img/hero/noctalia-observatory-bg.png')")) {
@@ -85,9 +87,8 @@ function checkWebPerformanceContract() {
     }
     const html = fs.readFileSync(homePath, 'utf8');
     if (
-      !/<link\b(?=[^>]*rel=(['"])preload\1)(?=[^>]*href=(['"])\/img\/hero\/noctalia-observatory-bg\.webp\2)(?=[^>]*fetchpriority=(['"])high\3)[^>]*>/i.test(
-        html
-      )
+      !(html.match(/<link\b[^>]*>/gi) || []).map(parseAttributes).some(attrs =>
+        attrs.rel === 'preload' && attrs.href === heroUrl && attrs.fetchpriority === 'high')
     ) {
       errors.push(`[homepage LCP] ${path.relative(ROOT_DIR, homePath)} must preload the WebP hero`);
     }
