@@ -278,6 +278,8 @@ const TESTERARMY = {
 export const SMOKE_WHEN = [
   'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/',
   '!routes/lucid/', '!components/lucid/', '!services/lucid*', '!apps/meditation/',
+  // A changed Dreamer journey: its smoke-tagged tests run only in this check.
+  'tools/e2e/tests/dreamer*.web.e2e.ts',
 ];
 
 // App paths plus the gate itself. A docs-only diff matches none of these, so

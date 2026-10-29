@@ -86,3 +86,19 @@ test('verify:pr reaches the gate for every web journey the gate would run', asyn
   assert.ok(journeys.includes('tools/e2e/tests/dreamer-home-editorial.web.e2e.ts'));
   for (const file of journeys) assert.equal(matchesAny(file, PARCOURS_WHEN), true, file);
 });
+
+test('a changed smoke journey runs in the smoke check, which verify:pr reaches', async () => {
+  const { matchesAny } = await import(new URL('../../scripts/verify-local.mjs', import.meta.url).href);
+  const { SMOKE_WHEN } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
+  const { parcoursExclude } = await import('./zones.mjs');
+  const file = 'tools/e2e/tests/dreamer-capture-save.web.e2e.ts';
+  // The parcours selection leaves its smoke test out by design...
+  const smokeTest = { id: 'save', tags: ['capture-save', 'smoke', 'zone-sauvegarde'], file };
+  assert.equal(parcoursExclude([smokeTest], [file]).exclude.save, 'la fumée PR joue ce parcours');
+  // ...so the smoke check must be in scope and launch for that diff alone.
+  assert.equal(matchesAny(file, SMOKE_WHEN), true);
+  assert.deepEqual(decideSmoke([file]).products, ['dreamer']);
+  // Lucid and Meditation journeys carry no smoke tag and do not start it.
+  assert.equal(decideSmoke(['tools/e2e/tests/lucid.web.e2e.ts']).launch, false);
+  assert.equal(matchesAny('tools/e2e/tests/meditation.web.e2e.ts', SMOKE_WHEN), false);
+});
