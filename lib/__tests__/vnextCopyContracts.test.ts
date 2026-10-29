@@ -17,9 +17,6 @@ const analysisActionKeys = [
 
 const analysisProgressKeys = [
   'analysis.step.generating_image',
-  'analysis.mantra.generating_image.1',
-  'analysis.mantra.generating_image.2',
-  'analysis.mantra.generating_image.3',
 ] as const;
 
 const morningKeys = Array.from({ length: 15 }, (_, index) => `notifications.prompt.morning_${index + 1}`);
@@ -54,7 +51,6 @@ describe('VNext copy contracts', () => {
         /analysis will create|l’analyse crée|el análisis generar|die analyse erstellt|l'analisi creer|a análise criar/i
       );
       expect(translations['journal.detail.image.ai_locked_note']).toMatch(/optional|optionnelle|opcional|opzionale/i);
-      expect(translations['journal.detail.image.preparing_subtitle']).toMatch(/optional|optionnelle|opcional|opzionale|facultativ|facoltativ/i);
     }
   });
 

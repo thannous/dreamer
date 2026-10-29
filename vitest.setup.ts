@@ -56,9 +56,6 @@ vi.mock('expo-modules-core', () => ({
   requireOptionalNativeModule: vi.fn(),
 }));
 
-// Some dependencies pull URL polyfills meant for RN; avoid bundling heavy/unsupported code in unit tests.
-vi.mock('react-native-url-polyfill/auto', () => ({}));
-vi.mock('react-native-url-polyfill', () => ({}));
 
 // Stub secure store to satisfy supabase client helpers in tests.
 vi.mock('expo-secure-store', () => ({

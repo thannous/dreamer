@@ -17,6 +17,7 @@ import { getDreamGuideCopy } from '@/lib/dreamGuideCopy';
 import type { DreamGuideLanguage } from '@/lib/dreamGuideTypes';
 import type { RitualId } from '@/lib/inspirationRituals';
 import { getSleepSoundCopy } from '@/lib/sleepSoundCopy';
+import type { SymbolLanguage } from '@/lib/symbolTypes';
 import { useBadgeSummary } from '@/hooks/useBadgeSummary';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { TID } from '@/lib/testIDs';
@@ -91,7 +92,7 @@ export const HomeDiscoverTiles = memo(function HomeDiscoverTiles({ now, selected
       key: 'symbol',
       art: getSymbolIllustration(symbolId, 'poster'),
       eyebrow: t('home.discover.symbol_of_day'),
-      title: symbol[language]?.name ?? symbol.en.name,
+      title: symbol.names[language as SymbolLanguage] ?? symbol.names.en,
       onPress: () => router.push({ pathname: '/symbol-detail/[id]', params: { id: symbolId } }),
       testID: TID.Button.HomeDailySymbol,
     }] : []),

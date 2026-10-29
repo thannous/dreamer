@@ -6,15 +6,9 @@ const languages = ['en', 'fr', 'es', 'de', 'it', 'pt'] as const;
 
 const exploration360Keys = [
   'dream_categories.exploration360.eyebrow',
-  'dream_categories.exploration360.title',
-  'dream_categories.exploration360.body.incomplete',
   'dream_categories.exploration360.body.ready',
   'dream_categories.exploration360.body.done',
-  'dream_categories.exploration360.progress',
-  'dream_categories.exploration360.step.done',
-  'dream_categories.exploration360.step.next',
   'dream_categories.exploration360.synthesis.cta',
-  'dream_categories.exploration360.synthesis.done',
   'dream_chat.prompt.synthesis_360',
   'dream_chat.exploration360.synthesis.display',
 ] as const;

@@ -46,6 +46,26 @@
 @source not './MAQUETTE';
 @source not './assets';
 @source not './public';
+/* Not Dreamer code: Meditation's own project, Expo config plugins, tooling,
+   release/CI configuration and local outputs. */
+@source not './apps';
+@source not './plugins';
+@source not './app-intents';
+@source not './tools';
+@source not './e2e';
+@source not './fastlane';
+@source not './release';
+@source not './identity';
+@source not './patches';
+@source not './outputs';
+@source not './screenshots';
+@source not './tmp-stage';
+@source not './.agents';
+@source not './.circleci';
+@source not './.claude';
+@source not './.github';
+@source not './.idea';
+@source not './.jules';
 
 @theme {
   /* ============================================================== typography ==

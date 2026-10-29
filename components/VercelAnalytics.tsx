@@ -1,10 +1,4 @@
-import { Analytics } from '@vercel/analytics/react';
-import { Platform } from 'react-native';
-
+/** Vercel Web Analytics runs on web only (VercelAnalytics.web.tsx). */
 export function VercelAnalytics() {
-  if (Platform.OS !== 'web') {
-    return null;
-  }
-
-  return <Analytics />;
+  return null;
 }

@@ -1,0 +1,5 @@
+# Fastlane fallback generated reports. Kept here rather than in the root
+# .gitignore, which @expo/fingerprint hashes into the native runtime version.
+/report.xml
+/Preview.html
+/test_output/
