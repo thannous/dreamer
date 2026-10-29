@@ -140,7 +140,12 @@
       "./plugins/withWebpLauncherIcons",
       "./plugins/withRevenueCatTestStoreBuild",
       "./plugins/withSoftExceptionLogging",
-      "expo-sqlite",
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": false
+        }
+      ],
       "react-native-edge-to-edge",
       "expo-image",
       "expo-sharing",
