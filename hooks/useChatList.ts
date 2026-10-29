@@ -142,7 +142,13 @@ export function useKeyboardAwareMessageList() {
       try {
         // Only attempt to load when the native module is linked (avoids Expo Go crash)
         if (NativeModules?.KeyboardController) {
-          const KeyboardController = await import('react-native-keyboard-controller');
+          // Only the event bindings, not the package index with every keyboard
+          // component (see lib/__tests__/keyboardControllerPaths.test.ts).
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const KeyboardController = require('react-native-keyboard-controller/src/bindings') as Pick<
+            typeof import('react-native-keyboard-controller'),
+            'KeyboardEvents'
+          >;
           if (cancelled) return;
           if (KeyboardController?.KeyboardEvents) {
             const showSub = KeyboardController.KeyboardEvents.addListener(
