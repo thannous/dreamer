@@ -34,7 +34,7 @@ module.exports = {
   ),
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   transformIgnorePatterns: (preset.transformIgnorePatterns ?? []).map((pattern) =>
-    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|remend|mdast-util-|micromark|unist-util-|decode-named-character-reference|character-entities|devlop|react-native')
+    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|remend|mdast-util-|micromark|unist-util-|decode-named-character-reference|character-entities|culori|devlop|react-native')
   ),
   moduleNameMapper: {
     ...(preset.moduleNameMapper ?? {}),

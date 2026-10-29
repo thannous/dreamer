@@ -1,6 +1,44 @@
 // https://docs.expo.dev/guides/using-eslint/
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
+const { REANIMATED_STUBBED_EXPORTS } = require('./scripts/metro-native-stubs');
+
+// Native bundles resolve these modules to empty stubs or a shim
+// (scripts/metro-native-stubs.js), so a value import would be undefined at
+// runtime. Remove the stub before adopting one of them.
+const stubbedImportPaths = [
+  {
+    name: 'react-native-reanimated',
+    importNames: REANIMATED_STUBBED_EXPORTS,
+    message: 'Metro stubs this Reanimated preset on native (scripts/metro-native-stubs.js); use FadeIn/FadeOut, LinearTransition or a keyframe.',
+  },
+  {
+    name: '@supabase/supabase-js',
+    importNames: [
+      'REALTIME_CHANNEL_STATES',
+      'REALTIME_LISTEN_TYPES',
+      'REALTIME_POSTGRES_CHANGES_LISTEN_EVENT',
+      'REALTIME_PRESENCE_LISTEN_EVENTS',
+      'REALTIME_SUBSCRIBE_STATES',
+      'RealtimeChannel',
+      'RealtimeClient',
+      'RealtimePresence',
+      'WebSocketFactory',
+    ],
+    message: 'Supabase Realtime is shimmed out of native bundles (scripts/metro-native-stubs.js).',
+  },
+  {
+    name: '@supabase/realtime-js',
+    message: 'Supabase Realtime is shimmed out of native bundles (scripts/metro-native-stubs.js).',
+  },
+];
+const testFiles = [
+  '**/__tests__/**/*.{js,jsx,ts,tsx}',
+  '**/*.test.{js,jsx,ts,tsx}',
+  '**/*.posix-native.ts',
+  '**/*.spec.{js,jsx,ts,tsx}',
+  'tests/**',
+];
 
 module.exports = defineConfig([
   expoConfig,
@@ -28,6 +66,23 @@ module.exports = defineConfig([
       // members. Keep the import rule for JavaScript, which has no such check.
       // https://typescript-eslint.io/troubleshooting/typed-linting/performance/#eslint-plugin-import
       'import/namespace': 'off',
+    },
+  },
+  {
+    files: ['**/*.{js,jsx}'],
+    ignores: testFiles,
+    rules: {
+      'no-restricted-imports': ['error', { paths: stubbedImportPaths }],
+    },
+  },
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: testFiles,
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        { paths: stubbedImportPaths.map((entry) => ({ ...entry, allowTypeImports: true })) },
+      ],
     },
   },
   {
