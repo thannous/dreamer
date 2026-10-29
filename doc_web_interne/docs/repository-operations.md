@@ -40,9 +40,10 @@ It starts the native Supabase runtime on the tracked migrations (copies with pro
 neutralised and scheduled jobs disabled), creates `dev-free@noctalia.test` and
 `dev-plus@noctalia.test` (Plus through `apply_subscription_state_update`; passwords printed at
 start and kept in `outputs/dev-local/secrets.json`), and serves Auth, Data API, Storage and the
-real `api`/`capture-recall` routes and job workers on port 31300 of every interface of this
-machine (home network and Tailscale); the app profile uses the LAN address (`--port`, `--host`).
-Data lives in ignored `outputs/dev-local/`; `--reset` destroys it.
+real `api`/`capture-recall` routes and job workers on this machine's private LAN address,
+port 31300 only (`--host` picks another private address, such as the Tailscale one, and `--port`
+the port). The private `dream-images` bucket is created at start. Data lives in ignored
+`outputs/dev-local/`; `--reset` destroys it.
 
 - **AI** answers are fixed and built from each route's JSON schema
   (`tools/dev-local/deterministic-ai.ts`): nothing is sent to a provider or billed. Streamed

@@ -126,7 +126,9 @@ globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   throw new Error(`The local backend does not reach ${url.hostname}`);
 };
 
-Deno.serve({ hostname: '0.0.0.0', port: manifest.port, onListen: () => {
+// Only the chosen private address answers (not every interface), so another network
+// this machine joins never sees the local verifiers. `--host` picks the address.
+Deno.serve({ hostname: new URL(publicOrigin).hostname, port: manifest.port, onListen: () => {
   console.log(JSON.stringify({ ready: true, origin: publicOrigin }));
 } }, async (request) => {
   try {

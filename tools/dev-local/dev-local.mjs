@@ -127,6 +127,17 @@ async function ensureAccounts(status) {
     }
   }
   writePrivate(secretsFile, JSON.stringify(secrets, null, 2));
+  // Production's bucket predates the migrations, which only make it private. Create it
+  // here so illustrations and previews have their storage on a fresh or reset backend.
+  const bucket = await admin.storage.getBucket('dream-images');
+  if (bucket.error) {
+    const created = await admin.storage.createBucket('dream-images', { public: false });
+    if (created.error && !/already exists/i.test(created.error.message)) {
+      throw new Error(`The dream-images bucket could not be created: ${created.error.message}`);
+    }
+  } else if (bucket.data.public) {
+    await admin.storage.updateBucket('dream-images', { public: false });
+  }
   return secrets.accounts;
 }
 

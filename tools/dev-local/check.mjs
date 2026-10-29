@@ -99,6 +99,14 @@ for (const kind of ['free', 'plus']) {
   });
 }
 
+await step('private dream-images bucket exists', async () => {
+  const response = await fetch(`${manifest.status.API_URL.replace(/\/$/, '')}/storage/v1/bucket/dream-images`, {
+    headers: { apikey: manifest.status.SERVICE_ROLE_KEY, Authorization: `Bearer ${manifest.status.SERVICE_ROLE_KEY}` },
+  });
+  const bucket = await response.json();
+  if (!response.ok || bucket.public !== false) throw new Error(JSON.stringify(bucket).slice(0, 200));
+});
+
 const failed = results.filter((result) => !result.ok).length;
 console.log(`\n${results.length - failed}/${results.length} local checks passed against ${origin}.`);
 process.exit(failed ? 1 : 0);
