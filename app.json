@@ -142,6 +142,7 @@
       "./plugins/withWebpSplashLogo",
       "./plugins/withWebpLauncherIcons",
       "./plugins/withRevenueCatTestStoreBuild",
+      "./plugins/withoutRevenueCatAmazon",
       "./plugins/withSoftExceptionLogging",
       [
         "expo-sqlite",
