@@ -116,9 +116,6 @@ jest.mock('expo-modules-core', () => ({
   requireOptionalNativeModule: jest.fn((moduleName: string) => mockNativeModules[moduleName as keyof typeof mockNativeModules] ?? null),
 }));
 
-// Some dependencies pull URL polyfills meant for RN; avoid heavy/unsupported code in unit tests.
-jest.mock('react-native-url-polyfill/auto', () => ({}));
-jest.mock('react-native-url-polyfill', () => ({}));
 
 // Stub secure store to satisfy supabase client helpers in tests.
 jest.mock('expo-secure-store', () => ({
