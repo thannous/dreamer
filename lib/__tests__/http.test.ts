@@ -203,6 +203,38 @@ describe('http', () => {
       expect(request.headers.apikey).toBeUndefined();
     });
 
+    it('given the local backend on a private address when fetching then attaches auth in development only', async () => {
+      const localBackend = 'http://192.168.1.9:31300';
+      process.env.EXPO_PUBLIC_SUPABASE_URL = localBackend;
+      jest.doMock('expo-constants', () => ({ __esModule: true, default: { expoConfig: { extra: {} } } }));
+      mockGetAccessToken.mockResolvedValue('user-access-token');
+      global.fetch = jest.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({}) });
+      const runtime = globalThis as unknown as { __DEV__: boolean };
+      const wasDev = runtime.__DEV__;
+      try {
+        runtime.__DEV__ = true;
+        jest.resetModules();
+        await require('../http').fetchJSON(`${localBackend}/rest/v1/dreams`);
+        expect((global.fetch as any).mock.calls[0][1].headers.Authorization).toBe('Bearer user-access-token');
+        // A release build never sends a session token in cleartext beyond loopback.
+        runtime.__DEV__ = false;
+        jest.resetModules();
+        await require('../http').fetchJSON(`${localBackend}/rest/v1/dreams`);
+        expect((global.fetch as any).mock.calls[1][1].headers.Authorization).toBeUndefined();
+        // The same rule covers a Tailscale address (`--host` on the local backend), not a public one.
+        runtime.__DEV__ = true;
+        for (const [origin, expected] of [['http://100.94.216.42:31300', 'Bearer user-access-token'], ['http://203.0.113.4:31300', undefined]] as const) {
+          process.env.EXPO_PUBLIC_SUPABASE_URL = origin;
+          jest.resetModules();
+          const calls = (global.fetch as any).mock.calls.length;
+          await require('../http').fetchJSON(`${origin}/rest/v1/dreams`);
+          expect((global.fetch as any).mock.calls[calls][1].headers.Authorization).toBe(expected);
+        }
+      } finally {
+        runtime.__DEV__ = wasDev;
+      }
+    });
+
     it('given Supabase URL without user auth token when fetching then falls back to anon apikey only', async () => {
       mockGetAccessToken.mockResolvedValue(null);
       global.fetch = jest.fn().mockResolvedValue({

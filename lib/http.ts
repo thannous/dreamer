@@ -223,13 +223,17 @@ function shouldAttachSupabaseAuth(targetUrl: string): boolean {
 }
 
 const LOCAL_INSECURE_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '10.0.2.2']);
+// A development build on a phone reaches the local backend (tools/dev-local) at
+// this network's private address, or its Tailscale (100.64.0.0/10) address, the
+// ranges that server accepts. A release build keeps cleartext tokens to loopback.
+const PRIVATE_NETWORK_HOST = /^(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}|100\.(?:6[4-9]|[7-9]\d|1[01]\d|12[0-7])(?:\.\d{1,3}){2})$/;
 
 function isSecureTransport(targetUrl: string): boolean {
   try {
     const parsed = new URL(targetUrl, 'http://localhost');
     if (parsed.protocol === 'https:') return true;
     if (parsed.protocol !== 'http:') return false;
-    return LOCAL_INSECURE_HOSTS.has(parsed.hostname);
+    return LOCAL_INSECURE_HOSTS.has(parsed.hostname) || (__DEV__ && PRIVATE_NETWORK_HOST.test(parsed.hostname));
   } catch {
     return false;
   }

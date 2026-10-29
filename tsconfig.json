@@ -34,6 +34,7 @@
     "dist/**",
     "dist-dev-nossg/**",
     "tools/e2e/**",
+    "tools/dev-local/**",
     ".expo/types/router.d.ts"
   ]
 }
