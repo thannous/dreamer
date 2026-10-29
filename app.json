@@ -128,7 +128,10 @@
             "enableShrinkResourcesInReleaseBuilds": true,
             "packagingOptions": {
               "exclude": [
-                "/org/bouncycastle/pqc/crypto/picnic/*.properties"
+                "/org/bouncycastle/pqc/crypto/picnic/*.properties",
+                "/org/apache/commons/codec/language/**",
+                "/org/bouncycastle/x509/*.properties",
+                "/DebugProbesKt.bin"
               ]
             }
           }
