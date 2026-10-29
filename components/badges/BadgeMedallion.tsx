@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import Animated, { useAnimatedStyle, type SharedValue } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
@@ -9,6 +9,7 @@ import { sparklePath } from '@/components/journal/story/sparkle';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { BADGE_GLYPHS, getBadgeArtwork } from '@/constants/badgeArtwork';
 import type { BadgeFamilyId } from '@/lib/badges/catalog';
+import { useRemoteArt } from '@/lib/remoteArt';
 
 import { COLLECTION, getBadgeMaterial, type BadgeFinish } from './badgeMaterials';
 
@@ -22,7 +23,7 @@ type Props = {
   /** A tier not earned yet is shown veiled: blurred and dimmed, like a dream half remembered. */
   veiled?: boolean;
   light?: BadgeLight;
-  /** The lighter export, for the album grid and other small medallions. */
+  /** The bundled lighter export, for the album grid and other small medallions. */
   small?: boolean;
 };
 
@@ -73,8 +74,11 @@ const BadgePlaceholderArt = memo(function BadgePlaceholderArt({ family, size }: 
  * moving with the card when a light is given.
  */
 export const BadgeMedallion = memo(function BadgeMedallion({ family, tier, size, veiled = false, light = null, small = false }: Props) {
-  const [failed, setFailed] = useState(false);
-  const art = failed ? null : getBadgeArtwork(family, small ? 'small' : 'full');
+  const artwork = getBadgeArtwork(family);
+  // The full painting comes from the CDN, for a card held open and unveiled only: under the
+  // veil's blur the bundled export looks the same. That export stands in while it loads,
+  // offline and on error.
+  const art = useRemoteArt(small || veiled ? null : artwork?.full ?? null, artwork?.small ?? null);
   const material = getBadgeMaterial(veiled ? null : tier);
   const inset = Math.round(size * ART_INSET);
 
@@ -102,13 +106,16 @@ export const BadgeMedallion = memo(function BadgeMedallion({ family, tier, size,
           boxShadow: [{ offsetX: 0, offsetY: 0, blurRadius: size * 0.22, spreadDistance: size * 0.02, color: material.glow }],
         }}
       />
-      {art ? (
+      {art.source ? (
         <Image
-          source={art}
+          source={art.source}
+          placeholder={art.placeholder}
+          placeholderContentFit="contain"
           contentFit="contain"
+          cachePolicy="disk"
           blurRadius={veiled ? Math.max(2, Math.round(size / 40)) : 0}
           style={{ position: 'absolute', top: inset, left: inset, width: size - 2 * inset, height: size - 2 * inset }}
-          onError={() => setFailed(true)}
+          onError={art.onError}
         />
       ) : (
         <BadgePlaceholderArt family={family} size={size} />
