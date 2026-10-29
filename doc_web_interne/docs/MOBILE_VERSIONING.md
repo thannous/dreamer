@@ -52,7 +52,7 @@ La commande inspecte le build distant et refuse un statut autre que `FINISHED`, 
 
 Après l'envoi iOS, vérifier l'upload dans **App Store Connect → TestFlight → Build Uploads**, puis le traitement du build et son accès dans le groupe interne. Une commande EAS Submit `ERRORED` sans détail n'établit pas à elle seule si Apple a reçu le fichier : lire le statut Apple avant toute nouvelle tentative. Après l'envoi Android, vérifier la release sur le track **Test interne** de Google Play. `FINISHED` côté EAS atteste l'envoi, pas l'installation ni la validation sur appareil.
 
-La configuration Expo résolue est un contrôle avant compilation. Avant un nouvel envoi iOS après un changement natif ou de plugin, vérifier aussi l'`Info.plist` de l'IPA produit : ses deux valeurs `NSHealthShareUsageDescription` et `NSHealthUpdateUsageDescription` doivent être des textes non vides. La build 3.4.4 (10) a passé ce contrôle et le traitement TestFlight ; une future IPA doit être requalifiée.
+La configuration Expo résolue est un contrôle avant compilation. Avant un nouvel envoi iOS après un changement natif ou de plugin, vérifier aussi l'`Info.plist` de l'IPA produit. Une IPA qui lie HealthKit, aujourd'hui seulement Lucid, doit porter deux textes non vides, `NSHealthShareUsageDescription` et `NSHealthUpdateUsageDescription`. Depuis que `react-native.config.js` retire HealthKit et Nitro du build iOS de Dreamer, l'IPA Dreamer ne lie plus HealthKit et ne porte plus ces clés ; `otool -L` sur son binaire ne doit plus lister `HealthKit.framework`. La build 3.4.4 (10) a passé ce contrôle et le traitement TestFlight ; une future IPA doit être requalifiée.
 
 ## Risques de distribution interne constatés le 24 septembre 2026
 

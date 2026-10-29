@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync, spawnSync } = require('node:child_process');
 const { syncMobileBuildVersions } = require('./sync-mobile-build-versions');
+const { iosLinksHealthKit, missingHealthPurposeKeys } = require('./lib/ios-healthkit-linking');
 
 const ROOT = path.resolve(__dirname, '..');
 const STATE = 'release/mobile-versions.json';
@@ -150,14 +151,11 @@ function verify(root, app) {
   if (eas.cli?.appVersionSource !== 'remote' || eas.build?.[profile]?.autoIncrement !== true) {
     throw new Error(`${app} distribution requires remote EAS versions and autoIncrement on ${profile}`);
   }
-  if (app !== 'meditation') {
-    const pkg = readJson(root, 'package.json');
-    if (pkg.dependencies?.['@kingstinct/react-native-healthkit']) {
-      const plist = readJson(root, 'app.json').expo.ios?.infoPlist;
-      const missing = ['NSHealthShareUsageDescription', 'NSHealthUpdateUsageDescription']
-        .filter(key => typeof plist?.[key] !== 'string' || !plist[key].trim());
-      if (missing.length) throw new Error(`HealthKit-linked iOS app needs ${missing.join(', ')} in app.json before a Store build`);
-    }
+  // Dreamer's purpose strings live in app.json. Lucid sets its own in app.config.ts,
+  // and check-eas-build-inputs checks them on the resolved Info.plist.
+  if (app === 'noctalia' && iosLinksHealthKit(root, 'noctalia')) {
+    const missing = missingHealthPurposeKeys(readJson(root, 'app.json').expo.ios?.infoPlist);
+    if (missing.length) throw new Error(`HealthKit-linked iOS app needs ${missing.join(', ')} in app.json before a Store build`);
   }
   if (app !== 'lucid') {
     const prefix = app === 'meditation' ? 'apps/meditation/' : '';

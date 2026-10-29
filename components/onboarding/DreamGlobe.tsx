@@ -22,7 +22,8 @@ import { TypeScale } from '@/constants/typeScale';
 
 // Reuse the landing's artwork and Fibonacci sphere, with native image cards.
 const IMAGES = [
-  require('../../docs-src/static/img/dreams/staircase-480w.webp'),
+  // The capture and dialogue stories already bundle the 800w staircase; sharing it saves a copy.
+  require('../../docs-src/static/img/dreams/staircase-800w.webp'),
   require('../../docs-src/static/img/dreams/harbour-480w.webp'),
   require('../../docs-src/static/img/dreams/tide-480w.webp'),
   require('../../docs-src/static/img/dreams/station-480w.webp'),
