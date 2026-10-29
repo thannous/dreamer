@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { test as base, surfaceOf } from '@e2e-dev/web';
 import type { BrowserContext, Page, Browser as BrowserSurface } from 'playwright/test';
+import { appMediaResponse } from './app-media-fixtures';
 import { expect } from './web-parity-fixtures';
 import { webEngine } from './web-engine';
 import { fileURLToPath } from 'node:url';
@@ -26,6 +27,9 @@ export async function restrictNetwork(context: BrowserContext) {
         (requestUrl.origin === url.origin && !requestUrl.pathname.startsWith('/functions/'))) {
       return route.continue();
     }
+    // The app's CDN paintings come from the committed exports.
+    const media = appMediaResponse(requestUrl);
+    if (media) return route.fulfill(media);
     // Auth and PostgREST are real. AI, analytics, OAuth and payment traffic are blocked.
     await route.abort();
   });

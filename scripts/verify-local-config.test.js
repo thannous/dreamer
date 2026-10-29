@@ -189,6 +189,7 @@ describe('verify-local.config.mjs', () => {
     const app = config.checks.filter((check) => check.targets).map((check) => [check.name, check.targets]);
     expect(app).toEqual([
       ['web-build', ['app']],
+      ['app-media-published', ['app']],
       ['e2e-backend', ['app']],
       ['testerarmy-dreamer', ['app']],
       ['testerarmy-lucid', ['app']],
