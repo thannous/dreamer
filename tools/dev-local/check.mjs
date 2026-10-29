@@ -12,13 +12,12 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const dataDir = resolve(process.env.DEV_LOCAL_DIR ?? join(root, 'outputs/dev-local'));
-const manifest = JSON.parse(readFileSync(join(dataDir, 'manifest.json'), 'utf8'));
+// The server's own validation: a native stack on loopback, a private plain-HTTP origin.
+const { parseDevLocalManifest } = await import('./manifest.mts');
+const manifest = parseDevLocalManifest(JSON.parse(readFileSync(join(dataDir, 'manifest.json'), 'utf8')));
 const { accounts } = JSON.parse(readFileSync(join(dataDir, 'secrets.json'), 'utf8'));
 const origin = manifest.publicOrigin;
 const anon = manifest.status.ANON_KEY;
-if (!/^http:\/\/(?:127\.0\.0\.1|10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/.test(origin)) {
-  throw new Error(`Refusing to check a non-local origin: ${origin}`);
-}
 
 const results = [];
 async function step(name, run) {

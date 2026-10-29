@@ -10,7 +10,7 @@
  * builds, any Play Integrity token, any Turnstile token. Store sync reports the
  * stored entitlement instead of calling RevenueCat.
  */
-import { parseDevLocalManifest } from './manifest.ts';
+import { parseDevLocalManifest } from './manifest.mts';
 import { answerProviderRequest } from './deterministic-ai.ts';
 
 const manifestPath = Deno.env.get('DEV_LOCAL_MANIFEST');

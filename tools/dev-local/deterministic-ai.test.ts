@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertNotEquals, assertThrows } from 'jsr:@std/assert@1';
 import { answerProviderRequest, promptContext, synthesize } from './deterministic-ai.ts';
-import { parseDevLocalManifest } from './manifest.ts';
+import { parseDevLocalManifest } from './manifest.mts';
 
 const RECALL_SCHEMA = {
   type: 'object', properties: { question: { type: ['string', 'null'] }, anchor: { type: 'string' } },
