@@ -33,7 +33,11 @@ export default function HistoryScreen() {
             <Text variant="h1">{t('history.title')}</Text>
             <Rule className="self-start" />
             <Text variant="bodySm">{t('history.subtitle')}</Text>
-            <Text variant="caption" tone="muted">{t('history.counted')}</Text>
+            <Text variant="caption" tone="muted" testID="history.counted"
+              accessibilityLabel={`${entries.length === 1
+                ? t('session.completed.one') : t('session.completed', { count: entries.length })}. ${t('history.counted')}`}>
+              {t('history.counted')}
+            </Text>
             {resume ? (
               <Button variant="secondary" testID="btn.history.resume"
                 label={`${t('session.resume')} · ${t(`session.${resume.session.id}.title` as TranslationKey)}`}
