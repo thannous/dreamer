@@ -71,3 +71,18 @@ test('a changed web journey runs its campaign even without a source zone', () =>
     assert.equal(decideParcours([file]).launch, false, file);
   }
 });
+
+test('verify:pr reaches the gate for every web journey the gate would run', async () => {
+  const { matchesAny } = await import(new URL('../../scripts/verify-local.mjs', import.meta.url).href);
+  const { PARCOURS_WHEN } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
+  const { readdirSync } = await import('node:fs');
+  // The engine skips parcours-touches when no path matches, before the gate runs:
+  // each journey the gate launches must also be in the check's scope.
+  const journeys = readdirSync(new URL('./tests/', import.meta.url))
+    .map(name => `tools/e2e/tests/${name}`)
+    .filter(file => decideParcours([file]).launch);
+  assert.ok(journeys.includes('tools/e2e/tests/lucid.web.e2e.ts'));
+  assert.ok(journeys.includes('tools/e2e/tests/meditation.web.e2e.ts'));
+  assert.ok(journeys.includes('tools/e2e/tests/dreamer-home-editorial.web.e2e.ts'));
+  for (const file of journeys) assert.equal(matchesAny(file, PARCOURS_WHEN), true, file);
+});
