@@ -127,6 +127,10 @@ real journey and its report/cleanup. A compatible candidate may be adopted after
 its applicable checks pass without another generic permission request. Keep exact
 pins and existing provider budgets; an upgrade does not enable a provider or Jev.
 
+New journeys are written from this directory with `npx e2e run --watch`
+(e2e 0.21.3). Watch reruns when a test, a neighbouring source file, or the
+config is saved. It is for authoring. Qualifying runs stay on `run.mjs`.
+
 From the repository root:
 
 ```sh
@@ -232,8 +236,12 @@ E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:test
 E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --tag personas
 ```
 
-The default model is `gpt-6.1-sol`; `E2E_PERSONA_MODEL` selects another model id
-served by the same login. The owner selected Sol for this campaign. Each goal allows at most 16 actions, 12 model calls
+Act uses `gpt-6.1-terra` and assert uses `gpt-6.1-sol` (`tools/e2e/persona-models.mjs`).
+e2e 0.21.3 `chatgpt(id)` forwards the id and does not embed a catalog; these are
+the OpenAI ids, and `gpt-6.1-sol` is the id this repo already qualified.
+`E2E_PERSONA_MODEL` or `E2E_PERSONA_ACT_MODEL` overrides act.
+`E2E_PERSONA_JUDGE_MODEL` overrides the judge. Set both back to `gpt-6.1-sol`
+to restore the single-model campaign. Each goal allows at most 16 actions, 12 model calls
 and 32,000 input tokens per request. Each test has a 240-second timeout; retries
 and replay stay off. Use one worker. The full suite has seven agent goals.
 It is not a human usability study or a performance/framerate measurement.

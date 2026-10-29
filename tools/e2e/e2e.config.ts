@@ -4,6 +4,7 @@ import { webEngine, webLocale } from './web-engine';
 import { fileURLToPath } from 'node:url';
 import { managedAppCommand } from './managed-app';
 import { createDreamerPersonaAgents } from './dreamer-personas';
+import { parcoursTouches } from './zone-filter';
 import { readFileSync } from 'node:fs';
 import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
 import { assertTestSupabaseTarget, readTestEnv, BRANCH_WEB_PORT } from './branch-target';
@@ -70,8 +71,14 @@ export default {
   projectId: `noctalia-${product}`,
   tests: nativeJourneys ? ['tests/dreamer-essential-capture.mobile.e2e.ts', 'tests/dreamer-voice.mobile.e2e.ts', 'tests/dreamer-sync-account.mobile.e2e.ts', 'tests/dreamer-recovery.mobile.e2e.ts']
     : branch ? 'tests/branch.web.e2e.ts' : backend ? 'tests/backend-*.web.e2e.ts' : personas ? `tests/dreamer-personas.${native ? 'mobile' : 'web'}.e2e.ts`
-    : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
-  ...(personas ? { agents: createDreamerPersonaAgents(process.env.E2E_PERSONA_MODEL?.trim() || undefined) } : {}),
+    : process.env.E2E_BUGBASH === '1' && product === 'dreamer' && !native
+      ? ['tests/dreamer*.web.e2e.ts', 'tests/bugbash/**/*.e2e.ts']
+      : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
+  ...(personas ? { agents: createDreamerPersonaAgents(
+    process.env.E2E_PERSONA_MODEL?.trim() || process.env.E2E_PERSONA_ACT_MODEL?.trim() || undefined,
+    process.env.E2E_PERSONA_JUDGE_MODEL?.trim() || undefined,
+  ) } : {}),
+  filters: [parcoursTouches],
   ...(nativeJourneys ? { credentials: nativeBackendCredentials() } : {}),
   targets: [{
     name: `${product}-${platform}`,

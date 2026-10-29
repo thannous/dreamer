@@ -6,7 +6,7 @@ const journalKey = 'noctalia_mock_dogfood_v1:gemini_dream_journal_dreams';
 const draftKey = 'noctalia_mock_dogfood_v1:gemini_dream_journal_recording_transcript:guest';
 
 test('capture keeps its draft after a storage failure, then saves it once across reload', {
-  tags: ['capture-save', 'locale-en-US'],
+  tags: ['capture-save', 'locale-en-US', 'smoke', 'zone-sauvegarde'],
   skip: webLocale !== 'en-US' ? 'Run E2E_WEB_LOCALE=en-US' : false,
   timeout: 180_000,
 }, async ({ app, screen, browser }) => {

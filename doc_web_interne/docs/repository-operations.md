@@ -40,6 +40,23 @@ E2E/isolation exceptions, evidence reuse, independent review, the isolated
 coverage and release targets; [verify-local.config.mjs](../../verify-local.config.mjs)
 is the executable source of truth.
 
+`verify:pr` also runs two local web gates when the diff touches the app, with no
+model call and no GitHub Actions minutes. `parcours-touches` maps changed paths
+(`app/`, `components/`, `services/`, and the other roots in `tools/e2e/zones.mjs`)
+to e2e tags and test files, then runs `e2e run --changed-since origin/master`.
+`smoke-journeys` runs the seven tagged smoke journeys (capture, save, journal,
+payment, sign-in) on every Dreamer app diff. A docs-only or non-app diff skips
+both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
+`tools/e2e/node_modules`, or Chromium is missing, the probe fails and the proof
+is incomplete, not passed. Rerun: `npm run test:e2e:parcours`
+and `npm run test:e2e:smoke`.
+
+Before an app release, run `npm run test:bugbash:prerelease` on Dreamer web in
+mock mode (the script refuses a production Supabase ref). Each confirmed bug
+becomes a failing test under `tools/e2e/tests/bugbash/`, tagged `bugbash`.
+`verify:release` runs those tests (`bugbash-repros` / `npm run test:bugbash:repros`).
+The PR gate excludes the tag. An empty repro directory passes.
+
 `verify:pr` runs engine tests, application/test types, lint and script lint,
 related Jest and static database contracts, each only when the PR changes a file
 it reads: their scopes in the configuration are checked against the two tsc

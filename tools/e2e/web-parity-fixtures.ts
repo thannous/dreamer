@@ -60,7 +60,8 @@ export async function expectCaptureDraftSaved(page: Page, text: string) {
 type Body = (fixtures: Fixtures, info: ParityInfo) => Promise<void>;
 type Hook = (fixtures: Fixtures) => Promise<void>;
 
-type Options = { locale?: string; viewport?: { width: number; height: number }; reducedMotion?: 'reduce' | 'no-preference'; contextOptions?: { reducedMotion?: 'reduce' | 'no-preference' }; timezoneId?: 'Europe/Paris' };
+type Options = { locale?: string; viewport?: { width: number; height: number }; reducedMotion?: 'reduce' | 'no-preference'; contextOptions?: { reducedMotion?: 'reduce' | 'no-preference' }; timezoneId?: 'Europe/Paris'; tags?: readonly string[] };
+type Extra = { tags?: readonly string[] };
 
 // Keep historical CSS, clock, accessibility and geometry assertions on the
 // pinned web engine. TesterArmy owns attempts, isolation, tracing and reports;
@@ -70,7 +71,10 @@ export function createParityTest(initial: Options = {}) {
   let hooks: Hook[] = [];
   let skipped = false;
   let running = false;
-  const register = (title: string, body: Body) => {
+  const register = (title: string, extraOrBody: Extra | Body, maybeBody?: Body) => {
+  const extra = typeof extraOrBody === 'function' ? undefined : extraOrBody;
+  const body = typeof extraOrBody === 'function' ? extraOrBody : maybeBody;
+  if (!body) throw new Error(`Missing body for ${title}`);
   const active = { ...options };
   const setup = [...hooks];
   const locale = active.locale ?? 'en-US';
@@ -113,7 +117,8 @@ export function createParityTest(initial: Options = {}) {
   // A fresh locale campaign compiles its first Expo client bundle in app.open.
   // Linux measured 57 seconds before the body. Give the attempt the existing
   // 180-second launch budget, retaining 30-second actions and 15-second assertions.
-  return parity(title, { skip, timeout: 180_000, tags: ['historical-parity', `locale-${locale}`] }, async ({ page, app }) => {
+  const tags = [...new Set(['historical-parity', `locale-${locale}`, ...(active.tags ?? []), ...(extra?.tags ?? [])])];
+  return parity(title, { skip, timeout: 180_000, tags }, async ({ page, app }) => {
     const captures: string[] = [];
     const folder = join(process.env.E2E_OUTPUT!, 'parity-artifacts', `${createHash('sha256').update(title).digest('hex').slice(0, 12)}-${Date.now()}`);
     mkdirSync(folder, { recursive: true });

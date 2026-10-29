@@ -5,7 +5,7 @@
 // mailbox: the link always "leaves", and the page is reached as the link would reach it.
 import type { Page } from 'playwright/test';
 import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
-const test = createParityTest();
+const test = createParityTest({ tags: ['zone-connexion'] });
 
 const SENT = 'If an account exists for this address, we sent a link to reset your password. Check your inbox and spam folder.';
 
@@ -58,7 +58,7 @@ const resetPage = (page: Page) => page.getByTestId('screen.auth.resetPassword');
 // The send button carries no button role, so its state is read from the attribute.
 const sendLink = (page: Page) => panel(page).getByTestId('btn.auth.sendPasswordReset');
 
-test('a forgotten password asks for a valid email, then confirms the link without saying whether the account exists', async ({ page }) => {
+test('a forgotten password asks for a valid email, then confirms the link without saying whether the account exists', { tags: ['smoke'] }, async ({ page }) => {
   await openSignIn(page);
   await signIn(page).getByTestId('btn.auth.forgotPassword').click();
   await expect(panel(page)).toContainText('Reset your password');

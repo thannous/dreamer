@@ -8,6 +8,11 @@
 //
 //   npm run verify:pr       before every push: the former pre-push `verify:fast`, split
 //                           into checks, plus the surfaces the PR changed.
+//                           App diffs also run the local web smoke journeys and
+//                           the named parcours (`--changed-since origin/master`).
+//                           No model call and no GitHub Actions minutes. A
+//                           docs-only diff skips both. A missing browser or
+//                           emulator prints a skip line and does not fail.
 //   npm run verify:release  before a publish: the PR checks, run again, plus the
 //                           full local validation of
 //                           doc_web_interne/docs/circleci-migration.md
@@ -268,6 +273,29 @@ const TESTERARMY = {
   hint: 'run it locally where you run verify:pr (after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
+// Dreamer paths that run the tagged smoke journeys. Lucid, Meditation and docs
+// stay out: Lucid and Meditation have their own parcours zones.
+export const SMOKE_WHEN = [
+  'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/',
+  '!routes/lucid/', '!components/lucid/', '!services/lucid*', '!apps/meditation/',
+];
+
+// App paths plus the gate itself. A docs-only diff matches none of these, so
+// verify:pr skips the check. The command still no-ops when the diff has no
+// named zone (see tools/e2e/pr-gate.mjs).
+export const PARCOURS_WHEN = [
+  'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/', 'apps/meditation/',
+  'tools/e2e/zones.mjs', 'tools/e2e/zones.d.mts', 'tools/e2e/zone-filter.ts', 'tools/e2e/zone-filter.test.mjs',
+  'tools/e2e/pr-gate.mjs', 'tools/e2e/pr-gate.test.mjs', 'tools/e2e/e2e.config.ts', 'tools/e2e/e2e.bugbash.config.ts',
+  'tools/e2e/run.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/persona-models.d.mts',
+  'tools/e2e/bugbash-prerelease.mjs', 'tools/e2e/bugbash-prerelease.test.mjs', 'tools/e2e/web-parity-fixtures.ts',
+  'tools/e2e/tests/dreamer-journeys.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-save.web.e2e.ts',
+  'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts',
+  'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts', 'tools/e2e/tests/dreamer-billing.web.e2e.ts',
+  'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts', 'tools/e2e/tests/dreamer-account-deletion.web.e2e.ts',
+  'tools/e2e/tests/bugbash/', 'verify-local.config.mjs',
+];
+
 // The full campaign and release gate share these four complete coverage contexts.
 export const DREAMER_CAMPAIGN_CONTEXTS = [
   { locale: 'en-US', featureSheets: true, args: [] },
@@ -382,6 +410,12 @@ export default {
     'scripts/expo-safe-runner.js',
     'scripts/expo-safe-runner.test.js',
     'tools/e2e/e2e.config.ts',
+    'tools/e2e/e2e.bugbash.config.ts',
+    'tools/e2e/zones.mjs',
+    'tools/e2e/zone-filter.ts',
+    'tools/e2e/pr-gate.mjs',
+    'tools/e2e/persona-models.mjs',
+    'tools/e2e/bugbash-prerelease.mjs',
     // The suites ci-contracts runs.
     '.circleci/tests/classify-changes.test.sh',
     '.circleci/tests/shared-build-impact.test.py',
@@ -571,6 +605,31 @@ export default {
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
+    // Web only, no model, no Actions. A diff with no web zone exits 0.
+    // A touched zone without Node 24.22.1, tools/e2e/node_modules or Chromium
+    // fails the probe: the proof is incomplete, not passed. No `targets`:
+    // the engine applies targets on release only, which would drop these
+    // checks from verify:pr. On a published master the diff is empty.
+    {
+      name: 'parcours-touches',
+      command: 'node --test tools/e2e/zone-filter.test.mjs tools/e2e/pr-gate.test.mjs tools/e2e/bugbash-prerelease.test.mjs && npm run test:e2e:parcours',
+      when: PARCOURS_WHEN,
+      specialised: true,
+      requires: {
+        command: 'node tools/e2e/pr-gate.mjs probe parcours',
+        hint: 'a diff that touches a web app zone needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the journeys, pass --external parcours-touches="owner-machine: <host> <note> on <SHA>". A diff with no app zone does not need the browser and the probe passes',
+      },
+    },
+    {
+      name: 'smoke-journeys',
+      command: 'npm run test:e2e:smoke',
+      when: SMOKE_WHEN,
+      specialised: true,
+      requires: {
+        command: 'node tools/e2e/pr-gate.mjs probe smoke',
+        hint: 'a Dreamer app diff needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the smoke journeys, pass --external smoke-journeys="owner-machine: <host> <note> on <SHA>". A diff that does not touch Dreamer app paths does not need the browser and the probe passes',
+      },
+    },
 
     // ---- verify:release only: the full local validation, then the delivered builds.
     {
@@ -623,6 +682,17 @@ export default {
       targets: ['app'],
       specialised: true,
       requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
+    },
+    // Repros written by npm run test:bugbash:prerelease. Empty is a pass.
+    // Not in the PR gate. Mock mode comes from e2e.config.ts; E2E_BUGBASH only
+    // adds tests/bugbash to the glob.
+    {
+      name: 'bugbash-repros',
+      command: 'npm run test:bugbash:repros',
+      kinds: ['release'],
+      targets: ['app'],
+      specialised: true,
+      requires: TESTERARMY,
     },
   ],
   hook: {

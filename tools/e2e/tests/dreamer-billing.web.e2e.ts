@@ -1,7 +1,7 @@
 // Historical billing UI assertions, executed by TesterArmy with mock-only service guard.
 import type { Page } from 'playwright/test';
 import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
-const test = createParityTest();
+const test = createParityTest({ tags: ['zone-paiement'] });
 
 async function setupFreeAccount(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -43,7 +43,7 @@ async function assertPlus(page: Page) {
 }
 
 for (const interval of ['Monthly', 'Annual']) {
-  test(`mock ${interval.toLowerCase()} purchase unlocks Plus through the paywall`, async ({ page }) => {
+  test(`mock ${interval.toLowerCase()} purchase unlocks Plus through the paywall`, interval === 'Monthly' ? { tags: ['smoke'] } : {}, async ({ page }) => {
     await setupFreeAccount(page);
     await offer(page);
     await page.getByTestId(`btn.paywall.select${interval}`).click();
