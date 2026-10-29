@@ -605,20 +605,30 @@ export default {
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
-    // Web only. A native diff, or a runner without Node 24.22.1 / Chromium,
-    // prints PARCOURS SAUTE or FUMEE SAUTEE and exits 0. No model, no Actions.
-    // No `targets`: the engine applies targets on release only, so a target
-    // would drop these checks from verify:pr. On a master release the diff is
-    // empty and the commands exit without a browser.
+    // Web only, no model, no Actions. A diff with no web zone exits 0.
+    // A touched zone without Node 24.22.1, tools/e2e/node_modules or Chromium
+    // fails the probe: the proof is incomplete, not passed. No `targets`:
+    // the engine applies targets on release only, which would drop these
+    // checks from verify:pr. On a published master the diff is empty.
     {
       name: 'parcours-touches',
       command: 'node --test tools/e2e/zone-filter.test.mjs tools/e2e/pr-gate.test.mjs tools/e2e/bugbash-prerelease.test.mjs && npm run test:e2e:parcours',
       when: PARCOURS_WHEN,
+      specialised: true,
+      requires: {
+        command: 'node tools/e2e/pr-gate.mjs probe parcours',
+        hint: 'a diff that touches a web app zone needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the journeys, pass --external parcours-touches="owner-machine: <host> <note> on <SHA>". A diff with no app zone does not need the browser and the probe passes',
+      },
     },
     {
       name: 'smoke-journeys',
       command: 'npm run test:e2e:smoke',
       when: SMOKE_WHEN,
+      specialised: true,
+      requires: {
+        command: 'node tools/e2e/pr-gate.mjs probe smoke',
+        hint: 'a Dreamer app diff needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the smoke journeys, pass --external smoke-journeys="owner-machine: <host> <note> on <SHA>". A diff that does not touch Dreamer app paths does not need the browser and the probe passes',
+      },
     },
 
     // ---- verify:release only: the full local validation, then the delivered builds.

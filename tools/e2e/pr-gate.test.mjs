@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { decideParcours, decideSmoke } from './pr-gate.mjs';
+import { decideParcours, decideSmoke, runGate } from './pr-gate.mjs';
 
 test('docs-only and non-app diffs skip both gates', () => {
   const files = ['doc_web_interne/docs/README.md', 'AGENTS.md', 'specs/noctalia-lucid-trainer.md'];
@@ -35,6 +35,15 @@ test('Lucid and Meditation do not start the Dreamer smoke set', () => {
   assert.deepEqual(decideParcours(['routes/lucid/lucid/index.tsx']).products, ['lucid']);
   assert.equal(decideSmoke(['apps/meditation/app/index.tsx']).launch, false);
   assert.deepEqual(decideParcours(['apps/meditation/app/index.tsx']).products, ['meditation']);
+});
+
+test('a missing runner fails only when a web zone would actually run', () => {
+  const missing = { ok: false, reason: 'PARCOURS NON JOUE: Chromium absent' };
+  assert.equal(runGate('parcours', '/tmp', ['AGENTS.md'], missing), 0);
+  assert.equal(runGate('parcours', '/tmp', ['tools/e2e/tests/dreamer.mobile.e2e.ts'], missing), 0);
+  assert.equal(runGate('smoke', '/tmp', ['doc_web_interne/docs/README.md'], missing), 0);
+  assert.equal(runGate('parcours', '/tmp', ['app/recording.tsx'], missing), 1);
+  assert.equal(runGate('smoke', '/tmp', ['components/ui/Toast.tsx'], missing), 1);
 });
 
 test('verify:pr scopes skip docs and keep the named app paths', async () => {

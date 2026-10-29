@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL } from './persona-models.mjs';
-import { isDreamerAppPath, isNativeJourney, parcoursExclude, zonesForFiles } from './zones.mjs';
+import { filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
 const billingSmoke = { id: 'billing-smoke', tags: ['smoke', 'zone-paiement'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -59,6 +59,31 @@ test('a changed web test file is kept even when no source zone matched', () => {
   const decision = parcoursExclude(suite, ['tools/e2e/tests/dreamer-home-editorial.web.e2e.ts']);
   assert.equal(decision.exclude.home, undefined);
   assert.equal(decision.exclude.capture, 'le diff ne touche pas ce parcours');
+});
+
+test('the zone filter stays inactive unless --changed-since supplied changes', () => {
+  assert.equal(filterIsActive(undefined), false);
+  assert.equal(filterIsActive({}), false);
+  assert.equal(filterIsActive({ changes: {} }), false);
+  assert.equal(filterIsActive({ changes: { files: ['app/recording.tsx'] } }), true);
+  const source = readFileSync(new URL('./zone-filter.ts', import.meta.url), 'utf8');
+  assert.match(source, /if \(!filterIsActive\(context\)\) return \{ exclude: \{\} \}/);
+});
+
+test('a full campaign does not pass --changed-since, and e2e 0.21.3 skips filters without it', async () => {
+  const { default: config } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
+  for (const name of ['testerarmy-dreamer', 'testerarmy-lucid', 'testerarmy-meditation', 'testerarmy-site', 'bugbash-repros']) {
+    const check = config.checks.find(entry => entry.name === name);
+    assert.equal(check.command.includes('--changed-since'), false, name);
+  }
+  const runner = readFileSync(new URL('./node_modules/e2e/dist/run/runner.js', import.meta.url), 'utf8');
+  const at = runner.indexOf('changedSince === undefined');
+  assert.ok(at > 0, 'e2e 0.21.3 listSelection short-circuits when --changed-since is absent');
+  const slice = runner.slice(at, at + 280);
+  assert.match(slice, /changedSince === undefined\s*\?\s*first/);
+  assert.match(slice, /filterSelection/);
+  const gate = readFileSync(new URL('./run.mjs', import.meta.url), 'utf8');
+  assert.match(gate, /args\[index\] === '--changed-since'/);
 });
 
 test('persona models stay the Terra act tier and the Sol judge', () => {

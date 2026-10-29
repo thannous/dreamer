@@ -142,8 +142,10 @@ Read the installed skill/topic, reuse guarded runners/fixtures and keep provider
 `verify:pr` runs the tagged smoke journeys on a Dreamer app diff and the named
 parcours for the zones that diff touches (`npm run test:e2e:smoke`,
 `npm run test:e2e:parcours`), locally, without a model and without GitHub Actions.
-A docs-only diff skips both. A runner without Chromium or an emulator prints
-`FUMEE SAUTEE` or `PARCOURS SAUTE` and does not fail. Before an app release,
+A docs-only diff, or a diff with no web app zone, skips both. A native-only
+diff skips the web gate. If a zone is touched and Node 24.22.1, the e2e
+install, or Chromium is missing, the check is unavailable and `verify:pr`
+stays incomplete. Before an app release,
 `npm run test:bugbash:prerelease` explores the mock app; each confirmed bug
 becomes a failing `bugbash` test, which `verify:release` runs and the PR gate
 does not.

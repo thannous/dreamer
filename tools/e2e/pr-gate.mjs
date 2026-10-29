@@ -1,10 +1,10 @@
 /**
  * PR-gate launcher for Dreamer/Lucid/Meditation web journeys.
- * Docs-only and non-app diffs exit 0 without a browser. A native-only diff
- * exits 0 with a skip line: this gate has no emulator. A missing e2e install,
- * Chromium, or the pinned Node does the same, so a runner that cannot start
- * the web app does not fail the proof. The log line says the journeys did
- * not run.
+ * A diff with no web app zone exits 0 without a browser. A native-only diff
+ * does too: this gate has no emulator. When a zone is touched, a missing
+ * pinned Node, e2e install, or Chromium exits 1. verify:pr probes the same
+ * condition first and records the check unavailable, so the proof is
+ * incomplete instead of passed.
  */
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -61,11 +61,11 @@ function repoRoot() {
 
 export function runnerReady(root) {
   if (process.version !== PINNED_NODE) {
-    return { ok: false, reason: `PARCOURS SAUTE: Node ${PINNED_NODE} est requis (mise exec), celui-ci est ${process.version}. Les parcours ne sont pas lances.` };
+    return { ok: false, reason: `PARCOURS NON JOUE: Node ${PINNED_NODE} est requis (mise exec), celui-ci est ${process.version}.` };
   }
   const cli = join(root, 'tools/e2e/node_modules/e2e/package.json');
   if (!existsSync(cli)) {
-    return { ok: false, reason: 'PARCOURS SAUTE: tools/e2e/node_modules est absent. Installer avec npm run test:testerarmy:setup && npm run test:testerarmy:browsers. Cette passe ne prouve pas les parcours.' };
+    return { ok: false, reason: 'PARCOURS NON JOUE: tools/e2e/node_modules est absent. npm run test:testerarmy:setup && npm run test:testerarmy:browsers.' };
   }
   try {
     const require = createRequire(join(root, 'tools/e2e/package.json'));
@@ -73,10 +73,10 @@ export function runnerReady(root) {
     const engineRequire = createRequire(web);
     const { chromium } = engineRequire('playwright-core');
     if (!existsSync(chromium.executablePath())) {
-      return { ok: false, reason: 'PARCOURS SAUTE: Chromium du moteur web est absent. npm run test:testerarmy:browsers. Cette passe ne prouve pas les parcours.' };
+      return { ok: false, reason: 'PARCOURS NON JOUE: Chromium du moteur web est absent. npm run test:testerarmy:browsers.' };
     }
   } catch {
-    return { ok: false, reason: 'PARCOURS SAUTE: le moteur web n\'est pas installé. npm run test:testerarmy:setup && npm run test:testerarmy:browsers.' };
+    return { ok: false, reason: 'PARCOURS NON JOUE: le moteur web n\'est pas installe. npm run test:testerarmy:setup && npm run test:testerarmy:browsers.' };
   }
   return { ok: true };
 }
@@ -88,16 +88,15 @@ function launch(root, product, extra) {
   return result.status ?? 1;
 }
 
-export function runGate(mode, root, files) {
+export function runGate(mode, root, files, ready = runnerReady(root)) {
   const decision = mode === 'smoke' ? decideSmoke(files) : decideParcours(files);
   if (!decision.launch) {
     console.log(decision.reason);
     return 0;
   }
-  const ready = runnerReady(root);
   if (!ready.ok) {
-    console.log(ready.reason);
-    return 0;
+    console.error(ready.reason);
+    return 1;
   }
   const shared = mode === 'smoke'
     ? ['--tag', 'smoke', '--exclude-tag', 'bugbash']
@@ -111,17 +110,33 @@ export function runGate(mode, root, files) {
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const mode = process.argv[2];
-  if (mode !== 'parcours' && mode !== 'smoke') {
-    console.error('Usage: pr-gate.mjs parcours|smoke');
+  if (!['parcours', 'smoke', 'probe'].includes(mode)) {
+    console.error('Usage: pr-gate.mjs parcours|smoke|probe parcours|smoke');
     process.exitCode = 2;
   } else {
-    const root = repoRoot();
-    const diff = changedFiles(root);
-    if (diff.error) {
-      console.error(diff.error);
-      process.exitCode = 1;
+    const which = mode === 'probe' ? process.argv[3] : mode;
+    if (which !== 'parcours' && which !== 'smoke') {
+      console.error('Usage: pr-gate.mjs probe parcours|smoke');
+      process.exitCode = 2;
     } else {
-      process.exitCode = runGate(mode, root, diff.files);
+      const root = repoRoot();
+      const diff = changedFiles(root);
+      if (diff.error) {
+        console.error(diff.error);
+        process.exitCode = 1;
+      } else if (mode === 'probe') {
+        const decision = which === 'smoke' ? decideSmoke(diff.files) : decideParcours(diff.files);
+        if (!decision.launch) process.exitCode = 0;
+        else {
+          const ready = runnerReady(root);
+          if (!ready.ok) {
+            console.error(ready.reason);
+            process.exitCode = 1;
+          }
+        }
+      } else {
+        process.exitCode = runGate(which, root, diff.files);
+      }
     }
   }
 }

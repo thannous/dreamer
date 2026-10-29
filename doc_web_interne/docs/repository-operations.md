@@ -46,8 +46,9 @@ model call and no GitHub Actions minutes. `parcours-touches` maps changed paths
 to e2e tags and test files, then runs `e2e run --changed-since origin/master`.
 `smoke-journeys` runs the seven tagged smoke journeys (capture, save, journal,
 payment, sign-in) on every Dreamer app diff. A docs-only or non-app diff skips
-both. A native-only diff, or a machine without Chromium or Node 24.22.1, prints
-`PARCOURS SAUTE` or `FUMEE SAUTEE` and exits 0. Rerun: `npm run test:e2e:parcours`
+both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
+`tools/e2e/node_modules`, or Chromium is missing, the probe fails and the proof
+is incomplete, not passed. Rerun: `npm run test:e2e:parcours`
 and `npm run test:e2e:smoke`.
 
 Before an app release, run `npm run test:bugbash:prerelease` on Dreamer web in

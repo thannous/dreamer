@@ -161,6 +161,11 @@ export function isNativeJourney(file) {
  * @param {readonly { id: string, tags: readonly string[], file: string }[]} tests
  * @param {readonly string[]} files
  */
+/** True only when a run handed the filter a `--changed-since` change set. */
+export function filterIsActive(context) {
+  return Array.isArray(context?.changes?.files);
+}
+
 export function parcoursExclude(tests, files) {
   const zones = zonesForFiles(files);
   const changedTests = new Set(files.filter(file => file.startsWith('tools/e2e/tests/') && file.endsWith('.e2e.ts') && !isNativeJourney(file)));

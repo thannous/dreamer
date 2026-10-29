@@ -196,10 +196,14 @@ describe('verify-local.config.mjs', () => {
       ['bugbash-repros', ['app']],
     ]);
     // targets apply on release only. A target here would drop the PR gates.
-    for (const name of ['parcours-touches', 'smoke-journeys']) {
+    // A missing browser on a touched zone must be incomplete, not a green pass.
+    for (const [name, probe] of [['parcours-touches', 'probe parcours'], ['smoke-journeys', 'probe smoke']]) {
       const check = config.checks.find((entry) => entry.name === name);
       expect(check.targets).toBeUndefined();
       expect(check.kinds ?? ['pr', 'release']).toEqual(['pr', 'release']);
+      expect(check.specialised).toBe(true);
+      expect(check.requires.command).toBe(`node tools/e2e/pr-gate.mjs ${probe}`);
+      expect(check.requires.hint).toContain('proof is incomplete');
     }
   });
 
