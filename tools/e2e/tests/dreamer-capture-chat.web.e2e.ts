@@ -3,7 +3,7 @@ import type { Browser } from '@e2e-dev/web';
 import { expect, type App, type Screen } from 'e2e';
 import { webLocale } from '../web-engine';
 import { test } from '../traced-parity-test';
-const options = { tags: ['historical-parity', 'locale-en-US'], skip: webLocale !== 'en-US' ? 'Requires the real en-US browser context; run E2E_WEB_LOCALE=en-US' : false, timeout: 180_000 };
+const options = { tags: ['historical-parity', 'locale-en-US', 'zone-capture'], skip: webLocale !== 'en-US' ? 'Requires the real en-US browser context; run E2E_WEB_LOCALE=en-US' : false, timeout: 180_000 };
 type Fixtures = { app: App; screen: Screen; browser: Browser };
 
 const story = 'Je marchais au bord d’un lac. Une maison éclairée apparaissait entre les arbres.';

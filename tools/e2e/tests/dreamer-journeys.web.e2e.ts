@@ -56,12 +56,12 @@ async function openDream(page: Page, title: string) {
   await page.getByTestId('component.transcriptCard').scrollIntoViewIfNeeded();
 }
 
-test('guest can start a first dream from onboarding', async ({ page }) => {
+test('guest can start a first dream from onboarding', { tags: ['smoke', 'zone-capture'] }, async ({ page }) => {
   await startGuest(page);
   await expect(page.getByTestId('btn.saveDream')).toBeDisabled();
 });
 
-test('guest keeps the same draft when switching capture modes', async ({ page }) => {
+test('guest keeps the same draft when switching capture modes', { tags: ['smoke', 'zone-capture'] }, async ({ page }) => {
   await startGuest(page);
   const transcript = page.getByTestId('input.dreamTranscript');
   await transcript.fill('E2E draft: a lighthouse above the sea.');
@@ -81,7 +81,7 @@ test('guest saves the first dream and can read its simulated analysis', async ({
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
 });
 
-test('free user saves a dream and finds the exact story in the journal', async ({ page }) => {
+test('free user saves a dream and finds the exact story in the journal', { tags: ['smoke', 'zone-sauvegarde'] }, async ({ page }) => {
   await selectProfile(page, 'existing');
   const story = 'E2E sapphire lighthouse above the quiet ocean.';
   await page.getByTestId('input.dreamTranscript').fill(story);

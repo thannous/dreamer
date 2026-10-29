@@ -11,6 +11,7 @@ import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
+import { PERSONA_ACT_MODEL } from './persona-models.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -48,14 +49,16 @@ if (command === 'collect' && (platform !== 'web' || args.length)) throw new Erro
 if (command === 'inspect' && (platform === 'web' || args.length)) throw new Error('Inspection takes one native product/platform and no test flags.');
 if (command === 'mcp' && args.length) throw new Error('The guarded MCP entry fixes its target and one session; pass no additional flags.');
 // Selection cannot replace the owned config, device target or evidence directory.
-const switches = new Set(['--video', '--trace', '--headed', '--debug', '--no-cache', '--strict-cache']);
+const switches = new Set(['--video', '--trace', '--headed', '--debug', '--no-cache', '--strict-cache', '--pass-with-no-tests']);
+const valued = new Set(['--changed-since']);
 const selections = new Set(['--grep', '--grep-invert', '--repeat-each', '--tag', '--exclude-tag', '--tag-mode', '--shard']);
 for (let index = 0; index < args.length; index++) {
   const flag = args[index];
   if (switches.has(flag)) continue;
-  if (!selections.has(flag)) throw new Error(`Unsupported E2E option: ${flag}`);
+  if (!valued.has(flag) && !selections.has(flag)) throw new Error(`Unsupported E2E option: ${flag}`);
   const value = args[++index];
   if (!value || value.startsWith('-')) throw new Error(`Invalid E2E value for ${flag}.`);
+  if (flag === '--changed-since' && !/^[A-Za-z0-9._/~^@-]+$/.test(value)) throw new Error('Invalid changed-since ref.');
   if (flag === '--repeat-each' && (!/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value))))
     throw new Error('Invalid E2E repeat count.');
   // CI splits one campaign context across parallel containers; collect proves the union.
@@ -130,7 +133,7 @@ function read(executable, argv, options = {}) {
   return result.stdout.trim();
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'dreamer-personas.ts', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
@@ -149,6 +152,7 @@ let installedReady = false;
 let installationDiagnostics = null;
 let installHandoffStarted = false;
 let sdkLaunched = false;
+let emptySelection = false;
 let inspectionStarted = false;
 let inspectionClosed = false;
 let mcpStarted = false;
@@ -161,7 +165,7 @@ const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agen
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
 const context = () => ({ locale: platform !== 'web' && env.E2E_PERSONAS === '1' ? 'fr-FR' : env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
-  ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || 'gpt-6.1-sol' } : {}) });
+  ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || env.E2E_PERSONA_ACT_MODEL?.trim() || PERSONA_ACT_MODEL } : {}) });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
   const child = spawn(executable, argv, { cwd: workdir, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
@@ -329,13 +333,24 @@ async function runSdk() {
   if (product === 'branch') read(process.execPath, ['scripts/test-auth-setup.mjs']);
   const collectionArgs = [];
   let repeatCount = 1;
+  const passWithNoTests = args.includes('--pass-with-no-tests');
   for (let index = 0; index < args.length; index++) {
     if (args[index] === '--repeat-each') repeatCount = Number(args[++index]);
+    else if (args[index] === '--changed-since') collectionArgs.push(args[index], args[++index]);
+    else if (args[index] === '--pass-with-no-tests') collectionArgs.push(args[index]);
     else if (selections.has(args[index])) collectionArgs.push(args[index], args[++index]);
   }
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
+  const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
+  if (!runnable.length) {
+    if (passWithNoTests) {
+      emptySelection = true;
+      console.log('Aucun test selectionne: le moteur n\'est pas lance.');
+      return;
+    }
+    throw new Error('No selected pairs.');
+  }
   writeOnce(join(output, 'collection.json'), collection);
-  if (!collection.pairs?.length) throw new Error('No selected pairs.');
   const history = durationHistory();
   const seed = seedDurations(history, output);
   sdkLaunched = true;
@@ -345,7 +360,7 @@ async function runSdk() {
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
-      startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: true, collection, repeatCount,
+      startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: true, collection: { ...collection, pairs: runnable }, repeatCount,
       ...(env.E2E_PERSONAS === '1' ? { personaModel: context().personaModel } : {}) });
     writeOnce(join(output, 'qualification.json'), proof);
   }
@@ -545,7 +560,7 @@ try {
   attempt('END_PERSISTENCE', () => writeOnce(join(output, 'end.json'), {
     finishedAt: new Date().toISOString(), primaryExitCode: requestedSignal ?? primary,
     exitCode: preserveStatus(requestedSignal ?? primary, secondary), sdkLaunched, installedReady, installationDiagnostics, installationErrorDetails, stability,
-    applicationQualified: command === 'run' && preserveStatus(requestedSignal ?? primary, secondary) === 0,
+    applicationQualified: command === 'run' && !emptySelection && preserveStatus(requestedSignal ?? primary, secondary) === 0,
     ownerDecision: '2026-10-06-install-hash-diagnostic-and-release-own-wrapper-lock',
     secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true,
     ...(backendLock ? { backendLockReleased: !existsSync(backendLock.path) } : {}), hostStalls,

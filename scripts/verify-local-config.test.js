@@ -188,11 +188,14 @@ describe('verify-local.config.mjs', () => {
     expect(scripts['verify:release:site']).toBe('node scripts/verify-local.mjs release');
     const app = config.checks.filter((check) => check.targets).map((check) => [check.name, check.targets]);
     expect(app).toEqual([
+      ['parcours-touches', ['app']],
+      ['smoke-journeys', ['app']],
       ['web-build', ['app']],
       ['e2e-backend', ['app']],
       ['testerarmy-dreamer', ['app']],
       ['testerarmy-lucid', ['app']],
       ['testerarmy-meditation', ['app']],
+      ['bugbash-repros', ['app']],
     ]);
   });
 

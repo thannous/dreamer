@@ -208,6 +208,10 @@
     "start:branch-e2e": "node ./scripts/start-branch-e2e.mjs",
     "test:testerarmy:all": "node tools/e2e/run.mjs all web",
     "test:testerarmy:login": "node tools/e2e/node_modules/e2e/dist/cli/bin.js login openai",
+    "test:e2e:parcours": "node tools/e2e/pr-gate.mjs parcours",
+    "test:e2e:smoke": "node tools/e2e/pr-gate.mjs smoke",
+    "test:bugbash:prerelease": "node tools/e2e/bugbash-prerelease.mjs",
+    "test:bugbash:repros": "E2E_BUGBASH=1 node tools/e2e/run.mjs dreamer web run --tag bugbash --pass-with-no-tests",
     "docs:media": "node ./scripts/site-media.js"
   },
   "dependencies": {

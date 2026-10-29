@@ -4,7 +4,7 @@ import { webLocale } from '../web-engine';
 import { test } from '../traced-parity-test';
 
 const options = {
-  tags: ['historical-parity', 'locale-en-US'],
+  tags: ['historical-parity', 'locale-en-US', 'zone-capture'],
   skip: webLocale !== 'en-US' ? 'Requires the real en-US browser context; run E2E_WEB_LOCALE=en-US' : false,
   timeout: 180_000,
 };

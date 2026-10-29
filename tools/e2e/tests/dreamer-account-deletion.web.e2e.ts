@@ -4,7 +4,7 @@
 // The mock app has no server: the journey answers its request the way the API does.
 import type { Page } from 'playwright/test';
 import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
-const test = createParityTest();
+const test = createParityTest({ tags: ['zone-connexion'] });
 
 const QUESTION = 'Delete your account?\n\nThis action is irreversible. Your dreams and your data will be permanently deleted.';
 const SUBSCRIPTION = 'Delete your account?\n\nDeleting your account doesn’t cancel your store subscription. Cancel it in your store subscription settings.';

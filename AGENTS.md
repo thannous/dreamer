@@ -135,7 +135,18 @@ review unless scope/risk changes. Prefer existing runners over parallel wrappers
 
 TesterArmy `e2e` is the default for new/affected journeys across all apps/worktrees:
 `@e2e-dev/web` for browsers, `@e2e-dev/mobile` for native; API/CLI uses its real interface.
+New journeys are written with `npx e2e run --watch` from `tools/e2e` (e2e 0.21.3).
+Watch reruns when a test file, a source file next to the tests, or the config is saved.
+It is an authoring loop, not part of `verify:pr` or CI.
 Read the installed skill/topic, reuse guarded runners/fixtures and keep provider budgets.
+`verify:pr` runs the tagged smoke journeys on a Dreamer app diff and the named
+parcours for the zones that diff touches (`npm run test:e2e:smoke`,
+`npm run test:e2e:parcours`), locally, without a model and without GitHub Actions.
+A docs-only diff skips both. A runner without Chromium or an emulator prints
+`FUMEE SAUTEE` or `PARCOURS SAUTE` and does not fail. Before an app release,
+`npm run test:bugbash:prerelease` explores the mock app; each confirmed bug
+becomes a failing `bugbash` test, which `verify:release` runs and the PR gate
+does not.
 Native qualification identifies an installed Release, uses one worker per owned device
 and starts with `app.open()`. Use one goal per `agent.act()` and exact assertions for
 critical outcomes; exact steps need no model. A compatible pinned upgrade may be piloted
