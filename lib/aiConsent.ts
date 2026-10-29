@@ -11,6 +11,10 @@ import { Alert, Platform } from 'react-native';
  * silent background work) before calling the service. Writing and reading the journal
  * never need it. Guests are asked too: their dreams reach the same providers.
  *
+ * Android (2026-10-29) shows no prompt: the first AI action records the grant. Once the
+ * user turns AI off in Settings, Android asks like the other platforms, so neither an
+ * automatic question nor background work can turn it back on silently.
+ *
  * v2 (2026-10-19): a v1 grant is asked once more; a v2 grant is never asked again
  * unless it is withdrawn in Settings, after which the next AI action asks again.
  *
@@ -19,6 +23,8 @@ import { Alert, Platform } from 'react-native';
 export const AI_CONSENT_STORAGE_KEY = 'noctalia.aiConsent.v2';
 const STORAGE_KEY = AI_CONSENT_STORAGE_KEY;
 const GRANTED = 'granted';
+// Android only: an explicit withdrawal, which brings the prompt back there.
+const WITHDRAWN = 'withdrawn';
 
 type Translate = (key: string) => string;
 
@@ -33,6 +39,8 @@ let promptHandler: AiConsentPromptHandler | null = null;
 let decision = 0;
 // A decision taken in this session is authoritative, even while its write is still pending.
 let decided = false;
+// Whether the user turned AI off in Settings (null until known).
+let withdrawn: boolean | null = null;
 // Writes run in order: a withdrawal never lands before the grant it withdraws.
 let storageWrites: Promise<void> = Promise.resolve();
 const listeners = new Set<() => void>();
@@ -107,9 +115,19 @@ export async function hasAiConsent(): Promise<boolean> {
   return granted;
 }
 
+async function wasWithdrawn(): Promise<boolean> {
+  if (withdrawn !== null) return withdrawn;
+  try {
+    return (await AsyncStorage.getItem(STORAGE_KEY)) === WITHDRAWN;
+  } catch {
+    return false;
+  }
+}
+
 /** Resolves true once the user has accepted, now or earlier; false if they decline. */
 export async function requestAiConsent(t: Translate): Promise<boolean> {
   if (await hasAiConsent()) return true;
+  const silent = Platform.OS === 'android' && !(await wasWithdrawn());
   // Several entry points can fire together (auto-sent chat topic, analysis after save).
   if (pending) return pending;
   const asked = decision;
@@ -121,11 +139,12 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
         return;
       }
       decide(true);
+      withdrawn = false;
       void writeStorage(() => AsyncStorage.setItem(STORAGE_KEY, GRANTED)).catch(() => undefined);
       resolve(true);
     };
-    // Android needs no separate AI disclosure: the AI action itself records the grant.
-    if (Platform.OS === 'android') {
+    // Android needs no separate AI disclosure until the user turns AI off.
+    if (silent) {
       accept();
       return;
     }
@@ -171,7 +190,11 @@ export async function requestAiConsent(t: Translate): Promise<boolean> {
 export async function withdrawAiConsent(): Promise<void> {
   pending = null;
   decide(false);
-  await writeStorage(() => AsyncStorage.removeItem(STORAGE_KEY));
+  withdrawn = true;
+  // Android remembers the withdrawal itself: without it, its next AI action would grant silently.
+  await writeStorage(() => Platform.OS === 'android'
+    ? AsyncStorage.setItem(STORAGE_KEY, WITHDRAWN)
+    : AsyncStorage.removeItem(STORAGE_KEY));
 }
 
 /** Test helper: forget the in-memory decision. */
@@ -179,6 +202,7 @@ export function resetAiConsentCacheForTests(): void {
   stopStorageListener?.();
   stopStorageListener = null;
   granted = null;
+  withdrawn = null;
   pending = null;
   decision += 1;
   decided = false;

@@ -137,11 +137,30 @@ describe('requestAiConsent on Android', () => {
     await expect(AsyncStorage.getItem('noctalia.aiConsent.v2')).resolves.toBe('granted');
   });
 
-  it('keeps a withdrawal from Settings until the next AI action', async () => {
+  it('asks again after a withdrawal in Settings, so no automatic step turns AI back on', async () => {
     await requestAiConsent(t);
     await withdrawAiConsent();
     await expect(hasAiConsent()).resolves.toBe(false);
+    const attempt = requestAiConsent(t);
+    await flush();
+    expect(Alert.alert).toHaveBeenCalledTimes(1);
+    answer(0);
+    await expect(attempt).resolves.toBe(false);
+    await expect(hasAiConsent()).resolves.toBe(false);
+  });
+
+  it('remembers the withdrawal across launches until the user accepts again', async () => {
+    await requestAiConsent(t);
+    await withdrawAiConsent();
+    resetAiConsentCacheForTests();
+    const attempt = requestAiConsent(t);
+    await flush();
+    expect(Alert.alert).toHaveBeenCalledTimes(1);
+    answer(1);
+    await expect(attempt).resolves.toBe(true);
+    // Accepted again: the next action grants without a prompt.
+    resetAiConsentCacheForTests();
     await expect(requestAiConsent(t)).resolves.toBe(true);
-    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(Alert.alert).toHaveBeenCalledTimes(1);
   });
 });

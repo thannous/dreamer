@@ -689,6 +689,7 @@ const translations: Record<string, string> = {
     'error.reanalysis_requires_plus': 'La mise à jour d’une analyse existante est réservée à Noctalia Plus. Ton analyse précédente reste disponible.',
     'journal.detail.stale.cta': 'Mettre à jour l’analyse',
     'journal.detail.stale.action_message': "Une nouvelle analyse lira sa dernière version.",
+    'journal.detail.stale.action_message_plus': "Mettre à jour une analyse est réservé à Noctalia Plus.",
     'journal.detail.stale.action_title': "Ton récit a changé",
     'journal.detail.stale.dismiss': 'Fermer et ne plus afficher ce rappel',
     'journal.detail.image.expand_accessibility': 'Voir l’illustration en plein écran',
