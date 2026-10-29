@@ -318,7 +318,14 @@ export const webAuthCallbackPromise: Promise<void> = webAuthCode
       let verifier: string | null = null;
       const configuration = getSupabasePublicConfiguration();
       try {
-        verifier = window.localStorage.getItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
+        const stored = window.localStorage.getItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
+        if (stored) {
+          // auth-js serializes storage strings as JSON; older clients may have
+          // stored the verifier directly. Never accept a non-string JSON value.
+          let decoded: unknown = stored;
+          try { decoded = JSON.parse(stored); } catch { /* legacy raw string */ }
+          verifier = typeof decoded === 'string' ? decoded : null;
+        }
       } catch {
         // A missing/unreadable verifier cannot prove the browser requested reset.
       }
