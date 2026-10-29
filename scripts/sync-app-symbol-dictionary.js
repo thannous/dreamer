@@ -6,7 +6,11 @@
  *
  * `data/dream-symbols*.json` also feed the marketing site, which needs the FAQ, SEO
  * titles, meta descriptions and illustration records (about 1.2 MB of the 6 MB the
- * app used to bundle). The app bundles `data/app/dream-symbols.json`; the extended
+ * app used to bundle). The app bundles `data/app/dream-symbols.json`, an index with
+ * each symbol's category, priority, related symbols and names. The short descriptions
+ * and questions are one bundled asset per language, `data/app/symbol-content/<lang>.txt`
+ * (JSON under an asset extension, so Metro copies it instead of compiling it into the
+ * JavaScript bundle), read on first use by services/symbolContent.ts. The extended
  * file is bundled on web only, and the native app downloads the same content per
  * language from the site (see buildSymbolContentByLanguage). The atlas (living paintings
  * and painted scenes of the symbols that have them) is read the same way, from
@@ -25,24 +29,21 @@ const { catalogKey } = require('./lib/symbol-locales');
 
 const ROOT = path.join(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'data', 'app');
+const LANGUAGES = ['en', 'fr', 'es', 'de', 'it', 'pt'];
+const CONTENT_DIR = path.join(OUT_DIR, 'symbol-content');
 const OUTPUTS = {
   symbols: path.join(OUT_DIR, 'dream-symbols.json'),
+  ...Object.fromEntries(LANGUAGES.map((language) => [`content:${language}`, path.join(CONTENT_DIR, `${language}.txt`)])),
   extended: path.join(OUT_DIR, 'dream-symbols-extended.json'),
   atlas: path.join(OUT_DIR, 'symbol-atlas.json'),
   // The analysis links each symbol it names to one of these ids (supabase/functions).
   symbolIds: path.join(ROOT, 'supabase', 'functions', 'api', 'lib', 'dreamSymbolIds.ts'),
 };
-const LANGUAGES = ['en', 'fr', 'es', 'de', 'it', 'pt'];
 
 const readJson = (file) => JSON.parse(fs.readFileSync(path.join(ROOT, file), 'utf8'));
 
-// Mirrors LocalizedSymbolContent / DreamSymbol / ExtendedSymbolContent in lib/symbolTypes.ts.
-const pickLocalized = ({ slug, name, shortDescription, askYourself }) => ({
-  slug,
-  name,
-  shortDescription,
-  askYourself,
-});
+// Mirrors DreamSymbol / SymbolContent / ExtendedSymbolContent in lib/symbolTypes.ts.
+const pickContent = ({ shortDescription, askYourself }) => ({ shortDescription, askYourself });
 
 const pickExtended = ({ fullInterpretation, variations }) => ({ fullInterpretation, variations });
 
@@ -179,15 +180,19 @@ function buildAppDictionary() {
       id: symbol.id,
       category: symbol.category,
       priority: symbol.priority,
-      ...Object.fromEntries(LANGUAGES.map((language) => [language, pickLocalized(symbol[language])])),
+      names: Object.fromEntries(LANGUAGES.map((language) => [language, symbol[language].name])),
       relatedSymbols: symbol.relatedSymbols,
-      relatedArticles: symbol.relatedArticles,
     })),
   };
+  const content = Object.fromEntries(LANGUAGES.map((language) => [
+    `content:${language}`,
+    `${JSON.stringify(Object.fromEntries(source.symbols.map((symbol) => [symbol.id, pickContent(symbol[language])])))}\n`,
+  ]));
 
   const extended = buildExtendedMap();
   return {
     symbols: `${JSON.stringify(symbols)}\n`,
+    ...content,
     extended: `${JSON.stringify(extended)}\n`,
     atlas: `${JSON.stringify(buildSymbolAtlas(extended))}\n`,
     symbolIds: buildSymbolIdsModule(source.symbols.map((symbol) => symbol.id)),
@@ -209,7 +214,7 @@ function main() {
     return;
   }
 
-  fs.mkdirSync(OUT_DIR, { recursive: true });
+  fs.mkdirSync(CONTENT_DIR, { recursive: true });
   for (const key of Object.keys(OUTPUTS)) fs.writeFileSync(OUTPUTS[key], built[key]);
   console.log(`Wrote ${Object.values(OUTPUTS).map((file) => path.relative(ROOT, file)).join(', ')}.`);
 }

@@ -8,10 +8,18 @@ import path from 'node:path';
 
 const ROOT = path.resolve(__dirname, '../../..');
 
+// The part of culori Uniwind's native runtime calls (culori ships no types).
+type Culori = {
+  parse(color: string): ({ alpha?: number } & Record<string, unknown>) | undefined;
+  formatHex(color: unknown): string;
+  formatHex8(color: unknown): string;
+  interpolate(colors: string[]): (weight: number) => unknown;
+};
+
 describe('culori-lite (Uniwind native runtime)', () => {
-  const lite = require('../culori-lite') as typeof import('culori');
-  const full = jest.requireActual('culori') as typeof import('culori');
-  const toHex8 = (color: string, culori: typeof import('culori')) => {
+  const lite = require('../culori-lite') as Culori;
+  const full = jest.requireActual('culori') as Culori;
+  const toHex8 = (color: string, culori: Culori) => {
     const parsed = culori.parse(color);
     return parsed ? culori.formatHex8(parsed) : undefined;
   };

@@ -15,6 +15,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useDreamsActions } from '@/context/DreamsContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { useSymbolContent } from '@/hooks/useSymbolContent';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { getDreamRouteParams } from '@/lib/dreamRoute';
@@ -191,7 +192,9 @@ function SymbolPage({ symbol, index, dream, born, language, onSelect, onClose }:
   const beats = born ? BEAT.born : BEAT.known;
 
   const entry = symbol.symbolId ? getSymbolById(symbol.symbolId) : undefined;
-  const guide = entry ? entry[language] ?? entry.en : undefined;
+  // The guide appears once the language's bundled content is read (once per launch).
+  const content = useSymbolContent(language);
+  const guide = entry ? content?.[entry.id] : undefined;
   const birthplace = symbol.appearances[0]?.dream;
   const longDate = (timestamp: number) => formatDate(timestamp, new Date(timestamp).getFullYear() === new Date().getFullYear()
     ? { day: 'numeric', month: 'long' } : { day: 'numeric', month: 'long', year: 'numeric' });

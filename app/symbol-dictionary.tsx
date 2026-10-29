@@ -16,6 +16,7 @@ import { DarkTheme, ThemeLayout } from "@/constants/journalTheme";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { Fonts } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeContext";
+import { useSymbolContent } from "@/hooks/useSymbolContent";
 import { useTranslation } from "@/hooks/useTranslation";
 import { trackProductEvent } from "@/lib/analytics";
 import { getDreamGuideCopy } from "@/lib/dreamGuideCopy";
@@ -76,7 +77,7 @@ const normalizeValue = (value: string) =>
     .trim();
 
 const getSymbolName = (symbol: DreamSymbol, language: SymbolLanguage) =>
-  (symbol[language] ?? symbol.en).name;
+  symbol.names[language] ?? symbol.names.en;
 
 const getSymbolLetter = (name: string) => {
   const normalized = normalizeValue(name);
@@ -123,13 +124,15 @@ function SymbolDictionaryScreen() {
   const popularSymbols = useMemo(() => getPopularSymbols(), []);
   const allSymbols = useMemo(() => getAllSymbols(), []);
   const deferredSearchQuery = useDeferredValue(searchQuery.trim());
+  // Search also reads the descriptions once they are loaded; names match right away.
+  const symbolContent = useSymbolContent(lang);
 
   const filteredSymbols = useMemo(
     () =>
       deferredSearchQuery
-        ? searchSymbols(deferredSearchQuery, lang)
+        ? searchSymbols(deferredSearchQuery, lang, symbolContent)
         : allSymbols,
-    [allSymbols, deferredSearchQuery, lang],
+    [allSymbols, deferredSearchQuery, lang, symbolContent],
   );
 
   const availableLetters = useMemo(() => {
@@ -375,13 +378,13 @@ function SymbolDictionaryScreen() {
           style={styles.popularScroller}
         >
           {popularSymbols.map((symbol) => {
-            const content = symbol[lang] ?? symbol.en;
+            const name = getSymbolName(symbol, lang);
             return (
               <SymbolLink
                 key={symbol.id}
                 symbolId={symbol.id}
                 source={detailSource}
-                accessibilityLabel={content.name}
+                accessibilityLabel={name}
                 testID={`symbol.popular.${symbol.id}`}
                 surfaceStyle={[styles.poster, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}
                 pressedStyle={styles.posterPressed}
@@ -398,7 +401,7 @@ function SymbolDictionaryScreen() {
                   locations={[0.35, 1]}
                   style={StyleSheet.absoluteFill}
                 />
-                <Text numberOfLines={2} style={styles.posterName}>{content.name}</Text>
+                <Text numberOfLines={2} style={styles.posterName}>{name}</Text>
               </SymbolLink>
             );
           })}

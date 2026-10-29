@@ -1,6 +1,10 @@
 import { jest } from '@jest/globals';
 
 jest.mock('react-native-enriched-markdown', () => require('react-native-enriched-markdown/jest'));
+// A required `.txt` asset is its path in Jest (tests/jest/text-asset-transformer.js).
+jest.mock('@/services/symbolContentAsset', () => ({
+  readSymbolContentAsset: (source: unknown) => require('node:fs').promises.readFile(String(source), 'utf8'),
+}));
 
 // Expo modules expect these globals during evaluation.
 // Keep a single definition here to avoid redefining in each test.

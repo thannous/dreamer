@@ -23,7 +23,9 @@ config.cacheVersion = createHash('sha256')
 
 // `expo-sqlite` imports a `.wasm` asset for the web worker (wa-sqlite).
 // Expo's default Metro config doesn't include `wasm` in assetExts yet.
-config.resolver.assetExts = Array.from(new Set([...config.resolver.assetExts, 'wasm']));
+// `txt` carries the per-language symbol content (data/app/symbol-content/):
+// requiring a .json would compile it into the JavaScript bundle instead.
+config.resolver.assetExts = Array.from(new Set([...config.resolver.assetExts, 'wasm', 'txt']));
 // Windows can leave transient hidden entries in node_modules/.bin that break Metro's fallback watcher.
 config.resolver.blockList = [
   /node_modules[\\/]\.bin[\\/]\.[^\\/]+$/,

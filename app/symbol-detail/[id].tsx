@@ -23,6 +23,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useExtendedSymbolContent } from '@/hooks/useExtendedSymbolContent';
 import { useScrollIdle } from '@/hooks/useScrollIdle';
+import { useSymbolContent } from '@/hooks/useSymbolContent';
 import { useSymbolAtlasEntry } from '@/hooks/useSymbolAtlas';
 import { useTranslation } from '@/hooks/useTranslation';
 import { buildFirstValueProperties } from '@/lib/activationAnalytics';
@@ -115,6 +116,8 @@ export default function SymbolDetailScreen() {
 
   const symbol = useMemo(() => getSymbolById(id!), [id]);
   const { content: extended, status: extendedStatus } = useExtendedSymbolContent(id, lang);
+  // Bundled, read once per language: only the very first symbol opened waits a moment.
+  const reading = useSymbolContent(lang)?.[id!];
   const relatedSymbols = useMemo(() => (symbol ? getRelatedSymbols(symbol) : []), [symbol]);
   // The symbols the site paints alive open on that painting, held upright for a phone.
   // The sheet keeps the look it opened with: an atlas that arrives while it is open (a
@@ -231,7 +234,7 @@ export default function SymbolDetailScreen() {
     );
   }
 
-  const content = symbol[lang] ?? symbol.en;
+  const name = symbol.names[lang] ?? symbol.names.en;
   const categoryName = getCategoryName(symbol.category, lang);
   const illustration = getSymbolIllustration(symbol.id, 'hero');
   const background = noctalia.screen.background;
@@ -340,13 +343,13 @@ export default function SymbolDetailScreen() {
                 accessibilityRole="header"
                 style={[styles.title, { color: HERO_TOKENS.text.primary }]}
               >
-                {content.name}
+                {name}
               </Text>
               <MarkdownText
                 selectable
                 style={[styles.lede, { color: HERO_TOKENS.text.secondary }]}
               >
-                {content.shortDescription}
+                {reading?.shortDescription ?? ''}
               </MarkdownText>
             </Animated.View>
           </View>
@@ -382,8 +385,8 @@ export default function SymbolDetailScreen() {
               <SymbolVariations variations={extended.variations} ink={noctalia} />
             ) : null}
 
-            {content.askYourself.length > 0 ? (
-              <SymbolQuestions questions={content.askYourself} ink={noctalia} />
+            {reading && reading.askYourself.length > 0 ? (
+              <SymbolQuestions questions={reading.askYourself} ink={noctalia} />
             ) : null}
 
             {relatedSymbols.length > 0 ? (
@@ -431,7 +434,7 @@ export default function SymbolDetailScreen() {
             importantForAccessibility="no"
             style={[styles.barTitle, { color: noctalia.text.primary }, barStyle]}
           >
-            {content.name}
+            {name}
           </Animated.Text>
         </View>
       </View>
@@ -440,7 +443,7 @@ export default function SymbolDetailScreen() {
 }
 
 function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: SymbolLanguage; noctalia: Tokens }) {
-  const content = symbol[lang] ?? symbol.en;
+  const name = symbol.names[lang] ?? symbol.names.en;
   // Large text widens the poster so a long single word never breaks mid-word.
   const { fontScale } = useWindowDimensions();
   const posterWidth = Math.round(140 * Math.min(Math.max(fontScale, 1), 1.5));
@@ -448,7 +451,7 @@ function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: 
     <Pressable
       onPress={() => router.replace(`/symbol-detail/${symbol.id}` as any)}
       accessibilityRole="button"
-      accessibilityLabel={content.name}
+      accessibilityLabel={name}
       style={({ pressed }) => [
         styles.poster,
         { width: posterWidth },
@@ -472,7 +475,7 @@ function RelatedPoster({ symbol, lang, noctalia }: { symbol: DreamSymbol; lang: 
         adjustsFontSizeToFit
         minimumFontScale={0.8}
       >
-        {content.name}
+        {name}
       </Text>
     </Pressable>
   );
