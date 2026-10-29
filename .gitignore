@@ -8,6 +8,13 @@ node_modules/
 .java-home/
 .gradle-user-home/
 
+# Ruby / Fastlane local dependencies and fallback generated reports
+.bundle/
+/vendor/bundle/
+/fastlane/report.xml
+/fastlane/Preview.html
+/fastlane/test_output/
+
 # Generated marketing site (rebuilt locally and by Cloudflare Pages)
 /docs/
 /docs-src/static/version.txt

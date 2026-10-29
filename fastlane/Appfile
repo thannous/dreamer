@@ -1,0 +1,3 @@
+app_identifier("com.tanuki75.noctalia")
+
+# Signing stays in Xcode; the App Store Connect app ID stays in eas.json.

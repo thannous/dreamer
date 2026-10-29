@@ -1,0 +1,81 @@
+require "fileutils"
+
+fastlane_version "2.241.1"
+default_platform :ios
+
+repository = File.expand_path("..", __dir__)
+ENV["FASTLANE_SKIP_DOCS"] = "1"
+ENV["FL_REPORT_PATH"] ||= File.join(repository, "outputs", "fastlane")
+
+run_script = lambda do |script, *arguments|
+  Dir.chdir(repository) do
+    sh("mise", "exec", "--", "node", "scripts/#{script}", *arguments)
+  end
+end
+
+required = lambda do |value, name|
+  UI.user_error!("Provide #{name}.") if value.to_s.strip.empty?
+  value.to_s
+end
+
+validate_options = lambda do |options, allowed|
+  unknown = options.keys - allowed
+  UI.user_error!("Unknown option(s): #{unknown.join(', ')}.") unless unknown.empty?
+end
+
+submit_build = lambda do |options, dry_run|
+  validate_options.call(options, [:build_id])
+  build_id = required.call(options[:build_id], "build_id:<EAS_BUILD_ID>")
+  unless build_id.match?(/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i)
+    UI.user_error!("build_id must be an explicit EAS build UUID.")
+  end
+  arguments = ["submit-internal", "--app", "noctalia", "--platform", "ios", "--id", build_id]
+  arguments << "--dry-run" if dry_run
+  run_script.call("mobile-release.js", *arguments)
+end
+
+before_all do
+  FileUtils.mkdir_p(ENV.fetch("FL_REPORT_PATH"))
+end
+
+platform :ios do
+  desc "Check Xcode and Noctalia version metadata without building"
+  lane :check do
+    sh("xcodebuild", "-version")
+    run_script.call("mobile-release.js", "verify", "--app", "noctalia")
+  end
+
+  desc "Show the release version plan for committed Noctalia changes"
+  lane :plan do
+    run_script.call("mobile-release.js", "plan", "--app", "noctalia")
+  end
+
+  desc "Check that a clean checkout has a prepared release version"
+  lane :release_check do
+    run_script.call("mobile-release.js", "check", "--app", "noctalia")
+  end
+
+  desc "Build a local Release IPA for a registered iPhone (development signing)"
+  lane :build do |options|
+    validate_options.call(options, [:team, :device, :profile, :version, :build_number])
+    team = required.call(options[:team] || ENV["NOCTALIA_APPLE_TEAM_ID"], "team:<APPLE_TEAM_ID>")
+    device = required.call(options[:device] || ENV["NOCTALIA_IOS_DEVICE"], "device:<IPHONE_NAME_OR_UDID>")
+    arguments = ["build", "--team", team, "--device", device,
+                 "--profile", options[:profile] || ".env.ios.local"]
+    if options[:version] || options[:build_number]
+      arguments += ["--version", required.call(options[:version], "version:X.Y.Z"),
+                    "--build-number", required.call(options[:build_number], "build_number:N")]
+    end
+    run_script.call("ios-local-ota.js", *arguments)
+  end
+
+  desc "Validate an existing EAS Store build for TestFlight without uploading"
+  lane :testflight_check do |options|
+    submit_build.call(options, true)
+  end
+
+  desc "Upload an explicitly selected EAS Store build to TestFlight"
+  lane :testflight_upload do |options|
+    submit_build.call(options, false)
+  end
+end
