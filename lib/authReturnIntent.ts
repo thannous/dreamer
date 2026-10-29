@@ -1,5 +1,6 @@
 import type { Href } from 'expo-router';
 
+import { createSerialLock } from '@/lib/serialLock';
 import { getPendingAuthReturn, savePendingAuthReturn } from '@/services/storageService';
 
 export const AUTH_RETURN_TTL_MS = 10 * 60 * 1000;
@@ -61,7 +62,6 @@ export function parseAuthReturnIntent(raw: string | null, now = Date.now()): Aut
 type Snapshot = { intent: AuthReturnIntent | null; ready: boolean };
 let snapshot: Snapshot = { intent: null, ready: false };
 const listeners = new Set<() => void>();
-let queue: Promise<unknown> = Promise.resolve();
 let restoration: Promise<void> | null = null;
 
 const publish = (intent: AuthReturnIntent | null) => {
@@ -71,11 +71,7 @@ const publish = (intent: AuthReturnIntent | null) => {
 
 // Serialize restoration, replacement and acknowledgement. A late clear must
 // never erase a newer link selected while authentication was in flight.
-function serialize<T>(operation: () => Promise<T>): Promise<T> {
-  const result = queue.then(operation, operation);
-  queue = result.catch(() => undefined);
-  return result;
-}
+const serialize = createSerialLock();
 
 export const getAuthReturnSnapshot = (): Snapshot => snapshot;
 export function subscribeAuthReturn(listener: () => void): () => void {
