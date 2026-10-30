@@ -84,7 +84,7 @@ test('the zone filter stays inactive unless --changed-since supplied changes', (
   assert.match(source, /if \(!filterIsActive\(context\)\) return \{ exclude: \{\} \}/);
 });
 
-test('a full campaign does not pass --changed-since, and e2e 0.21.3 skips filters without it', async () => {
+test('a full campaign does not pass --changed-since, and e2e 0.22.0 skips filters without it', async () => {
   const { default: config } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
   for (const name of ['testerarmy-dreamer', 'testerarmy-lucid', 'testerarmy-meditation', 'testerarmy-site', 'bugbash-repros']) {
     const check = config.checks.find(entry => entry.name === name);
@@ -92,7 +92,7 @@ test('a full campaign does not pass --changed-since, and e2e 0.21.3 skips filter
   }
   const runner = readFileSync(new URL('./node_modules/e2e/dist/run/runner.js', import.meta.url), 'utf8');
   const at = runner.indexOf('changedSince === undefined');
-  assert.ok(at > 0, 'e2e 0.21.3 listSelection short-circuits when --changed-since is absent');
+  assert.ok(at > 0, 'e2e 0.22.0 listSelection short-circuits when --changed-since is absent');
   const slice = runner.slice(at, at + 280);
   assert.match(slice, /changedSince === undefined\s*\?\s*first/);
   assert.match(slice, /filterSelection/);

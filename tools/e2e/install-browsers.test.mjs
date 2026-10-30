@@ -17,7 +17,7 @@ function packages(t, matcherVersion = '1.64.1') {
     writeFileSync(join(directory, 'package.json'), JSON.stringify({ version, ...extra }));
     return directory;
   }
-  const web = pkg('@e2e-dev/web', '0.15.3', { main: 'index.js' });
+  const web = pkg('@e2e-dev/web', '0.15.4', { main: 'index.js' });
   writeFileSync(join(web, 'index.js'), '');
   pkg('playwright', matcherVersion);
   pkg('playwright-core', 'unrelated-root-version');
