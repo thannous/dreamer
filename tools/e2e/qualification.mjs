@@ -205,6 +205,9 @@ export function verifyReport(document, options) {
       if (!goals.length || goals.some(step => step.model?.model !== options.personaModel
         || !Number.isSafeInteger(step.model?.calls) || step.model.calls < 1 || step.model.calls > 12
         || step.cache?.mode === 'self-finalized')) fail('PERSONA_MODEL_UNPROVEN');
+      const judgments = attempt.steps.filter(step => ['agent.assert', 'agent.waitFor', 'agent.extract'].includes(step.api));
+      if (judgments.some(step => !options.personaJudgeModel || step.model?.model !== options.personaJudgeModel
+        || !Number.isSafeInteger(step.model?.calls) || step.model.calls < 1)) fail('PERSONA_JUDGE_UNPROVEN');
     }
     if (options.video && !attempt.artifacts.some(a => a.kind === 'video')) fail('MEDIA_VIDEO_MISSING');
     for (const artifact of attempt.artifacts) artifacts.push(artifactBytes(options.output, artifact));

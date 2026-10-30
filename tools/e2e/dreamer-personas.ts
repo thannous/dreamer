@@ -26,17 +26,17 @@ export const dreamerPersonas = {
   },
 } as const;
 
-const context = 'Noctalia Dreamer is a dream journal. Its UI in this campaign is French. Rêve means a dream entry, Journal contains saved dreams, and Favoris are favourites. The Explorer tab contains general symbols, guides and sounds. Each dream has its own reflection and conversation; their controls follow the reading on the scrollable dream detail page. An existing exchange is reopened from that same dream. Account state and AI responses are synthetic fixtures; the user goals are exercised through the real interface.';
+const context = 'Noctalia Dreamer is a dream journal. Rêve means a dream entry, Journal contains saved dreams, and Favoris are favourites. The Explorer tab contains general symbols, guides and sounds. Each dream has its own reflection and conversation; their controls follow the reading on the scrollable dream detail page. An existing exchange is reopened from that same dream. Account state and AI responses are synthetic fixtures; the user goals are exercised through the real interface.';
 const conduct = 'Use only visible app controls. Copy observed node ids verbatim, preserving every digit. If a node is not found, observe again and choose a current node id instead of repeating the missing id. Do not guess URLs or routes, use developer profile controls, delete data, create accounts or make purchases. If the visible interface prevents the goal, report that obstacle instead of inventing success.';
 
 /** Called only by the explicit E2E_PERSONAS=1 campaign; reads no login here. */
-export function createDreamerPersonaAgents(actModel = PERSONA_ACT_MODEL, judgeModel = PERSONA_ASSERT_MODEL): NonNullable<E2EConfig['agents']> {
+export function createDreamerPersonaAgents(actModel = PERSONA_ACT_MODEL, judgeModel = PERSONA_ASSERT_MODEL, locale = 'fr-FR'): NonNullable<E2EConfig['agents']> {
   const act = actModel.trim() || PERSONA_ACT_MODEL;
   const judgeId = judgeModel.trim() || PERSONA_ASSERT_MODEL;
   const model = chatgpt(act);
   const judge = judgeId === act ? model : chatgpt(judgeId);
   return Object.fromEntries(Object.entries(dreamerPersonas).map(([name, persona]) => [name, {
-    model, judge, context, system: `${persona.system}\n${conduct}`,
+    model, judge, context: `${context} The UI locale for this campaign is ${locale}.`, system: `${persona.system}\n${conduct}`,
     maxSteps: 16, maxModelCalls: 12, maxInputTokens: 32_000,
   }]));
 }

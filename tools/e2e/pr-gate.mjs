@@ -13,6 +13,7 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DECISION_PRODUCTS, decisionEnabled, isDreamerAppPath, isNativeJourney, zonesForFiles } from './zones.mjs';
+import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PINNED_NODE = 'v24.22.1';
@@ -48,7 +49,7 @@ export function decideParcours(files, { model = decisionEnabled(process.env) } =
     }
     return {
       launch: false,
-      reason: 'PARCOURS SAUTE: aucun parcours nomme (capture, sauvegarde, journal, paiement, connexion, lucid, meditation) dans le diff. Une PR documentation, ou un fichier applicatif sans zone quand OPENAI_API_KEY est absente, ne lance pas de navigateur.',
+      reason: 'PARCOURS SAUTE: aucune zone declaree ni parcours web modifie dans le diff. Une PR documentation, ou un fichier applicatif sans zone quand OPENAI_API_KEY est absente, ne lance pas de navigateur.',
     };
   }
   return { launch: true, products: [...new Set([...zones.map(zone => zone.product), ...journeyProducts, ...modelProducts])] };
@@ -104,14 +105,24 @@ export function runnerReady(root) {
   return { ok: true };
 }
 
-function launch(root, product, extra) {
+function launch(root, product, extra, environment) {
   const result = spawnSync(process.execPath, ['tools/e2e/run.mjs', product, 'web', 'run', ...extra], {
-    cwd: root, stdio: 'inherit', env: process.env,
+    cwd: root, stdio: 'inherit', env: { ...process.env, ...environment },
   });
   return result.status ?? 1;
 }
 
-export function runGate(mode, root, files, ready = runnerReady(root), options = {}) {
+export function gateContexts(mode, product) {
+  const contexts = mode === 'parcours' && product === 'dreamer' ? dreamerCampaignContexts
+    : [{ locale: product === 'lucid' ? 'fr-FR' : 'en-US', featureSheets: false, args: [] }];
+  return contexts.map(({ locale, featureSheets, args }) => ({
+    args,
+    environment: { E2E_PERSONAS: '0', E2E_BUGBASH: '0', E2E_WEB_LOCALE: locale,
+      EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(featureSheets) },
+  }));
+}
+
+export function runGate(mode, root, files, ready = runnerReady(root), options = {}, execute = launch) {
   const decision = mode === 'smoke' ? decideSmoke(files) : decideParcours(files, options);
   if (!decision.launch) {
     console.log(decision.reason);
@@ -125,8 +136,12 @@ export function runGate(mode, root, files, ready = runnerReady(root), options = 
     ? ['--tag', 'smoke', '--exclude-tag', 'bugbash']
     : ['--changed-since', 'origin/master', '--exclude-tag', 'smoke', '--exclude-tag', 'bugbash', '--pass-with-no-tests'];
   for (const product of decision.products) {
-    const status = launch(root, product, shared);
-    if (status !== 0) return status;
+    // The source filter remains active in each context. A French-only parcours
+    // must execute in French, not count as covered by an English skipped result.
+    for (const context of gateContexts(mode, product)) {
+      const status = execute(root, product, [...shared, ...context.args], context.environment);
+      if (status !== 0) return status;
+    }
   }
   return 0;
 }

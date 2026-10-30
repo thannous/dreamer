@@ -4,7 +4,7 @@ Default framework for new journeys since the owner's 2026-10-05 instruction.
 All active E2E entry points use this runner since 2026-10-21; the duplicated
 Playwright test runners are retired. The complete web campaign is
 `mise exec -- npm run test:testerarmy:all`: four Dreamer locale/feature contexts
-and their coverage union, Lucid, Meditation, the built site, four personas through
+and their coverage union, Lucid, Meditation, the built site, five personas through
 the saved ChatGPT Pro login and the owned local backend. It requires that login
 and fails without actual model calls; no API-key fallback is configured. Use
 `npm run test:testerarmy:login` only if a saved login is missing. Native runs retain
@@ -240,7 +240,7 @@ It exercises the panel at 390 and 1280 pixels.
 ## Feature personas (opt-in pilot)
 
 Dreamer's personas describe different needs, not only languages. Their English
-goals run against the French real UI on web, iOS Simulator and Android emulator,
+goals run against the French UI on web, iOS Simulator and Android emulator,
 using the existing synthetic mock accounts:
 
 | Persona | Account fixture | Goal and exact outcome |
@@ -248,7 +248,7 @@ using the existing synthetic mock accounts:
 | Camille, just awake | New | Keep notes for later; reopen the one entry and recover the exact editable story without a reading or paywall. |
 | Alex, regular journaler | Existing free | Find a cloud-garden dream, add it to favourites, reopen it through that filter with its story intact. The fixture starts unfavourited. |
 | Samira, reflecting | Plus | Check the dream's title in the conversation, send one exact question, receive a simulated reply, then find the same dream, question and reply on revisit. |
-| Inès, guest without an account | Guest (no profile), AI pre-allowed | Web only. At the 10 offered chat exchanges, and with the 2 lifetime guest analyses spent, the page says so once and leads to the account form; Plus never promises the analyses back. From the empty journal, start a remembered dream with one invitation to write. |
+| Inès, guest without an account | Guest (no profile) | At the 10 offered chat exchanges, and with the 2 lifetime guest analyses spent, the page leads to the account form; Plus never promises the analyses back. From the empty journal, start a remembered dream. Web seeds consent/quota; native consumes the allowance through UI. |
 | Lucas, exhausted free quota | Existing free | Keep a dream, inspect the Plus offer, decline it and retain the story; verify free allowance and zero mock purchase/restore calls. |
 
 Definitions live in [dreamer-personas.ts](dreamer-personas.ts); journeys in
@@ -270,7 +270,7 @@ mise exec -- npx e2e models openai
 ```
 
 From the repository root, collect without login/model calls, pilot one persona,
-then run the four only after the pilot works:
+then run the suite after the pilot works:
 
 ```sh
 E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- list --tag personas
@@ -279,18 +279,23 @@ E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:test
 ```
 
 Act uses `gpt-6.1-terra` and assert uses `gpt-6.1-sol` (`tools/e2e/persona-models.mjs`).
-e2e 0.21.3 `chatgpt(id)` forwards the id and does not embed a catalog; these are
+e2e 0.22.0 `chatgpt(id)` forwards the id and does not embed a catalog; these are
 the OpenAI ids, and `gpt-6.1-sol` is the id this repo already qualified.
 `E2E_PERSONA_MODEL` or `E2E_PERSONA_ACT_MODEL` overrides act.
 `E2E_PERSONA_JUDGE_MODEL` overrides the judge. Set both back to `gpt-6.1-sol`
 to restore the single-model campaign. Each goal allows at most 16 actions, 12 model calls
 and 32,000 input tokens per request. Each test has a 240-second timeout; retries
-and replay stay off. Use one worker. The full suite has seven agent goals.
+and replay stay off. Use one worker. The suite registers 11 web tests in French
+and 7 native tests (the two native allowance journeys allow 360 seconds for exact setup).
+Four web additions tagged `persona-pilot` also run in English and German:
+first launch, recovery after a storage failure, symbol/collection discovery and
+resuming a guide. Exact assertions check persistence, no duplicate save, unchanged
+quota and the saved reading position. Each distinct goal has its own `agent.act`.
 It is not a human usability study or a performance/framerate measurement.
 
 Without `E2E_PERSONAS=1`, no persona test is registered and ordinary regressions
 retain their zero-model-call contract. Personas refuse other products and multiple
-workers. Web requires `fr-FR`, isolates each browser context and blocks traffic
+workers. Web isolates each browser context and blocks traffic
 outside the local origin. Native setup selects French through visible settings;
 `run.mjs` requires an identified `mock-persistent` Release on an owned virtual
 device before setup may clear its synthetic data. Never point the campaign at a
@@ -299,8 +304,9 @@ personal account or real dream journal.
 The canonical runner retains each test's trace, screenshot, exact source and
 input identity, model usage, persona name and rerun environment in its unique
 `.e2e/dreamer-{web,ios,android}/` directory. Qualification accepts model calls only for this
-explicit campaign, checks the declared persona and actual model calls, and retains
-all existing assertion, artifact and cleanup checks. A missing login or an
+explicit campaign, checks the declared persona, actual act and judge model calls, and retains
+both model overrides in the rerun environment, plus all existing assertion,
+artifact and cleanup checks. A missing login or an
 unexecuted journey is not a pass. Qualify a persona campaign with its `run`;
 `collect` is reserved for the historical four-locale regression campaign and
 does not aggregate persona runs. RTL, real service behaviour, physical-device
@@ -337,9 +343,9 @@ E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
   mise exec -- npm run test:testerarmy:mobile -- dreamer android run --install-release --tag persona-morning
 ```
 
-Once the pilot passes, replace `persona-morning` with `personas` to run all four
-on each platform. Do not set `E2E_WORKERS` for native: each invocation owns one
-explicit device and its lock. The first recorded action is `app.open()`, followed
+Once the pilot passes, replace `persona-morning` with `personas` to run all seven tests
+on the chosen platform. Do not set `E2E_WORKERS` for native: each invocation owns one
+explicitly named owned device and its lock. The first recorded action is `app.open()`, followed
 by a fresh synthetic app state. Native assertions use accessibility locators,
 keyboard dismissal, scroll-to-visible and the native AI consent dialog. Samira
 checks the completed reply and edits an unsent draft after reopening; Lucas checks

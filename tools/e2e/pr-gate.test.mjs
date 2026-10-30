@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { decideParcours, decideSmoke, runGate } from './pr-gate.mjs';
+import { selectionOwesNothing } from './zones.mjs';
 
 test('docs-only and non-app diffs skip both gates', () => {
   const files = ['doc_web_interne/docs/README.md', 'AGENTS.md', 'specs/noctalia-lucid-trainer.md'];
@@ -63,6 +64,23 @@ test('a parcours proof made without the key is not reused once the key turns the
     if (saved === undefined) delete process.env.OPENAI_API_KEY;
     else process.env.OPENAI_API_KEY = saved;
   }
+});
+
+test('an empty English selection advances to the changed French journey', () => {
+  const file = 'tools/e2e/tests/dreamer-symbol-dictionary.web.e2e.ts';
+  const pair = { id: 'fr-dictionary', tags: ['locale-fr-FR'], file: 'tests/dreamer-symbol-dictionary.web.e2e.ts' };
+  const visited = [];
+  const execute = (_root, _product, _args, env) => {
+    visited.push(env.E2E_WEB_LOCALE);
+    const disposition = env.E2E_WEB_LOCALE === 'fr-FR' ? 'run' : 'skip';
+    return disposition === 'run' || selectionOwesNothing([{ ...pair, disposition }], [file], env.E2E_WEB_LOCALE) ? 0 : 1;
+  };
+  assert.equal(runGate('parcours', '/tmp', [file], { ok: true }, { model: false }, execute), 0);
+  assert.ok(visited.indexOf('en-US') < visited.indexOf('fr-FR'));
+  assert.ok(visited.includes('fr-FR'));
+  const stillSkipped = (_root, _product, _args, env) =>
+    selectionOwesNothing([{ ...pair, disposition: 'skip' }], [file], env.E2E_WEB_LOCALE) ? 0 : 1;
+  assert.equal(runGate('parcours', '/tmp', [file], { ok: true }, { model: false }, stillSkipped), 1);
 });
 
 test('a model-judged diff without the runner fails like a touched zone', () => {
@@ -150,4 +168,18 @@ test('a changed smoke journey runs in the smoke check, which verify:pr reaches',
   // Lucid and Meditation journeys carry no smoke tag and do not start it.
   assert.equal(decideSmoke(['tools/e2e/tests/lucid.web.e2e.ts']).launch, false);
   assert.equal(matchesAny('tools/e2e/tests/meditation.web.e2e.ts', SMOKE_WHEN), false);
+});
+
+test('parcours launch each real language/feature context with the diff filter and no model', () => {
+  const calls = [];
+  const execute = (_root, product, args, environment) => { calls.push({ product, args, environment }); return 0; };
+  assert.equal(runGate('parcours', '/unused', ['app/moon-letter.tsx'], { ok: true }, { model: false }, execute), 0);
+  assert.deepEqual(calls.map(call => call.environment.E2E_WEB_LOCALE), ['en-US', 'fr-FR', 'de-DE', 'en-US']);
+  for (const call of calls) {
+    assert.equal(call.environment.E2E_PERSONAS, '0');
+    assert.ok(call.args.includes('--changed-since'));
+    assert.ok(call.args.includes('--pass-with-no-tests'));
+  }
+  assert.equal(calls[3].environment.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED, 'false');
+  assert.equal(runGate('parcours', '/unused', ['hooks/useQuota.ts'], { ok: true }, { model: false }, () => 3), 3);
 });

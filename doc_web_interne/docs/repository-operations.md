@@ -86,6 +86,9 @@ is the executable source of truth.
 GitHub Actions minutes and, by default, no model call. `parcours-touches` maps changed paths
 (`app/`, `components/`, `services/`, and the other roots in `tools/e2e/zones.mjs`)
 to e2e tags and test files, then runs `e2e run --changed-since origin/master`.
+Dreamer uses the shared English/French/German and feature-sheet contexts so that
+locale-specific selected journeys execute in their matching context. Each pass
+keeps the diff filter, and the PR gates explicitly disable personas and bug bash.
 `smoke-journeys` runs the seven tagged smoke journeys (capture, save, journal,
 payment, sign-in) on every Dreamer app diff. A docs-only or non-app diff skips
 both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
@@ -113,6 +116,10 @@ Before an app release, run `npm run test:bugbash:prerelease` on Dreamer web in
 mock mode (the script refuses a production Supabase ref). Each confirmed bug
 becomes a failing test under `tools/e2e/tests/bugbash/`, tagged `bugbash`.
 `verify:release` runs those tests (`bugbash-repros` / `npm run test:bugbash:repros`).
+The exploration launcher retains one receipt per campaign and returns 1 for
+observations awaiting triage, or 2 for incomplete exploration. Follow the
+[triage procedure](../../tools/e2e/tests/bugbash/README.md); an empty repro suite
+does not prove that the exploration was completed.
 The PR gate excludes the tag. An empty repro directory passes.
 
 `verify:pr` runs engine tests, application/test types, lint and script lint,
