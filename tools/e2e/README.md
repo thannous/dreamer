@@ -506,8 +506,11 @@ Android requires Simlock to return its isolated ADB server port; the runner
 refuses a grant without it instead of using an unscoped server.
 The foreground lease holder renews while the runner lives and is bound to its PID.
 It runs in its own process group, so Ctrl-C reaches only the runner, which stops at
-its next checkpoint, cleans up and then releases. Simlock 0.4.0 ignores signals
-while a request is queued for capacity; the runner then stops that holder outright.
+its next checkpoint, cleans up and then releases. Simlock 0.4.0 keeps a request
+queued for capacity after its client dies and grants it anyway, so an interrupt
+while queued waits until the request is granted (then released at once) or times
+out. Never kill a queued holder: its later grant would block the pool until the
+30-minute lease TTL expires.
 On a local Simlock worker the shims' `--lease` scoping is advisory: once the lease
 is lost or released they refuse every further device command, and after a loss
 no SDK child starts.

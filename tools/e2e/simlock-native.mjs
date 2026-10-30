@@ -133,11 +133,10 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
     onSignal(value);
     if (child.exitCode === null && child.signalCode === null) {
       child.kill(value);
-      // A holder still queued for capacity ignores signals until it is granted.
-      // It holds no device yet, so it is stopped outright.
-      setTimeout(() => {
-        if (!granted && child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
-      }, 2000).unref();
+      // Simlock 0.4.0 keeps a queued request after its client dies and grants it
+      // into the void, so the holder is never killed: once granted or timed out,
+      // it releases at once and exits.
+      if (!granted) console.error('SIMLOCK_INTERRUPTED: waiting for Simlock to grant or drop the queued request.');
     }
   };
   const onInterrupt = () => signal('SIGINT');

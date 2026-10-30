@@ -18,9 +18,16 @@ if (args[0] === 'catalog') {
   process.stdout.write(JSON.stringify({ platforms: [{ platform: args[args.indexOf('--platform') + 1], runtimes: ['1'], modelRuntimes: { phone: ['1'] } }] }) + '\\n');
 } else if (args[0] === 'lease') {
   if (process.env.FAKE_WAIT === '1') {
-    // Like Simlock 0.4.0, a request queued for capacity ignores signals until granted.
-    process.on('SIGTERM', () => {});
-    process.on('SIGINT', () => {});
+    // Like Simlock 0.4.0, a queued request outlives a signal: the late grant is
+    // reported, then released by the terminating holder.
+    const late = () => setTimeout(() => {
+      record(['late-grant']);
+      process.stdout.write(JSON.stringify({ lease: { id: 'lse_late', deviceId: 'dev_late', grantedAt: 1, requesterId: process.env.SIMLOCK_AGENT_ID || (process.env.CLAUDE_CODE_SESSION_ID ? 'claude-code:' + process.env.CLAUDE_CODE_SESSION_ID : 'codex:' + process.env.CODEX_SESSION_ID) },
+        device: { id: 'dev_late', address: '12345678-1234-1234-1234-123456789abc', physical: false, spec: { platform: 'ios', model: 'phone', osVersion: '1', physical: false } },
+        environment: {} }) + '\\n', () => process.exit(0));
+    }, 300);
+    process.once('SIGTERM', late);
+    process.once('SIGINT', late);
     record(['ready']);
     setInterval(() => {}, 1000);
     return;
@@ -181,7 +188,7 @@ test('an unavailable pool does not attempt to release another lease', async t =>
   assert.deepEqual(calls(events).map(args => args[0]), ['catalog', 'lease']);
 });
 
-test('an interrupted reservation stops a queued holder that ignores the signal', async t => {
+test('an interrupted reservation waits for the queued request and returns its late grant', async t => {
   const { root, env, events } = setup(t, { FAKE_WAIT: '1' });
   const modulePath = fileURLToPath(new URL('./simlock-native.mjs', import.meta.url));
   const script = `import { acquireSimlock } from ${JSON.stringify(new URL(`file://${modulePath}`).href)};\n` +
@@ -194,7 +201,8 @@ test('an interrupted reservation stops a queued holder that ignores the signal',
   assert.ok(existsSync(events) && calls(events).some(args => args[0] === 'ready'), 'the lease process started');
   child.kill('SIGTERM');
   assert.equal(await completed, 143);
-  assert.deepEqual(calls(events).map(args => args[0]), ['catalog', 'lease', 'ready']);
+  assert.deepEqual(calls(events).map(args => args[0]), ['catalog', 'lease', 'ready', 'late-grant', 'release']);
+  assert.deepEqual(calls(events).at(-1), ['release', 'lse_late']);
 });
 
 test('a signal during the catalog check never queues a reservation', async t => {
