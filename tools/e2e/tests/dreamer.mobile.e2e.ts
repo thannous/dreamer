@@ -901,16 +901,6 @@ test('Dreamer release capture widget link starts a closed app on Capture', { tag
 // Accessible image assertions alone do not prove artwork pixels: qualification also
 // requires inspection of these captures and the exact CDN image in the native cache.
 // The guarded runner permits this synthetic profile only on owned QA targets.
-// iOS pilot: ref activation did not reach the control, while a physical touch at
-// the same observed centre did. Keep one touch and assert the destination after it.
-async function collection633Tap(screen: TestFixtures['screen'], id: string) {
-  const target = screen.getByTestId(id, { visible: true });
-  await expect(target).toBeVisible();
-  const bounds = await target.boundingBox();
-  if (!bounds || bounds.width <= 0 || bounds.height <= 0) throw new Error(`Invalid native control bounds: ${id}`);
-  await screen.tapAt({ x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 });
-}
-
 async function collection633Start(fixtures: NativeBackgroundFixtures) {
   const { screen } = fixtures;
   await billingGuest(fixtures);
@@ -924,7 +914,7 @@ async function collection633Start(fixtures: NativeBackgroundFixtures) {
   await expect(screen.getByText(story)).toBeVisible();
   // iOS exposes a separate drop cap and an object-replacement marker in the transcript.
   await expect(screen.getByTestId('text.dreamDetail.transcript')).toContainText(story.slice(1));
-  await collection633Tap(screen, 'btn.savedDream.returnToJournal');
+  await screen.getByTestId('btn.savedDream.returnToJournal', { visible: true }).tap();
   await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
 }
 
@@ -933,6 +923,9 @@ async function collection633Open(screen: TestFixtures['screen']) {
   await screen.getByTestId('btn.explore.collection', { visible: true }).tap();
   await expect(screen.getByTestId('screen.collection', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('collection.summary.count')).toHaveText('1 card of 43');
+  const bounds = await screen.getByTestId('screen.collection', { visible: true }).boundingBox();
+  if (!bounds) throw new Error('Native collection frame is missing');
+  return bounds;
 }
 
 for (const offline of [false, true]) {
@@ -946,7 +939,7 @@ for (const offline of [false, true]) {
     await collection633Start(fixtures);
     try {
       if (offline) await device.setAirplaneMode(true);
-      await collection633Open(screen);
+      const collectionFrame = await collection633Open(screen);
       await expect(screen.getByRole('button', 'New Bronze card: Night Journal. Ready to reveal.', { visible: true })).toBeVisible();
       await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-grid`);
       await screen.getByTestId('collection.summary.new', { visible: true }).tap();
@@ -954,11 +947,16 @@ for (const offline of [false, true]) {
       await expect(screen.getByTestId('collection.detail.tier.bronze', { visible: true })).toBeVisible();
       await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
       await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-revealed`);
-      await collection633Tap(screen, 'collection.detail.close');
+      const close = screen.getByTestId('collection.detail.close', { visible: true });
+      const closeFrame = await close.boundingBox();
+      if (!closeFrame) throw new Error('Card close control frame is missing');
+      expect(closeFrame.x).toBeGreaterThanOrEqual(collectionFrame.x);
+      expect(closeFrame.x + closeFrame.width).toBeLessThanOrEqual(collectionFrame.x + collectionFrame.width);
+      await close.tap();
       await expect(screen.getByTestId('collection.detail', { visible: true })).toHaveCount(0);
       await expect(screen.getByTestId('collection.summary.new')).toHaveCount(0);
       await screen.scrollUntilVisible(screen.getByTestId('collection.card.night-journal', { visible: true }));
-      await collection633Tap(screen, 'collection.card.night-journal');
+      await screen.getByTestId('collection.card.night-journal', { visible: true }).tap();
       await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
       await expect(screen.getByTestId('collection.detail.reveal')).toHaveCount(0);
       await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-reopened`);

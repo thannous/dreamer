@@ -85,7 +85,7 @@ import {
 /**
  * Dream pages that arrived from the capture seal. The page clears its `saved` param as soon
  * as it mounts, which recomputes its options mid-transition; remembering the arrival keeps
- * the fade instead of falling back to a slide.
+ * the instant handoff instead of falling back to a slide.
  */
 const sealArrivals = new Set<string>();
 const arrivesFromSeal = (route: { key?: string; params?: unknown }) => {
@@ -930,15 +930,15 @@ const RootNavigator = memo(function RootNavigator({
             <Stack.Screen name="recording" options={{ headerShown: false, animation: 'none' }} />
             {/* Repeated Android detail transitions redraw the retained journal;
                 measured draw stalls exceed a frame. Keep this frequent route instant.
-                On iOS a dream arriving from the capture seal fades in under the seal's
-                window instead of sliding over it. */}
+                The capture seal already animates the saved dream's arrival. A second
+                native fade blocks the first touch while its buttons are already visible. */}
             <Stack.Screen name="journal/[id]" options={({ route }) => ({
               headerShown: false,
               scrollEdgeEffects: { top: 'hidden' },
               ...(Platform.OS === 'android'
                 ? { animation: 'none' as const }
                 : arrivesFromSeal(route)
-                  ? { animation: 'fade' as const, animationDuration: 600 }
+                  ? { animation: 'none' as const }
                   : {}),
             })} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />

@@ -706,9 +706,7 @@ restoring connectivity in `finally`. Inspect the retained screenshots and verify
 the full 720 px file in the native cache; an accessible image wrapper alone does
 not prove the artwork loaded.
 
-The iOS Duo pilot observed a reference activation with no callback followed by a
-physical touch at the exact same observed centre that reached the callback and
-opened the journal. The affected controls use one `boundingBox()` → `tapAt()`
-touch, with destination assertions; they never retry a failed reference press.
-The internal driver cause remains undetermined. Product navigation, Modal and
-perspective experiments were rejected and removed.
+The saved-dream journey uses one ordinary locator tap and asserts the journal
+immediately after it; a second tap or an app restart must not stand in for that
+outcome. The native capture seal owns the arrival animation, so the stack does
+not add another transition over that handoff.
