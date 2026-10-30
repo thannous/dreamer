@@ -172,6 +172,9 @@ stays incomplete. Before an app release,
 `npm run test:bugbash:prerelease` explores the mock app; each confirmed bug
 becomes a failing `bugbash` test, which `verify:release` runs and the PR gate
 does not.
+Before a mobile Store submission, run `npm run release:simulators` on the Mac mini for the
+candidate commit (owner decision 2026-10-30): the physical phone covers only the short list in
+[simulator tests](doc_web_interne/docs/tests-simulateurs.md).
 Native qualification identifies an installed Release, uses one worker per owned device
 and starts with `app.open()`. Use one goal per `agent.act()` and exact assertions for
 critical outcomes; exact steps need no model. A compatible pinned upgrade may be piloted

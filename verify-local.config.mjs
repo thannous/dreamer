@@ -606,6 +606,11 @@ export default {
       ],
     },
     { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
+    // The Mac mini simulator campaign (npm run release:simulators): its plan, profiles and report.
+    {
+      name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs',
+      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs'],
+    },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
