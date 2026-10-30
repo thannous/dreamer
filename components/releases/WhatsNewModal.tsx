@@ -35,6 +35,8 @@ import {
 import { TypeScale } from '@/constants/typeScale';
 
 export const RELEASE_NOTES_VERSION = '3.8.0';
+// The title names the release series (3.8), so a version bump cannot leave an older one behind.
+const RELEASE_NOTES_SERIES = RELEASE_NOTES_VERSION.split('.').slice(0, 2).join('.');
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
@@ -230,7 +232,7 @@ export function WhatsNewModal({ visible, onClose, onPrimary }: WhatsNewModalProp
                 webTitleFocusResetStyle,
               ]}
             >
-              {t('release_notes.title')}
+              {t('release_notes.title', { version: RELEASE_NOTES_SERIES })}
             </Text>
             <Text style={[styles.subtitle, { color: noctalia.text.secondary }]}>
               {t('release_notes.subtitle')}
