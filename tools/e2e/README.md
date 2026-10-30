@@ -14,14 +14,14 @@ their separate identified Release/device requirements. See the
 
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.21.3,
-`@e2e-dev/web` 0.15.3, `@e2e-dev/mobile` 0.12.4 and `agent-device` 0.21.35
+from the application's Playwright version. The locked runtime is `e2e` 0.22.0,
+`@e2e-dev/web` 0.15.4, `@e2e-dev/mobile` 0.12.5 and `agent-device` 0.21.35
 (a direct pin with a matching override for the mobile engine). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
-a report from another runner or engine. The engine peer ranges accept e2e 0.21.3.
-Web 0.15.3 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
+a report from another runner or engine. The engine peer ranges accept e2e 0.22.0.
+Web 0.15.4 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
 1.64.1 too and both share one Chromium build.
-Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.21's
+Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.22's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
@@ -36,6 +36,48 @@ the runner keeps the report of the last run with no `--grep`, `--tag` or
 seeds it into the next output directory; a seed the run does not replace is
 deleted. A blocked run, or one where no test passed, leaves the kept report as
 it was. Without that file, files start in collection order.
+
+What 0.22.0 changes here:
+
+- A secret fill no longer stops the model's screenshots (#1437, breaking
+  upstream). Secure fields stay masked in captures and secret values stay
+  redacted from text, but a model step after a fill now sees the screen. No step
+  here combines the two: ordinary regressions make no model call (qualification
+  refuses any token), personas sign in through mock profiles, and the journeys
+  that type a password (native `credentials.user(...)`, web local-backend
+  accounts) use no model. A future model journey that signs in must use
+  disposable test accounts.
+  `StepExecutorContext.pixelsTainted` is gone; nothing here read it.
+- A test whose cleanup fails now ends the run with exit 3 and is named in the
+  summary (#1233). `run.mjs` already refused such a report (`cleanup` other than
+  `complete`); now the SDK exit code says so too and no `qualification.json` is
+  written.
+- Mobile 0.12.5: a step on a control the keyboard is moving waits for it to land
+  (#1297), a locator whose target changes during the transition wait or a newer
+  snapshot is resolved again (#1300, #1413), `fill` and `clear` re-read the field
+  first (#1410), and `press('Enter')` taps an unfocused field before the key
+  (#1421). It depends on `agent-device` 0.21.35 itself, the version already pinned,
+  so the override now matches it. The iOS keyboard helpers in
+  `native-backend-fixtures.ts` and the 44 pt tab clearance stay until a native run
+  shows they are no longer needed.
+- Locators take `filter({ hasNot, hasNotText })` as in Playwright (#1334, #1037),
+  and `toHaveCount(0)` reads a locator under a closed frame as zero (#1354).
+  `agent.assert` and `agent.waitFor` take `params` like `agent.act` (#1463).
+- Web 0.15.4: `web()` targets accept `app.permissions` grants such as
+  `clipboard-read` (#1429), `browser.waitForDownloads()` collects several files
+  (#1048), `route.fetch()` reads the upstream response in a handler (#1044), and
+  screenshots no longer edit inputs' inline style to hide the caret (#1288). The
+  share journeys keep their scripted clipboard, which also covers a refused copy.
+- `app.startRecording()` and `app.stopRecording()` film one span of a test that
+  sets `{ video: 'off' }` (#1381).
+- `e2e mcp` sessions get `run_code`, which runs test lines such as an `expect`
+  on the live screen, and `open_session` takes a `test`
+  (`tests/<file>.e2e.ts:<line>`) to run it and stay on the screen where it
+  passed or failed (#1315, #1316). A config tool named `run_code` is refused;
+  none is defined here.
+- `--reporter ''` is a usage error (#1351); `run.mjs` and the bug bash always
+  pass named reporters.
+  See the [official changelog](https://github.com/tester-army/e2e/blob/main/packages/e2e/CHANGELOG.md#0220).
 
 What 0.21.3 changes here:
 
@@ -128,7 +170,7 @@ its applicable checks pass without another generic permission request. Keep exac
 pins and existing provider budgets; an upgrade does not enable a provider or Jev.
 
 New journeys are written from this directory with `npx e2e run --watch`
-(e2e 0.21.3). Watch reruns when a test, a neighbouring source file, or the
+(e2e 0.22.0). Watch reruns when a test, a neighbouring source file, or the
 config is saved. It is for authoring. Qualifying runs stay on `run.mjs`.
 
 From the repository root:

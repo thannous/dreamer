@@ -156,7 +156,7 @@ review unless scope/risk changes. Prefer existing runners over parallel wrappers
 
 TesterArmy `e2e` is the default for new/affected journeys across all apps/worktrees:
 `@e2e-dev/web` for browsers, `@e2e-dev/mobile` for native; API/CLI uses its real interface.
-New journeys are written with `npx e2e run --watch` from `tools/e2e` (e2e 0.21.3).
+New journeys are written with `npx e2e run --watch` from `tools/e2e` (e2e 0.22.0).
 Watch reruns when a test file, a source file next to the tests, or the config is saved.
 It is an authoring loop, not part of `verify:pr` or CI.
 Read the installed skill/topic, reuse guarded runners/fixtures and keep provider budgets.
