@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL } from './persona-models.mjs';
-import { filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, zonesForFiles } from './zones.mjs';
+import { filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
 const billingSmoke = { id: 'billing-smoke', tags: ['smoke', 'zone-paiement'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -59,6 +59,20 @@ test('a changed web test file is kept even when no source zone matched', () => {
   const decision = parcoursExclude(suite, ['tools/e2e/tests/dreamer-home-editorial.web.e2e.ts']);
   assert.equal(decision.exclude.home, undefined);
   assert.equal(decision.exclude.capture, 'le diff ne touche pas ce parcours');
+});
+
+test('only static skips the diff does not select leave the parcours selection empty', () => {
+  // Engine pairs: files relative to tools/e2e, static skips listed whatever the diff.
+  const localeSkip = { id: 'backgrounds', tags: ['historical-parity', 'locale-fr-FR'], file: 'tests/dreamer-backgrounds.web.e2e.ts', disposition: 'skip' };
+  const journalSkip = { id: 'journal-fr', tags: ['zone-journal', 'locale-fr-FR'], file: 'tests/dreamer-journal-margin.web.e2e.ts', disposition: 'skip' };
+  const skips = [localeSkip, journalSkip];
+  // A smoke-only journey change: its test is the smoke check's, the skips are untouched.
+  assert.equal(selectionOwesNothing(skips, ['tools/e2e/tests/dreamer-capture-save.web.e2e.ts', 'components/releases/WhatsNewModal.tsx']), true);
+  // A changed locale-only journey is selected but cannot run here: the gate still fails.
+  assert.equal(selectionOwesNothing(skips, ['tools/e2e/tests/dreamer-backgrounds.web.e2e.ts']), false);
+  // So does a locale-only journey of a zone the diff touches.
+  assert.equal(selectionOwesNothing(skips, ['app/journal/[id].tsx']), false);
+  assert.equal(selectionOwesNothing([...skips, { ...billing, file: 'tests/dreamer-billing.web.e2e.ts', disposition: 'run' }], []), false);
 });
 
 test('the zone filter stays inactive unless --changed-since supplied changes', () => {

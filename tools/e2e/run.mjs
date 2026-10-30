@@ -12,6 +12,7 @@ import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
 import { PERSONA_ACT_MODEL } from './persona-models.mjs';
+import { selectionOwesNothing } from './zones.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -131,6 +132,14 @@ function read(executable, argv, options = {}) {
   const result = spawnSync(executable, argv, { cwd: root, env, encoding: 'utf8', ...options });
   if (result.error || result.status !== 0) throw result.error ?? new Error(result.stderr || `${executable} failed`);
   return result.stdout.trim();
+}
+// The change set e2e hands its filters for `--changed-since` (run/changes.js): the working
+// tree against the merge base, plus untracked files.
+function changedFilesSince(ref) {
+  const base = read('git', ['merge-base', ref, 'HEAD']);
+  const listed = [read('git', ['diff', '--name-only', '--no-renames', '--no-ext-diff', '-z', base, '--']),
+    read('git', ['ls-files', '--others', '--exclude-standard', '--full-name', '-z'])].join('\0');
+  return [...new Set(listed.split('\0').filter(file => file !== '' && !file.endsWith('/')))];
 }
 function webInputIdentity() {
   const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
@@ -333,18 +342,21 @@ async function runSdk() {
   if (product === 'branch') read(process.execPath, ['scripts/test-auth-setup.mjs']);
   const collectionArgs = [];
   let repeatCount = 1;
+  let changedSince = null;
   const passWithNoTests = args.includes('--pass-with-no-tests');
   for (let index = 0; index < args.length; index++) {
     if (args[index] === '--repeat-each') repeatCount = Number(args[++index]);
-    else if (args[index] === '--changed-since') collectionArgs.push(args[index], args[++index]);
+    else if (args[index] === '--changed-since') { changedSince = args[index + 1]; collectionArgs.push(args[index], args[++index]); }
     else if (args[index] === '--pass-with-no-tests') collectionArgs.push(args[index]);
     else if (selections.has(args[index])) collectionArgs.push(args[index], args[++index]);
   }
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
   const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
-  // Static skips alone run nothing: a diff whose only journey is smoke-tagged leaves the
-  // parcours gate its locale skips, and the engine would then report no passing test.
-  if (!runnable.length || (passWithNoTests && !runnable.some(pair => pair.disposition === 'run'))) {
+  // A diff whose only journey is smoke-tagged leaves the parcours gate the static skips of
+  // untouched journeys: nothing it owes runs, so the selection is empty. A skipped journey
+  // the diff selects (a changed locale-only one) keeps the run, which then fails NO_PASS.
+  if (!runnable.length || (passWithNoTests && changedSince
+    && selectionOwesNothing(runnable, changedFilesSince(changedSince)))) {
     if (passWithNoTests) {
       emptySelection = true;
       console.log('Aucun test selectionne: le moteur n\'est pas lance.');

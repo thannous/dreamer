@@ -189,3 +189,21 @@ export function parcoursExclude(tests, files) {
   const note = names.length ? names.join(',') : changedTests.size ? 'tests-modifies' : 'aucun-parcours';
   return { exclude, note };
 }
+
+/**
+ * Whether a `--changed-since` selection that runs nothing owes the PR gate nothing.
+ * The engine marks static skips (locale-only journeys) before the zone filter runs, so
+ * they reach the selection whatever the diff. A skip the zone filter would leave out
+ * (untouched, or replayed by the smoke check) does not count. A skip the diff selects,
+ * such as a changed locale-only journey, does: the gate must still fail on it.
+ * `pairs[].file` is relative to tools/e2e, as the engine lists it.
+ * @param {readonly { id: string, tags: readonly string[], file: string, disposition: string }[]} pairs
+ * @param {readonly string[]} files
+ */
+export function selectionOwesNothing(pairs, files) {
+  if (pairs.some(pair => pair.disposition === 'run')) return false;
+  const skipped = pairs.filter(pair => pair.disposition === 'skip')
+    .map(pair => ({ id: pair.id, tags: pair.tags, file: `tools/e2e/${pair.file}` }));
+  const { exclude } = parcoursExclude(skipped, files);
+  return skipped.every(pair => exclude[pair.id] !== undefined);
+}
