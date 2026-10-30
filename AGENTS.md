@@ -98,6 +98,27 @@ Use existing package scripts and [runtime prerequisites](doc_web_interne/docs/re
 machine settings and skills are private resources, not distributed requirements.
 Backend requests use `lib/http.ts`; URL resolution lives in `lib/config.ts`.
 
+## Expo agent CLI
+
+Use the pinned `@expo/agent-cli` in [tools/expo-agent](tools/expo-agent/README.md)
+for Expo diagnosis, SDK-compatible installs, package skills and development plans.
+After `mise exec -- npm ci --prefix tools/expo-agent`, start from the selected app
+root with `node tools/expo-agent/run.cjs status --json`, then
+`node tools/expo-agent/run.cjs dev --ios --local --plan --json` (or `--android`).
+Meditation uses `node ../../tools/expo-agent/run.cjs` from `apps/meditation`.
+Read `skills:list` and the relevant installed package's skill before package work.
+After dependency changes run `skills:sync --agent codex`; SDK 58 packages provide
+only the skills they actually ship. Use `expo-overview` when available.
+
+Run setup as documented with `--project --agent codex --no-plugins --no-agents-md`:
+AGENTS stays the shared authority; do not generate CLAUDE.md or install global
+plugins. Translate CLI/skill suggestions to this pinned runner. Existing guarded
+profile launchers, type/lint scripts, TesterArmy, device ownership/consent and
+`verify:pr`/`verify:release` remain mandatory for their existing scope. A status
+exit 0 or a CLI smoke is not functional/release proof. Inspect plans first; actual
+runs require an owned isolated target and the correct Dreamer/Lucid/Meditation
+profile. EAS, deployments and Store submission keep their separate authorization.
+
 ## Styling and Motion
 
 Uniwind is canonical. Edit shared colours in `constants/noctaliaPalette.ts`, derive
