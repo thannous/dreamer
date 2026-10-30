@@ -176,3 +176,27 @@ test('dictionary entered from onboarding returns to the main app', async ({ page
   await expect(page.getByTestId('tab.explore').filter({ visible: true })).toBeVisible();
   await expect(page).not.toHaveURL(/symbol-dictionary/);
 });
+
+const pressTest = createParityTest({ viewport: { width: 390, height: 844 } });
+
+pressTest('a poster opens its sheet when its painting fails during the press', async ({ page }) => {
+  // A painting that cannot load gives way to another under the finger. On the web a press
+  // whose target leaves the page never clicks, so the painting must not be that target.
+  let fail!: () => void;
+  const failing = new Promise<void>(resolve => { fail = resolve; });
+  await page.route(/\/img\/(symbols\/atlas-six-v2\/water\/|seo\/symbols-v2\/water-)/, async route => {
+    await failing;
+    await route.abort();
+  });
+  await openDictionary(page);
+  const poster = page.getByTestId('symbol-popular').getByTestId('symbol.popular.water');
+  const portrait = poster.locator('img[src*="/atlas-six-v2/water/"]');
+  await expect(portrait).toHaveCount(1);
+  const box = (await poster.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  fail();
+  await expect(portrait).toHaveCount(0);
+  await page.mouse.up();
+  await expect(page).toHaveURL(/symbol-detail\/water/);
+});
