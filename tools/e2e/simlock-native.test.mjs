@@ -14,6 +14,7 @@ const args = process.argv.slice(2);
 const record = value => fs.appendFileSync(process.env.FAKE_EVENTS, JSON.stringify(value) + '\\n');
 record(args);
 if (args[0] === 'catalog') {
+  if (process.env.FAKE_SLOW_CATALOG === '1') Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1500);
   process.stdout.write(JSON.stringify({ platforms: [{ platform: args[args.indexOf('--platform') + 1], runtimes: ['1'], modelRuntimes: { phone: ['1'] } }] }) + '\\n');
 } else if (args[0] === 'lease') {
   if (process.env.FAKE_WAIT === '1') {
@@ -116,6 +117,7 @@ for (const platform of ['ios', 'android']) test(`${platform}: scopes the device 
   assert.equal(result.leaseId, 'lse_ours');
   assert.equal(result.released, true);
   assert.equal(existsSync(state), false);
+  assert.throws(() => execFileSync(process.execPath, [driver, platform === 'ios' ? 'xcrun' : 'adb', ...(platform === 'ios' ? ['simctl', 'list'] : ['devices'])], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_ENDED/);
   const invocations = calls(events);
   assert.equal(invocations[0][0], 'catalog');
   const lease = invocations.find(args => args[0] === 'lease');
@@ -169,6 +171,8 @@ test('unproven agent cleanup retains the explicitly reported state for diagnosis
   const result = await handle.release({ preserveState: true });
   assert.equal(result.retainedStateDirectory, state);
   assert.equal(existsSync(state), true);
+  // A daemon left in that state can no longer reach the released device.
+  assert.throws(() => execFileSync(process.execPath, [driver, 'xcrun', 'simctl', 'list'], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_ENDED/);
 });
 
 test('an unavailable pool does not attempt to release another lease', async t => {
@@ -193,6 +197,21 @@ test('an interrupted reservation stops a queued holder that ignores the signal',
   assert.deepEqual(calls(events).map(args => args[0]), ['catalog', 'lease', 'ready']);
 });
 
+test('a signal during the catalog check never queues a reservation', async t => {
+  const { root, env, events } = setup(t, { FAKE_SLOW_CATALOG: '1' });
+  const modulePath = fileURLToPath(new URL('./simlock-native.mjs', import.meta.url));
+  const script = `import { acquireSimlock } from ${JSON.stringify(new URL(`file://${modulePath}`).href)};\n` +
+    `try { await acquireSimlock({ platform: 'ios', env: process.env, shimDirectory: ${JSON.stringify(root)}, onSignal: () => {} }); process.exitCode = 3; } catch (error) { process.exitCode = error.message === 'SIMLOCK_INTERRUPTED' ? 143 : 4; }`;
+  const child = spawn(process.execPath, ['--input-type=module', '-e', script], { env, stdio: 'ignore' });
+  const completed = new Promise((resolve, reject) => { child.once('error', reject); child.once('close', code => resolve(code)); });
+  const deadline = Date.now() + 5000;
+  while ((!existsSync(events) || !calls(events).some(args => args[0] === 'catalog')) && Date.now() < deadline)
+    await new Promise(resolve => setTimeout(resolve, 20));
+  child.kill('SIGTERM');
+  assert.equal(await completed, 143);
+  assert.deepEqual(calls(events).map(args => args[0]), ['catalog']);
+});
+
 test('loss of a live lease is reported to the runner', async t => {
   const { root, env } = setup(t, { FAKE_LOSS: '1' });
   let resolveLoss;
@@ -200,8 +219,8 @@ test('loss of a live lease is reported to the runner', async t => {
   const handle = await acquireSimlock({ platform: 'ios', env, shimDirectory: root, onLoss: resolveLoss });
   const result = await lost;
   assert.equal(result.code, 14);
-  assert.ok(existsSync(env.E2E_SIMLOCK_LOSS_MARKER));
-  assert.throws(() => execFileSync(process.execPath, [driver, 'xcrun', 'simctl', 'list'], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_LOST/);
+  assert.ok(existsSync(env.E2E_SIMLOCK_END_MARKER));
+  assert.throws(() => execFileSync(process.execPath, [driver, 'xcrun', 'simctl', 'list'], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_ENDED/);
   await handle.release();
 });
 

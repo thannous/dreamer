@@ -508,8 +508,9 @@ The foreground lease holder renews while the runner lives and is bound to its PI
 It runs in its own process group, so Ctrl-C reaches only the runner, which stops at
 its next checkpoint, cleans up and then releases. Simlock 0.4.0 ignores signals
 while a request is queued for capacity; the runner then stops that holder outright.
-On a local Simlock worker the shims' `--lease` scoping is advisory: after a lost
-lease they refuse every further device command and no SDK child starts.
+On a local Simlock worker the shims' `--lease` scoping is advisory: once the lease
+is lost or released they refuse every further device command, and after a loss
+no SDK child starts.
 Codex and Claude use their existing Simlock session identity; a plain terminal
 gets an invocation-specific identity shared by the lease and release commands.
 Before reserving on the Mac mini, follow

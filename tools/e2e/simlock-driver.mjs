@@ -1,15 +1,16 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { dirname } from 'node:path';
 
 const [tool, ...input] = process.argv.slice(2);
 const binary = process.env.E2E_SIMLOCK_BIN;
 const lease = process.env.E2E_SIMLOCK_LEASE_ID;
 const device = process.env.E2E_DEVICE;
-const lossMarker = process.env.E2E_SIMLOCK_LOSS_MARKER;
-if (!binary || !lease || !device || !lossMarker || !process.env.E2E_SIMLOCK_UNWRAPPED_PATH) throw new Error('SIMLOCK_DRIVER_CONTEXT_MISSING');
-// A local Simlock worker treats --lease as advisory; after a loss the device may
-// already belong to another agent, so no further command reaches it.
-if (existsSync(lossMarker)) throw new Error('SIMLOCK_LEASE_LOST');
+const endMarker = process.env.E2E_SIMLOCK_END_MARKER;
+if (!binary || !lease || !device || !endMarker || !process.env.E2E_SIMLOCK_UNWRAPPED_PATH) throw new Error('SIMLOCK_DRIVER_CONTEXT_MISSING');
+// A local Simlock worker treats --lease as advisory; once the lease is lost or
+// released the device may belong to another agent, so no command reaches it.
+if (existsSync(endMarker) || !existsSync(dirname(endMarker))) throw new Error('SIMLOCK_LEASE_ENDED');
 const env = { ...process.env, PATH: process.env.E2E_SIMLOCK_UNWRAPPED_PATH };
 let executable = binary, args;
 if (tool === 'xcrun') {

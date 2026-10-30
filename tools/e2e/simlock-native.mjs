@@ -70,7 +70,20 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   const binary = simlockBinary(env);
   const timeout = Number(env.E2E_SIMLOCK_TIMEOUT_SECONDS ?? 180);
   if (!Number.isSafeInteger(timeout) || timeout < 10 || timeout > 3600) throw new Error('SIMLOCK_TIMEOUT_INVALID');
-  const catalog = JSON.parse(await command(binary, ['catalog', '--platform', platform, '--json'], env));
+  // A signal before the holder exists stops the reservation before it is queued.
+  let earlySignal;
+  const early = value => () => { earlySignal = value; onSignal(value); };
+  const earlyInterrupt = early('SIGINT'), earlyTerminate = early('SIGTERM');
+  process.on('SIGINT', earlyInterrupt);
+  process.on('SIGTERM', earlyTerminate);
+  let catalog;
+  try {
+    catalog = JSON.parse(await command(binary, ['catalog', '--platform', platform, '--json'], env));
+  } finally {
+    process.off('SIGINT', earlyInterrupt);
+    process.off('SIGTERM', earlyTerminate);
+  }
+  if (earlySignal) throw new Error('SIMLOCK_INTERRUPTED');
   const available = catalog.platforms?.find(item => item.platform === platform);
   if (!Array.isArray(available?.runtimes) || available.runtimes.length === 0
     || !available.modelRuntimes || !Object.values(available.modelRuntimes).some(runtimes => Array.isArray(runtimes) && runtimes.length > 0))
@@ -84,19 +97,23 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   // Its own process group: a terminal Ctrl-C reaches only the runner, which
   // releases after the SDK and device cleanup. --bind-pid covers a dead runner.
   const child = spawn(binary, args, { env, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
-  let closing = false, granted = false, stderr = '', stdout = '', receivedSignal, loss, lossMarker;
+  let closing = false, granted = false, stderr = '', stdout = '', receivedSignal, loss, endMarker;
   let resolveGrant, rejectGrant;
   const grantResult = new Promise((resolve, reject) => { resolveGrant = resolve; rejectGrant = reject; });
   const closed = new Promise(resolve => child.once('close', (code, signal) => {
     if (!granted) rejectGrant(new Error(`SIMLOCK_LEASE_FAILED: ${stderr.trim() || `exit ${code ?? signal}`}`));
     else if (!closing) {
       loss = { code, signal, message: stderr.slice(-4096) };
-      // The shims refuse every later device command once this marker exists.
-      if (lossMarker) try { writeFileSync(lossMarker, JSON.stringify(loss)); } catch { /* onLoss still fails the run */ }
+      markEnded({ lost: loss });
       onLoss(loss);
     }
     resolve({ code, signal });
   }));
+  // The shims refuse every device command once the lease is lost or released,
+  // including from an agent-device daemon left behind by a failed cleanup.
+  function markEnded(reason) {
+    if (endMarker) try { writeFileSync(endMarker, JSON.stringify(reason)); } catch { /* the runner still records why */ }
+  }
   child.once('error', error => rejectGrant(new Error(`SIMLOCK_START_FAILED: ${error.message}`)));
   child.stderr.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(-8192); });
   child.stdout.on('data', chunk => {
@@ -155,6 +172,7 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   const cleanupState = () => { if (stateDirectory) rmSync(stateDirectory, { recursive: true, force: true }); };
   const release = async ({ preserveState = false } = {}) => {
     closing = true;
+    markEnded({ released: grant.lease.id });
     let releaseError;
     try {
       const acknowledgement = JSON.parse(await command(binary, ['release', grant.lease.id], env));
@@ -168,13 +186,13 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   };
   try {
     stateDirectory = mkdtempSync(join(tmpdir(), 'noctalia-simlock-agent-'));
-    lossMarker = join(stateDirectory, 'simlock-lease-lost.json');
+    endMarker = join(stateDirectory, 'simlock-lease-ended.json');
     Object.assign(env, {
       E2E_DEVICE: grant.device.address,
       E2E_SIMLOCK_BIN: binary,
       E2E_SIMLOCK_LEASE_ID: grant.lease.id,
       AGENT_DEVICE_STATE_DIR: stateDirectory,
-      E2E_SIMLOCK_LOSS_MARKER: lossMarker,
+      E2E_SIMLOCK_END_MARKER: endMarker,
     });
     if (platform === 'ios') {
       const deviceSet = grant.environment.SIMLOCK_IOS_DEVICE_SET;
