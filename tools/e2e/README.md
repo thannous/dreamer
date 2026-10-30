@@ -703,8 +703,8 @@ Run the `pr633-collection` tag on an identified owned `mock-persistent` Release.
 The journey saves a fresh story, returns to the journal, reveals a card, closes it
 and reopens it; Android also runs with a cold image cache and airplane mode,
 restoring connectivity in `finally`. Inspect the retained screenshots and verify
-the full 720 px file in the native cache; an accessible image wrapper alone does
-not prove the artwork loaded.
+the full 720 px source through the native cache or image-decoder trace; an
+accessible image wrapper alone does not prove the artwork loaded.
 
 The saved-dream journey uses one ordinary locator tap and asserts the journal
 immediately after it; a second tap or an app restart must not stand in for that
