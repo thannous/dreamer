@@ -89,7 +89,7 @@ const LINT_SCRIPTS = [
   'context/DreamsContext.tsx', 'context/ThemeContext.tsx', 'lib/types.ts', 'lib/journalSyncContracts.ts',
   'services/storageService.ts', 'services/supabaseDreamService.ts', 'data/site-manifest.json',
   'supabase/db-contract.manifest.json',
-  'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs',
+  'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs', 'tools/e2e/native-release.mjs',
 ];
 
 // What jest-changed can select tests from: a module or a snapshot under a
