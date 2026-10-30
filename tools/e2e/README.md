@@ -15,7 +15,7 @@ their separate identified Release/device requirements. See the
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
 from the application's Playwright version. The locked runtime is `e2e` 0.21.3,
-`@e2e-dev/web` 0.15.3, `@e2e-dev/mobile` 0.12.4 and `agent-device` 0.21.32
+`@e2e-dev/web` 0.15.3, `@e2e-dev/mobile` 0.12.4 and `agent-device` 0.21.35
 (a direct pin with a matching override for the mobile engine). `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
 a report from another runner or engine. The engine peer ranges accept e2e 0.21.3.
@@ -50,7 +50,7 @@ What 0.21.3 changes here:
   does not pass them through: a qualifying run keeps the config's timeouts.
 - The web engine drives Playwright 1.64.1 and its Chromium; `npm run
   test:testerarmy:browsers` installs it. `@e2e-dev/mobile` 0.12.4 uses
-  `agent-device` 0.21.29; this package overrides it with the pinned 0.21.32
+  `agent-device` 0.21.29; this package overrides it with the pinned 0.21.35
   for the upstream iOS toolbar-occlusion fixes. The native evidence identifies
   the tested device and does not qualify every iPhone Duo layout.
   See the [official release notes](https://github.com/tester-army/e2e/releases/tag/e2e%400.21.3).
@@ -611,7 +611,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package pins `agent-device` 0.21.32 for its local CLI and the mobile engine
+package pins `agent-device` 0.21.35 for its local CLI and the mobile engine
 through a targeted dependency override. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured
@@ -696,3 +696,19 @@ attempt-bound `purchase-attestation.json`, and a native PURCHASE matching Revenu
 `store_transaction_id`. A renewal or stale state is refused. See the runbook for the private
 attestation fields. Run `mise exec -- node --test tools/e2e/iphone-sandbox-guards.test.mjs`
 for the documented unsafe-device/stale-evidence counterexamples without touching a phone.
+
+### PR #633 collection native qualification
+
+Run the `pr633-collection` tag on an identified owned `mock-persistent` Release.
+The journey saves a fresh story, returns to the journal, reveals a card, closes it
+and reopens it; Android also runs with a cold image cache and airplane mode,
+restoring connectivity in `finally`. Inspect the retained screenshots and verify
+the full 720 px file in the native cache; an accessible image wrapper alone does
+not prove the artwork loaded.
+
+The iOS Duo pilot observed a reference activation with no callback followed by a
+physical touch at the exact same observed centre that reached the callback and
+opened the journal. The affected controls use one `boundingBox()` → `tapAt()`
+touch, with destination assertions; they never retry a failed reference press.
+The internal driver cause remains undetermined. Product navigation, Modal and
+perspective experiments were rejected and removed.

@@ -57,7 +57,10 @@ async function billingGuest({ app, screen }: NativeBackgroundFixtures) {
   await billingTap(screen, 'quick-settings.language');
   await billingTap(screen, 'quick-settings.language.en');
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
-  await screen.getByRole('button', 'Close quick settings', { visible: true }).tap();
+  const close = screen.getByTestId('quick-settings.close', { visible: true });
+  if (await close.count() === 1) await close.tap();
+  else await screen.getByRole('button', 'Close quick settings', { visible: true }).tap();
+  await expect(screen.getByTestId('quick-settings.drawer', { visible: true })).toHaveCount(0);
 }
 
 async function billingFree(fixtures: NativeBackgroundFixtures) {
@@ -898,8 +901,18 @@ test('Dreamer release capture widget link starts a closed app on Capture', { tag
 // Accessible image assertions alone do not prove artwork pixels: qualification also
 // requires inspection of these captures and the exact CDN image in the native cache.
 // The guarded runner permits this synthetic profile only on owned QA targets.
+// iOS pilot: ref activation did not reach the control, while a physical touch at
+// the same observed centre did. Keep one touch and assert the destination after it.
+async function collection633Tap(screen: TestFixtures['screen'], id: string) {
+  const target = screen.getByTestId(id, { visible: true });
+  await expect(target).toBeVisible();
+  const bounds = await target.boundingBox();
+  if (!bounds || bounds.width <= 0 || bounds.height <= 0) throw new Error(`Invalid native control bounds: ${id}`);
+  await screen.tapAt({ x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 });
+}
+
 async function collection633Start(fixtures: NativeBackgroundFixtures) {
-  const { app, screen } = fixtures;
+  const { screen } = fixtures;
   await billingGuest(fixtures);
   await billingSettings(screen);
   await billingTap(screen, 'settings-account-open-signin', 'up');
@@ -911,7 +924,7 @@ async function collection633Start(fixtures: NativeBackgroundFixtures) {
   await expect(screen.getByText(story)).toBeVisible();
   // iOS exposes a separate drop cap and an object-replacement marker in the transcript.
   await expect(screen.getByTestId('text.dreamDetail.transcript')).toContainText(story.slice(1));
-  await screen.getByTestId('btn.savedDream.returnToJournal', { visible: true }).tap();
+  await collection633Tap(screen, 'btn.savedDream.returnToJournal');
   await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
 }
 
@@ -941,9 +954,11 @@ for (const offline of [false, true]) {
       await expect(screen.getByTestId('collection.detail.tier.bronze', { visible: true })).toBeVisible();
       await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
       await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-revealed`);
-      await screen.getByTestId('collection.detail.close', { visible: true }).tap();
+      await collection633Tap(screen, 'collection.detail.close');
+      await expect(screen.getByTestId('collection.detail', { visible: true })).toHaveCount(0);
       await expect(screen.getByTestId('collection.summary.new')).toHaveCount(0);
-      await screen.getByTestId('collection.card.night-journal', { visible: true }).tap();
+      await screen.scrollUntilVisible(screen.getByTestId('collection.card.night-journal', { visible: true }));
+      await collection633Tap(screen, 'collection.card.night-journal');
       await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
       await expect(screen.getByTestId('collection.detail.reveal')).toHaveCount(0);
       await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-reopened`);
