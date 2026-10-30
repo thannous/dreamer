@@ -105,8 +105,12 @@ soumission :
 - Micro physique et dictée en direct.
 - Fluidité ressentie sur un vrai téléphone.
 
-Tout le reste (écrans, navigation, journal, analyse côté app, offre Plus, widgets,
-langues, thèmes) est couvert par les simulateurs.
+Tout le reste (écrans, navigation, journal, analyse côté app, offre Plus, langues,
+thèmes) est couvert par la campagne. Les widgets, l'activité en direct et la Dynamic
+Island se vérifient aussi sur le simulateur (essai du 25 octobre 2026), tout comme la
+reprise des données après une mise à jour : installer d'abord le build Release de la
+version précédente, ajouter des données, puis installer le candidat par-dessus. Ces
+deux vérifications ne font pas encore partie de la commande.
 
 ## Place dans la release
 
