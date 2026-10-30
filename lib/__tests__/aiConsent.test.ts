@@ -115,6 +115,7 @@ describe('requestAiConsent', () => {
 // Android needs no separate AI disclosure since 2026-10-29; iOS and the web keep the prompt.
 describe('requestAiConsent on Android', () => {
   const os = Platform.OS;
+  const readStorage = jest.mocked(AsyncStorage.getItem).getMockImplementation()!;
   beforeEach(async () => {
     jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
     resetAiConsentCacheForTests();
@@ -124,6 +125,7 @@ describe('requestAiConsent on Android', () => {
 
   afterEach(() => {
     Platform.OS = os;
+    jest.mocked(AsyncStorage.getItem).mockReset().mockImplementation(readStorage);
     jest.restoreAllMocks();
   });
 
@@ -147,6 +149,77 @@ describe('requestAiConsent on Android', () => {
     answer(0);
     await expect(attempt).resolves.toBe(false);
     await expect(hasAiConsent()).resolves.toBe(false);
+  });
+
+  it('requires a prompt when a persisted Android withdrawal cannot be read after restart', async () => {
+    await withdrawAiConsent();
+    resetAiConsentCacheForTests();
+    const read = jest.spyOn(AsyncStorage, 'getItem').mockClear().mockRejectedValue(new Error('Storage unavailable'));
+    const write = jest.spyOn(AsyncStorage, 'setItem');
+    write.mockClear();
+    const sendDream = jest.fn();
+    const attempt = requestAiConsent(t).then((accepted) => {
+      if (accepted) sendDream();
+      return accepted;
+    });
+
+    await flush();
+    expect(Alert.alert).toHaveBeenCalledTimes(1);
+    expect(sendDream).not.toHaveBeenCalled();
+    expect(write).not.toHaveBeenCalled();
+    await expect(hasAiConsent()).resolves.toBe(false);
+    answer(0);
+    await expect(attempt).resolves.toBe(false);
+    expect(sendDream).not.toHaveBeenCalled();
+    expect(write).not.toHaveBeenCalled();
+    read.mockReset().mockImplementation(readStorage);
+    await expect(AsyncStorage.getItem('noctalia.aiConsent.v2')).resolves.toBe('withdrawn');
+  });
+
+  it('recovers from unreadable Android consent only after an explicit acceptance', async () => {
+    await withdrawAiConsent();
+    resetAiConsentCacheForTests();
+    jest.spyOn(AsyncStorage, 'getItem').mockRejectedValue(new Error('Storage unavailable'));
+    const write = jest.spyOn(AsyncStorage, 'setItem');
+    write.mockClear();
+    let respond!: (accepted: boolean) => void;
+    const show = jest.fn(() => new Promise<boolean>((resolve) => { respond = resolve; }));
+    const unregister = registerAiConsentPromptHandler({ show });
+    try {
+      const attempt = requestAiConsent(t);
+      await flush();
+      expect(show).toHaveBeenCalledTimes(1);
+      expect(write).not.toHaveBeenCalled();
+      await expect(hasAiConsent()).resolves.toBe(false);
+      respond(true);
+      await expect(attempt).resolves.toBe(true);
+      await flush();
+      expect(write).toHaveBeenCalledWith('noctalia.aiConsent.v2', 'granted');
+      await expect(hasAiConsent()).resolves.toBe(true);
+    } finally {
+      unregister();
+    }
+  });
+
+  it('does not let an older Android storage read undo a newer withdrawal', async () => {
+    let finishRead!: (value: string | null) => void;
+    const oldRead = new Promise<string | null>((resolve) => { finishRead = resolve; });
+    const read = jest.spyOn(AsyncStorage, 'getItem').mockClear()
+      .mockResolvedValueOnce(null)
+      .mockImplementationOnce(() => oldRead);
+    const write = jest.spyOn(AsyncStorage, 'setItem');
+    write.mockClear();
+    const attempt = requestAiConsent(t);
+    await flush();
+    expect(read).toHaveBeenCalledTimes(2);
+    await withdrawAiConsent();
+    finishRead(null);
+    await expect(attempt).resolves.toBe(false);
+    expect(Alert.alert).not.toHaveBeenCalled();
+    expect(write).not.toHaveBeenCalledWith('noctalia.aiConsent.v2', 'granted');
+    await expect(hasAiConsent()).resolves.toBe(false);
+    read.mockReset().mockImplementation(readStorage);
+    await expect(AsyncStorage.getItem('noctalia.aiConsent.v2')).resolves.toBe('withdrawn');
   });
 
   it('remembers the withdrawal across launches until the user accepts again', async () => {

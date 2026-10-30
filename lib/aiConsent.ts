@@ -120,17 +120,22 @@ async function wasWithdrawn(): Promise<boolean> {
   try {
     return (await AsyncStorage.getItem(STORAGE_KEY)) === WITHDRAWN;
   } catch {
-    return false;
+    // An unreadable withdrawal is not permission: require an explicit answer.
+    return true;
   }
 }
 
 /** Resolves true once the user has accepted, now or earlier; false if they decline. */
 export async function requestAiConsent(t: Translate): Promise<boolean> {
-  if (await hasAiConsent()) return true;
+  const asked = decision;
+  const consented = await hasAiConsent();
+  if (asked !== decision) return granted === true;
+  if (consented) return true;
   const silent = Platform.OS === 'android' && !(await wasWithdrawn());
+  // A decision taken while either storage read was pending stays authoritative.
+  if (asked !== decision) return granted === true;
   // Several entry points can fire together (auto-sent chat topic, analysis after save).
   if (pending) return pending;
-  const asked = decision;
   const request: Promise<boolean> = new Promise<boolean>((resolve) => {
     const accept = () => {
       // A withdrawal while this prompt was open wins: the next action asks again.
