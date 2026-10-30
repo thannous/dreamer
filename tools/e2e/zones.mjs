@@ -12,13 +12,13 @@ export const BUGBASH_TAG = 'bugbash';
 export const UNTOUCHED = 'le diff ne touche pas ce parcours';
 
 /**
- * Optional decision model (the TesterArmy Filters API with Jev). It judges only
- * the parcours the zones leave out, so the zones stay the floor. It needs a
- * Vercel AI Gateway key in the environment; without one the gate is the zones
- * alone, as before. This exact Jev pin is served with zero data retention.
+ * Optional decision model (the TesterArmy Filters API with OpenAI's Decisions
+ * API). It judges only the parcours the zones leave out, so the zones stay the
+ * floor. It needs an OpenAI key in the environment; without one the gate is
+ * the zones alone, as before.
  */
-export const DECISION_KEY_ENV = 'AI_GATEWAY_API_KEY';
-export const DECISION_MODEL = 'typesafe-ai/jev-1.14.0';
+export const DECISION_KEY_ENV = 'OPENAI_API_KEY';
+export const DECISION_MODEL = 'gpt-6-luna';
 /** Products whose journeys the model judges when a shared Dreamer path changes: Lucid runs on the same app code. */
 export const DECISION_PRODUCTS = ['dreamer', 'lucid'];
 

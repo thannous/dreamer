@@ -610,7 +610,7 @@ export default {
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
-    // Web only, no Actions. No model unless AI_GATEWAY_API_KEY is set: the
+    // Web only, no Actions. No model unless OPENAI_API_KEY is set: the
     // decision model then judges the parcours the zones leave out (zones.mjs).
     // A diff with no web zone exits 0, or with the key, no Dreamer app path.
     // A touched zone without Node 24.22.1, tools/e2e/node_modules or Chromium
@@ -620,6 +620,10 @@ export default {
     {
       name: 'parcours-touches',
       command: 'node --test tools/e2e/zone-filter.test.mjs tools/e2e/decision-verdict.test.mjs tools/e2e/pr-gate.test.mjs tools/e2e/bugbash-prerelease.test.mjs && npm run test:e2e:parcours',
+      // Part of the proof's fingerprint: a pass without the key is not reused once
+      // the key turns the model on, or back. Records on/off, never the key
+      // (DECISION_KEY_ENV and decisionEnabled in tools/e2e/zones.mjs).
+      env: { E2E_DECISION_FILTER: process.env.OPENAI_API_KEY?.trim() ? 'on' : 'off' },
       when: PARCOURS_WHEN,
       specialised: true,
       requires: {

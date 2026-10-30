@@ -43,7 +43,7 @@ function context(root, base) {
 /** An offline decision model: the moon journey is likely affected, the billing one is not. */
 function fakeModel(calls, fail = false) {
   return {
-    specificationVersion: 'v4', provider: 'fake', modelId: 'fake-jev', supportedQuestionTypes: ['boolean'],
+    specificationVersion: 'v4', provider: 'fake', modelId: 'fake-decisions', supportedQuestionTypes: ['boolean'],
     async doDecide({ questions }) {
       calls.push(Object.keys(questions).length);
       if (fail) throw new Error('401 invalid key');
@@ -111,9 +111,9 @@ test('an interrupted run keeps no failure', async () => {
 });
 
 test('a new commit, base, change or model is a new verdict', () => {
-  const input = { model: 'typesafe-ai/jev-1.14.0', base: 'a', head: 'b', files: ['x', 'y'], tests: ['t1', 't2'] };
+  const input = { model: 'gpt-6-luna', base: 'a', head: 'b', files: ['x', 'y'], tests: ['t1', 't2'] };
   const key = verdictKey(input);
   assert.equal(verdictKey({ ...input, files: ['y', 'x'], tests: ['t2', 't1'] }), key);
-  for (const change of [{ head: 'c' }, { base: 'c' }, { files: ['x'] }, { tests: ['t1'] }, { model: 'typesafe-ai/jev' }])
+  for (const change of [{ head: 'c' }, { base: 'c' }, { files: ['x'] }, { tests: ['t1'] }, { model: 'gpt-6-sol' }])
     assert.notEqual(verdictKey({ ...input, ...change }), key, JSON.stringify(change));
 });

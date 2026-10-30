@@ -1,7 +1,7 @@
 /**
  * The decision model's verdict on the parcours the zones leave out, through
- * the TesterArmy Filters API (`@e2e-dev/decision`, Jev on the Vercel AI
- * Gateway). run.mjs calls the filters twice, `e2e list` then `e2e run`, and
+ * the TesterArmy Filters API (`@e2e-dev/decision`, OpenAI's Decisions API).
+ * run.mjs calls the filters twice, `e2e list` then `e2e run`, and
  * checks that the run selected exactly what the list did, so the first answer
  * for a commit and a test set is kept in the clone's git directory and reused.
  * A rerun of verify:pr on the same commit asks nothing either. A failure is
@@ -44,12 +44,9 @@ function keep(file, value) {
 }
 
 async function loadDecisionFilter() {
-  const [{ decisionFilter }, { gateway }] = await Promise.all([import('@e2e-dev/decision'), import('ai')]);
-  return decisionFilter({
-    model: gateway.decisionModel(DECISION_MODEL),
-    // Only routes that keep nothing: the diff and the journeys leave the machine.
-    providerOptions: { gateway: { zeroDataRetention: true } },
-  });
+  const [{ decisionFilter }, { openai }] = await Promise.all([import('@e2e-dev/decision'), import('@ai-sdk/openai')]);
+  // Reads OPENAI_API_KEY. The diff and the journey files go to OpenAI's API.
+  return decisionFilter({ model: openai.decisionModel(DECISION_MODEL) });
 }
 
 /**

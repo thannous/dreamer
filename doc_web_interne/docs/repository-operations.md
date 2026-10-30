@@ -93,20 +93,21 @@ both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
 is incomplete, not passed. Rerun: `npm run test:e2e:parcours`
 and `npm run test:e2e:smoke`.
 
-Optional decision model: with a Vercel AI Gateway key in `AI_GATEWAY_API_KEY`,
-`parcours-touches` also asks the TesterArmy decision filter (Jev, pinned in
-`tools/e2e/zones.mjs`, zero-data-retention routes only) about every Dreamer and
-Lucid parcours the zones leave out, on any Dreamer app diff, named zone or not.
-The model sees the diff and the journey files, never the working tree. A
+Optional decision model: with an OpenAI key in `OPENAI_API_KEY`,
+`parcours-touches` also asks the TesterArmy decision filter (OpenAI's
+Decisions API, `gpt-6-luna`, named in `tools/e2e/zones.mjs`) about every
+Dreamer and Lucid parcours the zones leave out, on any Dreamer app diff, named
+zone or not. The model sees the committed diff and the journey files; a file
+only the working tree changes reaches it by name alone. A
 parcours runs unless the model rates it under 20% likely affected; the zones
 stay the floor, smoke and bug-bash tests keep their own checks, and a parcours
 the model cannot judge runs. A lockfile or e2e config change makes it keep
 every parcours. If the model cannot answer at all (no route, rejected key),
 the zones decide alone and the run's filter note says so. The first verdict for
 a commit is kept under `.git/verify-cache/e2e-decision/`, so `e2e list` and
-`e2e run` select the same tests and a rerun asks nothing. Without the key the
-gate is unchanged. Cost: about $0.04 per million tokens (one call is a few
-thousand to a few tens of thousands of tokens).
+`e2e run` select the same tests and a rerun asks nothing. The proof records
+whether the model was on, so a pass without the key is not reused once it is
+set. Without the key the gate is unchanged.
 
 Before an app release, run `npm run test:bugbash:prerelease` on Dreamer web in
 mock mode (the script refuses a production Supabase ref). Each confirmed bug

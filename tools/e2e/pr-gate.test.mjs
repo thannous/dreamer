@@ -31,15 +31,37 @@ test('with the decision model, any Dreamer app diff lets it judge the Dreamer an
   assert.equal(decideParcours(['doc_web_interne/docs/README.md', 'AGENTS.md'], { model: true }).launch, false);
   assert.equal(decideParcours(['tools/e2e/tests/dreamer.mobile.e2e.ts'], { model: true }).launch, false);
   // The key turns it on.
-  const saved = process.env.AI_GATEWAY_API_KEY;
+  const saved = process.env.OPENAI_API_KEY;
   try {
-    process.env.AI_GATEWAY_API_KEY = 'test-key';
+    process.env.OPENAI_API_KEY = 'test-key';
     assert.equal(decideParcours(['components/ui/Toast.tsx']).launch, true);
-    process.env.AI_GATEWAY_API_KEY = '  ';
+    process.env.OPENAI_API_KEY = '  ';
     assert.equal(decideParcours(['components/ui/Toast.tsx']).launch, false);
   } finally {
-    if (saved === undefined) delete process.env.AI_GATEWAY_API_KEY;
-    else process.env.AI_GATEWAY_API_KEY = saved;
+    if (saved === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = saved;
+  }
+});
+
+test('a parcours proof made without the key is not reused once the key turns the model on', async () => {
+  const { decisionEnabled } = await import('./zones.mjs');
+  const saved = process.env.OPENAI_API_KEY;
+  const envOf = async (key, tag) => {
+    if (key === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = key;
+    // A fresh module instance reads the environment again.
+    const { default: config } = await import(`${new URL('../../verify-local.config.mjs', import.meta.url).href}?${tag}`);
+    return config.checks.find(check => check.name === 'parcours-touches').env;
+  };
+  try {
+    for (const [key, tag] of [[undefined, 'none'], ['  ', 'blank'], ['sk-test', 'set']]) {
+      const env = await envOf(key, tag);
+      assert.deepEqual(env, { E2E_DECISION_FILTER: decisionEnabled({ OPENAI_API_KEY: key }) ? 'on' : 'off' }, tag);
+      assert.equal(JSON.stringify(env).includes('sk-test'), false);
+    }
+  } finally {
+    if (saved === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = saved;
   }
 });
 

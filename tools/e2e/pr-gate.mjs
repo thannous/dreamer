@@ -1,7 +1,7 @@
 /**
  * PR-gate launcher for Dreamer/Lucid/Meditation web journeys.
- * A diff with no web app zone exits 0 without a browser, unless a Vercel AI
- * Gateway key lets the decision model judge an unzoned Dreamer app diff.
+ * A diff with no web app zone exits 0 without a browser, unless an OpenAI
+ * key lets the decision model judge an unzoned Dreamer app diff.
  * A native-only diff does too: this gate has no emulator. When a zone is touched, a missing
  * pinned Node, e2e install, or Chromium exits 1. verify:pr probes the same
  * condition first and records the check unavailable, so the proof is
@@ -30,7 +30,7 @@ export function changedJourneyProduct(file) {
 
 /**
  * `model`: whether the decision model judges the parcours the zones leave out
- * (a Vercel AI Gateway key is set). It then sees every Dreamer app diff, named
+ * (an OpenAI key is set). It then sees every Dreamer app diff, named
  * zone or not, for Dreamer and Lucid, which run on the same app code.
  */
 export function decideParcours(files, { model = decisionEnabled(process.env) } = {}) {
@@ -48,7 +48,7 @@ export function decideParcours(files, { model = decisionEnabled(process.env) } =
     }
     return {
       launch: false,
-      reason: 'PARCOURS SAUTE: aucun parcours nomme (capture, sauvegarde, journal, paiement, connexion, lucid, meditation) dans le diff. Une PR documentation, ou un fichier applicatif sans zone quand AI_GATEWAY_API_KEY est absente, ne lance pas de navigateur.',
+      reason: 'PARCOURS SAUTE: aucun parcours nomme (capture, sauvegarde, journal, paiement, connexion, lucid, meditation) dans le diff. Une PR documentation, ou un fichier applicatif sans zone quand OPENAI_API_KEY est absente, ne lance pas de navigateur.',
     };
   }
   return { launch: true, products: [...new Set([...zones.map(zone => zone.product), ...journeyProducts, ...modelProducts])] };

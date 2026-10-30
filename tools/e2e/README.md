@@ -598,7 +598,7 @@ Agent goals can be added with an authorized model provider, one goal per call
 and exact critical-outcome assertions. No provider is configured by default.
 This package pins `@e2e-dev/decision` for one use only: the optional decision
 filter of the PR parcours gate (`zones.mjs`, `decision-verdict.mjs`, installed
-`docs/filters.mdx`), which stays off until `AI_GATEWAY_API_KEY` is set. Its
+`docs/filters.mdx`, OpenAI `gpt-6-luna`), which stays off until `OPENAI_API_KEY` is set. Its
 `decisionExecutor` for `agent.act` is not configured; exact journeys require no
 model dependency.
 Use a provider barrier when replay must never call a model; strict cache alone

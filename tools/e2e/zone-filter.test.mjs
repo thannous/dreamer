@@ -114,14 +114,14 @@ test('the decision model only takes back parcours the zones left out as untouche
   assert.equal(widened.note, 'journal; modele : 2 parcours hors zone repris; 1 call, 9.1k tokens, $0.0004');
 });
 
-test('the decision model is off without a gateway key and pinned to an exact Jev', () => {
-  assert.equal(DECISION_KEY_ENV, 'AI_GATEWAY_API_KEY');
+test('the decision model is off without an OpenAI key and is OpenAI\'s decision model', () => {
+  assert.equal(DECISION_KEY_ENV, 'OPENAI_API_KEY');
   assert.equal(decisionEnabled({}), false);
-  assert.equal(decisionEnabled({ AI_GATEWAY_API_KEY: ' ' }), false);
-  assert.equal(decisionEnabled({ AI_GATEWAY_API_KEY: 'vck_test' }), true);
-  assert.match(DECISION_MODEL, /^typesafe-ai\/jev-\d+\.\d+\.\d+$/);
+  assert.equal(decisionEnabled({ OPENAI_API_KEY: ' ' }), false);
+  assert.equal(decisionEnabled({ OPENAI_API_KEY: 'sk-test' }), true);
+  assert.equal(DECISION_MODEL, 'gpt-6-luna');
   const source = readFileSync(new URL('./decision-verdict.mjs', import.meta.url), 'utf8');
-  assert.match(source, /zeroDataRetention: true/);
+  assert.match(source, /openai\.decisionModel\(DECISION_MODEL\)/);
 });
 
 test('the zone filter keeps the zones when the model is off or cannot answer', async () => {
@@ -135,20 +135,20 @@ test('the zone filter keeps the zones when the model is off or cannot answer', a
     projectRoot: `${root}/tools/e2e`, changes: { base: 'base', root, files: ['app/journal/[id].tsx'] },
     signal: new AbortController().signal, log() {}, redact: text => text,
   };
-  const saved = process.env.AI_GATEWAY_API_KEY;
+  const saved = process.env.OPENAI_API_KEY;
   try {
-    delete process.env.AI_GATEWAY_API_KEY;
+    delete process.env.OPENAI_API_KEY;
     assert.deepEqual(await parcoursTouches.filter(candidates, context), { exclude: { home: UNTOUCHED }, note: 'journal' });
     // With a key, a model that cannot even start (here: no repository) leaves the zones' answer, and says so.
-    process.env.AI_GATEWAY_API_KEY = 'vck_test';
+    process.env.OPENAI_API_KEY = 'sk-test';
     const fallback = await parcoursTouches.filter(candidates, context);
     assert.deepEqual(fallback.exclude, { home: UNTOUCHED });
     assert.match(fallback.note, /^journal; modele indisponible \(.+\), zones seules$/);
     // Nothing left out as untouched: nothing to ask.
     assert.deepEqual(await parcoursTouches.filter(candidates.slice(0, 1), context), { exclude: {}, note: 'journal' });
   } finally {
-    if (saved === undefined) delete process.env.AI_GATEWAY_API_KEY;
-    else process.env.AI_GATEWAY_API_KEY = saved;
+    if (saved === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = saved;
   }
 });
 

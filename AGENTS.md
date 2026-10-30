@@ -163,7 +163,7 @@ Read the installed skill/topic, reuse guarded runners/fixtures and keep provider
 `verify:pr` runs the tagged smoke journeys on a Dreamer app diff and the named
 parcours for the zones that diff touches (`npm run test:e2e:smoke`,
 `npm run test:e2e:parcours`), locally, without GitHub Actions, and without a
-model unless `AI_GATEWAY_API_KEY` is set: the decision model then judges the
+model unless `OPENAI_API_KEY` is set: the decision model then judges the
 parcours the zones leave out ([details](doc_web_interne/docs/repository-operations.md)).
 A docs-only diff, or a diff with no web app zone, skips both. A native-only
 diff skips the web gate. If a zone is touched and Node 24.22.1, the e2e

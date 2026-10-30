@@ -13,9 +13,9 @@ function repoPath(gitRoot: string, projectRoot: string, file: string): string {
 /**
  * Inactive unless the run passed `--changed-since` (e2e only then fills
  * `context.changes`). A full campaign or `verify:release` therefore keeps
- * every test. The zones need no model and no network. With a Vercel AI
- * Gateway key, the decision model then judges the parcours the zones leave
- * out; if it cannot answer, the zones alone decide, and the note says so.
+ * every test. The zones need no model and no network. With an OpenAI key,
+ * the decision model then judges the parcours the zones leave out; if it
+ * cannot answer, the zones alone decide, and the note says so.
  */
 export const parcoursTouches: TestFilter = {
   name: 'parcours-touches',
