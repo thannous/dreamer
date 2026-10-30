@@ -34,7 +34,7 @@ import {
 } from '@/services/storageService';
 import { TypeScale } from '@/constants/typeScale';
 
-export const RELEASE_NOTES_VERSION = '3.7.0';
+export const RELEASE_NOTES_VERSION = '3.8.0';
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
   ? ({
