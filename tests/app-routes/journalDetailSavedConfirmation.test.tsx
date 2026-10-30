@@ -958,7 +958,8 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { render(<JournalDetailScreen />); });
     const action = screen.getByTestId(TID.Button.AnalysisStaleCta);
     expect(action.textContent).toContain(tier === 'plus' ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus');
-    if (tier === 'free') expect(screen.getByText('error.reanalysis_requires_plus')).toBeTruthy();
+    // The banner says the previous analysis stays; the card only names what updating needs (2026-10-29).
+    if (tier === 'free') expect(screen.getByText('journal.detail.stale.action_message_plus')).toBeTruthy();
     await act(async () => { fireEvent.click(action); });
     const { router } = require('expo-router');
     if (tier === 'free') {

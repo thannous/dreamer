@@ -559,6 +559,7 @@ const translations: Record<string, string> = {
     'error.reanalysis_requires_plus': 'Per aggiornare un’analisi esistente serve Noctalia Plus. La tua analisi precedente resta disponibile.',
     'journal.detail.stale.cta': 'Aggiorna analisi',
     'journal.detail.stale.action_message': "Una nuova analisi leggerà la sua versione più recente.",
+    'journal.detail.stale.action_message_plus': "Aggiornare un’analisi fa parte di Noctalia Plus.",
     'journal.detail.stale.action_title': "Il tuo racconto è cambiato",
     'journal.detail.stale.dismiss': 'Chiudi e non mostrare più questo avviso',
     'journal.detail.image.expand_accessibility': 'Vedi l’illustrazione a schermo intero',

@@ -382,7 +382,7 @@ export function QuotaLimitSheet({
   const subtitle = tier === 'guest' && mode === 'login'
     ? t('journal.detail.quota_limit.message_login')
     : tier === 'guest'
-      ? t('journal.detail.quota_limit.message_guest', { limit: resolvedLimit })
+      ? t('journal.detail.quota_limit.message_guest')
       : t('journal.detail.quota_limit.message_free', { limit: resolvedLimit });
 
   const primaryLabel = tier === 'guest' && mode === 'login'

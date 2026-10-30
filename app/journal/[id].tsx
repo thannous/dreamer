@@ -1065,7 +1065,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       return {
         icon: 'arrow.clockwise' as const,
         title: t('journal.detail.stale.action_title'),
-        message: t(isPlus ? 'journal.detail.stale.action_message' : 'error.reanalysis_requires_plus'),
+        // The banner above already says the previous analysis stays.
+        message: t(isPlus ? 'journal.detail.stale.action_message' : 'journal.detail.stale.action_message_plus'),
         step: t('journal.detail.action.analyze.step'),
         cta: t(isPlus ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus'),
         disabled: false,
