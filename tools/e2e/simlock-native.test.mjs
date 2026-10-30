@@ -17,7 +17,9 @@ if (args[0] === 'catalog') {
   process.stdout.write(JSON.stringify({ platforms: [{ platform: args[args.indexOf('--platform') + 1], runtimes: ['1'], modelRuntimes: { phone: ['1'] } }] }) + '\\n');
 } else if (args[0] === 'lease') {
   if (process.env.FAKE_WAIT === '1') {
-    process.on('SIGTERM', () => process.exit(0));
+    // Like Simlock 0.4.0, a request queued for capacity ignores signals until granted.
+    process.on('SIGTERM', () => {});
+    process.on('SIGINT', () => {});
     record(['ready']);
     setInterval(() => {}, 1000);
     return;
@@ -31,7 +33,9 @@ if (args[0] === 'catalog') {
       spec: { platform, model: 'phone', osVersion: '1', physical: false } },
     environment: platform === 'ios' ? (process.env.FAKE_NO_IOS_SET === '1' ? {} : { SIMLOCK_IOS_DEVICE_SET: '/private/qa-set' }) : { ANDROID_ADB_SERVER_PORT: '5042' } };
   process.stdout.write(JSON.stringify(grant) + '\\n');
+  record(['holder', process.pid]);
   process.on('SIGTERM', () => process.exit(0));
+  process.on('SIGINT', () => { record(['holder-sigint']); process.exit(0); });
   if (process.env.FAKE_LOSS === '1') setTimeout(() => process.exit(14), 100);
   else setInterval(() => {}, 1000);
 } else if (args[0] === 'release') {
@@ -173,7 +177,7 @@ test('an unavailable pool does not attempt to release another lease', async t =>
   assert.deepEqual(calls(events).map(args => args[0]), ['catalog', 'lease']);
 });
 
-test('an interrupted reservation stops the waiting holder', async t => {
+test('an interrupted reservation stops a queued holder that ignores the signal', async t => {
   const { root, env, events } = setup(t, { FAKE_WAIT: '1' });
   const modulePath = fileURLToPath(new URL('./simlock-native.mjs', import.meta.url));
   const script = `import { acquireSimlock } from ${JSON.stringify(new URL(`file://${modulePath}`).href)};\n` +
@@ -196,5 +200,32 @@ test('loss of a live lease is reported to the runner', async t => {
   const handle = await acquireSimlock({ platform: 'ios', env, shimDirectory: root, onLoss: resolveLoss });
   const result = await lost;
   assert.equal(result.code, 14);
+  assert.ok(existsSync(env.E2E_SIMLOCK_LOSS_MARKER));
+  assert.throws(() => execFileSync(process.execPath, [driver, 'xcrun', 'simctl', 'list'], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_LOST/);
   await handle.release();
+});
+
+test('a terminal interrupt reaches the runner, not the granted holder', async t => {
+  const { root, env, events } = setup(t);
+  const modulePath = fileURLToPath(new URL('./simlock-native.mjs', import.meta.url));
+  const script = `import { acquireSimlock } from ${JSON.stringify(new URL(`file://${modulePath}`).href)};\n` +
+    `await acquireSimlock({ platform: 'ios', env: process.env, shimDirectory: ${JSON.stringify(root)} });\n` +
+    `process.stdout.write(process.env.AGENT_DEVICE_STATE_DIR + '\\n'); setInterval(() => {}, 1000);`;
+  // The runner leads its own group, as a terminal's foreground job would.
+  const child = spawn(process.execPath, ['--input-type=module', '-e', script], { env, stdio: ['ignore', 'pipe', 'ignore'], detached: true });
+  const state = await new Promise((resolve, reject) => {
+    child.once('error', reject);
+    child.stdout.once('data', chunk => resolve(chunk.toString().trim()));
+  });
+  const holder = calls(events).find(args => args[0] === 'holder')[1];
+  t.after(() => {
+    rmSync(state, { recursive: true, force: true });
+    try { process.kill(holder, 'SIGKILL'); } catch { /* already stopped */ }
+  });
+  const closed = new Promise(resolve => child.once('close', (code, signal) => resolve(signal)));
+  process.kill(-child.pid, 'SIGINT');
+  assert.equal(await closed, 'SIGINT');
+  await new Promise(resolve => setTimeout(resolve, 200));
+  assert.equal(calls(events).some(args => args[0] === 'holder-sigint'), false);
+  process.kill(holder, 0);
 });

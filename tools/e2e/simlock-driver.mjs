@@ -1,10 +1,15 @@
 import { spawnSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 
 const [tool, ...input] = process.argv.slice(2);
 const binary = process.env.E2E_SIMLOCK_BIN;
 const lease = process.env.E2E_SIMLOCK_LEASE_ID;
 const device = process.env.E2E_DEVICE;
-if (!binary || !lease || !device || !process.env.E2E_SIMLOCK_UNWRAPPED_PATH) throw new Error('SIMLOCK_DRIVER_CONTEXT_MISSING');
+const lossMarker = process.env.E2E_SIMLOCK_LOSS_MARKER;
+if (!binary || !lease || !device || !lossMarker || !process.env.E2E_SIMLOCK_UNWRAPPED_PATH) throw new Error('SIMLOCK_DRIVER_CONTEXT_MISSING');
+// A local Simlock worker treats --lease as advisory; after a loss the device may
+// already belong to another agent, so no further command reaches it.
+if (existsSync(lossMarker)) throw new Error('SIMLOCK_LEASE_LOST');
 const env = { ...process.env, PATH: process.env.E2E_SIMLOCK_UNWRAPPED_PATH };
 let executable = binary, args;
 if (tool === 'xcrun') {

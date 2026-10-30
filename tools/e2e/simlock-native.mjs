@@ -1,6 +1,6 @@
 import { spawn, execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { existsSync, mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
 import { promisify } from 'node:util';
@@ -81,13 +81,20 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   if (env.E2E_SIMLOCK_OS?.trim()) args.push('--os', env.E2E_SIMLOCK_OS.trim());
   if (env.E2E_SIMLOCK_NO_WAIT === '1') args.push('--no-wait');
 
-  const child = spawn(binary, args, { env, stdio: ['ignore', 'pipe', 'pipe'] });
-  let closing = false, granted = false, stderr = '', stdout = '', receivedSignal, loss;
+  // Its own process group: a terminal Ctrl-C reaches only the runner, which
+  // releases after the SDK and device cleanup. --bind-pid covers a dead runner.
+  const child = spawn(binary, args, { env, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
+  let closing = false, granted = false, stderr = '', stdout = '', receivedSignal, loss, lossMarker;
   let resolveGrant, rejectGrant;
   const grantResult = new Promise((resolve, reject) => { resolveGrant = resolve; rejectGrant = reject; });
   const closed = new Promise(resolve => child.once('close', (code, signal) => {
     if (!granted) rejectGrant(new Error(`SIMLOCK_LEASE_FAILED: ${stderr.trim() || `exit ${code ?? signal}`}`));
-    else if (!closing) { loss = { code, signal, message: stderr.slice(-4096) }; onLoss(loss); }
+    else if (!closing) {
+      loss = { code, signal, message: stderr.slice(-4096) };
+      // The shims refuse every later device command once this marker exists.
+      if (lossMarker) try { writeFileSync(lossMarker, JSON.stringify(loss)); } catch { /* onLoss still fails the run */ }
+      onLoss(loss);
+    }
     resolve({ code, signal });
   }));
   child.once('error', error => rejectGrant(new Error(`SIMLOCK_START_FAILED: ${error.message}`)));
@@ -107,7 +114,14 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   const signal = value => {
     receivedSignal = value;
     onSignal(value);
-    if (child.exitCode === null && child.signalCode === null) child.kill(value);
+    if (child.exitCode === null && child.signalCode === null) {
+      child.kill(value);
+      // A holder still queued for capacity ignores signals until it is granted.
+      // It holds no device yet, so it is stopped outright.
+      setTimeout(() => {
+        if (!granted && child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+      }, 2000).unref();
+    }
   };
   const onInterrupt = () => signal('SIGINT');
   const onTerminate = () => signal('SIGTERM');
@@ -154,11 +168,13 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   };
   try {
     stateDirectory = mkdtempSync(join(tmpdir(), 'noctalia-simlock-agent-'));
+    lossMarker = join(stateDirectory, 'simlock-lease-lost.json');
     Object.assign(env, {
       E2E_DEVICE: grant.device.address,
       E2E_SIMLOCK_BIN: binary,
       E2E_SIMLOCK_LEASE_ID: grant.lease.id,
       AGENT_DEVICE_STATE_DIR: stateDirectory,
+      E2E_SIMLOCK_LOSS_MARKER: lossMarker,
     });
     if (platform === 'ios') {
       const deviceSet = grant.environment.SIMLOCK_IOS_DEVICE_SET;

@@ -483,10 +483,11 @@ For a native `run` without `E2E_DEVICE`, the runner reserves one disposable
 simulator or emulator from the configured Simlock pool, installs the Release
 identified by `E2E_RELEASE_RECEIPT`, runs the selected journeys and releases its
 own lease after the SDK and device checks finish. It waits for capacity by default;
-it never downloads a runtime or selects a physical phone. A missing receipt,
-lost lease or unconfirmed release fails the run. `simlock-lease.json` and
-`simlock-release.json` in the run directory record the reservation and its
-acknowledged release; the existing `end.json` remains the final verdict.
+it never downloads a runtime or selects a physical phone. A missing or malformed
+receipt is refused before reserving; a lost lease or unconfirmed release fails
+the run. `simlock-lease.json` and `simlock-release.json` in the run directory
+record the reservation and its acknowledged release; the existing `end.json`
+remains the final verdict.
 
 ```sh
 E2E_RELEASE_RECEIPT=PATH_TO_IOS_RELEASE_JSON \
@@ -504,6 +505,11 @@ devices on release, so never place personal data or unique evidence there.
 Android requires Simlock to return its isolated ADB server port; the runner
 refuses a grant without it instead of using an unscoped server.
 The foreground lease holder renews while the runner lives and is bound to its PID.
+It runs in its own process group, so Ctrl-C reaches only the runner, which stops at
+its next checkpoint, cleans up and then releases. Simlock 0.4.0 ignores signals
+while a request is queued for capacity; the runner then stops that holder outright.
+On a local Simlock worker the shims' `--lease` scoping is advisory: after a lost
+lease they refuse every further device command and no SDK child starts.
 Codex and Claude use their existing Simlock session identity; a plain terminal
 gets an invocation-specific identity shared by the lease and release commands.
 Before reserving on the Mac mini, follow
