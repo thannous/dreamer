@@ -4,10 +4,12 @@ import type {
   SymbolCategoryInfo,
   SymbolLanguage,
 } from '@/lib/symbolTypes';
+import type { SymbolContentMap } from '@/services/symbolContent';
 
-// App copy with only the fields the app reads; regenerate with
-// `npm run symbols:dictionary:sync` after editing data/dream-symbols*.json.
-// Full interpretations load per language from services/symbolExtendedContent.
+// The index of the app copy (ids, categories, names, related symbols); regenerate
+// with `npm run symbols:dictionary:sync` after editing data/dream-symbols*.json.
+// Short descriptions and questions load per language from services/symbolContent,
+// full interpretations from services/symbolExtendedContent.
 import symbolsDataJson from '@/data/app/dream-symbols.json';
 
 type IconSymbolName = Parameters<typeof import('@/components/ui/icon-symbol').IconSymbol>[0]['name'];
@@ -80,17 +82,18 @@ const normalizeSearchValue = (value: string) =>
     .trim()
     .toLowerCase();
 
-export function searchSymbols(query: string, language: SymbolLanguage): DreamSymbol[] {
+/** Matches names, and the short descriptions of `content` once it is loaded. */
+export function searchSymbols(query: string, language: SymbolLanguage, content?: SymbolContentMap): DreamSymbol[] {
   const normalizedQuery = normalizeSearchValue(query);
   if (!normalizedQuery) {
     return ALL_SYMBOLS;
   }
 
   return ALL_SYMBOLS.filter((s) => {
-    const content = s[language] ?? s.en;
+    const description = content?.[s.id]?.shortDescription;
     return (
-      normalizeSearchValue(content.name).includes(normalizedQuery) ||
-      normalizeSearchValue(content.shortDescription).includes(normalizedQuery)
+      normalizeSearchValue(s.names[language] ?? s.names.en).includes(normalizedQuery) ||
+      (description !== undefined && normalizeSearchValue(description).includes(normalizedQuery))
     );
   });
 }

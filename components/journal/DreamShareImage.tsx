@@ -115,7 +115,7 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
           <View style={[styles.medallion, { borderColor: 'rgba(234,212,180,0.4)', backgroundColor: 'rgba(234,212,180,0.04)' }]}>
             <View style={[styles.medallionInner, { borderColor: 'rgba(234,212,180,0.22)', backgroundColor: 'rgba(234,212,180,0.05)' }]}>
               <RNImage
-                source={emblem ?? require('@/assets/images/icon-transparent.png')}
+                source={emblem ?? require('@/assets/images/icon-transparent.webp')}
                 style={emblem ? [styles.emblem, { tintColor: SEAL_GOLD }] : styles.groundLogo}
                 onLoad={() => markDrawn('ground')}
                 onError={() => markDrawn('ground')}
@@ -171,7 +171,7 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
         <View style={styles.footerContainer}>
           <Text style={[styles.footer, { color: noctalia.text.secondary }]}>{t('journal.detail.share_image.footer')}</Text>
           <RNImage
-            source={require('@/assets/images/icon-transparent.png')}
+            source={require('@/assets/images/icon-transparent.webp')}
             style={styles.footerLogo}
             onLoad={() => markDrawn('logo')}
             onError={() => markDrawn('logo')}

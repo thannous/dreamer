@@ -371,7 +371,7 @@ const runInBackground = (task: Promise<void>): boolean => {
   return true;
 };
 
-const handleAnalysisJobWorkerRequest = async (req: Request): Promise<Response> => {
+export const handleAnalysisJobWorkerRequest = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 

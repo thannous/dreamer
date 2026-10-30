@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { sourceSnapshot, compareSnapshots, verifyEvidenceFiles } from './qualification.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { PERSONA_ACT_MODEL } from './persona-models.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 
@@ -79,7 +80,7 @@ export async function runFullCampaign() {
     }
     if (!interrupted) await execute('dreamer-chatgpt-pro', ['tools/e2e/run.mjs', 'dreamer', 'web', 'run', '--tag', 'personas'], {
       E2E_CAMPAIGN_ID: `${id}-pro`, E2E_PERSONAS: '1', E2E_WORKERS: '1', E2E_WEB_LOCALE: 'fr-FR',
-      E2E_PERSONA_MODEL: env.E2E_PERSONA_MODEL?.trim() || 'gpt-6.1-sol', EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: 'false',
+      E2E_PERSONA_MODEL: env.E2E_PERSONA_MODEL?.trim() || env.E2E_PERSONA_ACT_MODEL?.trim() || PERSONA_ACT_MODEL, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: 'false',
     });
     if (!interrupted) await execute('backend', ['scripts/run-backend-e2e.cjs']);
   } catch (error) { steps.push({ name: 'campaign-error', exitCode: 1, error: error.message }); }

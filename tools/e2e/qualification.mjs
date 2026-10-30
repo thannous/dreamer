@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdi
 import { join, relative, sep, resolve, basename } from 'node:path';
 
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
-export const SDK_PINS = { e2e: '0.21.3', '@e2e-dev/web': '0.15.3', '@e2e-dev/mobile': '0.12.4', 'agent-device': '0.21.32' };
+export const SDK_PINS = { e2e: '0.22.0', '@e2e-dev/web': '0.15.4', '@e2e-dev/mobile': '0.12.5', 'agent-device': '0.21.35' };
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 // Preserve the former UTF-8 stdout.trim() identity without buffering a whole diff.
 // A hash copy marks the last content byte; later whitespace stays provisional.

@@ -18,7 +18,7 @@ import Svg, { Path } from 'react-native-svg';
 import { sparklePath } from '@/components/journal/story/sparkle';
 import { DURATION, EASING, PressableScale, ProgressFill, Reveal, SPRING } from '@/components/motion';
 import { IconSymbol } from '@/components/ui/icon-symbol';
-import { useContentWindow } from '@/context/ContentWindowContext';
+import { useContentWindow, useSideGutters } from '@/context/ContentWindowContext';
 import { BADGE_TIERS, isFirstCard, type BadgeFamilyId, type BadgeTierLevel } from '@/lib/badges/catalog';
 import { nextTierPercent, type BadgeFamilyState } from '@/lib/badges/ledger';
 import type { TranslateFunction as Translate } from '@/lib/errors';
@@ -63,6 +63,7 @@ export function BadgeDetail({ state, guest = false, t, formatNumber, formatDate,
   const reduced = useReducedMotion();
   const insets = useSafeAreaInsets();
   const { width, height } = useContentWindow();
+  const sideGutters = useSideGutters();
   const family = state.family;
   const name = badgeName(t, family.id);
   const once = isFirstCard(family);
@@ -176,7 +177,7 @@ export function BadgeDetail({ state, guest = false, t, formatNumber, formatDate,
       accessibilityViewIsModal
       onAccessibilityEscape={onClose}
       testID="collection.detail"
-      style={{ backgroundColor: COLLECTION.scrim }}
+      style={{ backgroundColor: COLLECTION.scrim, paddingLeft: sideGutters.left, paddingRight: sideGutters.right }}
     >
       <ScrollView
         contentContainerStyle={{ paddingTop: insets.top + 56, paddingBottom: insets.bottom + 32, alignItems: 'center', gap: 22 }}
@@ -350,7 +351,7 @@ export function BadgeDetail({ state, guest = false, t, formatNumber, formatDate,
       <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('badges.detail.close')}
         testID="collection.detail.close" hitSlop={8}
         className="absolute h-11 w-11 items-center justify-center rounded-full border"
-        style={{ top: insets.top + 8, right: 16, borderColor: COLLECTION.hairlineStrong, backgroundColor: COLLECTION.button }}>
+        style={{ top: insets.top + 8, right: sideGutters.right + 16, borderColor: COLLECTION.hairlineStrong, backgroundColor: COLLECTION.button }}>
         <IconSymbol name="xmark" size={18} color={COLLECTION.text} />
       </Pressable>
     </View>

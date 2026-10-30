@@ -6,7 +6,7 @@ const journalKey = 'noctalia_mock_dogfood_v1:gemini_dream_journal_dreams';
 const draftKey = 'noctalia_mock_dogfood_v1:gemini_dream_journal_recording_transcript:guest';
 
 test('capture keeps its draft after a storage failure, then saves it once across reload', {
-  tags: ['capture-save', 'locale-en-US'],
+  tags: ['capture-save', 'locale-en-US', 'smoke', 'zone-sauvegarde'],
   skip: webLocale !== 'en-US' ? 'Run E2E_WEB_LOCALE=en-US' : false,
   timeout: 180_000,
 }, async ({ app, screen, browser }) => {
@@ -76,6 +76,10 @@ test('capture keeps its draft after a storage failure, then saves it once across
   expect(persisted[0].clientRequestId).toBeTruthy();
 
   await browser.reload();
+  // A reload is a fresh launch, which opens Capture: find the dream again in the journal.
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await screen.getByTestId('tab.journal', { visible: true }).tap();
+  await screen.getByRole('button', /A blue door stood beside the lake/).tap();
   await expect(saved).toContainText(story);
   const reopened = await browser.evaluate(key => JSON.parse(localStorage.getItem(key) ?? '[]') as {
     transcript: string; clientRequestId: string;

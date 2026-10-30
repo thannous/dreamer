@@ -5,7 +5,7 @@
 import type { Locator, Page } from 'playwright/test';
 import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
 // Tall enough for the desktop grid to draw all eight dreams.
-const test = createParityTest({ viewport: { width: 1280, height: 1600 } });
+const test = createParityTest({ viewport: { width: 1280, height: 1600 }, tags: ['zone-journal'] });
 
 const TITLES = [
   'The Infinite Library', // analyzed, favorite
@@ -75,7 +75,7 @@ async function chooseInSheet(page: Page, choose: (filters: Locator) => Promise<u
   await expect(sheet(page)).not.toBeVisible();
 }
 
-test('the bar keeps the favorite dreams or those left to deepen, and a second tap shows every dream again', async ({ page }) => {
+test('the bar keeps the favorite dreams or those left to deepen, and a second tap shows every dream again', { tags: ['smoke'] }, async ({ page }) => {
   await openJournal(page);
   await expectEveryDream(page);
   const favorites = journal(page).getByTestId('btn.filterFavorites');

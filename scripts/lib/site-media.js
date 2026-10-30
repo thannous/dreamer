@@ -133,10 +133,10 @@ async function parallel(items, run, count = 8) {
   if (failure) throw failure;
 }
 
-async function download(media, entry, fetcher = fetch) {
+async function download(media, entry, fetcher = fetch, url = publicUrl(media, entry[0])) {
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const response = await fetcher(publicUrl(media, entry[0]), { redirect: 'error', signal: AbortSignal.timeout(60_000) });
+      const response = await fetcher(url, { redirect: 'error', signal: AbortSignal.timeout(60_000) });
       if (response.status === 429 || response.status >= 500) {
         await response.body?.cancel?.();
         if (attempt < 3) { await new Promise(resolve => setTimeout(resolve, attempt * 250)); continue; }

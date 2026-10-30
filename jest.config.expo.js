@@ -33,8 +33,13 @@ module.exports = {
       : entry
   ),
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  transform: {
+    ...preset.transform,
+    // The per-language symbol content (data/app/symbol-content/) is a Metro asset.
+    '^.+\\.txt$': '<rootDir>/tests/jest/text-asset-transformer.js',
+  },
   transformIgnorePatterns: (preset.transformIgnorePatterns ?? []).map((pattern) =>
-    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|remend|mdast-util-|micromark|unist-util-|decode-named-character-reference|character-entities|devlop|react-native')
+    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|remend|mdast-util-|micromark|unist-util-|decode-named-character-reference|character-entities|culori|devlop|react-native')
   ),
   moduleNameMapper: {
     ...(preset.moduleNameMapper ?? {}),
@@ -50,6 +55,7 @@ module.exports = {
     '^@expo/ui$': '<rootDir>/tests/expo-ui-stub.tsx',
     '^expo-blur$': '<rootDir>/tests/expo-blur-stub.ts',
     '^expo-observe$': '<rootDir>/tests/expo-observe-stub.ts',
+    '^@expo/vector-icons/createIconSet$': '<rootDir>/tests/expo-vector-icons-create-icon-set-stub.ts',
     '^@expo/vector-icons/.+$': '<rootDir>/tests/expo-vector-icons-subpath-stub.ts',
     '^@expo/vector-icons$': '<rootDir>/tests/expo-vector-icons-stub.ts',
     '^expo-linear-gradient$': '<rootDir>/tests/expo-linear-gradient-stub.ts',

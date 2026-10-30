@@ -68,6 +68,16 @@ describe('guestSession bootstrap state', () => {
     mockGetTurnstileToken.mockReset();
   });
 
+  it('keeps production storage names and gives a local HTTP backend its own', () => {
+    const { backendStorageKey } = loadGuestSessionModule('ios');
+    // Installed apps keep their stored session and App Attest key on the hosted API.
+    expect(backendStorageKey('guest-app-attest-pause-v1', 'https://abc.functions.supabase.co/api')).toBe('guest-app-attest-pause-v1');
+    // A production refusal pause or key does not follow the app to the local dev backend, and two local backends stay apart.
+    const local = backendStorageKey('guest-app-attest-pause-v1', 'http://192.168.1.9:31300/functions/v1/api');
+    expect(local).toMatch(/^guest-app-attest-pause-v1\.local-[a-z0-9]+$/);
+    expect(backendStorageKey('guest-app-attest-pause-v1', 'http://192.168.1.10:31300/functions/v1/api')).not.toBe(local);
+  });
+
   it('resolves guest media ownership locally without bootstrapping a session', async () => {
     const guestSession = loadGuestSessionModule('android');
     const secureStore = require('expo-secure-store');

@@ -1,0 +1,18 @@
+{
+  "name": "@noctalia-internal/expo-agent",
+  "private": true,
+  "engines": {
+    "node": ">=24.22.1 <25"
+  },
+  "scripts": {
+    "agent": "node run.cjs --project ../..",
+    "status": "node run.cjs --project ../.. status --json",
+    "plan:ios": "node run.cjs --project ../.. dev --ios --local --plan --json",
+    "plan:android": "node run.cjs --project ../.. dev --android --local --plan --json",
+    "setup": "node run.cjs --project ../.. agents:setup --yes --project --agent codex --no-plugins --no-agents-md --json",
+    "skills:sync": "node run.cjs --project ../.. skills:sync --agent codex --json"
+  },
+  "devDependencies": {
+    "@expo/agent-cli": "1.0.22"
+  }
+}

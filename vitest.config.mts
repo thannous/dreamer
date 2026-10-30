@@ -17,6 +17,7 @@ export default defineConfig({
       { find: /^react-native-reanimated$/, replacement: path.resolve(__dirname, 'tests/react-native-reanimated-stub.ts') },
       { find: /^@react-native-masked-view\/masked-view$/, replacement: path.resolve(__dirname, 'tests/masked-view-stub.ts') },
       { find: /^expo-blur$/, replacement: path.resolve(__dirname, 'tests/expo-blur-stub.ts') },
+      { find: /^@expo\/vector-icons\/createIconSet$/, replacement: path.resolve(__dirname, 'tests/expo-vector-icons-create-icon-set-stub.ts') },
       { find: /^@expo\/vector-icons\/.+$/, replacement: path.resolve(__dirname, 'tests/expo-vector-icons-subpath-stub.ts') },
       { find: /^@expo\/vector-icons$/, replacement: path.resolve(__dirname, 'tests/expo-vector-icons-stub.ts') },
       { find: /^expo-linear-gradient$/, replacement: path.resolve(__dirname, 'tests/expo-linear-gradient-stub.ts') },

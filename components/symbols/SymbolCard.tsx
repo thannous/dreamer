@@ -9,6 +9,7 @@ import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
+import { useSymbolContent } from '@/hooks/useSymbolContent';
 import type { DreamSymbol, SymbolLanguage } from '@/lib/symbolTypes';
 import { TID } from '@/lib/testIDs';
 import { TypeScale } from '@/constants/typeScale';
@@ -25,7 +26,9 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, source, v
   const { fontScale } = useWindowDimensions();
   const isRow = variant === 'row';
   const noctalia = getNoctaliaDesignTokens(colors, mode);
-  const content = symbol[language] ?? symbol.en;
+  const name = symbol.names[language] ?? symbol.names.en;
+  // Empty for the moment the language's content is first read, keeping the card's height.
+  const description = useSymbolContent(language)?.[symbol.id]?.shortDescription ?? '';
 
   const glassBackground = noctalia.surface.raised;
   const cardStyle = useMemo(
@@ -69,7 +72,7 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, source, v
     <SymbolLink
       symbolId={symbol.id}
       source={source}
-      accessibilityLabel={content.name}
+      accessibilityLabel={name}
       testID={TID.List.SymbolItem(symbol.id)}
       surfaceStyle={cardStyle}
       pressedStyle={isRow ? styles.rowPressed : styles.cardPressed}>
@@ -84,12 +87,12 @@ export const SymbolCard = memo(function SymbolCard({ symbol, language, source, v
         <Text
           style={titleStyle}
           numberOfLines={isRow ? undefined : 1}>
-          {content.name}
+          {name}
         </Text>
         <Text
           style={descriptionStyle}
           numberOfLines={isRow ? (fontScale >= 1.6 ? undefined : 2) : 2}>
-          {content.shortDescription}
+          {description}
         </Text>
       </View>
       <IconSymbol name="chevron.right" size={16} color={noctalia.text.tertiary} />

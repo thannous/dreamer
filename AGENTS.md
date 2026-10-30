@@ -98,6 +98,27 @@ Use existing package scripts and [runtime prerequisites](doc_web_interne/docs/re
 machine settings and skills are private resources, not distributed requirements.
 Backend requests use `lib/http.ts`; URL resolution lives in `lib/config.ts`.
 
+## Expo agent CLI
+
+Use the pinned `@expo/agent-cli` in [tools/expo-agent](tools/expo-agent/README.md)
+for Expo diagnosis, SDK-compatible installs, package skills and development plans.
+After `mise exec -- npm ci --prefix tools/expo-agent`, start from the selected app
+root with `node tools/expo-agent/run.cjs status --json`, then
+`node tools/expo-agent/run.cjs dev --ios --local --plan --json` (or `--android`).
+Meditation uses `node ../../tools/expo-agent/run.cjs` from `apps/meditation`.
+Read `skills:list` and the relevant installed package's skill before package work.
+After dependency changes run `skills:sync --agent codex`; SDK 58 packages provide
+only the skills they actually ship. Use `expo-overview` when available.
+
+Run setup as documented with `--project --agent codex --no-plugins --no-agents-md`:
+AGENTS stays the shared authority; do not generate CLAUDE.md or install global
+plugins. Translate CLI/skill suggestions to this pinned runner. Existing guarded
+profile launchers, type/lint scripts, TesterArmy, device ownership/consent and
+`verify:pr`/`verify:release` remain mandatory for their existing scope. A status
+exit 0 or a CLI smoke is not functional/release proof. Inspect plans first; actual
+runs require an owned isolated target and the correct Dreamer/Lucid/Meditation
+profile. EAS, deployments and Store submission keep their separate authorization.
+
 ## Styling and Motion
 
 Uniwind is canonical. Edit shared colours in `constants/noctaliaPalette.ts`, derive
@@ -135,7 +156,22 @@ review unless scope/risk changes. Prefer existing runners over parallel wrappers
 
 TesterArmy `e2e` is the default for new/affected journeys across all apps/worktrees:
 `@e2e-dev/web` for browsers, `@e2e-dev/mobile` for native; API/CLI uses its real interface.
+New journeys are written with `npx e2e run --watch` from `tools/e2e` (e2e 0.22.0).
+Watch reruns when a test file, a source file next to the tests, or the config is saved.
+It is an authoring loop, not part of `verify:pr` or CI.
 Read the installed skill/topic, reuse guarded runners/fixtures and keep provider budgets.
+`verify:pr` runs the tagged smoke journeys on a Dreamer app diff and the named
+parcours for the zones that diff touches (`npm run test:e2e:smoke`,
+`npm run test:e2e:parcours`), locally, without GitHub Actions, and without a
+model unless `OPENAI_API_KEY` is set: the decision model then judges the
+parcours the zones leave out ([details](doc_web_interne/docs/repository-operations.md)).
+A docs-only diff, or a diff with no web app zone, skips both. A native-only
+diff skips the web gate. If a zone is touched and Node 24.22.1, the e2e
+install, or Chromium is missing, the check is unavailable and `verify:pr`
+stays incomplete. Before an app release,
+`npm run test:bugbash:prerelease` explores the mock app; each confirmed bug
+becomes a failing `bugbash` test, which `verify:release` runs and the PR gate
+does not.
 Native qualification identifies an installed Release, uses one worker per owned device
 and starts with `app.open()`. Use one goal per `agent.act()` and exact assertions for
 critical outcomes; exact steps need no model. A compatible pinned upgrade may be piloted

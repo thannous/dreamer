@@ -22,8 +22,9 @@ The complete command builds the site, runs Dreamer with English/French/German
 and feature sheets enabled plus English with sheets disabled, verifies their
 coverage union, runs Lucid, Meditation and the site, executes the four Dreamer
 personas through the saved ChatGPT Pro login, and qualifies the real local backend.
-The model defaults to `gpt-6.1-sol`; `E2E_PERSONA_MODEL` selects another model
-served by the same login. There is no API-key or paid-gateway fallback.
+Act defaults to `gpt-6.1-terra` and assert to `gpt-6.1-sol`
+(`tools/e2e/persona-models.mjs`). `E2E_PERSONA_MODEL` overrides act.
+There is no API-key or paid-gateway fallback.
 
 Deterministic steps use exact locators without model calls. Persona goals use
 `agent.act()` for one user outcome, followed by exact assertions. Their replay

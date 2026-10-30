@@ -2,7 +2,7 @@
   "expo": {
     "name": "Noctalia",
     "slug": "noctalia",
-    "version": "3.7.1",
+    "version": "3.8.0",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
@@ -25,8 +25,6 @@
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
         "NSCameraUsageDescription": "Noctalia does not use the camera. A picture you give a dream comes from your photo library.",
         "NSPhotoLibraryUsageDescription": "Allow Noctalia to use a photo from your library as the picture of a dream.",
-        "NSHealthShareUsageDescription": "When you choose to connect Apple Health in Lucid Trainer, Noctalia reads your past sleep records to show personal trends.",
-        "NSHealthUpdateUsageDescription": "Noctalia does not add or change data in Apple Health. Its optional sleep history feature only reads records you choose to connect.",
         "CADisableMinimumFrameDurationOnPhone": true,
         "LSApplicationQueriesSchemes": [
           "mailto",
@@ -130,7 +128,10 @@
             "enableShrinkResourcesInReleaseBuilds": true,
             "packagingOptions": {
               "exclude": [
-                "/org/bouncycastle/pqc/crypto/picnic/*.properties"
+                "/org/bouncycastle/pqc/crypto/picnic/*.properties",
+                "/org/apache/commons/codec/language/**",
+                "/org/bouncycastle/x509/*.properties",
+                "/DebugProbesKt.bin"
               ]
             }
           }
@@ -139,9 +140,16 @@
       "./plugins/withAndroidR8Optimization",
       "./plugins/withoutReactNativeImageDecoders",
       "./plugins/withWebpSplashLogo",
+      "./plugins/withWebpLauncherIcons",
       "./plugins/withRevenueCatTestStoreBuild",
+      "./plugins/withoutRevenueCatAmazon",
       "./plugins/withSoftExceptionLogging",
-      "expo-sqlite",
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": false
+        }
+      ],
       "react-native-edge-to-edge",
       "expo-image",
       "expo-sharing",

@@ -25,6 +25,48 @@ lockfile and additionally requires `mise exec -- npm ci` in `apps/meditation`.
 Backend URL resolution uses `EXPO_PUBLIC_API_URL`, then `app.json` `expo.extra.apiUrl`; see
 `lib/config.ts`. Use `lib/http.ts` for network requests and its timeout/auth conventions.
 
+### Local development backend
+
+Production stays production: for daily work on a phone, the Simulator or the web, run a
+persistent local backend instead (macOS 14+ on Apple silicon or Linux glibc 2.35+, no Docker):
+
+```sh
+mise exec -- node tools/dev-local/dev-local.mjs            # Ctrl-C stops and keeps the data
+mise exec -- node scripts/expo-safe-runner.js --profile outputs/dev-local/expo.env start --dev-client --lan --port 8081
+mise exec -- node tools/dev-local/check.mjs                # guest and signed-in proof through the real API
+```
+
+It starts the native Supabase runtime on the tracked migrations (copies with production URLs
+neutralised and scheduled jobs disabled), creates `dev-free@noctalia.test` and
+`dev-plus@noctalia.test` (Plus through `apply_subscription_state_update`; passwords printed at
+start and kept in `outputs/dev-local/secrets.json`), and serves Auth, Data API, Storage and the
+real `api`/`capture-recall` routes and job workers on this machine's private LAN address,
+port 31300 only (`--host` picks another private address, such as the Tailscale one, and `--port`
+the port). The private `dream-images` bucket is created at start. Data lives in ignored
+`outputs/dev-local/`; `--reset` destroys it.
+
+- **AI** answers are fixed and built from each route's JSON schema
+  (`tools/dev-local/deterministic-ai.ts`): nothing is sent to a provider or billed. Streamed
+  Gemini replies are not simulated. Real-provider quality stays with the manual
+  `reflection:eval:*` evaluations.
+- **Guests** keep the real session flow with local verifiers, only in this never-deployed server:
+  App Attest in its development environment for this team's builds (physical iPhone Debug
+  builds; the Simulator has no App Attest), any Play Integrity token on Android, and
+  Cloudflare's always-pass Turnstile test keys on the web. The server refuses to start unless its
+  backend is an identified native stack on loopback and its public origin a private HTTP address.
+- The app keeps a separate guest session, App Attest key and refusal pause per plain-HTTP API
+  (`backendStorageKey` in `lib/guestSession.ts`), so switching between production and the local
+  backend carries neither server's state to the other. Production key names are unchanged.
+- Development builds send the signed-in session token over plain HTTP to a private-network
+  address as well as loopback (`lib/http.ts`), so a phone can use the local accounts; a release
+  build keeps cleartext tokens to loopback only.
+- Store sync (`subscription/refresh`, `subscription/sync`) reports the stored entitlement without
+  calling RevenueCat, so the Plus account stays Plus.
+- Not available: Google/Apple sign-in, purchases, e-mail delivery.
+- Opening a personal install against it with a local account can move that install's guest
+  journal into the local account: prefer an owned QA install, the Simulator or the web.
+- No npm script: `package.json` scripts feed the runtime fingerprint.
+
 The canonical desktop/runtime entry point is `script/build_and_run.sh`, which keeps
 Metro in the foreground. An optional local `.codex/environments/environment.toml`
 can delegate desktop Run actions to it; this checkout does not ship that file.
@@ -39,6 +81,39 @@ E2E/isolation exceptions, evidence reuse, independent review, the isolated
 [local validation and CircleCI guide](circleci-migration.md) lists current
 coverage and release targets; [verify-local.config.mjs](../../verify-local.config.mjs)
 is the executable source of truth.
+
+`verify:pr` also runs two local web gates when the diff touches the app, with no
+GitHub Actions minutes and, by default, no model call. `parcours-touches` maps changed paths
+(`app/`, `components/`, `services/`, and the other roots in `tools/e2e/zones.mjs`)
+to e2e tags and test files, then runs `e2e run --changed-since origin/master`.
+`smoke-journeys` runs the seven tagged smoke journeys (capture, save, journal,
+payment, sign-in) on every Dreamer app diff. A docs-only or non-app diff skips
+both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
+`tools/e2e/node_modules`, or Chromium is missing, the probe fails and the proof
+is incomplete, not passed. Rerun: `npm run test:e2e:parcours`
+and `npm run test:e2e:smoke`.
+
+Optional decision model: with an OpenAI key in `OPENAI_API_KEY`,
+`parcours-touches` also asks the TesterArmy decision filter (OpenAI's
+Decisions API, `gpt-6-luna`, named in `tools/e2e/zones.mjs`) about every
+Dreamer and Lucid parcours the zones leave out, on any Dreamer app diff, named
+zone or not. The model sees the committed diff and the journey files; a file
+only the working tree changes reaches it by name alone. A
+parcours runs unless the model rates it under 20% likely affected; the zones
+stay the floor, smoke and bug-bash tests keep their own checks, and a parcours
+the model cannot judge runs. A lockfile or e2e config change makes it keep
+every parcours. If the model cannot answer at all (no route, rejected key),
+the zones decide alone and the run's filter note says so. The first verdict for
+a commit is kept under `.git/verify-cache/e2e-decision/`, so `e2e list` and
+`e2e run` select the same tests and a rerun asks nothing. The proof records
+whether the model was on, so a pass without the key is not reused once it is
+set. Without the key the gate is unchanged.
+
+Before an app release, run `npm run test:bugbash:prerelease` on Dreamer web in
+mock mode (the script refuses a production Supabase ref). Each confirmed bug
+becomes a failing test under `tools/e2e/tests/bugbash/`, tagged `bugbash`.
+`verify:release` runs those tests (`bugbash-repros` / `npm run test:bugbash:repros`).
+The PR gate excludes the tag. An empty repro directory passes.
 
 `verify:pr` runs engine tests, application/test types, lint and script lint,
 related Jest and static database contracts, each only when the PR changes a file
