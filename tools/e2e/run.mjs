@@ -342,7 +342,9 @@ async function runSdk() {
   }
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
   const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
-  if (!runnable.length) {
+  // Static skips alone run nothing: a diff whose only journey is smoke-tagged leaves the
+  // parcours gate its locale skips, and the engine would then report no passing test.
+  if (!runnable.length || (passWithNoTests && !runnable.some(pair => pair.disposition === 'run'))) {
     if (passWithNoTests) {
       emptySelection = true;
       console.log('Aucun test selectionne: le moteur n\'est pas lance.');
