@@ -890,7 +890,7 @@ const translations: Record<string, string> = {
     'notifications.next_reminder_today': 'Today at {time}',
     'notifications.next_reminder_tomorrow': 'Tomorrow at {time}',
     'release_notes.badge': "WHAT'S NEW · {version}",
-    'release_notes.title': "Noctalia 3.7 is here",
+    'release_notes.title': "Noctalia {version} is here",
     'release_notes.subtitle': "Here's what's new in the app.",
     'release_notes.journal.title': "Your dreams in pictures",
     'release_notes.journal.body': "Each dream now shows its full picture. You can also add a note to it or share it.",
