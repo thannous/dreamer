@@ -292,6 +292,7 @@ export const SMOKE_WHEN = [
 export const PARCOURS_WHEN = [
   'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/', 'apps/meditation/',
   'tools/e2e/zones.mjs', 'tools/e2e/zones.d.mts', 'tools/e2e/zone-filter.ts', 'tools/e2e/zone-filter.test.mjs',
+  'tools/e2e/decision-verdict.mjs', 'tools/e2e/decision-verdict.d.mts', 'tools/e2e/decision-verdict.test.mjs',
   'tools/e2e/pr-gate.mjs', 'tools/e2e/pr-gate.test.mjs', 'tools/e2e/e2e.config.ts', 'tools/e2e/e2e.bugbash.config.ts',
   'tools/e2e/run.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/persona-models.d.mts',
   'tools/e2e/bugbash-prerelease.mjs', 'tools/e2e/bugbash-prerelease.test.mjs', 'tools/e2e/web-parity-fixtures.ts',
@@ -609,14 +610,20 @@ export default {
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
     { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
     { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
-    // Web only, no model, no Actions. A diff with no web zone exits 0.
+    // Web only, no Actions. No model unless OPENAI_API_KEY is set: the
+    // decision model then judges the parcours the zones leave out (zones.mjs).
+    // A diff with no web zone exits 0, or with the key, no Dreamer app path.
     // A touched zone without Node 24.22.1, tools/e2e/node_modules or Chromium
     // fails the probe: the proof is incomplete, not passed. No `targets`:
     // the engine applies targets on release only, which would drop these
     // checks from verify:pr. On a published master the diff is empty.
     {
       name: 'parcours-touches',
-      command: 'node --test tools/e2e/zone-filter.test.mjs tools/e2e/pr-gate.test.mjs tools/e2e/bugbash-prerelease.test.mjs && npm run test:e2e:parcours',
+      command: 'node --test tools/e2e/zone-filter.test.mjs tools/e2e/decision-verdict.test.mjs tools/e2e/pr-gate.test.mjs tools/e2e/bugbash-prerelease.test.mjs && npm run test:e2e:parcours',
+      // Part of the proof's fingerprint: a pass without the key is not reused once
+      // the key turns the model on, or back. Records on/off, never the key
+      // (DECISION_KEY_ENV and decisionEnabled in tools/e2e/zones.mjs).
+      env: { E2E_DECISION_FILTER: process.env.OPENAI_API_KEY?.trim() ? 'on' : 'off' },
       when: PARCOURS_WHEN,
       specialised: true,
       requires: {
