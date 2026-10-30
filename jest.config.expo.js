@@ -33,8 +33,13 @@ module.exports = {
       : entry
   ),
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  transform: {
+    ...preset.transform,
+    // The per-language symbol content (data/app/symbol-content/) is a Metro asset.
+    '^.+\\.txt$': '<rootDir>/tests/jest/text-asset-transformer.js',
+  },
   transformIgnorePatterns: (preset.transformIgnorePatterns ?? []).map((pattern) =>
-    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|remend|mdast-util-|micromark|unist-util-|decode-named-character-reference|character-entities|devlop|react-native')
+    pattern.replace('(.pnpm|react-native', '(.pnpm|.deno|remend|mdast-util-|micromark|unist-util-|decode-named-character-reference|character-entities|culori|devlop|react-native')
   ),
   moduleNameMapper: {
     ...(preset.moduleNameMapper ?? {}),

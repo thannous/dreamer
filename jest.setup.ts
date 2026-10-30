@@ -1,6 +1,10 @@
 import { jest } from '@jest/globals';
 
 jest.mock('react-native-enriched-markdown', () => require('react-native-enriched-markdown/jest'));
+// A required `.txt` asset is its path in Jest (tests/jest/text-asset-transformer.js).
+jest.mock('@/services/symbolContentAsset', () => ({
+  readSymbolContentAsset: (source: unknown) => require('node:fs').promises.readFile(String(source), 'utf8'),
+}));
 
 // Expo modules expect these globals during evaluation.
 // Keep a single definition here to avoid redefining in each test.
@@ -116,9 +120,6 @@ jest.mock('expo-modules-core', () => ({
   requireOptionalNativeModule: jest.fn((moduleName: string) => mockNativeModules[moduleName as keyof typeof mockNativeModules] ?? null),
 }));
 
-// Some dependencies pull URL polyfills meant for RN; avoid heavy/unsupported code in unit tests.
-jest.mock('react-native-url-polyfill/auto', () => ({}));
-jest.mock('react-native-url-polyfill', () => ({}));
 
 // Stub secure store to satisfy supabase client helpers in tests.
 jest.mock('expo-secure-store', () => ({

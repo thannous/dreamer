@@ -40,7 +40,7 @@ const ROOT_VIEW_STYLE = { flex: 1 } as const;
 const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
   Platform.OS !== 'web' && NativeModules?.KeyboardController
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    ? require('react-native-keyboard-controller').KeyboardProvider
+    ? require('react-native-keyboard-controller/src/animated').KeyboardProvider
     : ({ children }) => <>{children}</>;
 
 function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: {
