@@ -1,7 +1,7 @@
 /**
- * Homemade zone map for the PR gate, without a model. Paths are repository-relative
- * POSIX paths, the same spelling `git diff --name-only` and e2e's
- * `--changed-since` use. A zone's tests run only when one of its sources
+ * Homemade zone map for the PR gate, without a model. Paths are
+ * repository-relative POSIX paths, the same spelling `git diff --name-only`
+ * and e2e's `--changed-since` use. A zone's tests run only when one of its sources
  * changed, unless the optional decision model below keeps them. Docs and
  * other non-app paths match nothing here.
  */

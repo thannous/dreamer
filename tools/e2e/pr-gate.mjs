@@ -1,8 +1,8 @@
 /**
  * PR-gate launcher for Dreamer/Lucid/Meditation web journeys.
  * A diff with no web app zone exits 0 without a browser, unless a Vercel AI
- * Gateway key lets the decision model judge an unzoned Dreamer app diff. A native-only diff
- * does too: this gate has no emulator. When a zone is touched, a missing
+ * Gateway key lets the decision model judge an unzoned Dreamer app diff.
+ * A native-only diff does too: this gate has no emulator. When a zone is touched, a missing
  * pinned Node, e2e install, or Chromium exits 1. verify:pr probes the same
  * condition first and records the check unavailable, so the proof is
  * incomplete instead of passed.

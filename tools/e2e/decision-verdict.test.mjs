@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
 import { decisionFilter } from '@e2e-dev/decision';
-import { decisionVerdict, verdictKey } from './decision-verdict.mjs';
+import { FAILURE_TTL_MS, decisionVerdict, verdictKey } from './decision-verdict.mjs';
 
 const git = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
 
@@ -79,11 +79,33 @@ test('the real decision filter leaves out the journey the change cannot reach, a
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
-test('a model that cannot answer throws and keeps no verdict', async () => {
+test('a model that cannot answer throws, and the run falls back as its list did until the failure expires', async () => {
   const { root, base } = repository();
   try {
-    const load = async () => decisionFilter({ model: fakeModel([], true) });
-    await assert.rejects(decisionVerdict(tests, context(root, base), { load }), /401 invalid key/);
+    const calls = [];
+    let clock = 1_000_000;
+    const now = () => clock;
+    const load = async () => decisionFilter({ model: fakeModel(calls, true) });
+    await assert.rejects(decisionVerdict(tests, context(root, base), { load, now }), /401 invalid key/);
+    assert.equal(calls.length, 1);
+    // `e2e run` right after: the same failure, without asking again.
+    clock += FAILURE_TTL_MS - 1;
+    await assert.rejects(decisionVerdict(tests, context(root, base), { load, now }), /401 invalid key \(echec repris\)/);
+    assert.equal(calls.length, 1);
+    // A later verify:pr asks again.
+    clock += 1;
+    await assert.rejects(decisionVerdict(tests, context(root, base), { load, now }), /^Error: 401 invalid key$/);
+    assert.equal(calls.length, 2);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('an interrupted run keeps no failure', async () => {
+  const { root, base } = repository();
+  try {
+    const interrupt = new AbortController();
+    interrupt.abort(new Error('SIGINT'));
+    const load = async () => ({ name: 'decision', filter: async () => { throw new Error('aborted'); } });
+    await assert.rejects(decisionVerdict(tests, { ...context(root, base), signal: interrupt.signal }, { load }), /aborted/);
     assert.equal(existsSync(join(root, '.git/verify-cache/e2e-decision')), false);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

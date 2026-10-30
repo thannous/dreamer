@@ -3,6 +3,9 @@ import { relative, resolve } from 'node:path';
 import { UNTOUCHED, decisionEnabled, filterIsActive, parcoursExclude, widenWithDecision } from './zones.mjs';
 import { decisionVerdict } from './decision-verdict.mjs';
 
+/** Past this the model's answer is dropped and the zones decide, well inside e2e's 5-minute filter budget. */
+const DECISION_DEADLINE_MS = 120_000;
+
 function repoPath(gitRoot: string, projectRoot: string, file: string): string {
   return relative(gitRoot, resolve(projectRoot, file)).replaceAll('\\', '/');
 }
@@ -26,12 +29,18 @@ export const parcoursTouches: TestFilter = {
     if (!decisionEnabled(process.env)) return zones;
     const asked = tests.filter(test => zones.exclude[test.id] === UNTOUCHED);
     if (asked.length === 0) return zones;
+    // A ref'd timer, as e2e's own: an unref'd AbortSignal.timeout may never fire.
+    const deadline = new AbortController();
+    const timer = setTimeout(() => deadline.abort(new DOMException('no answer within 2 minutes', 'TimeoutError')), DECISION_DEADLINE_MS);
     try {
-      return widenWithDecision(zones, await decisionVerdict(asked, context));
+      const signal = AbortSignal.any([context.signal, deadline.signal]);
+      return widenWithDecision(zones, await decisionVerdict(asked, { ...context, signal }));
     } catch (error) {
       context.signal.throwIfAborted();
       const reason = (error instanceof Error ? error.message : String(error)).split('\n')[0];
       return { ...zones, note: `${zones.note}; modele indisponible (${reason}), zones seules` };
+    } finally {
+      clearTimeout(timer);
     }
   },
 };
