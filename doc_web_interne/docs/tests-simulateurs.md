@@ -13,11 +13,18 @@ ou n'importe quel espace de travail de `origin/master`) :
 mise exec -- npm run release:simulators -- --ref <commit du candidat>
 ```
 
-Sans `--ref`, la commande récupère et teste `origin/master`. Compter 3 à 4 heures pour
+Sans `--ref`, la commande récupère et teste `origin/master`. Le commit testé doit
+contenir la réservation Simlock de `tools/e2e/run.mjs` ; un commit plus ancien est
+refusé. Compter 3 à 4 heures pour
 les deux plateformes et les trois couches, et 30 Go libres sur le disque. Le Mac reste
 éveillé tant que la commande tourne. `--plan` affiche les étapes sans rien lancer ;
 `--platform ios` ou `--suites production,mock` réduisent la campagne pour une reprise.
 `--help` liste les options.
+
+Avant de lancer, suivre Storage Guard comme pour toute réservation d'appareil sur le
+Mac mini (`~/Projects/infra-ops/storage-guard/AGENT_RULES.md`) : scanner, déclarer la
+campagne avec son budget (deux plateformes, six builds Release), puis la clore à la fin.
+La commande ne le fait pas à ta place.
 
 La commande ne lance aucun build EAS, aucun envoi aux Stores, aucun déploiement, et ne
 touche à aucun téléphone. Elle peut donc tourner sans autre accord que la demande de
@@ -44,14 +51,15 @@ bash en environnement simulé avant une release.
 1. Elle prend le commit dans un espace de travail isolé
    (`~/Projects/.workspaces/noctalia/release-sim-<commit>`), installe les dépendances et
    TesterArmy. Le checkout principal n'est pas modifié.
-2. Elle utilise un simulateur « Noctalia QA Simulateurs » et un émulateur
-   `Noctalia_QA_Simulateurs`, qu'elle crée s'ils manquent (iPhone classique sur le
-   runtime iOS le plus récent, image Google APIs arm64 la plus récente). Ils ne servent
-   qu'à elle, pour ne pas gêner un autre test.
-3. Pour chaque plateforme et chaque couche : build Release avec le JavaScript embarqué
-   et les mises à jour OTA coupées, reçu de build, installation, puis les parcours
-   natifs TesterArmy avec les contrôles habituels de `tools/e2e/run.mjs` (identité du
-   binaire installé, source inchangée, nettoyage).
+2. Pour chaque plateforme et chaque couche : build Release avec le JavaScript embarqué
+   et les mises à jour OTA coupées, puis reçu de build. Le build ne vise aucun appareil.
+3. Chaque run réserve un simulateur iPhone ou un émulateur Android du pool Simlock du
+   Mac, comme les autres agents, en attendant au plus 30 minutes s'il est pris
+   (`--wait-minutes`). Il installe la Release du reçu, joue les parcours natifs
+   TesterArmy avec les contrôles habituels de `tools/e2e/run.mjs` (identité du binaire
+   installé, source inchangée, nettoyage), puis rend l'appareil, que Simlock remet à
+   zéro. Une réservation perdue ou non rendue rend la couche non qualifiée. Voir
+   [la réservation Simlock](../../tools/e2e/README.md#automatic-simlock-reservation).
 4. Elle écrit `outputs/release-simulators/<date>-<commit>/rapport.md` au fil de l'eau,
    range les preuves complètes dans le dossier `e2e/` à côté et les journaux dans
    `logs/`.
@@ -60,9 +68,9 @@ bash en environnement simulé avant une release.
 
 Une seule campagne tourne à la fois sur le Mac ; une deuxième est refusée.
 
-Le rapport sert de preuve : il nomme le commit, l'environnement (Mac, Xcode,
-simulateur, émulateur, versions TesterArmy), le profil de chaque couche, le résultat
-et les limites.
+Le rapport sert de preuve : il nomme le commit, l'environnement (Mac, Xcode, appareils
+loués par Simlock, versions TesterArmy), le profil de chaque couche, le résultat et les
+limites.
 
 ## Les trois couches
 

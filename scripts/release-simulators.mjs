@@ -4,6 +4,7 @@
 // and one French report. A physical phone is then needed only for PHONE_ONLY below.
 // It chains the guarded runners (tools/e2e/run.mjs build/run, native-backend-stack,
 // native-recovery-api) in a managed workspace of the commit; their checks stay in force.
+// Each run leases its simulator or emulator from the shared Simlock pool, like other agents.
 import { spawn, spawnSync } from 'node:child_process';
 import { createWriteStream, existsSync, mkdirSync, openSync, closeSync, readFileSync, readdirSync, renameSync, statfsSync, unlinkSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -29,16 +30,14 @@ export const PHONE_ONLY = [
   'Micro physique et dictée en direct (le simulateur reconnaît un fichier audio, pas une voix).',
   'Fluidité ressentie sur un vrai téléphone.',
 ];
-const DEFAULTS = { ref: 'origin/master', platform: 'all', suites: 'production,mock,backend',
-  'ios-device': 'Noctalia QA Simulateurs', avd: 'Noctalia_QA_Simulateurs', 'min-free-gb': '30' };
-const IOS_TYPES = ['iPhone 17 Pro', 'iPhone 17', 'iPhone 16 Pro', 'iPhone 16'];
+const DEFAULTS = { ref: 'origin/master', platform: 'all', suites: 'production,mock,backend', 'wait-minutes': '30', 'min-free-gb': '30' };
 const BACKEND_PORT = 31283;
 const RECOVERY_PORT = 31284;
 
 export function parseOptions(argv) {
   const { values } = parseArgs({ args: argv, options: {
     ref: { type: 'string' }, platform: { type: 'string' }, suites: { type: 'string' },
-    'ios-device': { type: 'string' }, avd: { type: 'string' }, 'min-free-gb': { type: 'string' },
+    'wait-minutes': { type: 'string' }, 'min-free-gb': { type: 'string' },
     'no-fetch': { type: 'boolean' }, keep: { type: 'boolean' }, plan: { type: 'boolean' }, help: { type: 'boolean' },
   } });
   const options = { ...DEFAULTS, ...values };
@@ -48,15 +47,17 @@ export function parseOptions(argv) {
   if (!suites.length || suites.some(suite => !SUITES[suite])) throw new Error(`--suites takes a comma list of ${Object.keys(SUITES).join(', ')}.`);
   const minFreeGb = Number(options['min-free-gb']);
   if (!Number.isFinite(minFreeGb) || minFreeGb < 0) throw new Error('--min-free-gb takes a number.');
+  const waitMinutes = Number(options['wait-minutes']);
+  if (!Number.isInteger(waitMinutes) || waitMinutes < 1) throw new Error('--wait-minutes takes a whole number of minutes.');
   if (!/^[A-Za-z0-9._/~^@-]+$/.test(options.ref)) throw new Error('Invalid --ref.');
-  if (!/^[A-Za-z0-9._-]+$/.test(options.avd)) throw new Error('Invalid --avd name.');
   return { ref: options.ref, platforms, suites: Object.keys(SUITES).filter(suite => suites.includes(suite)),
-    iosDevice: options['ios-device'], avd: options.avd, minFreeGb, fetch: !options['no-fetch'], keep: !!options.keep,
+    waitMinutes, minFreeGb, fetch: !options['no-fetch'], keep: !!options.keep,
     plan: !!options.plan, help: !!options.help };
 }
 
 // production and mock share one generated project; the local backend needs the QA app
 // (its own bundle id) and a live stack, so it runs last, after a second generation.
+// Simlock resets each device on release, so no run inherits an app from the previous one.
 export function planSteps({ platforms, suites }) {
   const steps = [];
   for (const platform of platforms) {
@@ -68,37 +69,11 @@ export function planSteps({ platforms, suites }) {
     steps.push({ kind: 'backend-start' });
     for (const platform of platforms) {
       steps.push({ kind: 'prebuild', platform, qa: true },
-        { kind: 'build', platform, suite: 'backend' }, { kind: 'run', platform, suite: 'backend' }, { kind: 'stop-app', platform });
+        { kind: 'build', platform, suite: 'backend' }, { kind: 'run', platform, suite: 'backend' });
     }
     steps.push({ kind: 'backend-stop' });
   }
   return steps;
-}
-
-export function chooseIosSimulator(list) {
-  const version = runtime => (runtime.version ?? '0').split('.').map(Number);
-  const newer = (a, b) => { const [x, y] = [version(a), version(b)]; for (let i = 0; i < 3; i++) if ((x[i] ?? 0) !== (y[i] ?? 0)) return (y[i] ?? 0) - (x[i] ?? 0); return 0; };
-  const runtimes = (list.runtimes ?? []).filter(runtime => runtime.platform === 'iOS' && runtime.isAvailable).sort(newer);
-  for (const wanted of IOS_TYPES) {
-    for (const runtime of runtimes) {
-      const type = (runtime.supportedDeviceTypes ?? []).find(entry => entry.name === wanted);
-      if (type) return { runtime: runtime.identifier, deviceType: type.identifier, label: `${type.name}, iOS ${runtime.version}` };
-    }
-  }
-  // A foldable lays several screens out differently; the journeys target a classic iPhone.
-  for (const runtime of runtimes) {
-    const type = (runtime.supportedDeviceTypes ?? []).find(entry => entry.productFamily === 'iPhone' && !/Duo|Fold/i.test(entry.name));
-    if (type) return { runtime: runtime.identifier, deviceType: type.identifier, label: `${type.name}, iOS ${runtime.version}` };
-  }
-  throw new Error('NO_IOS_SIMULATOR_RUNTIME: install an iOS Simulator runtime in Xcode > Settings > Components.');
-}
-
-export function chooseSystemImage(paths, arch = 'arm64-v8a') {
-  const images = paths.map(path => path.split('/').filter(Boolean).slice(-3))
-    .filter(([api, tag, abi]) => /^android-\d+$/.test(api ?? '') && /^google_apis(_playstore)?$/.test(tag ?? '') && abi === arch)
-    .sort((a, b) => Number(b[0].slice(8)) - Number(a[0].slice(8)) || (a[1] === 'google_apis' ? -1 : 1));
-  if (!images.length) throw new Error(`NO_ANDROID_SYSTEM_IMAGE: install a Google APIs ${arch} image with the Android SDK Manager.`);
-  return `system-images;${images[0].join(';')}`;
 }
 
 // The generated projects enable expo-updates; a qualified Release runs its embedded bundle.
@@ -123,12 +98,13 @@ export function suiteBuildEnv(suite, { easProduction = {}, backend } = {}) {
   return { E2E_BUILD_PROFILE: 'local-backend', E2E_NATIVE_JOURNEYS: '1', E2E_NATIVE_BACKEND_MANIFEST: backend.manifestFile };
 }
 
-export function buildCommand(platform, { scheme, udid, suite }) {
+export function buildCommand(platform, { scheme, suite }) {
   if (platform === 'android') return { command: ['./gradlew', ':app:assembleRelease', '--no-daemon', '-PreactNativeArchitectures=arm64-v8a'],
     binary: 'android/app/build/outputs/apk/release/app-release.apk' };
+  // The leased Simulator is known only at run time; the Mac mini's pool is Apple silicon.
   // Ad hoc signing gives the Simulator app its entitlements (keychain, app group).
   return { command: ['xcodebuild', '-workspace', `ios/${scheme}.xcworkspace`, '-scheme', scheme, '-configuration', 'Release',
-    '-sdk', 'iphonesimulator', '-destination', `id=${udid}`, '-derivedDataPath', `ios/build/${suite}`,
+    '-sdk', 'iphonesimulator', '-destination', 'generic/platform=iOS Simulator', 'ARCHS=arm64', '-derivedDataPath', `ios/build/${suite}`,
     'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGN_IDENTITY=-', 'build'],
   binary: `ios/build/${suite}/Build/Products/Release-iphonesimulator/${scheme}.app` };
 }
@@ -154,9 +130,10 @@ export function readRun(dir) {
   const summary = run?.summary ?? {};
   const failures = (run?.results ?? []).filter(result => result.selected && !['passed', 'skipped'].includes(result.status))
     .map(result => (result.titlePath ?? [result.title ?? result.testId]).join(' > '));
+  const lease = end?.simlock;
   return { qualified: end?.applicationQualified === true, exitCode: end?.exitCode ?? null, passed: summary.passed ?? 0,
     failed: summary.failed ?? failures.length, skipped: summary.skipped ?? 0, failures,
-    errors: end?.secondaryErrors ?? [] };
+    errors: end?.secondaryErrors ?? [], device: lease ? `${lease.model}, ${lease.osVersion} (Simlock ${lease.deviceId})` : null };
 }
 
 const PLATFORM_LABEL = { ios: 'iPhone (simulateur)', android: 'Android (émulateur)' };
@@ -197,12 +174,12 @@ export function renderReport({ revision, ref, startedAt, finishedAt, platforms, 
 const HELP = `Usage: mise exec -- npm run release:simulators -- [options]
 
 Builds the candidate for the iOS Simulator and the Android emulator on this Mac,
-runs the native TesterArmy journeys and writes outputs/release-simulators/<run>/rapport.md.
+runs the native TesterArmy journeys on devices leased from Simlock and writes
+outputs/release-simulators/<run>/rapport.md.
   --ref <commit>        commit to test (default origin/master, fetched first)
   --platform <p>        ios, android or all (default all)
   --suites <list>       production,mock,backend (default all three)
-  --ios-device <name>   dedicated Simulator, created if missing (default "${DEFAULTS['ios-device']}")
-  --avd <name>          dedicated Android emulator, created if missing (default ${DEFAULTS.avd})
+  --wait-minutes <n>    how long each run waits for a Simlock device (default ${DEFAULTS['wait-minutes']})
   --min-free-gb <n>     refuse to start below this free disk space (default ${DEFAULTS['min-free-gb']})
   --no-fetch            do not fetch origin before resolving --ref
   --keep                keep the workspace (faster rerun of the same commit)
@@ -277,74 +254,16 @@ function javaHome(env) {
   throw new Error('JAVA_17_MISSING: install a JDK 17 (for example `mise use -g java@temurin-17`) for Android Release builds.');
 }
 
-function iosSimulator(name, notes) {
-  const list = JSON.parse(read('xcrun', ['simctl', 'list', '--json']));
-  const matches = Object.entries(list.devices).flatMap(([runtime, devices]) => devices
-    .filter(device => device.name === name && device.isAvailable).map(device => ({ ...device, runtime })));
-  if (matches.length > 1) throw new Error(`Several Simulators are named "${name}"; delete the extra ones in Xcode > Devices.`);
-  let udid = matches[0]?.udid;
-  let label = matches[0] && `${matches[0].deviceTypeIdentifier?.split('.').pop() ?? 'iPhone'}, ${matches[0].runtime.split('.').pop()}`;
-  if (!udid) {
-    const choice = chooseIosSimulator(list);
-    udid = read('xcrun', ['simctl', 'create', name, choice.deviceType, choice.runtime]);
-    label = choice.label;
-    notes.push(`Simulateur « ${name} » créé.`);
-  }
-  spawnSync('xcrun', ['simctl', 'boot', udid], { encoding: 'utf8' }); // Already booted is fine.
-  read('xcrun', ['simctl', 'bootstatus', udid, '-b'], { timeout: 600_000 });
-  return { udid, label: `« ${name} » (${label}, ${udid})` };
-}
-
 function androidSdk(env) {
   const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT ?? join(homedir(), 'Library/Android/sdk');
-  if (!existsSync(join(sdk, 'platform-tools/adb')) || !existsSync(join(sdk, 'emulator/emulator'))) throw new Error('ANDROID_SDK_MISSING: install Android Studio with the emulator and platform tools.');
+  if (!existsSync(join(sdk, 'platform-tools/adb'))) throw new Error('ANDROID_SDK_MISSING: install Android Studio with the platform tools.');
   return sdk;
 }
 
-async function androidEmulator(name, sdk, env, logDir, notes) {
-  const adb = join(sdk, 'platform-tools/adb'), emulator = join(sdk, 'emulator/emulator');
-  const { normalizeAvdName } = await import('../tools/e2e/native-release.mjs');
-  for (const line of read(adb, ['devices']).split('\n')) {
-    const serial = line.split('\t')[0];
-    if (!/^emulator-\d+$/.test(serial) || !line.endsWith('\tdevice')) continue;
-    try { if (normalizeAvdName(read(adb, ['-s', serial, 'emu', 'avd', 'name'])) === name) return { serial, started: false }; } catch { /* another emulator */ }
-  }
-  if (!read(emulator, ['-list-avds']).split('\n').map(line => line.trim()).includes(name)) {
-    const tools = join(sdk, 'cmdline-tools');
-    const avdmanager = existsSync(tools) && readdirSync(tools).map(version => join(tools, version, 'bin/avdmanager')).find(existsSync);
-    if (!avdmanager) throw new Error('AVDMANAGER_MISSING: install "Android SDK Command-line Tools" in Android Studio > SDK Manager.');
-    const root = join(sdk, 'system-images');
-    const images = existsSync(root) ? readdirSync(root).flatMap(api => readdirSync(join(root, api)).flatMap(tag =>
-      readdirSync(join(root, api, tag)).map(abi => `${api}/${tag}/${abi}`))) : [];
-    const image = chooseSystemImage(images);
-    const create = device => spawnSync(avdmanager, ['create', 'avd', '-n', name, '-k', image, ...(device ? ['-d', device] : [])],
-      { input: 'no\n', encoding: 'utf8', env: { ...env, JAVA_HOME: javaHome(env) } });
-    if ((create('pixel_9').status ?? 1) !== 0) {
-      const fallback = create(null);
-      if (fallback.status !== 0) throw new Error(`AVD creation failed: ${(fallback.stderr || fallback.stdout).trim().slice(-1000)}`);
-    }
-    notes.push(`Émulateur « ${name} » créé avec ${image}.`);
-  }
-  const busy = new Set(read(adb, ['devices']).split('\n').map(line => line.split('\t')[0]));
-  const port = [5580, 5582, 5584, 5586, 5588].find(candidate => !busy.has(`emulator-${candidate}`));
-  if (!port) throw new Error('No free emulator port between 5580 and 5588.');
-  const serial = `emulator-${port}`;
-  const log = openSync(join(logDir, 'emulator.log'), 'a');
-  spawn(emulator, ['-avd', name, '-port', String(port), '-no-window', '-no-audio', '-no-boot-anim', '-no-snapshot-save'],
-    { detached: true, stdio: ['ignore', log, log], env }).unref();
-  closeSync(log);
-  read(adb, ['-s', serial, 'wait-for-device'], { timeout: 300_000 });
-  const deadline = Date.now() + 600_000;
-  while (spawnSync(adb, ['-s', serial, 'shell', 'getprop', 'sys.boot_completed'], { encoding: 'utf8' }).stdout?.trim() !== '1') {
-    if (Date.now() > deadline) throw new Error(`Emulator ${name} did not finish booting in 10 minutes; see emulator.log.`);
-    await new Promise(done => setTimeout(done, 5000));
-  }
-  return { serial, started: true };
-}
-
 function cleanEnv(env) {
-  // The shell may carry a profile from another task; each step states its own.
-  return Object.fromEntries(Object.entries(env).filter(([key]) => !/^(EXPO_PUBLIC_|E2E_|NOCTALIA_)/.test(key)));
+  // The shell may carry a profile from another task; each step states its own. The Simlock
+  // settings of this machine (binary, model) pass through.
+  return Object.fromEntries(Object.entries(env).filter(([key]) => !/^(EXPO_PUBLIC_|E2E_(?!SIMLOCK_)|NOCTALIA_)/.test(key)));
 }
 
 function parseDotEnv(file) {
@@ -405,6 +324,9 @@ async function main() {
   if (options.fetch && (options.ref.startsWith('origin/') || !known()))
     read('git', ['fetch', 'origin', options.ref.replace(/^origin\//, '')], { cwd: primary });
   const revision = read('git', ['rev-parse', '--verify', '--end-of-options', `${options.ref}^{commit}`], { cwd: primary });
+  // The runs use the candidate's own runner; without Simlock it would need a named device.
+  if (spawnSync('git', ['cat-file', '-e', `${revision}:tools/e2e/simlock-native.mjs`], { cwd: primary }).status !== 0)
+    throw new Error(`${revision.slice(0, 12)} predates the Simlock reservation of tools/e2e/run.mjs (PR #645); test a commit that contains it.`);
 
   const lockFile = join(tmpdir(), 'noctalia-release-simulators.lock');
   try { const fd = openSync(lockFile, 'wx'); writeFileSync(fd, String(process.pid)); closeSync(fd); } catch (error) {
@@ -432,8 +354,7 @@ async function main() {
   const task = `release-sim-${revision.slice(0, 12)}`;
   const baseEnv = { ...cleanEnv(process.env), CI: '1' };
   let workspace = null;
-  let backend = null, stack = null, api = null, emulatorStarted = null, simulatorBooted = null;
-  const devices = {};
+  let backend = null, stack = null, api = null;
   const schemes = {};
   const onSignal = () => { stopping = true; for (const child of children) child.kill('SIGINT'); };
   // A campaign lasts hours: keep the Mac awake while this process lives.
@@ -452,19 +373,12 @@ async function main() {
     // The runs use the tested commit's runner and pins, not this checkout's.
     const { SDK_PINS } = await import(pathToFileURL(join(workspace, 'tools/e2e/qualification.mjs')).href);
     environment.push(`TesterArmy : ${Object.entries(SDK_PINS).map(([name, version]) => `${name} ${version}`).join(', ')}`);
-    if (options.platforms.includes('ios')) {
-      const simulator = iosSimulator(options.iosDevice, notes);
-      devices.ios = simulatorBooted = simulator.udid;
-      environment.push(`Xcode : ${read('xcodebuild', ['-version']).split('\n').join(', ')}`, `Simulateur iPhone : ${simulator.label}`);
-    }
+    if (options.platforms.includes('ios')) environment.push(`Xcode : ${read('xcodebuild', ['-version']).split('\n').join(', ')}`);
     if (options.platforms.includes('android')) {
       const sdk = androidSdk(baseEnv);
       Object.assign(baseEnv, { ANDROID_HOME: sdk, ANDROID_SDK_ROOT: sdk });
-      const emulator = await androidEmulator(options.avd, sdk, baseEnv, logDir, notes);
-      devices.android = emulator.serial;
-      environment.push(`Émulateur Android : « ${options.avd} » (${emulator.serial})`);
-      if (emulator.started) emulatorStarted = { adb: join(sdk, 'platform-tools/adb'), serial: emulator.serial };
     }
+    const leased = new Set();
     const receipts = {};
     for (const step of steps) {
       if (stopping) throw new Error('Interrupted.');
@@ -488,28 +402,27 @@ async function main() {
             ready: text => text.includes(`Native recovery API ready on loopback:${RECOVERY_PORT}`) });
         } else if (step.kind === 'backend-stop') {
           await stopService(api); await stopService(stack); api = stack = null;
-        } else if (step.kind === 'stop-app') {
-          if (step.platform === 'ios') spawnSync('xcrun', ['simctl', 'terminate', devices.ios, 'com.tanuki75.noctalia.qa']);
-          else spawnSync(join(baseEnv.ANDROID_HOME, 'platform-tools/adb'), ['-s', devices.android, 'shell', 'am', 'force-stop', 'com.tanuki75.noctalia.qa']);
         } else if (results[key]?.error) {
           continue; // The build of this layer failed; its run is reported as such.
         } else if (step.suite === 'backend' && !backend) {
           results[key] = { error: 'le serveur local n’a pas démarré (voir logs/backend-stack.log)' };
         } else if (step.kind === 'build') {
-          const { command, binary } = buildCommand(step.platform, { scheme: schemes[step.platform], udid: devices.ios, suite: step.suite });
+          const { command, binary } = buildCommand(step.platform, { scheme: schemes[step.platform], suite: step.suite });
           const env = { ...baseEnv, ...suiteBuildEnv(step.suite, { easProduction, backend }), EXPO_NO_DOTENV: '1', EXPO_OFFLINE: '1',
             E2E_BUILD_COMMAND: JSON.stringify(command), E2E_RELEASE_BINARY: binary };
           const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'build'], { cwd: workspace, env, log: log(`build-${step.suite}-${step.platform}.log`) });
           receipts[key] = lastPath(tail, 'Release receipt');
           if (code !== 0 || !receipts[key]) results[key] = { error: `build en échec (logs/build-${step.suite}-${step.platform}.log, puis build.log du dossier)`, dir: lastPath(tail, 'E2E evidence') };
         } else if (step.kind === 'run') {
-          const env = { ...baseEnv, E2E_DEVICE: devices[step.platform], E2E_RELEASE_RECEIPT: receipts[key],
-            ...(step.platform === 'android' ? { E2E_AVD_NAME: options.avd } : {}),
+          // No E2E_DEVICE: the runner leases a pooled device, installs the receipt's Release and releases it.
+          const env = { ...baseEnv, E2E_RELEASE_RECEIPT: receipts[key], E2E_SIMLOCK_TIMEOUT_SECONDS: String(options.waitMinutes * 60),
             ...(step.suite === 'backend' ? { E2E_NATIVE_JOURNEYS: '1', E2E_NATIVE_BACKEND_MANIFEST: backend.manifestFile } : {}) };
           const { tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'run', '--install-release', ...runSelection(step.platform, step.suite)],
             { cwd: workspace, env, log: log(`run-${step.suite}-${step.platform}.log`) });
           const dir = lastPath(tail, 'E2E evidence');
           results[key] = dir ? { ...readRun(dir), dir } : { error: `le run n’a pas démarré (logs/run-${step.suite}-${step.platform}.log)` };
+          const device = results[key].device && `${PLATFORM_LABEL[step.platform]} : ${results[key].device}`;
+          if (device && !leased.has(device)) { leased.add(device); environment.push(device); }
         }
       } catch (error) {
         if (step.kind === 'prebuild' || step.kind === 'backend-start') {
@@ -528,8 +441,6 @@ async function main() {
     process.off('SIGINT', onSignal);
     process.off('SIGTERM', onSignal);
     await stopService(api); await stopService(stack);
-    if (emulatorStarted) spawnSync(emulatorStarted.adb, ['-s', emulatorStarted.serial, 'emu', 'kill']);
-    if (simulatorBooted) spawnSync('xcrun', ['simctl', 'shutdown', simulatorBooted]);
     const runs = workspace && join(workspace, 'tools/e2e/.e2e');
     if (runs && existsSync(runs)) {
       try {
