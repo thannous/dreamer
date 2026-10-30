@@ -1,6 +1,7 @@
 /**
  * PR-gate launcher for Dreamer/Lucid/Meditation web journeys.
- * A diff with no web app zone exits 0 without a browser. A native-only diff
+ * A diff with no web app zone exits 0 without a browser, unless a Vercel AI
+ * Gateway key lets the decision model judge an unzoned Dreamer app diff. A native-only diff
  * does too: this gate has no emulator. When a zone is touched, a missing
  * pinned Node, e2e install, or Chromium exits 1. verify:pr probes the same
  * condition first and records the check unavailable, so the proof is
@@ -11,7 +12,7 @@ import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { isDreamerAppPath, isNativeJourney, zonesForFiles } from './zones.mjs';
+import { DECISION_PRODUCTS, decisionEnabled, isDreamerAppPath, isNativeJourney, zonesForFiles } from './zones.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PINNED_NODE = 'v24.22.1';
@@ -27,12 +28,18 @@ export function changedJourneyProduct(file) {
   return null;
 }
 
-export function decideParcours(files) {
+/**
+ * `model`: whether the decision model judges the parcours the zones leave out
+ * (a Vercel AI Gateway key is set). It then sees every Dreamer app diff, named
+ * zone or not, for Dreamer and Lucid, which run on the same app code.
+ */
+export function decideParcours(files, { model = decisionEnabled(process.env) } = {}) {
   const zones = zonesForFiles(files).filter(zone => zone.platform === 'web');
   // A changed journey runs even when no source zone matched: the decision
   // filter keeps it too, so a fixed or retagged journey is proved in the PR.
   const journeyProducts = files.map(changedJourneyProduct).filter(Boolean);
-  if (zones.length === 0 && journeyProducts.length === 0) {
+  const modelProducts = model && files.some(isDreamerAppPath) ? DECISION_PRODUCTS : [];
+  if (zones.length === 0 && journeyProducts.length === 0 && modelProducts.length === 0) {
     if (files.some(isNativeJourney) && !files.some(isDreamerAppPath)) {
       return {
         launch: false,
@@ -41,10 +48,10 @@ export function decideParcours(files) {
     }
     return {
       launch: false,
-      reason: 'PARCOURS SAUTE: aucun parcours nomme (capture, sauvegarde, journal, paiement, connexion, lucid, meditation) dans le diff. Une PR documentation, ou un fichier applicatif sans zone, ne lance pas de navigateur.',
+      reason: 'PARCOURS SAUTE: aucun parcours nomme (capture, sauvegarde, journal, paiement, connexion, lucid, meditation) dans le diff. Une PR documentation, ou un fichier applicatif sans zone quand AI_GATEWAY_API_KEY est absente, ne lance pas de navigateur.',
     };
   }
-  return { launch: true, products: [...new Set([...zones.map(zone => zone.product), ...journeyProducts])] };
+  return { launch: true, products: [...new Set([...zones.map(zone => zone.product), ...journeyProducts, ...modelProducts])] };
 }
 
 export function decideSmoke(files) {
@@ -104,8 +111,8 @@ function launch(root, product, extra) {
   return result.status ?? 1;
 }
 
-export function runGate(mode, root, files, ready = runnerReady(root)) {
-  const decision = mode === 'smoke' ? decideSmoke(files) : decideParcours(files);
+export function runGate(mode, root, files, ready = runnerReady(root), options = {}) {
+  const decision = mode === 'smoke' ? decideSmoke(files) : decideParcours(files, options);
   if (!decision.launch) {
     console.log(decision.reason);
     return 0;

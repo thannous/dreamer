@@ -12,14 +12,41 @@ test('docs-only and non-app diffs skip both gates', () => {
 
 test('a Dreamer recording change runs parcours and smoke on web', () => {
   const files = ['app/recording.tsx', 'README.md'];
-  assert.deepEqual(decideParcours(files).products, ['dreamer']);
+  assert.deepEqual(decideParcours(files, { model: false }).products, ['dreamer']);
   assert.deepEqual(decideSmoke(files).products, ['dreamer']);
 });
 
 test('an unmapped component runs smoke only', () => {
   const files = ['components/ui/Toast.tsx'];
-  assert.equal(decideParcours(files).launch, false);
+  assert.equal(decideParcours(files, { model: false }).launch, false);
   assert.equal(decideSmoke(files).launch, true);
+});
+
+test('with the decision model, any Dreamer app diff lets it judge the Dreamer and Lucid parcours', () => {
+  assert.deepEqual(decideParcours(['components/ui/Toast.tsx'], { model: true }).products, ['dreamer', 'lucid']);
+  assert.deepEqual(decideParcours(['app/journal/[id].tsx'], { model: true }).products, ['dreamer', 'lucid']);
+  // Lucid-only and Meditation paths keep their own zone; docs and native journeys still launch nothing.
+  assert.deepEqual(decideParcours(['routes/lucid/lucid/index.tsx'], { model: true }).products, ['lucid']);
+  assert.deepEqual(decideParcours(['apps/meditation/app/index.tsx'], { model: true }).products, ['meditation']);
+  assert.equal(decideParcours(['doc_web_interne/docs/README.md', 'AGENTS.md'], { model: true }).launch, false);
+  assert.equal(decideParcours(['tools/e2e/tests/dreamer.mobile.e2e.ts'], { model: true }).launch, false);
+  // The key turns it on.
+  const saved = process.env.AI_GATEWAY_API_KEY;
+  try {
+    process.env.AI_GATEWAY_API_KEY = 'test-key';
+    assert.equal(decideParcours(['components/ui/Toast.tsx']).launch, true);
+    process.env.AI_GATEWAY_API_KEY = '  ';
+    assert.equal(decideParcours(['components/ui/Toast.tsx']).launch, false);
+  } finally {
+    if (saved === undefined) delete process.env.AI_GATEWAY_API_KEY;
+    else process.env.AI_GATEWAY_API_KEY = saved;
+  }
+});
+
+test('a model-judged diff without the runner fails like a touched zone', () => {
+  const missing = { ok: false, reason: 'PARCOURS NON JOUE: Chromium absent' };
+  assert.equal(runGate('parcours', '/tmp', ['components/ui/Toast.tsx'], missing, { model: false }), 0);
+  assert.equal(runGate('parcours', '/tmp', ['components/ui/Toast.tsx'], missing, { model: true }), 1);
 });
 
 test('a native-only diff skips instead of failing', () => {
@@ -80,7 +107,7 @@ test('verify:pr reaches the gate for every web journey the gate would run', asyn
   // each journey the gate launches must also be in the check's scope.
   const journeys = readdirSync(new URL('./tests/', import.meta.url))
     .map(name => `tools/e2e/tests/${name}`)
-    .filter(file => decideParcours([file]).launch);
+    .filter(file => decideParcours([file], { model: false }).launch);
   assert.ok(journeys.includes('tools/e2e/tests/lucid.web.e2e.ts'));
   assert.ok(journeys.includes('tools/e2e/tests/meditation.web.e2e.ts'));
   assert.ok(journeys.includes('tools/e2e/tests/dreamer-home-editorial.web.e2e.ts'));

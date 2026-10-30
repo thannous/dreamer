@@ -1,5 +1,9 @@
 export const SMOKE_TAG: string;
 export const BUGBASH_TAG: string;
+export const UNTOUCHED: string;
+export const DECISION_KEY_ENV: string;
+export const DECISION_MODEL: string;
+export const DECISION_PRODUCTS: readonly ('dreamer' | 'lucid')[];
 export const DREAMER_APP_ROOTS: readonly string[];
 
 export interface Zone {
@@ -24,3 +28,10 @@ export function parcoursExclude(
   tests: readonly { id: string; tags: readonly string[]; file: string }[],
   files: readonly string[],
 ): { exclude: Record<string, string>; note?: string };
+
+export function decisionEnabled(env: Record<string, string | undefined>): boolean;
+
+export function widenWithDecision(
+  zones: { exclude: Record<string, string>; note?: string },
+  verdict: { exclude: Readonly<Record<string, string>>; note?: string },
+): { exclude: Record<string, string>; note: string };

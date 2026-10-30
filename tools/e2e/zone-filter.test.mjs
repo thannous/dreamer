@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL } from './persona-models.mjs';
-import { filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, zonesForFiles } from './zones.mjs';
+import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, widenWithDecision, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
 const billingSmoke = { id: 'billing-smoke', tags: ['smoke', 'zone-paiement'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -98,6 +98,58 @@ test('a full campaign does not pass --changed-since, and e2e 0.21.3 skips filter
   assert.match(slice, /filterSelection/);
   const gate = readFileSync(new URL('./run.mjs', import.meta.url), 'utf8');
   assert.match(gate, /args\[index\] === '--changed-since'/);
+});
+
+test('the decision model only takes back parcours the zones left out as untouched', () => {
+  const zones = parcoursExclude(suite, ['app/journal/[id].tsx']);
+  assert.equal(zones.exclude.home, UNTOUCHED);
+  assert.equal(zones.exclude.capture, UNTOUCHED);
+  // The model keeps `home`, leaves `capture` out, and its answer about smoke or bug bash would not count.
+  const widened = widenWithDecision(zones, { exclude: { capture: '4% likely affected', 'billing-smoke': '1% likely affected' }, note: '1 call, 9.1k tokens, $0.0004' });
+  assert.equal(widened.exclude.journal, undefined);
+  assert.equal(widened.exclude.home, undefined);
+  assert.equal(widened.exclude.capture, `${UNTOUCHED} (modele : 4% likely affected)`);
+  assert.equal(widened.exclude['billing-smoke'], 'la fumée PR joue ce parcours');
+  assert.equal(widened.exclude.bug, 'bug bash hors porte PR');
+  assert.equal(widened.note, 'journal; modele : 2 parcours hors zone repris; 1 call, 9.1k tokens, $0.0004');
+});
+
+test('the decision model is off without a gateway key and pinned to an exact Jev', () => {
+  assert.equal(DECISION_KEY_ENV, 'AI_GATEWAY_API_KEY');
+  assert.equal(decisionEnabled({}), false);
+  assert.equal(decisionEnabled({ AI_GATEWAY_API_KEY: ' ' }), false);
+  assert.equal(decisionEnabled({ AI_GATEWAY_API_KEY: 'vck_test' }), true);
+  assert.match(DECISION_MODEL, /^typesafe-ai\/jev-\d+\.\d+\.\d+$/);
+  const source = readFileSync(new URL('./decision-verdict.mjs', import.meta.url), 'utf8');
+  assert.match(source, /zeroDataRetention: true/);
+});
+
+test('the zone filter keeps the zones when the model is off or cannot answer', async () => {
+  const { parcoursTouches } = await import('./zone-filter.ts');
+  const root = '/nonexistent/noctalia';
+  const candidates = [
+    { id: 'journal', file: 'tests/dreamer-journal-filters.web.e2e.ts', titlePath: ['journal'], tags: ['zone-journal'] },
+    { id: 'home', file: 'tests/dreamer-home-editorial.web.e2e.ts', titlePath: ['home'], tags: ['historical-parity'] },
+  ];
+  const context = {
+    projectRoot: `${root}/tools/e2e`, changes: { base: 'base', root, files: ['app/journal/[id].tsx'] },
+    signal: new AbortController().signal, log() {}, redact: text => text,
+  };
+  const saved = process.env.AI_GATEWAY_API_KEY;
+  try {
+    delete process.env.AI_GATEWAY_API_KEY;
+    assert.deepEqual(await parcoursTouches.filter(candidates, context), { exclude: { home: UNTOUCHED }, note: 'journal' });
+    // With a key, a model that cannot even start (here: no repository) leaves the zones' answer, and says so.
+    process.env.AI_GATEWAY_API_KEY = 'vck_test';
+    const fallback = await parcoursTouches.filter(candidates, context);
+    assert.deepEqual(fallback.exclude, { home: UNTOUCHED });
+    assert.match(fallback.note, /^journal; modele indisponible \(.+\), zones seules$/);
+    // Nothing left out as untouched: nothing to ask.
+    assert.deepEqual(await parcoursTouches.filter(candidates.slice(0, 1), context), { exclude: {}, note: 'journal' });
+  } finally {
+    if (saved === undefined) delete process.env.AI_GATEWAY_API_KEY;
+    else process.env.AI_GATEWAY_API_KEY = saved;
+  }
 });
 
 test('persona models stay the Terra act tier and the Sol judge', () => {

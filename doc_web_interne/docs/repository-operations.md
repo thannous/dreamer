@@ -83,7 +83,7 @@ coverage and release targets; [verify-local.config.mjs](../../verify-local.confi
 is the executable source of truth.
 
 `verify:pr` also runs two local web gates when the diff touches the app, with no
-model call and no GitHub Actions minutes. `parcours-touches` maps changed paths
+GitHub Actions minutes and, by default, no model call. `parcours-touches` maps changed paths
 (`app/`, `components/`, `services/`, and the other roots in `tools/e2e/zones.mjs`)
 to e2e tags and test files, then runs `e2e run --changed-since origin/master`.
 `smoke-journeys` runs the seven tagged smoke journeys (capture, save, journal,
@@ -92,6 +92,21 @@ both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
 `tools/e2e/node_modules`, or Chromium is missing, the probe fails and the proof
 is incomplete, not passed. Rerun: `npm run test:e2e:parcours`
 and `npm run test:e2e:smoke`.
+
+Optional decision model: with a Vercel AI Gateway key in `AI_GATEWAY_API_KEY`,
+`parcours-touches` also asks the TesterArmy decision filter (Jev, pinned in
+`tools/e2e/zones.mjs`, zero-data-retention routes only) about every Dreamer and
+Lucid parcours the zones leave out, on any Dreamer app diff, named zone or not.
+The model sees the diff and the journey files, never the working tree. A
+parcours runs unless the model rates it under 20% likely affected; the zones
+stay the floor, smoke and bug-bash tests keep their own checks, and a parcours
+the model cannot judge runs. A lockfile or e2e config change makes it keep
+every parcours. If the model cannot answer at all (no route, rejected key),
+the zones decide alone and the run's filter note says so. The first verdict for
+a commit is kept under `.git/verify-cache/e2e-decision/`, so `e2e list` and
+`e2e run` select the same tests and a rerun asks nothing. Without the key the
+gate is unchanged. Cost: about $0.04 per million tokens (one call is a few
+thousand to a few tens of thousands of tokens).
 
 Before an app release, run `npm run test:bugbash:prerelease` on Dreamer web in
 mock mode (the script refuses a production Supabase ref). Each confirmed bug

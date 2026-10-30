@@ -596,10 +596,11 @@ real journeys and never establish application or physical qualification.
 
 Agent goals can be added with an authorized model provider, one goal per call
 and exact critical-outcome assertions. No provider is configured by default.
-The optional `@e2e-dev/decision` / Jev setup described in the installed
-`docs/decision-models.mdx` additionally requires `ai` 7.0.128 or later. This
-package installs neither that executor nor `ai`; exact journeys require no
-model dependency, and the upgrade does not enable a provider.
+This package pins `@e2e-dev/decision` for one use only: the optional decision
+filter of the PR parcours gate (`zones.mjs`, `decision-verdict.mjs`, installed
+`docs/filters.mdx`), which stays off until `AI_GATEWAY_API_KEY` is set. Its
+`decisionExecutor` for `agent.act` is not configured; exact journeys require no
+model dependency.
 Use a provider barrier when replay must never call a model; strict cache alone
 does not forbid a call on a cache miss. Existing Playwright, backend and
 CI checks remain until an explicitly reviewed pipeline change. Still-relevant

@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@ai-sdk/openai": "4.0.96",
+    "@e2e-dev/decision": "0.3.1",
     "@e2e-dev/mobile": "0.12.4",
     "@e2e-dev/web": "0.15.3",
     "@types/node": "^24.0.0",
