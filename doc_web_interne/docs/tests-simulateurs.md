@@ -111,11 +111,13 @@ langues, thèmes) est couvert par les simulateurs.
 ## Place dans la release
 
 1. Préparer la version et fixer le commit candidat ([versions mobiles](MOBILE_VERSIONING.md)).
-2. `npm run verify:release` sur ce commit.
-3. `npm run release:simulators -- --ref <ce commit>` sur le Mac mini : tout `OK`.
-4. Builds Store et envoi TestFlight / test interne, sur le go de Thanh.
-5. La courte session sur téléphone ci-dessus.
-6. Soumission, sur le go de Thanh.
+2. Bug bash en mode simulé (`npm run test:bugbash:prerelease`) : chaque anomalie confirmée
+   devient un test qui échoue d'abord pour la bonne raison, puis passe après correction.
+3. `npm run verify:release` sur ce commit (il rejoue aussi les tests du bug bash).
+4. `npm run release:simulators -- --ref <ce commit>` sur le Mac mini : tout `OK`.
+5. Builds Store et envoi TestFlight / test interne, sur le go de Thanh.
+6. La courte session sur téléphone ci-dessus.
+7. Soumission, sur le go de Thanh.
 
 ## Limites connues
 
