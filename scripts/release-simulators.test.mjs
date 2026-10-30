@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOptions, planSteps, chooseIosSimulator, chooseSystemImage, disableAndroidUpdates, suiteBuildEnv,
-  buildCommand, runSelection, readRun, renderReport, PHONE_ONLY } from './release-simulators.mjs';
+  buildCommand, runSelection, readRun, renderReport, iosScheme, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
 import { validateBuildCommand } from '../tools/e2e/native-release.mjs';
 
 test('defaults test origin/master on both platforms with the three layers', () => {
@@ -82,6 +82,20 @@ test('builds each layer with the profile the guarded runner accepts', () => {
   assert.deepEqual(runSelection('ios', 'backend'), ['--exclude-tag', 'native-real-dictation', '--exclude-tag', 'native-speech-file']);
   assert.deepEqual(runSelection('android', 'backend'), ['--exclude-tag', 'native-real-dictation']);
   assert.deepEqual(runSelection('ios', 'mock'), []);
+});
+
+test('names the iOS scheme from the generated project, before CocoaPods creates its workspace', () => {
+  // `expo prebuild --no-install` leaves only the template's .xcodeproj (Expo template 58.0.30).
+  assert.equal(iosScheme(['.xcode.env', 'NoctaliaQA', 'NoctaliaQA.xcodeproj', 'Podfile', 'Podfile.properties.json']), 'NoctaliaQA');
+  assert.equal(iosScheme(['Noctalia.xcodeproj', 'Noctalia.xcworkspace', 'Pods', 'Podfile.lock']), 'Noctalia');
+  assert.throws(() => iosScheme(['Podfile']), /found 0/);
+  assert.throws(() => iosScheme(['A.xcodeproj', 'B.xcodeproj']), /found 2/);
+});
+
+test('lets the workspace go with everything the campaign writes in it', () => {
+  const covered = file => WORKSPACE_REGENERABLE.some(item => file === item || file.startsWith(`${item}/`));
+  for (const file of ['node_modules/expo/package.json', 'tools/e2e/node_modules/x', 'tools/e2e/.e2e/run/end.json', 'ios/build/mock/x',
+    'android/app/build/x', '.expo/x', 'expo-env.d.ts', 'test-results/backend-e2e-cli-home/x']) assert.ok(covered(file), file);
 });
 
 test('reads a run folder and writes a French report with the phone-only list', () => {

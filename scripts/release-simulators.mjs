@@ -134,6 +134,16 @@ export function buildCommand(platform, { scheme, udid, suite }) {
 }
 
 // The runbook leaves microphone injection out on both platforms and file recognition out on iOS.
+// `prebuild --no-install` leaves only the .xcodeproj; CocoaPods adds the .xcworkspace later.
+export function iosScheme(names) {
+  const schemes = names.filter(name => name.endsWith('.xcodeproj')).map(name => name.slice(0, -'.xcodeproj'.length));
+  if (schemes.length !== 1) throw new Error(`Expected one Xcode project in ios/, found ${schemes.length}.`);
+  return schemes[0];
+}
+// test-results holds the local Supabase runtime (SUPABASE_HOME of native-backend-stack).
+export const WORKSPACE_REGENERABLE = ['node_modules', 'tools/e2e/node_modules', 'tools/e2e/.e2e', 'ios', 'android', '.expo', '.tmp',
+  'expo-env.d.ts', 'test-results'];
+
 export const runSelection = (platform, suite) => suite !== 'backend' ? []
   : ['--exclude-tag', 'native-real-dictation', ...(platform === 'ios' ? ['--exclude-tag', 'native-speech-file'] : [])];
 
@@ -357,15 +367,15 @@ function prebuild(workspace, platform, qa, env, backend, log) {
       if (found) writeFileSync(file, manifest);
       return null;
     }
-    const scheme = readdirSync(join(workspace, 'ios')).filter(name => name.endsWith('.xcworkspace')).map(name => name.slice(0, -'.xcworkspace'.length));
-    if (scheme.length !== 1) throw new Error(`Expected one Xcode workspace in ios/, found ${scheme.length}.`);
-    const expoPlist = join(workspace, 'ios', scheme[0], 'Supporting/Expo.plist');
+    const scheme = iosScheme(readdirSync(join(workspace, 'ios')));
+    const expoPlist = join(workspace, 'ios', scheme, 'Supporting/Expo.plist');
     if (existsSync(expoPlist)) read('plutil', ['-replace', 'EXUpdatesEnabled', '-bool', 'NO', expoPlist]);
     const { removeTruncatedCocoaPodsEntries } = require('./ios-native-preflight.js');
     removeTruncatedCocoaPodsEntries(process.env.CP_CACHE_DIR ?? join(homedir(), 'Library/Caches/CocoaPods'));
     const pods = await stream('pod', ['install'], { cwd: join(workspace, 'ios'), env: prebuildEnv, log });
     if (pods.code !== 0) throw new Error(`pod install failed (code ${pods.code})`);
-    return scheme[0];
+    if (!existsSync(join(workspace, 'ios', `${scheme}.xcworkspace`))) throw new Error(`pod install did not create ios/${scheme}.xcworkspace.`);
+    return scheme;
   });
 }
 
@@ -420,7 +430,6 @@ async function main() {
 
   const { prepare, release } = require('./lib/local-workspace.js');
   const task = `release-sim-${revision.slice(0, 12)}`;
-  const regenerable = ['node_modules', 'tools/e2e/node_modules', 'tools/e2e/.e2e', 'ios', 'android', '.expo', '.tmp', 'expo-env.d.ts'];
   const baseEnv = { ...cleanEnv(process.env), CI: '1' };
   let workspace = null;
   let backend = null, stack = null, api = null, emulatorStarted = null, simulatorBooted = null;
@@ -432,7 +441,7 @@ async function main() {
   process.on('SIGINT', onSignal);
   process.on('SIGTERM', onSignal);
   try {
-    workspace = prepare({ task, repo: primary, ref: revision, ownerPid: String(process.pid), regenerable }).path;
+    workspace = prepare({ task, repo: primary, ref: revision, ownerPid: String(process.pid), regenerable: WORKSPACE_REGENERABLE }).path;
     const easProduction = JSON.parse(readFileSync(join(workspace, 'eas.json'), 'utf8')).build?.production?.env ?? {};
     const log = name => join(logDir, name);
     for (const [label, argv, cwd] of [['npm ci', ['ci'], workspace], ['TesterArmy install', ['ci', '--prefix', 'tools/e2e'], workspace]]) {
