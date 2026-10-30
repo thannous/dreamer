@@ -66,7 +66,7 @@ function chatgptLoginPresent(env = process.env) {
 function explore(charter, env) {
   const cli = join(here, 'node_modules/e2e/dist/cli/bin.js');
   if (!existsSync(cli)) {
-    console.error('e2e 0.21.3 n\'est pas installe. npm run test:testerarmy:setup && npm run test:testerarmy:browsers');
+    console.error('e2e 0.22.0 n\'est pas installe. npm run test:testerarmy:setup && npm run test:testerarmy:browsers');
     return 2;
   }
   console.log(`\n# ${charter.slug}`);
