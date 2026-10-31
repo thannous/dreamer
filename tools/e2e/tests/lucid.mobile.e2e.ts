@@ -60,7 +60,8 @@ async function captureWrittenDream({ screen, device, platform }: Fixtures, note:
   await screen.getByTestId('lucid-morning-cue-not_heard', { visible: true }).tap();
   await screen.getByTestId('lucid-morning-next', { visible: true }).tap();
   await screen.getByTestId('lucid-morning-save', { visible: true }).tap();
-  await screen.getByRole('button', /^(Terminé|Done)$/, { visible: true }).tap();
+  // Android's alert shows its buttons in capitals (« DONE »).
+  await screen.getByRole('button', /^(Terminé|Done)$/i, { visible: true }).tap();
   await expect(screen.getByTestId('lucid-morning', { visible: true })).toHaveCount(0);
 }
 
@@ -85,27 +86,41 @@ test('Lucid release keeps a written morning capture after restart and lists it i
   await captureWrittenDream(fixtures, note);
   await app.restart();
   await screen.getByTestId('lucid-tab-journal', { visible: true }).tap();
-  await expect(screen.getByRole('button', `Ouvrir le rêve : ${note}`, { visible: true })).toBeVisible();
+  // Android's emulator runs Lucid in English, the iOS Simulator in French.
+  const dream = new RegExp(`^(Ouvrir le rêve : |Open dream: )${note.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+  await expect(screen.getByRole('button', dream, { visible: true })).toBeVisible();
   await app.screenshot('release-lucid-capture-persisted');
 });
 
 test('Lucid release deletes all its local data and starts again at onboarding', { tags: ['persistence'] }, async fixtures => {
-  const { app, screen } = fixtures;
+  const { app, screen, platform } = fixtures;
   await activateLucid(fixtures);
   await captureWrittenDream(fixtures, 'Fixture Lucid : une donnée à effacer.');
   await screen.getByTestId('lucid-tab-journal', { visible: true }).tap();
-  await screen.getByRole('button', 'Ouvrir le profil', { visible: true }).tap();
-  const dataRow = screen.getByRole('button', /Gestion des données/, { visible: true });
+  await screen.getByRole('button', /^(Ouvrir le profil|Open profile)$/, { visible: true }).tap();
+  // Data management is a link inside the collapsed « Ressources et contrôle » section.
+  const resources = screen.getByTestId('lucid-settings-resources', { visible: true });
+  await screen.scrollUntilVisible(resources);
+  await resources.tap();
+  const dataLabel = /Gestion des données|Data management/;
+  // iOS exposes the row as a link; Android as a group around its text.
+  const dataRow = platform === 'ios'
+    ? screen.getByRole('link', dataLabel, { visible: true })
+    : screen.getByText(dataLabel, { visible: true });
   await screen.scrollUntilVisible(dataRow);
+  // Both platforms report a partially visible row whose centre is under the floating tabs.
+  await screen.swipe({ direction: 'down' });
   await dataRow.tap();
-  const remove = screen.getByRole('button', 'Supprimer les données Lucid', { visible: true });
+  const deleteLabel = /^(Supprimer les données Lucid|Delete Lucid data)$/i;
+  const remove = screen.getByRole('button', deleteLabel, { visible: true });
   await screen.scrollUntilVisible(remove);
+  await screen.swipe({ direction: 'down' });
   await remove.tap();
   // The confirmation repeats the label: the alert's button is the last match.
-  await expect(screen.getByText('Supprimer toutes les données Lucid ?', { visible: true })).toBeVisible();
-  await screen.getByRole('button', 'Supprimer les données Lucid', { visible: true }).last().tap();
-  await expect(screen.getByText('Données Lucid supprimées', { visible: true })).toBeVisible();
-  await screen.getByRole('button', 'Terminé', { visible: true }).tap();
+  await expect(screen.getByText(/^(Supprimer toutes les données Lucid \?|Delete all Lucid data\?)$/, { visible: true })).toBeVisible();
+  await screen.getByRole('button', deleteLabel, { visible: true }).last().tap();
+  await expect(screen.getByText(/^(Données Lucid supprimées|Lucid data deleted)$/, { visible: true })).toBeVisible();
+  await screen.getByRole('button', /^(Terminé|Done)$/i, { visible: true }).tap();
   await expect(screen.getByTestId('lucid-onboarding-continue', { visible: true })).toBeDisabled();
   await app.restart();
   await expect(screen.getByTestId('lucid-onboarding-continue', { visible: true })).toBeDisabled();
