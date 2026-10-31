@@ -265,11 +265,13 @@ async function declineAiConsent(screen: TestFixtures['screen'], platform: TestFi
 /**
  * A fresh Android target offers the voice pack of a newly chosen language. The sheet opens
  * just after the tap, so it is awaited briefly rather than counted at once; iOS never shows it.
+ * Counts, not waitFor: a waitFor that times out stays a failed step, which disqualifies the run.
  */
 async function declineVoicePack(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
   if (platform !== 'android') return;
   const cancel = screen.getByTestId('btn.offline-model.cancel', { visible: true });
-  if (!await cancel.waitFor({ state: 'visible', timeout: 3_000 }).then(() => true, () => false)) return;
+  for (let wait = 0; wait < 10 && await cancel.count() === 0; wait += 1) await new Promise(resolve => setTimeout(resolve, 300));
+  if (await cancel.count() === 0) return;
   await cancel.tap();
   await expect(cancel).toHaveCount(0);
 }
@@ -408,6 +410,26 @@ for (const mode of ['light', 'dark'] as const) {
   });
 }
 
+/**
+ * Native visibility does not prove the dream page's fixed action dock leaves a control
+ * uncovered: XCTest and UIAutomator both call a covered control visible, and a tap there
+ * lands on the dock. Scroll once more when the dock overlaps it, then tap.
+ */
+async function tapClearOfActionDock(screen: TestFixtures['screen'], control: ReturnType<TestFixtures['screen']['getByTestId']>) {
+  await screen.scrollUntilVisible(control);
+  const dock = screen.getByTestId('component.dreamDetail.actionDock', { visible: true });
+  const covered = async () => {
+    const box = await control.boundingBox();
+    const overlay = await dock.count() ? await dock.boundingBox() : null;
+    if (!box) throw new Error('The control has no geometry.');
+    return !!overlay && box.x < overlay.x + overlay.width && box.x + box.width > overlay.x
+      && box.y < overlay.y + overlay.height && box.y + box.height > overlay.y;
+  };
+  if (await covered()) await screen.swipe({ direction: 'down', momentum: 'slow' });
+  if (await covered()) throw new Error('The fixed action dock still covers the control after one scroll.');
+  await control.tap();
+}
+
 for (const editor of ['metadata', 'transcript'] as const) {
   test(`Dreamer release background categorization preserves the ${editor} draft and isolates another entry`, {
     tags: ['journal-concurrency'],
@@ -446,7 +468,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(pending).toHaveCount(1);
     // One edit control opens the name and the story together; the sheet saves them.
     const button = screen.getByTestId('btn.editDream', { visible: true });
-    await screen.scrollUntilVisible(button); await button.tap();
+    await tapClearOfActionDock(screen, button);
     const input = screen.getByTestId(editor === 'metadata' ? 'input.dreamTitle' : 'input.dreamTranscript');
     const draft = editor === 'metadata' ? 'E2E personal lighthouse title' : 'E2E revised story: the lighthouse has a blue door. I climb three quiet staircases, count the windows, and see a yellow boat passing the harbour. The lamp turns slowly above me while I write down every detail before waking.';
     await input.fill(draft);
@@ -477,7 +499,8 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
     await expect(card).toHaveCount(1); await card.tap();
-    if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true })).toBeVisible();
+    // The new name shows as the page title and in the page's header.
+    if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true }).first()).toBeVisible();
     else {
       if (platform === 'ios') {
         // Scope the exact story to the single active detail, excluding AX echoes
@@ -487,11 +510,13 @@ for (const editor of ['metadata', 'transcript'] as const) {
         await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toHaveCount(1);
         await expect(detail.getByText(draft, { visible: true })).toHaveText([draft]);
       } else {
-        const transcript = screen.getByText(draft, { visible: true });
-        await screen.scrollUntilVisible(transcript); await expect(transcript).toHaveText(draft);
+        // Android exposes the drop cap's inline object after the initial, so the exact story
+        // text matches nothing: read the prose by its ID, past its first letter.
+        const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
+        await screen.scrollUntilVisible(transcript); await expect(transcript).toContainText(draft.slice(1));
       }
     }
-    await screen.scrollUntilVisible(button); await button.tap();
+    await tapClearOfActionDock(screen, button);
     if (platform === 'ios' && editor === 'transcript') {
       // Use the observed UIKit selection menu for the long multiline value.
       // The preserved fill failure retained a suffix of the previous value.
@@ -524,7 +549,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
     const other = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'The Infinite Library' });
     await expect(other).toHaveCount(1); await other.tap();
     await expect(input).toHaveCount(0);
-    await screen.scrollUntilVisible(button); await button.tap();
+    await tapClearOfActionDock(screen, button);
     await expect(input).toHaveValue(editor === 'metadata' ? SEEDED_OTHER_DREAM.title : SEEDED_OTHER_DREAM.transcript);
     await app.screenshot(`release-${editor}-other-entry-isolated`);
   });
