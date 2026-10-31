@@ -12,6 +12,7 @@ import { homedir, hostname, tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createCampaignStorage } from './campaign-storage.mjs';
 
 const require = createRequire(import.meta.url);
 const NODE = 'v24.22.1';
@@ -30,7 +31,7 @@ export const PHONE_ONLY = [
   'Micro physique et dictée en direct (le simulateur reconnaît un fichier audio, pas une voix).',
   'Fluidité ressentie sur un vrai téléphone.',
 ];
-const DEFAULTS = { ref: 'origin/master', platform: 'all', suites: 'mock', 'wait-minutes': '30', 'min-free-gb': '30' };
+const DEFAULTS = { ref: 'origin/master', platform: 'all', suites: 'mock', 'wait-minutes': '30', 'min-free-gb': '50' };
 const BACKEND_PORT = 31283;
 const RECOVERY_PORT = 31284;
 
@@ -38,6 +39,8 @@ export function parseOptions(argv) {
   const { values } = parseArgs({ args: argv, options: {
     ref: { type: 'string' }, platform: { type: 'string' }, suites: { type: 'string' },
     'wait-minutes': { type: 'string' }, 'min-free-gb': { type: 'string' },
+    'reuse-workspace': { type: 'string' }, 'release-receipt': { type: 'string' },
+    personas: { type: 'boolean' }, 'budget-gb': { type: 'string' }, 'startup-budget-gb': { type: 'string' },
     'no-fetch': { type: 'boolean' }, keep: { type: 'boolean' }, plan: { type: 'boolean' }, help: { type: 'boolean' },
   } });
   const options = { ...DEFAULTS, ...values };
@@ -46,11 +49,21 @@ export function parseOptions(argv) {
   const suites = options.suites === 'all' ? Object.keys(SUITES) : [...new Set(options.suites.split(',').map(suite => suite.trim()).filter(Boolean))];
   if (!suites.length || suites.some(suite => !SUITES[suite])) throw new Error(`--suites takes all or a comma list of ${Object.keys(SUITES).join(', ')}.`);
   const minFreeGb = Number(options['min-free-gb']);
-  if (!Number.isFinite(minFreeGb) || minFreeGb < 0) throw new Error('--min-free-gb takes a number.');
+  if (!Number.isFinite(minFreeGb) || minFreeGb < 50) throw new Error('--min-free-gb must keep at least 50 GB free.');
   const waitMinutes = Number(options['wait-minutes']);
   if (!Number.isInteger(waitMinutes) || waitMinutes < 1) throw new Error('--wait-minutes takes a whole number of minutes.');
   if (!/^[A-Za-z0-9._/~^@-]+$/.test(options.ref)) throw new Error('Invalid --ref.');
-  return { ref: options.ref, platforms, suites: Object.keys(SUITES).filter(suite => suites.includes(suite)),
+  const reuseWorkspace = options['reuse-workspace'] && resolve(options['reuse-workspace']);
+  const releaseReceipt = options['release-receipt'] && resolve(options['release-receipt']);
+  const budgetGb = Number(options['budget-gb'] ?? 0), startupBudgetGb = Number(options['startup-budget-gb'] ?? 0);
+  if (reuseWorkspace || releaseReceipt || options.personas || options['budget-gb'] || options['startup-budget-gb']) {
+    if (!reuseWorkspace || !releaseReceipt || platforms.length !== 1 || platforms[0] !== 'ios'
+      || suites.length !== 1 || suites[0] !== 'mock') throw new Error('Reuse requires --reuse-workspace, --release-receipt, --platform ios and --suites mock.');
+    if (!Number.isFinite(budgetGb) || budgetGb <= 0 || !Number.isFinite(startupBudgetGb)
+      || startupBudgetGb <= 0 || startupBudgetGb >= budgetGb) throw new Error('Declare a positive --budget-gb and a positive, smaller --startup-budget-gb.');
+  }
+  return { requestedRef: values.ref, reuseWorkspace, releaseReceipt, personas: !!options.personas, budgetGb, startupBudgetGb,
+    ref: options.ref, platforms, suites: Object.keys(SUITES).filter(suite => suites.includes(suite)),
     waitMinutes, minFreeGb, fetch: !options['no-fetch'], keep: !!options.keep,
     plan: !!options.plan, help: !!options.help };
 }
@@ -257,11 +270,144 @@ export function finishWorkspace({ workspace, reportDir, primary, task, keep, res
   return evidence;
 }
 
+export function acquireCampaignLock(path = join(tmpdir(), 'noctalia-release-simulators.lock')) {
+  try { const fd = openSync(path, 'wx'); writeFileSync(fd, String(process.pid)); closeSync(fd); }
+  catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+    const owner = Number(readFileSync(path, 'utf8'));
+    if (!Number.isSafeInteger(owner) || owner <= 0) throw new Error('Campaign lock owner is unknown; preserve it for diagnosis.');
+    try { process.kill(owner, 0); throw new Error(`Another release:simulators run (pid ${owner}) is in progress.`); }
+    catch (check) { if (check.code !== 'ESRCH') throw check; }
+    unlinkSync(path);
+    return acquireCampaignLock(path);
+  }
+  return () => { if (existsSync(path) && readFileSync(path, 'utf8') === String(process.pid)) unlinkSync(path); };
+}
+
+export function isNewRunDirectory(name, pid, before) {
+  return !before.has(name) && /^\d+-\d+-/.test(name) && name.split('-')[1] === String(pid);
+}
+
+export function reuseSteps(personas) {
+  return personas ? [{ kind: 'pilot', args: ['--tag', 'persona-morning'], expectedPassed: 1 },
+    { kind: 'remaining', args: ['--tag', 'personas', '--exclude-tag', 'persona-morning'], expectedPassed: 6 }]
+    : [{ kind: 'mock', args: ['--exclude-tag', 'contextual-backgrounds'] }];
+}
+
+export function checkReusedResult(result, expectedPassed) {
+  if (!result.qualified || result.exitCode !== 0 || result.failed || result.passed === 0
+    || (expectedPassed !== undefined && (result.passed !== expectedPassed || result.skipped !== 0))) throw new Error('REUSE_RUN_INCOMPLETE');
+}
+
+export function reuseEnvironment(options, source = process.env) {
+  const env = { ...cleanEnv(source), E2E_PERSONAS: options.personas ? '1' : '0', E2E_RELEASE_RECEIPT: options.releaseReceipt,
+    E2E_SIMLOCK_TIMEOUT_SECONDS: String(options.waitMinutes * 60) };
+  for (const key of ['E2E_DEVICE', 'SIMLOCK_IOS_DEVICE_SET', 'AGENT_DEVICE_IOS_SIMULATOR_DEVICE_SET', 'AGENT_DEVICE_STATE_DIR'])
+    if (source[key]) env[key] = source[key];
+  if (options.personas) {
+    for (const key of ['E2E_PERSONA_MODEL', 'E2E_PERSONA_ACT_MODEL', 'E2E_PERSONA_JUDGE_MODEL'])
+      if (source[key] !== undefined) env[key] = source[key];
+    delete env.OPENAI_API_KEY;
+  }
+  return env;
+}
+
+async function runReusedRelease(options) {
+  if (process.platform !== 'darwin' || process.version !== NODE) throw new Error('Reuse requires macOS and pinned Node; use mise exec.');
+  if (!/^[a-f0-9-]{36}$/i.test(process.env.E2E_DEVICE ?? '') || !process.env.SIMLOCK_IOS_DEVICE_SET
+    || !process.env.AGENT_DEVICE_STATE_DIR) throw new Error('Reuse storage attribution requires an explicitly leased E2E_DEVICE, SIMLOCK_IOS_DEVICE_SET and owned AGENT_DEVICE_STATE_DIR.');
+  const workspace = options.reuseWorkspace;
+  const revision = read('git', ['rev-parse', 'HEAD'], { cwd: workspace });
+  if (options.requestedRef && read('git', ['rev-parse', '--verify', `${options.requestedRef}^{commit}`], { cwd: workspace }) !== revision) throw new Error('REUSE_REVISION_MISMATCH');
+  if (read('git', ['status', '--porcelain'], { cwd: workspace })) throw new Error('REUSE_WORKSPACE_DIRTY');
+  // Use the preserved candidate's own guard. Its SDK checks the installed binary again.
+  const native = await import(pathToFileURL(join(workspace, 'tools/e2e/native-release.mjs')).href);
+  const receipt = JSON.parse(readFileSync(options.releaseReceipt, 'utf8'));
+  const artifact = native.binaryInputs(receipt.binary.path, 'ios');
+  native.validateReleaseReceipt(receipt, { product: 'dreamer', platform: 'ios', bundle: 'com.tanuki75.noctalia',
+    inputDigest: native.appInputs(workspace, 'dreamer').inputDigest,
+    nativeInputDigest: native.nativeInputs(workspace, 'dreamer', 'ios').digest, binaryDigest: artifact.sha256 });
+  if (receipt.profile.name !== 'mock-persistent' || !receipt.profile.mock || !receipt.profile.persistence) throw new Error('REUSE_MOCK_PROFILE');
+  const primary = dirname(read('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], { cwd: workspace }));
+  const reportDir = join(primary, 'outputs/release-simulators', `reuse-${Date.now()}-${revision.slice(0, 12)}`);
+  const sdkRoot = join(workspace, 'tools/e2e/.e2e/dreamer-ios');
+  mkdirSync(reportDir, { recursive: true }); mkdirSync(sdkRoot, { recursive: true });
+  const paths = [reportDir];
+  if (process.env.AGENT_DEVICE_STATE_DIR) {
+    mkdirSync(process.env.AGENT_DEVICE_STATE_DIR, { recursive: true });
+    paths.push(process.env.AGENT_DEVICE_STATE_DIR);
+  }
+  const budget = createCampaignStorage({ paths, freePath: primary,
+    limitBytes: Math.floor(options.budgetGb * 1e9), reservedBytes: Math.floor(options.startupBudgetGb * 1e9), minimumFreeBytes: Math.ceil(options.minFreeGb * 1e9) });
+  if (process.env.SIMLOCK_IOS_DEVICE_SET && /^[a-f0-9-]{36}$/i.test(process.env.E2E_DEVICE ?? '')) {
+    const devicePath = join(process.env.SIMLOCK_IOS_DEVICE_SET, process.env.E2E_DEVICE);
+    budget.addPath(devicePath, { chargeExisting: true });
+  }
+  const env = reuseEnvironment(options);
+  const results = [];
+  let storage, refusal, samplingError;
+  const ownedRuns = new Set();
+  const registerRun = (pid, before) => {
+    for (const name of readdirSync(sdkRoot)) if (isNewRunDirectory(name, pid, before)) {
+      const path = join(sdkRoot, name);
+      if (!ownedRuns.has(path)) { budget.addPath(path, { chargeExisting: true }); ownedRuns.add(path); }
+    }
+  };
+  const sample = () => {
+    try {
+      storage = budget.sample();
+      writeFileSync(join(reportDir, 'storage.json'), JSON.stringify(storage, null, 2) + '\n');
+      if (storage.refusal && !refusal) { refusal = storage.refusal; for (const child of children) child.kill('SIGINT'); }
+    } catch (error) { samplingError = error; for (const child of children) child.kill('SIGINT'); }
+  };
+  const interrupted = () => { stopping = true; for (const child of children) child.kill('SIGINT'); };
+  process.on('SIGINT', interrupted); process.on('SIGTERM', interrupted);
+  sample();
+  const timer = setInterval(sample, 1000);
+  let failure;
+  try {
+    for (const step of reuseSteps(options.personas)) {
+      if (refusal || samplingError || stopping) throw new Error(refusal ?? samplingError?.message ?? 'Interrupted');
+      const before = new Set(readdirSync(sdkRoot));
+      const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', 'ios', 'run', '--install-release', ...step.args],
+        { cwd: workspace, env, log: join(reportDir, `${step.kind}.log`), onSpawn: pid => {
+          const observe = () => {
+            try { registerRun(pid, before); } catch (error) { samplingError = error; for (const child of children) child.kill('SIGINT'); }
+          };
+          const poll = setInterval(observe, 250);
+          return () => { clearInterval(poll); observe(); };
+        } });
+      const dir = lastPath(tail, 'E2E evidence');
+      const result = { ...readRun(dir), dir, stage: step.kind, wrapperExitCode: code };
+      result.diagnostic = !dir || !existsSync(join(dir, 'report.json')) ? tail.slice(-4000) : undefined;
+      results.push(result); sample();
+      if (refusal || samplingError || stopping || code !== 0) throw new Error(refusal ?? samplingError?.message ?? `Run failed: ${code}${result.diagnostic ? ': ' + result.diagnostic.trim() : ''}`);
+      checkReusedResult(result, step.expectedPassed);
+    }
+  } catch (error) { failure = error.message; }
+  finally {
+    clearInterval(timer); process.off('SIGINT', interrupted); process.off('SIGTERM', interrupted);
+    sample();
+    failure ??= refusal ?? samplingError?.message;
+    const passed = !failure && results.length === reuseSteps(options.personas).length;
+    writeFileSync(join(reportDir, 'receipt.json'), JSON.stringify({ revision, releaseReceipt: options.releaseReceipt,
+      buildSource: receipt.source.revision, reusedBuild: true, passed, failure: failure ?? null, storage, results }, null, 2) + '\n');
+    writeFileSync(join(reportDir, 'rapport.md'), `# Reprise iPhone : ${revision}\n\n${passed ? 'Périmètre sélectionné passé.' : 'Campagne incomplète ou en échec : ' + failure}\n\nRelease réutilisée : ${options.releaseReceipt}\n\n${results.map(r => `- ${r.stage} : ${r.passed} réussis, ${r.failed} échecs, ${r.skipped} non exécutés ; preuves : ${r.dir}`).join('\n')}\n\nStockage : estimation des allocations propres, préparation réservée séparément ; caches partagés non attribués. La réserve globale reste indépendante. Voir storage.json et receipt.json.\n`);
+    console.log(`Rapport : ${join(reportDir, 'rapport.md')}`);
+  }
+  return failure ? 1 : 0;
+}
+
 const HELP = `Usage: mise exec -- npm run release:simulators -- [options]
 
 Builds the candidate for the iOS Simulator and the Android emulator on this Mac,
 runs the native TesterArmy journeys on devices leased from Simlock and writes
 outputs/release-simulators/<run>/rapport.md.
+  --reuse-workspace <path>  preserved candidate checkout; no install, prebuild or build
+  --release-receipt <path>  existing compatible Release (reuse: iOS mock only)
+  --personas            reuse: one existing pilot, then six remaining personas
+  --budget-gb <n>       reuse: explicitly authorized campaign budget, in decimal GB
+  --startup-budget-gb <n> reuse: reserve for pool/driver preparation outside owned paths
   --ref <commit>        commit to test (default origin/master, fetched first)
   --platform <p>        ios, android or all (default all)
   --suites <list>       all, or a list of production,mock,backend (default mock: the user
@@ -283,17 +429,18 @@ function read(executable, argv, options = {}) {
 
 const children = new Set();
 let stopping = false;
-function stream(executable, argv, { cwd, env, log }) {
+function stream(executable, argv, { cwd, env, log, onSpawn }) {
   return new Promise((resolvePromise, reject) => {
     const out = createWriteStream(log, { flags: 'a' });
     const child = spawn(executable, argv, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'] });
     children.add(child);
+    const stopObserving = onSpawn?.(child.pid);
     let tail = '';
     const relay = target => chunk => { target.write(chunk); out.write(chunk); tail = (tail + chunk).slice(-20000); };
     child.stdout.on('data', relay(process.stdout));
     child.stderr.on('data', relay(process.stderr));
-    child.once('error', reject);
-    child.once('close', code => { children.delete(child); out.end(); resolvePromise({ code: code ?? 1, tail }); });
+    child.once('error', error => { stopObserving?.(); reject(error); });
+    child.once('close', code => { stopObserving?.(); children.delete(child); out.end(); resolvePromise({ code: code ?? 1, tail }); });
   });
 }
 
@@ -398,10 +545,14 @@ function lastPath(tail, label) {
 async function main() {
   const options = parseOptions(process.argv.slice(2));
   if (options.help) { console.log(HELP); return 0; }
-  const steps = planSteps(options);
+  const steps = options.reuseWorkspace ? reuseSteps(options.personas) : planSteps(options);
   if (options.plan) {
     for (const step of steps) console.log([step.kind, step.platform, step.suite ?? (step.qa ? 'qa-app' : step.qa === false ? 'app' : '')].filter(Boolean).join(' '));
     return 0;
+  }
+  if (options.reuseWorkspace) {
+    const unlock = acquireCampaignLock();
+    try { return await runReusedRelease(options); } finally { unlock(); }
   }
   if (process.platform !== 'darwin') throw new Error('Run this on the Mac mini: the iOS Simulator needs macOS.');
   if (process.version !== NODE) throw new Error(`Node ${NODE} is required: run it through \`mise exec -- npm run release:simulators\`.`);
@@ -420,15 +571,7 @@ async function main() {
   if (spawnSync('git', ['cat-file', '-e', `${revision}:tools/e2e/simlock-native.mjs`], { cwd: primary }).status !== 0)
     throw new Error(`${revision.slice(0, 12)} predates the Simlock reservation of tools/e2e/run.mjs (PR #645); test a commit that contains it.`);
 
-  const lockFile = join(tmpdir(), 'noctalia-release-simulators.lock');
-  try { const fd = openSync(lockFile, 'wx'); writeFileSync(fd, String(process.pid)); closeSync(fd); } catch (error) {
-    if (error.code !== 'EEXIST') throw error;
-    const owner = Number(readFileSync(lockFile, 'utf8'));
-    let alive = false;
-    try { process.kill(owner, 0); alive = true; } catch { /* stale */ }
-    if (alive) throw new Error(`Another release:simulators run (pid ${owner}) is in progress.`);
-    writeFileSync(lockFile, String(process.pid));
-  }
+  const unlock = acquireCampaignLock();
 
   const stamp = new Date().toISOString().slice(0, 16).replace(/[-:]/g, '').replace('T', '-');
   const reportDir = join(primary, 'outputs/release-simulators', `${stamp}-${revision.slice(0, 12)}`);
@@ -544,7 +687,7 @@ async function main() {
     evidence = finishWorkspace({ workspace, reportDir, primary, task, keep: options.keep, results, notes, releaseWorkspace: release });
     finishedAt = new Date().toISOString();
     report();
-    try { unlinkSync(lockFile); } catch { /* already gone */ }
+    unlock();
   }
   console.log(`\nRapport : ${reportFile}`);
   const all = options.suites.flatMap(suite => options.platforms.map(platform => results[`${suite}:${platform}`]));

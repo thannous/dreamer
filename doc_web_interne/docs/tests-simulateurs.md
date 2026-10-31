@@ -18,7 +18,7 @@ contenir la réservation Simlock de `tools/e2e/run.mjs` ; un commit plus ancien 
 refusé.
 
 Par défaut, elle joue les parcours utilisateurs (couche compte et achats simulés) sur
-iPhone et sur Android : compter environ 40 minutes et 30 Go libres sur le disque.
+iPhone et sur Android : compter environ 40 minutes et 50 Go libres sur le disque.
 `--suites all` ajoute la configuration production et le serveur local réel (six builds
 au lieu de deux, 1 h 30 à 2 h 30 estimées). Le Mac reste éveillé tant que la commande
 tourne. `--plan` affiche les étapes sans rien lancer ; `--platform ios` limite la
@@ -156,3 +156,51 @@ deux vérifications ne font pas encore partie de la commande.
   [checklist Android](android-release-checklist.md#parcours-de-release-testerarmy-émulateur).
 - Le build iOS local n'a pas la clé RevenueCat iOS (elle vit dans EAS) : l'offre Plus
   s'affiche sans prix réels dans la couche production.
+
+
+## Reprendre une Release iPhone compatible
+
+Dans ce mode budgété, la cible QA doit déjà être louée et explicitement fournie
+par `E2E_DEVICE`, `SIMLOCK_IOS_DEVICE_SET` et un `AGENT_DEVICE_STATE_DIR` propre à
+l’invocation. Le cycle Simlock doit rester sous le même propriétaire ; la commande
+refuse une attribution incomplète. Les campagnes ordinaires gardent leur réservation
+automatique.
+
+Le lanceur peut utiliser un checkout conservé et son reçu sans réinstaller les
+packages, régénérer le projet ou recompiler. Il vérifie les empreintes applicatives,
+natives et du binaire avec les contrôles du candidat ; une incompatibilité refuse
+la reprise et demande un build explicite, sans déclencher un build caché.
+
+```sh
+mise exec -- npm run release:simulators -- --platform ios --suites mock \
+  --reuse-workspace /chemin/du/checkout-conserve \
+  --release-receipt /chemin/du/release.json \
+  --budget-gb 10 --startup-budget-gb 4 --personas
+```
+
+Les nombres sont des Go décimaux et doivent correspondre au budget autorisé pour
+la campagne, déclarée auparavant avec Storage Guard. Les premiers 6 Go étaient une autorisation temporaire du propriétaire, passée de
+4 à 6 Go ; ce n'est pas une exigence iOS ou TesterArmy. Le 31 octobre 2026, le
+propriétaire a ensuite autorisé 10 Go pour cette campagne et abaissé explicitement
+la réserve globale à 50 Go dans le thread Astra, avec une seule reprise coordonnée.
+Storage Guard limite ordinairement les estimations à 500 Mo et exige 50 Go libres.
+Sa configuration spécifique au pool Simlock est distincte. Il journalise et protège
+les preuves ; il n'interrompt ni ne nettoie automatiquement les tests.
+
+Le lanceur surveille séparément la réserve globale et une estimation de croissance
+des fichiers alloués dans les sorties de la campagne. Une écriture ou suppression
+externe ne dépense ni ne rembourse ce budget. La préparation hors de ces chemins
+(caches partagés, préparation du pilote) est réservée explicitement par `--startup-budget-gb`, sur la
+base des observations du pool ; les caches partagés restent non attribués. Cette
+estimation ne constitue pas un quota physique APFS. Le chemin exact d'un appareil
+iOS explicitement loué est compté dès le démarrage ; les sorties SDK sont attribuées
+au PID de notre enfant, sans compter les runs voisins. Une marge de 250 Mo au plus
+précède le plafond estimé. Les modes ordinaires et reprise partagent le même verrou
+de campagne pour éviter deux pilotes concurrents. Le reçu distingue les deux
+mesures et référence les médias SDK conservés sur place, sans déplacer le checkout
+emprunté ou ses anciennes preuves. Une pression globale sous 50 Go interrompt le run.
+
+`--personas` sert à stabiliser une reprise : le persona existant `persona-morning`
+est exécuté une fois, puis les six autres seulement si le pilote est qualifié.
+Le pilote seul ne prouve que 1/7. Ce découpage n'ajoute pas de contrôle obligatoire
+aux campagnes ordinaires. Sans ce flag, la reprise joue le périmètre mock standard.
