@@ -132,18 +132,15 @@ export function buildCommand(platform, { scheme, suite }) {
   binary: `ios/build/${suite}/Build/Products/Release-iphonesimulator/${scheme}.app` };
 }
 
-// After a prebuild, iOS builds keep rewriting native inputs for a while (prebuilt Expo pods switch to
-// Release, then dSYM UUID plists appear), which the runner refuses as BUILD_INPUTS_CHANGED. Build
-// outside it until its native-input digest stops moving.
-export async function settleNativeInputs(build, inputDigest, maxBuilds = 4) {
-  let before = inputDigest();
-  for (let attempt = 1; attempt <= maxBuilds; attempt += 1) {
-    if (await build(attempt) !== 0) return { ok: false, failed: attempt };
-    const after = inputDigest();
-    if (after === before) return { ok: true };
-    before = after;
+// After a prebuild, the first iOS builds still add native files (prebuilt Expo pods switch to
+// Release, then dSYM UUID plists under ios/Pods that only the runner's build environment writes),
+// and the runner refuses a build whose native inputs moved during it. Build again through the
+// runner until it accepts one; any other refusal stands.
+export async function buildUntilAccepted(build, maxBuilds = 4) {
+  for (let attempt = 1; ; attempt += 1) {
+    const result = await build(attempt);
+    if (!result.refusals?.includes('BUILD_INPUTS_CHANGED') || attempt === maxBuilds) return { ...result, attempts: attempt };
   }
-  return { ok: false, unsettled: true };
 }
 
 // The runbook leaves microphone injection out on both platforms and file recognition out on iOS.
@@ -161,6 +158,10 @@ export const WORKSPACE_REGENERABLE = ['node_modules', 'tools/e2e/node_modules', 
 export const runSelection = (platform, suite) => suite === 'production' ? []
   : suite === 'mock' ? ['--exclude-tag', 'contextual-backgrounds']
     : ['--exclude-tag', 'native-real-dictation', ...(platform === 'ios' ? ['--exclude-tag', 'native-speech-file'] : [])];
+
+export function readRefusals(dir) {
+  try { return JSON.parse(readFileSync(join(dir, 'end.json'), 'utf8')).secondaryErrors ?? []; } catch { return []; }
+}
 
 export function readRun(dir) {
   const read = file => { try { return JSON.parse(readFileSync(join(dir, file), 'utf8')); } catch { return null; } };
@@ -427,7 +428,6 @@ async function main() {
     if (options.platforms.includes('android')) baseEnv.JAVA_HOME = javaHome(baseEnv);
     // The runs use the tested commit's runner and pins, not this checkout's.
     const { SDK_PINS } = await import(pathToFileURL(join(workspace, 'tools/e2e/qualification.mjs')).href);
-    const { nativeInputs } = await import(pathToFileURL(join(workspace, 'tools/e2e/native-release.mjs')).href);
     environment.push(`TesterArmy : ${Object.entries(SDK_PINS).map(([name, version]) => `${name} ${version}`).join(', ')}`);
     if (options.platforms.includes('ios')) environment.push(`Xcode : ${read('xcodebuild', ['-version']).split('\n').join(', ')}`);
     if (options.platforms.includes('android')) {
@@ -466,21 +466,17 @@ async function main() {
           const { command, binary } = buildCommand(step.platform, { scheme: schemes[step.platform], suite: step.suite });
           const env = { ...baseEnv, ...suiteBuildEnv(step.suite, { easProduction, backend }), EXPO_NO_DOTENV: '1', EXPO_OFFLINE: '1',
             E2E_BUILD_COMMAND: JSON.stringify(command), E2E_RELEASE_BINARY: binary };
-          if (step.platform === 'ios') {
-            // Each layer builds into its own DerivedData, so settle before every iOS runner build.
-            const warmLog = `build-warmup-${step.suite}-ios.log`;
-            const settled = await settleNativeInputs(
-              async () => (await stream(command[0], command.slice(1), { cwd: workspace, env, log: log(warmLog) })).code,
-              () => nativeInputs(workspace, 'dreamer', 'ios').digest);
-            if (!settled.ok) {
-              results[key] = stepFailure(settled.unsettled ? `les fichiers natifs changent encore après 4 builds de préparation (logs/${warmLog})`
-                : `build de préparation en échec (logs/${warmLog})`, stopping);
-              report(); return;
-            }
+          const buildLog = `build-${step.suite}-${step.platform}.log`;
+          const built = await buildUntilAccepted(async () => {
+            const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'build'], { cwd: workspace, env, log: log(buildLog) });
+            const dir = lastPath(tail, 'E2E evidence');
+            return { code, tail, dir, refusals: stopping ? [] : readRefusals(dir) };
+          });
+          receipts[key] = lastPath(built.tail, 'Release receipt');
+          if (built.code !== 0 || !receipts[key]) {
+            const why = built.refusals.length ? `${built.refusals.join(', ')}${built.attempts > 1 ? ` après ${built.attempts} essais` : ''}, ` : '';
+            results[key] = { ...stepFailure(`build en échec (${why}logs/${buildLog}, puis build.log du dossier)`, stopping), dir: built.dir };
           }
-          const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'build'], { cwd: workspace, env, log: log(`build-${step.suite}-${step.platform}.log`) });
-          receipts[key] = lastPath(tail, 'Release receipt');
-          if (code !== 0 || !receipts[key]) results[key] = { ...stepFailure(`build en échec (logs/build-${step.suite}-${step.platform}.log, puis build.log du dossier)`, stopping), dir: lastPath(tail, 'E2E evidence') };
         } else if (step.kind === 'run') {
           // No E2E_DEVICE: the runner leases a pooled device, installs the receipt's Release and releases it.
           const env = { ...baseEnv, E2E_RELEASE_RECEIPT: receipts[key], E2E_SIMLOCK_TIMEOUT_SECONDS: String(options.waitMinutes * 60),

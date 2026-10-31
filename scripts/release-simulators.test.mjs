@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOptions, planSteps, runPlan, cleanEnv, stepFailure, disableAndroidUpdates, suiteBuildEnv,
-  buildCommand, runSelection, readRun, renderReport, iosScheme, settleNativeInputs, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
+  buildCommand, runSelection, readRun, renderReport, iosScheme, buildUntilAccepted, readRefusals, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
 import { validateBuildCommand } from '../tools/e2e/native-release.mjs';
 
 test('defaults to the user journeys on both platforms, the other layers on demand', () => {
@@ -122,18 +122,22 @@ test('builds each layer with the profile the guarded runner accepts', () => {
   assert.deepEqual(gradle.slice(1, 4), [':app:createBundleReleaseJsAndAssets', '--rerun', ':app:assembleRelease']);
 });
 
-test('builds iOS until the runner sees no native input move, then hands over', async () => {
-  // Lucid/Méditation run, 2026-10-31: one warm-up switched the Expo pods to Release, the next build
-  // still added dSYM UUID plists, so the runner's first build was refused (3 times out of 3).
-  const settle = (digests, codes = []) => {
-    const seen = [...digests], builds = [];
-    return settleNativeInputs(async attempt => { builds.push(attempt); return codes[attempt - 1] ?? 0; }, () => seen.shift())
-      .then(result => ({ ...result, builds }));
+test('rebuilds through the runner until it accepts a build whose native inputs held still', async () => {
+  // Mac mini, 2026-10-31: xcodebuild warm-ups outside the runner settled, yet the runner's own build
+  // still added dSYM UUID plists under ios/Pods and was refused (BUILD_INPUTS_CHANGED), as in the
+  // Lucid/Méditation runs where the runner's second build passed. Only its environment writes them.
+  const builds = outcomes => {
+    const calls = [];
+    return buildUntilAccepted(async attempt => { calls.push(attempt); return outcomes[attempt - 1]; })
+      .then(result => ({ ...result, calls }));
   };
-  assert.deepEqual(await settle(['fresh', 'release', 'plists', 'plists']), { ok: true, builds: [1, 2, 3] });
-  assert.deepEqual(await settle(['same', 'same']), { ok: true, builds: [1] });
-  assert.deepEqual(await settle(['a', 'b'], [0, 65]), { ok: false, failed: 2, builds: [1, 2] });
-  assert.deepEqual(await settle(['a', 'b', 'c', 'd', 'e']), { ok: false, unsettled: true, builds: [1, 2, 3, 4] });
+  const moved = { code: 1, refusals: ['BUILD_INPUTS_CHANGED'] }, ok = { code: 0, refusals: [] };
+  assert.deepEqual(await builds([moved, moved, ok]), { ...ok, attempts: 3, calls: [1, 2, 3] });
+  assert.deepEqual(await builds([ok]), { ...ok, attempts: 1, calls: [1] });
+  // Any other refusal is a real failure, reported at once.
+  const broken = { code: 1, refusals: ['BUILD_PROFILE_IDENTITY'] };
+  assert.deepEqual(await builds([moved, broken]), { ...broken, attempts: 2, calls: [1, 2] });
+  assert.deepEqual(await builds([moved, moved, moved, moved, ok]), { ...moved, attempts: 4, calls: [1, 2, 3, 4] });
 });
 
 test('names the iOS scheme from the generated project, before CocoaPods creates its workspace', () => {
@@ -161,12 +165,18 @@ test('reads a run folder and writes a French report with the phone-only list', (
         { status: 'failed', error: { code: 'ASSERTION_FAILED', message: 'expect.toBeChecked failed\nlocator: getByRole("radio")', source: { file: 'tests/dreamer.mobile.e2e.ts', line: 59, column: 3 } } }] },
       { selected: true, status: 'skipped', titlePath: ['skip'] },
     ] } }));
+    assert.deepEqual(readRefusals(dir), []);
+    assert.deepEqual(readRefusals(join(dir, 'missing')), []);
     const failed = readRun(dir);
     assert.deepEqual([failed.qualified, failed.passed, failed.failed, failed.skipped], [false, 8, 1, 4]);
     assert.equal(failed.device, 'iPhone 17 Pro, 27.1 (Simlock ios-1)');
     assert.deepEqual(failed.failures, ['Dreamer release drawer Plus opens its offer and closes back to Capture']);
     // The report names the failing assertion, so nine failures with one cause read as one.
     assert.deepEqual(failed.causes, [{ text: 'ASSERTION_FAILED: expect.toBeChecked failed (tests/dreamer.mobile.e2e.ts:59)', count: 1 }]);
+    const refused = mkdtempSync(join(tmpdir(), 'release-simulators-build-'));
+    writeFileSync(join(refused, 'end.json'), JSON.stringify({ exitCode: 3, secondaryErrors: ['BUILD_INPUTS_CHANGED'] }));
+    assert.deepEqual(readRefusals(refused), ['BUILD_INPUTS_CHANGED']);
+    rmSync(refused, { recursive: true, force: true });
     assert.deepEqual(readRun(join(dir, 'missing')), { qualified: false, exitCode: null, passed: 0, failed: 0, skipped: 0, failures: [], causes: [], errors: [], device: null });
 
     const results = { 'production:ios': { qualified: true, passed: 9, failed: 0, skipped: 3 }, 'production:android': { ...failed, dir: 'outputs/x/e2e/run' } };
