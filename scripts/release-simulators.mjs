@@ -100,7 +100,9 @@ export function suiteBuildEnv(suite, { easProduction = {}, backend } = {}) {
 
 export function buildCommand(platform, { scheme, suite }) {
   // Three Release builds in a row exhausted Gradle's Metaspace on the Mac mini (3.8.0 run).
-  if (platform === 'android') return { command: ['./gradlew', ':app:assembleRelease', '--no-daemon', '--max-workers=4',
+  // The layers share one Gradle project and RN's bundle task only declares JS/TS inputs, so rerun it
+  // or the mock APK keeps the production bundle (same fix as build-android-release-local.js).
+  if (platform === 'android') return { command: ['./gradlew', ':app:createBundleReleaseJsAndAssets', '--rerun', ':app:assembleRelease', '--no-daemon', '--max-workers=4',
     '-Dorg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1536m', '-PreactNativeArchitectures=arm64-v8a'],
     binary: 'android/app/build/outputs/apk/release/app-release.apk' };
   // The leased Simulator is known only at run time; the Mac mini's pool is Apple silicon.

@@ -70,6 +70,8 @@ test('builds each layer with the profile the guarded runner accepts', () => {
   const gradle = buildCommand('android', { suite: 'mock' }).command;
   assert.ok(gradle.includes('--max-workers=4'));
   assert.ok(gradle.includes('-Dorg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1536m'));
+  // Production and mock share one Gradle project, and the bundle task does not see EXPO_PUBLIC_* changes.
+  assert.deepEqual(gradle.slice(1, 4), [':app:createBundleReleaseJsAndAssets', '--rerun', ':app:assembleRelease']);
 });
 
 test('names the iOS scheme from the generated project, before CocoaPods creates its workspace', () => {
