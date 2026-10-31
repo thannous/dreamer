@@ -47,7 +47,7 @@ the runner continues independent steps so their evidence is still available.
 | Marketing site | `test:testerarmy:site -- run` | Generated multilingual pages and interactions; run `docs:build` first. |
 | Real local backend | `test:e2e:backend` | Owned disposable Supabase Auth/Postgres/PostgREST: durability, account isolation, offline recovery, server quotas, theme compatibility and Apple-token privacy. |
 | Optional hosted test branch | `test:e2e:branch` | Saved free/premium sessions; production and unlisted targets fail before network access. |
-| Native Release | `test:testerarmy:mobile -- <dreamer\|lucid\|meditation> <android\|ios> run` | One identified Release build on one owned emulator/Simulator, with explicit device and Release receipt. |
+| Native Release | `test:testerarmy:mobile -- <dreamer\|lucid\|meditation> <android\|ios> run` | One identified Release and one owned emulator/Simulator: automatically leased with Simlock when `E2E_DEVICE` is unset, or explicitly selected. |
 
 Use `--grep` or `--tag` to select a focused journey, for example:
 
