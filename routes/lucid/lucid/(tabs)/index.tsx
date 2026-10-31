@@ -630,6 +630,35 @@ export default function LucidTodayScreen() {
           </Text>
         </PressableScale>
 
+        {/* Right under the main action: Night has no tab, so this row is its only entry,
+            and lower down it sat under the floating tab bar on a first look (iPhone 17). */}
+        <View style={styles.contextActions} testID="lucid-today-shortcuts">
+          <View style={styles.secondaryContexts}>
+            {contextActions.map((action) => (
+              <PressableScale
+                key={action.key}
+                accessibilityLabel={action.accessibilityLabel}
+                accessibilityRole="button"
+                onPress={() => router.push(action.route)}
+                testID={action.testID}
+                style={[
+                  styles.contextAction,
+                  { backgroundColor: palette.surface, borderColor: palette.borderInteractive },
+                ]}
+              >
+                <Ionicons
+                  color={action.key === 'morning' ? palette.amber : palette.accent}
+                  name={action.icon}
+                  size={LucidIcon.md}
+                />
+                <Text style={[styles.contextLabel, { color: palette.text }]}>
+                  {action.label}
+                </Text>
+              </PressableScale>
+            ))}
+          </View>
+        </View>
+
         <LucidDayThread
           current={dayPhase}
           label={copy.phaseLabel(copy.phases[dayPhase])}
@@ -779,32 +808,6 @@ export default function LucidTodayScreen() {
           </View>
         </View>
 
-        <View style={styles.contextActions} testID="lucid-today-shortcuts">
-          <View style={styles.secondaryContexts}>
-            {contextActions.map((action) => (
-            <PressableScale
-              key={action.key}
-              accessibilityLabel={action.accessibilityLabel}
-              accessibilityRole="button"
-              onPress={() => router.push(action.route)}
-              testID={action.testID}
-              style={[
-                styles.contextAction,
-                { backgroundColor: palette.surface, borderColor: palette.borderInteractive },
-              ]}
-            >
-              <Ionicons
-                color={action.key === 'morning' ? palette.amber : palette.accent}
-                name={action.icon}
-                size={LucidIcon.md}
-              />
-              <Text style={[styles.contextLabel, { color: palette.text }]}>
-                {action.label}
-              </Text>
-            </PressableScale>
-            ))}
-          </View>
-        </View>
       </Reveal>
     </LucidScreen>
   );

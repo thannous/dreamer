@@ -72,13 +72,16 @@ bash en environnement simulé avant une release.
    range les preuves complètes dans le dossier `e2e/` à côté et les journaux dans
    `logs/`.
 5. Elle libère l'espace de travail à la fin (`--keep` le garde pour relancer le même
-   commit plus vite).
+   commit plus vite). Si le déplacement des preuves échoue, elle conserve cet espace
+   et indique le chemin des preuves dans le rapport.
 
 Une seule campagne tourne à la fois sur le Mac ; une deuxième est refusée.
 
 Le rapport sert de preuve : il nomme le commit, l'environnement (Mac, Xcode, appareils
 loués par Simlock, versions TesterArmy), le profil de chaque couche, le résultat et les
-limites.
+limites. Une campagne ciblée ne qualifie que les plateformes et couches sélectionnées ;
+le rapport liste aussi la couverture simulateur non exécutée. Le verdict « il ne reste
+que le vrai téléphone » est réservé à une campagne complète passée.
 
 ## Les trois couches
 

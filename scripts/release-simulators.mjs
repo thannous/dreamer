@@ -196,12 +196,17 @@ function cell(result) {
 export function renderReport({ revision, ref, startedAt, finishedAt, platforms, suites, results, environment = [], notes = [], evidence }) {
   const all = suites.flatMap(suite => platforms.map(platform => results[`${suite}:${platform}`]));
   const done = all.length > 0 && all.every(result => result?.qualified);
+  const missing = Object.keys(SUITES).flatMap(suite => ['ios', 'android'].filter(platform => !suites.includes(suite) || !platforms.includes(platform)).map(platform => `${SUITES[suite].label} / ${PLATFORM_LABEL[platform]}`));
   const lines = [`# Tests sur simulateurs : ${ref} (${revision.slice(0, 12)})`, '',
     `Commit ${revision}, du ${startedAt} au ${finishedAt ?? 'en cours'}.`, '',
-    done ? '**Tout est passé sur les simulateurs.** Il ne reste que la courte liste « vrai téléphone » ci-dessous.'
+    `Périmètre sélectionné : ${platforms.map(platform => PLATFORM_LABEL[platform]).join(', ')} ; ${suites.map(suite => SUITES[suite].label).join(', ')}.`, '',
+    done ? missing.length
+      ? '**Le périmètre sélectionné est passé sur les simulateurs.** Les autres couches et plateformes ne sont pas qualifiées par cette campagne.'
+      : '**Tout est passé sur les simulateurs.** Il ne reste que la courte liste « vrai téléphone » ci-dessous.'
       : finishedAt ? '**Des parcours ont échoué ou n’ont pas tourné.** Voir le tableau et les échecs.' : '**Campagne en cours.**', '',
     `| Couche | ${platforms.map(platform => PLATFORM_LABEL[platform]).join(' | ')} |`, `| --- |${platforms.map(() => ' --- |').join('')}`,
     ...suites.map(suite => `| ${SUITES[suite].label} | ${platforms.map(platform => cell(results[`${suite}:${platform}`])).join(' | ')} |`), ''];
+  if (missing.length) lines.push('## Couverture simulateur non exécutée', '', ...missing.map(item => `- ${item}`), '');
   const failures = suites.flatMap(suite => platforms.flatMap(platform => {
     const result = results[`${suite}:${platform}`];
     if (!result || result.qualified) return [];
@@ -219,6 +224,37 @@ export function renderReport({ revision, ref, startedAt, finishedAt, platforms, 
   if (notes.length) lines.push('## Notes', '', ...notes.map(note => `- ${note}`), '');
   if (evidence) lines.push(`Preuves complètes (reçus de build, rapports TesterArmy, captures) : \`${evidence}\`.`, '');
   return lines.join('\n');
+}
+
+// A relocation failure must retain the only copy of receipts and failure media.
+export function finishWorkspace({ workspace, reportDir, primary, task, keep, results, notes, releaseWorkspace }) {
+  if (!workspace) return undefined;
+  const runs = join(workspace, 'tools/e2e/.e2e');
+  let evidence;
+  let relocationFailed = false;
+  if (existsSync(runs)) {
+    try {
+      const destination = join(reportDir, 'e2e');
+      renameSync(runs, destination);
+      evidence = destination;
+      for (const result of Object.values(results)) {
+        if (result.dir && (result.dir === runs || result.dir.startsWith(`${runs}/`))) {
+          result.dir = relative(primary, join(evidence, relative(runs, result.dir)));
+        }
+      }
+    } catch (error) {
+      relocationFailed = true;
+      evidence = runs;
+      notes.push(`Preuves laissées dans ${runs} (${error.message.slice(0, 200)}).`);
+    }
+  }
+  if (keep || relocationFailed) {
+    notes.push(`Espace de travail gardé${relocationFailed ? ' pour préserver les preuves' : ''} : ${workspace} (le libérer : npm run workspace -- release --task ${task} --owner-pid $$).`);
+  } else {
+    try { releaseWorkspace({ task, repo: primary, ownerPid: String(process.pid) }); }
+    catch (error) { notes.push(`Espace de travail non supprimé (${error.message.slice(0, 200)}) : ${workspace}.`); }
+  }
+  return evidence;
 }
 
 const HELP = `Usage: mise exec -- npm run release:simulators -- [options]
@@ -505,19 +541,7 @@ async function main() {
     process.off('SIGINT', onSignal);
     process.off('SIGTERM', onSignal);
     await stopService(api); await stopService(stack);
-    const runs = workspace && join(workspace, 'tools/e2e/.e2e');
-    if (runs && existsSync(runs)) {
-      try {
-        renameSync(runs, join(reportDir, 'e2e'));
-        evidence = join(reportDir, 'e2e');
-        for (const result of Object.values(results)) if (result.dir?.startsWith(runs)) result.dir = relative(primary, join(evidence, relative(runs, result.dir)));
-      } catch (error) { notes.push(`Preuves laissées dans ${runs} (${error.message.slice(0, 200)}).`); }
-    }
-    if (workspace && options.keep) notes.push(`Espace de travail gardé : ${workspace} (le libérer : npm run workspace -- release --task ${task} --owner-pid $$).`);
-    else if (workspace) {
-      try { release({ task, repo: primary, ownerPid: String(process.pid) }); }
-      catch (error) { notes.push(`Espace de travail non supprimé (${error.message.slice(0, 200)}) : ${workspace}.`); }
-    }
+    evidence = finishWorkspace({ workspace, reportDir, primary, task, keep: options.keep, results, notes, releaseWorkspace: release });
     finishedAt = new Date().toISOString();
     report();
     try { unlinkSync(lockFile); } catch { /* already gone */ }

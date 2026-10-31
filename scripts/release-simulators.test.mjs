@@ -1,10 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, existsSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOptions, planSteps, runPlan, cleanEnv, stepFailure, disableAndroidUpdates, suiteBuildEnv,
-  buildCommand, runSelection, readRun, renderReport, iosScheme, buildUntilAccepted, readRefusals, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
+  buildCommand, runSelection, readRun, renderReport, finishWorkspace, iosScheme, buildUntilAccepted, readRefusals, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
 import { validateBuildCommand } from '../tools/e2e/native-release.mjs';
 
 test('defaults to the user journeys on both platforms, the other layers on demand', () => {
@@ -190,8 +190,48 @@ test('reads a run folder and writes a French report with the phone-only list', (
     for (const item of PHONE_ONLY) assert.ok(report.includes(item));
     assert.doesNotMatch(report, /—/);
     const passed = renderReport({ ...base, results: { ...results, 'production:android': { qualified: true, passed: 9, failed: 0, skipped: 3 } } });
-    assert.match(passed, /Tout est passé sur les simulateurs/);
+    assert.match(passed, /Le périmètre sélectionné est passé/);
+    assert.doesNotMatch(passed, /Il ne reste que/);
     assert.doesNotMatch(passed, /## Échecs/);
     assert.match(renderReport({ ...base, finishedAt: null, results: {} }), /Campagne en cours[\s\S]*non lancé/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+
+test('a focused iPhone mock campaign names every unexecuted layer and platform', () => {
+  const base = { revision: 'b'.repeat(40), ref: 'candidate', startedAt: 's', finishedAt: 'f' };
+  const report = renderReport({ ...base, platforms: ['ios'], suites: ['mock'], results: { 'mock:ios': { qualified: true, passed: 7 } } });
+  assert.match(report, /Le périmètre sélectionné est passé/);
+  assert.doesNotMatch(report, /Il ne reste que|Tout est passé/);
+  assert.match(report, /Couverture simulateur non exécutée/);
+  for (const item of ['Configuration production / iPhone', 'Configuration production / Android', 'Compte et achats simulés / Android', 'Serveur local réel / iPhone', 'Serveur local réel / Android']) assert.ok(report.includes(item), item);
+  const results = Object.fromEntries(['production', 'mock', 'backend'].flatMap(suite => ['ios', 'android'].map(platform => [`${suite}:${platform}`, { qualified: true, passed: 7 }])));
+  const full = renderReport({ ...base, platforms: ['ios', 'android'], suites: ['production', 'mock', 'backend'], results });
+  assert.match(full, /Tout est passé sur les simulateurs/);
+  assert.doesNotMatch(full, /Couverture simulateur non exécutée/);
+});
+
+test('keeps the only evidence when relocation fails and releases only after a successful move', () => {
+  const root = mkdtempSync(join(tmpdir(), 'release-simulators-evidence-'));
+  try {
+    const workspace = join(root, 'workspace'), reportDir = join(root, 'report');
+    const runs = join(workspace, 'tools/e2e/.e2e'), destination = join(reportDir, 'e2e');
+    mkdirSync(runs, { recursive: true }); mkdirSync(destination, { recursive: true });
+    writeFileSync(join(runs, 'failure.json'), 'unique failure');
+    writeFileSync(join(destination, 'older.json'), 'older campaign');
+    const notes = [], results = { 'mock:ios': { dir: runs } };
+    const options = { workspace, reportDir, primary: root, task: 'test', keep: false, results, notes,
+      releaseWorkspace: () => rmSync(workspace, { recursive: true }) };
+    // A nonempty destination forces the real rename to fail; cleanup must not erase the source.
+    assert.equal(finishWorkspace(options), runs);
+    assert.equal(readFileSync(join(runs, 'failure.json'), 'utf8'), 'unique failure');
+    assert.equal(readFileSync(join(destination, 'older.json'), 'utf8'), 'older campaign');
+    assert.ok(notes.some(note => note.includes('pour préserver les preuves')));
+    assert.equal(results['mock:ios'].dir, runs);
+    rmSync(destination, { recursive: true });
+    assert.equal(finishWorkspace(options), destination);
+    assert.equal(readFileSync(join(destination, 'failure.json'), 'utf8'), 'unique failure');
+    assert.equal(existsSync(workspace), false);
+    assert.equal(results['mock:ios'].dir, 'report/e2e');
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });
