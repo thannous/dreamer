@@ -32,7 +32,7 @@ test('missing reports, failed steps, budget exhaustion and changing source remai
     assert.equal(campaignExit([charterResult(CHARTERS[0], exit, evidence, '/report.json')]), 2);
   }
   assert.equal(campaignExit([], false), 2);
-  assert.throws(() => runBugbash({ exploreCharters: false, only: 'typo' }), /Unknown/);
+  assert.throws(() => runBugbash({ exploreCharters: false, only: 'typo', login: false }), /Unknown/);
 });
 
 test('a production Supabase ref is refused before any explore', () => {

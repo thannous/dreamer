@@ -3,19 +3,9 @@ import '@/global.css';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Fraunces_400Regular } from '@expo-google-fonts/fraunces/400Regular';
-import { Fraunces_500Medium } from '@expo-google-fonts/fraunces/500Medium';
-import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces/600SemiBold';
-import { Fraunces_700Bold } from '@expo-google-fonts/fraunces/700Bold';
-import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
-import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
-import { Lora_700Bold } from '@expo-google-fonts/lora/700Bold';
-import { Lora_700Bold_Italic } from '@expo-google-fonts/lora/700Bold_Italic';
-import { Outfit_400Regular } from '@expo-google-fonts/outfit/400Regular';
-import { Outfit_500Medium } from '@expo-google-fonts/outfit/500Medium';
-import { Outfit_700Bold } from '@expo-google-fonts/outfit/700Bold';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router/react-navigation';
 import { useFonts } from 'expo-font';
+import { APP_FONTS } from '@/constants/appFonts';
 import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
@@ -95,7 +85,7 @@ import {
 /**
  * Dream pages that arrived from the capture seal. The page clears its `saved` param as soon
  * as it mounts, which recomputes its options mid-transition; remembering the arrival keeps
- * the fade instead of falling back to a slide.
+ * the instant handoff instead of falling back to a slide.
  */
 const sealArrivals = new Set<string>();
 const arrivesFromSeal = (route: { key?: string; params?: unknown }) => {
@@ -187,10 +177,12 @@ if (__DEV__) {
   ]);
 }
 
+// The package index re-exports every keyboard component; require only the
+// provider (deep path checked by lib/__tests__/keyboardControllerPaths.test.ts).
 const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
   Platform.OS !== 'web' && NativeModules?.KeyboardController
     ? // eslint-disable-next-line @typescript-eslint/no-require-imports
-    require('react-native-keyboard-controller').KeyboardProvider
+    require('react-native-keyboard-controller/src/animated').KeyboardProvider
     : ({ children }) => <>{children}</>;
 
 /**
@@ -938,15 +930,15 @@ const RootNavigator = memo(function RootNavigator({
             <Stack.Screen name="recording" options={{ headerShown: false, animation: 'none' }} />
             {/* Repeated Android detail transitions redraw the retained journal;
                 measured draw stalls exceed a frame. Keep this frequent route instant.
-                On iOS a dream arriving from the capture seal fades in under the seal's
-                window instead of sliding over it. */}
+                The capture seal already animates the saved dream's arrival. A second
+                native fade blocks the first touch while its buttons are already visible. */}
             <Stack.Screen name="journal/[id]" options={({ route }) => ({
               headerShown: false,
               scrollEdgeEffects: { top: 'hidden' },
               ...(Platform.OS === 'android'
                 ? { animation: 'none' as const }
                 : arrivesFromSeal(route)
-                  ? { animation: 'fade' as const, animationDuration: 600 }
+                  ? { animation: 'none' as const }
                   : {}),
             })} />
             <Stack.Screen name="dream-chat/[id]" options={{ headerShown: false }} />
@@ -995,19 +987,7 @@ function JournalRuntime({ children }: React.PropsWithChildren) {
  */
 function RootLayout() {
   const [fontsStartedAt] = useState(() => globalThis.performance?.now?.() ?? Date.now());
-  const [fontsLoaded, fontError] = useFonts({
-    Outfit_400Regular,
-    Outfit_500Medium,
-    Outfit_700Bold,
-    Lora_400Regular,
-    Lora_400Regular_Italic,
-    Lora_700Bold,
-    Lora_700Bold_Italic,
-    Fraunces_400Regular,
-    Fraunces_500Medium,
-    Fraunces_600SemiBold,
-    Fraunces_700Bold,
-  });
+  const [fontsLoaded, fontError] = useFonts(APP_FONTS);
   const [showCustomSplash, setShowCustomSplash] = useState(true);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);
   const [startupDestinationCommitted, setStartupDestinationCommitted] = useState(false);

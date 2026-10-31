@@ -109,13 +109,20 @@ export function useBookBody(italic = false) {
 const GFM_SYNTAX = /[|~@]|:\/\/|www\./i;
 
 /**
+ * A named or numeric character reference. Native bundles decode only a few
+ * named ones in JS (scripts/metro-shims/character-entities-lite.js), so the
+ * parse below cannot be trusted to spot the others; the renderer decodes all.
+ */
+const CHARACTER_REFERENCE = /&(?:#\d+|#x[\da-f]+|[a-z][a-z\d]*);/i;
+
+/**
  * Whether the story reads the same set as written as through the Markdown renderer:
  * paragraphs of plain text, without any syntax, escape or character reference.
  */
 function isPlainProse(story: string): boolean {
   // The Markdown renderer shows a story this long as plain text too.
   if (story.length > MAX_MARKDOWN_INPUT_LENGTH) return true;
-  if (GFM_SYNTAX.test(story)) return false;
+  if (GFM_SYNTAX.test(story) || CHARACTER_REFERENCE.test(story)) return false;
   return fromMarkdown(story).children.every((block) => block.type === 'paragraph'
     && block.children.every((inline) => inline.type === 'text'
       && inline.position?.start.offset != null && inline.position.end.offset != null

@@ -57,6 +57,18 @@ async function openCollection(screen: Screen) {
 
 const card = (screen: Screen, id: string) => screen.getByTestId(`collection.card.${id}`, { visible: true });
 
+// A held card's full painting comes from the CDN (served here by isolateWeb from the committed
+// exports); the bundled 320 px export stands in. Each image drawn on the open card's face, by
+// host and decoded width.
+const CDN_MEDIA = 'https://media.noctalia.app/app/v1/**';
+const facePainting = (browser: Browser, label: string) => browser.evaluate((name: string) => {
+  const face = document.querySelector(`[role="img"][aria-label="${name}"]`);
+  return [...(face?.querySelectorAll('img') ?? [])]
+    .filter((image) => image.complete && image.naturalWidth > 0 && getComputedStyle(image).opacity !== '0')
+    .map((image) => `${new URL(image.src, location.href).host === 'media.noctalia.app' ? 'cdn' : 'bundled'}:${image.naturalWidth}`)
+    .join(' ');
+}, label);
+
 const TIERS = ['bronze', 'silver', 'gold', 'platinum', 'diamond'] as const;
 
 // The journal's own family grows up to diamond: five tiers side by side, one chosen.
@@ -82,6 +94,9 @@ test('an account\'s written dream earns its card face down, turned over once and
     await expect.poll(() => ledger(browser), { timeout: 10_000 }).toContain('"night-journal"');
 
     await screen.getByTestId('btn.navigateJournal', { visible: true }).tap();
+    // Offline with nothing cached (the album's prefetch fails too), the card still turns over on
+    // its painting: the bundled export.
+    await browser.route(CDN_MEDIA, (route) => route.abort());
     await screen.getByTestId('tab.explore', { visible: true }).tap();
     const door = screen.getByTestId('btn.explore.collection', { visible: true });
     await expect(door).toContainText('1 card of 43');
@@ -151,8 +166,10 @@ test('an account\'s written dream earns its card face down, turned over once and
       const state = { face: opacity(face), around, flat: Number(flat.toFixed(4)) };
       return state.face === 1 && around === 0 && flat > 0.995 ? 'settled' : JSON.stringify(state);
     }), { timeout: 10_000 }).toBe('settled');
+    await expect.poll(() => facePainting(browser, 'Night Journal, Bronze')).toBe('bundled:320');
     await app.screenshot('collection-bronze-revealed');
     await screen.getByTestId('collection.detail.close', { visible: true }).tap();
+    await browser.unroute(CDN_MEDIA);
     await expect(card(screen, 'night-journal'))
       .toHaveAttribute('aria-label', 'Night Journal. Bronze earned. 1 of 10 toward Silver');
     await expect(screen.getByTestId('collection.summary.new')).toHaveCount(0);
@@ -184,6 +201,8 @@ test('an account\'s written dream earns its card face down, turned over once and
     await card(screen, 'night-journal').tap();
     await expect(screen.getByTestId('collection.detail.reveal', { visible: true })).toHaveCount(0);
     await expect.poll(focused).toEqual({ testId: null, role: 'img', label: 'Night Journal, Bronze', hidden: false });
+    // Back online, the card held open shows its full painting from the CDN.
+    await expect.poll(() => facePainting(browser, 'Night Journal, Bronze'), { timeout: 10_000 }).toContain('cdn:720');
     await expectTierSelection(screen, 'bronze');
     await screen.getByTestId('collection.detail.close', { visible: true }).tap();
     await app.screenshot('collection-reopened');

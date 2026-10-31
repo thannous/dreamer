@@ -5,43 +5,12 @@ import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 
 const languages: ('en' | 'fr' | 'es' | 'de' | 'it' | 'pt')[] = ['en', 'fr', 'es', 'de', 'it', 'pt'];
 
-const firstDreamSheetKeys = [
-  'guest.first_dream.sheet.title',
-  'guest.first_dream.sheet.subtitle',
-  'guest.first_dream.sheet.analyze',
-  'guest.first_dream.sheet.journal',
-  'guest.first_dream.sheet.remembered_title',
-  'guest.first_dream.sheet.remembered_subtitle',
-  'guest.first_dream.sheet.remembered_primary',
-  'guest.first_dream.sheet.remembered_analyze',
-  'guest.first_dream.sheet.dismiss',
-] as const;
-
 const analyzePromptSheetKeys = [
-  'recording.analyze_prompt.sheet.title',
-  'recording.analyze_prompt.sheet.subtitle',
-  'recording.analyze_prompt.sheet.analyze',
-  'recording.analyze_prompt.sheet.journal',
-  'recording.analyze_prompt.sheet.dismiss',
   'recording.analysis_offer.title',
-  'recording.analysis_offer.quota_remaining',
-  'recording.analysis_offer.unlimited',
-  'recording.analysis_offer.unknown',
-  'recording.analysis_offer.exhausted',
-  'recording.analysis_offer.launch',
   'recording.analysis_offer.view',
-  'recording.analysis_offer.later',
-  'recording.analysis_offer.retry',
-  'recording.analysis_offer.error',
-  'recording.memory_offer.title',
-  'recording.memory_offer.subtitle',
-  'recording.memory_offer.view',
-  'recording.memory_offer.analyze',
-  'recording.memory_offer.later',
 ] as const;
 
 const analysisLimitSheetKeys = [
-  'recording.alert.analysis_limit.message_free',
   'recording.analysis_limit.title_guest',
   'recording.analysis_limit.title_free',
   'recording.analysis_limit.title_login',
@@ -64,21 +33,8 @@ const recordingStatusKeys = [
   'recording.tell.title',
   'recording.tell.empty',
   'recording.tell.edit',
-  'recording.tell.help',
-  'recording.tell.help_hint',
-  'recording.tell.save',
-  'recording.status.permission_prompt.title',
-  'recording.status.permission_prompt.detail',
-  'recording.status.ready.title',
-  'recording.status.ready.detail',
-  'recording.status.hide',
-  'recording.status.show',
   'recording.status.preparing.title',
-  'recording.status.preparing.detail',
   'recording.status.recording.title',
-  'recording.status.recording.detail',
-  'recording.status.busy.title',
-  'recording.status.busy.detail',
   'recording.status.duration',
   'recording.status.fallback.permission_denied',
   'recording.status.fallback.stt_unavailable',
@@ -90,14 +46,7 @@ const recordingStatusKeys = [
 ] as const;
 
 const recordingModeKeys = [
-  'recording.mode.switch_to_text',
-  'recording.mode.switch_to_text_hint',
-  'recording.mode.switch_to_text_edit',
-  'recording.mode.switch_to_text_edit_hint',
   'recording.mode.switch_to_voice',
-  'recording.mode.voice_cta_detail',
-  'recording.mode.voice_pause_detail',
-  'recording.mode.voice_resume_detail',
 ] as const;
 
 // This label is still shared by remembered dreams in the journal and detail.
@@ -108,25 +57,16 @@ const rememberedDreamLabelKeys = [
 
 const recordingMicKeys = [
   'recording.mic.start',
-  'recording.mic.stop',
   'recording.mic.pause',
   'recording.mic.resume',
   'recording.mic.start_hint',
-  'recording.mic.stop_hint',
   'recording.mic.pause_hint',
-  'recording.mic.resume_hint',
 ] as const;
 
 const recordingPreferenceKeys = [
   'recording.preference.label',
-  'recording.preference.view_title',
   'recording.preference.text',
   'recording.preference.voice',
-  'recording.preference.selected',
-  'recording.preference.text_hint',
-  'recording.preference.voice_hint',
-  'recording.preference.accessibility',
-  'recording.preference.dismiss_accessibility',
 ] as const;
 
 const micRationaleKeys = [
@@ -138,31 +78,9 @@ const micRationaleKeys = [
 ] as const;
 
 const onboardingTourKeys = [
-  'recording.onboarding.step_count',
   'recording.onboarding.voice.body',
-  'recording.onboarding.text.body',
-  'recording.onboarding.explore.body',
-  'recording.onboarding.preference.badge',
-  'recording.onboarding.preference.title',
-  'recording.onboarding.preference.voice_detail',
-  'recording.onboarding.preference.text_detail',
-  'recording.onboarding.preference.cta',
   'recording.onboarding.preference.settings_hint',
-  'recording.onboarding.skip',
-  'recording.onboarding.next',
-  'recording.onboarding.done',
   'recording.voice_hint.understood',
-  'recording.guide.title',
-  'recording.guide.step_mode',
-  'recording.guide.step_modes',
-  'recording.guide.mode_text_detail',
-  'recording.guide.mode_voice_detail',
-  'recording.guide.step_control',
-  'recording.guide.step_control_text',
-  'recording.guide.step_control_voice',
-  'recording.guide.next',
-  'recording.guide.done',
-  'recording.guide.dismiss',
 ] as const;
 
 const firstRunOnboardingKeys = [
@@ -172,7 +90,6 @@ const firstRunOnboardingKeys = [
   'onboarding.persistence_error',
   'onboarding.retry',
   'onboarding.continue_session',
-  'onboarding.intro.title',
   'onboarding.intro.title_lead',
   'onboarding.intro.title_accent',
   'onboarding.intro.subtitle',
@@ -188,27 +105,16 @@ const firstRunOnboardingKeys = [
   'onboarding.privacy.body',
   'onboarding.privacy.no_content',
   'onboarding.privacy.toggle_label',
-  'onboarding.privacy.toggle_hint',
-  'onboarding.privacy.enabled',
-  'onboarding.privacy.disabled',
   'onboarding.privacy.error',
   'onboarding.title',
   'onboarding.path.title_lead',
   'onboarding.path.title_accent',
   'onboarding.subtitle',
-  'onboarding.fresh_cta',
   'onboarding.path.analyze.title',
   'onboarding.path.analyze.body',
-  'onboarding.path.analyze.kicker',
-  'onboarding.path.analyze.detail_title',
   'onboarding.path.analyze.cta',
   'onboarding.path.memory.title',
   'onboarding.path.memory.body',
-  'onboarding.path.memory.kicker',
-  'onboarding.path.memory.detail_title',
-  'onboarding.path.memory.outcome_1',
-  'onboarding.path.memory.outcome_2',
-  'onboarding.path.memory.outcome_3',
   'onboarding.path.memory.cta',
   'onboarding.path.dictionary.title',
   'onboarding.path.dictionary.body',
@@ -219,14 +125,6 @@ const rememberedDreamPromptKeys = [
   'recording.remembered.default_title',
   'recording.remembered.placeholder',
   'recording.remembered.save_button',
-  'recording.remembered.save_button_accessibility',
-  'recording.remembered_prompt.eyebrow',
-  'recording.remembered_prompt.title',
-  'recording.remembered_prompt.body',
-  'recording.remembered_prompt.yes',
-  'recording.remembered_prompt.tonight',
-  'recording.remembered_prompt.skip',
-  'recording.remembered_profile.eyebrow',
   'recording.remembered_profile.accordion_title',
   'recording.remembered_profile.expand_hint',
   'recording.remembered_profile.collapse_hint',
@@ -265,21 +163,6 @@ const settingsOnboardingKeys = [
 ] as const;
 
 describe('Recording i18n - bottom sheets', () => {
-  it('has translations for first-dream sheet in all supported languages', async () => {
-    await Promise.all(languages.map((lang) => loadTranslations(lang)));
-
-    for (const lang of languages) {
-      const t = getTranslator(lang);
-
-      for (const key of firstDreamSheetKeys) {
-        const value = t(key);
-        expect(value).not.toBe(key);
-        expect(typeof value).toBe('string');
-        expect(value.length).toBeGreaterThan(0);
-      }
-    }
-  });
-
   it('has translations for analyze-prompt sheet in all supported languages', async () => {
     await Promise.all(languages.map((lang) => loadTranslations(lang)));
 
@@ -402,7 +285,6 @@ describe('Recording i18n - bottom sheets', () => {
       expect(t('recording.preference.text')).toBe(labels[lang].text);
       expect(t('recording.preference.voice')).toBe(labels[lang].voice);
       expect(t('recording.preference.accessibility')).not.toMatch(/hamburger|menu cach|hidden menu|réglages de capture|capture settings/i);
-      expect(t('recording.guide.step_mode')).not.toMatch(/haut à droite|top-right|superior derecho|oben rechts|alto a destra|canto superior direito/i);
     }
   });
 

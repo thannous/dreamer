@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { test, expect, login, journal, client, admin, restrictNetwork } from '../backend-fixtures';
 
 type WireMutation = { mutation_id: string; client_request_id: string; operation: string; payload: Record<string, unknown> };
+type RetryWindow = Window & { noteRetryPressed?: boolean };
 
 test('a durable pre-notes receipt recovers after reload without duplicating the dream', async ({ page, browserSurface, accounts }) => {
   const owner = client();
@@ -20,15 +21,17 @@ test('a durable pre-notes receipt recovers after reload without duplicating the 
     expect(result.error).toBeNull();
     return result.data!;
   };
-  const state: { legacyRequest?: WireMutation; recoveryAllowed: boolean; seeded: boolean } = {
-    recoveryAllowed: false, seeded: false,
-  };
+  const state: { legacyRequest?: WireMutation; seeded: boolean } = { seeded: false };
+  // The gate opens when the page sees the press itself, not when the test
+  // decides to click: the app's own retries after a reload must not recover
+  // the note in the gap between the two and remove the button being clicked.
+  const retryPressed = () => page.evaluate(() => (window as RetryWindow).noteRetryPressed === true).catch(() => false);
   const syncRoute = '**/rest/v1/rpc/sync_dream_mutations';
   await page.route(syncRoute, async route => {
     const request = route.request().postDataJSON() as { mutations: WireMutation[] };
     const noteMutation = request.mutations.find(mutation => mutation.payload.remote_id === id &&
       Array.isArray(mutation.payload.personal_notes) && mutation.payload.personal_notes.length > 0);
-    if (!noteMutation || state.recoveryAllowed) return route.continue();
+    if (!noteMutation || await retryPressed()) return route.continue();
     if (state.seeded) return route.abort();
     state.seeded = true;
     // On the owned local fixture, reproduce the old RPC's actual write: omit
@@ -80,10 +83,17 @@ test('a durable pre-notes receipt recovers after reload without duplicating the 
     await expect(page.getByTestId('dream.personal-notes')).toContainText(noteText);
     const retry = page.getByText('Retry sync', { exact: true });
     await expect(retry).toBeVisible();
-    // After a reload the app also retries on its own. Keep those attempts
-    // blocked until the action is clickable, so recovery comes from this retry.
-    await retry.click({ trial: true });
-    state.recoveryAllowed = true;
+    // After a reload the app also retries on its own; those attempts stay
+    // blocked until this press. The listener sits on the document because the
+    // button re-renders while they fail.
+    await page.evaluate(() => document.addEventListener('pointerdown', event => {
+      for (let node = event.target as Element | null; node; node = node.parentElement) {
+        if (node.textContent === 'Retry sync') {
+          (window as RetryWindow).noteRetryPressed = true;
+          return;
+        }
+      }
+    }, { capture: true }));
     await retry.click();
     await expect.poll(async () => (await read()).personal_notes.map((note: { text: string }) => note.text)).toEqual([noteText]);
     await expect(retry).toHaveCount(0);

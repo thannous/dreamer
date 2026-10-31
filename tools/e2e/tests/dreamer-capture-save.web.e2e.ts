@@ -76,6 +76,10 @@ test('capture keeps its draft after a storage failure, then saves it once across
   expect(persisted[0].clientRequestId).toBeTruthy();
 
   await browser.reload();
+  // A reload is a fresh launch, which opens Capture: find the dream again in the journal.
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await screen.getByTestId('tab.journal', { visible: true }).tap();
+  await screen.getByRole('button', /A blue door stood beside the lake/).tap();
   await expect(saved).toContainText(story);
   const reopened = await browser.evaluate(key => JSON.parse(localStorage.getItem(key) ?? '[]') as {
     transcript: string; clientRequestId: string;

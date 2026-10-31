@@ -10,25 +10,22 @@ export type SymbolCategory =
 
 export type SymbolPriority = 1 | 2 | 3;
 
-export interface LocalizedSymbolContent {
-  slug: string;
-  name: string;
-  shortDescription: string;
-  askYourself: string[];
-}
-
+/** A symbol as the bundled index lists it (data/app/dream-symbols.json). */
 export interface DreamSymbol {
   id: string;
   category: SymbolCategory;
   priority: SymbolPriority;
-  en: LocalizedSymbolContent;
-  fr: LocalizedSymbolContent;
-  es: LocalizedSymbolContent;
-  de: LocalizedSymbolContent;
-  it: LocalizedSymbolContent;
-  pt: LocalizedSymbolContent;
+  names: Record<SymbolLanguage, string>;
   relatedSymbols: string[];
-  relatedArticles: Record<string, string>;
+}
+
+/**
+ * A symbol's short reading in one language. One bundled asset per language
+ * (data/app/symbol-content/), loaded by services/symbolContent.ts.
+ */
+export interface SymbolContent {
+  shortDescription: string;
+  askYourself: string[];
 }
 
 export interface SymbolVariation {
@@ -57,12 +54,6 @@ export interface SymbolCategoryInfo {
   de: string;
   it: string;
   pt: string;
-}
-
-export interface SymbolsDataFile {
-  meta: { version: string; lastUpdated: string; totalSymbols: number; languages: string[] };
-  categories: Record<SymbolCategory, SymbolCategoryInfo>;
-  symbols: DreamSymbol[];
 }
 
 export interface ExtendedSymbolsDataFile {

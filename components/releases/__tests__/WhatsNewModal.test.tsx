@@ -7,6 +7,12 @@ import {
   WhatsNewModal,
   WhatsNewModalHost,
 } from '@/components/releases/WhatsNewModal';
+import de from '@/lib/i18n/de';
+import en from '@/lib/i18n/en';
+import es from '@/lib/i18n/es';
+import fr from '@/lib/i18n/fr';
+import italian from '@/lib/i18n/it';
+import pt from '@/lib/i18n/pt';
 import { TID } from '@/lib/testIDs';
 
 const mockNavigate = jest.fn();
@@ -113,7 +119,7 @@ jest.mock('react-native-safe-area-context', () => ({
 
 const copy: Record<string, string> = {
   "release_notes.badge": "NOUVEAUTÉS · {version}",
-  "release_notes.title": "Noctalia 3.7 est là",
+  "release_notes.title": "Noctalia {version} est là",
   "release_notes.subtitle": "Voici ce qui change dans l’app.",
   "release_notes.journal.title": "Tes rêves en images",
   "release_notes.journal.body": "Chaque rêve s’affiche avec sa grande image. Tu peux aussi y ajouter une note ou le partager.",
@@ -167,7 +173,7 @@ describe('WhatsNewModal', () => {
     );
 
     expect(view.getByText(`NOUVEAUTÉS · ${RELEASE_NOTES_VERSION}`)).toBeTruthy();
-    expect(view.getByText('Noctalia 3.7 est là')).toBeTruthy();
+    expect(view.getByText(`Noctalia ${RELEASE_NOTES_VERSION.split('.').slice(0, 2).join('.')} est là`)).toBeTruthy();
     expect(view.getByText('Tes rêves en images')).toBeTruthy();
     expect(view.getByText('Un accueil plus clair')).toBeTruthy();
     expect(view.getByText('La pleine lune')).toBeTruthy();
@@ -187,6 +193,15 @@ describe('WhatsNewModal', () => {
 
     expect(onPrimary).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(2);
+  });
+
+  it('names the current release series in every language title', () => {
+    const series = RELEASE_NOTES_VERSION.split('.').slice(0, 2).join('.');
+    for (const pack of [de, en, es, fr, italian, pt]) {
+      const title = pack['release_notes.title'].replace('{version}', series);
+      expect(title).toContain(`Noctalia ${series}`);
+      expect(title.match(/\d+\.\d+/g)).toEqual([series]);
+    }
   });
 
   it('leaves the iPhone widgets out where the build has none', () => {

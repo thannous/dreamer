@@ -15,6 +15,7 @@ import {
   PRACTICE_GOALS,
   type DailyIntention,
 } from '@/lib/types';
+import { cancelAll } from '@/services/notificationService';
 import { clearAll } from '@/services/storageService';
 
 export default function AccountScreen() {
@@ -46,6 +47,8 @@ export default function AccountScreen() {
         text: t('account.reset.confirmed'),
         style: 'destructive',
         onPress: async () => {
+          // The daily reminder lives in the OS schedule, not in storage.
+          await cancelAll();
           await clearAll();
           await reset();
           router.replace('/welcome');

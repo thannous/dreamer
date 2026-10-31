@@ -2,19 +2,9 @@ import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import '@/global.css';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Fraunces_400Regular } from '@expo-google-fonts/fraunces/400Regular';
-import { Fraunces_500Medium } from '@expo-google-fonts/fraunces/500Medium';
-import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces/600SemiBold';
-import { Fraunces_700Bold } from '@expo-google-fonts/fraunces/700Bold';
-import { Lora_400Regular } from '@expo-google-fonts/lora/400Regular';
-import { Lora_400Regular_Italic } from '@expo-google-fonts/lora/400Regular_Italic';
-import { Lora_700Bold } from '@expo-google-fonts/lora/700Bold';
-import { Lora_700Bold_Italic } from '@expo-google-fonts/lora/700Bold_Italic';
-import { Outfit_400Regular } from '@expo-google-fonts/outfit/400Regular';
-import { Outfit_500Medium } from '@expo-google-fonts/outfit/500Medium';
-import { Outfit_700Bold } from '@expo-google-fonts/outfit/700Bold';
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from 'expo-router/react-navigation';
 import { useFonts } from 'expo-font';
+import { APP_FONTS } from '@/constants/appFonts';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -50,7 +40,7 @@ const ROOT_VIEW_STYLE = { flex: 1 } as const;
 const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
   Platform.OS !== 'web' && NativeModules?.KeyboardController
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    ? require('react-native-keyboard-controller').KeyboardProvider
+    ? require('react-native-keyboard-controller/src/animated').KeyboardProvider
     : ({ children }) => <>{children}</>;
 
 function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: {
@@ -148,19 +138,7 @@ export default function LucidRootLayout() {
 }
 
 function LucidRootContent() {
-  const [fontsLoaded, fontError] = useFonts({
-    Outfit_400Regular,
-    Outfit_500Medium,
-    Outfit_700Bold,
-    Lora_400Regular,
-    Lora_400Regular_Italic,
-    Lora_700Bold,
-    Lora_700Bold_Italic,
-    Fraunces_400Regular,
-    Fraunces_500Medium,
-    Fraunces_600SemiBold,
-    Fraunces_700Bold,
-  });
+  const [fontsLoaded, fontError] = useFonts(APP_FONTS);
   const [showCustomSplash, setShowCustomSplash] = useState(true);
   const [splashDelayElapsed, setSplashDelayElapsed] = useState(false);
   const [languageBootstrapped, setLanguageBootstrapped] = useState(false);

@@ -958,7 +958,8 @@ describe('journal detail saved confirmation route', () => {
     await act(async () => { render(<JournalDetailScreen />); });
     const action = screen.getByTestId(TID.Button.AnalysisStaleCta);
     expect(action.textContent).toContain(tier === 'plus' ? 'journal.detail.stale.cta' : 'journal.detail.analyze_with_plus');
-    if (tier === 'free') expect(screen.getByText('error.reanalysis_requires_plus')).toBeTruthy();
+    // The banner says the previous analysis stays; the card only names what updating needs (2026-10-29).
+    if (tier === 'free') expect(screen.getByText('journal.detail.stale.action_message_plus')).toBeTruthy();
     await act(async () => { fireEvent.click(action); });
     const { router } = require('expo-router');
     if (tier === 'free') {
@@ -1266,6 +1267,27 @@ describe('journal detail saved confirmation route', () => {
     render(<JournalDetailScreen />);
     expect(screen.getByText('journal.detail.sync.too_long_message')).toBeTruthy();
     expect(screen.queryByText('DREAM_TRANSCRIPT_TOO_LONG')).toBeNull();
+  });
+
+  it('says why a sync stopped in its own words, never with the recorded error', () => {
+    const raw = 'Error: fetch failed: java.io.IOException: unexpected end of stream on http://127.0.0.1:31283/';
+    mockDreams = [buildDream({ syncState: 'failed', lastSyncError: raw })];
+    const failed = render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.failed_message')).toBeTruthy();
+    expect(screen.queryByText(raw)).toBeNull();
+    failed.unmount();
+
+    mockDreams = [buildDream({ syncState: 'conflict', lastSyncError: 'A newer server revision exists for this dream.' })];
+    const conflict = render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.conflict_message')).toBeTruthy();
+    expect(screen.queryByText('A newer server revision exists for this dream.')).toBeNull();
+    conflict.unmount();
+
+    // A conflict that could not be settled offline asks for the connection, in the reader's language.
+    mockDreams = [buildDream({ syncState: 'conflict', lastSyncError: 'An internet connection is required to resolve this sync conflict.' })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.retry_error')).toBeTruthy();
+    expect(screen.queryByText('An internet connection is required to resolve this sync conflict.')).toBeNull();
   });
 
   it('offers share between the seal and the reading, only once the reading is complete', () => {

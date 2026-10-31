@@ -90,9 +90,9 @@ const getDictionaryNames = (): Map<string, string> => {
     if (normalized && !names.has(normalized)) names.set(normalized, id);
   };
   // Whole names first: a part of one entry's name never takes another entry's own name.
-  for (const symbol of symbols) for (const language of languages) add(symbol[language]?.name ?? '', symbol.id);
+  for (const symbol of symbols) for (const language of languages) add(symbol.names[language] ?? '', symbol.id);
   for (const symbol of symbols) {
-    for (const language of languages) for (const part of nameParts(symbol[language]?.name ?? '')) add(part, symbol.id);
+    for (const language of languages) for (const part of nameParts(symbol.names[language] ?? '')) add(part, symbol.id);
   }
   dictionaryNames = names;
   return names;
@@ -237,7 +237,7 @@ export function buildSymbolIndex(dreams: readonly DreamAnalysis[], language: Sym
   for (const symbol of symbols.values()) {
     if (symbol.symbolId) {
       const entry = getSymbolById(symbol.symbolId);
-      symbol.name = entry?.[language]?.name ?? entry?.en.name ?? symbol.name;
+      symbol.name = entry?.names[language] ?? entry?.names.en ?? symbol.name;
     } else {
       symbol.name = commonestName(names.get(symbol.linkKey) ?? new Map(), symbol.name);
     }

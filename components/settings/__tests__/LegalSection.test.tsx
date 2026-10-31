@@ -69,9 +69,20 @@ jest.mock('@/components/settings/useStabilityReportsController', () => ({
   useStabilityReportsController: () => ({ available: false }),
 }));
 
-// The AI permission row is proven by the dreamer-ai-consent-settings web journey.
+// The AI permission row's consent flow is proven by the dreamer-ai-consent-settings web journey.
+let mockAiConsentEnabled = true;
+let mockAiConsentSaving = false;
+const mockAiConsentToggle = jest.fn(async (_next: boolean) => {});
 jest.mock('@/components/settings/useAiConsentController', () => ({
-  useAiConsentController: () => ({ enabled: true, loading: false, saving: false, error: false, toggle: jest.fn() }),
+  useAiConsentController: () => ({
+    title: 'settings.ai.title',
+    toggleLabel: 'settings.ai.toggle_label',
+    enabled: mockAiConsentEnabled,
+    loading: false,
+    saving: mockAiConsentSaving,
+    error: false,
+    toggle: mockAiConsentToggle,
+  }),
 }));
 
 const mockRequestAccountDeletion = jest.mocked(requestAccountDeletion);
@@ -91,6 +102,8 @@ describe('LegalSection', () => {
     jest.clearAllMocks();
     openURLSpy.mockResolvedValue(undefined);
     mockUser = { id: 'user-1' };
+    mockAiConsentEnabled = true;
+    mockAiConsentSaving = false;
   });
 
   afterEach(cleanup);
@@ -101,6 +114,27 @@ describe('LegalSection', () => {
 
     fireEvent(getByTestId('settings-analytics-preference-switch'), 'valueChange', false);
     expect(mockAnalyticsToggle).toHaveBeenCalledWith(false);
+  });
+
+  it('turns a permission over from anywhere on its row, the one switch VoiceOver activates', () => {
+    // iOS exposes each permission row as a single switch: VoiceOver's activation and a touch
+    // on the row's words land on the row, not on the small control at its end.
+    mockAiConsentEnabled = false;
+    const { getByTestId } = render(<LegalSection />);
+
+    fireEvent.press(getByTestId('settings-ai-consent'));
+    expect(mockAiConsentToggle).toHaveBeenCalledWith(true);
+    fireEvent.press(getByTestId('settings-analytics-preference'));
+    expect(mockAnalyticsToggle).toHaveBeenCalledWith(false);
+  });
+
+  it('leaves a permission as it is while its last change is still saving', () => {
+    mockAiConsentSaving = true;
+    const { getByTestId } = render(<LegalSection />);
+
+    fireEvent.press(getByTestId('settings-ai-consent'));
+    expect(mockAiConsentToggle).not.toHaveBeenCalled();
+    expect(getByTestId('settings-ai-consent').props.accessibilityState).toEqual(expect.objectContaining({ disabled: true }));
   });
 
   it('hides the usage-measurement row when analytics is unavailable in this build', () => {

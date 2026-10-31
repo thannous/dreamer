@@ -61,6 +61,8 @@ describe('BookProse', () => {
     ['an indented code block', 'Before.\n\n    a line of code'],
     ['an escaped character', 'A star \\* fell.'],
     ['a character reference', 'Salt &amp; pepper.'],
+    ['a rare named reference', 'A caf&eacute; by the sea.'],
+    ['a numeric reference', 'A caf&#233; by the sea.'],
   ])('sets a story with %s through the Markdown renderer', (_: string, story: string) => {
     render(<BookProse text={story} />);
 

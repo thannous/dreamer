@@ -7,7 +7,7 @@ import {
   type WorldId,
   WORLD_BY_ID,
 } from '@/constants/worlds';
-import { readJson, StorageKey, writeJson } from '@/services/storageService';
+import { onLocalDataCleared, readJson, StorageKey, writeJson } from '@/services/storageService';
 
 type WorldContextValue = {
   loaded: boolean;
@@ -42,6 +42,15 @@ export const WorldProvider: React.FC<React.PropsWithChildren> = ({ children }) =
       mounted = false;
     };
   }, []);
+
+  useEffect(
+    () =>
+      onLocalDataCleared(() => {
+        setPreviewWorldId(null);
+        setWorldId(DEFAULT_WORLD_ID);
+      }),
+    []
+  );
 
   const setWorld = useCallback(async (nextWorldId: WorldId) => {
     setPreviewWorldId(null);

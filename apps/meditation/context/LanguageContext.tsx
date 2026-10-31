@@ -10,7 +10,7 @@ import React, {
 
 import { translate, type TranslationKey, type TranslationValues } from '@/lib/i18n';
 import type { AppLanguage } from '@/lib/types';
-import { readJson, StorageKey, writeJson } from '@/services/storageService';
+import { onLocalDataCleared, readJson, StorageKey, writeJson } from '@/services/storageService';
 
 const ALL_LANGUAGES: AppLanguage[] = ['en', 'fr', 'es', 'de', 'it', 'pt'];
 
@@ -44,6 +44,8 @@ export const LanguageProvider: React.FC<React.PropsWithChildren> = ({ children }
       mounted = false;
     };
   }, []);
+
+  useEffect(() => onLocalDataCleared(() => setLanguageState(detectLanguage())), []);
 
   const setLanguage = useCallback(async (next: AppLanguage) => {
     setLanguageState(next);

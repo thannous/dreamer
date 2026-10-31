@@ -1,9 +1,19 @@
 // Fallback for using MaterialIcons on Android and web.
 
 import React, { ComponentProps } from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import createIconSet from '@expo/vector-icons/createIconSet';
 import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
 import { type ColorValue, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import materialGlyphMap from '@/assets/fonts/MaterialIconsSubset.json';
+
+// Only the glyphs MAPPING and the 'help' fallback use, about 11 KB instead of the full
+// 357 KB font. After adding a mapping, run scripts/subset-app-fonts.py: until then the
+// new name fails the type check below.
+const MaterialIcons = createIconSet(
+  materialGlyphMap,
+  'noctalia-material-icons',
+  require('@/assets/fonts/MaterialIconsSubset.ttf')
+);
 
 type MaterialIconName = ComponentProps<typeof MaterialIcons>['name'];
 type SFSymbolName = Extract<SymbolViewProps['name'], string>;
@@ -25,6 +35,9 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'chart.pie.fill': 'pie-chart',
   'chart.line.uptrend.xyaxis': 'show-chart',
   'checkmark.circle.fill': 'check-circle',
+  // Plan radios on the paywall
+  'largecircle.fill.circle': 'radio-button-checked',
+  circle: 'radio-button-unchecked',
   'flame.fill': 'local-fire-department',
   'heart.fill': 'favorite',
   'lock.fill': 'lock',

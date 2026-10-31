@@ -931,7 +931,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     );
   }, [handleClearTranscript, isHydrated, isSaveLocked, t]);
 
-  const startRecording = useCallback(async (options?: { preserveDraft?: boolean }) => {
+  const startRecording = useCallback(async (options?: { preserveDraft?: boolean; restartGeneration?: number }) => {
     if (!isHydrated || restartingCaptureRef.current || stopsInFlightRef.current > 0) return false;
     discardDictationRef.current = false;
     captureMicrophoneMutedRef.current = false;
@@ -962,6 +962,11 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       const response = await startSessionRecording(sourceTranscript);
       if (response.error === 'cancelled') return false;
       if (response.success) {
+        // A pause or stop that landed while a hands-free restart was starting keeps its word;
+        // the restart closes the session it opened.
+        if (options?.restartGeneration !== undefined && options.restartGeneration !== handsFreeRestartGenerationRef.current) {
+          return true;
+        }
         // Permission dialogs can take focus away from the editor. Restore it
         // after startup without moving the user's selected insertion point.
         if (inputMode === 'text' && !options?.preserveDraft) {
@@ -1066,8 +1071,14 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
         setDictationIntentState('paused');
         return;
       }
-      const started = await startRecording({ preserveDraft: true });
+      const started = await startRecording({ preserveDraft: true, restartGeneration: generation });
       if (generation !== handsFreeRestartGenerationRef.current) {
+        // A pause or stop landed while this restart was starting and found no session to
+        // stop, so the one opened here must not keep listening behind it.
+        if (started) {
+          const late = await stopSessionRecording();
+          applyStoppedTranscript(late.transcript ?? '');
+        }
         return;
       }
       if (!started) {

@@ -18,6 +18,11 @@ bundle exec fastlane ios check
 Si les gems Homebrew partagées ne sont pas inscriptibles, utiliser
 `GEM_HOME="$(ruby -e 'print Gem.user_dir')" bundle install` : Ruby recherche
 également les gems de ce dossier utilisateur. Ne pas utiliser `sudo`.
+Ne pas installer les gems dans le dépôt (`bundle config set --local path …`) :
+`.bundle/` et `vendor/bundle/` n'y sont plus ignorés, car le `.gitignore`
+racine entre dans l'empreinte native d'Expo et une modification coupe les
+mises à jour OTA des builds publiés. Les rapports Fastlane sont ignorés par
+`fastlane/.gitignore`.
 
 `Gemfile.lock` verrouille Fastlane et ses dépendances. Fastlane installé par
 Homebrew peut aussi lancer ces lanes avec `fastlane ios check`.

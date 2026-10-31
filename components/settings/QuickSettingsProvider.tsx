@@ -194,6 +194,9 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
 /** An overlay, not a second navigator: tab/search state stays mounted beneath it. */
 export function QuickSettingsProvider({ children, disabled = false }: React.PropsWithChildren<{ disabled?: boolean }>) {
   const [open, setOpen] = useState(false);
+  // Each opening mounts a new drawer: the native drawer keeps its content while closed, and
+  // reopened where it was scrolled it hid its close button under the iOS status bar.
+  const [opening, setOpening] = useState(0);
   const [origin, setOrigin] = useState('');
   const pathname = usePathname();
   // The welcome owns its controls; a closed web drawer can overflow its viewport.
@@ -217,6 +220,7 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
   const show = useCallback(() => {
     Keyboard.dismiss();
     setOrigin(pathnameRef.current);
+    setOpening((count) => count + 1);
     setOpen(true);
   }, []);
   const showSettings = useCallback(() => {
@@ -244,7 +248,7 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
     };
   }, [visible, close]);
 
-  const content = () => <QuickSettingsContent onClose={close} onSettings={showSettings} onAccount={showAccount} onPlus={showPlus} />;
+  const content = () => <QuickSettingsContent key={opening} onClose={close} onSettings={showSettings} onAccount={showAccount} onPlus={showPlus} />;
   return (
     <QuickSettingsContext.Provider value={show}>
       <View className="flex-1">

@@ -12,7 +12,6 @@ import {
 } from '@/lib/reminderOptIn';
 
 const notificationCopyKeys = [
-  'reminders.opt_in.includes',
   'notifications.analysis_ready.title',
   'notifications.analysis_ready.body',
 ] as const;
@@ -62,7 +61,6 @@ describe('reminderOptIn', () => {
       'weekdayEnabled',
       'weekendEnabled',
     ]);
-    expect(en['reminders.opt_in.includes']).toBeTruthy();
   });
 
   it('localizes opt-in disclosure and analysis-ready copy in every catalogue', () => {
@@ -72,7 +70,6 @@ describe('reminderOptIn', () => {
         expect(translations[key]).not.toBe(key);
         expect(translations[key].trim()).not.toBe('');
       }
-      expect(translations['reminders.opt_in.includes'].toLowerCase()).toMatch(/sunday recap|récap du dimanche|resumen del domingo|sonntagsübersicht|sonntagsrückblick|riepilogo della domenica|resumo de domingo/);
       expect(translations['notifications.analysis_ready.body'].toLowerCase()).not.toMatch(
         /symbol|symbole|símbolo|simbolo|nightmare|cauchemar|pesadilla|incubo|pesadelo/
       );

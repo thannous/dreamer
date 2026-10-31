@@ -1,5 +1,6 @@
 import type { IconSymbol } from '@/components/ui/icon-symbol';
 import type { BadgeFamilyId } from '@/lib/badges/catalog';
+import type { RemoteArtKey } from '@/lib/remoteArt';
 
 type IconSymbolName = Parameters<typeof IconSymbol>[0]['name'];
 
@@ -9,79 +10,82 @@ type IconSymbolName = Parameters<typeof IconSymbol>[0]['name'];
  * catalogue.json). Its gilding is part of the painting, not a tier: the tiers are
  * told by the card around it.
  *
- * The app bundles WebP exports of those sources, alpha kept, made by
- * `node scripts/export-badge-artwork.mjs`: `full` for the card held in the hand, `small`
- * for the album grid and the tier row.
+ * WebP exports of those sources, alpha kept, are made by `node scripts/export-badge-artwork.mjs`:
+ * `full` for the card held in the hand, served from the CDN (see lib/remoteArt.ts), and
+ * `small`, bundled, for the album grid and the tier row, and as the stand-in while the full
+ * painting loads or when it cannot be reached.
  */
 /**
- * Metro asset ids. Two families wear the painting of a family the collection retired:
- * the echoes of a shared dream, and the thread of questions.
+ * App media keys and Metro asset ids. Two families wear the painting of a family the
+ * collection retired: the echoes of a shared dream, and the thread of questions.
  */
-const BADGE_ARTWORK: Record<BadgeFamilyId, { full: number; small: number }> = {
+export type BadgeArtwork = { full: RemoteArtKey; small: number };
+
+const BADGE_ARTWORK: Record<BadgeFamilyId, BadgeArtwork> = {
   'night-journal': {
-    full: require('@/assets/images/badges/app/night-journal.webp'),
+    full: 'badges/night-journal',
     small: require('@/assets/images/badges/app/night-journal-small.webp'),
   },
   'moon-cycles': {
-    full: require('@/assets/images/badges/app/moon-cycles.webp'),
+    full: 'badges/moon-cycles',
     small: require('@/assets/images/badges/app/moon-cycles-small.webp'),
   },
   'memory-keeper': {
-    full: require('@/assets/images/badges/app/memory-keeper.webp'),
+    full: 'badges/memory-keeper',
     small: require('@/assets/images/badges/app/memory-keeper-small.webp'),
   },
   'dream-reader': {
-    full: require('@/assets/images/badges/app/dream-reader.webp'),
+    full: 'badges/dream-reader',
     small: require('@/assets/images/badges/app/dream-reader-small.webp'),
   },
   'time-traveler': {
-    full: require('@/assets/images/badges/app/time-traveler.webp'),
+    full: 'badges/time-traveler',
     small: require('@/assets/images/badges/app/time-traveler-small.webp'),
   },
   'dream-weaver': {
-    full: require('@/assets/images/badges/app/dream-weaver.webp'),
+    full: 'badges/dream-weaver',
     small: require('@/assets/images/badges/app/dream-weaver-small.webp'),
   },
   'symbol-explorer': {
-    full: require('@/assets/images/badges/app/symbol-explorer.webp'),
+    full: 'badges/symbol-explorer',
     small: require('@/assets/images/badges/app/symbol-explorer-small.webp'),
   },
   'night-scholar': {
-    full: require('@/assets/images/badges/app/night-scholar.webp'),
+    full: 'badges/night-scholar',
     small: require('@/assets/images/badges/app/night-scholar-small.webp'),
   },
   'night-echoes': {
-    full: require('@/assets/images/badges/app/favorite-echoes.webp'),
+    full: 'badges/favorite-echoes',
     small: require('@/assets/images/badges/app/favorite-echoes-small.webp'),
   },
   'night-voice': {
-    full: require('@/assets/images/badges/app/night-voice.webp'),
+    full: 'badges/night-voice',
     small: require('@/assets/images/badges/app/night-voice-small.webp'),
   },
   'dream-questions': {
-    full: require('@/assets/images/badges/app/night-thread.webp'),
+    full: 'badges/night-thread',
     small: require('@/assets/images/badges/app/night-thread-small.webp'),
   },
   'treasure-keeper': {
-    full: require('@/assets/images/badges/app/treasure-keeper.webp'),
+    full: 'badges/treasure-keeper',
     small: require('@/assets/images/badges/app/treasure-keeper-small.webp'),
   },
   'dream-painter': {
-    full: require('@/assets/images/badges/app/dream-painter.webp'),
+    full: 'badges/dream-painter',
     small: require('@/assets/images/badges/app/dream-painter-small.webp'),
   },
   'dream-seeker': {
-    full: require('@/assets/images/badges/app/dream-seeker.webp'),
+    full: 'badges/dream-seeker',
     small: require('@/assets/images/badges/app/dream-seeker-small.webp'),
   },
   'observatory': {
-    full: require('@/assets/images/badges/app/observatory.webp'),
+    full: 'badges/observatory',
     small: require('@/assets/images/badges/app/observatory-small.webp'),
   },
 };
 
-export function getBadgeArtwork(id: BadgeFamilyId, size: 'full' | 'small' = 'full'): number | null {
-  return BADGE_ARTWORK[id]?.[size] ?? null;
+export function getBadgeArtwork(id: BadgeFamilyId): BadgeArtwork | null {
+  return BADGE_ARTWORK[id] ?? null;
 }
 
 /** The glyph of the drawn medallion that stands in if a family's illustration cannot be shown. */

@@ -40,7 +40,6 @@ export interface SymbolDreamGuide
   extends LocalizedDreamGuideFields<LocalizedDreamGuideContent> {
   kind: 'symbols';
   id: SymbolDreamGuideId;
-  slugs: Record<DreamGuideLanguage, string>;
   symbols: string[];
 }
 

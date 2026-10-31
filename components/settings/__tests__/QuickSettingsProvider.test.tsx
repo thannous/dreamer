@@ -10,6 +10,7 @@ let mockAuthLoading = false;
 let mockPlusActive = false;
 let mockSubscriptionLoading = false;
 let mockReduced = false;
+let mockDrawerKeepsContent = false;
 let mockHardwareBack: (() => boolean) | undefined;
 const mockPush = jest.fn();
 const mockThemeSelect = jest.fn();
@@ -28,7 +29,10 @@ jest.mock('react-native', () => {
   };
 });
 jest.mock('react-native-gesture-handler', () => ({ Pressable: require('react-native').Pressable }));
-jest.mock('react-native-drawer-layout', () => ({ Drawer: ({ open, renderDrawerContent }: any) => open ? renderDrawerContent() : null }));
+// The real drawer keeps its content mounted while closed; most tests only need it gone.
+jest.mock('react-native-drawer-layout', () => ({ Drawer: ({ open, renderDrawerContent }: any) => mockDrawerKeepsContent
+  ? require('react').createElement('div', { hidden: !open }, renderDrawerContent())
+  : open ? renderDrawerContent() : null }));
 jest.mock('react-native-reanimated', () => ({ useReducedMotion: () => mockReduced }));
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24 }) }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
@@ -52,7 +56,7 @@ function Page() {
   const open = useQuickSettings();
   return <><button onClick={open}>Open quick settings</button><input aria-label="Search" defaultValue="garden" /></>;
 }
-afterEach(() => { cleanup(); jest.clearAllMocks(); mockPath = '/journal'; mockReduced = false; mockUser = null; mockAuthLoading = false; mockPlusActive = false; mockSubscriptionLoading = false; });
+afterEach(() => { cleanup(); jest.clearAllMocks(); mockPath = '/journal'; mockReduced = false; mockDrawerKeepsContent = false; mockUser = null; mockAuthLoading = false; mockPlusActive = false; mockSubscriptionLoading = false; });
 
 it.each([false, true])('closes with Android Back without remounting the page (reduced motion=%s)', (reduced) => {
   mockReduced = reduced;
@@ -88,6 +92,19 @@ it.each([false, true])('closes explicitly with the close button (reduced motion=
   fireEvent.click(screen.getByText('Open quick settings'));
   fireEvent.click(screen.getByTestId('quick-settings.close'));
   expect(screen.queryByTestId('quick-settings.drawer')).toBeNull();
+});
+it('reopens at its top with the language list folded, though the drawer keeps its content mounted', () => {
+  // A drawer reopened where it was scrolled hides its close button under the iOS status bar.
+  mockDrawerKeepsContent = true;
+  render(<QuickSettingsProvider><Page /></QuickSettingsProvider>);
+  fireEvent.click(screen.getByText('Open quick settings'));
+  const first = screen.getByTestId('quick-settings.drawer');
+  fireEvent.click(screen.getByTestId('quick-settings.language'));
+  expect(screen.getByTestId('quick-settings.language.fr')).toBeTruthy();
+  fireEvent.click(screen.getByTestId('quick-settings.close'));
+  fireEvent.click(screen.getByText('Open quick settings'));
+  expect(screen.getByTestId('quick-settings.drawer')).not.toBe(first);
+  expect(screen.queryByTestId('quick-settings.language.fr')).toBeNull();
 });
 it('dismisses with Escape and when navigation changes', () => {
   const view = render(<QuickSettingsProvider><Page /></QuickSettingsProvider>);

@@ -228,5 +228,48 @@ avec les mêmes octets que `origin/master`. Les 14 239 fichiers sont tous sauveg
 et diffusables sur R2 ; **14 224 sortent du suivi Git, soit 1 120 886 442 octets**.
 `detach` exige que les fichiers `bundledPaths` restent suivis avant toute opération.
 Aucun code, chemin d'import ou rendu natif ne change. Pour de nouveaux médias
-exclusivement mobiles, préférer le dossier d'assets de l'application ; un média
-partagé à embarquer doit être ajouté à cette liste et suivi explicitement dans Git.
+exclusivement mobiles, préférer le dossier d'assets de l'application, sauf décision
+contraire comme celle des badges ci-dessous ; un média partagé à embarquer doit être
+ajouté à cette liste et suivi explicitement dans Git.
+
+## Médias de l'application Dreamer (`app/v1/`)
+
+Décision du propriétaire du 29 octobre 2026 : les quinze peintures pleine taille
+des badges (720 px), visibles seulement sur une carte ouverte de la collection,
+quittent le paquet de l'application et sont servies par ce même bucket et ce même
+domaine, plutôt que réencodées. Les exports 320 px restent embarqués : ils servent
+de vignette dans l'album, puis de remplaçant pendant le chargement, hors ligne et en
+cas d'erreur. EAS Hosting (domaine personnalisé payant, cache d'une heure) et le
+dossier `public/` de Vercel (réponse HTML 200 pour un fichier absent) ont été écartés.
+
+- Clé : `app/v1/<sha256>.<ext>`, une par fichier, adressée par son contenu, en
+  `Cache-Control: public, max-age=31536000, immutable`. Une clé n'est jamais
+  remplacée ni supprimée : chaque version installée garde ses URL. L'application
+  utilise l'URL directe `https://media.noctalia.app/…`, sans redirection, sans
+  paramètre ni donnée d'utilisateur.
+- Inventaire : `assets/remote/app-media.json`, `{clé: [source, octets, sha256]}`,
+  importé par `lib/remoteArt.ts`. Les WebP sources restent suivis dans Git aux
+  chemins indiqués ; les PNG originaux de `assets/images/badges/` ne changent pas.
+- Reçu : `assets/remote/app-media-verification.json`, écrit par `app-verify`
+  après un GET CDN complet (type, taille, SHA-256) de chaque objet.
+- Porte de publication : `verify:release --target app` lance
+  `scripts/app-media-release.test.mjs`, qui exige chaque clé de l'inventaire dans
+  ce reçu. `verify:pr` ne l'exige pas : une branche peut être relue avant l'envoi.
+- Le CDN garde une réponse 404 en cache quatre heures (`max-age=14400`). Ne jamais
+  ouvrir dans l'application, ni lire avec `app-verify`, une clé avant son envoi :
+  un 404 mis en cache masquerait ensuite l'objet. Les parcours web servent ces URL
+  depuis les exports suivis (`tools/e2e/app-media-fixtures.ts`).
+
+```sh
+# Après une nouvelle peinture ou un réexport (node scripts/export-badge-artwork.mjs) :
+mise exec -- npm run docs:media -- app-inventory
+NOCTALIA_MEDIA_CREDENTIALS=/chemin/prive/credentials.json mise exec -- npm run docs:media -- app-upload
+mise exec -- npm run docs:media -- app-verify
+# Committer l'inventaire et le reçu ensemble.
+```
+
+`app-upload` réutilise l'écriture conditionnelle sans écrasement et la relecture S3
+du site ; une reprise vérifie les objets existants sans les réécrire. Il exige une
+clé R2 Object Read & Write limitée au bucket et autorisée pour la période ; la clé
+du 22 au 29 octobre ne vaut pas autorisation au-delà. Ne pas créer, élargir ni
+renouveler une clé, ni modifier le bucket ou le CDN, sans accord explicite.

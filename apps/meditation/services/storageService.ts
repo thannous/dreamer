@@ -59,9 +59,23 @@ export async function saveThemePreference(preference: ThemePreference): Promise<
   await writeJson(StorageKey.theme, preference);
 }
 
+const clearedListeners = new Set<() => void>();
+
+/**
+ * Providers that hold storage in memory drop that copy once the device data
+ * is wiped, so nothing erased stays on screen or gets written back.
+ */
+export function onLocalDataCleared(listener: () => void): () => void {
+  clearedListeners.add(listener);
+  return () => {
+    clearedListeners.delete(listener);
+  };
+}
+
 /** Wipes every key owned by the app. Used by "reset my data" in settings. */
 export async function clearAll(): Promise<void> {
   await AsyncStorage.multiRemove(Object.values(StorageKey));
+  clearedListeners.forEach((listener) => listener());
 }
 
 /** Strict variants for state whose read/write failure must never become empty data. */

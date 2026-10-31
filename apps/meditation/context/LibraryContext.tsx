@@ -16,6 +16,7 @@ import {
   type SessionId,
 } from '@/lib/types';
 import { createLibraryPersistence } from '@/services/libraryPersistence';
+import { onLocalDataCleared } from '@/services/storageService';
 
 type LibraryContextValue = {
   favorites: SessionId[];
@@ -98,6 +99,13 @@ export const LibraryProvider: React.FC<React.PropsWithChildren> = ({ children })
     });
     return () => { mounted = false; mountedRef.current = false; };
   }, [persistence]);
+
+  // Erased data is read again like a cold start, which also makes the
+  // persistence forget what it last wrote.
+  useEffect(() => onLocalDataCleared(() => {
+    hydratedRef.current = false;
+    void retryPersistence();
+  }), [retryPersistence]);
 
   const isFavorite = useCallback(
     (id: SessionId) => state.favorites.includes(id),

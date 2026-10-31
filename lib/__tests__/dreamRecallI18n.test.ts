@@ -22,9 +22,7 @@ const dreamRecallKeys = [
   'dream_recall.question.who_else',
   'dream_recall.question.what_seen',
   'dream_recall.question.what_next',
-  'dream_recall.offer.eyebrow',
   'dream_recall.offer.title',
-  'dream_recall.offer.body',
   'dream_recall.offer.start',
   'dream_recall.offer.later',
   'dream_recall.session.title',
@@ -32,7 +30,6 @@ const dreamRecallKeys = [
   'dream_recall.session.input_label',
   'dream_recall.session.input_placeholder',
   'dream_recall.session.submit',
-  'dream_recall.session.pause',
   'dream_recall.session.resume',
   'dream_recall.session.skip',
   'dream_recall.session.complete',
@@ -49,8 +46,8 @@ const placeholdersOf = (value: string): string[] =>
   [...value.matchAll(/\{\{?\s*([a-zA-Z_]+)\s*\}?\}/g)].map((match) => match[1]).sort();
 
 describe('dream recall i18n', () => {
-  it('covers the closed 26-key pack in every supported language', () => {
-    expect(dreamRecallKeys).toHaveLength(26);
+  it('covers the closed 23-key pack in every supported language', () => {
+    expect(dreamRecallKeys).toHaveLength(23);
 
     for (const [language, translations] of Object.entries(packs)) {
       for (const key of dreamRecallKeys) {
@@ -109,20 +106,5 @@ describe('dream recall i18n', () => {
         expect(isNeutralRecallQuestion(question)).toBe(true);
       }
     }
-  });
-
-  it('keeps the offer optional after the dream is already saved', () => {
-    expect(en['dream_recall.offer.body']).toMatch(/already saved/i);
-    expect(en['dream_recall.offer.body']).toMatch(/optional/i);
-    expect(fr['dream_recall.offer.body']).toMatch(/(?:déjà |est )enregistré/);
-    expect(fr['dream_recall.offer.body']).toMatch(/facultatifs|si tu le souhaites/i);
-    expect(es['dream_recall.offer.body']).toMatch(/ya está guardado/);
-    expect(es['dream_recall.offer.body']).toMatch(/opcionales/);
-    expect(de['dream_recall.offer.body']).toMatch(/bereits gespeichert/);
-    expect(de['dream_recall.offer.body']).toMatch(/optional/);
-    expect(italian['dream_recall.offer.body']).toMatch(/già salvato/);
-    expect(italian['dream_recall.offer.body']).toMatch(/facoltativo/);
-    expect(pt['dream_recall.offer.body']).toMatch(/já está salvo/);
-    expect(pt['dream_recall.offer.body']).toMatch(/opcionais/);
   });
 });

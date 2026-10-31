@@ -12,6 +12,7 @@ import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
 import { personaModels, personaEnvironment } from './persona-models.mjs';
+import { selectionOwesNothing } from './zones.mjs';
 import { acquireSimlock, needsSimlock } from './simlock-native.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
@@ -133,8 +134,16 @@ function read(executable, argv, options = {}) {
   if (result.error || result.status !== 0) throw result.error ?? new Error(result.stderr || `${executable} failed`);
   return result.stdout.trim();
 }
+// The change set e2e hands its filters for `--changed-since` (run/changes.js): the working
+// tree against the merge base, plus untracked files.
+function changedFilesSince(ref) {
+  const base = read('git', ['merge-base', ref, 'HEAD']);
+  const listed = [read('git', ['diff', '--name-only', '--no-renames', '--no-ext-diff', '-z', base, '--']),
+    read('git', ['ls-files', '--others', '--exclude-standard', '--full-name', '-z'])].join('\0');
+  return [...new Set(listed.split('\0').filter(file => file !== '' && !file.endsWith('/')))];
+}
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'decision-verdict.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
@@ -163,6 +172,21 @@ let simlockRelease;
 let simlockLost = false;
 let simlockPreserveState = false;
 let interruptActiveChild;
+// From the reservation until the SDK child starts, a signal stops the run at the next
+// checkpoint, so the device lock, agent-device state and lease are still cleaned up.
+const simlockInterrupt = () => { requestedSignal = 130; };
+const simlockTerminate = () => { requestedSignal = 143; };
+function simlockCheckpoint() {
+  if (simlockLost) throw new Error('SIMLOCK_LEASE_LOST_BEFORE_SDK');
+  if (simlock && requestedSignal) throw new Error('SIMLOCK_INTERRUPTED');
+}
+// Shape only; identity, digests and profile rules need the device and checkout.
+function releaseShape(receipt) {
+  if (typeof receipt?.binary?.path !== 'string' || !receipt.binary.path
+    || !receipt.profile || typeof receipt.profile !== 'object' || Array.isArray(receipt.profile))
+    throw new Error('RELEASE_PROVENANCE');
+  return receipt;
+}
 const secondary = [];
 const installationErrorDetails = [];
 const startedAt = Date.now();
@@ -173,6 +197,8 @@ const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
 const context = () => ({ locale: platform !== 'web' && env.E2E_PERSONAS === '1' ? 'fr-FR' : env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
   ...(env.E2E_PERSONAS === '1' ? { personas: true, ...personaModels(env) } : {}) });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
+  // After an interrupt on a leased device, no further SDK child starts.
+  if (simlock && (requestedSignal || simlockLost)) return requestedSignal ?? 3;
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
   const child = spawn(executable, argv, { cwd: workdir, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
   const stopProgress = startSdkProgress(child, {
@@ -257,6 +283,7 @@ async function buildRelease() {
     || (profile.name === 'local-backend' && (!backend || profile.mock || profile.persistence || profile.audioMock))
     || (profile.name === 'production-apk' && profile.mock)
     || (profile.name === 'mock-persistent' && (!profile.mock || !profile.persistence))
+    || (profile.name === 'lucid-mock' && !profile.mock)
     || (profile.categorizationDelayMs !== 0 && (!profile.mock || !profile.persistence || profile.categorizationDelayMs < 20000 || profile.categorizationDelayMs > 60000)))
     throw new Error('Invalid explicit Release profile.');
   writeOnce(join(output, 'build-start.json'), { source, nativeInputDigest: native.digest, nativeInputs: native.files,
@@ -342,16 +369,21 @@ async function runSdk() {
   if (product === 'branch') read(process.execPath, ['scripts/test-auth-setup.mjs']);
   const collectionArgs = [];
   let repeatCount = 1;
+  let changedSince = null;
   const passWithNoTests = args.includes('--pass-with-no-tests');
   for (let index = 0; index < args.length; index++) {
     if (args[index] === '--repeat-each') repeatCount = Number(args[++index]);
-    else if (args[index] === '--changed-since') collectionArgs.push(args[index], args[++index]);
+    else if (args[index] === '--changed-since') { changedSince = args[index + 1]; collectionArgs.push(args[index], args[++index]); }
     else if (args[index] === '--pass-with-no-tests') collectionArgs.push(args[index]);
     else if (selections.has(args[index])) collectionArgs.push(args[index], args[++index]);
   }
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
   const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
-  if (!runnable.length) {
+  // A diff whose only journey is smoke-tagged leaves the parcours gate the static skips of
+  // untouched journeys: nothing it owes runs, so the selection is empty. A skipped journey
+  // the diff selects (a changed locale-only one) keeps the run, which then fails NO_PASS.
+  if (!runnable.length || (passWithNoTests && changedSince
+    && selectionOwesNothing(runnable, changedFilesSince(changedSince), context().locale))) {
     if (passWithNoTests) {
       emptySelection = true;
       console.log('Aucun test selectionne: le moteur n\'est pas lance.');
@@ -380,6 +412,9 @@ try {
   if (needsSimlock({ platform, command, env })) {
     if (!releaseFile || !existsSync(resolve(releaseFile)))
       throw new Error('An existing E2E_RELEASE_RECEIPT is required before reserving a Simlock device.');
+    releaseShape(JSON.parse(readFileSync(resolve(releaseFile), 'utf8')));
+    process.on('SIGINT', simlockInterrupt);
+    process.on('SIGTERM', simlockTerminate);
     simlock = await acquireSimlock({
       platform, env, shimDirectory: join(cwd, 'simlock-bin'),
       onSignal: signal => { requestedSignal = signal === 'SIGINT' ? 130 : 143; },
@@ -411,10 +446,7 @@ try {
     fd = openSync(lock, 'wx');
     writeFileSync(fd, JSON.stringify({ pid: process.pid, product, platform, device }));
     if (!releaseFile) throw new Error('E2E_RELEASE_RECEIPT is required; create it through the explicit native build command.');
-    release = JSON.parse(readFileSync(resolve(releaseFile), 'utf8'));
-    if (typeof release?.binary?.path !== 'string' || !release.binary.path
-      || !release.profile || typeof release.profile !== 'object' || Array.isArray(release.profile))
-      throw new Error('RELEASE_PROVENANCE');
+    release = releaseShape(JSON.parse(readFileSync(resolve(releaseFile), 'utf8')));
     if (nativeJourneys) {
       const backend = readNativeBackendState();
       if (release.profile.name !== 'local-backend' || release.profile.backend?.origin !== backend.proxy.origin
@@ -526,6 +558,7 @@ try {
     if (command === 'mcp') { mcpStarted = true; primary = await execute(process.execPath, [...webNodeArgs, cli, command, '--target', `${product}-${platform}`, '--max-sessions', '1'], undefined, cliEnvironment()); }
     else if (platform === 'web') await runSdk();
     else {
+      simlockCheckpoint();
       installHandoffStarted = true;
       installationDiagnostics = await runWithInstallDiagnostics({
       install: installRelease ? async () => {
@@ -536,7 +569,7 @@ try {
         writeOnce(join(output, 'installed-start.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read }));
         installedReady = true;
       },
-      launch: runSdk, onDiagnostic: (code, error) => {
+      launch: async () => { simlockCheckpoint(); return runSdk(); }, onDiagnostic: (code, error) => {
         secondary.push(code); installationErrorDetails.push({ code, message: error instanceof Error ? error.message.slice(0, 4096) : 'Non-Error diagnostic' });
       },
       });
@@ -603,6 +636,8 @@ try {
       console.error(error.message);
     }
   }
+  process.off('SIGINT', simlockInterrupt);
+  process.off('SIGTERM', simlockTerminate);
   if (hostStalls.length) {
     // A failed run during a host stall stays failed; the code says why, so it is rerun on a
     // quiet host instead of being read as an app regression. A passed run is left as it is.

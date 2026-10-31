@@ -8,7 +8,21 @@ import {
   nativeJournal,
   nativeTap,
   nativeTranscript,
+  type NativeFixtures,
 } from '../native-backend-fixtures';
+
+/**
+ * Android allows AI at the first question (2026-10-29) and this local stack has no AI provider,
+ * so the quick categorization after the save fails and says so; the dream itself stays saved.
+ * iOS declined AI above and categorizes nothing.
+ */
+async function dismissUnavailableCategorization({ screen, platform }: Pick<NativeFixtures, 'screen' | 'platform'>) {
+  if (platform !== 'android') return;
+  const unavailable = screen.getByText(/^Automatic title and classification are unavailable\./, { visible: true });
+  await expect(unavailable).toBeVisible();
+  await screen.getByRole('button', /^OK$/i, { visible: true }).tap();
+  await expect(unavailable).toHaveCount(0);
+}
 
 // The backend fixture first opens the owned QA app, signs out any retained QA
 // session, clears only that app, and completes its first-launch onboarding.
@@ -53,6 +67,7 @@ test('Dreamer native first capture survives a mode switch and restart with exact
   await nativeDismissCaptureKeyboard(fixtures);
   await expect(save).toBeEnabled();
   await nativeTap(screen, 'btn.saveDream');
+  await dismissUnavailableCategorization(fixtures);
 
   const later = screen.getByTestId('btn.dreamCaptureSeal.readLater', { visible: true });
   const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
@@ -124,6 +139,7 @@ test('Dreamer native capture reviews its original story and saves an added detai
   await screen.scrollUntilVisible(save, { direction: 'down' });
   await expect(save).toBeEnabled();
   await nativeTap(screen, 'btn.saveDream');
+  await dismissUnavailableCategorization(fixtures);
 
   const later = screen.getByTestId('btn.dreamCaptureSeal.readLater', { visible: true });
   const dream = screen.getByTestId('screen.dreamDetail', { visible: true });

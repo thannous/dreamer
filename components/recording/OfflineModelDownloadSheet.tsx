@@ -26,6 +26,10 @@ export function OfflineModelDownloadSheet({
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const [isDownloading, setIsDownloading] = useState(false);
+  // The sheet names the language, never its code ("en-US"); an unknown code is shown as is.
+  const languageKey = `recording.alert.offline_model_vocal.language.${locale.split(/[-_]/)[0].toLowerCase()}`;
+  const languageName = t(languageKey);
+  const language = languageName && languageName !== languageKey ? languageName : locale;
 
   const handleDownload = useCallback(async () => {
     try {
@@ -65,8 +69,9 @@ export function OfflineModelDownloadSheet({
       onClose={handleCancel}
       title={t('recording.alert.offline_model_vocal.title') || 'Pack de langue pour la reconnaissance vocale'}
       subtitle={
-        t('recording.alert.offline_model_vocal.message', { locale, size: '~45 MB' }) ||
-        `Pour enregistrer vos rêves vocalement en ${locale}, téléchargez le pack de langue (~45 MB).`
+        // The copy writes the approximation sign itself.
+        t('recording.alert.offline_model_vocal.message', { locale: language, size: '45 MB' }) ||
+        `Pour enregistrer vos rêves vocalement en ${language}, téléchargez le pack de langue (~45 MB).`
       }
       actions={{
         primaryLabel: t('common.download') || 'Télécharger',

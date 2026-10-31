@@ -4,6 +4,7 @@ const { withUniwindConfig } = require('uniwind/metro');
 const {
   RC_WEB_STUB_OPT_OUT,
   isRevenueCatWebStubDisabled,
+  resolveBuildFlagStub,
   resolveNativeStub,
 } = require('./scripts/metro-native-stubs');
 
@@ -22,7 +23,9 @@ config.cacheVersion = createHash('sha256')
 
 // `expo-sqlite` imports a `.wasm` asset for the web worker (wa-sqlite).
 // Expo's default Metro config doesn't include `wasm` in assetExts yet.
-config.resolver.assetExts = Array.from(new Set([...config.resolver.assetExts, 'wasm']));
+// `txt` carries the per-language symbol content (data/app/symbol-content/):
+// requiring a .json would compile it into the JavaScript bundle instead.
+config.resolver.assetExts = Array.from(new Set([...config.resolver.assetExts, 'wasm', 'txt']));
 // Windows can leave transient hidden entries in node_modules/.bin that break Metro's fallback watcher.
 config.resolver.blockList = [
   /node_modules[\\/]\.bin[\\/]\.[^\\/]+$/,
@@ -32,15 +35,17 @@ config.resolver.blockList = [
   /apps[\\/]meditation[\\/].*/,
 ];
 
-// Native-only empty-module stubs (RevenueCat web SDK, Android Material Symbols
-// font) live in scripts/metro-native-stubs.js. Local Expo Go can opt out of the
-// RevenueCat stub with NOCTALIA_DISABLE_RC_WEB_STUB=1 (see AGENTS.md).
+// Native-only stubs and shims (RevenueCat web SDK, Android Material Symbols,
+// unused Reanimated presets, Supabase Realtime, release-only dev tooling...)
+// and the mock/QA-lab stubs keyed on build flags live in
+// scripts/metro-native-stubs.js. Local Expo Go can opt out of the RevenueCat
+// stub with NOCTALIA_DISABLE_RC_WEB_STUB=1 (see AGENTS.md).
 const upstreamResolveRequest = config.resolver.resolveRequest;
 if (isRevenueCatWebStubDisabled()) {
   console.warn(`[metro] ${RC_WEB_STUB_OPT_OUT}=1: bundling the real RevenueCat web SDK for native (Expo Go only).`);
 }
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  const stub = resolveNativeStub(moduleName, platform);
+  const stub = resolveNativeStub(moduleName, platform, process.env, context);
   if (stub) {
     return stub;
   }
@@ -57,7 +62,8 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   ) {
     return { type: 'empty' };
   }
-  return (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
+  const resolution = (upstreamResolveRequest ?? context.resolveRequest)(context, moduleName, platform);
+  return resolveBuildFlagStub(__dirname, resolution, platform, process.env, context) ?? resolution;
 };
 
 // `withUniwindConfig` must stay the outermost wrapper.

@@ -185,12 +185,16 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
       });
       const shortcuts = Array.from(document.querySelectorAll('[data-testid="lucid-today-shortcuts"] *'))
         .filter(node => node.children.length === 0 && node.textContent?.trim() && getComputedStyle(node).fontFamily.includes('Outfit'));
-      return { tabs, shortcuts: shortcuts.map(node => {
+      // Night has no tab: its shortcut must be reachable on a first look, above the floating bar.
+      const row = document.querySelector('[data-testid="lucid-today-shortcuts"]')!.getBoundingClientRect();
+      const bar = document.querySelector('[role="tablist"]')!.getBoundingClientRect();
+      return { tabs, shortcutsClearOfBar: row.bottom <= bar.top, shortcuts: shortcuts.map(node => {
         const rect = node.getBoundingClientRect();
         return node.scrollHeight <= rect.height + 1 && node.scrollWidth <= rect.width + 1;
       }) };
     });
     expect(geometry.tabs).toEqual([true, true, true, true]);
+    expect(geometry.shortcutsClearOfBar).toBe(true);
     expect(geometry.shortcuts.length).toBeGreaterThan(0);
     expect(geometry.shortcuts.every(Boolean)).toBe(true);
     await app.screenshot(`complete-tab-labels-${width}`);

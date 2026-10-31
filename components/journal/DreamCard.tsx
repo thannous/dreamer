@@ -11,7 +11,7 @@ import { getDreamThemeLabel, getDreamTypeLabel } from '@/lib/dreamLabels';
 import { formatLocaleDate } from '@/lib/dateUtils';
 import { getFormattingLocale } from '@/lib/locale';
 import { areDreamMemoryMetadataEqual, getDreamSyncState } from '@/lib/dreamUtils';
-import { isRememberedDream, isRecurringDream } from '@/lib/dreamFilters';
+import { getShownDreamType, isRememberedDream, isRecurringDream } from '@/lib/dreamFilters';
 import { getDreamAnalysisState, isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { isMockModeEnabled } from '@/lib/env';
 import { getDreamImageVersion, getDreamThumbnailCacheKey, getDreamThumbnailUri, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
@@ -240,10 +240,7 @@ export const DreamCard = memo(function DreamCard({
   const isRecurring = isRecurringDream(dream);
   const isFavorite = !!dream.isFavorite;
   const analysisState = getDreamAnalysisState(dream);
-  // Legacy unanalysed captures defaulted to Symbolic Dream without classification.
-  const dreamType = !dream.dreamType || (dream.dreamType === 'Symbolic Dream' && !isAnalyzed)
-    ? 'Unknown'
-    : dream.dreamType;
+  const dreamType = getShownDreamType(dream) ?? 'Unknown';
   const typeLabel = getDreamTypeLabel(dreamType, t);
   const locale = getFormattingLocale(currentLang ?? 'en');
   // An almanac leaf: the day's numeral, then its weekday over its month and year; a narrow card

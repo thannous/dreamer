@@ -1,6 +1,6 @@
 import { test } from '@e2e-dev/mobile';
 import { expect } from 'e2e';
-import { meditationJourney } from '../journeys';
+import { meditationJourney, restartMeditation } from '../journeys';
 
 test('Meditation release persists onboarding and opens every main tab', async ({ app, screen, platform }) => {
   await app.open();
@@ -51,7 +51,7 @@ test('Meditation release switches languages immediately and persists the choice 
   await screen.getByTestId('lang.fr', { visible: true }).tap();
   await expect(screen.getByText('Langue', { visible: true })).toBeVisible();
   await app.screenshot('release-language-french');
-  await app.restart();
+  await restartMeditation(app, platform === 'ios');
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
   await screen.getByTestId('tab.profile', { visible: true }).tap();
   await screen.scrollUntilVisible(screen.getByTestId('btn.profile.settings', { visible: true }));
@@ -90,7 +90,7 @@ test('Meditation release plays a bundled session, seeks exactly fifteen seconds 
   await app.screenshot('release-audio-paused-after-seek');
   await screen.getByTestId('btn.player.close', { visible: true }).tap();
   await expect(screen.getByTestId('screen.session', { visible: true })).toBeVisible();
-  await app.restart();
+  await restartMeditation(app, platform === 'ios');
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
   await screen.getByTestId('tab.search', { visible: true }).tap();
   await screen.scrollUntilVisible(session);
@@ -102,4 +102,46 @@ test('Meditation release plays a bundled session, seeks exactly fifteen seconds 
   await expect.poll(elapsed).toBeGreaterThanOrEqual(paused + 15);
   await expect.poll(elapsed).toBeLessThan(paused + 30);
   await app.screenshot('release-audio-resumed');
+});
+
+// Erase cleared storage only: the saved session stayed in memory, showed again
+// right after a new onboarding and was written back by the next change.
+test('Meditation release erases its data and a new onboarding starts from nothing', { tags: ['persistence'] }, async ({ app, screen, platform }) => {
+  await app.open();
+  await app.clearState();
+  await meditationJourney(app, screen, platform === 'ios');
+  await screen.getByTestId('tab.search', { visible: true }).tap();
+  const session = screen.getByTestId('option.session.sleep-descent', { visible: true });
+  await screen.scrollUntilVisible(session);
+  // UIKit reports a partially visible card whose centre is under the floating tabs.
+  if (platform === 'ios') await screen.swipe({ direction: 'down' });
+  await session.tap();
+  await screen.getByTestId('btn.session.favorite', { visible: true }).tap();
+  // The iOS Simulator runs Méditation in French, the Android emulator in English.
+  await expect(screen.getByRole('button', /^(Saved|Enregistrée)$/, { visible: true })).toBeVisible();
+  await restartMeditation(app, platform === 'ios');
+  await screen.getByTestId('tab.profile', { visible: true }).tap();
+  const savedLabel = /^(Saved sessions|Séances enregistrées)$/;
+  const saved = screen.getByRole('button', /^(Saved sessions|Séances enregistrées)/, { visible: true });
+  await screen.scrollUntilVisible(saved);
+  await expect(saved).toHaveText(/^(Saved sessions|Séances enregistrées) · 1$/);
+  await screen.scrollUntilVisible(screen.getByTestId('btn.profile.settings', { visible: true }));
+  await screen.getByTestId('btn.profile.settings', { visible: true }).tap();
+  await screen.getByRole('button', /^(Your profile|Votre profil)/, { visible: true }).tap();
+  const erase = screen.getByRole('button', /^(Erase my data|Effacer mes données)$/, { visible: true });
+  await screen.scrollUntilVisible(erase);
+  await erase.tap();
+  await expect(screen.getByText(/^(Erase everything\?|Tout effacer\s\?)$/, { visible: true })).toBeVisible();
+  await screen.getByRole('button', /^(erase|effacer)$/i, { visible: true }).tap();
+  await expect(screen.getByTestId('screen.welcome', { visible: true })).toBeVisible();
+  // No restart: what the app still holds in memory is the point.
+  await meditationJourney(app, screen, platform === 'ios', false);
+  await screen.getByTestId('tab.profile', { visible: true }).tap();
+  await screen.scrollUntilVisible(saved);
+  await expect(saved).toHaveText(savedLabel);
+  await restartMeditation(app, platform === 'ios');
+  await screen.getByTestId('tab.profile', { visible: true }).tap();
+  await screen.scrollUntilVisible(saved);
+  await expect(saved).toHaveText(savedLabel);
+  await app.screenshot('release-erase-starts-from-nothing');
 });

@@ -6,6 +6,7 @@ import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { appMediaResponse } from './app-media-fixtures';
 import { webEngine, webLocale } from './web-engine';
 
 // Keep the matcher library out of the test module bundler, as in SkillCodex's
@@ -85,7 +86,9 @@ export function createParityTest(initial: Options = {}) {
       const serviceRequests: string[] = [];
       await browser.route('**/*', async route => {
         const url = new URL(route.request.url);
+        const media = appMediaResponse(url);
         if (url.origin === origin) await route.continue();
+        else if (media) await route.fulfill(media);
         else if (/^(picsum\.photos|fastly\.picsum\.photos)$/.test(url.hostname))
           await route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#eee"/></svg>' });
         else {

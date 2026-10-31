@@ -27,7 +27,14 @@ export async function getNativeQaSpeechAudioSource(): Promise<ExpoSpeechRecognit
   // Keep native asset initialization behind the QA identity and endpoint guards.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { Asset } = require('expo-asset') as typeof import('expo-asset');
-  const asset = Asset.fromModule(require('../assets/qa/dreamer-dictation-en.wav'));
+  // Metro records an asset as soon as it sees its require, even after the return above.
+  // This ternary folds to undefined when the flag is not inlined as 'true', so release
+  // bundles carry no QA recording; the local QA build sets the flag and keeps it.
+  const fixture: number | undefined = process.env.EXPO_PUBLIC_NATIVE_QA_AUDIO === 'true'
+    ? require('../assets/qa/dreamer-dictation-en.wav')
+    : undefined;
+  if (fixture === undefined) return undefined;
+  const asset = Asset.fromModule(fixture);
   await asset.downloadAsync();
   if (!asset.localUri?.startsWith('file://')) throw new Error('Native QA speech fixture is not a local file.');
   return { uri: asset.localUri, audioChannels: 1, audioEncoding: 2, sampleRate: 16000 };

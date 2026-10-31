@@ -10,6 +10,7 @@ const path = require('node:path');
 // a QA bundle identifier can be selected accidentally for the store build;
 // local Gradle output inside a fingerprinted native package can diverge from EAS npm ci.
 const { assertPortableFingerprint, assertCleanNativeModules, assertIosStoreConfig, assertAndroidStoreConfig } = require('./check-eas-build-inputs');
+const { iosLinksHealthKit } = require('./lib/ios-healthkit-linking');
 
 const infoPlist = {
   NSHealthShareUsageDescription: 'Reads selected sleep records',
@@ -49,5 +50,15 @@ describe('EAS store build input preflight', () => {
     expect(() => assertIosStoreConfig(resolved({ NSHealthUpdateUsageDescription: 'No writes' }), 'noctalia')).toThrow('NSHealthShareUsageDescription');
     expect(() => assertIosStoreConfig(resolved(infoPlist, 'com.tanuki75.noctalia.qa'), 'noctalia')).toThrow('bundleIdentifier');
     expect(() => assertIosStoreConfig({ ios: { bundleIdentifier: 'com.tanuki75.noctalia' } }, 'noctalia')).toThrow('Info.plist');
+  });
+  it('requires the HealthKit purpose strings only from a binary that links HealthKit', () => {
+    expect(() => assertIosStoreConfig(resolved({}), 'noctalia', false)).not.toThrow();
+    expect(() => assertIosStoreConfig(resolved({}, 'com.tanuki75.noctalia.lucid'), 'lucid', true)).toThrow('NSHealthShareUsageDescription');
+  });
+  it('links HealthKit and its Nitro runtime into the Lucid iOS build only', () => {
+    const root = path.join(__dirname, '..');
+    expect(iosLinksHealthKit(root, 'lucid')).toBe(true);
+    expect(iosLinksHealthKit(root, 'noctalia')).toBe(false);
+    expect(iosLinksHealthKit(root, undefined)).toBe(false);
   });
 });

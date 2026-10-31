@@ -22,6 +22,7 @@ import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { getBadgeArtwork } from '@/constants/badgeArtwork';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { useBadgeSyncStatus } from '@/services/badgeSyncStatus';
@@ -33,6 +34,8 @@ import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { BADGE_CARD_COUNT, BADGE_CHAPTERS, BADGE_TIERS, type BadgeFamilyId } from '@/lib/badges/catalog';
 import { nextTierPercent, type BadgeFamilyState } from '@/lib/badges/ledger';
+import { prefetchRemoteArt, type RemoteArtKey } from '@/lib/remoteArt';
+import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import { markBadgeFamilyRevealed, settleBadges } from '@/services/badgeLedgerStore';
 
 const GAP = 12;
@@ -114,6 +117,18 @@ function CollectionScreen() {
   const families = useMemo(() => guest ? collection.families.map(lockedForGuest) : collection.families,
     [collection.families, guest]);
   const openState = openId ? families.find((state) => state.family.id === openId) ?? null : null;
+  // A card held opens on its full painting, which comes from the CDN: fetched once the album
+  // is drawn, so it is there when the card is turned. A family not held yet opens veiled, on
+  // the bundled export.
+  useEffect(() => {
+    const held = families.flatMap((state): RemoteArtKey[] => {
+      const full = state.tier > 0 ? getBadgeArtwork(state.family.id)?.full : undefined;
+      return full ? [full] : [];
+    });
+    if (!held.length) return;
+    const task = scheduleIdleTask(() => void prefetchRemoteArt(held));
+    return task.cancel;
+  }, [families]);
   const firstUnrevealed = families.find((state) => state.unrevealed > 0);
   const closeDetail = useCallback(() => setOpenId(null), []);
   const act = useCallback((state: BadgeFamilyState) => {

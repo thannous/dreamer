@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -9,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { PressableScale, SPRING } from '@/components/motion';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -109,8 +109,8 @@ export const PricingOption: React.FC<PricingOptionProps> = function PricingOptio
       <View style={[styles.headerRow, compact && styles.compactHeaderRow]}>
         {compact ? (
           <Animated.View style={radioStyle}>
-            <MaterialIcons
-              name={isSelected ? 'radio-button-checked' : 'radio-button-unchecked'}
+            <IconSymbol
+              name={isSelected ? 'largecircle.fill.circle' : 'circle'}
               size={21}
               color={isSelected ? noctalia.accent.text : noctalia.text.tertiary}
             />

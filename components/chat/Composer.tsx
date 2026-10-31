@@ -64,15 +64,18 @@ const KeyboardStickyView: React.ComponentType<{
   pointerEvents?: 'box-none';
   children: React.ReactNode;
 }> | null = (() => {
-  if (Platform.OS !== 'ios') return null;
-  if (!NativeModules?.KeyboardController) return null;
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const KeyboardController = require('react-native-keyboard-controller');
-    return KeyboardController.KeyboardStickyView ?? null;
-  } catch {
-    return null;
+  // A block rather than an early return, so Metro drops the require from the
+  // Android bundle. The deep path skips the package index (see
+  // lib/__tests__/keyboardControllerPaths.test.ts).
+  if (Platform.OS === 'ios' && NativeModules?.KeyboardController) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      return require('react-native-keyboard-controller/src/components/KeyboardStickyView').default ?? null;
+    } catch {
+      return null;
+    }
   }
+  return null;
 })();
 
 type ComposerContextValue = {

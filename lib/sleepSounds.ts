@@ -4,7 +4,8 @@ export type SleepTimerMinutes = 15 | 30 | 45;
 export type SleepSoundConfig = {
   id: SleepSoundId;
   // Published by the marketing site (docs-src/static/audio/sleep). The app
-  // downloads each loop on first play instead of shipping ~4.7 MB of audio.
+  // downloads the selected loop once, when a sleep sound screen opens, instead
+  // of shipping ~4.7 MB of audio.
   remoteUrl: string;
 };
 

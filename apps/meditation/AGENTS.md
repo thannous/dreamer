@@ -31,6 +31,15 @@ npm run typecheck  # tsc --noEmit
 npm run lint       # eslint
 ```
 
+## Expo agent CLI
+
+Le CLI expérimental est fixé dans [tools/expo-agent](../../tools/expo-agent/README.md).
+Depuis ce dossier : `node ../../tools/expo-agent/run.cjs status --json`, puis
+`node ../../tools/expo-agent/run.cjs dev --ios --local --plan --json` (ou `--android`).
+La configuration et les skills sont propres à cette racine Expo ; suivre le guide
+pour `agents:setup` et `skills:sync`. Conserver les commandes, verrous, consentements
+et gates du dépôt parent ; un plan ou smoke ne remplace pas TesterArmy.
+
 ## Règles non négociables
 
 1. **Styling via Uniwind** (Tailwind v4, CSS-first). Les classes utilitaires

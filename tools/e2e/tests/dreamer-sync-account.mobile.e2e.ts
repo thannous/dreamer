@@ -21,28 +21,27 @@ test('Dreamer native offline creation and edit survive process restart and synch
       expect(before.data).toEqual([]);
       const edit = screen.getByTestId('btn.editDream', { visible: true });
       await screen.scrollUntilVisible(edit);
-      if (platform === 'ios') {
-        // Native visibility does not establish that the fixed dock leaves the
-        // edit control uncovered. Measure before choosing a single scroll.
-        const dock = screen.getByTestId('component.dreamDetail.actionDock', { visible: true });
-        const geometry = async () => {
-          const button = await edit.boundingBox();
-          const hasDock = await dock.count();
-          const overlay = hasDock ? await dock.boundingBox() : null;
-          if (!button || (hasDock && !overlay)) throw new Error('Offline edit geometry is unavailable.');
-          const covered = !!overlay && button.x < overlay.x + overlay.width
-            && button.x + button.width > overlay.x && button.y < overlay.y + overlay.height
-            && button.y + button.height > overlay.y;
-          return { button, overlay, covered };
-        };
-        const beforeScroll = await geometry();
-        console.info('[native-offline-edit-geometry]', JSON.stringify({ stage: 'before', ...beforeScroll }));
-        if (beforeScroll.covered) {
-          await screen.swipe({ direction: 'down', momentum: 'slow' });
-          const afterScroll = await geometry();
-          console.info('[native-offline-edit-geometry]', JSON.stringify({ stage: 'after', ...afterScroll }));
-          if (afterScroll.covered) throw new Error('The fixed dock still covers Edit after one native scroll.');
-        }
+      // Native visibility does not establish that the fixed dock leaves the edit control
+      // uncovered: XCTest and UIAutomator both call a covered control visible. Measure
+      // before choosing a single scroll.
+      const dock = screen.getByTestId('component.dreamDetail.actionDock', { visible: true });
+      const geometry = async () => {
+        const button = await edit.boundingBox();
+        const hasDock = await dock.count();
+        const overlay = hasDock ? await dock.boundingBox() : null;
+        if (!button || (hasDock && !overlay)) throw new Error('Offline edit geometry is unavailable.');
+        const covered = !!overlay && button.x < overlay.x + overlay.width
+          && button.x + button.width > overlay.x && button.y < overlay.y + overlay.height
+          && button.y + button.height > overlay.y;
+        return { button, overlay, covered };
+      };
+      const beforeScroll = await geometry();
+      console.info('[native-offline-edit-geometry]', JSON.stringify({ stage: 'before', ...beforeScroll }));
+      if (beforeScroll.covered) {
+        await screen.swipe({ direction: 'down', momentum: 'slow' });
+        const afterScroll = await geometry();
+        console.info('[native-offline-edit-geometry]', JSON.stringify({ stage: 'after', ...afterScroll }));
+        if (afterScroll.covered) throw new Error('The fixed dock still covers Edit after one native scroll.');
       }
       await expect(edit).toBeEnabled();
       await edit.tap();

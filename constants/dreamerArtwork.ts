@@ -23,7 +23,9 @@ export const DREAMER_LIGHT_ARTWORK = {
   journal: require('@/assets/images/dreamer/journal-light-v1.webp'),
   dialogue: require('@/assets/images/dreamer/dialogue-light-v1.webp'),
   ritual: require('@/assets/images/dreamer/ritual-light-v1.webp'),
-  sleep: require('@/assets/images/dreamer/sleep-light-v1.webp'),
+  // No screen shows the sleep scene in the paper theme since the sleep sounds became
+  // full-screen night paintings, so it reuses the night one instead of bundling its own.
+  sleep: DREAMER_ARTWORK.sleep,
   symbols: require('@/assets/images/dreamer/symbols-light-v1.webp'),
   observatory: require('@/assets/images/dreamer/observatory-light-v1.webp'),
 } as const satisfies Record<DreamerScene, number>;

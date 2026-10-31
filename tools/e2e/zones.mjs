@@ -1,12 +1,31 @@
 /**
- * Homemade zone map for the PR gate. No model. Paths are repository-relative
- * POSIX paths, the same spelling `git diff --name-only` and e2e's
- * `--changed-since` use. A zone's tests run only when one of its sources
- * changed. Docs and other non-app paths match nothing here.
+ * Homemade zone map for the PR gate, without a model. Paths are
+ * repository-relative POSIX paths, the same spelling `git diff --name-only`
+ * and e2e's `--changed-since` use. A zone's tests run only when one of its sources
+ * changed, unless the optional decision model below keeps them. Docs and
+ * other non-app paths match nothing here.
  */
 
 export const SMOKE_TAG = 'smoke';
 export const BUGBASH_TAG = 'bugbash';
+/** Why the zones leave out a parcours: the only reason the decision model may overturn. */
+export const UNTOUCHED = 'le diff ne touche pas ce parcours';
+
+/**
+ * Optional decision model (the TesterArmy Filters API with OpenAI's Decisions
+ * API). It judges only the parcours the zones leave out, so the zones stay the
+ * floor. It needs an OpenAI key in the environment; without one the gate is
+ * the zones alone, as before.
+ */
+export const DECISION_KEY_ENV = 'OPENAI_API_KEY';
+export const DECISION_MODEL = 'gpt-6-luna';
+/** Products whose journeys the model judges when a shared Dreamer path changes: Lucid runs on the same app code. */
+export const DECISION_PRODUCTS = ['dreamer', 'lucid'];
+
+/** @param {Record<string, string | undefined>} env */
+export function decisionEnabled(env) {
+  return Boolean(env[DECISION_KEY_ENV]?.trim());
+}
 
 /** Dreamer surfaces that should run the smoke tag, even with no named zone. */
 export const DREAMER_APP_ROOTS = [
@@ -256,9 +275,46 @@ export function parcoursExclude(tests, files, locale) {
     }
     const tagged = test.tags.some(tag => tags.has(tag));
     const listed = testFiles.has(test.file) || changedTests.has(test.file);
-    if (!tagged && !listed) exclude[test.id] = 'le diff ne touche pas ce parcours';
+    if (!tagged && !listed) exclude[test.id] = UNTOUCHED;
   }
   const names = zones.map(zone => zone.id);
   const note = names.length ? names.join(',') : changedTests.size ? 'tests-modifies' : 'aucun-parcours';
+  return { exclude, note };
+}
+
+/**
+ * Whether a `--changed-since` selection that runs nothing owes the PR gate nothing.
+ * The engine marks static skips (locale-only journeys) before the zone filter runs, so
+ * they reach the selection whatever the diff. A skip the zone filter would leave out
+ * (untouched, or replayed by the smoke check) does not count. A skip the diff selects,
+ * such as a changed locale-only journey, does: the gate must still fail on it.
+ * `pairs[].file` is relative to tools/e2e, as the engine lists it.
+ * @param {readonly { id: string, tags: readonly string[], file: string, disposition: string }[]} pairs
+ * @param {readonly string[]} files
+ */
+export function selectionOwesNothing(pairs, files, locale) {
+  if (pairs.some(pair => pair.disposition === 'run')) return false;
+  const skipped = pairs.filter(pair => pair.disposition === 'skip')
+    .map(pair => ({ id: pair.id, tags: pair.tags, file: `tools/e2e/${pair.file}` }));
+  const { exclude } = parcoursExclude(skipped, files, locale);
+  return skipped.every(pair => exclude[pair.id] !== undefined);
+}
+
+/**
+ * The zones' answer, widened by the model's. A parcours the zones leave out only
+ * because the diff misses its zone runs unless the model also leaves it out.
+ * Smoke and bug-bash exclusions stand: those tests have their own checks.
+ * @param {{ exclude: Record<string, string>, note?: string }} zones
+ * @param {{ exclude: Record<string, string>, note?: string }} verdict the model's answer about the parcours `UNTOUCHED` names
+ */
+export function widenWithDecision(zones, verdict) {
+  const exclude = {};
+  let kept = 0;
+  for (const [id, reason] of Object.entries(zones.exclude)) {
+    if (reason !== UNTOUCHED) exclude[id] = reason;
+    else if (verdict.exclude[id] !== undefined) exclude[id] = `${UNTOUCHED} (modele : ${verdict.exclude[id]})`;
+    else kept += 1;
+  }
+  const note = [zones.note, `modele : ${kept} parcours hors zone repris`, verdict.note].filter(Boolean).join('; ');
   return { exclude, note };
 }

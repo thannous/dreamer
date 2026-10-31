@@ -3,8 +3,10 @@
   "selection": "Agent-selected for the owner's Dreamer implementation request",
   "format": {
     "type": "WebP",
-    "quality": 84,
-    "width": 1536
+    "quality": 76,
+    "width": 1536,
+    "effort": 6,
+    "smartSubsample": true
   },
   "assets": [
     {
@@ -14,8 +16,8 @@
       "sourceFilename": "exec-a761cec3-77ec-46b6-accb-d20f2b5695a2.png",
       "width": 1536,
       "height": 1024,
-      "bytes": 88256,
-      "sha256": "e8d1646e3fac555f5976aaf68933fcfb552fd5650336efef69f7e677d5605b64"
+      "bytes": 57838,
+      "sha256": "d3e51a6fbc92fdea73b47f5e6da9957379d8d079a8b4b1ea7a964fbbeafed028"
     },
     {
       "scene": "dialogue",
@@ -24,8 +26,8 @@
       "sourceFilename": "exec-89dd775c-07da-430c-b1d4-685b830dae26.png",
       "width": 1536,
       "height": 1024,
-      "bytes": 63576,
-      "sha256": "e18906bfaa588cc02cb84172fc895072e3e1f84f8ddcf62298a1cf080c0419f1"
+      "bytes": 41984,
+      "sha256": "9daa435d24002f929c05e2220f3baa385dde66ecffa4b8b6113049598c1d62ce"
     },
     {
       "scene": "ritual",
@@ -34,8 +36,8 @@
       "sourceFilename": "exec-4c720e27-b0de-49f0-9f6a-326842605fc7.png",
       "width": 1536,
       "height": 1024,
-      "bytes": 140848,
-      "sha256": "42badbd534cd317f30ce201ee19bae2b5f0108701e3b76398b104a22c66e914f"
+      "bytes": 92954,
+      "sha256": "c9ec9d10d32269f972b6f4917b5e5a7171a5072dc40ba7ba85daa68132319b72"
     },
     {
       "scene": "sleep",
@@ -44,8 +46,8 @@
       "sourceFilename": "exec-e4528c3a-fd83-4512-b66f-68da2d2a7088.png",
       "width": 1536,
       "height": 1024,
-      "bytes": 52458,
-      "sha256": "ee6014de11e97b4ec4cbc39d0d6d2da0d9026f8226820da0d925d87088870b56"
+      "bytes": 34220,
+      "sha256": "f7d2ef70656645fb949349170c8973c6a11e505e3d7f1eb2076d5e847b8dc11b"
     },
     {
       "scene": "symbols",
@@ -54,8 +56,8 @@
       "sourceFilename": "exec-f128b7e0-9ef5-4f9c-ad41-f5f33c45f2c0.png",
       "width": 1536,
       "height": 1024,
-      "bytes": 86418,
-      "sha256": "80fc64885b9d3a1e00c3ca02a60aa11c7f56083531085cb629300db93d630414"
+      "bytes": 55726,
+      "sha256": "870c7922b07bf62707c4170044f185e79f95193f99665116fd98feaa5ba5003f"
     },
     {
       "scene": "observatory",
@@ -64,8 +66,8 @@
       "sourceFilename": "exec-1cd9c417-c126-4ad9-9c63-2f4341d708b7.png",
       "width": 1536,
       "height": 1024,
-      "bytes": 80028,
-      "sha256": "c1c4a351e6994b910309a8d83a14571d6782c785701f5dfca1918cedebf0410b"
+      "bytes": 52584,
+      "sha256": "d4ff7b04de66a3655162c43f5f3caa976bdd96cede5b0a66c1a8dba6a228fa1b"
     }
   ],
   "lightVariants": {

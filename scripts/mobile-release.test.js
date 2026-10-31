@@ -178,6 +178,12 @@ describe('release planning against real Git histories', () => {
     write(root, 'app.json', app);
     expect(verify(root, 'noctalia').version).toBe('3.1.0');
   });
+  it('lets Dreamer ship without HealthKit purpose strings once it no longer links HealthKit', () => {
+    const root = fixture();
+    write(root, 'package.json', { version: '3.1.0', scripts: {}, dependencies: { '@kingstinct/react-native-healthkit': '14.1.0' } });
+    write(root, 'react-native.config.js', fs.readFileSync(path.join(__dirname, '..', 'react-native.config.js'), 'utf8'));
+    expect(verify(root, 'noctalia').version).toBe('3.1.0');
+  });
   it('fingerprints a local Store build with the profile EAS Build will use', () => {
     const base = { PATH: '/bin', EAS_BUILD_PROFILE: 'release-smoke' };
     expect(buildEnv('noctalia', 'production', base)).toEqual({ PATH: '/bin', EAS_BUILD_PROFILE: 'production', EXPO_NO_DOTENV: '1', NOCTALIA_APP_VARIANT: 'noctalia', EXPO_PUBLIC_APP_VARIANT: 'noctalia' });
