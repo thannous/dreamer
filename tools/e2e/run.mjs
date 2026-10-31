@@ -11,7 +11,7 @@ import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
-import { PERSONA_ACT_MODEL } from './persona-models.mjs';
+import { personaModels, personaEnvironment } from './persona-models.mjs';
 import { selectionOwesNothing } from './zones.mjs';
 import { acquireSimlock, needsSimlock } from './simlock-native.mjs';
 
@@ -195,7 +195,7 @@ const pins = Object.fromEntries(['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agen
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
 const context = () => ({ locale: platform !== 'web' && env.E2E_PERSONAS === '1' ? 'fr-FR' : env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
-  ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || env.E2E_PERSONA_ACT_MODEL?.trim() || PERSONA_ACT_MODEL } : {}) });
+  ...(env.E2E_PERSONAS === '1' ? { personas: true, ...personaModels(env) } : {}) });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
   // After an interrupt on a leased device, no further SDK child starts.
   if (simlock && (requestedSignal || simlockLost)) return requestedSignal ?? 3;
@@ -379,11 +379,10 @@ async function runSdk() {
   }
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
   const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
-  // A diff whose only journey is smoke-tagged leaves the parcours gate the static skips of
-  // untouched journeys: nothing it owes runs, so the selection is empty. A skipped journey
-  // the diff selects (a changed locale-only one) keeps the run, which then fails NO_PASS.
+  // Static skips from another locale do not block this context. A selected
+  // journey skipped in its own locale still runs and fails NO_PASS.
   if (!runnable.length || (passWithNoTests && changedSince
-    && selectionOwesNothing(runnable, changedFilesSince(changedSince)))) {
+    && selectionOwesNothing(runnable, changedFilesSince(changedSince), platform === 'web' ? context().locale : undefined))) {
     if (passWithNoTests) {
       emptySelection = true;
       console.log('Aucun test selectionne: le moteur n\'est pas lance.');
@@ -402,7 +401,7 @@ async function runSdk() {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
       startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: true, collection: { ...collection, pairs: runnable }, repeatCount,
-      ...(env.E2E_PERSONAS === '1' ? { personaModel: context().personaModel } : {}) });
+      ...(env.E2E_PERSONAS === '1' ? personaModels(env) : {}) });
     writeOnce(join(output, 'qualification.json'), proof);
   }
   return primary;
@@ -497,12 +496,12 @@ try {
     trackedDiffSha256: diffSha256,
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
     rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null,
-      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { ...(simlock
+      ...(env.E2E_PERSONAS === '1' ? personaEnvironment(env) : {}) } : { ...(simlock
         ? { E2E_SIMLOCK_BIN: env.E2E_SIMLOCK_BIN, E2E_SIMLOCK_MODEL: env.E2E_SIMLOCK_MODEL ?? null,
           E2E_SIMLOCK_OS: env.E2E_SIMLOCK_OS ?? null, E2E_SIMLOCK_TIMEOUT_SECONDS: env.E2E_SIMLOCK_TIMEOUT_SECONDS ?? null,
           E2E_SIMLOCK_NO_WAIT: env.E2E_SIMLOCK_NO_WAIT ?? null }
         : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37' }),
-      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}),
+      ...(env.E2E_PERSONAS === '1' ? personaEnvironment(env) : {}),
       ...(nativeJourneys ? { E2E_NATIVE_JOURNEYS: '1', E2E_NATIVE_BACKEND_MANIFEST: env.E2E_NATIVE_BACKEND_MANIFEST,
         E2E_NATIVE_QA_AUDIO: env.E2E_NATIVE_QA_AUDIO, E2E_NATIVE_RECOVERY_PORT: env.E2E_NATIVE_RECOVERY_PORT ?? '31284' } : {}) },
     ...(platform === 'web' ? {
@@ -592,7 +591,7 @@ try {
   if (platform !== 'web' && sdkLaunched) {
     resourceCleanup = attempt('NATIVE_CLEANUP_UNPROVEN', () => verifyNativeCleanup(JSON.parse(readFileSync(join(output, 'report.json'), 'utf8')), {
       target: `${product}-${platform}`, platform, revision: sourceBefore.revision, startedAt,
-      ...(env.E2E_PERSONAS === '1' ? { personaModel: context().personaModel } : {}),
+      ...(env.E2E_PERSONAS === '1' ? personaModels(env) : {}),
     })) ? 'complete' : 'unproven';
   } else if (inspectionStarted) {
     resourceCleanup = inspectionClosed ? 'complete' : 'unproven';

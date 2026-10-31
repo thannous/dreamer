@@ -25,7 +25,7 @@ export const parcoursTouches: TestFilter = {
       id: test.id,
       tags: test.tags,
       file: repoPath(context.changes.root, context.projectRoot, test.file),
-    })), context.changes.files);
+    })), context.changes.files, process.env.E2E_WEB_LOCALE);
     if (!decisionEnabled(process.env)) return zones;
     const asked = tests.filter(test => zones.exclude[test.id] === UNTOUCHED);
     if (asked.length === 0) return zones;

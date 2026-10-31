@@ -35,11 +35,18 @@ test('the Symbolic dream filter lists only dreams the journal labels Symbolic dr
   await screen.getByTestId('btn.filterMore', { visible: true }).tap();
   const sheet = screen.getByTestId('modal.advancedFilters');
   await expect(sheet).toBeVisible();
-  await sheet.getByRole('button', 'Symbolic dream').tap();
+  const symbolic = sheet.getByRole('button', 'Symbolic dream', { exact: true });
+  await symbolic.tap();
+  await expect(symbolic).toHaveAttribute('aria-pressed', 'true');
   await sheet.getByRole('button', 'Done').tap();
   await expect(screen.getByTestId('modal.advancedFilters', { visible: true })).toHaveCount(0);
   await expect(cards.filter({ hasText: 'The Infinite Library' })).toHaveCount(1);
 
   // Expected: every dream kept by "Symbolic dream" says Symbolic dream on its card.
   await expect(cards.filter({ hasText: 'Unclassified' })).toHaveCount(0);
+  // Keep the filter while searching for the known unclassified dream. Its absence
+  // must hold even in a short viewport where the list virtualizes offscreen cards.
+  await browser.setViewport({ width: 390, height: 844 });
+  await screen.getByTestId('input.searchDreams', { visible: true }).fill('The Broken Mirror');
+  await expect(cards.filter({ hasText: 'The Broken Mirror' })).toHaveCount(0);
 });

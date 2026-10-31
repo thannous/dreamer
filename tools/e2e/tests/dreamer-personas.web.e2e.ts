@@ -1,6 +1,7 @@
 import { test, type Browser } from '@e2e-dev/web';
 import { expect, type App, type Screen } from 'e2e';
 import { isolateWeb } from '../web-fixtures';
+import { webLocale } from '../web-engine';
 
 // Normal regression campaigns register no persona tests and need no model/login.
 // The separate opt-in campaign selects only this file, with one worker and no replay.
@@ -30,11 +31,12 @@ if (process.env.E2E_PERSONAS === '1') {
   /** A guest past onboarding, with AI already allowed: the journeys below are about limits, not consent. */
   async function startGuest(app: App, screen: Screen, browser: Browser, spentAnalyses = 0) {
     await isolateWeb(browser, app);
+    await app.open();
     await browser.addInitScript((spent: number) => {
       // The blank page before the app has no storage to seed.
       if (location.origin === 'null') return;
       localStorage.setItem('noctalia.aiConsent.v2', 'granted');
-      // Seeded once, before the app's first read: the offered analyses already used.
+      // Seeded once, before the reloaded app reads its offered analyses.
       if (!spent || sessionStorage.getItem('e2e.guestAnalysesSpent')) return;
       sessionStorage.setItem('e2e.guestAnalysesSpent', '1');
       localStorage.setItem('mock_quota_events_migrated_v1', 'true');
@@ -43,7 +45,7 @@ if (process.env.E2E_PERSONAS === '1') {
         analyzedDreamIds: [], exploredDreamIds: [], imagedDreamIds: [],
       }));
     }, spentAnalyses);
-    await app.open();
+    await browser.reload();
     await screen.getByTestId('btn.onboarding.intro.next').tap();
     if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
       const stop = await browser.onDialog('accept');
@@ -62,6 +64,24 @@ if (process.env.E2E_PERSONAS === '1') {
     await expect(screen.getByTestId('screen.paywall')).toBeHidden();
   }
 
+  async function reopenAfterReload(screen: Screen, browser: Browser, query: string) {
+    await browser.reload();
+    // Startup can resume the first capture intent or open Capture. Persistence
+    // means the entry is recoverable from Journal, not that its route is retained.
+    const back = screen.getByTestId('btn.navigateJournal', { visible: true });
+    const tab = screen.getByTestId('tab.journal', { visible: true });
+    await expect(back.or(tab)).toBeVisible();
+    if (await back.isVisible()) { await back.scrollIntoView(); await back.tap(); }
+    else await tab.tap();
+    await screen.getByTestId('input.searchDreams', { visible: true }).fill(query);
+    const entry = screen.getByTestId(/^dream\.item\./, { visible: true });
+    await expect(entry).toHaveCount(1);
+    await entry.tap();
+  }
+
+  // The original detailed French assertions remain unchanged. The pilot below
+  // uses stable UI outcomes in every configured browser language.
+  if (webLocale === 'fr-FR') {
   test('a sleepy journaler keeps the exact dream for later without requesting a reading',
     { agent: 'morning', tags: ['personas', 'persona-morning', 'capture'] }, async ({ app, screen, browser, agent }) => {
       await startProfile(app, screen, browser, 'new');
@@ -223,8 +243,9 @@ if (process.env.E2E_PERSONAS === '1') {
     { agent: 'guest', tags: ['personas', 'persona-guest', 'capture'] }, async ({ app, screen, browser, agent }) => {
       await startGuest(app, screen, browser);
       await screen.getByTestId('tab.journal', { visible: true }).tap();
-      await agent.act('From your empty journal, start writing down an old dream you never forgot.');
+      await agent.act('From your empty journal, open the empty writing form for an old dream you never forgot. Stop before entering any text.');
       const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+      await expect(editor).toHaveValue('');
       await expect(editor).toHaveAttribute('placeholder', 'Raconte ce rêve que tu n’as jamais oublié...');
       // The placeholder is the only invitation: no instruction above it repeats it.
       await expect(screen.getByText('Raconte un rêve déjà vécu.')).toHaveCount(0);
@@ -265,5 +286,114 @@ if (process.env.E2E_PERSONAS === '1') {
       }
       await expect(screen.getByTestId('text.subscription.qa.purchaseCalls')).toHaveText('0');
       await expect(screen.getByTestId('text.subscription.qa.restoreCalls')).toHaveText('0');
+    });
+  }
+
+  test('a first-time guest discovers capture and keeps a dream across reload',
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-discovery', 'persona-pilot'] }, async ({ app, screen, browser, agent }) => {
+      await isolateWeb(browser, app);
+      await app.open();
+      await browser.addInitScript(() => localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
+      await browser.reload();
+      const dismiss = await browser.onDialog('accept');
+      try {
+        await agent.act('From this first welcome, reach the place where you can write a dream without creating an account.');
+      } finally { await dismiss(); }
+      const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+      await expect(editor).toBeVisible();
+      const story = 'Persona discovery: a blue boat carries a brass key across a quiet lake.';
+      await editor.fill(story);
+      await agent.act('Save the dream you entered so you can find it later.');
+      await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
+      await expect(screen.getByTestId('screen.account')).toBeHidden();
+      await reopenAfterReload(screen, browser, 'Persona discovery');
+      await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
+      await expect.poll(() => browser.evaluate(text => {
+        const entries = JSON.parse(localStorage.getItem('noctalia_mock_dogfood_v1:gemini_dream_journal_dreams') ?? '[]') as { transcript: string }[];
+        return entries.filter(entry => entry.transcript === text).length;
+      }, story)).toBe(1);
+      await app.screenshot('persona-first-launch-durable-dream');
+    });
+
+  test('a guest recovers a failed save without losing text or spending another allowance',
+    { agent: 'morning', tags: ['personas', 'persona-morning', 'persona-recovery', 'persona-pilot'] }, async ({ app, screen, browser, agent }) => {
+      await startGuest(app, screen, browser, 2);
+      const story = 'Persona recovery: a paper lighthouse shelters a small silver bird.';
+      const journalKey = 'noctalia_mock_dogfood_v1:gemini_dream_journal_dreams';
+      const draftKey = 'noctalia_mock_dogfood_v1:gemini_dream_journal_recording_transcript:guest';
+      const quotaKey = 'mock_quota_events_v1';
+      const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+      await editor.fill(story);
+      await expect.poll(() => browser.evaluate(key => localStorage.getItem(key), draftKey)).toBe(story);
+      const quota = await browser.evaluate(key => localStorage.getItem(key), quotaKey);
+      await browser.evaluate(key => {
+        const setItem = Storage.prototype.setItem;
+        (window as Window & { restorePersonaStorage?: () => void }).restorePersonaStorage = () => { Storage.prototype.setItem = setItem; };
+        Storage.prototype.setItem = function (name, value) {
+          if (name === key) throw new DOMException('Synthetic persona storage failure', 'QuotaExceededError');
+          setItem.call(this, name, value);
+        };
+        return null;
+      }, journalKey);
+      let failures = 0;
+      const dismiss = await browser.onDialog(async dialog => { failures += 1; await dialog.accept(); });
+      try {
+        await screen.getByTestId('btn.saveDream', { visible: true }).tap();
+        await expect.poll(() => failures).toBe(1);
+        await expect(editor).toHaveValue(story);
+        expect(await browser.evaluate(key => JSON.parse(localStorage.getItem(key) ?? '[]').length, journalKey)).toBe(0);
+      } finally {
+        await dismiss();
+        await browser.evaluate(() => {
+          const target = window as Window & { restorePersonaStorage?: () => void };
+          target.restorePersonaStorage?.(); delete target.restorePersonaStorage; return null;
+        });
+      }
+      await agent.act('Recover from the failed save by keeping your existing dream. Do not create an account or request a reading.');
+      await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
+      await reopenAfterReload(screen, browser, 'Persona recovery');
+      await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
+      const entries = await browser.evaluate(key => JSON.parse(localStorage.getItem(key) ?? '[]') as { transcript: string }[], journalKey);
+      expect(entries).toHaveLength(1);
+      expect(entries[0].transcript).toBe(story);
+      expect(await browser.evaluate(key => localStorage.getItem(key), quotaKey)).toBe(quota);
+      await app.screenshot('persona-save-recovered-once');
+    });
+
+  test('a curious guest finds a symbol interpretation and the account condition of a collection',
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-exploration', 'persona-pilot'] }, async ({ app, screen, browser, agent }) => {
+      await startGuest(app, screen, browser);
+      await agent.act('Find the dictionary interpretation of water as a dream symbol.');
+      await expect(browser).toHaveURL(/\/symbol-detail\/water/);
+      await expect(screen.getByTestId('screen.symbolDetail', { visible: true })).toBeVisible();
+      await agent.act('Open your collection of dream cards.');
+      await expect(screen.getByTestId('collection.guest.body', { visible: true })).toBeVisible();
+      await agent.assert('The collection explains that a free account is needed to earn cards, without claiming that this guest already owns them.', { vision: true });
+      await expect(screen.getByTestId('collection.summary')).toBeHidden();
+      await app.screenshot('persona-collection-account-condition');
+    });
+
+  test('a reader resumes the bookmarked guide after restarting the app',
+    { agent: 'archivist', tags: ['personas', 'persona-archivist', 'persona-guides', 'persona-pilot'] }, async ({ app, screen, browser, agent }) => {
+      await startGuest(app, screen, browser);
+      await screen.getByTestId('tab.explore', { visible: true }).tap();
+      await screen.getByTestId('btn.explorer.guides', { visible: true }).tap();
+      await screen.getByTestId('dream-guide-dream-journal').tap();
+      await screen.getByTestId('guide.section.3').scrollIntoView();
+      const key = 'noctalia_guide_reading_v1:guest';
+      await expect.poll(() => browser.evaluate(k => JSON.parse(localStorage.getItem(k) ?? '{}')['dream-journal']?.section ?? 0, key)).toBeGreaterThan(0);
+      const bookmark = await browser.evaluate(k => JSON.parse(localStorage.getItem(k) ?? '{}')['dream-journal'].section as number, key);
+      await browser.reload();
+      await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+      await agent.act('Resume the guide about keeping a dream journal that you were reading earlier.');
+      await expect(screen.getByTestId('screen.dreamGuideDetail', { visible: true })).toBeVisible();
+      await expect.poll(() => browser.evaluate(section => {
+        const element = document.querySelector(`[data-testid="guide.section.${section}"]`);
+        if (!element) return false;
+        const { top } = element.getBoundingClientRect();
+        return top >= 0 && top < innerHeight / 2;
+      }, bookmark)).toBe(true);
+      await expect(screen.getByTestId('guide.reading.completed')).toBeHidden();
+      await app.screenshot('persona-guide-resumed');
     });
 }

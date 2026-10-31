@@ -16,7 +16,7 @@ const persona = {
 // with E2E_BUGBASH=1 on the main config. This file does not widen the PR gate.
 export default {
   ...shared,
-  tests: ['tests/dreamer*.web.e2e.ts', 'tests/bugbash/**/*.e2e.ts'],
+  tests: ['tests/bugbash.setup.e2e.ts', 'tests/bugbash/**/*.e2e.ts'],
   agents: {
     default: persona,
     skeptic: { ...persona, system: 'Distrust every number, price, and label. Compare each with the rest of the screen. Do not purchase.' },

@@ -50,6 +50,11 @@ export const ZONES = [
       'components/recording/',
       'components/speech/',
       'components/chat/',
+      'hooks/useCaptureConversation.ts',
+      'hooks/useCaptureReviewPreparation.ts',
+      'hooks/useRecordingSession.ts',
+      'hooks/useRecordingDraftPersistence.ts',
+      'hooks/useRecordingDraftScope.ts',
       'services/captureConversation.ts',
       'services/captureReviewPreparation.ts',
       'services/microphoneHold.ts',
@@ -58,6 +63,7 @@ export const ZONES = [
     tests: [
       'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts',
       'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts',
+      'tools/e2e/tests/dreamer-system-speech.web.e2e.ts',
     ],
   },
   {
@@ -67,6 +73,9 @@ export const ZONES = [
     platform: 'web',
     sources: [
       'services/captureSave.ts',
+      'hooks/useCaptureSave.ts',
+      'hooks/useRecordingDraftPersistence.ts',
+      'hooks/useRecordingDraftScope.ts',
       'services/storageService.ts',
       'services/storageServiceReal.ts',
       'services/journalRepository.ts',
@@ -83,6 +92,14 @@ export const ZONES = [
       'app/journal/',
       'app/(tabs)/journal.tsx',
       'components/journal/',
+      'lib/dreamFilters.ts',
+      'lib/dreamLabels.ts',
+      'lib/dreamUtils.ts',
+      'lib/journalFilterLink.ts',
+      'hooks/useDreamJournal.ts',
+      'hooks/useDreamPersistence.ts',
+      'hooks/useRemoteJournalList.ts',
+      'hooks/useJournalListPagination.ts',
       'services/journalRepository.ts',
       'services/journalSyncEngine.ts',
       'services/journalAnalysis.ts',
@@ -105,6 +122,8 @@ export const ZONES = [
       'services/subscriptionService.ts',
       'services/subscriptionServiceReal.ts',
       'services/subscriptionSyncService.ts',
+      'hooks/useSubscription',
+      'context/SubscriptionContext.tsx',
       'services/quotaService.ts',
     ],
     tests: ['tools/e2e/tests/dreamer-billing.web.e2e.ts'],
@@ -119,6 +138,9 @@ export const ZONES = [
       'app/settings.tsx',
       'components/auth/',
       'components/settings/',
+      'context/AuthContext.tsx',
+      'lib/auth',
+      'lib/supabase.ts',
       'services/accountDeletionService.ts',
       'services/productOAuthSession.ts',
       'services/productOAuthNativeStorage.ts',
@@ -126,7 +148,59 @@ export const ZONES = [
     tests: [
       'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts',
       'tools/e2e/tests/dreamer-account-deletion.web.e2e.ts',
+      'tools/e2e/tests/dreamer-security-url.web.e2e.ts',
     ],
+  },
+  {
+    id: 'reflexion', tags: ['zone-reflexion'], product: 'dreamer', platform: 'web',
+    sources: [
+      'app/dream-chat/', 'app/dream-categories/', 'components/chat/',
+      'context/ChatContext.tsx', 'hooks/useDreamChatSend.ts', 'hooks/useChat',
+      'services/dreamChatSend.ts', 'lib/chat/',
+    ],
+    tests: [
+      'tools/e2e/tests/dreamer-chat-category.web.e2e.ts',
+      'tools/e2e/tests/dreamer-reflection-context.web.e2e.ts',
+      'tools/e2e/tests/dreamer-plus-channels.web.e2e.ts',
+    ],
+  },
+  {
+    id: 'consentement-quota', tags: ['zone-consentement-quota'], product: 'dreamer', platform: 'web',
+    sources: [
+      'hooks/useQuota.ts', 'services/quota/', 'services/quotaService.ts',
+      'components/quota/', 'components/privacy/', 'components/settings/useAiConsentController.ts',
+      'lib/aiConsent', 'constants/limits.ts',
+    ],
+    tests: [
+      'tools/e2e/tests/dreamer-ai-consent.web.e2e.ts',
+      'tools/e2e/tests/dreamer-ai-consent-settings.web.e2e.ts',
+      'tools/e2e/tests/dreamer-guest-limits.web.e2e.ts',
+      'tools/e2e/tests/dreamer-billing.web.e2e.ts',
+    ],
+  },
+  {
+    id: 'exploration', tags: ['zone-exploration'], product: 'dreamer', platform: 'web',
+    sources: [
+      'app/(tabs)/explore.tsx', 'app/symbol-detail/', 'app/symbol-dictionary.tsx',
+      'app/dream-guide/', 'app/dream-guides.tsx', 'app/collection.tsx',
+      'components/symbols/', 'components/badges/', 'components/guides/', 'services/symbol',
+      'services/dreamGuideService.ts', 'services/guideReading', 'services/badgeLedger', 'lib/badges/', 'lib/guideReading',
+    ],
+    tests: [
+      'tools/e2e/tests/dreamer-explorer-repertoire.web.e2e.ts',
+      'tools/e2e/tests/dreamer-symbol-dictionary.web.e2e.ts',
+      'tools/e2e/tests/dreamer-symbol-links.web.e2e.ts',
+      'tools/e2e/tests/dreamer-guide-progress.web.e2e.ts',
+      'tools/e2e/tests/dreamer-badge-collection.web.e2e.ts',
+      'tools/e2e/tests/dreamer-guest-collection.web.e2e.ts',
+    ],
+  },
+  {
+    id: 'lettre-recap', tags: ['zone-lettre-recap'], product: 'dreamer', platform: 'web',
+    sources: ['app/moon-letter.tsx', 'app/weekly-recap.tsx', 'components/moon/', 'components/recap/',
+      'components/home/HomeMoonLetterRow.tsx', 'components/home/HomeWeekNights.tsx', 'components/home/HomeRecurringCard.tsx',
+      'services/moonLetterService.ts', 'lib/moonLetter.ts', 'lib/weeklyRecap.ts'],
+    tests: ['tools/e2e/tests/dreamer-moon-letter.web.e2e.ts', 'tools/e2e/tests/dreamer-weekly-recap.web.e2e.ts'],
   },
   {
     id: 'lucid',
@@ -185,13 +259,18 @@ export function filterIsActive(context) {
   return Array.isArray(context?.changes?.files);
 }
 
-export function parcoursExclude(tests, files) {
+export function parcoursExclude(tests, files, locale) {
   const zones = zonesForFiles(files);
   const changedTests = new Set(files.filter(file => file.startsWith('tools/e2e/tests/') && file.endsWith('.e2e.ts') && !isNativeJourney(file)));
   const tags = new Set(zones.flatMap(zone => zone.tags));
   const testFiles = new Set(zones.flatMap(zone => zone.tests));
   const exclude = {};
   for (const test of tests) {
+    const locales = test.tags.filter(tag => tag.startsWith('locale-'));
+    if (locale && locales.length && !locales.includes(`locale-${locale}`)) {
+      exclude[test.id] = 'ce parcours appartient à un autre contexte de langue';
+      continue;
+    }
     if (test.tags.includes(SMOKE_TAG)) {
       exclude[test.id] = 'la fumée PR joue ce parcours';
       continue;
@@ -211,19 +290,19 @@ export function parcoursExclude(tests, files) {
 
 /**
  * Whether a `--changed-since` selection that runs nothing owes the PR gate nothing.
- * The engine marks static skips (locale-only journeys) before the zone filter runs, so
- * they reach the selection whatever the diff. A skip the zone filter would leave out
- * (untouched, or replayed by the smoke check) does not count. A skip the diff selects,
- * such as a changed locale-only journey, does: the gate must still fail on it.
+ * The engine lists static skips before applying the zone filter. Skips from a
+ * different locale, untouched journeys, or the smoke check do not count. A
+ * selected journey skipped in its own locale still fails the gate.
  * `pairs[].file` is relative to tools/e2e, as the engine lists it.
  * @param {readonly { id: string, tags: readonly string[], file: string, disposition: string }[]} pairs
  * @param {readonly string[]} files
+ * @param {string | undefined} locale
  */
-export function selectionOwesNothing(pairs, files) {
+export function selectionOwesNothing(pairs, files, locale) {
   if (pairs.some(pair => pair.disposition === 'run')) return false;
   const skipped = pairs.filter(pair => pair.disposition === 'skip')
     .map(pair => ({ id: pair.id, tags: pair.tags, file: `tools/e2e/${pair.file}` }));
-  const { exclude } = parcoursExclude(skipped, files);
+  const { exclude } = parcoursExclude(skipped, files, locale);
   return skipped.every(pair => exclude[pair.id] !== undefined);
 }
 

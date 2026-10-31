@@ -218,7 +218,7 @@ assets or the only retained evidence, and never empty Trash without authorizatio
 ## Livraison
 
 1. Avant chaque push, drafts inclus, lancer `npm run verify:pr` sur le commit à pousser ; échec ou preuve `incomplete` : ne pas pousser.
-2. La PR indique le commit vérifié, le résultat et les limites. Traiter la revue dans ses commentaires ; chaque nouveau head envoyé est vérifié.
+2. La PR indique le commit vérifié, le résultat et les limites. Traiter la revue dans ses commentaires ; chaque nouveau head envoyé est vérifié. Ouvrir les PR prêtes pour revue afin que les agents les prennent en charge ; réserver le draft à une demande explicite ou à une préparation encore non vérifiable. Les blocages de fusion restent explicites dans les contrôles et les remarques, sans attente générique de revue humaine.
 3. Sur demande explicite de thanh, fusion possible quand les commentaires sont réglés et rien ne bloque ; aucune intervention du CTO imposée.
 4. Rien ne part en production sans le go de thanh.
 

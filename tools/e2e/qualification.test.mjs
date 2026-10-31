@@ -132,11 +132,16 @@ for (const platform of ['web', 'ios', 'android']) {
       agent: 'morning', tags: ['persona-morning'],
     });
     r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { model: 'gpt-6.1-sol', calls: 1 } });
-    const opts = options({ target, platform, origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6.1-sol' });
+    const opts = options({ target, platform, origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6.1-sol', personaJudgeModel: 'declared-judge' });
     assert.equal(verifyReport(r, opts).passed[0].agent, 'morning');
     if (platform !== 'web') assert.equal(verifyNativeCleanup(r, opts), true);
     assert.throws(() => verifyReport(r, { ...opts, personaModel: undefined }), /REPORT_PROVENANCE/);
     assert.throws(() => verifyReport(r, { ...opts, personaModel: 'another-model' }), /PERSONA_MODEL_UNPROVEN/);
+    const judged = structuredClone(r);
+    judged.run.results[0].attempts[0].steps.push({ api: 'agent.assert', status: 'passed', model: { model: 'declared-judge', calls: 1 } });
+    assert.equal(verifyReport(judged, opts).passed.length, 1);
+    assert.throws(() => verifyReport(judged, { ...opts, personaJudgeModel: 'different-judge' }), /PERSONA_JUDGE_UNPROVEN/);
+    assert.throws(() => verifyReport(judged, { ...opts, personaJudgeModel: undefined }), /PERSONA_JUDGE_UNPROVEN/);
     for (const mutate of [
       data => { data.run.usage.maxModelCallsInStep = 13; },
       data => { data.run.usage.maxActionStepsInStep = 17; },
