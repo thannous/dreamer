@@ -1,18 +1,24 @@
 import { render, screen, waitFor } from '@testing-library/react-native-legacy';
 import React from 'react';
+import { Platform } from 'react-native';
 
 import RootLayout from '@/app/_layout';
 import * as SplashScreen from 'expo-splash-screen';
 
+let mockSegments: string[] = ['(drawer)', '(tabs)'];
+const mockStackOptions: { animation?: string }[] = [];
+
 jest.mock('expo-font', () => ({ useFonts: () => [true, null] }));
 jest.mock('expo-router', () => ({
-  useSegments: () => ['(drawer)', '(tabs)'],
+  useSegments: () => mockSegments,
   usePathname: () => '/',
   useGlobalSearchParams: () => ({}),
-  Stack: () =>
-    jest.requireActual('react').createElement(jest.requireActual('react-native').View, {
+  Stack: ({ screenOptions }: { screenOptions: { animation?: string } }) => {
+    mockStackOptions.push(screenOptions);
+    return jest.requireActual('react').createElement(jest.requireActual('react-native').View, {
       testID: 'root-stack',
-    }),
+    });
+  },
 }));
 jest.mock('expo-splash-screen', () => ({
   preventAutoHideAsync: jest.fn(async () => {}),
@@ -93,5 +99,21 @@ describe('root startup', () => {
 
     expect(screen.getByTestId('root-stack')).toBeTruthy();
     await waitFor(() => expect(SplashScreen.hideAsync).toHaveBeenCalled());
+  });
+
+  it('switches the startup redirect instantly, then keeps the platform motion', () => {
+    // `app/index.tsx`, the startup route, has no segments.
+    mockSegments = [];
+    const view = render(<RootLayout />);
+    expect(mockStackOptions.at(-1)?.animation).toBe('none');
+
+    mockSegments = ['(drawer)', '(tabs)'];
+    view.rerender(<RootLayout />);
+    expect(mockStackOptions.at(-1)?.animation).toBe(Platform.OS === 'android' ? 'none' : 'fade');
+
+    // Back on a segment-less route later, the motion stays.
+    mockSegments = [];
+    view.rerender(<RootLayout />);
+    expect(mockStackOptions.at(-1)?.animation).toBe(Platform.OS === 'android' ? 'none' : 'fade');
   });
 });

@@ -15,7 +15,7 @@ import { Stack, useGlobalSearchParams, usePathname, useSegments } from 'expo-rou
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform, View, useWindowDimensions } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -90,6 +90,18 @@ const rootStackMotion =
 function RootNavigator() {
   const { mode, colors, loaded: themeLoaded } = useTheme();
   const { loaded: worldLoaded } = useWorld();
+  // The startup route (`app/index.tsx`) redirects to Home or to the welcome as soon
+  // as onboarding is read. That redirect switches instantly: iOS drops touches during
+  // a native fade, so the first tap on Home was lost while its buttons were already
+  // there. Every later navigation keeps the platform motion.
+  const leftStartupRoute = useSegments().length > 0;
+  const [startupRouted, setStartupRouted] = useState(leftStartupRoute);
+  useEffect(() => {
+    // A latch set after the redirect has committed: derived during render, it would
+    // turn the fade back on for the redirect itself.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- startup latch
+    if (leftStartupRoute) setStartupRouted(true);
+  }, [leftStartupRoute]);
 
   const [fontsLoaded, fontError] = useFonts({
     Fraunces_400Regular,
@@ -127,7 +139,7 @@ function RootNavigator() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: 'transparent' },
-          ...rootStackMotion,
+          ...(startupRouted ? rootStackMotion : ({ animation: 'none' } as const)),
           fullScreenGestureEnabled: false,
         }}
       />
