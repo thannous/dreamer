@@ -53,6 +53,32 @@ test('Meditation finds a session, persists its favourite after restart and persi
   await app.screenshot('favourite-removal-persisted');
 });
 
+// The onboarding answers (sleep, ten minutes) match only the first step of the
+// Constellation path. Home kept offering that finished step and kept the second
+// one "tomorrow" forever.
+test('Meditation home moves to the next step of the path once the first one is practised', { tags: ['journey', 'persistence'], timeout: 180_000 }, async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await app.open();
+  await meditationJourney(app, screen);
+  const ritual = screen.getByTestId('home.journey.ritual-title', { visible: true });
+  await expect(ritual).toHaveText('Bringing the breath down');
+  await screen.getByTestId('home.journey.cta', { visible: true }).tap();
+  await screen.getByTestId('btn.session.play', { visible: true }).tap();
+  await expect(screen.getByTestId('text.player.position', { visible: true })).not.toHaveText('0:00');
+  const page = surfaceOf(webEngine)!.page() as unknown as Page;
+  const slider = page.getByRole('slider', { name: 'Playback position', exact: true });
+  const bounds = await slider.boundingBox();
+  if (!bounds) throw new Error('Playback seek control is not visible.');
+  await slider.click({ position: { x: bounds.width - 0.1, y: bounds.height / 2 } });
+  await expect(screen.getByTestId('screen.sessionComplete', { visible: true })).toBeVisible();
+  await screen.getByTestId('btn.complete.home', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+  await expect(ritual).toHaveText('The threshold');
+  await app.restart();
+  await expect(ritual).toHaveText('The threshold');
+  await app.screenshot('home-next-path-step');
+});
+
 test('Meditation resumes audio after restart, completes it and records history and streak only once', { tags: ['audio', 'recovery', 'persistence'], timeout: 180_000 }, async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await app.open();
