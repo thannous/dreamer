@@ -28,7 +28,9 @@ jest.mock('expo-router/drawer', () => {
   const { View } = require('react-native');
   const Drawer = ({ children }: React.PropsWithChildren) =>
     React.createElement(View, { testID: 'drawer' }, children);
-  Drawer.Screen = () => null;
+  const DrawerScreen = () => null;
+  DrawerScreen.displayName = 'DrawerScreen';
+  Drawer.Screen = DrawerScreen;
   return { Drawer };
 });
 
