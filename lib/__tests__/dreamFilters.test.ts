@@ -711,8 +711,8 @@ describe('dreamFilters', () => {
       // When
       const result = getUniqueDreamTypes(dreams);
 
-      // Then
-      expect(result).toEqual(['Lucid Dream', 'Nightmare', 'Symbolic Dream']);
+      // Then: the Symbolic Dream among them was never analysed, so it shows no type.
+      expect(result).toEqual(['Lucid Dream', 'Nightmare']);
     });
 
     it('given dreams with null types when getting unique types then excludes null types', () => {
@@ -729,7 +729,7 @@ describe('dreamFilters', () => {
       const result = getUniqueDreamTypes(dreamsWithNullType);
 
       // Then
-      expect(result).toEqual(['Lucid Dream', 'Nightmare', 'Symbolic Dream']);
+      expect(result).toEqual(['Lucid Dream', 'Nightmare']);
     });
 
     it('given empty array when getting unique types then returns empty array', () => {
@@ -818,6 +818,38 @@ describe('dreamFilters', () => {
 
       expect(narrowedLookups).toBeLessThanOrEqual(1);
       expect(resolver.mock.calls.length).toBe(journal.length);
+    });
+  });
+
+  describe('a capture never analysed, stored with the legacy default type', () => {
+    // The journal card calls it Unclassified, so no type filter, type choice or type
+    // search may treat it as a Symbolic dream.
+    const legacy = mockDreams[2];
+    const analysedSymbolic = buildDream({
+      id: 1640259200000,
+      title: 'Mirror Dream',
+      dreamType: 'Symbolic Dream',
+      isAnalyzed: true,
+      analysisStatus: 'done',
+      analyzedAt: 1640259200000,
+    });
+    const journal = [...mockDreams, analysedSymbolic];
+
+    it('is not kept by the Symbolic dream filter', () => {
+      expect(applyFilters(journal, { dreamType: 'Symbolic Dream' }).map((dream) => dream.title)).toEqual(['Mirror Dream']);
+      expect(filterByDreamType(journal, 'Symbolic Dream').map((dream) => dream.title)).toEqual(['Mirror Dream']);
+    });
+
+    it('does not offer a Symbolic dream filter on its own', () => {
+      expect(getUniqueDreamTypes(mockDreams)).toEqual(['Lucid Dream', 'Nightmare']);
+      expect(getUniqueDreamTypes(journal)).toEqual(['Lucid Dream', 'Nightmare', 'Symbolic Dream']);
+    });
+
+    it('is not found by searching for its type', () => {
+      const resolver = (dreamType: DreamType | null | undefined) => (dreamType === 'Symbolic Dream' ? 'Rêve symbolique' : undefined);
+      expect(filterBySearch(journal, 'symbolic').map((dream) => dream.title)).toEqual(['Mirror Dream']);
+      expect(filterBySearch(journal, 'symbolique', { dreamTypeLabelResolver: resolver }).map((dream) => dream.title)).toEqual(['Mirror Dream']);
+      expect(filterBySearch([legacy], 'swimming')).toEqual([legacy]);
     });
   });
 });
