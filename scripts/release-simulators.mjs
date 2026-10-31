@@ -132,12 +132,21 @@ export function readRun(dir) {
   const end = read('end.json');
   const run = read('report.json')?.run;
   const summary = run?.summary ?? {};
-  const failures = (run?.results ?? []).filter(result => result.selected && !['passed', 'skipped'].includes(result.status))
-    .map(result => (result.titlePath ?? [result.title ?? result.testId]).join(' > '));
+  const failed = (run?.results ?? []).filter(result => result.selected && !['passed', 'skipped'].includes(result.status));
+  const failures = failed.map(result => (result.titlePath ?? [result.title ?? result.testId]).join(' > '));
+  // One line per distinct first error, from the last attempt, so a shared cause reads at once.
+  const causes = new Map();
+  for (const result of failed) {
+    const error = result.attempts?.at(-1)?.error;
+    if (!error) continue;
+    const where = error.source ? ` (${error.source.file}:${error.source.line})` : '';
+    const text = `${error.code}: ${String(error.message ?? '').split('\n')[0].slice(0, 200)}${where}`;
+    causes.set(text, (causes.get(text) ?? 0) + 1);
+  }
   const lease = end?.simlock;
   return { qualified: end?.applicationQualified === true, exitCode: end?.exitCode ?? null, passed: summary.passed ?? 0,
     failed: summary.failed ?? failures.length, skipped: summary.skipped ?? 0, failures,
-    errors: end?.secondaryErrors ?? [], device: lease ? `${lease.model}, ${lease.osVersion} (Simlock ${lease.deviceId})` : null };
+    causes: [...causes].map(([text, count]) => ({ text, count })), errors: end?.secondaryErrors ?? [], device: lease ? `${lease.model}, ${lease.osVersion} (Simlock ${lease.deviceId})` : null };
 }
 
 const PLATFORM_LABEL = { ios: 'iPhone (simulateur)', android: 'Android (émulateur)' };
@@ -162,7 +171,8 @@ export function renderReport({ revision, ref, startedAt, finishedAt, platforms, 
     if (!result || result.qualified) return [];
     const where = result.dir ? ` (dossier \`${result.dir}\`${result.error ? '' : ', lire \`summary.md\` puis la page \`trace.md\` du test'})` : '';
     return [`- ${SUITES[suite].label}, ${PLATFORM_LABEL[platform]}${where} :`,
-      ...(result.failures?.length ? result.failures.map(title => `  - ${title}`) : [`  - ${result.error ?? `code ${result.exitCode}, ${result.errors?.join(', ') || 'voir le dossier'}`}`])];
+      ...(result.failures?.length ? result.failures.map(title => `  - ${title}`) : [`  - ${result.error ?? `code ${result.exitCode}, ${result.errors?.join(', ') || 'voir le dossier'}`}`]),
+      ...(result.causes ?? []).map(cause => `  - Cause (${cause.count} parcours) : \`${cause.text}\``)];
   }));
   if (failures.length) lines.push('## Échecs', '', ...failures, '');
   lines.push('## Ce que couvre chaque couche', '', ...suites.map(suite => `- ${SUITES[suite].label} (profil \`${SUITES[suite].profile}\`) : ${SUITES[suite].covers}.`), '',

@@ -93,14 +93,17 @@ test('reads a run folder and writes a French report with the phone-only list', (
       simlock: { leaseId: 'l1', deviceId: 'ios-1', model: 'iPhone 17 Pro', osVersion: '27.1', released: true } }));
     writeFileSync(join(dir, 'report.json'), JSON.stringify({ run: { summary: { passed: 8, failed: 1, skipped: 4 }, results: [
       { selected: true, status: 'passed', titlePath: ['ok'] },
-      { selected: true, status: 'failed', titlePath: ['Dreamer release drawer Plus opens its offer and closes back to Capture'] },
+      { selected: true, status: 'failed', titlePath: ['Dreamer release drawer Plus opens its offer and closes back to Capture'], attempts: [
+        { status: 'failed', error: { code: 'ASSERTION_FAILED', message: 'expect.toBeChecked failed\nlocator: getByRole("radio")', source: { file: 'tests/dreamer.mobile.e2e.ts', line: 59, column: 3 } } }] },
       { selected: true, status: 'skipped', titlePath: ['skip'] },
     ] } }));
     const failed = readRun(dir);
     assert.deepEqual([failed.qualified, failed.passed, failed.failed, failed.skipped], [false, 8, 1, 4]);
     assert.equal(failed.device, 'iPhone 17 Pro, 27.1 (Simlock ios-1)');
     assert.deepEqual(failed.failures, ['Dreamer release drawer Plus opens its offer and closes back to Capture']);
-    assert.deepEqual(readRun(join(dir, 'missing')), { qualified: false, exitCode: null, passed: 0, failed: 0, skipped: 0, failures: [], errors: [], device: null });
+    // The report names the failing assertion, so nine failures with one cause read as one.
+    assert.deepEqual(failed.causes, [{ text: 'ASSERTION_FAILED: expect.toBeChecked failed (tests/dreamer.mobile.e2e.ts:59)', count: 1 }]);
+    assert.deepEqual(readRun(join(dir, 'missing')), { qualified: false, exitCode: null, passed: 0, failed: 0, skipped: 0, failures: [], causes: [], errors: [], device: null });
 
     const results = { 'production:ios': { qualified: true, passed: 9, failed: 0, skipped: 3 }, 'production:android': { ...failed, dir: 'outputs/x/e2e/run' } };
     const base = { revision: 'a'.repeat(40), ref: 'origin/master', startedAt: 's', finishedAt: 'f', platforms: ['ios', 'android'], suites: ['production'] };
@@ -109,6 +112,7 @@ test('reads a run folder and writes a French report with the phone-only list', (
     assert.match(report, /Des parcours ont échoué/);
     assert.match(report, /\| Configuration production \| OK \(9 réussis, 3 hors profil\) \| ÉCHEC \(8 réussis, 1 en échec, 4 hors profil\) \|/);
     assert.match(report, /- Dreamer release drawer Plus opens its offer/);
+    assert.match(report, /Cause \(1 parcours\) : `ASSERTION_FAILED: expect\.toBeChecked failed \(tests\/dreamer\.mobile\.e2e\.ts:59\)`/);
     for (const item of PHONE_ONLY) assert.ok(report.includes(item));
     assert.doesNotMatch(report, /—/);
     const passed = renderReport({ ...base, results: { ...results, 'production:android': { qualified: true, passed: 9, failed: 0, skipped: 3 } } });
