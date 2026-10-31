@@ -10,9 +10,11 @@ const STALL_TIMEOUT_MS = 20_000;
 const pendingFiles = new Map<string, Promise<string>>();
 
 /**
- * Returns a playable URI for a sleep sound. The first play downloads the loop
- * from noctalia.app into the document directory, so later sessions stay offline.
- * Web streams the same URL directly.
+ * Returns a playable URI for a sleep sound. `useSleepSoundPlayer` calls it as soon as
+ * a sleep sound screen opens (Dreamer's sleep sounds, Lucid's Night), before Play, so
+ * the loop is ready when the listener presses it. The first call downloads the
+ * selected loop from noctalia.app into the document directory; later sessions reuse
+ * that file offline. Web streams the same URL directly.
  */
 export function ensureSleepSoundFile(sound: SleepSoundConfig): Promise<string> {
   if (Platform.OS === 'web') return Promise.resolve(sound.remoteUrl);
