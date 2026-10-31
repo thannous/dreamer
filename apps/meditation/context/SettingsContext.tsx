@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 
 import { DEFAULT_SCHEDULE, type ReminderSchedule } from '@/lib/reminders';
-import { readJson, StorageKey, writeJson } from '@/services/storageService';
+import { onLocalDataCleared, readJson, StorageKey, writeJson } from '@/services/storageService';
 
 /** The local profile. No account exists in v1 — this never leaves the device. */
 export type LocalProfile = {
@@ -69,6 +69,18 @@ export const SettingsProvider: React.FC<React.PropsWithChildren> = ({ children }
       mounted = false;
     };
   }, []);
+
+  useEffect(
+    () =>
+      onLocalDataCleared(() => {
+        profileRef.current = INITIAL_PROFILE;
+        remindersRef.current = DEFAULT_SCHEDULE;
+        setProfileState(INITIAL_PROFILE);
+        setRemindersState(DEFAULT_SCHEDULE);
+        setVideoBackgroundsState(true);
+      }),
+    []
+  );
 
   const setProfile = useCallback(async (patch: Partial<LocalProfile>) => {
     const next = { ...profileRef.current, ...patch };
