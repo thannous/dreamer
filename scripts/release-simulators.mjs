@@ -99,7 +99,9 @@ export function suiteBuildEnv(suite, { easProduction = {}, backend } = {}) {
 }
 
 export function buildCommand(platform, { scheme, suite }) {
-  if (platform === 'android') return { command: ['./gradlew', ':app:assembleRelease', '--no-daemon', '-PreactNativeArchitectures=arm64-v8a'],
+  // Three Release builds in a row exhausted Gradle's Metaspace on the Mac mini (3.8.0 run).
+  if (platform === 'android') return { command: ['./gradlew', ':app:assembleRelease', '--no-daemon', '--max-workers=4',
+    '-Dorg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1536m', '-PreactNativeArchitectures=arm64-v8a'],
     binary: 'android/app/build/outputs/apk/release/app-release.apk' };
   // The leased Simulator is known only at run time; the Mac mini's pool is Apple silicon.
   // Ad hoc signing gives the Simulator app its entitlements (keychain, app group).
@@ -120,8 +122,10 @@ export function iosScheme(names) {
 export const WORKSPACE_REGENERABLE = ['node_modules', 'tools/e2e/node_modules', 'tools/e2e/.e2e', 'ios', 'android', '.expo', '.tmp',
   'expo-env.d.ts', 'test-results'];
 
-export const runSelection = (platform, suite) => suite !== 'backend' ? []
-  : ['--exclude-tag', 'native-real-dictation', ...(platform === 'ios' ? ['--exclude-tag', 'native-speech-file'] : [])];
+// The light/dark background matrices are visual captures reviewed on their own, not a release check.
+export const runSelection = (platform, suite) => suite === 'production' ? []
+  : suite === 'mock' ? ['--exclude-tag', 'contextual-backgrounds']
+    : ['--exclude-tag', 'native-real-dictation', ...(platform === 'ios' ? ['--exclude-tag', 'native-speech-file'] : [])];
 
 export function readRun(dir) {
   const read = file => { try { return JSON.parse(readFileSync(join(dir, file), 'utf8')); } catch { return null; } };
@@ -378,7 +382,7 @@ async function main() {
       const sdk = androidSdk(baseEnv);
       Object.assign(baseEnv, { ANDROID_HOME: sdk, ANDROID_SDK_ROOT: sdk });
     }
-    const leased = new Set();
+    const leased = new Set(), warmed = new Set();
     const receipts = {};
     for (const step of steps) {
       if (stopping) throw new Error('Interrupted.');
@@ -388,6 +392,7 @@ async function main() {
         if (step.kind === 'prebuild') {
           if (step.qa && !backend) continue;
           schemes[step.platform] = await prebuild(workspace, step.platform, step.qa, baseEnv, backend, log(`prebuild-${step.platform}.log`));
+          warmed.delete(step.platform);
         } else if (step.kind === 'backend-start') {
           const qaDir = join(process.platform === 'darwin' ? '/private/tmp' : tmpdir(), `noctalia-release-simulators-${stamp}-${process.pid}`);
           stack = await startService(process.execPath, ['tools/e2e/native-backend-stack.mjs', '--output', qaDir, '--port', String(BACKEND_PORT),
@@ -410,6 +415,13 @@ async function main() {
           const { command, binary } = buildCommand(step.platform, { scheme: schemes[step.platform], suite: step.suite });
           const env = { ...baseEnv, ...suiteBuildEnv(step.suite, { easProduction, backend }), EXPO_NO_DOTENV: '1', EXPO_OFFLINE: '1',
             E2E_BUILD_COMMAND: JSON.stringify(command), E2E_RELEASE_BINARY: binary };
+          if (step.platform === 'ios' && !warmed.has('ios')) {
+            // The first build after a prebuild rewrites native inputs (prebuilt Expo pods switch to
+            // Release, dSYM plists), which the runner refuses as BUILD_INPUTS_CHANGED; build once outside it.
+            const warm = await stream(command[0], command.slice(1), { cwd: workspace, env, log: log(`build-warmup-${step.suite}-ios.log`) });
+            if (warm.code !== 0) { results[key] = { error: `build de préparation en échec (logs/build-warmup-${step.suite}-ios.log)` }; report(); continue; }
+            warmed.add('ios');
+          }
           const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'build'], { cwd: workspace, env, log: log(`build-${step.suite}-${step.platform}.log`) });
           receipts[key] = lastPath(tail, 'Release receipt');
           if (code !== 0 || !receipts[key]) results[key] = { error: `build en échec (logs/build-${step.suite}-${step.platform}.log, puis build.log du dossier)`, dir: lastPath(tail, 'E2E evidence') };

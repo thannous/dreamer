@@ -83,8 +83,9 @@ limites.
 Le détail des parcours et de leurs limites est dans la
 [matrice native](../../tools/e2e/NATIVE-MATRIX.md) et le
 [guide des parcours natifs](../../tools/e2e/native-journeys.md). Les parcours avec
-modèle (personas), la concurrence du journal (build avec délai de 30 s) et la
-fluidité ne font pas partie de la campagne : ils se lancent à part, comme décrit dans
+modèle (personas), la concurrence du journal (build avec délai de 30 s), les captures
+des fonds clair et sombre (`contextual-backgrounds`) et la fluidité ne font pas partie
+de la campagne : ils se lancent à part, comme décrit dans
 le [guide TesterArmy](../../tools/e2e/README.md).
 
 ## Lire le résultat

@@ -63,7 +63,13 @@ test('builds each layer with the profile the guarded runner accepts', () => {
   }
   assert.deepEqual(runSelection('ios', 'backend'), ['--exclude-tag', 'native-real-dictation', '--exclude-tag', 'native-speech-file']);
   assert.deepEqual(runSelection('android', 'backend'), ['--exclude-tag', 'native-real-dictation']);
-  assert.deepEqual(runSelection('ios', 'mock'), []);
+  // The light/dark background matrices are visual captures run on their own (3.8.0 run, 2026-10-30).
+  assert.deepEqual(runSelection('ios', 'mock'), ['--exclude-tag', 'contextual-backgrounds']);
+  assert.deepEqual(runSelection('android', 'production'), []);
+  // Three Gradle builds in a row exhausted Metaspace on the Mac mini with the default heap.
+  const gradle = buildCommand('android', { suite: 'mock' }).command;
+  assert.ok(gradle.includes('--max-workers=4'));
+  assert.ok(gradle.includes('-Dorg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1536m'));
 });
 
 test('names the iOS scheme from the generated project, before CocoaPods creates its workspace', () => {
