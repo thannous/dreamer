@@ -103,3 +103,43 @@ test('Meditation release plays a bundled session, seeks exactly fifteen seconds 
   await expect.poll(elapsed).toBeLessThan(paused + 30);
   await app.screenshot('release-audio-resumed');
 });
+
+// Erase cleared storage only: the saved session stayed in memory, showed again
+// right after a new onboarding and was written back by the next change.
+test('Meditation release erases its data and a new onboarding starts from nothing', { tags: ['persistence'] }, async ({ app, screen, platform }) => {
+  await app.open();
+  await app.clearState();
+  await meditationJourney(app, screen, platform === 'ios');
+  await screen.getByTestId('tab.search', { visible: true }).tap();
+  const session = screen.getByTestId('option.session.sleep-descent', { visible: true });
+  await screen.scrollUntilVisible(session);
+  // UIKit reports a partially visible card whose centre is under the floating tabs.
+  if (platform === 'ios') await screen.swipe({ direction: 'down' });
+  await session.tap();
+  await screen.getByTestId('btn.session.favorite', { visible: true }).tap();
+  await expect(screen.getByRole('button', 'Saved', { exact: true, visible: true })).toBeVisible();
+  await app.restart();
+  await screen.getByTestId('tab.profile', { visible: true }).tap();
+  const saved = screen.getByRole('button', /^Saved sessions/, { visible: true });
+  await screen.scrollUntilVisible(saved);
+  await expect(saved).toHaveText('Saved sessions · 1');
+  await screen.scrollUntilVisible(screen.getByTestId('btn.profile.settings', { visible: true }));
+  await screen.getByTestId('btn.profile.settings', { visible: true }).tap();
+  await screen.getByRole('button', /^Your profile/, { visible: true }).tap();
+  const erase = screen.getByRole('button', 'Erase my data', { visible: true });
+  await screen.scrollUntilVisible(erase);
+  await erase.tap();
+  await expect(screen.getByText('Erase everything?', { visible: true })).toBeVisible();
+  await screen.getByRole('button', /^erase$/i, { visible: true }).tap();
+  await expect(screen.getByTestId('screen.welcome', { visible: true })).toBeVisible();
+  // No restart: what the app still holds in memory is the point.
+  await meditationJourney(app, screen, platform === 'ios', false);
+  await screen.getByTestId('tab.profile', { visible: true }).tap();
+  await screen.scrollUntilVisible(saved);
+  await expect(saved).toHaveText('Saved sessions');
+  await app.restart();
+  await screen.getByTestId('tab.profile', { visible: true }).tap();
+  await screen.scrollUntilVisible(saved);
+  await expect(saved).toHaveText('Saved sessions');
+  await app.screenshot('release-erase-starts-from-nothing');
+});

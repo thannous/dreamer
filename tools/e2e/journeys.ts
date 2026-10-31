@@ -1,7 +1,7 @@
 import type { App, Screen } from 'e2e';
 import { expect } from 'e2e';
 
-export async function meditationJourney(app: App, screen: Screen, nativeIosStack = false) {
+export async function meditationJourney(app: App, screen: Screen, nativeIosStack = false, restart = true) {
   // UIKit keeps the outgoing onboarding scene in its accessibility snapshot.
   // The active navigation scene is last; browser and Android have one CTA.
   const next = () => {
@@ -23,7 +23,7 @@ export async function meditationJourney(app: App, screen: Screen, nativeIosStack
   await expect(screen.getByTestId('screen.onboarding.reminder', { visible: true })).toBeVisible();
   await next().tap();
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
-  await app.restart();
+  if (restart) await app.restart();
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
   for (const tab of ['breathe', 'search', 'profile', 'home']) {
     await screen.getByTestId(`tab.${tab}`, { visible: true }).tap();
