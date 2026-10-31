@@ -1,6 +1,6 @@
 import { test } from '@e2e-dev/mobile';
 import { expect } from 'e2e';
-import { meditationJourney } from '../journeys';
+import { meditationJourney, restartMeditation } from '../journeys';
 
 test('Meditation release persists onboarding and opens every main tab', async ({ app, screen, platform }) => {
   await app.open();
@@ -51,7 +51,7 @@ test('Meditation release switches languages immediately and persists the choice 
   await screen.getByTestId('lang.fr', { visible: true }).tap();
   await expect(screen.getByText('Langue', { visible: true })).toBeVisible();
   await app.screenshot('release-language-french');
-  await app.restart();
+  await restartMeditation(app, platform === 'ios');
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
   await screen.getByTestId('tab.profile', { visible: true }).tap();
   await screen.scrollUntilVisible(screen.getByTestId('btn.profile.settings', { visible: true }));
@@ -90,7 +90,7 @@ test('Meditation release plays a bundled session, seeks exactly fifteen seconds 
   await app.screenshot('release-audio-paused-after-seek');
   await screen.getByTestId('btn.player.close', { visible: true }).tap();
   await expect(screen.getByTestId('screen.session', { visible: true })).toBeVisible();
-  await app.restart();
+  await restartMeditation(app, platform === 'ios');
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
   await screen.getByTestId('tab.search', { visible: true }).tap();
   await screen.scrollUntilVisible(session);
@@ -119,7 +119,7 @@ test('Meditation release erases its data and a new onboarding starts from nothin
   await screen.getByTestId('btn.session.favorite', { visible: true }).tap();
   // The iOS Simulator runs Méditation in French, the Android emulator in English.
   await expect(screen.getByRole('button', /^(Saved|Enregistrée)$/, { visible: true })).toBeVisible();
-  await app.restart();
+  await restartMeditation(app, platform === 'ios');
   await screen.getByTestId('tab.profile', { visible: true }).tap();
   const savedLabel = /^(Saved sessions|Séances enregistrées)$/;
   const saved = screen.getByRole('button', /^(Saved sessions|Séances enregistrées)/, { visible: true });
@@ -139,7 +139,7 @@ test('Meditation release erases its data and a new onboarding starts from nothin
   await screen.getByTestId('tab.profile', { visible: true }).tap();
   await screen.scrollUntilVisible(saved);
   await expect(saved).toHaveText(savedLabel);
-  await app.restart();
+  await restartMeditation(app, platform === 'ios');
   await screen.getByTestId('tab.profile', { visible: true }).tap();
   await screen.scrollUntilVisible(saved);
   await expect(saved).toHaveText(savedLabel);
