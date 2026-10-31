@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { parseOptions, planSteps, runPlan, disableAndroidUpdates, suiteBuildEnv,
+import { parseOptions, planSteps, runPlan, cleanEnv, stepFailure, disableAndroidUpdates, suiteBuildEnv,
   buildCommand, runSelection, readRun, renderReport, iosScheme, settleNativeInputs, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
 import { validateBuildCommand } from '../tools/e2e/native-release.mjs';
 
@@ -65,6 +65,19 @@ test('lets a run go on while the other platform builds, never beside its own pla
   await assert.rejects(runPlan(planSteps({ platforms: ['ios', 'android'], suites: ['production', 'mock'] }), execute), /run broke/);
   assert.ok(events.includes('-run android production'));
   assert.ok(!events.includes('+build ios mock'));
+});
+
+test('gives the build tools a UTF-8 locale and drops profiles inherited from the shell', () => {
+  // Mac mini, 2026-10-31: from an agent shell without a locale, pod install stopped at
+  // « CocoaPods requires your terminal to be using UTF-8 ».
+  const bare = cleanEnv({ PATH: '/usr/bin', EXPO_PUBLIC_MOCK_MODE: 'true', E2E_DEVICE: 'x', E2E_SIMLOCK_BIN: '/opt/simlock' });
+  assert.deepEqual(bare, { PATH: '/usr/bin', E2E_SIMLOCK_BIN: '/opt/simlock', LANG: 'en_US.UTF-8', LC_ALL: 'en_US.UTF-8' });
+  assert.equal(cleanEnv({ LANG: 'C', LC_ALL: 'POSIX' }).LC_ALL, 'en_US.UTF-8');
+  assert.deepEqual(cleanEnv({ LANG: 'fr_FR.UTF-8' }), { LANG: 'fr_FR.UTF-8' });
+  assert.equal(cleanEnv({ LANG: 'fr_FR.UTF-8', LC_ALL: 'C' }).LC_ALL, 'en_US.UTF-8');
+  // A step stopped by Ctrl-C reads as interrupted, not as a failed build.
+  assert.deepEqual(stepFailure('build en échec (logs/x.log)', false), { error: 'build en échec (logs/x.log)' });
+  assert.deepEqual(stepFailure('build en échec (logs/x.log)', true), { error: 'interrompu' });
 });
 
 test('turns off expo-updates in the generated Android manifest, whatever the attribute order', () => {

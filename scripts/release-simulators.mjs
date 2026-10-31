@@ -310,11 +310,16 @@ function androidSdk(env) {
   return sdk;
 }
 
-function cleanEnv(env) {
+export function cleanEnv(env) {
   // The shell may carry a profile from another task; each step states its own. The Simlock
   // settings of this machine (binary, model) pass through.
-  return Object.fromEntries(Object.entries(env).filter(([key]) => !/^(EXPO_PUBLIC_|E2E_(?!SIMLOCK_)|NOCTALIA_)/.test(key)));
+  const clean = Object.fromEntries(Object.entries(env).filter(([key]) => !/^(EXPO_PUBLIC_|E2E_(?!SIMLOCK_)|NOCTALIA_)/.test(key)));
+  // CocoaPods refuses a terminal that is not UTF-8, and an agent shell may have no locale at all.
+  if (!/UTF-?8/i.test(clean.LC_ALL || clean.LC_CTYPE || clean.LANG || '')) Object.assign(clean, { LANG: 'en_US.UTF-8', LC_ALL: 'en_US.UTF-8' });
+  return clean;
 }
+
+export const stepFailure = (text, interrupted) => ({ error: interrupted ? 'interrompu' : text });
 
 function parseDotEnv(file) {
   return Object.fromEntries(readFileSync(file, 'utf8').split('\n').map(line => line.trim())
@@ -468,14 +473,14 @@ async function main() {
               async () => (await stream(command[0], command.slice(1), { cwd: workspace, env, log: log(warmLog) })).code,
               () => nativeInputs(workspace, 'dreamer', 'ios').digest);
             if (!settled.ok) {
-              results[key] = { error: settled.unsettled ? `les fichiers natifs changent encore après 4 builds de préparation (logs/${warmLog})`
-                : `build de préparation en échec (logs/${warmLog})` };
+              results[key] = stepFailure(settled.unsettled ? `les fichiers natifs changent encore après 4 builds de préparation (logs/${warmLog})`
+                : `build de préparation en échec (logs/${warmLog})`, stopping);
               report(); return;
             }
           }
           const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'build'], { cwd: workspace, env, log: log(`build-${step.suite}-${step.platform}.log`) });
           receipts[key] = lastPath(tail, 'Release receipt');
-          if (code !== 0 || !receipts[key]) results[key] = { error: `build en échec (logs/build-${step.suite}-${step.platform}.log, puis build.log du dossier)`, dir: lastPath(tail, 'E2E evidence') };
+          if (code !== 0 || !receipts[key]) results[key] = { ...stepFailure(`build en échec (logs/build-${step.suite}-${step.platform}.log, puis build.log du dossier)`, stopping), dir: lastPath(tail, 'E2E evidence') };
         } else if (step.kind === 'run') {
           // No E2E_DEVICE: the runner leases a pooled device, installs the receipt's Release and releases it.
           const env = { ...baseEnv, E2E_RELEASE_RECEIPT: receipts[key], E2E_SIMLOCK_TIMEOUT_SECONDS: String(options.waitMinutes * 60),
@@ -483,7 +488,7 @@ async function main() {
           const { tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'run', '--install-release', ...runSelection(step.platform, step.suite)],
             { cwd: workspace, env, log: log(`run-${step.suite}-${step.platform}.log`) });
           const dir = lastPath(tail, 'E2E evidence');
-          results[key] = dir ? { ...readRun(dir), dir } : { error: `le run n’a pas démarré (logs/run-${step.suite}-${step.platform}.log)` };
+          results[key] = dir ? { ...readRun(dir), dir } : stepFailure(`le run n’a pas démarré (logs/run-${step.suite}-${step.platform}.log)`, stopping);
           const device = results[key].device && `${PLATFORM_LABEL[step.platform]} : ${results[key].device}`;
           if (device && !leased.has(device)) { leased.add(device); environment.push(device); }
         }
