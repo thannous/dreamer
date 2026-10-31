@@ -44,7 +44,7 @@ async function billingSettings(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
 }
 
-async function billingGuest({ app, screen }: NativeBackgroundFixtures) {
+async function billingGuest({ app, screen, platform }: NativeBackgroundFixtures) {
   await app.open();
   // The profile and device are owned synthetic QA data, checked by run.mjs.
   await app.clearState();
@@ -58,7 +58,10 @@ async function billingGuest({ app, screen }: NativeBackgroundFixtures) {
   await billingTap(screen, 'quick-settings.language.en');
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
   const close = screen.getByTestId('quick-settings.close', { visible: true });
-  if (await close.count() === 1) await close.tap();
+  // Scrolled down to English, the drawer's own close sits under the iOS status bar, where a
+  // tap only scrolls back up; the backdrop beside the drawer closes it the same way.
+  if (platform === 'ios') await screen.getByRole('button', 'Close quick settings', { visible: true }).first().tap();
+  else if (await close.count() === 1) await close.tap();
   else await screen.getByRole('button', 'Close quick settings', { visible: true }).tap();
   await expect(screen.getByTestId('quick-settings.drawer', { visible: true })).toHaveCount(0);
 }
@@ -214,8 +217,8 @@ for (const profile of ['existing', 'new'] as const) {
     await device.home();
     await device.openApp('com.tanuki75.noctalia');
     // RootLayoutNav's default foreground destination is Capture. Android
-    // dispatches that lifecycle transition; the historical iOS run stayed Home.
-    const resumedScreen = fixtures.platform === 'android' ? 'screen.recording' : 'screen.home';
+    // dispatches that lifecycle transition; iOS stayed Home until iOS 27.2 dispatched it too.
+    const resumedScreen = fixtures.platform === 'android' ? 'screen.recording' : /^screen\.(home|recording)$/;
     await expect(screen.getByTestId(resumedScreen, { visible: true })).toBeVisible();
     await expect(screen.getByTestId('screen.paywall', { visible: true })).toHaveCount(0);
     await app.screenshot(`native-${profile}-foreground-${fixtures.platform === 'android' ? 'capture' : 'home'}`);
@@ -259,6 +262,18 @@ async function declineAiConsent(screen: TestFixtures['screen'], platform: TestFi
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
 }
 
+/**
+ * A fresh Android target offers the voice pack of a newly chosen language. The sheet opens
+ * just after the tap, so it is awaited briefly rather than counted at once; iOS never shows it.
+ */
+async function declineVoicePack(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
+  if (platform !== 'android') return;
+  const cancel = screen.getByTestId('btn.offline-model.cancel', { visible: true });
+  if (!await cancel.waitFor({ state: 'visible', timeout: 3_000 }).then(() => true, () => false)) return;
+  await cancel.tap();
+  await expect(cancel).toHaveCount(0);
+}
+
 async function acceptDreamerLink({ screen }: Pick<TestFixtures, 'screen'>) {
   // iOS asks before handing a custom URL back from Safari to the installed app.
   const prompt = screen.getByText(/^(Ouvrir dans|Open in).*Noctalia/, { visible: true });
@@ -286,11 +301,8 @@ async function prepareBackgrounds({ app, screen, platform }: NativeBackgroundFix
   await settings.tap();
   await screen.getByTestId('quick-settings.language', { visible: true }).tap();
   await screen.getByTestId('quick-settings.language.fr', { visible: true }).tap();
-  // A fresh Android QA target offers its optional voice pack over the language drawer.
-  // Declining that download preserves the selected UI language and the measured fixture.
-  if (platform === 'android' && await screen.getByText('Pack de langue pour la reconnaissance vocale', { visible: true }).count() > 0) {
-    await screen.getByRole('button', 'Annuler', { visible: true }).tap();
-  }
+  // Declining the voice pack preserves the selected UI language and the measured fixture.
+  await declineVoicePack(screen, platform);
   await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
   await screen.getByTestId('quick-settings.close', { visible: true }).tap();
   await settings.tap();
@@ -413,14 +425,19 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await settings.tap();
     const all = screen.getByTestId('quick-settings.all', { visible: true });
     await screen.scrollUntilVisible(all); await all.tap();
+    // Categorization after a save never asks: it runs only once AI is allowed, here in Settings.
+    const ai = screen.getByTestId('btn.settings.aiConsent', { visible: true });
+    await screen.scrollUntilVisible(ai); await ai.tap();
+    await acceptAiConsent(screen, platform);
+    await expect(ai).toBeChecked();
     const signin = screen.getByTestId('settings-account-open-signin', { visible: true });
-    await screen.scrollUntilVisible(signin); await signin.tap();
+    await screen.scrollUntilVisible(signin, { direction: 'up' }); await signin.tap();
     await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
     const story = 'E2E sapphire lighthouse above the quiet ocean.';
     await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
-    await device.dismissKeyboard();
+    await dismissCaptureKeyboard({ screen, device, platform });
     await screen.getByTestId('btn.saveDream', { visible: true }).tap();
     // The real loading indicator witnesses that the response is still pending.
     // No device clock/evaluation API, fixed sleep or injected UI control is used.
@@ -526,7 +543,7 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   const draft = 'Release fixture: a blue lighthouse above a quiet sea.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(draft);
-  await device.dismissKeyboard();
+  await dismissCaptureKeyboard({ screen, device, platform });
   await screen.scrollUntilVisible(screen.getByTestId('btn.recording.inputMode.voice', { visible: true }), { direction: 'up' });
   await screen.getByTestId('btn.recording.inputMode.voice', { visible: true }).tap();
   // Speech with a draft owes its first question: iOS asks before any provider call, and
@@ -549,7 +566,7 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
   const draft = 'Fixture de qualification : un phare bleu sur une mer calme.';
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
   await editor.fill(draft);
-  await device.dismissKeyboard();
+  await dismissCaptureKeyboard({ screen, device, platform });
   // The real header precedes the extra navigation rail in mock Release builds.
   const settings = screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first();
   await screen.scrollUntilVisible(settings, { direction: 'up' });
@@ -559,16 +576,12 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
   const english = screen.getByTestId('quick-settings.language.en', { visible: true });
   await english.tap();
   // A fresh Android target can lack the English pack as well as the French one.
-  if (platform === 'android' && await screen.getByText('Language Pack for Voice Recording', { visible: true }).count() > 0) {
-    await screen.getByRole('button', 'Cancel', { visible: true }).tap();
-  }
+  await declineVoicePack(screen, platform);
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
   const french = screen.getByTestId('quick-settings.language.fr', { visible: true });
   await french.tap();
   // Android offers a speech pack independently of the saved UI language.
-  if (platform === 'android' && await screen.getByText('Pack de langue pour la reconnaissance vocale', { visible: true }).count() > 0) {
-    await screen.getByRole('button', 'Annuler', { visible: true }).tap();
-  }
+  await declineVoicePack(screen, platform);
   await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
   await screen.getByTestId('quick-settings.close', { visible: true }).tap();
   await expect(screen.getByTestId('quick-settings.language.fr')).toHaveCount(0);
