@@ -152,6 +152,7 @@ export function validateReleaseReceipt(receipt, expected) {
     || (receipt.profile.name === 'production-apk' && receipt.profile.mock)
     || (receipt.profile.categorizationDelayMs !== 0 && (!receipt.profile.mock || !receipt.profile.persistence || receipt.profile.categorizationDelayMs < 20000 || receipt.profile.categorizationDelayMs > 60000))
     || (receipt.product === 'lucid' && receipt.profile.name !== 'lucid-mock')
+    || (receipt.profile.name === 'lucid-mock' && !receipt.profile.mock)
     || (receipt.product === 'meditation' && receipt.profile.name !== 'meditation-local')
     || (receipt.profile.name === 'mock-persistent' && (!receipt.profile.mock || !receipt.profile.persistence))
     || (receipt.profile.name === 'local-backend' && (receipt.profile.mock || receipt.profile.audioMock || receipt.profile.persistence

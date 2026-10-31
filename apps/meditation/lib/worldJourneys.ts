@@ -123,7 +123,19 @@ export function homeRecommendationForWorld(
     'world'
   );
 
-  if (preferredWorld) return preferredWorld;
+  if (preferredWorld) {
+    // A practice already done must not hold the path back: while a step is
+    // left and playable, it comes before repeating the matching practice.
+    const practised = (progress[preferredWorld.session.id]?.completedCount ?? 0) > 0;
+    if (
+      practised &&
+      hasIncompletePathStep(worldId, progress) &&
+      (!isPlayable || isPlayable(editorial))
+    ) {
+      return recommendationFromSession(editorial, preference, 'world');
+    }
+    return preferredWorld;
+  }
 
   if (!preference?.lockToWorld) {
     const cataloguePool = isPlayable ? SESSIONS.filter(isPlayable) : SESSIONS;
@@ -148,17 +160,21 @@ export function homeRecommendationForWorld(
   return recommendationFromSession(incompletePlayable[0] ?? playableWorld[0], preference, 'world');
 }
 
+function hasIncompletePathStep(
+  worldId: WorldId,
+  progress: Record<SessionId, SessionProgress>
+): boolean {
+  return WORLD_BY_ID[worldId].personality.progression.some(
+    ({ sessionId }) => (progress[sessionId]?.completedCount ?? 0) === 0
+  );
+}
+
 function editorialSessionForWorld(
   worldId: WorldId,
   dateISO: string,
   progress: Record<SessionId, SessionProgress>
 ): MeditationSession {
-  const progression = WORLD_BY_ID[worldId].personality.progression;
-  const hasIncompleteStep = progression.some(
-    ({ sessionId }) => (progress[sessionId]?.completedCount ?? 0) === 0
-  );
-
-  return hasIncompleteStep
+  return hasIncompletePathStep(worldId, progress)
     ? journeyStateForWorld(worldId, progress).session
     : sessionOfTheDayForWorld(worldId, dateISO);
 }

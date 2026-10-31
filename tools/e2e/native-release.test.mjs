@@ -5,6 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary, releaseMetadata } from './native-release.mjs';
 import { virtualLinks } from './test-support/virtual-links.mjs';
+// The Simlock reservation guards join this file instead of a new package.json
+// script: root scripts feed the Expo runtime fingerprint.
+import './simlock-native.test.mjs';
 const sha = 'a'.repeat(64);
 test('iteration APK commands never qualify as Release on either path syntax', () => {
   for (const wrapper of ['/repo/android/gradlew', 'C:\\repo\\android\\gradlew.bat']) {
@@ -93,6 +96,16 @@ test('read receipts obey the same bounded/profile rules as their canonical build
     r => { r.startedAt = '2100-01-01T00:00:00Z'; }, r => { r.finishedAt = 'invalid'; }]) {
     const r = receipt(); mutate(r); assert.throws(() => validateReleaseReceipt(r, expected));
   }
+});
+
+// A Lucid build without .env.lucid.mock keeps the default public config, which
+// points at the production project. Its receipt must not qualify as lucid-mock.
+test('a lucid-mock receipt requires the mock mode it is named after', () => {
+  const lucid = mock => ({ ...receipt(), product: 'lucid', bundle: 'com.tanuki75.noctalia.lucid',
+    profile: { name: 'lucid-mock', mock, persistence: false, audioMock: false, featureSheets: true, categorizationDelayMs: 0 } });
+  const lucidExpected = { ...expected, product: 'lucid', bundle: 'com.tanuki75.noctalia.lucid' };
+  assert.equal(validateReleaseReceipt(lucid(true), lucidExpected).profile.name, 'lucid-mock');
+  assert.throws(() => validateReleaseReceipt(lucid(false), lucidExpected), /RELEASE_PROFILE/);
 });
 
 // A UI journey cannot prove a receipt refuses a hosted origin or forged mode.

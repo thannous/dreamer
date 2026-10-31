@@ -345,7 +345,7 @@ E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
 
 Once the pilot passes, replace `persona-morning` with `personas` to run all seven tests
 on the chosen platform. Do not set `E2E_WORKERS` for native: each invocation owns one
-explicitly named owned device and its lock. The first recorded action is `app.open()`, followed
+leased or explicitly named owned device and its lock. The first recorded action is `app.open()`, followed
 by a fresh synthetic app state. Native assertions use accessibility locators,
 keyboard dismissal, scroll-to-visible and the native AI consent dialog. Samira
 checks the completed reply and edits an unsent draft after reopening; Lucas checks
@@ -483,6 +483,56 @@ It never generates a native project or selects a phone. The descriptor accepts
 Android requires Java 17, an installed SDK and an OTA-disabled embedded bundle.
 iOS requires an existing project/Pods, an embedded JS bundle and a Simulator build.
 
+### Automatic Simlock reservation
+
+For a native `run` without `E2E_DEVICE`, the runner reserves one disposable
+simulator or emulator from the configured Simlock pool, installs the Release
+identified by `E2E_RELEASE_RECEIPT`, runs the selected journeys and releases its
+own lease after the SDK and device checks finish. It waits for capacity by default;
+it never downloads a runtime or selects a physical phone. A missing or malformed
+receipt is refused before reserving; a lost lease or unconfirmed release fails
+the run. `simlock-lease.json` and `simlock-release.json` in the run directory
+record the reservation and its acknowledged release; the existing `end.json`
+remains the final verdict.
+
+```sh
+E2E_RELEASE_RECEIPT=PATH_TO_IOS_RELEASE_JSON \
+  mise exec -- npm run test:testerarmy:mobile -- dreamer ios run --grep 'onboarding'
+E2E_RELEASE_RECEIPT=PATH_TO_ANDROID_RELEASE_JSON \
+  mise exec -- npm run test:testerarmy:mobile -- dreamer android run --grep 'onboarding'
+```
+
+The configured machine uses `~/Projects/infra-ops/simlock-pilot/simlock`; on
+another machine use `E2E_SIMLOCK_BIN` or a `simlock` executable on `PATH`.
+Optional `E2E_SIMLOCK_MODEL` and `E2E_SIMLOCK_OS` select an installed catalog
+entry; `E2E_SIMLOCK_TIMEOUT_SECONDS` bounds the wait (default 180), and
+`E2E_SIMLOCK_NO_WAIT=1` refuses when capacity is unavailable. The pool resets
+devices on release, so never place personal data or unique evidence there.
+Android requires Simlock to return its isolated ADB server port; the runner
+refuses a grant without it instead of using an unscoped server.
+The foreground lease holder renews while the runner lives and is bound to its PID.
+It runs in its own process group, so Ctrl-C reaches only the runner, which stops at
+its next checkpoint, cleans up and then releases. Simlock 0.4.0 keeps a request
+queued for capacity after its client dies and grants it anyway, so an interrupt
+while queued waits until the request is granted (then released at once) or times
+out. Never kill a queued holder: its later grant would block the pool until the
+30-minute lease TTL expires.
+On a local Simlock worker the shims' `--lease` scoping is advisory: once the lease
+is lost or released they refuse every further device command, and after a loss
+no SDK child starts. Each shim call also checks that this runner's lease holder is
+still alive, so a loss during a synchronous install or collection is refused at once.
+Codex and Claude use their existing Simlock session identity; a plain terminal
+gets an invocation-specific identity shared by the lease and release commands.
+Before reserving on the Mac mini, follow
+`~/Projects/infra-ops/storage-guard/AGENT_RULES.md`: scan, register the campaign
+with an honest device/build budget, and finish it afterward. The runner does not
+register that storage campaign automatically.
+
+An explicit `E2E_DEVICE` keeps the existing owned-device flow and does not acquire
+a Simlock lease. `list`, `build`, `inspect` and `mcp` do not auto-reserve devices.
+The Simlock lease and the existing runner lock serve different purposes; neither
+replaces the Release receipt, installed identity checks or native evidence.
+
 Example from an isolated checkout with an existing Android project:
 
 ```sh
@@ -517,7 +567,9 @@ without locale rules, and values are never printed. See the official
 New source inputs require a new build. Unchanged app/native input digests permit
 reuse after a test-only commit; build-source and test-source revisions stay distinct.
 
-`--install-release` is opt-in and simulator/emulator-only. The existing runner
+With an explicit `E2E_DEVICE`, `--install-release` is opt-in and
+simulator/emulator-only; a fresh Simlock lease installs the identified Release
+automatically. The existing runner
 holds the device lock, validates the receipt/source/binary, installs that binary,
 pulls and hashes the installed APK (or hashes the installed Simulator `.app`),
 then launches collection and SDK tests. The owner decision of2026-10-06 makes

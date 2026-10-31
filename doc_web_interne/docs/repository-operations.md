@@ -272,7 +272,10 @@ data; never uninstall or clear it to force an installation.
 
 Read `tools/e2e/README.md`. `npm run test:testerarmy` runs Dreamer web;
 `test:testerarmy:lucid`, `test:testerarmy:meditation`, and `test:testerarmy:site`
-select the other web products. For a native installed Release build use
+select the other web products. A native `run` without `E2E_DEVICE` reserves a
+disposable Simlock device, installs the identified Release and releases the lease
+after the runner finishes; see the [Simlock procedure](../../tools/e2e/README.md#automatic-simlock-reservation).
+For an explicitly selected native installed Release build use
 `E2E_DEVICE=<emulator-serial> npm run test:testerarmy:mobile -- <product> android`
 or an explicitly named iOS Simulator with `<product> ios`. Product is dreamer,
 lucid or meditation. Run setup/browser installation once through package scripts.

@@ -1269,6 +1269,27 @@ describe('journal detail saved confirmation route', () => {
     expect(screen.queryByText('DREAM_TRANSCRIPT_TOO_LONG')).toBeNull();
   });
 
+  it('says why a sync stopped in its own words, never with the recorded error', () => {
+    const raw = 'Error: fetch failed: java.io.IOException: unexpected end of stream on http://127.0.0.1:31283/';
+    mockDreams = [buildDream({ syncState: 'failed', lastSyncError: raw })];
+    const failed = render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.failed_message')).toBeTruthy();
+    expect(screen.queryByText(raw)).toBeNull();
+    failed.unmount();
+
+    mockDreams = [buildDream({ syncState: 'conflict', lastSyncError: 'A newer server revision exists for this dream.' })];
+    const conflict = render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.conflict_message')).toBeTruthy();
+    expect(screen.queryByText('A newer server revision exists for this dream.')).toBeNull();
+    conflict.unmount();
+
+    // A conflict that could not be settled offline asks for the connection, in the reader's language.
+    mockDreams = [buildDream({ syncState: 'conflict', lastSyncError: 'An internet connection is required to resolve this sync conflict.' })];
+    render(<JournalDetailScreen />);
+    expect(screen.getByText('journal.detail.sync.retry_error')).toBeTruthy();
+    expect(screen.queryByText('An internet connection is required to resolve this sync conflict.')).toBeNull();
+  });
+
   it('offers share between the seal and the reading, only once the reading is complete', () => {
     mockDreams = [buildDream()];
     const view = render(<JournalDetailScreen />);
