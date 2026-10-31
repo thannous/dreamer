@@ -2840,6 +2840,29 @@ describe('Recording screen', () => {
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
   });
 
+  it('stops the microphone a restart opened when a pause landed while it was starting', async () => {
+    await startAndroidHandsFree();
+    let finishStart!: (value: { success: boolean }) => void;
+    mockStartRecording.mockImplementationOnce(() => new Promise((resolve) => { finishStart = resolve; }));
+
+    await act(async () => { mockOnNativeEnd?.(); });
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    // The pause finds no session yet: the restart is still opening it.
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    expect(mockStopRecording).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      mockIsRecordingRef.current = true;
+      finishStart({ success: true });
+    });
+    await waitFor(() => expect(mockStopRecording).toHaveBeenCalledTimes(3));
+    expect(mockIsRecordingRef.current).toBe(false);
+    expect(mockStartRecording).toHaveBeenCalledTimes(2);
+    // Still paused: the next tap resumes rather than pausing again.
+    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    expect(mockStartRecording).toHaveBeenCalledTimes(3);
+  });
+
   it('does not restart after pause, then resumes only from an explicit tap', async () => {
     await startAndroidHandsFree();
 

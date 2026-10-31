@@ -172,8 +172,11 @@ const GUEST_DEMO_QUOTA_WAIT_MS = 30_000;
 
 const humanizeMemoryValue = (value: string): string => value.replace(/_/g, ' ');
 
-const isTechnicalRevisionConflict = (message?: string | null): boolean =>
-  String(message ?? '').toLowerCase().includes('revision conflict');
+// A conflict that could not be settled because the server was out of reach (useDreamJournal).
+const isConnectionConflict = (message?: string | null): boolean => {
+  const text = String(message ?? '');
+  return text.includes('internet connection is required') || text.includes('could not be loaded');
+};
 
 // Refusals of the server's anti-abuse limits: the dream stays on the device until it passes.
 const getDreamLimitSyncError = (message?: string | null): 'too_long' | 'daily_limit' | null => {
@@ -2415,16 +2418,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       : isSyncFailed
         ? t('journal.detail.sync.failed_title')
         : t('journal.detail.sync.pending_title');
+    // The recorded error is for logs: it can be a raw network exception or English-only text.
     const message = isSyncConflict
-      ? (dream.lastSyncError && !isTechnicalRevisionConflict(dream.lastSyncError)
-          ? dream.lastSyncError
-          : t('journal.detail.sync.conflict_message'))
+      ? t(isConnectionConflict(dream.lastSyncError) ? 'journal.detail.sync.retry_error' : 'journal.detail.sync.conflict_message')
       : isSyncFailed
         ? (limitSyncError === 'too_long'
             ? t('journal.detail.sync.too_long_message', { max: formatNumber(DREAM_TRANSCRIPT_MAX_CHARS) })
             : limitSyncError === 'daily_limit'
               ? t('journal.detail.sync.daily_limit_message')
-              : dream.lastSyncError || t('journal.detail.sync.failed_message'))
+              : t('journal.detail.sync.failed_message'))
         : t('journal.detail.sync.pending_message');
     // Icon colours go to a prop, not a style, so they stay on the TS tokens.
     const toneIconColor = isSyncConflict
