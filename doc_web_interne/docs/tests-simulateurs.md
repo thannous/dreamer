@@ -160,6 +160,12 @@ deux vérifications ne font pas encore partie de la commande.
 
 ## Reprendre une Release iPhone compatible
 
+Dans ce mode budgété, la cible QA doit déjà être louée et explicitement fournie
+par `E2E_DEVICE`, `SIMLOCK_IOS_DEVICE_SET` et un `AGENT_DEVICE_STATE_DIR` propre à
+l’invocation. Le cycle Simlock doit rester sous le même propriétaire ; la commande
+refuse une attribution incomplète. Les campagnes ordinaires gardent leur réservation
+automatique.
+
 Le lanceur peut utiliser un checkout conservé et son reçu sans réinstaller les
 packages, régénérer le projet ou recompiler. Il vérifie les empreintes applicatives,
 natives et du binaire avec les contrôles du candidat ; une incompatibilité refuse

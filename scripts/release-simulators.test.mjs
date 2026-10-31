@@ -259,3 +259,12 @@ test('reuse and ordinary campaigns share an exclusive lock and never release a r
     assert.equal(readFileSync(path, 'utf8'), '1');
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
+
+
+test('PID reuse never attributes a historical or differently named SDK folder to the new child', async () => {
+  const { isNewRunDirectory } = await import('./release-simulators.mjs');
+  const previous = new Set(['1000-42-old']);
+  assert.equal(isNewRunDirectory('1000-42-old', 42, previous), false);
+  assert.equal(isNewRunDirectory('2000-43-42-suffix', 42, previous), false);
+  assert.equal(isNewRunDirectory('2000-42-new', 42, previous), true);
+});

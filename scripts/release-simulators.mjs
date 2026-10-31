@@ -284,6 +284,10 @@ export function acquireCampaignLock(path = join(tmpdir(), 'noctalia-release-simu
   return () => { if (existsSync(path) && readFileSync(path, 'utf8') === String(process.pid)) unlinkSync(path); };
 }
 
+export function isNewRunDirectory(name, pid, before) {
+  return !before.has(name) && /^\d+-\d+-/.test(name) && name.split('-')[1] === String(pid);
+}
+
 export function reuseSteps(personas) {
   return personas ? [{ kind: 'pilot', args: ['--tag', 'persona-morning'], expectedPassed: 1 },
     { kind: 'remaining', args: ['--tag', 'personas', '--exclude-tag', 'persona-morning'], expectedPassed: 6 }]
@@ -297,6 +301,8 @@ export function checkReusedResult(result, expectedPassed) {
 
 async function runReusedRelease(options) {
   if (process.platform !== 'darwin' || process.version !== NODE) throw new Error('Reuse requires macOS and pinned Node; use mise exec.');
+  if (!/^[a-f0-9-]{36}$/i.test(process.env.E2E_DEVICE ?? '') || !process.env.SIMLOCK_IOS_DEVICE_SET
+    || !process.env.AGENT_DEVICE_STATE_DIR) throw new Error('Reuse storage attribution requires an explicitly leased E2E_DEVICE, SIMLOCK_IOS_DEVICE_SET and owned AGENT_DEVICE_STATE_DIR.');
   const workspace = options.reuseWorkspace;
   const revision = read('git', ['rev-parse', 'HEAD'], { cwd: workspace });
   if (options.requestedRef && read('git', ['rev-parse', '--verify', `${options.requestedRef}^{commit}`], { cwd: workspace }) !== revision) throw new Error('REUSE_REVISION_MISMATCH');
@@ -333,8 +339,8 @@ async function runReusedRelease(options) {
   const results = [];
   let storage, refusal, samplingError;
   const ownedRuns = new Set();
-  const registerRun = pid => {
-    for (const name of readdirSync(sdkRoot)) if (name.includes(`-${pid}-`)) {
+  const registerRun = (pid, before) => {
+    for (const name of readdirSync(sdkRoot)) if (isNewRunDirectory(name, pid, before)) {
       const path = join(sdkRoot, name);
       if (!ownedRuns.has(path)) { budget.addPath(path, { chargeExisting: true }); ownedRuns.add(path); }
     }
@@ -354,12 +360,14 @@ async function runReusedRelease(options) {
   try {
     for (const step of reuseSteps(options.personas)) {
       if (refusal || samplingError || stopping) throw new Error(refusal ?? samplingError?.message ?? 'Interrupted');
+      const before = new Set(readdirSync(sdkRoot));
       const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', 'ios', 'run', '--install-release', ...step.args],
         { cwd: workspace, env, log: join(reportDir, `${step.kind}.log`), onSpawn: pid => {
-          const poll = setInterval(() => {
-            try { registerRun(pid); } catch (error) { samplingError = error; for (const child of children) child.kill('SIGINT'); }
-          }, 250);
-          return () => { clearInterval(poll); registerRun(pid); };
+          const observe = () => {
+            try { registerRun(pid, before); } catch (error) { samplingError = error; for (const child of children) child.kill('SIGINT'); }
+          };
+          const poll = setInterval(observe, 250);
+          return () => { clearInterval(poll); observe(); };
         } });
       const dir = lastPath(tail, 'E2E evidence');
       const result = { ...readRun(dir), dir, stage: step.kind, wrapperExitCode: code };
