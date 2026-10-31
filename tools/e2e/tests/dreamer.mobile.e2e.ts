@@ -532,6 +532,11 @@ for (const editor of ['metadata', 'transcript'] as const) {
     // The new name shows as the page title and in the page's header.
     if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true }).first()).toBeVisible();
     else {
+      if (platform === 'ios') {
+        // One active detail and one story card: no AX echo of another scene answers for it.
+        await expect(screen.getByTestId('screen.dreamDetail', { visible: true })).toHaveCount(1);
+        await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toHaveCount(1);
+      }
       // iOS and Android expose the drop cap's inline object after the initial, so the exact
       // story text matches nothing: read the prose by its ID, past its first letter.
       const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
