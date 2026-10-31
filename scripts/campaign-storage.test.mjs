@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, linkSync } from 'node:fs';
+import fs, { mkdtempSync, mkdirSync, writeFileSync, rmSync, linkSync } from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createCampaignStorage } from './campaign-storage.mjs';
@@ -52,4 +53,30 @@ test('late-owned device and SDK paths are charged, while another SDK run stays o
     writeFileSync(join(ownRun, 'trace'), Buffer.alloc(8_000)); budget.addPath(ownRun, { chargeExisting: true });
     assert.ok(budget.sample().growthBytes >= deviceBytes + 8_000);
   } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('a directory removed between stat and enumeration is ignored, but access errors still fail closed', t => {
+  const root = fs.realpathSync(mkdtempSync(join(tmpdir(), 'campaign-storage-')));
+  const vanished = join(root, 'vanished');
+  const readdir = fs.readdirSync;
+  let accessDenied = false, removed = false;
+  const enumeration = t.mock.method(fs, 'readdirSync', (path, ...options) => {
+    if (accessDenied) throw Object.assign(new Error('access denied'), { code: 'EACCES' });
+    if (path === vanished) { removed = true; rmSync(vanished, { recursive: true }); }
+    return readdir(path, ...options);
+  });
+  syncBuiltinESMExports();
+  try {
+    const budget = createCampaignStorage({ paths: [root], freePath: root, limitBytes: 100_000,
+      disk: () => ({ bavail: 100_000_000_000, bsize: 1 }) });
+    mkdirSync(vanished); writeFileSync(join(vanished, 'temporary'), Buffer.alloc(8_000));
+    writeFileSync(join(root, 'kept'), Buffer.alloc(8_000));
+    const sample = budget.sample();
+    assert.equal(removed, true); assert.ok(sample.growthBytes >= 8_000); assert.equal(sample.refusal, null);
+    accessDenied = true;
+    assert.throws(() => budget.sample(), { code: 'EACCES' });
+  } finally {
+    enumeration.mock.restore(); syncBuiltinESMExports();
+    rmSync(root, { recursive: true, force: true });
+  }
 });

@@ -10,8 +10,11 @@ function allocatedFiles(roots) {
     let stat;
     try { stat = lstatSync(path); } catch (error) { if (error.code === 'ENOENT') return; throw error; }
     if (stat.isSymbolicLink()) { links.push(path); return; }
-    if (stat.isDirectory()) for (const name of readdirSync(path)) visit(join(path, name));
-    else if (stat.isFile()) files.set(`${stat.dev}:${stat.ino}`, (stat.blocks ?? Math.ceil(stat.size / 512)) * 512);
+    if (stat.isDirectory()) {
+      let names;
+      try { names = readdirSync(path); } catch (error) { if (error.code === 'ENOENT') return; throw error; }
+      for (const name of names) visit(join(path, name));
+    } else if (stat.isFile()) files.set(`${stat.dev}:${stat.ino}`, (stat.blocks ?? Math.ceil(stat.size / 512)) * 512);
   };
   for (const root of roots) visit(root);
   return { files, links };
