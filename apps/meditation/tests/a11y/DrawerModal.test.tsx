@@ -31,7 +31,12 @@ jest.mock('expo-blur', () => {
   };
 });
 
+jest.mock('@/context/OnboardingContext', () => ({
+  useOnboarding: () => ({ loaded: true, state: { completed: true } }),
+}));
+
 jest.mock('expo-router', () => ({
+  Redirect: () => null,
   useRouter: () => ({
     push: mockPush,
     back: jest.fn(),

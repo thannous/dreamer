@@ -635,26 +635,26 @@ export default function LucidTodayScreen() {
         <View style={styles.contextActions} testID="lucid-today-shortcuts">
           <View style={styles.secondaryContexts}>
             {contextActions.map((action) => (
-            <PressableScale
-              key={action.key}
-              accessibilityLabel={action.accessibilityLabel}
-              accessibilityRole="button"
-              onPress={() => router.push(action.route)}
-              testID={action.testID}
-              style={[
-                styles.contextAction,
-                { backgroundColor: palette.surface, borderColor: palette.borderInteractive },
-              ]}
-            >
-              <Ionicons
-                color={action.key === 'morning' ? palette.amber : palette.accent}
-                name={action.icon}
-                size={LucidIcon.md}
-              />
-              <Text style={[styles.contextLabel, { color: palette.text }]}>
-                {action.label}
-              </Text>
-            </PressableScale>
+              <PressableScale
+                key={action.key}
+                accessibilityLabel={action.accessibilityLabel}
+                accessibilityRole="button"
+                onPress={() => router.push(action.route)}
+                testID={action.testID}
+                style={[
+                  styles.contextAction,
+                  { backgroundColor: palette.surface, borderColor: palette.borderInteractive },
+                ]}
+              >
+                <Ionicons
+                  color={action.key === 'morning' ? palette.amber : palette.accent}
+                  name={action.icon}
+                  size={LucidIcon.md}
+                />
+                <Text style={[styles.contextLabel, { color: palette.text }]}>
+                  {action.label}
+                </Text>
+              </PressableScale>
             ))}
           </View>
         </View>
