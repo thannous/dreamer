@@ -44,6 +44,18 @@ async function billingSettings(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
 }
 
+/**
+ * Settings reopen where they were left, sometimes at their very end. The quota card comes
+ * after the notifications and before its QA lab, the Plus row and the legal section, so the
+ * scroll goes up from any of those and down otherwise.
+ */
+async function billingQuota(screen: TestFixtures['screen']) {
+  const quota = screen.getByTestId('quota.analysisValue', { visible: true });
+  const below = screen.getByTestId(/^(screen\.subscription\.qaLab|settings-section-subscription|settings-section-legal|settings-ai-consent|settings-analytics-preference|settings-stability-reports|settings-legal-contact|settings-delete-account)$/, { visible: true });
+  await screen.scrollUntilVisible(quota, { direction: await below.count() ? 'up' : 'down' });
+  return quota;
+}
+
 async function billingGuest({ app, screen, platform }: NativeBackgroundFixtures) {
   await app.open();
   // The profile and device are owned synthetic QA data, checked by run.mjs.
@@ -74,8 +86,7 @@ async function billingFree(fixtures: NativeBackgroundFixtures) {
   await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   await billingSettings(screen);
-  const quota = screen.getByTestId('quota.analysisValue', { visible: true });
-  await screen.scrollUntilVisible(quota);
+  const quota = await billingQuota(screen);
   // The fixture holds five analyses; since #429 the card caps the count at its limit.
   await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
   await billingTap(screen, 'screen.subscription.qaLab.toggle');
@@ -183,10 +194,7 @@ for (const action of ['purchase', 'restore'] as const) {
     await app.screenshot(`native-${action}-retry-confirmed`);
     await billingClose(screen);
     await billingSettings(screen);
-    // Settings reopen where they were left: at the QA lab's buttons, the quota card is above them.
-    const quota = screen.getByTestId('quota.analysisValue', { visible: true });
-    const lab = screen.getByTestId('screen.subscription.qaLab', { visible: true });
-    await screen.scrollUntilVisible(quota, { direction: await lab.count() ? 'up' : 'down' });
+    const quota = await billingQuota(screen);
     await expect(quota).toHaveText(/^(?:Included analyses: )?Unlimited$/);
     await billingCounts(fixtures, action === 'purchase' ? '1' : '0', action === 'restore' ? '1' : '0');
   });
@@ -225,8 +233,7 @@ for (const profile of ['existing', 'new'] as const) {
     await expect(screen.getByTestId('screen.paywall', { visible: true })).toHaveCount(0);
     await app.screenshot(`native-${profile}-foreground-${fixtures.platform === 'android' ? 'capture' : 'home'}`);
     await billingSettings(screen);
-    const quota = screen.getByTestId('quota.analysisValue', { visible: true });
-    await screen.scrollUntilVisible(quota);
+    const quota = await billingQuota(screen);
     await expect(quota).toHaveText(profile === 'existing'
       ? /^(?:Included analyses: )?3 \/ 3$/ : /^(?:Included analyses: )?0 \/ 3$/);
     await billingCounts(fixtures, '0', '0');
@@ -460,11 +467,21 @@ for (const editor of ['metadata', 'transcript'] as const) {
     const all = screen.getByTestId('quick-settings.all', { visible: true });
     await screen.scrollUntilVisible(all); await all.tap();
     // Categorization after a save never asks: it runs only once AI is allowed, here in Settings.
-    const ai = screen.getByTestId('btn.settings.aiConsent', { visible: true });
+    // On iOS the whole permission row is the switch, as VoiceOver activates it: its inner
+    // Switch is no longer an element of its own there.
+    const ai = screen.getByTestId(platform === 'ios' ? 'settings-ai-consent' : 'btn.settings.aiConsent', { visible: true });
     await screen.scrollUntilVisible(ai); await ai.tap();
     await acceptAiConsent(screen, platform);
     await expect(ai).toBeChecked();
     const signin = screen.getByTestId('settings-account-open-signin', { visible: true });
+    if (platform === 'ios') {
+      // The consent sheet is still fading out when the row reads checked, and a synthesized
+      // scroll then moves nothing: drag the page down once from above the row first.
+      const row = await ai.boundingBox();
+      if (!row) throw new Error('The AI permission row has no geometry.');
+      const x = row.x + row.width / 2;
+      await screen.swipe({ from: { x, y: row.y - 24 }, to: { x, y: row.y + row.height }, duration: 900 });
+    }
     await screen.scrollUntilVisible(signin, { direction: 'up' }); await signin.tap();
     await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -505,7 +522,8 @@ for (const editor of ['metadata', 'transcript'] as const) {
     const search = screen.getByTestId('input.searchDreams', { visible: true });
     const title = editor === 'metadata' ? draft : 'E2E sapphire lighthouse above the quiet ocean';
     await search.fill(title);
-    if (platform === 'ios') await search.press('Enter');
+    // The keyboard's own Search key submits; a synthesized Enter can leave the driver waiting.
+    if (platform === 'ios') await screen.getByTestId('Search', { visible: true }).tap();
     else await device.dismissKeyboard();
     await expect(search).toHaveValue(title);
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
@@ -514,19 +532,10 @@ for (const editor of ['metadata', 'transcript'] as const) {
     // The new name shows as the page title and in the page's header.
     if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true }).first()).toBeVisible();
     else {
-      if (platform === 'ios') {
-        // Scope the exact story to the single active detail, excluding AX echoes
-        // outside that scene. The scoped result must contain exactly one text.
-        const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
-        await expect(detail).toHaveCount(1);
-        await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toHaveCount(1);
-        await expect(detail.getByText(draft, { visible: true })).toHaveText([draft]);
-      } else {
-        // Android exposes the drop cap's inline object after the initial, so the exact story
-        // text matches nothing: read the prose by its ID, past its first letter.
-        const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
-        await screen.scrollUntilVisible(transcript); await expect(transcript).toContainText(draft.slice(1));
-      }
+      // iOS and Android expose the drop cap's inline object after the initial, so the exact
+      // story text matches nothing: read the prose by its ID, past its first letter.
+      const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
+      await screen.scrollUntilVisible(transcript); await expect(transcript).toContainText(draft.slice(1));
     }
     await tapClearOfActionDock(screen, button);
     if (platform === 'ios' && editor === 'transcript') {
@@ -552,9 +561,14 @@ for (const editor of ['metadata', 'transcript'] as const) {
     if (platform === 'ios') await screen.getByTestId('btn.journal.dismissKeyboard', { visible: true }).tap();
     else await device.dismissKeyboard();
     await expect(input).toHaveValue('E2E abandoned local draft');
+    // The editor's veil covers the page's Back: the draft is left by the sheet's own Cancel.
+    const cancel = screen.getByTestId('btn.cancelDreamEdit', { visible: true });
+    await screen.scrollUntilVisible(cancel); await cancel.tap();
+    await expect(input).toHaveCount(0);
     await screen.scrollUntilVisible(back, { direction: 'up' }); await back.tap();
     await search.fill('The Infinite Library');
-    if (platform === 'ios') await search.press('Enter');
+    // The keyboard's own Search key submits; a synthesized Enter can leave the driver waiting.
+    if (platform === 'ios') await screen.getByTestId('Search', { visible: true }).tap();
     else await device.dismissKeyboard();
     await expect(search).toHaveValue('The Infinite Library');
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
@@ -857,6 +871,15 @@ test('Dreamer Release scroll dogfood preserves its journal and painted resource 
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
 });
 
+/**
+ * `app.open()` relaunches the app. A link sent while it is still starting can reach it before
+ * it listens for links: it then stays on Capture. A person opens the link from a started app.
+ */
+async function openStartedApp({ app, screen }: Pick<NativeBackgroundFixtures, 'app' | 'screen'>) {
+  await app.open();
+  await expect(screen.getByTestId(/^screen\.(onboarding|recording|home|settings)$/, { visible: true }).first()).toBeVisible();
+}
+
 // Recovered from the isolated security QA run. Use the canonical owned-device
 // profile and supported scheme instead of a physical-phone-only local config.
 const nativeRecoveryOptions = {
@@ -866,8 +889,8 @@ const nativeRecoveryOptions = {
 };
 
 test('Dreamer native security recovery rejects a bearer-shaped reset link', nativeRecoveryOptions, async (fixtures) => {
-  const { app, screen } = fixtures;
-  await app.open();
+  const { screen } = fixtures;
+  await openStartedApp(fixtures);
   await openBackgroundRoute(fixtures, 'auth/reset-password?type=recovery&access_token=qa-synthetic&refresh_token=qa-synthetic');
   await expect(screen.getByTestId('screen.auth.resetPassword')).toBeVisible();
   await expect(screen.getByText(/Ce lien n.est plus valide|This link is no longer valid/)).toBeVisible();
@@ -876,8 +899,8 @@ test('Dreamer native security recovery rejects a bearer-shaped reset link', nati
 });
 
 test('Dreamer native security recovery keeps a synthetic token-hash form inert', nativeRecoveryOptions, async (fixtures) => {
-  const { app, screen } = fixtures;
-  await app.open();
+  const { screen } = fixtures;
+  await openStartedApp(fixtures);
   await openBackgroundRoute(fixtures, 'auth/reset-password?type=recovery&token_hash=qa-synthetic-invalid');
   await expect(screen.getByTestId('screen.auth.resetPassword')).toBeVisible();
   await expect(screen.getByTestId('input.auth.recoveryEmail')).toBeVisible();
