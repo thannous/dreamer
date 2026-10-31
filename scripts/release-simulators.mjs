@@ -30,7 +30,7 @@ export const PHONE_ONLY = [
   'Micro physique et dictée en direct (le simulateur reconnaît un fichier audio, pas une voix).',
   'Fluidité ressentie sur un vrai téléphone.',
 ];
-const DEFAULTS = { ref: 'origin/master', platform: 'all', suites: 'production,mock,backend', 'wait-minutes': '30', 'min-free-gb': '30' };
+const DEFAULTS = { ref: 'origin/master', platform: 'all', suites: 'mock', 'wait-minutes': '30', 'min-free-gb': '30' };
 const BACKEND_PORT = 31283;
 const RECOVERY_PORT = 31284;
 
@@ -43,8 +43,8 @@ export function parseOptions(argv) {
   const options = { ...DEFAULTS, ...values };
   const platforms = options.platform === 'all' ? ['ios', 'android'] : [options.platform];
   if (platforms.some(platform => !['ios', 'android'].includes(platform))) throw new Error('--platform takes ios, android or all.');
-  const suites = [...new Set(options.suites.split(',').map(suite => suite.trim()).filter(Boolean))];
-  if (!suites.length || suites.some(suite => !SUITES[suite])) throw new Error(`--suites takes a comma list of ${Object.keys(SUITES).join(', ')}.`);
+  const suites = options.suites === 'all' ? Object.keys(SUITES) : [...new Set(options.suites.split(',').map(suite => suite.trim()).filter(Boolean))];
+  if (!suites.length || suites.some(suite => !SUITES[suite])) throw new Error(`--suites takes all or a comma list of ${Object.keys(SUITES).join(', ')}.`);
   const minFreeGb = Number(options['min-free-gb']);
   if (!Number.isFinite(minFreeGb) || minFreeGb < 0) throw new Error('--min-free-gb takes a number.');
   const waitMinutes = Number(options['wait-minutes']);
@@ -59,21 +59,40 @@ export function parseOptions(argv) {
 // (its own bundle id) and a live stack, so it runs last, after a second generation.
 // Simlock resets each device on release, so no run inherits an app from the previous one.
 export function planSteps({ platforms, suites }) {
-  const steps = [];
-  for (const platform of platforms) {
-    const ordinary = suites.filter(suite => suite !== 'backend');
-    if (ordinary.length) steps.push({ kind: 'prebuild', platform, qa: false });
-    for (const suite of ordinary) steps.push({ kind: 'build', platform, suite }, { kind: 'run', platform, suite });
-  }
+  const ordinary = suites.filter(suite => suite !== 'backend');
+  const steps = ordinary.length ? platforms.map(platform => ({ kind: 'prebuild', platform, qa: false })) : [];
+  for (const suite of ordinary) for (const platform of platforms) steps.push({ kind: 'build', platform, suite }, { kind: 'run', platform, suite });
   if (suites.includes('backend')) {
-    steps.push({ kind: 'backend-start' });
-    for (const platform of platforms) {
-      steps.push({ kind: 'prebuild', platform, qa: true },
-        { kind: 'build', platform, suite: 'backend' }, { kind: 'run', platform, suite: 'backend' });
-    }
+    steps.push({ kind: 'backend-start' }, ...platforms.map(platform => ({ kind: 'prebuild', platform, qa: true })));
+    for (const platform of platforms) steps.push({ kind: 'build', platform, suite: 'backend' }, { kind: 'run', platform, suite: 'backend' });
     steps.push({ kind: 'backend-stop' });
   }
   return steps;
+}
+
+// One build or generation at a time. A production or mock run goes on in the background on its
+// leased device while the other platform builds; that platform's next step waits for it (a build
+// rewrites what its run checks), and so do the local server (one run per stack) and the end.
+export async function runPlan(steps, execute) {
+  const pending = new Map();
+  const wait = async platforms => {
+    for (const platform of platforms) {
+      const outcome = await pending.get(platform);
+      pending.delete(platform);
+      if (outcome?.error) throw outcome.error;
+    }
+  };
+  try {
+    for (const step of steps) {
+      await wait(step.platform ? [step.platform] : [...pending.keys()]);
+      const done = execute(step);
+      if (step.kind === 'run' && step.suite !== 'backend') pending.set(step.platform, done.then(() => null, error => ({ error })));
+      else await done;
+    }
+    await wait([...pending.keys()]);
+  } finally {
+    await Promise.all(pending.values()); // The workspace is released only once no run uses it.
+  }
 }
 
 // The generated projects enable expo-updates; a qualified Release runs its embedded bundle.
@@ -208,7 +227,8 @@ runs the native TesterArmy journeys on devices leased from Simlock and writes
 outputs/release-simulators/<run>/rapport.md.
   --ref <commit>        commit to test (default origin/master, fetched first)
   --platform <p>        ios, android or all (default all)
-  --suites <list>       production,mock,backend (default all three)
+  --suites <list>       all, or a list of production,mock,backend (default mock: the user
+                        journeys; add the others when build config or the server changed)
   --wait-minutes <n>    how long each run waits for a Simlock device (default ${DEFAULTS['wait-minutes']})
   --min-free-gb <n>     refuse to start below this free disk space (default ${DEFAULTS['min-free-gb']})
   --no-fetch            do not fetch origin before resolving --ref
@@ -411,13 +431,13 @@ async function main() {
     }
     const leased = new Set();
     const receipts = {};
-    for (const step of steps) {
+    await runPlan(steps, async step => {
       if (stopping) throw new Error('Interrupted.');
       const key = `${step.suite}:${step.platform}`;
       console.log(`\n== ${step.kind} ${step.platform ?? ''} ${step.suite ?? ''}`.trimEnd());
       try {
         if (step.kind === 'prebuild') {
-          if (step.qa && !backend) continue;
+          if (step.qa && !backend) return;
           schemes[step.platform] = await prebuild(workspace, step.platform, step.qa, baseEnv, backend, log(`prebuild-${step.platform}.log`));
         } else if (step.kind === 'backend-start') {
           const qaDir = join(process.platform === 'darwin' ? '/private/tmp' : tmpdir(), `noctalia-release-simulators-${stamp}-${process.pid}`);
@@ -434,7 +454,7 @@ async function main() {
         } else if (step.kind === 'backend-stop') {
           await stopService(api); await stopService(stack); api = stack = null;
         } else if (results[key]?.error) {
-          continue; // The build of this layer failed; its run is reported as such.
+          return; // The build of this layer failed; its run is reported as such.
         } else if (step.suite === 'backend' && !backend) {
           results[key] = { error: 'le serveur local n’a pas démarré (voir logs/backend-stack.log)' };
         } else if (step.kind === 'build') {
@@ -450,7 +470,7 @@ async function main() {
             if (!settled.ok) {
               results[key] = { error: settled.unsettled ? `les fichiers natifs changent encore après 4 builds de préparation (logs/${warmLog})`
                 : `build de préparation en échec (logs/${warmLog})` };
-              report(); continue;
+              report(); return;
             }
           }
           const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'build'], { cwd: workspace, env, log: log(`build-${step.suite}-${step.platform}.log`) });
@@ -477,7 +497,7 @@ async function main() {
         } else throw error;
       }
       report();
-    }
+    });
   } catch (error) {
     notes.push(`Arrêt : ${error.message.slice(0, 500)}`);
   } finally {

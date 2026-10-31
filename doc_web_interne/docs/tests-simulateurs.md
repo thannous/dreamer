@@ -15,15 +15,19 @@ mise exec -- npm run release:simulators -- --ref <commit du candidat>
 
 Sans `--ref`, la commande récupère et teste `origin/master`. Le commit testé doit
 contenir la réservation Simlock de `tools/e2e/run.mjs` ; un commit plus ancien est
-refusé. Compter 3 à 4 heures pour
-les deux plateformes et les trois couches, et 30 Go libres sur le disque. Le Mac reste
-éveillé tant que la commande tourne. `--plan` affiche les étapes sans rien lancer ;
-`--platform ios` ou `--suites production,mock` réduisent la campagne pour une reprise.
-`--help` liste les options.
+refusé.
+
+Par défaut, elle joue les parcours utilisateurs (couche compte et achats simulés) sur
+iPhone et sur Android : compter environ 40 minutes et 30 Go libres sur le disque.
+`--suites all` ajoute la configuration production et le serveur local réel (six builds
+au lieu de deux, 1 h 30 à 2 h 30 estimées). Le Mac reste éveillé tant que la commande
+tourne. `--plan` affiche les étapes sans rien lancer ; `--platform ios` limite la
+campagne à une plateforme. `--help` liste les options.
 
 Avant de lancer, suivre Storage Guard comme pour toute réservation d'appareil sur le
 Mac mini (`~/Projects/infra-ops/storage-guard/AGENT_RULES.md`) : scanner, déclarer la
-campagne avec son budget (deux plateformes, six builds Release), puis la clore à la fin.
+campagne avec son budget (deux builds Release par défaut, six avec `--suites all`), puis
+la clore à la fin.
 La commande ne le fait pas à ta place.
 
 La commande ne lance aucun build EAS, aucun envoi aux Stores, aucun déploiement, et ne
@@ -36,11 +40,12 @@ La commande applique la [validation proportionnée](validation-proportionnee.md)
 natif ; elle ne remplace ni `verify:pr` avant un push, ni `verify:release`, ni le bug
 bash en environnement simulé avant une release.
 
-- Avant une soumission aux Stores : la campagne complète, sur le commit exact du
-  candidat. Une release réunit comptes, synchronisation, achats et configuration de
-  build : c'est le cas « vérifications plus larges ».
-- Entre deux releases, pour un changement qui touche le natif : seulement la couche et
-  la plateforme concernées, par exemple `--suites mock --platform ios` pour un écran,
+- Avant une soumission aux Stores : la commande par défaut, sur le commit exact du
+  candidat. Ajouter `--suites all` quand la configuration de build (`eas.json`,
+  `app.config`, variables publiques) ou le serveur (API, synchronisation, comptes) a
+  changé depuis la dernière campagne complète.
+- Entre deux releases, pour un changement qui touche le natif : seulement la
+  plateforme ou la couche concernée, par exemple `--platform ios` pour un écran,
   `--suites backend` pour la synchronisation ou les comptes.
 - Une modification de texte du rapport ou de documentation ne demande pas de relance.
   Un nouveau changement applicatif fusionné dans le candidat demande une nouvelle
@@ -60,6 +65,9 @@ bash en environnement simulé avant une release.
    installé, source inchangée, nettoyage), puis rend l'appareil, que Simlock remet à
    zéro. Une réservation perdue ou non rendue rend la couche non qualifiée. Voir
    [la réservation Simlock](../../tools/e2e/README.md#automatic-simlock-reservation).
+   Les parcours d'une plateforme continuent pendant que l'autre plateforme compile ;
+   un seul build tourne à la fois, et la couche serveur local joue ses runs l'un après
+   l'autre.
 4. Elle écrit `outputs/release-simulators/<date>-<commit>/rapport.md` au fil de l'eau,
    range les preuves complètes dans le dossier `e2e/` à côté et les journaux dans
    `logs/`.
@@ -127,7 +135,8 @@ deux vérifications ne font pas encore partie de la commande.
 2. Bug bash en mode simulé (`npm run test:bugbash:prerelease`) : chaque anomalie confirmée
    devient un test qui échoue d'abord pour la bonne raison, puis passe après correction.
 3. `npm run verify:release` sur ce commit (il rejoue aussi les tests du bug bash).
-4. `npm run release:simulators -- --ref <ce commit>` sur le Mac mini : tout `OK`.
+4. `npm run release:simulators -- --ref <ce commit>` sur le Mac mini, avec `--suites all`
+   si la configuration ou le serveur a changé : tout `OK`.
 5. Builds Store et envoi TestFlight / test interne, sur le go de Thanh.
 6. La courte session sur téléphone ci-dessus.
 7. Soumission, sur le go de Thanh.

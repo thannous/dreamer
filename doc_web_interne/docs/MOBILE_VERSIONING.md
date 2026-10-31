@@ -23,7 +23,7 @@ Un second passage après commit/fusion ne remonte pas la version : les changemen
 
 ## Tester le candidat sur simulateurs
 
-Avant les builds Store, lancer sur le Mac mini `mise exec -- npm run release:simulators -- --ref <commit préparé>` : builds Release pour le simulateur iPhone et l'émulateur Android, parcours natifs TesterArmy et rapport dans `outputs/release-simulators/`. Le vrai téléphone ne sert ensuite qu'à la courte liste de [tests sur simulateurs](tests-simulateurs.md#ce-qui-demande-encore-un-vrai-téléphone) (App Attest, achat réel, installation depuis TestFlight ou Google Play, micro, fluidité). La commande ne lance ni build EAS ni envoi.
+Avant les builds Store, lancer sur le Mac mini `mise exec -- npm run release:simulators -- --ref <commit préparé>` : builds Release pour le simulateur iPhone et l'émulateur Android, parcours natifs TesterArmy et rapport dans `outputs/release-simulators/` (`--suites all` si la configuration de build ou le serveur a changé). Le vrai téléphone ne sert ensuite qu'à la courte liste de [tests sur simulateurs](tests-simulateurs.md#ce-qui-demande-encore-un-vrai-téléphone) (App Attest, achat réel, installation depuis TestFlight ou Google Play, micro, fluidité). La commande ne lance ni build EAS ni envoi.
 
 ## Construire la release préparée
 

@@ -426,9 +426,10 @@ Run the affected check before a local native build; CI checks both manifests.
 
 ## Dreamer native recovery journeys
 
-`npm run release:simulators` chains the native build and run commands below (production,
-`mock-persistent` and `local-backend` profiles, iOS Simulator then Android emulator) for one
-candidate commit in a managed workspace and writes one report; see
+`npm run release:simulators` chains the native build and run commands below for one candidate
+commit in a managed workspace and writes one report: the `mock-persistent` profile on the iOS
+Simulator and the Android emulator by default, plus `production-apk` and `local-backend` with
+`--suites all`. One platform's runs go on while the other platform builds; see
 [simulator tests](../../doc_web_interne/docs/tests-simulateurs.md).
 
 The [native journey runbook](native-journeys.md) covers real local Auth/storage,

@@ -108,7 +108,7 @@ E2E_DEVICE=<emulator-serial> E2E_RELEASE_RECEIPT=<release.json imprimé> \
 - [ ] `QA_ANDROID_RELEASE_APK` désigne l'APK candidat ; son sha256 doit être celui
   de l'APK testé et installé par le run.
 - [ ] Ces parcours restent hors ligne : ils ne prouvent ni achat, ni voix réelle, ni compte backend.
-- [ ] La campagne `npm run release:simulators` ([tests sur simulateurs](tests-simulateurs.md)) passe sur le commit candidat : elle ajoute les couches compte simulé et serveur local réel, sur Android et sur iPhone. Elle ne remplace pas ce run pour `android:gates:strict`.
+- [ ] La campagne `npm run release:simulators` ([tests sur simulateurs](tests-simulateurs.md)) passe sur le commit candidat : par défaut la couche compte simulé, sur Android et sur iPhone ; `--suites all` ajoute la configuration production et le serveur local réel. Elle ne remplace pas ce run pour `android:gates:strict`.
 
 - [ ] Vérifier la release sur la piste Test interne et son accès aux testeurs.
 - [ ] Copier le SHA-1 Play App Signing depuis Play Console → App Integrity.

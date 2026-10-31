@@ -3,14 +3,16 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { parseOptions, planSteps, disableAndroidUpdates, suiteBuildEnv,
+import { parseOptions, planSteps, runPlan, disableAndroidUpdates, suiteBuildEnv,
   buildCommand, runSelection, readRun, renderReport, iosScheme, settleNativeInputs, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
 import { validateBuildCommand } from '../tools/e2e/native-release.mjs';
 
-test('defaults test origin/master on both platforms with the three layers', () => {
+test('defaults to the user journeys on both platforms, the other layers on demand', () => {
+  // Thanh, 2026-10-31: « 3 à 4h pour noctalia dream ??? ». The short default is the mock layer.
   const options = parseOptions([]);
   assert.deepEqual([options.ref, options.platforms, options.suites, options.waitMinutes, options.fetch, options.keep],
-    ['origin/master', ['ios', 'android'], ['production', 'mock', 'backend'], 30, true, false]);
+    ['origin/master', ['ios', 'android'], ['mock'], 30, true, false]);
+  assert.deepEqual(parseOptions(['--suites', 'all']).suites, ['production', 'mock', 'backend']);
   assert.deepEqual(parseOptions(['--platform', 'ios', '--suites', 'backend,mock', '--ref', 'abc123']).suites, ['mock', 'backend']);
   assert.throws(() => parseOptions(['--platform', 'iphone']), /--platform/);
   assert.throws(() => parseOptions(['--suites', 'store']), /--suites/);
@@ -18,18 +20,51 @@ test('defaults test origin/master on both platforms with the three layers', () =
   assert.throws(() => parseOptions(['--wait-minutes', '0']), /--wait-minutes/);
 });
 
-test('generates each project once and runs the local backend last, one leased device at a time', () => {
-  const steps = planSteps({ platforms: ['ios', 'android'], suites: ['production', 'mock', 'backend'] })
-    .map(step => [step.kind, step.platform, step.suite ?? step.qa].filter(value => value !== undefined).join(' '));
-  assert.deepEqual(steps, [
-    'prebuild ios false', 'build ios production', 'run ios production', 'build ios mock', 'run ios mock',
-    'prebuild android false', 'build android production', 'run android production', 'build android mock', 'run android mock',
-    'backend-start',
-    'prebuild ios true', 'build ios backend', 'run ios backend',
-    'prebuild android true', 'build android backend', 'run android backend',
+const label = step => [step.kind, step.platform, step.suite ?? step.qa].filter(value => value !== undefined).join(' ');
+
+test('generates each project once, alternates platforms and runs the local backend last', () => {
+  assert.deepEqual(planSteps({ platforms: ['ios', 'android'], suites: ['production', 'mock', 'backend'] }).map(label), [
+    'prebuild ios false', 'prebuild android false',
+    'build ios production', 'run ios production', 'build android production', 'run android production',
+    'build ios mock', 'run ios mock', 'build android mock', 'run android mock',
+    'backend-start', 'prebuild ios true', 'prebuild android true',
+    'build ios backend', 'run ios backend', 'build android backend', 'run android backend',
     'backend-stop',
   ]);
   assert.deepEqual(planSteps({ platforms: ['android'], suites: ['mock'] }).map(step => step.kind), ['prebuild', 'build', 'run']);
+});
+
+test('lets a run go on while the other platform builds, never beside its own platform or the backend', async () => {
+  const events = [];
+  const sleep = ms => new Promise(done => setTimeout(done, ms));
+  const execute = async step => {
+    events.push(`+${label(step)}`);
+    await (step.kind === 'run' ? sleep(20) : Promise.resolve());
+    if (label(step) === 'run ios production' && events.includes('fail')) throw new Error('run broke');
+    events.push(`-${label(step)}`);
+  };
+  await runPlan(planSteps({ platforms: ['ios', 'android'], suites: ['production', 'mock', 'backend'] }), execute);
+  const at = event => { assert.ok(events.includes(event), event); return events.indexOf(event); };
+  // The iOS journeys and the Android build share the time.
+  assert.ok(at('+build android production') < at('-run ios production'));
+  assert.ok(at('+run android production') < at('-run ios production'));
+  // A platform's next build waits for its run: the build rewrites what the run checks.
+  assert.ok(at('-run ios production') < at('+build ios mock'));
+  assert.ok(at('-run android production') < at('+build android mock'));
+  // One build or generation at a time.
+  events.forEach((event, index) => {
+    if (/^\+(build|prebuild)/.test(event)) assert.equal(events[index + 1], `-${event.slice(1)}`, event);
+  });
+  // The local server takes one run at a time, after every earlier run.
+  assert.ok(at('-run ios mock') < at('+backend-start') && at('-run android mock') < at('+backend-start'));
+  assert.ok(at('-run ios backend') < at('+build android backend'));
+  assert.equal(events.at(-1), '-backend-stop');
+
+  // A failed run stops the campaign, but only once the other platform's run is over.
+  events.length = 0; events.push('fail');
+  await assert.rejects(runPlan(planSteps({ platforms: ['ios', 'android'], suites: ['production', 'mock'] }), execute), /run broke/);
+  assert.ok(events.includes('-run android production'));
+  assert.ok(!events.includes('+build ios mock'));
 });
 
 test('turns off expo-updates in the generated Android manifest, whatever the attribute order', () => {
