@@ -283,6 +283,7 @@ async function buildRelease() {
     || (profile.name === 'local-backend' && (!backend || profile.mock || profile.persistence || profile.audioMock))
     || (profile.name === 'production-apk' && profile.mock)
     || (profile.name === 'mock-persistent' && (!profile.mock || !profile.persistence))
+    || (profile.name === 'lucid-mock' && !profile.mock)
     || (profile.categorizationDelayMs !== 0 && (!profile.mock || !profile.persistence || profile.categorizationDelayMs < 20000 || profile.categorizationDelayMs > 60000)))
     throw new Error('Invalid explicit Release profile.');
   writeOnce(join(output, 'build-start.json'), { source, nativeInputDigest: native.digest, nativeInputs: native.files,

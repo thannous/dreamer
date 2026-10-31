@@ -4,6 +4,7 @@ import {
   Alert,
   Linking,
   Platform,
+  Pressable,
   Text,
   View,
 } from 'react-native';
@@ -158,12 +159,18 @@ export function LegalSection() {
 
   return (
     <SettingsSection title={t('settings.legal.sectionTitle')} testID="settings-section-legal">
-      <View
+      {/* iOS exposes each permission row as one switch, so VoiceOver's activation and a touch
+          on its words press the row, as the other settings switches do. */}
+      <Pressable
         accessibilityRole="switch"
-        accessibilityState={{ checked: aiConsent.enabled }}
+        accessibilityState={{ checked: aiConsent.enabled, disabled: aiConsent.loading || aiConsent.saving }}
         aria-checked={aiConsent.enabled}
         accessibilityLabel={aiConsent.toggleLabel}
         className={ROW_CLASS.replace('border-t border-line', '')}
+        disabled={aiConsent.loading || aiConsent.saving}
+        onPress={() => {
+          void aiConsent.toggle(!aiConsent.enabled);
+        }}
         testID="settings-ai-consent"
       >
         <IconSymbol name="sparkles" size={21} color={noctalia.accent.text} />
@@ -183,14 +190,18 @@ export function LegalSection() {
           testID={TID.Button.SettingsAiConsentToggle}
           value={aiConsent.enabled}
         />
-      </View>
+      </Pressable>
       {analyticsPreference.available ? (
-        <View
+        <Pressable
           accessibilityRole="switch"
-          accessibilityState={{ checked: analyticsPreference.enabled === true }}
+          accessibilityState={{ checked: analyticsPreference.enabled === true, disabled: analyticsPreference.loading || analyticsPreference.saving }}
           aria-checked={analyticsPreference.enabled === true}
           accessibilityLabel={analyticsPreference.toggleLabel}
           className={ROW_CLASS}
+          disabled={analyticsPreference.loading || analyticsPreference.saving}
+          onPress={() => {
+            void analyticsPreference.toggle(analyticsPreference.enabled !== true);
+          }}
           testID="settings-analytics-preference"
         >
           <IconSymbol name="chart.bar.fill" size={21} color={noctalia.accent.text} />
@@ -210,15 +221,19 @@ export function LegalSection() {
             testID="settings-analytics-preference-switch"
             value={analyticsPreference.enabled === true}
           />
-        </View>
+        </Pressable>
       ) : null}
       {stabilityReports.available ? (
-        <View
+        <Pressable
           accessibilityRole="switch"
-          accessibilityState={{ checked: stabilityReports.enabled }}
+          accessibilityState={{ checked: stabilityReports.enabled, disabled: stabilityReports.loading || stabilityReports.saving }}
           aria-checked={stabilityReports.enabled}
           accessibilityLabel={stabilityReports.toggleLabel}
           className={ROW_CLASS}
+          disabled={stabilityReports.loading || stabilityReports.saving}
+          onPress={() => {
+            void stabilityReports.toggle(!stabilityReports.enabled);
+          }}
           testID="settings-stability-reports"
         >
           <IconSymbol name="exclamationmark.triangle" size={21} color={noctalia.accent.text} />
@@ -238,7 +253,7 @@ export function LegalSection() {
             testID="settings-stability-reports-switch"
             value={stabilityReports.enabled}
           />
-        </View>
+        </Pressable>
       ) : null}
       {LEGAL_LINK_ROWS.map((row) => (
         <PressableScale

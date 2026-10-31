@@ -185,8 +185,10 @@ for (const action of ['purchase', 'restore'] as const) {
     await app.screenshot(`native-${action}-retry-confirmed`);
     await billingClose(screen);
     await billingSettings(screen);
+    // Settings reopen where they were left: at the QA lab's buttons, the quota card is above them.
     const quota = screen.getByTestId('quota.analysisValue', { visible: true });
-    await screen.scrollUntilVisible(quota);
+    const lab = screen.getByTestId('screen.subscription.qaLab', { visible: true });
+    await screen.scrollUntilVisible(quota, { direction: await lab.count() ? 'up' : 'down' });
     await expect(quota).toHaveText(/^(?:Included analyses: )?Unlimited$/);
     await billingCounts(fixtures, action === 'purchase' ? '1' : '0', action === 'restore' ? '1' : '0');
   });
@@ -415,20 +417,30 @@ for (const mode of ['light', 'dark'] as const) {
 /**
  * Native visibility does not prove the dream page's fixed action dock leaves a control
  * uncovered: XCTest and UIAutomator both call a covered control visible, and a tap there
- * lands on the dock. Scroll once more when the dock overlaps it, then tap.
+ * lands on the dock. When the dock overlaps it, drag the reading up by the overlap, then tap.
  */
 async function tapClearOfActionDock(screen: TestFixtures['screen'], control: ReturnType<TestFixtures['screen']['getByTestId']>) {
   await screen.scrollUntilVisible(control);
   const dock = screen.getByTestId('component.dreamDetail.actionDock', { visible: true });
-  const covered = async () => {
+  const overlap = async () => {
     const box = await control.boundingBox();
     const overlay = await dock.count() ? await dock.boundingBox() : null;
     if (!box) throw new Error('The control has no geometry.');
-    return !!overlay && box.x < overlay.x + overlay.width && box.x + box.width > overlay.x
+    const covered = !!overlay && box.x < overlay.x + overlay.width && box.x + box.width > overlay.x
       && box.y < overlay.y + overlay.height && box.y + box.height > overlay.y;
+    return covered && overlay ? { box, top: overlay.y } : null;
   };
-  if (await covered()) await screen.swipe({ direction: 'down', momentum: 'slow' });
-  if (await covered()) throw new Error('The fixed action dock still covers the control after one scroll.');
+  for (let drag = 0; drag < 2; drag += 1) {
+    const hidden = await overlap();
+    if (!hidden) break;
+    // A tall dock (a next step) can cover the middle of the screen, where a viewport swipe
+    // starts and moves nothing: the finger goes down on the reading just above the dock.
+    const x = hidden.box.x + hidden.box.width / 2;
+    const from = hidden.top - 24;
+    const to = Math.max(64, from - (hidden.box.y + hidden.box.height - hidden.top) - 48);
+    await screen.swipe({ from: { x, y: from }, to: { x, y: to }, duration: 900 });
+  }
+  if (await overlap()) throw new Error('The fixed action dock still covers the control after scrolling the reading.');
   await control.tap();
 }
 

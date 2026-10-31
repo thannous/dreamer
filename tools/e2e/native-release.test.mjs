@@ -98,6 +98,16 @@ test('read receipts obey the same bounded/profile rules as their canonical build
   }
 });
 
+// A Lucid build without .env.lucid.mock keeps the default public config, which
+// points at the production project. Its receipt must not qualify as lucid-mock.
+test('a lucid-mock receipt requires the mock mode it is named after', () => {
+  const lucid = mock => ({ ...receipt(), product: 'lucid', bundle: 'com.tanuki75.noctalia.lucid',
+    profile: { name: 'lucid-mock', mock, persistence: false, audioMock: false, featureSheets: true, categorizationDelayMs: 0 } });
+  const lucidExpected = { ...expected, product: 'lucid', bundle: 'com.tanuki75.noctalia.lucid' };
+  assert.equal(validateReleaseReceipt(lucid(true), lucidExpected).profile.name, 'lucid-mock');
+  assert.throws(() => validateReleaseReceipt(lucid(false), lucidExpected), /RELEASE_PROFILE/);
+});
+
 // A UI journey cannot prove a receipt refuses a hosted origin or forged mode.
 // Keep that trust boundary independent of the happy-path native evidence.
 test('local backend receipts require real modes, a disposable identity and strict loopback origin', () => {
