@@ -33,7 +33,7 @@ function getFoldedDreamText(dream: DreamAnalysis): string {
       dream.title,
       dream.transcript,
       dream.interpretation,
-      dream.dreamType,
+      getShownDreamType(dream),
       ...(dream.symbols ?? []).map((symbol) => symbol.name),
     ]
       .filter((value): value is string => Boolean(value))
@@ -77,7 +77,7 @@ function matchesSearch(
   if (ownText.includes(normalizedQuery)) return true;
 
   // Perf: resolve localized labels only when needed (most searches match the dream's own words).
-  const dreamTypeLabel = options.dreamTypeLabelResolver?.(dream.dreamType);
+  const dreamTypeLabel = options.dreamTypeLabelResolver?.(getShownDreamType(dream));
   const labels = getDreamMemorySearchFields(dream, options);
   if (dreamTypeLabel) labels.unshift(dreamTypeLabel);
   if (labels.length === 0) return false;
@@ -95,6 +95,16 @@ function matchesSearch(
 export function isRememberedDream(dream: Pick<DreamAnalysis, 'memory'>): boolean {
   const memory = normalizeDreamMemoryMetadata(dream.memory);
   return Boolean(memory);
+}
+
+/**
+ * The type a dream shows, or none when it was never classified: captures saved before
+ * any analysis used to default to Symbolic Dream, which classifies nothing. The journal
+ * card, the type filter and type search all read this, so they always agree.
+ */
+export function getShownDreamType(dream: DreamAnalysis): DreamType | undefined {
+  if (!dream.dreamType || (dream.dreamType === 'Symbolic Dream' && !isDreamAnalyzed(dream))) return undefined;
+  return dream.dreamType;
 }
 
 export function isRecurringDream(dream: Pick<DreamAnalysis, 'dreamType' | 'memory'>): boolean {
@@ -174,7 +184,7 @@ export function filterByDreamType(
 ): DreamAnalysis[] {
   if (!dreamType) return dreams;
 
-  return dreams.filter((dream) => dream.dreamType === dreamType);
+  return dreams.filter((dream) => getShownDreamType(dream) === dreamType);
 }
 
 /**
@@ -327,7 +337,7 @@ export function applyFilters(
       return false;
     }
 
-    if (dreamType && dream.dreamType !== dreamType) {
+    if (dreamType && getShownDreamType(dream) !== dreamType) {
       return false;
     }
 
@@ -428,7 +438,8 @@ export function getUniqueThemes(dreams: DreamAnalysis[]): DreamTheme[] {
 export function getUniqueDreamTypes(dreams: DreamAnalysis[]): DreamType[] {
   const types = new Set<DreamType>();
   dreams.forEach((dream) => {
-    if (dream.dreamType) types.add(dream.dreamType);
+    const dreamType = getShownDreamType(dream);
+    if (dreamType) types.add(dreamType);
   });
   return Array.from(types).sort();
 }
