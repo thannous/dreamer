@@ -66,7 +66,7 @@ async function captureWrittenDream({ screen, device, platform }: Fixtures, note:
 }
 
 test('Lucid release completes its local plan, persists activation and opens the main tabs', async fixtures => {
-  const { app, screen, platform } = fixtures;
+  const { app, screen } = fixtures;
   await activateLucid(fixtures);
   await app.restart();
   await expect(screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
@@ -74,11 +74,9 @@ test('Lucid release completes its local plan, persists activation and opens the 
     await screen.getByTestId(`lucid-tab-${tab}`, { visible: true }).tap();
     await expect(screen.getByTestId(`lucid-${tab}`, { visible: true })).toBeVisible();
   }
-  // Night opens from Today's « Préparer cette nuit » button, whose centre sits
-  // under the iPhone's floating tabs until the screen scrolls a little.
+  // Night opens from Today's « Préparer cette nuit » shortcut, right under the main
+  // action and clear of the floating tabs without scrolling.
   const night = screen.getByTestId('lucid-tab-night', { visible: true });
-  await screen.scrollUntilVisible(night);
-  if (platform === 'ios') await screen.swipe({ direction: 'down' });
   await night.tap();
   await expect(screen.getByTestId('lucid-night', { visible: true })).toBeVisible();
   await app.screenshot('release-lucid-activated-tabs');
