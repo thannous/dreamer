@@ -56,6 +56,8 @@ async function billingGuest({ app, screen, platform }: NativeBackgroundFixtures)
   await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
   await billingTap(screen, 'quick-settings.language');
   await billingTap(screen, 'quick-settings.language.en');
+  // A freshly reset Simlock emulator offers the English voice pack over the drawer.
+  await declineVoicePack(screen, platform);
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
   const close = screen.getByTestId('quick-settings.close', { visible: true });
   // Scrolled down to English, the drawer's own close sits under the iOS status bar, where a
