@@ -25,6 +25,8 @@ export function SymbolArtwork({ symbolId, size }: { symbolId: string; size: 'thu
   }, [failedId, living, symbolId]);
   const illustration = portrait ? undefined : getSymbolIllustration(symbolId, size);
 
+  // Never the target of a press: a portrait that fails gives way under the finger, and on
+  // the web a press whose target leaves the page never clicks the link around it.
   if (portrait) {
     return (
       <Image
@@ -32,9 +34,12 @@ export function SymbolArtwork({ symbolId, size }: { symbolId: string; size: 'thu
         contentFit="cover"
         contentPosition={portrait.position}
         style={StyleSheet.absoluteFill}
+        pointerEvents="none"
         onError={() => setFailedId(symbolId)}
       />
     );
   }
-  return illustration ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} /> : null;
+  return illustration
+    ? <Image source={illustration} contentFit="cover" style={StyleSheet.absoluteFill} pointerEvents="none" />
+    : null;
 }
