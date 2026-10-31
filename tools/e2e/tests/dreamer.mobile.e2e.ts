@@ -44,6 +44,72 @@ async function billingSettings(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
 }
 
+type Control = ReturnType<TestFixtures['screen']['getByTestId']>;
+
+/**
+ * The keyboard's own Search key submits; a synthesized Enter can leave the driver waiting.
+ * Once the simulator has seen a hardware key, iOS shows only its minimized bar, which has no
+ * Search key and covers no result: the list already filters as the words are typed.
+ */
+async function submitIosSearch(screen: TestFixtures['screen']) {
+  const key = screen.getByTestId('Search', { visible: true });
+  if (await key.count()) await key.tap();
+}
+
+/**
+ * iOS takes a tap that lands while a page still glides, or while a sheet still fades, for a
+ * touch that only stops it: nothing opens. The control is touched again, at most twice, when
+ * what it opens has not appeared after a short wait and the control is still there.
+ */
+async function tapUntilShown(control: Control, shown: Control) {
+  for (let tap = 0; tap < 3 && await control.count() > 0; tap += 1) {
+    await control.tap();
+    for (let wait = 0; wait < 5 && await shown.count() === 0; wait += 1) await new Promise(resolve => setTimeout(resolve, 300));
+    if (await shown.count() > 0) return;
+  }
+}
+
+/**
+ * On iOS a synthesized scroll up in Settings can move nothing at all: just after the AI sheet
+ * fades, and from the end of the page. A drag that starts just under the header, as a finger
+ * does, moves the list every time. Android scrolls as asked.
+ */
+async function settingsScrollUp({ screen, platform }: Pick<NativeBackgroundFixtures, 'screen' | 'platform'>, target: Control) {
+  if (platform !== 'ios') {
+    await screen.scrollUntilVisible(target, { direction: 'up' });
+    return;
+  }
+  const page = await screen.getByTestId('screen.settings', { visible: true }).boundingBox();
+  const header = await screen.getByTestId('settings.back', { visible: true }).boundingBox();
+  if (!page || !header) throw new Error('Settings or their header have no geometry.');
+  const x = page.x + page.width / 2;
+  const from = header.y + header.height + 24;
+  const to = from + Math.round(page.height * 0.35);
+  for (let drag = 0; drag < 12 && await target.count() === 0; drag += 1) {
+    await screen.swipe({ from: { x, y: from }, to: { x, y: to }, duration: 700 });
+  }
+  await expect(target).toBeVisible();
+  // What just came in can still sit under the header: bring it fully below.
+  const box = await target.boundingBox();
+  if (box && box.y < from) await screen.swipe({ from: { x, y: from }, to: { x, y: 2 * from - box.y + 8 }, duration: 500 });
+}
+
+/**
+ * Settings reopen where they were left, sometimes at their very end. The quota card comes
+ * after the notifications and before its QA lab, the Plus row and the legal section, so the
+ * scroll goes up from any of those and down otherwise.
+ */
+async function billingQuota(fixtures: Pick<NativeBackgroundFixtures, 'screen' | 'platform'>) {
+  const { screen } = fixtures;
+  const quota = screen.getByTestId('quota.analysisValue', { visible: true });
+  // The screen matches while it is still sliding over Home: read the direction from its sections.
+  await expect(screen.getByTestId(/^settings-section-/, { visible: true }).first()).toBeVisible();
+  const below = screen.getByTestId(/^(screen\.subscription\.qaLab|settings-section-subscription|settings-section-legal|settings-ai-consent|settings-analytics-preference|settings-stability-reports|settings-legal-contact|settings-delete-account)$/, { visible: true });
+  if (await below.count()) await settingsScrollUp(fixtures, quota);
+  else await screen.scrollUntilVisible(quota, { direction: 'down' });
+  return quota;
+}
+
 async function billingGuest({ app, screen, platform }: NativeBackgroundFixtures) {
   await app.open();
   // The profile and device are owned synthetic QA data, checked by run.mjs.
@@ -74,11 +140,13 @@ async function billingFree(fixtures: NativeBackgroundFixtures) {
   await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   await billingSettings(screen);
-  const quota = screen.getByTestId('quota.analysisValue', { visible: true });
-  await screen.scrollUntilVisible(quota);
+  const quota = await billingQuota(fixtures);
   // The fixture holds five analyses; since #429 the card caps the count at its limit.
   await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
-  await billingTap(screen, 'screen.subscription.qaLab.toggle');
+  const lab = screen.getByTestId('screen.subscription.qaLab.toggle', { visible: true });
+  await screen.scrollUntilVisible(lab);
+  // The lab's rows exist only while it is open.
+  await tapUntilShown(lab, screen.getByTestId('text.subscription.qa.mode'));
   const mode = screen.getByTestId('text.subscription.qa.mode', { visible: true });
   await screen.scrollUntilVisible(mode);
   await expect(mode).toHaveText('Mock services');
@@ -183,10 +251,7 @@ for (const action of ['purchase', 'restore'] as const) {
     await app.screenshot(`native-${action}-retry-confirmed`);
     await billingClose(screen);
     await billingSettings(screen);
-    // Settings reopen where they were left: at the QA lab's buttons, the quota card is above them.
-    const quota = screen.getByTestId('quota.analysisValue', { visible: true });
-    const lab = screen.getByTestId('screen.subscription.qaLab', { visible: true });
-    await screen.scrollUntilVisible(quota, { direction: await lab.count() ? 'up' : 'down' });
+    const quota = await billingQuota(fixtures);
     await expect(quota).toHaveText(/^(?:Included analyses: )?Unlimited$/);
     await billingCounts(fixtures, action === 'purchase' ? '1' : '0', action === 'restore' ? '1' : '0');
   });
@@ -225,8 +290,7 @@ for (const profile of ['existing', 'new'] as const) {
     await expect(screen.getByTestId('screen.paywall', { visible: true })).toHaveCount(0);
     await app.screenshot(`native-${profile}-foreground-${fixtures.platform === 'android' ? 'capture' : 'home'}`);
     await billingSettings(screen);
-    const quota = screen.getByTestId('quota.analysisValue', { visible: true });
-    await screen.scrollUntilVisible(quota);
+    const quota = await billingQuota(fixtures);
     await expect(quota).toHaveText(profile === 'existing'
       ? /^(?:Included analyses: )?3 \/ 3$/ : /^(?:Included analyses: )?0 \/ 3$/);
     await billingCounts(fixtures, '0', '0');
@@ -444,7 +508,9 @@ async function tapClearOfActionDock(screen: TestFixtures['screen'], control: Ret
 
 for (const editor of ['metadata', 'transcript'] as const) {
   test(`Dreamer release background categorization preserves the ${editor} draft and isolates another entry`, {
-    tags: ['journal-concurrency'],
+    // The 30 s categorization, two edits and two searches take 91-161 s on the iOS Simulator:
+    // its switch back to the full keyboard after a fill once held the field for 23 s.
+    tags: ['journal-concurrency'], timeout: 180_000,
     skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' || Number(process.env.E2E_NATIVE_MOCK_CATEGORIZATION_MS) < 20000
       ? 'Requires an identified persistent mock Release with the bounded categorization QA opt-in.' : false,
   }, async ({ app, screen, device, platform }) => {
@@ -460,13 +526,22 @@ for (const editor of ['metadata', 'transcript'] as const) {
     const all = screen.getByTestId('quick-settings.all', { visible: true });
     await screen.scrollUntilVisible(all); await all.tap();
     // Categorization after a save never asks: it runs only once AI is allowed, here in Settings.
-    const ai = screen.getByTestId('btn.settings.aiConsent', { visible: true });
-    await screen.scrollUntilVisible(ai); await ai.tap();
+    // On iOS the whole permission row is the switch, as VoiceOver activates it: its inner
+    // Switch is no longer an element of its own there.
+    const ai = screen.getByTestId(platform === 'ios' ? 'settings-ai-consent' : 'btn.settings.aiConsent', { visible: true });
+    await screen.scrollUntilVisible(ai);
+    // Android allows AI at once, with no sheet to wait for.
+    if (platform === 'ios') await tapUntilShown(ai, screen.getByTestId('modal.aiConsent', { visible: true }));
+    else await ai.tap();
     await acceptAiConsent(screen, platform);
     await expect(ai).toBeChecked();
     const signin = screen.getByTestId('settings-account-open-signin', { visible: true });
-    await screen.scrollUntilVisible(signin, { direction: 'up' }); await signin.tap();
-    await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
+    await settingsScrollUp({ screen, platform }, signin);
+    const existing = screen.getByTestId('btn.mockProfile.existing', { visible: true });
+    // The page still glides after the drags that brought the row in.
+    if (platform === 'ios') await tapUntilShown(signin, existing);
+    else await signin.tap();
+    await existing.tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
     const story = 'E2E sapphire lighthouse above the quiet ocean.';
@@ -483,6 +558,9 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await tapClearOfActionDock(screen, button);
     const input = screen.getByTestId(editor === 'metadata' ? 'input.dreamTitle' : 'input.dreamTranscript');
     const draft = editor === 'metadata' ? 'E2E personal lighthouse title' : 'E2E revised story: the lighthouse has a blue door. I climb three quiet staircases, count the windows, and see a yellow boat passing the harbour. The lamp turns slowly above me while I write down every detail before waking.';
+    // The sheet is still rising after the edit tap, and a tap then can miss the field: its
+    // text stays and the typing goes nowhere. Focus the field first, as a person would.
+    await input.tap(); await expect(input).toBeFocused();
     await input.fill(draft);
     await expect(input).toBeVisible();
     await app.screenshot(`release-${editor}-keyboard-focus`);
@@ -505,61 +583,59 @@ for (const editor of ['metadata', 'transcript'] as const) {
     const search = screen.getByTestId('input.searchDreams', { visible: true });
     const title = editor === 'metadata' ? draft : 'E2E sapphire lighthouse above the quiet ocean';
     await search.fill(title);
-    if (platform === 'ios') await search.press('Enter');
+    if (platform === 'ios') await submitIosSearch(screen);
     else await device.dismissKeyboard();
     await expect(search).toHaveValue(title);
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
-    await expect(card).toHaveCount(1); await card.tap();
+    await expect(card).toHaveCount(1);
+    // The results are still settling after Search, and a tap then can miss the card or only
+    // close the keyboard: the page itself, not the card's own title, proves it opened.
+    if (platform === 'ios') {
+      const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
+      await tapUntilShown(card, detail);
+      await expect(detail).toBeVisible();
+    } else await card.tap();
     // The new name shows as the page title and in the page's header.
     if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true }).first()).toBeVisible();
     else {
       if (platform === 'ios') {
-        // Scope the exact story to the single active detail, excluding AX echoes
-        // outside that scene. The scoped result must contain exactly one text.
-        const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
-        await expect(detail).toHaveCount(1);
+        // One active detail and one story card: no AX echo of another scene answers for it.
+        await expect(screen.getByTestId('screen.dreamDetail', { visible: true })).toHaveCount(1);
         await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toHaveCount(1);
-        await expect(detail.getByText(draft, { visible: true })).toHaveText([draft]);
-      } else {
-        // Android exposes the drop cap's inline object after the initial, so the exact story
-        // text matches nothing: read the prose by its ID, past its first letter.
-        const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
-        await screen.scrollUntilVisible(transcript); await expect(transcript).toContainText(draft.slice(1));
       }
+      // iOS and Android expose the drop cap's inline object after the initial, so the exact
+      // story text matches nothing: read the prose by its ID, past its first letter.
+      const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
+      await screen.scrollUntilVisible(transcript); await expect(transcript).toContainText(draft.slice(1));
     }
     await tapClearOfActionDock(screen, button);
+    await input.tap(); await expect(input).toBeFocused();
     if (platform === 'ios' && editor === 'transcript') {
-      // Use the observed UIKit selection menu for the long multiline value.
-      // The preserved fill failure retained a suffix of the previous value.
-      await input.longPress();
-      await input.tap();
-      const selectAll = screen.getByText(/^(Select All|Tout sélectionner)$/, { visible: true });
-      if (await selectAll.count() === 0) {
-        // UIKit may paginate Select All when Paste occupies the first page.
-        const nextPage = screen.getByRole('button', /^(Next page|Page suivante)$/, { visible: true });
-        await expect(nextPage).toHaveCount(1);
-        await nextPage.tap();
-      }
-      await expect(selectAll).toHaveCount(1);
-      await selectAll.tap();
-      const cut = screen.getByText(/^(Cut|Couper)$/, { visible: true });
-      await expect(cut).toHaveCount(1);
-      await cut.tap();
+      // A fill once kept a suffix of the long multiline story: empty it first and check.
+      // UIKit's menu is no way there: on a French simulator a tap on an English word opens
+      // the spelling suggestions, not Select All.
+      await input.clear();
       await expect(input).toHaveValue('');
     }
     await input.fill('E2E abandoned local draft');
     if (platform === 'ios') await screen.getByTestId('btn.journal.dismissKeyboard', { visible: true }).tap();
     else await device.dismissKeyboard();
     await expect(input).toHaveValue('E2E abandoned local draft');
+    // The editor's veil covers the page's Back: the draft is left by the sheet's own Cancel.
+    const cancel = screen.getByTestId('btn.cancelDreamEdit', { visible: true });
+    await screen.scrollUntilVisible(cancel); await cancel.tap();
+    await expect(input).toHaveCount(0);
     await screen.scrollUntilVisible(back, { direction: 'up' }); await back.tap();
     await search.fill('The Infinite Library');
-    if (platform === 'ios') await search.press('Enter');
+    if (platform === 'ios') await submitIosSearch(screen);
     else await device.dismissKeyboard();
     await expect(search).toHaveValue('The Infinite Library');
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const other = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'The Infinite Library' });
-    await expect(other).toHaveCount(1); await other.tap();
+    await expect(other).toHaveCount(1);
+    if (platform === 'ios') await tapUntilShown(other, screen.getByTestId('screen.dreamDetail', { visible: true }));
+    else await other.tap();
     await expect(input).toHaveCount(0);
     await tapClearOfActionDock(screen, button);
     await expect(input).toHaveValue(editor === 'metadata' ? SEEDED_OTHER_DREAM.title : SEEDED_OTHER_DREAM.transcript);
@@ -586,8 +662,11 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
   // Speech with a draft owes its first question: iOS asks before any provider call, and
   // declining keeps that question local. Either way the draft itself is not rewritten.
   await declineAiConsent(screen, platform);
-  await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
-  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue(draft);
+  // The declined sheet is still fading out when it leaves the tree, and a tap then lands on it.
+  const textMode = screen.getByTestId('btn.recording.inputMode.text', { visible: true });
+  const transcript = screen.getByTestId('input.dreamTranscript', { visible: true });
+  await tapUntilShown(textMode, transcript);
+  await expect(transcript).toHaveValue(draft);
   await expect(screen.getByTestId('btn.saveDream')).toBeEnabled();
   await app.screenshot('release-capture');
 });
@@ -857,6 +936,15 @@ test('Dreamer Release scroll dogfood preserves its journal and painted resource 
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
 });
 
+/**
+ * `app.open()` relaunches the app. A link sent while it is still starting can reach it before
+ * it listens for links: it then stays on Capture. A person opens the link from a started app.
+ */
+async function openStartedApp({ app, screen }: Pick<NativeBackgroundFixtures, 'app' | 'screen'>) {
+  await app.open();
+  await expect(screen.getByTestId(/^screen\.(onboarding|recording|home|settings)$/, { visible: true }).first()).toBeVisible();
+}
+
 // Recovered from the isolated security QA run. Use the canonical owned-device
 // profile and supported scheme instead of a physical-phone-only local config.
 const nativeRecoveryOptions = {
@@ -866,8 +954,8 @@ const nativeRecoveryOptions = {
 };
 
 test('Dreamer native security recovery rejects a bearer-shaped reset link', nativeRecoveryOptions, async (fixtures) => {
-  const { app, screen } = fixtures;
-  await app.open();
+  const { screen } = fixtures;
+  await openStartedApp(fixtures);
   await openBackgroundRoute(fixtures, 'auth/reset-password?type=recovery&access_token=qa-synthetic&refresh_token=qa-synthetic');
   await expect(screen.getByTestId('screen.auth.resetPassword')).toBeVisible();
   await expect(screen.getByText(/Ce lien n.est plus valide|This link is no longer valid/)).toBeVisible();
@@ -876,8 +964,8 @@ test('Dreamer native security recovery rejects a bearer-shaped reset link', nati
 });
 
 test('Dreamer native security recovery keeps a synthetic token-hash form inert', nativeRecoveryOptions, async (fixtures) => {
-  const { app, screen } = fixtures;
-  await app.open();
+  const { screen } = fixtures;
+  await openStartedApp(fixtures);
   await openBackgroundRoute(fixtures, 'auth/reset-password?type=recovery&token_hash=qa-synthetic-invalid');
   await expect(screen.getByTestId('screen.auth.resetPassword')).toBeVisible();
   await expect(screen.getByTestId('input.auth.recoveryEmail')).toBeVisible();
@@ -906,13 +994,21 @@ async function dismissCaptureKeyboard({ screen, device, platform }: Pick<NativeB
     await device.dismissKeyboard();
     return;
   }
+  const input = screen.getByTestId('input.dreamTranscript', { visible: true });
   const keyboardReturn = screen.getByTestId('Return', { visible: true });
   const title = screen.getByText(/^(Capture|Capturer|Capturar|Cattura|Aufnehmen|Registrar)$/, { visible: true }).first();
-  await expect(keyboardReturn).toBeVisible();
+  // Once the simulator has seen a hardware key (the driver clears a field with Command-A), iOS
+  // shows only its minimized bar, without Return: the focused story is what both states share.
+  await expect(input).toBeFocused();
+  const softKeyboard = await keyboardReturn.count() > 0;
   // Just after typing, the editor can still be scrolling into view, and a tap then only stops it.
-  for (let tap = 0; tap < 3 && await keyboardReturn.count() > 0; tap += 1) await title.tap();
+  await title.tap();
+  for (let tap = 1; tap < 3 && await keyboardReturn.count() > 0; tap += 1) await title.tap();
   await expect(keyboardReturn).toBeHidden();
-  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).not.toBeFocused();
+  // React Native's scroll view ends editing on a touch outside only once a soft keyboard has
+  // shown; with the minimized bar, as with any hardware keyboard, the story keeps its focus
+  // and no keyboard covers the page.
+  if (softKeyboard) await expect(input).not.toBeFocused();
 }
 
 test('Dreamer release capture widget link opens Capture from Today and keeps the draft', { tags: ['widget-links'] }, async ({ app, screen, device, platform }) => {
