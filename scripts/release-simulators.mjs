@@ -299,6 +299,19 @@ export function checkReusedResult(result, expectedPassed) {
     || (expectedPassed !== undefined && (result.passed !== expectedPassed || result.skipped !== 0))) throw new Error('REUSE_RUN_INCOMPLETE');
 }
 
+export function reuseEnvironment(options, source = process.env) {
+  const env = { ...cleanEnv(source), E2E_PERSONAS: options.personas ? '1' : '0', E2E_RELEASE_RECEIPT: options.releaseReceipt,
+    E2E_SIMLOCK_TIMEOUT_SECONDS: String(options.waitMinutes * 60) };
+  for (const key of ['E2E_DEVICE', 'SIMLOCK_IOS_DEVICE_SET', 'AGENT_DEVICE_IOS_SIMULATOR_DEVICE_SET', 'AGENT_DEVICE_STATE_DIR'])
+    if (source[key]) env[key] = source[key];
+  if (options.personas) {
+    for (const key of ['E2E_PERSONA_MODEL', 'E2E_PERSONA_ACT_MODEL', 'E2E_PERSONA_JUDGE_MODEL'])
+      if (source[key] !== undefined) env[key] = source[key];
+    delete env.OPENAI_API_KEY;
+  }
+  return env;
+}
+
 async function runReusedRelease(options) {
   if (process.platform !== 'darwin' || process.version !== NODE) throw new Error('Reuse requires macOS and pinned Node; use mise exec.');
   if (!/^[a-f0-9-]{36}$/i.test(process.env.E2E_DEVICE ?? '') || !process.env.SIMLOCK_IOS_DEVICE_SET
@@ -330,12 +343,7 @@ async function runReusedRelease(options) {
     const devicePath = join(process.env.SIMLOCK_IOS_DEVICE_SET, process.env.E2E_DEVICE);
     budget.addPath(devicePath, { chargeExisting: true });
   }
-  const env = { ...cleanEnv(process.env), E2E_PERSONAS: options.personas ? '1' : '0', E2E_RELEASE_RECEIPT: options.releaseReceipt,
-    E2E_SIMLOCK_TIMEOUT_SECONDS: String(options.waitMinutes * 60) };
-  // Explicit QA targets retain their existing ownership workflow; absent one, run.mjs leases Simlock.
-  for (const key of ['E2E_DEVICE', 'SIMLOCK_IOS_DEVICE_SET', 'AGENT_DEVICE_IOS_SIMULATOR_DEVICE_SET', 'AGENT_DEVICE_STATE_DIR'])
-    if (process.env[key]) env[key] = process.env[key];
-  if (options.personas) delete env.OPENAI_API_KEY;
+  const env = reuseEnvironment(options);
   const results = [];
   let storage, refusal, samplingError;
   const ownedRuns = new Set();

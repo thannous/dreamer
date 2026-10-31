@@ -89,7 +89,7 @@ const LINT_SCRIPTS = [
   'context/DreamsContext.tsx', 'context/ThemeContext.tsx', 'lib/types.ts', 'lib/journalSyncContracts.ts',
   'services/storageService.ts', 'services/supabaseDreamService.ts', 'data/site-manifest.json',
   'supabase/db-contract.manifest.json',
-  'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs', 'tools/e2e/native-release.mjs',
+  'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/persona-models.mjs',
 ];
 
 // What jest-changed can select tests from: a module or a snapshot under a
@@ -609,7 +609,7 @@ export default {
     // The Mac mini simulator campaign (npm run release:simulators): its plan, profiles and report.
     {
       name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
-      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs'],
+      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs'],
     },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },

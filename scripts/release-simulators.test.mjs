@@ -268,3 +268,24 @@ test('PID reuse never attributes a historical or differently named SDK folder to
   assert.equal(isNewRunDirectory('2000-43-42-suffix', 42, previous), false);
   assert.equal(isNewRunDirectory('2000-42-new', 42, previous), true);
 });
+
+test('reuse preserves effective persona act and judge overrides while dropping inherited build profiles', async () => {
+  const { reuseEnvironment } = await import('./release-simulators.mjs');
+  const { personaModels } = await import('../tools/e2e/persona-models.mjs');
+  const options = { personas: true, releaseReceipt: '/qa/release.json', waitMinutes: 30 };
+  const source = { E2E_PERSONA_MODEL: 'gpt-6.1-sol', E2E_PERSONA_ACT_MODEL: 'gpt-6-luna',
+    E2E_PERSONA_JUDGE_MODEL: 'gpt-6-astra', E2E_DEVICE: 'owned-iphone', SIMLOCK_IOS_DEVICE_SET: '/owned/set',
+    AGENT_DEVICE_STATE_DIR: '/owned/driver', OPENAI_API_KEY: 'synthetic-test-key',
+    E2E_BUILD_PROFILE: 'production-apk', EXPO_PUBLIC_MOCK_MODE: 'false', E2E_PERSONAS: '0' };
+  const env = reuseEnvironment(options, source);
+  assert.deepEqual(personaModels(env), { personaModel: 'gpt-6.1-sol', personaJudgeModel: 'gpt-6-astra' });
+  assert.equal(env.E2E_PERSONA_ACT_MODEL, 'gpt-6-luna');
+  assert.equal(personaModels(reuseEnvironment(options, { E2E_PERSONA_ACT_MODEL: 'gpt-6-luna' })).personaModel, 'gpt-6-luna');
+  assert.equal(env.E2E_PERSONAS, '1'); assert.equal(env.E2E_RELEASE_RECEIPT, '/qa/release.json');
+  assert.equal(env.E2E_DEVICE, source.E2E_DEVICE); assert.equal(env.SIMLOCK_IOS_DEVICE_SET, source.SIMLOCK_IOS_DEVICE_SET);
+  assert.equal(env.E2E_BUILD_PROFILE, undefined); assert.equal(env.EXPO_PUBLIC_MOCK_MODE, undefined);
+  assert.equal(env.OPENAI_API_KEY, undefined);
+  const ordinary = reuseEnvironment({ ...options, personas: false }, source);
+  assert.equal(ordinary.E2E_PERSONAS, '0'); assert.equal(ordinary.E2E_PERSONA_MODEL, undefined);
+  assert.equal(ordinary.OPENAI_API_KEY, source.OPENAI_API_KEY);
+});
