@@ -1,6 +1,6 @@
 import { spawn, execFile } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
 import { promisify } from 'node:util';
@@ -63,6 +63,8 @@ function closeWithin(child, closed, timeoutMs = 10_000) {
 export async function acquireSimlock({ platform, env, shimDirectory, onLoss = () => {}, onSignal = () => {} }) {
   // Codex and Claude supply their own session identity. A plain terminal needs
   // one stable identity across the separate catalog, lease and release CLIs.
+  // Simlock takes a defined SIMLOCK_AGENT_ID even when empty; unset it so both agree.
+  if (env.SIMLOCK_AGENT_ID === '') delete env.SIMLOCK_AGENT_ID;
   if (!env.SIMLOCK_AGENT_ID && !env.CODEX_SESSION_ID && !env.CLAUDE_CODE_SESSION_ID)
     env.SIMLOCK_AGENT_ID = `noctalia-e2e-${randomUUID()}`;
   const requester = env.SIMLOCK_AGENT_ID || (env.CLAUDE_CODE_SESSION_ID
@@ -212,6 +214,16 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
       const lines = raw.split(/\r?\n/).map(line => line.trim());
       if (!lines[0] || lines.length > 2 || (lines.length === 2 && lines[1] !== 'OK')) throw new Error('SIMLOCK_AVD_PROTOCOL');
       env.E2E_AVD_NAME = lines[0];
+      // agent-device takes adb from ANDROID_SDK_ROOT/ANDROID_HOME before PATH and puts that
+      // SDK's platform-tools first on its own PATH, so the PATH shim never sees its commands.
+      // This SDK root holds only the shim; the driver restores the real one for Simlock.
+      const sdk = join(stateDirectory, 'android-sdk');
+      mkdirSync(join(sdk, 'platform-tools'), { recursive: true });
+      writeFileSync(join(sdk, 'platform-tools', 'adb'),
+        `#!/bin/sh\nexec '${join(shimDirectory, 'adb').replaceAll("'", `'\\''`)}' "$@"\n`, { mode: 0o755 });
+      env.E2E_SIMLOCK_UNWRAPPED_ANDROID_HOME = env.ANDROID_HOME ?? '';
+      env.E2E_SIMLOCK_UNWRAPPED_ANDROID_SDK_ROOT = env.ANDROID_SDK_ROOT ?? '';
+      env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
     }
     const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') ?? 'PATH';
     env.E2E_SIMLOCK_UNWRAPPED_PATH = env[pathKey];

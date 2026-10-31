@@ -514,8 +514,13 @@ Optional `E2E_SIMLOCK_MODEL` and `E2E_SIMLOCK_OS` select an installed catalog
 entry; `E2E_SIMLOCK_TIMEOUT_SECONDS` bounds the wait (default 180), and
 `E2E_SIMLOCK_NO_WAIT=1` refuses when capacity is unavailable. The pool resets
 devices on release, so never place personal data or unique evidence there.
-Android requires Simlock to return its isolated ADB server port; the runner
-refuses a grant without it instead of using an unscoped server.
+Android requires Simlock to return the port of its private ADB server; the runner
+refuses a grant without it instead of using the shared default server. That
+server is private to Simlock, not to one lease: every Simlock emulator is on it,
+and a released one may stay attached for the next lease, so device commands
+must go through the shim. agent-device takes `adb` from `ANDROID_SDK_ROOT` or
+`ANDROID_HOME` before `PATH`, so the runner points both at a per-run SDK root whose
+only `adb` is the shim; the shim restores the real SDK for Simlock itself.
 The foreground lease holder renews while the runner lives and is bound to its PID.
 It runs in its own process group, so Ctrl-C reaches only the runner, which stops at
 its next checkpoint, cleans up and then releases. Simlock 0.4.0 keeps a request
