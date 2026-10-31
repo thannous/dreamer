@@ -113,6 +113,20 @@ export function buildCommand(platform, { scheme, suite }) {
   binary: `ios/build/${suite}/Build/Products/Release-iphonesimulator/${scheme}.app` };
 }
 
+// After a prebuild, iOS builds keep rewriting native inputs for a while (prebuilt Expo pods switch to
+// Release, then dSYM UUID plists appear), which the runner refuses as BUILD_INPUTS_CHANGED. Build
+// outside it until its native-input digest stops moving.
+export async function settleNativeInputs(build, inputDigest, maxBuilds = 4) {
+  let before = inputDigest();
+  for (let attempt = 1; attempt <= maxBuilds; attempt += 1) {
+    if (await build(attempt) !== 0) return { ok: false, failed: attempt };
+    const after = inputDigest();
+    if (after === before) return { ok: true };
+    before = after;
+  }
+  return { ok: false, unsettled: true };
+}
+
 // The runbook leaves microphone injection out on both platforms and file recognition out on iOS.
 // `prebuild --no-install` leaves only the .xcodeproj; CocoaPods adds the .xcworkspace later.
 export function iosScheme(names) {
@@ -388,13 +402,14 @@ async function main() {
     if (options.platforms.includes('android')) baseEnv.JAVA_HOME = javaHome(baseEnv);
     // The runs use the tested commit's runner and pins, not this checkout's.
     const { SDK_PINS } = await import(pathToFileURL(join(workspace, 'tools/e2e/qualification.mjs')).href);
+    const { nativeInputs } = await import(pathToFileURL(join(workspace, 'tools/e2e/native-release.mjs')).href);
     environment.push(`TesterArmy : ${Object.entries(SDK_PINS).map(([name, version]) => `${name} ${version}`).join(', ')}`);
     if (options.platforms.includes('ios')) environment.push(`Xcode : ${read('xcodebuild', ['-version']).split('\n').join(', ')}`);
     if (options.platforms.includes('android')) {
       const sdk = androidSdk(baseEnv);
       Object.assign(baseEnv, { ANDROID_HOME: sdk, ANDROID_SDK_ROOT: sdk });
     }
-    const leased = new Set(), warmed = new Set();
+    const leased = new Set();
     const receipts = {};
     for (const step of steps) {
       if (stopping) throw new Error('Interrupted.');
@@ -404,7 +419,6 @@ async function main() {
         if (step.kind === 'prebuild') {
           if (step.qa && !backend) continue;
           schemes[step.platform] = await prebuild(workspace, step.platform, step.qa, baseEnv, backend, log(`prebuild-${step.platform}.log`));
-          warmed.delete(step.platform);
         } else if (step.kind === 'backend-start') {
           const qaDir = join(process.platform === 'darwin' ? '/private/tmp' : tmpdir(), `noctalia-release-simulators-${stamp}-${process.pid}`);
           stack = await startService(process.execPath, ['tools/e2e/native-backend-stack.mjs', '--output', qaDir, '--port', String(BACKEND_PORT),
@@ -427,12 +441,17 @@ async function main() {
           const { command, binary } = buildCommand(step.platform, { scheme: schemes[step.platform], suite: step.suite });
           const env = { ...baseEnv, ...suiteBuildEnv(step.suite, { easProduction, backend }), EXPO_NO_DOTENV: '1', EXPO_OFFLINE: '1',
             E2E_BUILD_COMMAND: JSON.stringify(command), E2E_RELEASE_BINARY: binary };
-          if (step.platform === 'ios' && !warmed.has('ios')) {
-            // The first build after a prebuild rewrites native inputs (prebuilt Expo pods switch to
-            // Release, dSYM plists), which the runner refuses as BUILD_INPUTS_CHANGED; build once outside it.
-            const warm = await stream(command[0], command.slice(1), { cwd: workspace, env, log: log(`build-warmup-${step.suite}-ios.log`) });
-            if (warm.code !== 0) { results[key] = { error: `build de préparation en échec (logs/build-warmup-${step.suite}-ios.log)` }; report(); continue; }
-            warmed.add('ios');
+          if (step.platform === 'ios') {
+            // Each layer builds into its own DerivedData, so settle before every iOS runner build.
+            const warmLog = `build-warmup-${step.suite}-ios.log`;
+            const settled = await settleNativeInputs(
+              async () => (await stream(command[0], command.slice(1), { cwd: workspace, env, log: log(warmLog) })).code,
+              () => nativeInputs(workspace, 'dreamer', 'ios').digest);
+            if (!settled.ok) {
+              results[key] = { error: settled.unsettled ? `les fichiers natifs changent encore après 4 builds de préparation (logs/${warmLog})`
+                : `build de préparation en échec (logs/${warmLog})` };
+              report(); continue;
+            }
           }
           const { code, tail } = await stream(process.execPath, ['tools/e2e/run.mjs', 'dreamer', step.platform, 'build'], { cwd: workspace, env, log: log(`build-${step.suite}-${step.platform}.log`) });
           receipts[key] = lastPath(tail, 'Release receipt');

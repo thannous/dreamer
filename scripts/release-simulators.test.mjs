@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOptions, planSteps, disableAndroidUpdates, suiteBuildEnv,
-  buildCommand, runSelection, readRun, renderReport, iosScheme, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
+  buildCommand, runSelection, readRun, renderReport, iosScheme, settleNativeInputs, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
 import { validateBuildCommand } from '../tools/e2e/native-release.mjs';
 
 test('defaults test origin/master on both platforms with the three layers', () => {
@@ -72,6 +72,20 @@ test('builds each layer with the profile the guarded runner accepts', () => {
   assert.ok(gradle.includes('-Dorg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1536m'));
   // Production and mock share one Gradle project, and the bundle task does not see EXPO_PUBLIC_* changes.
   assert.deepEqual(gradle.slice(1, 4), [':app:createBundleReleaseJsAndAssets', '--rerun', ':app:assembleRelease']);
+});
+
+test('builds iOS until the runner sees no native input move, then hands over', async () => {
+  // Lucid/Méditation run, 2026-10-31: one warm-up switched the Expo pods to Release, the next build
+  // still added dSYM UUID plists, so the runner's first build was refused (3 times out of 3).
+  const settle = (digests, codes = []) => {
+    const seen = [...digests], builds = [];
+    return settleNativeInputs(async attempt => { builds.push(attempt); return codes[attempt - 1] ?? 0; }, () => seen.shift())
+      .then(result => ({ ...result, builds }));
+  };
+  assert.deepEqual(await settle(['fresh', 'release', 'plists', 'plists']), { ok: true, builds: [1, 2, 3] });
+  assert.deepEqual(await settle(['same', 'same']), { ok: true, builds: [1] });
+  assert.deepEqual(await settle(['a', 'b'], [0, 65]), { ok: false, failed: 2, builds: [1, 2] });
+  assert.deepEqual(await settle(['a', 'b', 'c', 'd', 'e']), { ok: false, unsettled: true, builds: [1, 2, 3, 4] });
 });
 
 test('names the iOS scheme from the generated project, before CocoaPods creates its workspace', () => {
