@@ -287,6 +287,32 @@ describe('personalized home recommendation', () => {
     expect(second).toEqual(first);
   });
 
+  it('moves along the path once the practice matching the onboarding answers is done', () => {
+    const preference = { goals: ['sleep'] as ['sleep'], dailyIntentionMin: 10 as const };
+    const done = (sessionId: string) => ({
+      ...progressFor(sessionId, 1, '2026-08-23T21:00:00.000Z'),
+      completedCount: 1,
+    });
+    const afterFirst = { 'sleep-descent': done('sleep-descent') };
+    const afterSecond = { ...afterFirst, 'dream-threshold': done('dream-threshold') };
+    const afterPath = { ...afterSecond, 'dream-lucid': done('dream-lucid') };
+
+    // The next step that still fits the chosen length comes first.
+    expect(homeRecommendationForWorld('constellation', DATE, afterFirst, undefined, preference)).toMatchObject({
+      session: { id: 'dream-threshold' },
+      reason: 'duration',
+    });
+    // The last step is longer than the chosen length, but the path still moves on.
+    expect(homeRecommendationForWorld('constellation', DATE, afterSecond, undefined, preference)).toMatchObject({
+      session: { id: 'dream-lucid' },
+      reason: 'editorial',
+    });
+    // A finished path goes back to the practice that matches the answers.
+    expect(homeRecommendationForWorld('constellation', DATE, afterPath, undefined, preference).session.id).toBe(
+      'sleep-descent'
+    );
+  });
+
   it('does not override a gated editorial step with an unplayable preferred session', () => {
     const progress = {
       'sleep-descent': {
