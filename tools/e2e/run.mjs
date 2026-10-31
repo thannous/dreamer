@@ -13,6 +13,7 @@ import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
 import { PERSONA_ACT_MODEL } from './persona-models.mjs';
 import { selectionOwesNothing } from './zones.mjs';
+import { acquireSimlock, needsSimlock } from './simlock-native.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -166,6 +167,26 @@ let inspectionStarted = false;
 let inspectionClosed = false;
 let mcpStarted = false;
 let resourceCleanup = 'not-started';
+let simlock;
+let simlockRelease;
+let simlockLost = false;
+let simlockPreserveState = false;
+let interruptActiveChild;
+// From the reservation until the SDK child starts, a signal stops the run at the next
+// checkpoint, so the device lock, agent-device state and lease are still cleaned up.
+const simlockInterrupt = () => { requestedSignal = 130; };
+const simlockTerminate = () => { requestedSignal = 143; };
+function simlockCheckpoint() {
+  if (simlockLost) throw new Error('SIMLOCK_LEASE_LOST_BEFORE_SDK');
+  if (simlock && requestedSignal) throw new Error('SIMLOCK_INTERRUPTED');
+}
+// Shape only; identity, digests and profile rules need the device and checkout.
+function releaseShape(receipt) {
+  if (typeof receipt?.binary?.path !== 'string' || !receipt.binary.path
+    || !receipt.profile || typeof receipt.profile !== 'object' || Array.isArray(receipt.profile))
+    throw new Error('RELEASE_PROVENANCE');
+  return receipt;
+}
 const secondary = [];
 const installationErrorDetails = [];
 const startedAt = Date.now();
@@ -176,6 +197,8 @@ const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
 const context = () => ({ locale: platform !== 'web' && env.E2E_PERSONAS === '1' ? 'fr-FR' : env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
   ...(env.E2E_PERSONAS === '1' ? { personas: true, personaModel: env.E2E_PERSONA_MODEL?.trim() || env.E2E_PERSONA_ACT_MODEL?.trim() || PERSONA_ACT_MODEL } : {}) });
 async function execute(executable, argv, logName, childEnv = env, workdir = cwd) {
+  // After an interrupt on a leased device, no further SDK child starts.
+  if (simlock && (requestedSignal || simlockLost)) return requestedSignal ?? 3;
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
   const child = spawn(executable, argv, { cwd: workdir, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
   const stopProgress = startSdkProgress(child, {
@@ -191,17 +214,20 @@ async function execute(executable, argv, logName, childEnv = env, workdir = cwd)
   };
   const interrupt = () => { requestedSignal = 130; relay('SIGINT'); };
   const terminate = () => { requestedSignal = 143; relay('SIGTERM'); };
+  const interruptForLeaseLoss = () => relay('SIGTERM');
+  interruptActiveChild = interruptForLeaseLoss;
   process.on('SIGINT', interrupt);
   process.on('SIGTERM', terminate);
   try {
     return await new Promise((resolve, reject) => {
       child.once('error', reject);
-      child.once('close', (code, signal) => resolve(requestedSignal ?? code ?? (signal === 'SIGTERM' ? 143 : signal ? 130 : 1)));
+      child.once('close', (code, signal) => resolve(requestedSignal ?? (simlockLost ? 3 : code ?? (signal === 'SIGTERM' ? 143 : signal ? 130 : 1))));
     });
   } finally {
     stopProgress();
     process.off('SIGINT', interrupt);
     process.off('SIGTERM', terminate);
+    if (interruptActiveChild === interruptForLeaseLoss) interruptActiveChild = undefined;
     if (logFd !== undefined) closeSync(logFd);
   }
 }
@@ -382,6 +408,21 @@ async function runSdk() {
 }
 try {
   sourceBefore = sourceSnapshot(root, product);
+  if (needsSimlock({ platform, command, env })) {
+    if (!releaseFile || !existsSync(resolve(releaseFile)))
+      throw new Error('An existing E2E_RELEASE_RECEIPT is required before reserving a Simlock device.');
+    releaseShape(JSON.parse(readFileSync(resolve(releaseFile), 'utf8')));
+    process.on('SIGINT', simlockInterrupt);
+    process.on('SIGTERM', simlockTerminate);
+    simlock = await acquireSimlock({
+      platform, env, shimDirectory: join(cwd, 'simlock-bin'),
+      onSignal: signal => { requestedSignal = signal === 'SIGINT' ? 130 : 143; },
+      onLoss: () => { simlockLost = true; secondary.push('SIMLOCK_LEASE_LOST'); interruptActiveChild?.(); },
+    });
+    writeOnce(join(output, 'simlock-lease.json'), simlock.evidence);
+    // The pooled QA device is reset after every lease; install the identified Release.
+    installRelease = true;
+  }
   const device = env.E2E_DEVICE;
   let binary = null;
   if (platform !== 'web' && command !== 'build') {
@@ -404,7 +445,7 @@ try {
     fd = openSync(lock, 'wx');
     writeFileSync(fd, JSON.stringify({ pid: process.pid, product, platform, device }));
     if (!releaseFile) throw new Error('E2E_RELEASE_RECEIPT is required; create it through the explicit native build command.');
-    release = JSON.parse(readFileSync(resolve(releaseFile), 'utf8'));
+    release = releaseShape(JSON.parse(readFileSync(resolve(releaseFile), 'utf8')));
     if (nativeJourneys) {
       const backend = readNativeBackendState();
       if (release.profile.name !== 'local-backend' || release.profile.backend?.origin !== backend.proxy.origin
@@ -455,7 +496,11 @@ try {
     trackedDiffSha256: diffSha256,
     command: ['node', 'tools/e2e/run.mjs', product, platform, command, ...args, ...(releaseFile ? ['--release-receipt', resolve(releaseFile)] : []), ...(installRelease ? ['--install-release'] : [])],
     rerunEnvironment: platform === 'web' ? { E2E_WEB_LOCALE: context().locale, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: String(context().featureSheets), E2E_WEB_PORT: new URL(expectedOrigin).port, E2E_WORKERS: env.E2E_WORKERS, E2E_KEEP_METRO_CACHE: env.E2E_KEEP_METRO_CACHE === '1' ? '1' : null,
-      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37',
+      ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}) } : { ...(simlock
+        ? { E2E_SIMLOCK_BIN: env.E2E_SIMLOCK_BIN, E2E_SIMLOCK_MODEL: env.E2E_SIMLOCK_MODEL ?? null,
+          E2E_SIMLOCK_OS: env.E2E_SIMLOCK_OS ?? null, E2E_SIMLOCK_TIMEOUT_SECONDS: env.E2E_SIMLOCK_TIMEOUT_SECONDS ?? null,
+          E2E_SIMLOCK_NO_WAIT: env.E2E_SIMLOCK_NO_WAIT ?? null }
+        : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37' }),
       ...(env.E2E_PERSONAS === '1' ? { E2E_PERSONAS: '1', E2E_PERSONA_MODEL: context().personaModel } : {}),
       ...(nativeJourneys ? { E2E_NATIVE_JOURNEYS: '1', E2E_NATIVE_BACKEND_MANIFEST: env.E2E_NATIVE_BACKEND_MANIFEST,
         E2E_NATIVE_QA_AUDIO: env.E2E_NATIVE_QA_AUDIO, E2E_NATIVE_RECOVERY_PORT: env.E2E_NATIVE_RECOVERY_PORT ?? '31284' } : {}) },
@@ -512,6 +557,7 @@ try {
     if (command === 'mcp') { mcpStarted = true; primary = await execute(process.execPath, [...webNodeArgs, cli, command, '--target', `${product}-${platform}`, '--max-sessions', '1'], undefined, cliEnvironment()); }
     else if (platform === 'web') await runSdk();
     else {
+      simlockCheckpoint();
       installHandoffStarted = true;
       installationDiagnostics = await runWithInstallDiagnostics({
       install: installRelease ? async () => {
@@ -522,7 +568,7 @@ try {
         writeOnce(join(output, 'installed-start.json'), verifyInstalledRelease({ receipt: release, device: identity, output, read }));
         installedReady = true;
       },
-      launch: runSdk, onDiagnostic: (code, error) => {
+      launch: async () => { simlockCheckpoint(); return runSdk(); }, onDiagnostic: (code, error) => {
         secondary.push(code); installationErrorDetails.push({ code, message: error instanceof Error ? error.message.slice(0, 4096) : 'Non-Error diagnostic' });
       },
       });
@@ -553,6 +599,22 @@ try {
   } else if (mcpStarted) {
     resourceCleanup = 'unproven'; secondary.push('NATIVE_MCP_CLEANUP_UNPROVEN');
   }
+  if (simlock && sdkLaunched) {
+    try {
+      // This state directory is unique to this invocation, so --clean cannot
+      // stop another agent's shared daemon or remove another session.
+      const deviceCli = join(cwd, 'node_modules/agent-device/bin/agent-device.mjs');
+      const stopped = spawnSync(process.execPath, [deviceCli, 'daemon', 'stop', '--clean', '--state-dir', env.AGENT_DEVICE_STATE_DIR],
+        { cwd, env, encoding: 'utf8', timeout: 30_000 });
+      writeOnce(join(output, 'simlock-agent-cleanup.json'), { status: stopped.status,
+        stdout: stopped.stdout?.slice(-4096) ?? '', stderr: stopped.stderr?.slice(-4096) ?? '', error: stopped.error?.message ?? null });
+      if (stopped.error || stopped.status !== 0) throw new Error('SIMLOCK_AGENT_CLEANUP');
+    } catch (error) {
+      simlockPreserveState = true; resourceCleanup = 'unproven';
+      secondary.push('SIMLOCK_AGENT_CLEANUP_UNPROVEN');
+      console.error(`${error.message}; retained state: ${env.AGENT_DEVICE_STATE_DIR}`);
+    }
+  }
   if (backendLock) attempt('BACKEND_LOCK_RELEASE', () => releaseNativeBackendRunLock(backendLock));
   if (fd !== undefined) {
     attempt('LOCK_CLOSE', () => closeSync(fd));
@@ -564,6 +626,17 @@ try {
       unlinkSync(lock);
     });
   }
+  if (simlock) {
+    try {
+      simlockRelease = await simlock.release({ preserveState: simlockPreserveState });
+      writeOnce(join(output, 'simlock-release.json'), simlockRelease);
+    } catch (error) {
+      secondary.push('SIMLOCK_RELEASE_UNPROVEN');
+      console.error(error.message);
+    }
+  }
+  process.off('SIGINT', simlockInterrupt);
+  process.off('SIGTERM', simlockTerminate);
   if (hostStalls.length) {
     // A failed run during a host stall stays failed; the code says why, so it is rerun on a
     // quiet host instead of being read as an app regression. A passed run is left as it is.
@@ -577,6 +650,8 @@ try {
     applicationQualified: command === 'run' && !emptySelection && preserveStatus(requestedSignal ?? primary, secondary) === 0,
     ownerDecision: '2026-10-06-install-hash-diagnostic-and-release-own-wrapper-lock',
     secondaryErrors: secondary, resourceCleanup, lockReleased: lock ? !existsSync(lock) : true,
+    ...(simlock ? { simlock: { ...simlock.evidence, released: Boolean(simlockRelease),
+      ...(simlockPreserveState ? { retainedStateDirectory: env.AGENT_DEVICE_STATE_DIR } : {}) } } : {}),
     ...(backendLock ? { backendLockReleased: !existsSync(backendLock.path) } : {}), hostStalls,
   }));
   process.exitCode = preserveStatus(requestedSignal ?? primary, secondary);
