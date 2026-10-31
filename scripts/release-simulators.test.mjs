@@ -235,3 +235,27 @@ test('keeps the only evidence when relocation fails and releases only after a su
     assert.equal(results['mock:ios'].dir, 'report/e2e');
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
+
+test('reuse goes straight to one pilot and six remaining distinct personas, with no preparation step', async () => {
+  const { reuseSteps, checkReusedResult } = await import('./release-simulators.mjs');
+  const parsed = parseOptions(['--reuse-workspace', '/qa', '--release-receipt', '/qa/release.json', '--platform', 'ios', '--personas', '--budget-gb', '6', '--startup-budget-gb', '4']);
+  assert.equal(parsed.budgetGb, 6); assert.equal(parsed.startupBudgetGb, 4);
+  assert.deepEqual(reuseSteps(true).map(x => [x.kind, x.expectedPassed]), [['pilot', 1], ['remaining', 6]]);
+  assert.ok(reuseSteps(true)[1].args.includes('--exclude-tag'));
+  assert.throws(() => checkReusedResult({ qualified: true, exitCode: 0, passed: 1, failed: 0, skipped: 6 }, 7), /INCOMPLETE/);
+  assert.doesNotThrow(() => checkReusedResult({ qualified: true, exitCode: 0, passed: 6, failed: 0, skipped: 0 }, 6));
+  assert.throws(() => parseOptions(['--personas']), /Reuse requires/);
+  assert.throws(() => parseOptions(['--min-free-gb', '30']), /50 GB/);
+});
+
+test('reuse and ordinary campaigns share an exclusive lock and never release a replacement owner', async () => {
+  const { acquireCampaignLock } = await import('./release-simulators.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'release-campaign-lock-')); const path = join(root, 'lock');
+  try {
+    const unlock = acquireCampaignLock(path);
+    assert.throws(() => acquireCampaignLock(path), /in progress/);
+    unlock(); assert.equal(existsSync(path), false);
+    const owned = acquireCampaignLock(path); writeFileSync(path, '1'); owned();
+    assert.equal(readFileSync(path, 'utf8'), '1');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
