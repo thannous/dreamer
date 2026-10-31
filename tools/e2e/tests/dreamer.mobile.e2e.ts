@@ -508,7 +508,9 @@ async function tapClearOfActionDock(screen: TestFixtures['screen'], control: Ret
 
 for (const editor of ['metadata', 'transcript'] as const) {
   test(`Dreamer release background categorization preserves the ${editor} draft and isolates another entry`, {
-    tags: ['journal-concurrency'],
+    // The 30 s categorization, two edits and two searches take 91-161 s on the iOS Simulator:
+    // its switch back to the full keyboard after a fill once held the field for 23 s.
+    tags: ['journal-concurrency'], timeout: 180_000,
     skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' || Number(process.env.E2E_NATIVE_MOCK_CATEGORIZATION_MS) < 20000
       ? 'Requires an identified persistent mock Release with the bounded categorization QA opt-in.' : false,
   }, async ({ app, screen, device, platform }) => {
@@ -534,8 +536,12 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await acceptAiConsent(screen, platform);
     await expect(ai).toBeChecked();
     const signin = screen.getByTestId('settings-account-open-signin', { visible: true });
-    await settingsScrollUp({ screen, platform }, signin); await signin.tap();
-    await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
+    await settingsScrollUp({ screen, platform }, signin);
+    const existing = screen.getByTestId('btn.mockProfile.existing', { visible: true });
+    // The page still glides after the drags that brought the row in.
+    if (platform === 'ios') await tapUntilShown(signin, existing);
+    else await signin.tap();
+    await existing.tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
     const story = 'E2E sapphire lighthouse above the quiet ocean.';
@@ -627,7 +633,9 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(search).toHaveValue('The Infinite Library');
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const other = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'The Infinite Library' });
-    await expect(other).toHaveCount(1); await other.tap();
+    await expect(other).toHaveCount(1);
+    if (platform === 'ios') await tapUntilShown(other, screen.getByTestId('screen.dreamDetail', { visible: true }));
+    else await other.tap();
     await expect(input).toHaveCount(0);
     await tapClearOfActionDock(screen, button);
     await expect(input).toHaveValue(editor === 'metadata' ? SEEDED_OTHER_DREAM.title : SEEDED_OTHER_DREAM.transcript);
@@ -992,11 +1000,15 @@ async function dismissCaptureKeyboard({ screen, device, platform }: Pick<NativeB
   // Once the simulator has seen a hardware key (the driver clears a field with Command-A), iOS
   // shows only its minimized bar, without Return: the focused story is what both states share.
   await expect(input).toBeFocused();
+  const softKeyboard = await keyboardReturn.count() > 0;
   // Just after typing, the editor can still be scrolling into view, and a tap then only stops it.
   await title.tap();
   for (let tap = 1; tap < 3 && await keyboardReturn.count() > 0; tap += 1) await title.tap();
   await expect(keyboardReturn).toBeHidden();
-  await expect(input).not.toBeFocused();
+  // React Native's scroll view ends editing on a touch outside only once a soft keyboard has
+  // shown; with the minimized bar, as with any hardware keyboard, the story keeps its focus
+  // and no keyboard covers the page.
+  if (softKeyboard) await expect(input).not.toBeFocused();
 }
 
 test('Dreamer release capture widget link opens Capture from Today and keeps the draft', { tags: ['widget-links'] }, async ({ app, screen, device, platform }) => {
