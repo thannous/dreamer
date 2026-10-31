@@ -854,7 +854,6 @@ const translations: Record<string, string> = {
     "recording.chat.add_detail": "Ajoute un détail…",
     "recording.chat.send": "Envoyer",
     "recording.chat.pending_hint": "Envoie ton détail avant d’ajouter le rêve au journal.",
-    "recording.conversation.offline": "L’aide personnalisée ne répond pas, alors voici une question simple.",
     "recording.conversation.answer_placeholder": "Écris ou dicte ton rêve ici…",
     "recording.conversation.edited": "Tu as modifié ton récit.",
     "recording.conversation.edited_hint": "La question précédente a été retirée. Tu peux continuer les questions ou terminer pour relire ton récit.",

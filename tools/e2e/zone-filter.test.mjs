@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL } from './persona-models.mjs';
+import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
 import { filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -111,4 +111,46 @@ test('seven smoke journeys carry the smoke tag and a zone tag', () => {
     smokeTags += source.split("'smoke'").length - 1;
   }
   assert.equal(smokeTags, 7);
+});
+
+test('changes in behavioral owners select their journeys without selecting unrelated billing', () => {
+  const cases = [
+    ['hooks/useCaptureConversation.ts', 'dreamer-capture-chat.web.e2e.ts'],
+    ['hooks/useCaptureSave.ts', 'dreamer-capture-save.web.e2e.ts'],
+    ['hooks/useRecordingDraftScope.ts', 'dreamer-capture-save.web.e2e.ts'],
+    ['hooks/useDreamChatSend.ts', 'dreamer-reflection-context.web.e2e.ts'],
+    ['services/dreamChatSend.ts', 'dreamer-chat-category.web.e2e.ts'],
+    ['components/chat/MessagesList.tsx', 'dreamer-plus-channels.web.e2e.ts'],
+    ['services/nativeSpeechRecognition.ts', 'dreamer-system-speech.web.e2e.ts'],
+    ['lib/auth.web.ts', 'dreamer-forgot-password.web.e2e.ts'],
+    ['lib/supabase.ts', 'dreamer-security-url.web.e2e.ts'],
+    ['app/symbol-detail/[id].tsx', 'dreamer-symbol-links.web.e2e.ts'],
+    ['app/moon-letter.tsx', 'dreamer-moon-letter.web.e2e.ts'],
+  ];
+  for (const [source, file] of cases) {
+    const expected = { id: 'expected', file: `tools/e2e/tests/${file}`, tags: [] };
+    const selection = parcoursExclude([expected, billing, bug], [source]);
+    assert.equal(selection.exclude.expected, undefined, source);
+    assert.ok(selection.exclude.billing, source);
+    assert.ok(selection.exclude.bug, source);
+  }
+  for (const source of ['hooks/useSubscription.ts', 'hooks/useSubscriptionExpiryTimer.ts', 'hooks/useQuota.ts']) {
+    assert.equal(parcoursExclude([billing], [source]).exclude.billing, undefined, source);
+  }
+});
+
+test('a French-only selected journey runs in French rather than becoming an English skipped pass', () => {
+  const french = { id: 'letter', file: 'tools/e2e/tests/dreamer-moon-letter.web.e2e.ts', tags: ['locale-fr-FR'] };
+  const files = ['app/moon-letter.tsx'];
+  assert.ok(parcoursExclude([french], files, 'en-US').exclude.letter);
+  assert.equal(parcoursExclude([french], files, 'fr-FR').exclude.letter, undefined);
+  assert.ok(parcoursExclude([french], ['app/paywall.tsx'], 'fr-FR').exclude.letter);
+});
+
+test('the rerun environment preserves both effective models, including judge overrides', () => {
+  const env = { E2E_PERSONA_ACT_MODEL: 'actor', E2E_PERSONA_JUDGE_MODEL: 'judge' };
+  assert.deepEqual(personaModels(personaEnvironment(env)), personaModels(env));
+  assert.equal(personaModels({ ...env, E2E_PERSONA_MODEL: ' override ' }).personaModel, 'override');
+  assert.deepEqual(personaModels({ E2E_PERSONA_MODEL: ' ', E2E_PERSONA_JUDGE_MODEL: ' ' }),
+    { personaModel: PERSONA_ACT_MODEL, personaJudgeModel: PERSONA_ASSERT_MODEL });
 });

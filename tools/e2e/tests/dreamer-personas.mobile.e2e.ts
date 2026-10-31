@@ -38,7 +38,7 @@ if (process.env.E2E_PERSONAS === '1') {
     await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
   }
 
-  async function startProfile({ app, screen, platform }: NativeFixtures, profile: 'new' | 'existing' | 'plus') {
+  async function startProfile({ app, screen, platform }: NativeFixtures, profile?: 'new' | 'existing' | 'plus') {
     await app.open(); // First recorded action on each owned native target.
     if (process.env.E2E_NATIVE_MOCK_MODE !== 'true' || process.env.E2E_NATIVE_MOCK_PERSISTENCE !== 'true')
       throw new Error('Personas may reset only the identified persistent mock QA app.');
@@ -67,6 +67,17 @@ if (process.env.E2E_PERSONAS === '1') {
       }
     }
     await expect(screen.getByRole('radio', 'Français', { visible: true })).toBeChecked();
+    if (!profile) {
+      // On iOS the drawer's close button can be reported visible while its
+      // scrolled header is off screen. Use the visible settings route and back.
+      await tap(screen, 'quick-settings.all');
+      await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
+      await tap(screen, 'settings.back', 'up');
+      await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+      await tap(screen, 'tab.addDream');
+      await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+      return;
+    }
     await tap(screen, 'quick-settings.all');
     await expect(screen.getByTestId('screen.settings', { visible: true })).toBeVisible();
     await tap(screen, 'settings-account-open-signin', 'up');
@@ -74,17 +85,74 @@ if (process.env.E2E_PERSONAS === '1') {
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
   }
 
-  async function enterStory({ screen, device }: NativeFixtures, story: string) {
+  async function enterStory({ screen, device, platform }: NativeFixtures, story: string) {
     await tap(screen, 'btn.recording.inputMode.text');
-    await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(story);
-    await device.dismissKeyboard();
+    const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+    await editor.fill(story);
+    // The iOS multiline keyboard has no dismiss key; the static title is a
+    // safe tap target and avoids inserting a newline or hitting Save/Clear.
+    if (platform === 'ios') await screen.getByText('Noctalia', { exact: true, visible: true }).tap();
+    else await device.dismissKeyboard();
+    await expect(editor).toHaveValue(story);
+  }
+
+  async function saveGuestDream(fixtures: NativeFixtures, story: string, reading: 'first' | 'next' | 'none') {
+    const { screen, platform } = fixtures;
+    await enterStory(fixtures, story);
+    await tap(screen, 'btn.saveDream');
+    if (reading === 'next') await tap(screen, 'btn.dreamCaptureSeal.readNow');
+    if (reading === 'first' && platform === 'ios') {
+      await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
+      await expect(screen.getByTestId('component.aiConsent.card', { visible: true })).toBeVisible();
+      const accept = screen.getByTestId('btn.aiConsent.accept', { visible: true });
+      await expect(accept).toBeEnabled();
+      // The native modal can expose its AX nodes before the opening transition
+      // finishes. Wait for its actual button frame to settle before one tap.
+      let previousFrame = '';
+      let stableReads = 0;
+      await expect.poll(async () => {
+        const frame = await accept.boundingBox();
+        if (!frame || frame.width <= 0 || frame.height <= 0) return false;
+        const currentFrame = [frame.x, frame.y, frame.width, frame.height].map(Math.round).join(':');
+        stableReads = currentFrame === previousFrame ? stableReads + 1 : 0;
+        previousFrame = currentFrame;
+        return stableReads >= 2;
+      }).toBe(true);
+      await accept.tap();
+      await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
+    }
+    if (reading !== 'none') {
+      // The pending reading can move the transcript when its result arrives.
+      // Wait for the actual interpretation before navigating to the story.
+      const interpretation = screen.getByTestId('component.dreamDetail.interpretation', { visible: true });
+      await expect(interpretation).toBeVisible();
+      let previousFrame = '';
+      let stableReads = 0;
+      await expect.poll(async () => {
+        const frame = await interpretation.boundingBox();
+        if (!frame || frame.width <= 0 || frame.height <= 0) return false;
+        const currentFrame = [frame.x, frame.y, frame.width, frame.height].map(Math.round).join(':');
+        stableReads = currentFrame === previousFrame ? stableReads + 1 : 0;
+        previousFrame = currentFrame;
+        return stableReads >= 2;
+      }).toBe(true);
+    }
+    await readableStory(screen, story);
+  }
+
+  async function expectGuestSignup(screen: NativeFixtures['screen']) {
+    await expect(screen.getByTestId('screen.account', { visible: true })).toBeVisible();
+    await expect(screen.getByTestId('btn.auth.signUp', { visible: true })).toHaveCount(1);
+    await expect(screen.getByTestId('screen.paywall')).toBeHidden();
   }
 
   async function readableStory(screen: NativeFixtures['screen'], story: string) {
-    // Native accessibility exposes the story's Text, not a DOM subtree on its View.
-    const prose = screen.getByText(story, { exact: true, visible: true });
+    // iOS accessibility inserts an object-replacement marker after the styled
+    // initial; compare the complete text after removing only that marker.
+    const prose = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
     await screen.scrollUntilVisible(prose);
     await expect(prose).toBeVisible();
+    expect((await prose.textContent())?.replace(/\uFFFC/g, '')).toBe(story);
   }
 
   async function openSearchResult({ screen, device, platform }: NativeFixtures, query: string) {
@@ -99,7 +167,9 @@ if (process.env.E2E_PERSONAS === '1') {
       await expect(search).toHaveValue('');
     }
     await search.fill(query);
-    if (platform === 'ios') await search.press('Enter');
+    // Tap the actual iOS search key: synthetic Enter can time out on the
+    // Simulator keyboard even though the filtered result is already present.
+    if (platform === 'ios') await screen.getByTestId('Search', { visible: true }).tap();
     else await device.dismissKeyboard();
     await expect(search).toHaveValue(query);
     const entry = screen.getByTestId(/^dream\.item\./, { visible: true });
@@ -148,10 +218,8 @@ if (process.env.E2E_PERSONAS === '1') {
         .getByText('Garden in the Clouds', { exact: true, visible: true }).last();
       await screen.scrollUntilVisible(title, { direction: 'up' });
       await expect(title).toBeVisible();
-      const transcript = screen.getByText(/^I was walking through a beautiful garden floating among the clouds\./, { visible: true });
-      await screen.scrollUntilVisible(transcript);
-      const originalStory = await transcript.textContent();
-      if (!originalStory || originalStory.length < 30) throw new Error('The retrieved dream has no readable story.');
+      const originalStory = 'I was walking through a beautiful garden floating among the clouds. There were flowers I had never seen before, in colors that do not exist in real life. A gentle breeze carried the scent of jasmine. I sat on a bench and watched birds made of rainbow light fly by. Time seemed to stand still.';
+      await readableStory(screen, originalStory);
       // This exact fixture starts outside favourites. Finding it in the filtered
       // Journal after the goal proves a change even if native AX hides icon state.
       await agent.act('Add this dream to your favourites so you can find it again later. Finish on this dream page.');
@@ -194,6 +262,15 @@ if (process.env.E2E_PERSONAS === '1') {
       const answer = screen.getByText(/^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/, { visible: true });
       await expect(answer).toBeVisible();
       await expect(screen.getByTestId('chat.loading')).toBeHidden();
+      // The thinking indicator disappears as soon as streaming begins, and
+      // iOS AX reports the microphone's child enabled before its parent.
+      // The quick topic becomes a button only when the send lock is released.
+      if (platform === 'ios') {
+        const topic = screen.getByRole('button', 'Symboles', { exact: true, visible: true });
+        await screen.scrollUntilVisible(topic, { direction: 'up' });
+        await expect(topic).toBeVisible();
+        await screen.scrollUntilVisible(answer);
+      }
       await expect(input).toBeEnabled();
       const response = await answer.textContent();
       if (!response) throw new Error('The conversation has no readable assistant reply.');
@@ -246,5 +323,104 @@ if (process.env.E2E_PERSONAS === '1') {
         await screen.scrollUntilVisible(count);
         await expect(count).toHaveText('0');
       }
+    });
+  test('a native guest at the offered chat limit discovers account creation',
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-chat'], timeout: 360_000 }, async fixtures => {
+      const { app, screen, agent, device, platform } = fixtures;
+      await startProfile(fixtures);
+      await saveGuestDream(fixtures, 'Personas invitée : un verger de verre chante quand le vent passe.', 'first');
+      await tap(screen, 'component.dreamDetail.actionCard');
+      await tap(screen, 'btn.dreamCategory.freeChat');
+      const input = screen.getByTestId('chat.input.message', { visible: true });
+      const limit = screen.getByTestId('text.chat.limit', { visible: true });
+      const counter = screen.getByTestId('text.chat.messageCounter', { visible: true });
+      for (let sent = 0; sent < 10; sent += 1) {
+        await expect(counter).toHaveText(new RegExp(`^${sent}/10(?:\\s|$)`));
+        // The counter advances on acceptance, before the streamed reply has
+        // finished and the iOS composer becomes editable again. A quick topic
+        // is exposed as a button only after the send lock is released.
+        if (platform === 'ios' && sent > 0) {
+          const topic = screen.getByRole('button', 'Symboles', { exact: true, visible: true });
+          await screen.scrollUntilVisible(topic, { direction: 'up' });
+          await expect(topic).toBeVisible();
+        }
+        await input.fill(`Personas limite native ${sent + 1}`);
+        if (platform === 'android') await device.dismissKeyboard();
+        await tap(screen, 'chat.button.send');
+        await expect(counter.filter({ hasText: `${sent + 1}/10` }).or(limit)).toBeVisible();
+      }
+      await expect(limit).toBeVisible();
+      // iOS exposes the banner text beside its testID container in AX.
+      await expect(screen.getByText('Tes 10 échanges offerts sont utilisés', { exact: true, visible: true }).last()).toBeVisible();
+      await expect(screen.getByTestId('btn.chat.limitUpgrade', { visible: true })).toBeVisible();
+      await expect(screen.getByRole('button', 'Créer un compte', { exact: true, visible: true }).last()).toBeVisible();
+      await agent.assert('The visible chat explains that the offered exchanges are used and offers account creation without a purchase screen.', { vision: true });
+      await agent.act('Follow the invitation to continue this conversation. Stop at the account form without filling it in.');
+      await expectGuestSignup(screen);
+      await app.screenshot('native-guest-chat-signup');
+    });
+
+  test('a native guest out of offered analyses keeps the dream and discovers account creation',
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-analyses'], timeout: 360_000 }, async fixtures => {
+      const { app, screen, agent, platform } = fixtures;
+      await startProfile(fixtures);
+      const returnToJournal = async () => {
+        if (platform === 'ios') {
+          const back = screen.getByTestId('btn.navigateJournal', { visible: true });
+          await screen.scrollUntilVisible(back, { direction: 'up' });
+          // On an illustrated dream, the running head can keep moving after AX
+          // first exposes the back control. Let its frame settle before tapping.
+          let previousFrame = '';
+          let stableReads = 0;
+          await expect.poll(async () => {
+            const frame = await back.boundingBox();
+            if (!frame || frame.width <= 0 || frame.height <= 0) return false;
+            const currentFrame = [frame.x, frame.y, frame.width, frame.height].map(Math.round).join(':');
+            stableReads = currentFrame === previousFrame ? stableReads + 1 : 0;
+            previousFrame = currentFrame;
+            return stableReads >= 2;
+          }).toBe(true);
+        }
+        await journal(screen);
+      };
+      // Consume the real mock allowance through UI; do not add a native storage backdoor.
+      await saveGuestDream(fixtures, 'Première nuit : un arbre bleu au milieu de la mer.', 'first');
+      await returnToJournal();
+      await tap(screen, 'tab.addDream');
+      await saveGuestDream(fixtures, 'Deuxième nuit : une horloge de sable sous la lune.', 'next');
+      await returnToJournal();
+      await tap(screen, 'tab.addDream');
+      const story = 'Personas limite native : un phare turquoise éclaire les nuages.';
+      await saveGuestDream(fixtures, story, 'none');
+      await tap(screen, 'btn.savedDream.discoverPlus');
+      await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();
+      await tap(screen, 'btn.paywall.close');
+      await readableStory(screen, story);
+      const invitation = screen.getByTestId('btn.dream.primaryCta', { visible: true });
+      await screen.scrollUntilVisible(invitation);
+      await expect(invitation).toContainText('Créer un compte');
+      await agent.act('Follow the invitation to get new offered analyses. Stop at the account form without filling it in.');
+      await expectGuestSignup(screen);
+      await app.screenshot('native-guest-analyses-signup');
+    });
+
+  test('a native guest discovers remembered capture from an empty journal',
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-memory'] }, async fixtures => {
+      const { app, screen, agent } = fixtures;
+      await startProfile(fixtures);
+      await tap(screen, 'tab.journal');
+      await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
+      await agent.act('From your empty journal, open the empty writing form for an old dream you never forgot. Stop before entering any text.');
+      await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+      await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue('');
+      await agent.assert('The screen invites you to describe a remembered dream, and that invitation and the writing area are readable.', { vision: true });
+      const story = 'Personas souvenir natif : enfant, je traversais une forêt de lampes.';
+      await saveGuestDream(fixtures, story, 'first');
+      await app.restart();
+      await home(screen);
+      await tap(screen, 'tab.journal');
+      await openSearchResult(fixtures, 'Personas souvenir natif');
+      await readableStory(screen, story);
+      await app.screenshot('native-guest-remembered-dream-durable');
     });
 }

@@ -9,6 +9,58 @@ datées et résultats antérieurs restent des faits historiques, pas des interdi
 permanentes d'évolution. TesterArmy reste le choix par défaut pour les parcours
 nouveaux ou affectés ; les interfaces et assertions critiques sont réellement testées.
 
+## La politique en pratique
+
+On choisit les vérifications selon ce qui a changé et les conséquences possibles
+d'une régression. Pendant le développement, le tableau ci-dessous aide à choisir
+entre une simple relecture, une inspection visuelle, un parcours utilisateur ciblé
+ou des vérifications plus larges des données et des cas d'échec.
+
+- **Parcours utilisateur.** Pour une fonctionnalité nouvelle ou modifiée, on
+  privilégie un parcours TesterArmy sur l'interface concernée, avec des
+  assertions précises sur les résultats importants. Un test isolé complète ce
+  parcours lorsqu'il couvre un risque concret que celui-ci ne peut pas vérifier
+  de façon sûre ou fiable. Un parcours avec des services simulés vérifie
+  l'application dans cet environnement ; il ne prouve pas la production.
+- **Simulateurs et émulateurs.** Sur la machine équipée du pilote, Simlock
+  coordonne le pool partagé d'appareils virtuels iOS et Android : il permet de
+  réserver un appareil de manière exclusive pour éviter que plusieurs agents
+  ne le pilotent en même temps. On rend sa réservation en fin d'utilisation.
+  Les appareils du pool pilote sont réinitialisés à la libération : utiliser
+  uniquement des appareils de QA jetables et préserver les données personnelles.
+  TesterArmy exécute les parcours ; l'identification de la Release et le verrou
+  du lanceur restent nécessaires. Un `run` natif sans `E2E_DEVICE` réserve et
+  libère automatiquement un appareil Simlock ; un appareil explicitement nommé
+  conserve le parcours existant. Les commandes de liste et de build ne réservent
+  pas d'appareil. Sur cette machine,
+  la procédure du pilote est dans `~/Projects/infra-ops/simlock-pilot/README.md` ;
+  voir aussi les [procédures natives](repository-operations.md#native-journeys-and-inspection).
+- **Avant chaque push.** Après `git fetch origin master`, on lance
+  `npm run verify:pr` sur le commit à envoyer. Cette commande sélectionne les
+  contrôles pertinents et, pour les changements web concernés, les parcours
+  touchés et les parcours essentiels. La sélection par zones reste le socle ;
+  selon la révision et sa configuration, un filtre IA facultatif peut ajouter
+  d'autres parcours. Une preuve échouée ou incomplète bloque le push. Voir les
+  [détails de la sélection](repository-operations.md#local-validation-and-ci).
+- **Avant une release de l'application.** On lance l'exploration
+  `npm run test:bugbash:prerelease` en environnement simulé. Chaque bug confirmé
+  devient un test reproductible qui échoue sur le comportement attendu, puis
+  passe après correction. `npm run verify:release` exécute notamment ces
+  reproductions. Une liste vide de reproductions ne prouve pas que l'exploration
+  a été effectuée ni que ses observations ont été traitées ; voir la
+  [procédure de triage](../../tools/e2e/tests/bugbash/README.md).
+- **Preuve et limites.** On conserve la révision, l'environnement, le résultat,
+  la commande et les éléments utiles au diagnostic. Une preuve web simulée,
+  un test sur simulateur, une vérification sur appareil physique et une
+  publication sont des étapes distinctes. Une preuve absente ou une exécution
+  incomplète ne compte pas comme un succès.
+
+On réutilise les preuves encore valides et les tests existants ; on relance ou
+on ajoute un contrôle lorsqu'un changement ou un risque le justifie. Si le
+produit évolue, on adapte les anciennes attentes avec leur raison et un
+contre-exemple pertinent, sans effacer les résultats historiques ni supprimer
+les protections qui restent utiles.
+
 ## Évolution des contrats et outils
 
 Avant de reproduire un ancien rouge, identifier le résultat attendu aujourd'hui.

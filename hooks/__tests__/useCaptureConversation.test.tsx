@@ -1,14 +1,18 @@
 /* @jest-environment jsdom */
 import { act, renderHook } from '@testing-library/react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCaptureConversation } from '../useCaptureConversation';
 import { requestCaptureQuestion } from '@/services/captureConversation';
 import { hasAiConsent } from '@/lib/aiConsent';
 jest.mock('@/services/captureConversation', () => ({ requestCaptureQuestion: jest.fn() }));
 jest.mock('@/lib/aiConsent', () => ({ hasAiConsent: jest.fn() }));
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'));
 const request = jest.mocked(requestCaptureQuestion);
 const consent = jest.mocked(hasAiConsent);
 const t = () => 'De quoi d’autre te souviens-tu ?';
-beforeEach(() => {
+beforeEach(async () => {
+  await AsyncStorage.clear();
   request.mockReset();
   consent.mockReset();
   consent.mockResolvedValue(true);
@@ -23,6 +27,32 @@ it('requests a grounded question once per completed transcript revision', async 
   expect(result.current.question).toBe('Que voyais-tu dans ce jardin ?');
   await act(async () => { await result.current.ask('Un jardin. Une porte ouverte.'); });
   expect(request.mock.calls[1][2]).toEqual(['Que voyais-tu dans ce jardin ?']);
+});
+
+it('shows the answered question again when the capture reopens, without a new request', async () => {
+  request.mockResolvedValue({ question: 'Que voyais-tu dans ce jardin ?', done: false });
+  const first = renderHook(() => useCaptureConversation({ language: 'fr', t, scope: 'guest' }));
+  await act(async () => { await first.result.current.ask('Un jardin.'); });
+  first.unmount();
+  // Reopened: the same draft keeps its question; a different draft or account asks again.
+  const reopened = renderHook(() => useCaptureConversation({ language: 'fr', t, scope: 'guest' }));
+  await act(async () => { await reopened.result.current.ask('Un jardin.'); });
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(reopened.result.current).toMatchObject({ question: 'Que voyais-tu dans ce jardin ?', loading: false });
+  const other = renderHook(() => useCaptureConversation({ language: 'fr', t, scope: 'account' }));
+  await act(async () => { await other.result.current.ask('Un jardin.'); });
+  expect(request).toHaveBeenCalledTimes(2);
+});
+
+it('asks again on the next visit after a network failure', async () => {
+  request.mockRejectedValueOnce(new Error('offline')).mockResolvedValue({ question: 'Et ensuite ?', done: false });
+  const first = renderHook(() => useCaptureConversation({ language: 'fr', t }));
+  await act(async () => { await first.result.current.ask('Un jardin.'); });
+  first.unmount();
+  const reopened = renderHook(() => useCaptureConversation({ language: 'fr', t }));
+  await act(async () => { await reopened.result.current.ask('Un jardin.'); });
+  expect(request).toHaveBeenCalledTimes(2);
+  expect(reopened.result.current.question).toBe('Et ensuite ?');
 });
 
 it('keeps capture usable with an explicitly general question on network failure', async () => {
@@ -139,7 +169,9 @@ it('drops a local question when the draft is cleared during the consent check', 
   consent.mockImplementation(() => new Promise(r => { resolveConsent = r; }));
   const { result } = renderHook(() => useCaptureConversation({ language: 'fr', t }));
   let pending!: ReturnType<typeof result.current.ask>;
-  act(() => { pending = result.current.ask('Ancien rêve'); });
+  // Let the saved-question lookup finish so the request is waiting on consent.
+  await act(async () => { pending = result.current.ask('Ancien rêve'); });
+  expect(consent).toHaveBeenCalled();
   act(() => result.current.reset());
   await act(async () => { resolveConsent(true); await pending; });
   expect(request).not.toHaveBeenCalled();

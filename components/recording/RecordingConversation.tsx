@@ -30,7 +30,6 @@ type Props = {
   storyTranscript: string;
   question: string | null;
   loading: boolean;
-  unavailable: boolean;
   done: boolean;
   needsDecision?: boolean;
   onContinueQuestions?: () => void | Promise<void>;
@@ -119,7 +118,7 @@ export function RecordingConversation(props: Props) {
       {currentQuestion ? <MarkdownText accessibilityLiveRegion="polite" style={[styles.question, { color: tokens.text.primary }]} testID="recording-conversation-question">{currentQuestion}</MarkdownText> : null}
       {props.weaving && !props.review ? <CaptureWeaving /> : null}
       {props.loading ? <ActivityIndicator color={tokens.text.primary} accessibilityLabel={t('recording.conversation.thinking')} /> : null}
-      {props.unavailable && !props.review ? <Text style={[styles.hint, { color: tokens.text.secondary }]}>{t('recording.conversation.offline')}</Text> : null}
+      {/* A general question stands on its own: the reader is not told the personalized help failed. */}
       {props.review ? <View onLayout={({ nativeEvent }) => {
         reviewTop.current = nativeEvent.layout.y;
         if (revealReview.current) revealReview.current = !scrollToReview();
@@ -134,13 +133,20 @@ export function RecordingConversation(props: Props) {
       accessibilityRole="button" style={styles.secondary} testID="recording-conversation-continue-questions">
       <Text style={[styles.hint, { color: tokens.text.primary }]}>{t('recording.conversation.continue_questions')}</Text>
     </Pressable> : null}
-    {!props.review && (hasStory || props.answer.trim()) ? <View style={styles.tools}>
+    {/* Once there is a story, two labelled actions frame it above the reply: a quiet way to
+        start over on the left, the way to close the questions on the right. */}
+    {!props.review && hasStory ? <View style={styles.tools}>
       <Pressable onPress={props.onRestart} disabled={locked} accessibilityRole="button" accessibilityLabel={t('recording.conversation.restart')}
-        style={styles.tool} testID="recording-conversation-restart"><IconSymbol name="trash" size={18} color={tokens.text.secondary} /></Pressable>
+        style={[styles.tool, { opacity: locked ? 0.4 : 1 }]} hitSlop={4} testID="recording-conversation-restart">
+        <IconSymbol name="trash" size={15} color={tokens.text.secondary} />
+        <Text style={[styles.toolLabel, { color: tokens.text.secondary }]}>{t('recording.conversation.restart')}</Text>
+      </Pressable>
       {props.onFinish ? <Pressable onPress={props.onFinish} disabled={locked || props.loading || props.finishDisabled} accessibilityRole="button"
         accessibilityLabel={t('recording.conversation.done')} accessibilityState={{ disabled: locked || props.loading || props.finishDisabled }}
-        style={[styles.tool, { opacity: locked || props.loading || props.finishDisabled ? 0.4 : 1 }]} testID="recording-conversation-finish">
-        <IconSymbol name="checkmark" size={20} color={tokens.text.primary} />
+        style={[styles.finish, { backgroundColor: tokens.surface.raised, borderColor: tokens.surface.border, opacity: locked || props.loading || props.finishDisabled ? 0.4 : 1 }]}
+        testID="recording-conversation-finish">
+        <IconSymbol name="checkmark" size={15} color={tokens.text.primary} />
+        <Text style={[styles.finishLabel, { color: tokens.text.primary }]}>{t('recording.conversation.done')}</Text>
       </Pressable> : null}
     </View> : null}
     {/* Noctalia listening: a halo that follows the voice, above the reply. */}
@@ -173,8 +179,11 @@ const styles = StyleSheet.create({
   bubble: { maxWidth: '86%', alignSelf: 'flex-end', borderWidth: StyleSheet.hairlineWidth, borderRadius: 16, padding: 14 },
   message: { fontFamily: Fonts.outfit.regular, fontSize: 16, lineHeight: 24 },
   hint: { fontFamily: Fonts.outfit.regular, fontSize: 13, lineHeight: 20 },
-  tools: { alignSelf: 'flex-end', alignItems: 'center' },
-  tool: { minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' },
+  tools: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12, paddingHorizontal: 4 },
+  tool: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 6, paddingRight: 8 },
+  toolLabel: { fontFamily: Fonts.outfit.regular, fontSize: 13, lineHeight: 18 },
+  finish: { minHeight: 40, flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: 16, borderRadius: 20, borderWidth: StyleSheet.hairlineWidth },
+  finishLabel: { fontFamily: Fonts.outfit.medium, fontSize: 14, lineHeight: 20 },
   secondary: { minHeight: 44, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 12 },
   control: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   listening: { alignSelf: 'center' },

@@ -253,7 +253,9 @@ async function declineAiConsent(screen: TestFixtures['screen'], platform: TestFi
   }
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.aiConsent.decline', { visible: true }).tap();
-  await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
+  // Native dismissal can outlive its accessibility node. Require stable absence
+  // before tapping the capture controls behind the fading modal.
+  await expect(screen.getByTestId('modal.aiConsent')).not.toBeVisible();
 }
 
 async function acceptDreamerLink({ screen }: Pick<TestFixtures, 'screen'>) {
@@ -523,7 +525,11 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   const draft = 'Release fixture: a blue lighthouse above a quiet sea.';
   await screen.getByTestId('input.dreamTranscript', { visible: true }).fill(draft);
-  await device.dismissKeyboard();
+  // iOS has a multiline Return key; dismiss via the static header without
+  // inserting a newline or letting a heuristic gesture hit Save/Clear.
+  if (platform === 'ios') await screen.getByText('Noctalia', { exact: true, visible: true }).tap();
+  else await device.dismissKeyboard();
+  await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toHaveValue(draft);
   await screen.scrollUntilVisible(screen.getByTestId('btn.recording.inputMode.voice', { visible: true }), { direction: 'up' });
   await screen.getByTestId('btn.recording.inputMode.voice', { visible: true }).tap();
   // Speech with a draft owes its first question: iOS asks before any provider call, and

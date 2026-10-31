@@ -102,3 +102,17 @@ test('a changed smoke journey runs in the smoke check, which verify:pr reaches',
   assert.equal(decideSmoke(['tools/e2e/tests/lucid.web.e2e.ts']).launch, false);
   assert.equal(matchesAny('tools/e2e/tests/meditation.web.e2e.ts', SMOKE_WHEN), false);
 });
+
+test('parcours launch each real language/feature context with the diff filter and no model', () => {
+  const calls = [];
+  const execute = (_root, product, args, environment) => { calls.push({ product, args, environment }); return 0; };
+  assert.equal(runGate('parcours', '/unused', ['app/moon-letter.tsx'], { ok: true }, execute), 0);
+  assert.deepEqual(calls.map(call => call.environment.E2E_WEB_LOCALE), ['en-US', 'fr-FR', 'de-DE', 'en-US']);
+  for (const call of calls) {
+    assert.equal(call.environment.E2E_PERSONAS, '0');
+    assert.ok(call.args.includes('--changed-since'));
+    assert.ok(call.args.includes('--pass-with-no-tests'));
+  }
+  assert.equal(calls[3].environment.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED, 'false');
+  assert.equal(runGate('parcours', '/unused', ['hooks/useQuota.ts'], { ok: true }, () => 3), 3);
+});

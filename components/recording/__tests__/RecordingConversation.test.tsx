@@ -34,7 +34,7 @@ jest.mock('@/components/recording/MicButton', () => {
 function props() {
   return {
     transcript: 'Un jardin.', answer: '', storyTranscript: 'Un jardin.', question: 'Que te revient-il de ce jardin ?', loading: false,
-    unavailable: false, done: false, disabled: false, voiceSupported: true,
+    done: false, disabled: false, voiceSupported: true,
     voiceStatus: 'idle' as const, onVoice: jest.fn(), onMute: jest.fn(async () => {}), onReview: jest.fn(), onRestart: jest.fn(),
     onAnswerChange: jest.fn(), onAnswerSubmit: jest.fn(),
   };
@@ -71,10 +71,9 @@ it('persists typed answers on change and explicitly submits before the next ques
   await waitFor(() => expect(view.getByTestId('recording-conversation-answer').props.value).toBe(''));
 });
 
-it('allows review after completion and presents fallback questions as general', () => {
+it('allows review after completion', () => {
   const callbacks = props();
-  const view = render(<RecordingConversation {...callbacks} unavailable />);
-  expect(view.getByText('recording.conversation.offline')).toBeTruthy();
+  const view = render(<RecordingConversation {...callbacks} />);
   view.rerender(<RecordingConversation {...callbacks} done />);
   fireEvent.press(view.getByTestId('capture-chat-user'));
   expect(callbacks.onReview).toHaveBeenCalledTimes(1);

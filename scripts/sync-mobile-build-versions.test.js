@@ -30,23 +30,31 @@ function fixture(native = true) {
       CFBundleVersion: '1', CFBundleShortVersionString: '3.4.3',
       NSMicrophoneUsageDescription: 'Keep this purpose string',
     }));
+    write('ios/ExpoWidgetsTarget/Info.plist', plist.build({
+      CFBundleVersion: '1', CFBundleShortVersionString: '3.4.3',
+      NSExtension: { NSExtensionPointIdentifier: 'com.apple.widgetkit-extension' },
+    }));
     write('ios/Noctalia.xcodeproj/project.pbxproj', `// !$*UTF8*$!
 {
   archiveVersion = 1;
   objectVersion = 54;
   objects = {
 /* Begin PBXProject section */
-    P = { isa = PBXProject; targets = (A /* Noctalia */,); };
+    P = { isa = PBXProject; targets = (A /* Noctalia */, W /* ExpoWidgetsTarget */,); };
 /* End PBXProject section */
 /* Begin PBXNativeTarget section */
     A /* Noctalia */ = { isa = PBXNativeTarget; name = Noctalia; productType = "com.apple.product-type.application"; buildConfigurationList = L; };
+    W /* ExpoWidgetsTarget */ = { isa = PBXNativeTarget; name = ExpoWidgetsTarget; productType = "com.apple.product-type.app-extension"; buildConfigurationList = WL; };
 /* End PBXNativeTarget section */
 /* Begin XCConfigurationList section */
     L = { isa = XCConfigurationList; buildConfigurations = (D /* Debug */, R /* Release */,); };
+    WL = { isa = XCConfigurationList; buildConfigurations = (WD /* Debug */, WR /* Release */,); };
 /* End XCConfigurationList section */
 /* Begin XCBuildConfiguration section */
     D = { isa = XCBuildConfiguration; name = Debug; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.tanuki75.noctalia; INFOPLIST_FILE = Noctalia/Info.plist; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 1.0; }; };
     R = { isa = XCBuildConfiguration; name = Release; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.tanuki75.noctalia; INFOPLIST_FILE = Noctalia/Info.plist; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 1.0; }; };
+    WD = { isa = XCBuildConfiguration; name = Debug; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.tanuki75.noctalia.ExpoWidgetsTarget; INFOPLIST_FILE = ExpoWidgetsTarget/Info.plist; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 1.0; }; };
+    WR = { isa = XCBuildConfiguration; name = Release; buildSettings = { PRODUCT_BUNDLE_IDENTIFIER = com.tanuki75.noctalia.ExpoWidgetsTarget; INFOPLIST_FILE = ExpoWidgetsTarget/Info.plist; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 1.0; }; };
 /* End XCBuildConfiguration section */
   };
   rootObject = P;
@@ -71,7 +79,14 @@ describe('EAS build number synchronization', () => {
       CFBundleVersion: '11', CFBundleShortVersionString: '3.4.5',
       NSMicrophoneUsageDescription: 'Keep this purpose string',
     });
-    expect(read(root, 'ios/Noctalia.xcodeproj/project.pbxproj')).toContain('CURRENT_PROJECT_VERSION = 11');
+    const pbxproj = read(root, 'ios/Noctalia.xcodeproj/project.pbxproj');
+    // The widget extension follows the app, or Xcode and App Store Connect reject the mismatch.
+    expect(pbxproj.match(/CURRENT_PROJECT_VERSION = 11;/g)).toHaveLength(4);
+    expect(pbxproj).not.toMatch(/CURRENT_PROJECT_VERSION = 1;/);
+    expect(plist.parse(read(root, 'ios/ExpoWidgetsTarget/Info.plist'))).toMatchObject({
+      CFBundleVersion: '11', CFBundleShortVersionString: '3.4.5',
+      NSExtension: { NSExtensionPointIdentifier: 'com.apple.widgetkit-extension' },
+    });
     expect(syncMobileBuildVersions({ root, readRemote: remote }).changed).toEqual([]);
   });
 

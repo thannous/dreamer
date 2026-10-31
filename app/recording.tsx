@@ -2025,7 +2025,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
                     storyTranscript={captureReview?.source ?? answerBase ?? transcript}
                     question={conversation.question}
                     loading={conversation.loading}
-                    unavailable={conversation.unavailable}
                     done={conversation.done}
                     needsDecision={conversation.needsDecision}
                     onContinueQuestions={async () => {

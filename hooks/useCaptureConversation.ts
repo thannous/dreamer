@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestCaptureQuestion } from '@/services/captureConversation';
 import { getCaptureFallbackQuestion } from '@/lib/dreamRecallQuestions';
 import { hasAiConsent } from '@/lib/aiConsent';
@@ -9,6 +10,22 @@ type ConversationState =
   | { status: 'idle' | 'asking' | 'decision' }
   | { status: 'question'; question: string | null; unavailable: boolean }
   | { status: 'done'; question: string | null };
+
+// The question Noctalia last asked, kept with the draft text it answers: reopening the
+// capture shows it again instead of asking the provider anew.
+type SavedQuestion = { key: string; question: string | null; done: boolean; previous: string[] };
+const savedQuestionKey = (scope?: string) => `noctalia.capture.question.v1:${scope ?? 'default'}`;
+
+async function readSavedQuestion(scope: string | undefined, key: string): Promise<SavedQuestion | null> {
+  try {
+    const saved = JSON.parse((await AsyncStorage.getItem(savedQuestionKey(scope))) ?? 'null') as SavedQuestion | null;
+    return saved?.key === key && Array.isArray(saved.previous) ? saved : null;
+  } catch { return null; }
+}
+
+function saveQuestion(scope: string | undefined, saved: SavedQuestion) {
+  AsyncStorage.setItem(savedQuestionKey(scope), JSON.stringify(saved)).catch(() => {});
+}
 
 // One shared idle snapshot: resetting an idle conversation does not re-render the screen.
 const IDLE: ConversationState = { status: 'idle' };
@@ -90,8 +107,19 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
       const fallback = getCaptureFallbackQuestion(text, previous.current.length, t).text;
       setState({ status: 'question', question: fallback, unavailable: failed });
       previous.current.push(fallback);
+      // A failure is retried on the next visit; a general question chosen without consent is kept.
+      if (!failed) saveQuestion(scope, { key, question: fallback, done: false, previous: [...previous.current] });
     };
     try {
+      // This draft was already answered: show the same question again, without a new request.
+      const saved = await readSavedQuestion(scope, key);
+      if (generation.current !== owner) return;
+      if (saved) {
+        previous.current = [...saved.previous];
+        finished.current = saved.done;
+        setState(saved.done ? { status: 'done', question: saved.question } : { status: 'question', question: saved.question, unavailable: false });
+        return saved.done;
+      }
       // The transcript goes to the AI provider: without consent stay local. A question is only
       // due once the microphone has stopped, so asking here interrupts no capture. Ask once:
       // a narrator who declines keeps the general questions without being asked again, and a
@@ -117,6 +145,7 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
         : { status: 'question', question: result.question, unavailable: false });
       finished.current = result.done;
       if (result.question) previous.current.push(result.question);
+      saveQuestion(scope, { key, question: result.question, done: result.done, previous: [...previous.current] });
       return result.done;
     } catch {
       if (generation.current !== owner) return;
@@ -127,7 +156,7 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
         setState(current => current.status === 'asking' ? IDLE : current);
       }
     }
-  }, [language, rememberQuestions, requestConsent, t]);
+  }, [language, rememberQuestions, requestConsent, scope, t]);
 
   useEffect(() => {
     // Account identity is external state: cancel its pending request and clear its visible question together.

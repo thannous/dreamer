@@ -168,7 +168,7 @@ export default function SymbolDetailScreen() {
   });
 
   // On the paper theme the night scene needs room to dawn into the page below its copy.
-  const heroDusk = mode === 'light' ? 72 : 0;
+  const heroDusk = mode === 'light' ? 120 : 0;
   // A living painting takes most of the screen: the page opens inside it.
   const paintingHeight = living
     ? Math.max(460, windowHeight * 0.75)
@@ -308,7 +308,7 @@ export default function SymbolDetailScreen() {
             </Link.AppleZoomTarget>
             <LinearGradient
               pointerEvents="none"
-              colors={['rgba(8,3,15,0.55)', 'rgba(8,3,15,0.04)', 'rgba(8,3,15,0.45)', 'rgba(9,4,19,0.92)']}
+              colors={['rgba(8,3,15,0.55)', 'rgba(8,3,15,0.04)', 'rgba(8,3,15,0.45)', `rgba(9,4,19,${heroDusk ? 0.78 : 0.92})`]}
               locations={[0, 0.3, 0.56, 0.9]}
               style={StyleSheet.absoluteFill}
             />
@@ -324,9 +324,10 @@ export default function SymbolDetailScreen() {
               pointerEvents="none"
               colors={mode === 'dark'
                 ? ['rgba(9,4,19,0)', 'rgba(3,4,13,0.42)']
-                // Eased from night into paper below the copy, instead of a 36 point step.
-                : ['rgba(9,4,19,0)', `${background}38`, `${background}99`, `${background}E0`, background]}
-              locations={mode === 'dark' ? undefined : [0, 0.3, 0.58, 0.82, 1]}
+                // Night dawns slowly into paper below the copy, on an ease-in-out curve, so the
+                // painting dissolves into the page rather than ending on a dark band.
+                : ['rgba(9,4,19,0)', `${background}12`, `${background}3D`, `${background}80`, `${background}C2`, `${background}EE`, background]}
+              locations={mode === 'dark' ? undefined : [0, 0.16, 0.32, 0.5, 0.68, 0.85, 1]}
               style={[styles.heroFade, heroDusk ? { height: heroDusk + 36 } : null]}
             />
             <Animated.View

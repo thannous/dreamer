@@ -23,4 +23,5 @@ export function filterIsActive(context: { changes?: { files?: readonly string[] 
 export function parcoursExclude(
   tests: readonly { id: string; tags: readonly string[]; file: string }[],
   files: readonly string[],
+  locale?: string,
 ): { exclude: Record<string, string>; note?: string };

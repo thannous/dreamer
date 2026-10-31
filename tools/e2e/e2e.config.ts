@@ -32,8 +32,7 @@ if (backend) {
 const personas = process.env.E2E_PERSONAS === '1';
 if (process.env.E2E_PERSONAS !== undefined && !['0', '1'].includes(process.env.E2E_PERSONAS))
   throw new Error('E2E_PERSONAS takes 0 or 1.');
-if (personas && (product !== 'dreamer' || (!native && webLocale !== 'fr-FR')))
-  throw new Error('Personas require Dreamer; web personas also require E2E_WEB_LOCALE=fr-FR.');
+if (personas && product !== 'dreamer') throw new Error('Personas require Dreamer.');
 const output = process.env.E2E_OUTPUT ?? `.e2e/${product}-${platform}`;
 const appLog = `${fileURLToPath(new URL('.', import.meta.url))}${output}/app.log`;
 const ports = { dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099, backend: 8085, branch: BRANCH_WEB_PORT };
@@ -77,6 +76,7 @@ export default {
   ...(personas ? { agents: createDreamerPersonaAgents(
     process.env.E2E_PERSONA_MODEL?.trim() || process.env.E2E_PERSONA_ACT_MODEL?.trim() || undefined,
     process.env.E2E_PERSONA_JUDGE_MODEL?.trim() || undefined,
+    native ? 'fr-FR' : webLocale,
   ) } : {}),
   filters: [parcoursTouches],
   ...(nativeJourneys ? { credentials: nativeBackendCredentials() } : {}),

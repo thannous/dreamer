@@ -89,6 +89,36 @@ function planIosVersions(root, config, originals, writes) {
   if (info.CFBundleVersion !== config.ios.buildNumber || info.CFBundleShortVersionString !== config.version) {
     writes.set(plistFile, plist.build(IOSConfig.Version.setBuildNumber(config, IOSConfig.Version.setVersion(config, info))) + '\n');
   }
+  // App extensions (the widget) must carry the app's exact version, or Xcode warns and
+  // App Store Connect rejects the upload. Prebuild only stamps them when it regenerates.
+  const isVariable = value => /^\$\(/.test(String(value ?? ''));
+  for (const [, extension] of Object.entries(project.pbxNativeTargetSection())) {
+    if (typeof extension !== 'object' || unquote(extension.productType) !== 'com.apple.product-type.app-extension') continue;
+    for (const [, entry] of IOSConfig.XcodeUtils.getBuildConfigurationsForListId(project, extension.buildConfigurationList)) {
+      const settings = entry.buildSettings;
+      if (!unquote(settings.PRODUCT_BUNDLE_IDENTIFIER).startsWith(`${APP_ID}.`)) continue;
+      if (unquote(settings.CURRENT_PROJECT_VERSION) !== config.ios.buildNumber || unquote(settings.MARKETING_VERSION) !== config.version) {
+        settings.CURRENT_PROJECT_VERSION = config.ios.buildNumber;
+        settings.MARKETING_VERSION = config.version;
+        projectChanged = true;
+      }
+      const extensionPlist = settings.INFOPLIST_FILE ? `ios/${unquote(settings.INFOPLIST_FILE)}` : null;
+      if (!extensionPlist || writes.has(extensionPlist)) continue;
+      if (!originals.has(extensionPlist)) {
+        originals.set(extensionPlist, fs.existsSync(path.join(root, extensionPlist)) ? fs.readFileSync(path.join(root, extensionPlist), 'utf8') : null);
+      }
+      if (originals.get(extensionPlist) === null) continue;
+      const extensionInfo = plist.parse(originals.get(extensionPlist));
+      let plistChanged = false;
+      for (const [key, value] of [['CFBundleVersion', config.ios.buildNumber], ['CFBundleShortVersionString', config.version]]) {
+        if (extensionInfo[key] !== undefined && !isVariable(extensionInfo[key]) && extensionInfo[key] !== value) {
+          extensionInfo[key] = value;
+          plistChanged = true;
+        }
+      }
+      if (plistChanged) writes.set(extensionPlist, plist.build(extensionInfo) + '\n');
+    }
+  }
   if (projectChanged) writes.set(projectFile, project.writeSync());
 }
 
