@@ -513,7 +513,8 @@ out. Never kill a queued holder: its later grant would block the pool until the
 30-minute lease TTL expires.
 On a local Simlock worker the shims' `--lease` scoping is advisory: once the lease
 is lost or released they refuse every further device command, and after a loss
-no SDK child starts.
+no SDK child starts. Each shim call also checks that this runner's lease holder is
+still alive, so a loss during a synchronous install or collection is refused at once.
 Codex and Claude use their existing Simlock session identity; a plain terminal
 gets an invocation-specific identity shared by the lease and release commands.
 Before reserving on the Mac mini, follow

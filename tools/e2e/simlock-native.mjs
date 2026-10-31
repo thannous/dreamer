@@ -192,6 +192,8 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
       E2E_SIMLOCK_LEASE_ID: grant.lease.id,
       AGENT_DEVICE_STATE_DIR: stateDirectory,
       E2E_SIMLOCK_END_MARKER: endMarker,
+      E2E_SIMLOCK_HOLDER_PID: String(child.pid),
+      E2E_SIMLOCK_RUNNER_PID: String(process.pid),
     });
     if (platform === 'ios') {
       const deviceSet = grant.environment.SIMLOCK_IOS_DEVICE_SET;

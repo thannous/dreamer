@@ -7,11 +7,20 @@ const binary = process.env.E2E_SIMLOCK_BIN;
 const lease = process.env.E2E_SIMLOCK_LEASE_ID;
 const device = process.env.E2E_DEVICE;
 const endMarker = process.env.E2E_SIMLOCK_END_MARKER;
-if (!binary || !lease || !device || !endMarker || !process.env.E2E_SIMLOCK_UNWRAPPED_PATH) throw new Error('SIMLOCK_DRIVER_CONTEXT_MISSING');
+const holder = process.env.E2E_SIMLOCK_HOLDER_PID;
+const runner = process.env.E2E_SIMLOCK_RUNNER_PID;
+if (!binary || !lease || !device || !endMarker || !/^\d+$/.test(holder ?? '') || !/^\d+$/.test(runner ?? '')
+  || !process.env.E2E_SIMLOCK_UNWRAPPED_PATH) throw new Error('SIMLOCK_DRIVER_CONTEXT_MISSING');
+const env = { ...process.env, PATH: process.env.E2E_SIMLOCK_UNWRAPPED_PATH };
 // A local Simlock worker treats --lease as advisory; once the lease is lost or
 // released the device may belong to another agent, so no command reaches it.
 if (existsSync(endMarker) || !existsSync(dirname(endMarker))) throw new Error('SIMLOCK_LEASE_ENDED');
-const env = { ...process.env, PATH: process.env.E2E_SIMLOCK_UNWRAPPED_PATH };
+// The runner may be blocked in a synchronous command when its holder exits, so
+// the marker can lag: the holder must still be this runner's live lease process.
+const ps = spawnSync('ps', ['-ww', '-o', 'stat=,command=', '-p', holder], { env, encoding: 'utf8' });
+const [state = '', ...command] = ps.status === 0 ? ps.stdout.trim().split(/\s+/) : [];
+if (!state || state.startsWith('Z') || !command.includes('lease') || command[command.indexOf('--bind-pid') + 1] !== runner)
+  throw new Error('SIMLOCK_LEASE_ENDED');
 let executable = binary, args;
 if (tool === 'xcrun') {
   if (input[0] !== 'simctl') {

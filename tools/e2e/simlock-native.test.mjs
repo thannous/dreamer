@@ -44,7 +44,7 @@ if (args[0] === 'catalog') {
   record(['holder', process.pid]);
   process.on('SIGTERM', () => process.exit(0));
   process.on('SIGINT', () => { record(['holder-sigint']); process.exit(0); });
-  if (process.env.FAKE_LOSS === '1') setTimeout(() => process.exit(14), 100);
+  if (process.env.FAKE_LOSS === '1') setTimeout(() => process.exit(14), Number(process.env.FAKE_LOSS_MS ?? 100));
   else setInterval(() => {}, 1000);
 } else if (args[0] === 'release') {
   if (process.env.FAKE_FAIL_RELEASE === '1') { process.stderr.write('release rejected'); process.exit(3); }
@@ -229,6 +229,17 @@ test('loss of a live lease is reported to the runner', async t => {
   assert.equal(result.code, 14);
   assert.ok(existsSync(env.E2E_SIMLOCK_END_MARKER));
   assert.throws(() => execFileSync(process.execPath, [driver, 'xcrun', 'simctl', 'list'], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_ENDED/);
+  await handle.release();
+});
+
+test('a holder that exits while the runner is blocked is refused before its marker exists', async t => {
+  const { root, env } = setup(t, { FAKE_LOSS: '1', FAKE_LOSS_MS: '300' });
+  const handle = await acquireSimlock({ platform: 'ios', env, shimDirectory: root });
+  // A synchronous install or SDK collection blocks the loop past the holder's exit.
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 900);
+  assert.equal(existsSync(env.E2E_SIMLOCK_END_MARKER), false);
+  assert.throws(() => execFileSync(process.execPath, [driver, 'xcrun', 'simctl', 'list'], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_ENDED/);
+  await new Promise(resolve => setTimeout(resolve, 50));
   await handle.release();
 });
 
