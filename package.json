@@ -208,7 +208,7 @@
     "test:migration-grants": "node --test scripts/check-migration-grants.test.cjs",
     "start:branch-e2e": "node ./scripts/start-branch-e2e.mjs",
     "test:testerarmy:all": "node tools/e2e/run.mjs all web",
-    "test:testerarmy:login": "node tools/e2e/node_modules/e2e/dist/cli/bin.js login openai",
+    "test:testerarmy:login": "E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 node tools/e2e/node_modules/e2e/dist/cli/bin.js login openai",
     "test:e2e:parcours": "node tools/e2e/pr-gate.mjs parcours",
     "test:e2e:smoke": "node tools/e2e/pr-gate.mjs smoke",
     "test:bugbash:prerelease": "node tools/e2e/bugbash-prerelease.mjs",

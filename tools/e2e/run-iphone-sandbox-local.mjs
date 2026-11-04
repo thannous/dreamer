@@ -55,6 +55,9 @@ Object.assign(env, {
   E2E_IPHONE_CAMPAIGN_ID: campaignId, E2E_IPHONE_ATTEMPT_ID: options.resume,
   E2E_IPHONE_SOURCE_REVISION: initialSource.revision,
   E2E_OUTPUT: `.e2e/owner-iphone-sandbox-${Date.now()}`,
+  // Set after loadEnvProfile, so the private profile cannot switch e2e telemetry back on.
+  E2E_TELEMETRY_DISABLED: '1',
+  DO_NOT_TRACK: '1',
 });
 if (!options.list) {
   assertCleanSource(initialSource.status);

@@ -173,9 +173,14 @@ real journey and its report/cleanup. A compatible candidate may be adopted after
 its applicable checks pass without another generic permission request. Keep exact
 pins and existing provider budgets; an upgrade does not enable a provider or Jev.
 
-New journeys are written from this directory with `npx e2e run --watch`
+New journeys are written from this directory with
+`E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 mise exec -- npx e2e run --watch`
 (e2e 0.22.0). Watch reruns when a test, a neighbouring source file, or the
 config is saved. It is for authoring. Qualifying runs stay on `run.mjs`.
+`run.mjs`, `full-campaign.mjs`, the bug bash, the iPhone sandbox runner and
+`npm run test:testerarmy:login` set both variables themselves; a direct `npx e2e`
+needs them. A saved `e2e telemetry disable` stops usage events, but not the daily
+registry update check or `e2e feedback`: only the environment variables stop those.
 `run.mjs` starts its SDK `list` and `run` children with `CI=1` and `NO_COLOR=1`,
 so a `test.only` left from authoring fails with `ONLY_IN_CI` instead of
 narrowing the run to that test: `list` exits 2, a run stops with exit 3 before
@@ -274,8 +279,8 @@ enabled by installing the dependencies. Authentication stays outside Git:
 
 ```sh
 cd tools/e2e
-mise exec -- npx e2e login openai
-mise exec -- npx e2e models openai
+E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 mise exec -- npx e2e login openai
+E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 mise exec -- npx e2e models openai
 ```
 
 From the repository root, collect without login/model calls, pilot one persona,

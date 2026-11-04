@@ -55,6 +55,9 @@ export function mockEnv(base = process.env) {
     E2E_PERSONAS: '0',
     E2E_WORKERS: '1',
     E2E_WEB_LOCALE: 'fr-FR',
+    // As in run.mjs: no usage events, update check or feedback from the explore.
+    E2E_TELEMETRY_DISABLED: '1',
+    DO_NOT_TRACK: '1',
     EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: 'false',
     EXPO_PUBLIC_MOCK_MODE: 'true',
     EXPO_PUBLIC_MOCK_AUDIO: 'true',

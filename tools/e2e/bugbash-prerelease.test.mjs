@@ -11,6 +11,12 @@ test('the pre-release bash has one charter per named area and stays in mock mode
   assert.equal(env.EXPO_PUBLIC_MOCK_MODE, 'true');
   assert.equal(env.EXPO_PUBLIC_MOCK_AUDIO, 'true');
   assert.equal(env.EXPO_PUBLIC_MOCK_PERSISTENCE, 'true');
+  assert.equal(env.E2E_TELEMETRY_DISABLED, '1');
+  assert.equal(env.DO_NOT_TRACK, '1');
+  // A caller's opt-in cannot switch the explore's telemetry back on.
+  const optedIn = mockEnv({ E2E_TELEMETRY_DISABLED: '0', DO_NOT_TRACK: 'false' });
+  assert.equal(optedIn.E2E_TELEMETRY_DISABLED, '1');
+  assert.equal(optedIn.DO_NOT_TRACK, '1');
   assert.equal(runBugbash({ exploreCharters: false, env, login: false }), 0);
 });
 
