@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { test } from 'node:test';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
 import { qualifyingSdkEnvironment } from './qualification.mjs';
-import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, widenWithDecision, zonesForFiles } from './zones.mjs';
+import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, widenWithDecision, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
 const billingSmoke = { id: 'billing-smoke', tags: ['smoke', 'zone-paiement'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -205,6 +205,25 @@ test('seven smoke journeys carry the smoke tag and a zone tag', () => {
   assert.equal(smokeTags, 7);
 });
 
+test('every web journey is reachable by a zone, or kept release-only with a reason', () => {
+  const directory = new URL('./tests/', import.meta.url);
+  const journeys = readdirSync(directory).filter(name => /^(dreamer|lucid|meditation).*\.web\.e2e\.ts$/.test(name));
+  assert.ok(journeys.length > 40);
+  const tags = ZONES.flatMap(zone => zone.tags);
+  for (const name of journeys) {
+    const file = `tools/e2e/tests/${name}`;
+    const source = readFileSync(new URL(name, directory), 'utf8');
+    const zoned = ZONES.some(zone => zone.tests.includes(file)) || tags.some(tag => source.includes(`'${tag}'`));
+    assert.notEqual(zoned, Object.hasOwn(UNZONED, file), `${name} must be zoned or listed in UNZONED, not both`);
+  }
+  for (const [file, reason] of Object.entries(UNZONED)) {
+    assert.ok(existsSync(new URL(`../../${file}`, import.meta.url)), file);
+    assert.ok(reason.trim(), file);
+  }
+  // A renamed journey must not silently drop out of its zone.
+  for (const file of ZONES.flatMap(zone => zone.tests)) assert.ok(existsSync(new URL(`../../${file}`, import.meta.url)), file);
+});
+
 test('changes in behavioral owners select their journeys without selecting unrelated billing', () => {
   const cases = [
     ['hooks/useCaptureConversation.ts', 'dreamer-capture-chat.web.e2e.ts'],
@@ -223,10 +242,24 @@ test('changes in behavioral owners select their journeys without selecting unrel
     ['components/recap/WeeklyRecapScreen.tsx', 'dreamer-weekly-recap.web.e2e.ts'],
     ['lib/guideReading.ts', 'dreamer-guide-progress.web.e2e.ts'],
     ['components/guides/GuideReadingHost.tsx', 'dreamer-guide-progress.web.e2e.ts'],
+    ['components/guides/GuideReadingHost.tsx', 'dreamer-dream-guides.web.e2e.ts', 'fr-FR'],
+    ['app/settings.tsx', 'dreamer-settings.web.e2e.ts', 'fr-FR'],
+    ['components/journal/DreamShareSheet.tsx', 'dreamer-web-share.web.e2e.ts'],
+    ['components/journal/DreamPersonalNotes.tsx', 'dreamer-personal-notes.web.e2e.ts'],
+    ['lib/dreamPersonalNotes.ts', 'dreamer-personal-notes.web.e2e.ts'],
+    ['services/analysisPreviewService.ts', 'dreamer-analysis-preview.web.e2e.ts'],
+    ['app/(tabs)/journal.tsx', 'dreamer-native-large-text-polish.web.e2e.ts', 'fr-FR'],
+    ['lib/browserAlert.ts', 'dreamer-web-dialogs.web.e2e.ts'],
+    ['components/home/TodayHero.tsx', 'dreamer-home-editorial.web.e2e.ts'],
+    ['components/trends/TrendsSky.tsx', 'dreamer-trends-editorial.web.e2e.ts'],
+    ['lib/onboardingState.ts', 'dreamer-onboarding-features.web.e2e.ts'],
+    ['components/navigation/DesktopSidebar.tsx', 'dreamer-desktop-shell.web.e2e.ts'],
+    ['components/ui/DreamerBackground.tsx', 'dreamer-backgrounds.web.e2e.ts', 'fr-FR'],
   ];
-  for (const [source, file] of cases) {
-    const expected = { id: 'expected', file: `tools/e2e/tests/${file}`, tags: [] };
-    const selection = parcoursExclude([expected, billing, bug], [source]);
+  for (const [source, file, locale] of cases) {
+    // A French-only journey is selected in its own French context.
+    const expected = { id: 'expected', file: `tools/e2e/tests/${file}`, tags: locale ? [`locale-${locale}`] : [] };
+    const selection = parcoursExclude([expected, billing, bug], [source], locale);
     assert.equal(selection.exclude.expected, undefined, source);
     assert.ok(selection.exclude.billing, source);
     assert.ok(selection.exclude.bug, source);

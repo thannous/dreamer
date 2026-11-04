@@ -16,6 +16,7 @@ export interface Zone {
 }
 
 export const ZONES: readonly Zone[];
+export const UNZONED: Readonly<Record<string, string>>;
 
 export function sourceMatches(source: string, file: string): boolean;
 export function zonesForFiles(files: readonly string[]): Zone[];

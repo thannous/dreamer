@@ -86,6 +86,8 @@ is the executable source of truth.
 GitHub Actions minutes and, by default, no model call. `parcours-touches` maps changed paths
 (`app/`, `components/`, `services/`, and the other roots in `tools/e2e/zones.mjs`)
 to e2e tags and test files, then runs `e2e run --changed-since origin/master`.
+Every Dreamer, Lucid and Meditation web journey belongs to a zone or is listed
+in `UNZONED` with its reason; `zone-filter.test.mjs` refuses one that is neither.
 Dreamer uses the shared English/French/German and feature-sheet contexts so that
 locale-specific selected journeys execute in their matching context. Each pass
 keeps the diff filter, and the PR gates explicitly disable personas and bug bash.

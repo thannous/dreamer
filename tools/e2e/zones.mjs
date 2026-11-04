@@ -59,11 +59,17 @@ export const ZONES = [
       'services/captureReviewPreparation.ts',
       'services/microphoneHold.ts',
       'services/nativeSpeechRecognition.ts',
+      // On the web every Alert.alert of the capture (refused microphone, restart) is a browser dialog.
+      'lib/browserAlert.ts',
     ],
     tests: [
       'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts',
       'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts',
       'tools/e2e/tests/dreamer-system-speech.web.e2e.ts',
+      'tools/e2e/tests/dreamer-readiness.web.e2e.ts',
+      'tools/e2e/tests/dreamer-review-accessibility.web.e2e.ts',
+      'tools/e2e/tests/dreamer-web-dialogs.web.e2e.ts',
+      'tools/e2e/tests/dreamer-visual-overflow.web.e2e.ts',
     ],
   },
   {
@@ -96,6 +102,8 @@ export const ZONES = [
       'lib/dreamLabels.ts',
       'lib/dreamUtils.ts',
       'lib/journalFilterLink.ts',
+      'lib/dreamPersonalNotes.ts',
+      'lib/journal/',
       'hooks/useDreamJournal.ts',
       'hooks/useDreamPersistence.ts',
       'hooks/useRemoteJournalList.ts',
@@ -107,8 +115,19 @@ export const ZONES = [
       'services/journalMediaUploadService.ts',
       'services/journalMutationTransport.ts',
       'services/journalNativeImageAdapter.ts',
+      'services/analysisPreviewService.ts',
     ],
-    tests: ['tools/e2e/tests/dreamer-journal-filters.web.e2e.ts'],
+    tests: [
+      'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts',
+      'tools/e2e/tests/dreamer-journal-margin.web.e2e.ts',
+      'tools/e2e/tests/dreamer-personal-notes.web.e2e.ts',
+      'tools/e2e/tests/dreamer-web-share.web.e2e.ts',
+      'tools/e2e/tests/dreamer-analysis-preview.web.e2e.ts',
+      'tools/e2e/tests/dreamer-dream-continuous-reading.web.e2e.ts',
+      'tools/e2e/tests/dreamer-readiness.web.e2e.ts',
+      'tools/e2e/tests/dreamer-review-accessibility.web.e2e.ts',
+      'tools/e2e/tests/dreamer-native-large-text-polish.web.e2e.ts',
+    ],
   },
   {
     id: 'paiement',
@@ -149,6 +168,7 @@ export const ZONES = [
       'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts',
       'tools/e2e/tests/dreamer-account-deletion.web.e2e.ts',
       'tools/e2e/tests/dreamer-security-url.web.e2e.ts',
+      'tools/e2e/tests/dreamer-settings.web.e2e.ts',
     ],
   },
   {
@@ -176,6 +196,8 @@ export const ZONES = [
       'tools/e2e/tests/dreamer-ai-consent-settings.web.e2e.ts',
       'tools/e2e/tests/dreamer-guest-limits.web.e2e.ts',
       'tools/e2e/tests/dreamer-billing.web.e2e.ts',
+      'tools/e2e/tests/dreamer-analysis-preview.web.e2e.ts',
+      'tools/e2e/tests/dreamer-web-dialogs.web.e2e.ts',
     ],
   },
   {
@@ -185,6 +207,7 @@ export const ZONES = [
       'app/dream-guide/', 'app/dream-guides.tsx', 'app/collection.tsx',
       'components/symbols/', 'components/badges/', 'components/guides/', 'services/symbol',
       'services/dreamGuideService.ts', 'services/guideReading', 'services/badgeLedger', 'lib/badges/', 'lib/guideReading',
+      'lib/dreamGuide',
     ],
     tests: [
       'tools/e2e/tests/dreamer-explorer-repertoire.web.e2e.ts',
@@ -193,6 +216,8 @@ export const ZONES = [
       'tools/e2e/tests/dreamer-guide-progress.web.e2e.ts',
       'tools/e2e/tests/dreamer-badge-collection.web.e2e.ts',
       'tools/e2e/tests/dreamer-guest-collection.web.e2e.ts',
+      'tools/e2e/tests/dreamer-dream-guides.web.e2e.ts',
+      'tools/e2e/tests/dreamer-visual-overflow.web.e2e.ts',
     ],
   },
   {
@@ -200,7 +225,42 @@ export const ZONES = [
     sources: ['app/moon-letter.tsx', 'app/weekly-recap.tsx', 'components/moon/', 'components/recap/',
       'components/home/HomeMoonLetterRow.tsx', 'components/home/HomeWeekNights.tsx', 'components/home/HomeRecurringCard.tsx',
       'services/moonLetterService.ts', 'lib/moonLetter.ts', 'lib/weeklyRecap.ts'],
-    tests: ['tools/e2e/tests/dreamer-moon-letter.web.e2e.ts', 'tools/e2e/tests/dreamer-weekly-recap.web.e2e.ts'],
+    tests: ['tools/e2e/tests/dreamer-moon-letter.web.e2e.ts', 'tools/e2e/tests/dreamer-weekly-recap.web.e2e.ts',
+      'tools/e2e/tests/dreamer-today-fomo.web.e2e.ts'],
+  },
+  {
+    id: 'accueil', tags: ['zone-accueil'], product: 'dreamer', platform: 'web',
+    sources: ['app/(tabs)/index.tsx', 'components/home/', 'components/quota/MonthEndAnalysesCard.tsx',
+      'lib/todayState.ts', 'lib/dreamRediscovery.ts', 'lib/dreamAnniversary.ts', 'lib/monthEndAnalyses.ts',
+      'lib/personalReading.ts', 'lib/fullMoon.ts', 'lib/weekConstellations.ts'],
+    tests: ['tools/e2e/tests/dreamer-home-editorial.web.e2e.ts', 'tools/e2e/tests/dreamer-today-fomo.web.e2e.ts'],
+  },
+  {
+    id: 'tendances', tags: ['zone-tendances'], product: 'dreamer', platform: 'web',
+    // Each Trends door opens the journal through its filter link.
+    sources: ['app/(tabs)/statistics.tsx', 'components/trends/', 'lib/dreamTrends.ts', 'lib/trendsSymbols.ts',
+      'lib/dreamSky.ts', 'lib/fullMoon.ts', 'lib/weekConstellations.ts', 'lib/journalFilterLink.ts'],
+    tests: ['tools/e2e/tests/dreamer-trends-editorial.web.e2e.ts', 'tools/e2e/tests/dreamer-today-fomo.web.e2e.ts'],
+  },
+  {
+    id: 'onboarding', tags: ['zone-onboarding'], product: 'dreamer', platform: 'web',
+    sources: ['app/onboarding.tsx', 'components/onboarding/', 'context/OnboardingContext.tsx', 'lib/onboardingState.ts'],
+    // Settings replays the introduction and keeps a finished onboarding finished.
+    tests: ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts'],
+  },
+  {
+    id: 'navigation', tags: ['zone-navigation'], product: 'dreamer', platform: 'web',
+    sources: ['app/(tabs)/_layout.tsx', 'components/navigation/', 'context/SideColumnTabBarContext.tsx',
+      'context/ContentWindowContext.tsx', 'constants/layout.ts'],
+    tests: ['tools/e2e/tests/dreamer-desktop-shell.web.e2e.ts', 'tools/e2e/tests/dreamer-visual-overflow.web.e2e.ts'],
+  },
+  {
+    id: 'apparence', tags: ['zone-apparence'], product: 'dreamer', platform: 'web',
+    // The palette is the colour source of the CSS and of every contextual background.
+    sources: ['components/ui/DreamerBackground.tsx', 'components/ui/NightSkyBand.tsx',
+      'components/inspiration/AtmosphericBackground.tsx', 'constants/dreamerArtwork.ts',
+      'constants/noctaliaPalette.ts', 'context/ThemeContext.tsx'],
+    tests: ['tools/e2e/tests/dreamer-backgrounds.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts'],
   },
   {
     id: 'lucid',
@@ -219,6 +279,17 @@ export const ZONES = [
     tests: ['tools/e2e/tests/meditation.web.e2e.ts'],
   },
 ];
+
+/**
+ * Web journeys no zone selects on purpose, each with its reason. Every other
+ * Dreamer, Lucid and Meditation web journey is listed in a zone or carries a
+ * zone tag (zone-filter.test.mjs), so a new journey cannot become release-only
+ * by omission.
+ */
+export const UNZONED = Object.freeze({
+  'tools/e2e/tests/dreamer.web.e2e.ts': 'régression large de toutes les surfaces, jouée par la campagne de release',
+  'tools/e2e/tests/dreamer-personas.web.e2e.ts': 'aucun test sans E2E_PERSONAS=1 : la campagne personas, facultative, appelle des modèles',
+});
 
 /** @param {string} source @param {string} file */
 export function sourceMatches(source, file) {
