@@ -78,7 +78,8 @@ export async function runFullCampaign() {
       if (interrupted) break;
       await execute(product, ['tools/e2e/run.mjs', product, 'web', 'run'], { E2E_WEB_LOCALE: product === 'lucid' ? 'fr-FR' : 'en-US' });
     }
-    if (!interrupted) await execute('dreamer-chatgpt-pro', ['tools/e2e/run.mjs', 'dreamer', 'web', 'run', '--tag', 'personas'], {
+    // A systemic persona failure stops after two, before every goal spends its model calls.
+    if (!interrupted) await execute('dreamer-chatgpt-pro', ['tools/e2e/run.mjs', 'dreamer', 'web', 'run', '--tag', 'personas', '--max-failures', '2'], {
       E2E_CAMPAIGN_ID: `${id}-pro`, E2E_PERSONAS: '1', E2E_WORKERS: '1', E2E_WEB_LOCALE: 'fr-FR',
       E2E_PERSONA_MODEL: env.E2E_PERSONA_MODEL?.trim() || env.E2E_PERSONA_ACT_MODEL?.trim() || PERSONA_ACT_MODEL, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: 'false',
     });

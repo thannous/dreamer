@@ -112,6 +112,12 @@ function launch(root, product, extra, environment) {
   return result.status ?? 1;
 }
 
+/**
+ * A systemic break (Metro or app crash) fails every journey at its assertion
+ * timeout; each gate run stops after this many failures and skips the rest.
+ */
+export const GATE_MAX_FAILURES = '3';
+
 export function gateContexts(mode, product) {
   const contexts = mode === 'parcours' && product === 'dreamer' ? dreamerCampaignContexts
     : [{ locale: product === 'lucid' ? 'fr-FR' : 'en-US', featureSheets: false, args: [] }];
@@ -132,9 +138,10 @@ export function runGate(mode, root, files, ready = runnerReady(root), options = 
     console.error(ready.reason);
     return 1;
   }
-  const shared = mode === 'smoke'
+  const shared = [...(mode === 'smoke'
     ? ['--tag', 'smoke', '--exclude-tag', 'bugbash']
-    : ['--changed-since', 'origin/master', '--exclude-tag', 'smoke', '--exclude-tag', 'bugbash', '--pass-with-no-tests'];
+    : ['--changed-since', 'origin/master', '--exclude-tag', 'smoke', '--exclude-tag', 'bugbash', '--pass-with-no-tests']),
+  '--max-failures', GATE_MAX_FAILURES];
   for (const product of decision.products) {
     // The source filter remains active in each context. A French-only parcours
     // must execute in French, not count as covered by an English skipped result.

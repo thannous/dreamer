@@ -35,8 +35,8 @@ attempt in its own browser context and storage; a file's tests stay in order.
 CI (`CI` set) keeps one worker and shards across containers, and native runs keep
 one worker per named device. e2e starts the slowest files first when the
 previous report sits in the same output directory. Each run gets a new one, so
-the runner keeps the report of the last run with no `--grep`, `--tag` or
-`--shard` in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
+the runner keeps the report of the last run with no `--grep`, `--tag`, `--shard`
+or run budget in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
 seeds it into the next output directory; a seed the run does not replace is
 deleted. A blocked run, or one where no test passed, leaves the kept report as
 it was. Without that file, files start in collection order.
@@ -768,14 +768,34 @@ by these inspection commands.
 
 Selection flags may narrow a run, but config, target, worker and output overrides
 are refused before device preflight. Use the explicit product/platform entry.
+The run-only budgets `--max-failures <n>` and `--max-duration <ms>` stop a red run
+early: the tests running end interrupted, those not started are skipped with cause
+`failure-limit` or `time-limit`. The first keeps the failures' exit code, the second
+exits 1 with `RUN_TIMEOUT`. `list` refuses them. A passing run never reaches its
+budget, so its qualification is unchanged; a budgeted run is not kept as the
+duration history. The PR gate passes `--max-failures 3` to each of its runs and
+the full campaign's persona step `--max-failures 2`.
 
-## Interrupted CI campaign evidence
+## Red runs, liveness and interrupted campaign evidence
 
 Local web SDK runs keep complete stdout/stderr in each immutable `sdk.log`.
-A fixed, queryless console line every60s says only that this runner's own SDK child
-is still open and its elapsed time; it does not claim test progress. It stops on
-close/finally and never forwards SDK/app content. Matcher/action/lifecycle/retry
-budgets are unchanged. CircleCI no longer launches these campaigns.
+When stdout is a terminal, a fixed, queryless console line every 60 s says only that
+this runner's own SDK child is still open and its elapsed time; it does not claim
+test progress. It stops on close/finally and never forwards SDK/app content. A pipe
+gets no such line. Matcher/action/lifecycle/retry budgets are unchanged. CircleCI no
+longer launches these campaigns.
+
+A red run prints a digest to stderr after `end.json`, before the final
+`E2E evidence:` line, and never writes it into the sealed output. It reads only this
+run's own report: one line per failed, timed-out or interrupted test with its file
+and line, error code and `trace.md` path, then the `failure-limit`/`time-limit`
+skip counts, the run's error codes, the `summary.md` path and the exit split
+between the SDK and the wrapper's coded refusals. It holds no error message, title
+or app log, which can quote the user's text, and stops at about 20 lines.
+`verify:pr` deletes its isolated copy when it ends, traces included: the digest's
+codes and lines remain in the terminal. Keep the copy with
+`VERIFY_LOCAL_KEEP_FAILED=1` or `npm run verify:pr -- --keep`, or rerun
+`npm run test:e2e:parcours` / `test:e2e:smoke` in the main checkout.
 
 `web collect` still requires all exact current contexts and complete finalized
 proof for qualification. After an interruption it inspects each owned campaign

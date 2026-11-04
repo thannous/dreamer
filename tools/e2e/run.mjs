@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, qualifyingSdkEnvironment, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
+import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, qualifyingSdkEnvironment, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, failureDigest, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { seedDurations, keepDurations } from './duration-history.mjs';
@@ -54,12 +54,20 @@ if (command === 'mcp' && args.length) throw new Error('The guarded MCP entry fix
 const switches = new Set(['--video', '--trace', '--headed', '--debug', '--no-cache', '--strict-cache', '--pass-with-no-tests']);
 const valued = new Set(['--changed-since']);
 const selections = new Set(['--grep', '--grep-invert', '--repeat-each', '--tag', '--exclude-tag', '--tag-mode', '--shard']);
+// Run-only budgets: a red run stops early, its rest skipped as failure-limit or time-limit.
+// `e2e list` takes neither, so they never reach a collection.
+const budgets = new Set(['--max-failures', '--max-duration']);
 for (let index = 0; index < args.length; index++) {
   const flag = args[index];
   if (switches.has(flag)) continue;
-  if (!valued.has(flag) && !selections.has(flag)) throw new Error(`Unsupported E2E option: ${flag}`);
+  if (!valued.has(flag) && !selections.has(flag) && !budgets.has(flag)) throw new Error(`Unsupported E2E option: ${flag}`);
   const value = args[++index];
   if (!value || value.startsWith('-')) throw new Error(`Invalid E2E value for ${flag}.`);
+  if (budgets.has(flag)) {
+    if (!/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value)) || (flag === '--max-duration' && Number(value) > 2 ** 31 - 1))
+      throw new Error(`Invalid E2E value for ${flag}.`);
+    if (command !== 'run') throw new Error(`${flag} applies to a run only.`);
+  }
   if (flag === '--changed-since' && !/^[A-Za-z0-9._/~^@-]+$/.test(value)) throw new Error('Invalid changed-since ref.');
   if (flag === '--repeat-each' && (!/^[1-9]\d*$/.test(value) || !Number.isSafeInteger(Number(value))))
     throw new Error('Invalid E2E repeat count.');
@@ -162,6 +170,7 @@ let installedReady = false;
 let installationDiagnostics = null;
 let installHandoffStarted = false;
 let sdkLaunched = false;
+let sdkExit = null;
 let emptySelection = false;
 let inspectionStarted = false;
 let inspectionClosed = false;
@@ -201,8 +210,10 @@ async function execute(executable, argv, logName, childEnv = env, workdir = cwd)
   if (simlock && (requestedSignal || simlockLost)) return requestedSignal ?? 3;
   const logFd = logName ? openSync(join(output, logName), 'wx') : undefined;
   const child = spawn(executable, argv, { cwd: workdir, env: childEnv, stdio: logFd === undefined ? 'inherit' : ['ignore', logFd, logFd], detached: process.platform !== 'win32' });
+  // Locally the liveness line goes to a terminal only: a write to a closed pipe
+  // (`… | head`) fails later as an unhandled EPIPE and would end the wrapper mid-run.
   const stopProgress = startSdkProgress(child, {
-    enabled: platform === 'web' && command === 'run' && logName === 'sdk.log' && env.CIRCLECI === 'true',
+    enabled: platform === 'web' && command === 'run' && logName === 'sdk.log' && (env.CIRCLECI === 'true' || process.stdout.isTTY === true),
     write: message => console.log(message), onError: () => secondary.push('CI_PROGRESS_WRITE_FAILED'),
   });
   const relay = signal => {
@@ -376,6 +387,7 @@ async function runSdk() {
     else if (args[index] === '--changed-since') { changedSince = args[index + 1]; collectionArgs.push(args[index], args[++index]); }
     else if (args[index] === '--pass-with-no-tests') collectionArgs.push(args[index]);
     else if (selections.has(args[index])) collectionArgs.push(args[index], args[++index]);
+    else if (budgets.has(args[index])) index++;
   }
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: qualifyingSdkEnvironment(cliEnvironment()) }));
   const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
@@ -395,8 +407,12 @@ async function runSdk() {
   const seed = seedDurations(history, output);
   sdkLaunched = true;
   const stopStallMonitor = startHostStallMonitor();
-  try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', qualifyingSdkEnvironment(cliEnvironment())); }
-  finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0, output); }
+  try {
+    primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', qualifyingSdkEnvironment(cliEnvironment()));
+    sdkExit = primary;
+  }
+  // A budgeted run can stop before the slow files, so its report is no duration seed.
+  finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0 || args.some(arg => budgets.has(arg)), output); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
@@ -654,6 +670,19 @@ try {
       ...(simlockPreserveState ? { retainedStateDirectory: env.AGENT_DEVICE_STATE_DIR } : {}) } } : {}),
     ...(backendLock ? { backendLockReleased: !existsSync(backendLock.path) } : {}), hostStalls,
   }));
-  process.exitCode = preserveStatus(requestedSignal ?? primary, secondary);
+  const finalExit = preserveStatus(requestedSignal ?? primary, secondary);
+  process.exitCode = finalExit;
+  if (finalExit !== 0) {
+    // verify:pr deletes its isolated copy, sdk.log and traces included, so the terminal
+    // keeps what failed: codes and places only, to stderr, never into the sealed output.
+    if (sdkLaunched) {
+      try { for (const line of failureDigest(JSON.parse(readFileSync(join(output, 'report.json'), 'utf8')), { output, startedAt })) console.error(line); }
+      catch { /* No report of this run: the exit line still names the failure. */ }
+    }
+    const coded = secondary.filter(code => typeof code === 'string' && /^[A-Z][A-Z0-9_]+$/.test(code));
+    const uncoded = secondary.length - coded.length;
+    console.error(`E2E exit ${finalExit}: sdk=${sdkExit ?? 'not launched'}; wrapper=${coded.join(',') || 'none'}${uncoded ? ` (+${uncoded} uncoded)` : ''}`);
+    if (env.VERIFY_LOCAL_SHA) console.error('E2E note: verify:pr removes its isolated copy when it ends; keep it with VERIFY_LOCAL_KEEP_FAILED=1 or npm run verify:pr -- --keep, or rerun npm run test:e2e:parcours / test:e2e:smoke in the main checkout.');
+  }
   console.log('E2E evidence: ' + output);
 }

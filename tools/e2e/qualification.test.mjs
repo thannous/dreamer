@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
 import { virtualLinks } from './test-support/virtual-links.mjs';
-import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, qualifyingSdkEnvironment, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
+import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, qualifyingSdkEnvironment, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, failureDigest, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const before = { revision: 'a'.repeat(40), files: { 'app/recording.tsx': sha('source') }, outputs: {} };
@@ -288,6 +288,62 @@ test('forced interruption preserves available SDK/log bytes while missing final 
     links.link(join(output, 'report.json'), join(output, 'app.log'));
     assert.equal(campaignFailureRecord(output, new Error('bad payload')).retained['app.log'], undefined);
   } finally { rmSync(output, { recursive: true, force: true }); }
+});
+
+// verify:pr deletes the run's copy, so this digest is what the terminal keeps of a red gate.
+test('a red run digest names each failure by line, code and trace page, never the user\'s text or a stale report', () => {
+  const output = mkdtempSync(join(tmpdir(), 'noctalia-red-run-'));
+  try {
+    const startedAt = Date.now();
+    const red = report();
+    Object.assign(red.run, { status: 'failed', exitCode: 1, startedAt: new Date(startedAt).toISOString(), errors: [] });
+    const base = red.run.results[0];
+    const failedId = 'ab'.repeat(32), owner = `dreamer-web-capture-${failedId.slice(0, 16)}`;
+    const attempt = (status, error) => ({ ...structuredClone(base.attempts[0]), status, error,
+      appLog: [{ level: 'error', text: 'DREAM TEXT logged by the app', stepIndex: 0 }] });
+    const skippedRow = testId => ({ ...structuredClone(base), id: undefined, testId, status: 'skipped', attempts: [],
+      skip: { cause: 'failure-limit', reason: 'run stopped after 1 failure (--max-failures 1)' } });
+    red.run.results = [
+      { ...structuredClone(base), id: failedId, titlePath: ['DREAM TEXT title'], status: 'failed', source: { file: 'tests/x.web.e2e.ts', line: 8, column: 1 },
+        attempts: [attempt('failed', { code: 'EXPECT_TIMEOUT', message: 'expected "DREAM TEXT" to be visible', source: { file: 'tests/x.web.e2e.ts', line: 12, column: 5 } })] },
+      { ...structuredClone(base), id: 'cd'.repeat(32), testId: 'other-worker', status: 'interrupted', source: { file: 'tests/y.web.e2e.ts', line: 4, column: 1 },
+        attempts: [attempt('interrupted', { code: 'INTERRUPTED', message: 'run interrupted in phase body: DREAM TEXT' })] },
+      skippedRow('rest-one'), skippedRow('rest-two'),
+    ];
+    mkdirSync(join(output, 'results', owner), { recursive: true });
+    writeFileSync(join(output, 'results', owner, 'trace.md'), '# public trace');
+    writeFileSync(join(output, 'summary.md'), '# public summary');
+    const lines = failureDigest(red, { output, startedAt });
+    assert.deepEqual(lines, [
+      `E2E failed: tests/x.web.e2e.ts:12 EXPECT_TIMEOUT trace=${join(output, 'results', owner, 'trace.md')}`,
+      'E2E interrupted: tests/y.web.e2e.ts:4 INTERRUPTED trace=no trace page',
+      'E2E skipped: 2 failure-limit, 0 time-limit',
+      `E2E summary: ${join(output, 'summary.md')}`,
+    ]);
+    assert.equal(lines.some(line => line.includes('DREAM TEXT') || line.includes('E2E evidence:')), false);
+    const capped = failureDigest(red, { output, startedAt, limit: 3 });
+    assert.equal(capped.length, 3); assert.match(capped[0], /\+2 more in report\.json$/);
+    // The previous run's report seeded for durations, or another runner's, prints nothing.
+    assert.deepEqual(failureDigest(red, { output, startedAt: startedAt + 1 }), []);
+    const foreign = structuredClone(red); foreign.run.runner.version = '0.21.3';
+    assert.deepEqual(failureDigest(foreign, { output, startedAt }), []);
+    assert.deepEqual(failureDigest(null, { output, startedAt }), []);
+  } finally { rmSync(output, { recursive: true, force: true }); }
+});
+
+test('run budgets are refused outside a run or their bounds, before the runner creates any output', () => {
+  const runner = fileURLToPath(new URL('./run.mjs', import.meta.url));
+  // `list` keeps a missing refusal harmless: it would start no engine, and the message would differ.
+  for (const [budget, refusal] of [
+    [['--max-failures', '3'], /--max-failures applies to a run only/],
+    [['--max-duration', '60000'], /--max-duration applies to a run only/],
+    [['--max-failures', '0'], /Invalid E2E value for --max-failures/],
+    [['--max-duration', String(2 ** 31)], /Invalid E2E value for --max-duration/],
+  ]) {
+    const result = spawnSync(process.execPath, [runner, 'dreamer', 'web', 'list', ...budget], { encoding: 'utf8' });
+    assert.notEqual(result.status, 0, budget.join(' '));
+    assert.match(result.stderr, refusal);
+  }
 });
 
 test('Circle web SDK liveness emits only elapsed time, stops on close/error and leaves disabled sinks unopened', () => {

@@ -113,11 +113,16 @@ function artifactBytes(output, artifact) {
 }
 // Since e2e 0.20 a trace is the test's page, results/<file-title-slug>-<result id head>/trace.md,
 // not an attempt artifact. The slug is for reading; the id's 16 hex characters name the result.
+function traceDirectory(base, id) {
+  if (typeof id !== 'string' || !/^[a-f0-9]{16}/.test(id)) return null;
+  const owners = readdirSync(base, { withFileTypes: true }).filter(entry => entry.isDirectory() && entry.name.endsWith(`-${id.slice(0, 16)}`));
+  return owners.length === 1 ? owners[0].name : null;
+}
 function tracePage(output, result) {
   const base = realpathSync(join(output, 'results'));
-  const owners = readdirSync(base, { withFileTypes: true }).filter(entry => entry.isDirectory() && entry.name.endsWith(`-${result.id.slice(0, 16)}`));
-  if (owners.length !== 1 || !/^[a-f0-9]{16}/.test(result.id)) fail('MEDIA_TRACE_MISSING');
-  const path = `${owners[0].name}/trace.md`, file = join(base, path);
+  const owner = traceDirectory(base, result.id);
+  if (!owner) fail('MEDIA_TRACE_MISSING');
+  const path = `${owner}/trace.md`, file = join(base, path);
   try { if (lstatSync(file).isSymbolicLink() || !lstatSync(file).isFile()) fail('ARTIFACT_PATH'); }
   catch (error) { if (error.code === 'ENOENT') fail('MEDIA_TRACE_MISSING'); throw error; }
   const bytes = readFileSync(file);
@@ -275,8 +280,49 @@ export function campaignFailureRecord(output, error) {
     sdkExitCode: exit(report?.exitCode), wrapperPrimaryExitCode: exit(end?.primaryExitCode), summary };
 }
 
-// Only the canonical caller enables this for its own CircleCI web SDK child.
-// No SDK/app output is forwarded, and a live process is not claimed to make progress.
+// What a red run's terminal keeps, since verify:pr deletes its copy and sdk.log with it.
+// Only this run's report counts: seedDurations put the previous run's there first.
+// A message, title, candidate or app log can quote the user's text, so a line holds
+// a code, a test file:line or a path, and never the evidence line callers search for.
+const DIGEST_CODE = /^[A-Z][A-Z0-9_]*$/;
+export function failureDigest(document, { output, startedAt, limit = 20 }) {
+  try {
+    const run = document?.run;
+    if (document?.schemaVersion !== 'report-1' || run?.runner?.version !== SDK_PINS.e2e
+      || !(Date.parse(run.startedAt) >= startedAt) || !Array.isArray(run.results)) return [];
+    const coded = code => typeof code === 'string' && DIGEST_CODE.test(code);
+    const place = source => typeof source?.file === 'string' && Number.isSafeInteger(source.line) ? `${source.file}:${source.line}` : null;
+    const results = join(output, 'results');
+    const trace = id => {
+      try {
+        const owner = traceDirectory(results, id);
+        const file = owner && join(results, owner, 'trace.md');
+        return file && lstatSync(file).isFile() ? file : null;
+      } catch { return null; }
+    };
+    // A run stopped by --max-failures interrupts the tests other workers were running.
+    const failed = [], interrupted = [], skips = { 'failure-limit': 0, 'time-limit': 0 };
+    for (const result of run.results) {
+      if (Object.hasOwn(skips, result?.skip?.cause)) skips[result.skip.cause]++;
+      if (result?.selected !== true || !['failed', 'timed-out', 'interrupted'].includes(result.status)) continue;
+      const attempt = Array.isArray(result.attempts) ? result.attempts.at(-1) : undefined;
+      const line = `E2E ${result.status}: ${place(attempt?.error?.source) ?? place(result.source) ?? 'unknown source'}`
+        + ` ${coded(attempt?.error?.code) ? attempt.error.code : 'NO_ERROR_CODE'} trace=${trace(result.id) ?? 'no trace page'}`;
+      (result.status === 'interrupted' ? interrupted : failed).push(line);
+    }
+    const tail = [];
+    if (skips['failure-limit'] || skips['time-limit']) tail.push(`E2E skipped: ${skips['failure-limit']} failure-limit, ${skips['time-limit']} time-limit`);
+    const errors = Array.isArray(run.errors) ? run.errors.map(error => error?.code) : [];
+    const known = errors.filter(coded);
+    if (errors.length) tail.push(`E2E run errors: ${known.join(',') || 'none coded'}${errors.length > known.length ? ` (+${errors.length - known.length} uncoded)` : ''}`);
+    try { if (lstatSync(join(output, 'summary.md')).isFile()) tail.push(`E2E summary: ${join(output, 'summary.md')}`); } catch { /* No summary page. */ }
+    const listed = [...failed, ...interrupted];
+    const room = Math.max(1, limit - tail.length);
+    const shown = listed.length > room ? [...listed.slice(0, room - 1), `E2E … +${listed.length - room + 1} more in report.json`] : listed;
+    return [...shown, ...tail].filter(line => !line.includes('E2E evidence:'));
+  } catch { return []; }
+}
+
 // A whole-host stall (VM snapshot or pause, memory reclaim) stops every process at
 // once; on resume the attempt deadline has expired, so the next step fails in ms
 // on a page that is fine (2026-10-19: app.open "took" 4m39s, then a tap failed
@@ -302,6 +348,8 @@ export function startHostStallMonitor({ intervalMs = 1_000, stallMs = HOST_STALL
     return stalls.map(stall => ({ ...stall }));
   };
 }
+// run.mjs enables this for its own web SDK child when its stdout is a terminal (or on CircleCI).
+// No SDK/app output is forwarded, and a live process is not claimed to make progress.
 export function startSdkProgress(child, { enabled, write, onError = () => {}, now = Date.now, setTimer = setInterval, clearTimer = clearInterval }) {
   if (!enabled) return () => {};
   const start = now(); let stopped = false;

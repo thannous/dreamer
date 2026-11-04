@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { decideParcours, decideSmoke, runGate } from './pr-gate.mjs';
+import { GATE_MAX_FAILURES, decideParcours, decideSmoke, runGate } from './pr-gate.mjs';
 import { selectionOwesNothing } from './zones.mjs';
 
 test('docs-only and non-app diffs skip both gates', () => {
@@ -179,9 +179,18 @@ test('parcours launch each real language/feature context with the diff filter, n
     assert.equal(call.environment.E2E_PERSONAS, '0');
     assert.ok(call.args.includes('--changed-since'));
     assert.ok(call.args.includes('--pass-with-no-tests'));
+    assert.equal(call.args[call.args.indexOf('--max-failures') + 1], GATE_MAX_FAILURES);
   }
   assert.equal(calls[3].environment.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED, 'false');
   assert.equal(runGate('parcours', '/unused', ['hooks/useQuota.ts'], { ok: true }, { model: false }, () => 3), 3);
+});
+
+test('smoke runs the tagged Dreamer journeys once, without bug bash, and stops a systemic break early', () => {
+  const calls = [];
+  const execute = (_root, product, args) => { calls.push({ product, args }); return 1; };
+  assert.equal(runGate('smoke', '/unused', ['app/recording.tsx'], { ok: true }, {}, execute), 1);
+  assert.deepEqual(calls, [{ product: 'dreamer', args: ['--tag', 'smoke', '--exclude-tag', 'bugbash', '--max-failures', GATE_MAX_FAILURES] }]);
+  assert.ok(Number(GATE_MAX_FAILURES) >= 1);
 });
 
 test('model selection retains Dreamer language passes and the Lucid campaign', () => {
