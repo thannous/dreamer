@@ -140,17 +140,22 @@ for (const platform of ['web', 'ios', 'android']) {
       targetId: target, platform, file: `tests/dreamer-personas.${platform === 'web' ? 'web' : 'mobile'}.e2e.ts`,
       agent: 'morning', tags: ['persona-morning'],
     });
-    r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { model: 'gpt-6.1-sol', calls: 1 } });
+    r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { provider: 'chatgpt.responses', model: 'gpt-6.1-sol', calls: 1 } });
     const opts = options({ target, platform, origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6.1-sol', personaJudgeModel: 'declared-judge' });
     assert.equal(verifyReport(r, opts).passed[0].agent, 'morning');
     if (platform !== 'web') assert.equal(verifyNativeCleanup(r, opts), true);
     assert.throws(() => verifyReport(r, { ...opts, personaModel: undefined }), /REPORT_PROVENANCE/);
     assert.throws(() => verifyReport(r, { ...opts, personaModel: 'another-model' }), /PERSONA_MODEL_UNPROVEN/);
     const judged = structuredClone(r);
-    judged.run.results[0].attempts[0].steps.push({ api: 'agent.assert', status: 'passed', model: { model: 'declared-judge', calls: 1 } });
+    judged.run.results[0].attempts[0].steps.push({ api: 'agent.assert', status: 'passed', model: { provider: 'chatgpt.responses', model: 'declared-judge', calls: 1 } });
     assert.equal(verifyReport(judged, opts).passed.length, 1);
     assert.throws(() => verifyReport(judged, { ...opts, personaJudgeModel: 'different-judge' }), /PERSONA_JUDGE_UNPROVEN/);
     assert.throws(() => verifyReport(judged, { ...opts, personaJudgeModel: undefined }), /PERSONA_JUDGE_UNPROVEN/);
+    // The same model id through an API key (openai('…'), OPENAI_API_KEY) is another billing route.
+    const keyed = structuredClone(r); keyed.run.results[0].attempts[0].steps[1].model.provider = 'openai.responses';
+    assert.throws(() => verifyReport(keyed, opts), /PERSONA_MODEL_UNPROVEN/);
+    const keyedJudge = structuredClone(judged); keyedJudge.run.results[0].attempts[0].steps[2].model.provider = 'openai.responses';
+    assert.throws(() => verifyReport(keyedJudge, opts), /PERSONA_JUDGE_UNPROVEN/);
     for (const mutate of [
       data => { data.run.usage.maxModelCallsInStep = 13; },
       data => { data.run.usage.maxActionStepsInStep = 17; },
@@ -159,6 +164,7 @@ for (const platform of ['web', 'ios', 'android']) {
       data => { data.run.results[0].file = `tests/dreamer-personas.${platform === 'web' ? 'mobile' : 'web'}.e2e.ts`; },
       data => { data.run.results[0].attempts[0].steps.pop(); },
       data => { data.run.results[0].attempts[0].steps[1].model.calls = 0; },
+      data => { delete data.run.results[0].attempts[0].steps[1].model.provider; },
       data => { data.run.results[0].attempts[0].steps[1].cache = { mode: 'self-finalized' }; },
       data => { data.run.results[0].attempts[0].steps.push({ api: 'expect.toBeVisible', status: 'failed' }); },
       data => { data.run.results[0].attempts[0].steps.shift(); },

@@ -9,6 +9,10 @@
  */
 export const PERSONA_ACT_MODEL = 'gpt-6.1-terra';
 export const PERSONA_ASSERT_MODEL = 'gpt-6.1-sol';
+// The saved-login route each persona step must report: e2e 0.22.0 chatgpt(id) is
+// createOpenAI({ name: 'chatgpt' }).responses(id) (@ai-sdk/openai 4.0.108). An
+// API-key openai(id) reports 'openai.responses' and does not qualify.
+export const PERSONA_PROVIDER = 'chatgpt.responses';
 
 export function personaModels(env = process.env) {
   return {

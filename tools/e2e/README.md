@@ -20,9 +20,15 @@ from the application's Playwright version. The locked runtime is `e2e` 0.22.0,
 0.21.36 rebuilds the iOS runner and changes iOS alert and modal-surface reads, deep
 accessibility snapshots, Android snapshot-helper retirement and daemon lease recovery
 ([release notes](https://github.com/callstack/agent-device/releases/tag/v0.21.36)).
-A native campaign qualifies it; a web run does not use it. `SDK_PINS` in `qualification.mjs`
-holds the same four versions; the runner refuses another installed version and
-a report from another runner or engine. The engine peer ranges accept e2e 0.22.0.
+A native campaign qualifies it; a web run does not use it. The model stack is
+pinned too: `ai` 7.0.162 runs the agent steps, `@ai-sdk/openai` 4.0.108 wraps the
+saved ChatGPT login, and `@e2e-dev/decision` 0.3.1 is the PR gate's decision filter.
+`SDK_PINS` in `qualification.mjs` holds these four runtime versions and those three.
+A run, collection, build, inspection or MCP session refuses another installed version
+of any of them, `evidence.json` `pins` records all seven, and a report from another
+runner or engine does not qualify. Nor does a persona step whose provider is not
+`chatgpt.responses`, the saved login's route: an API-key `openai(…)` reports
+`openai.responses`. The engine peer ranges accept e2e 0.22.0.
 Web 0.15.4 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
 1.64.1 too and both share one Chromium build.
 Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.22's
@@ -172,6 +178,7 @@ update only this isolated package/lockfile, then pilot collection/loader, one re
 real journey and its report/cleanup. A compatible candidate may be adopted after
 its applicable checks pass without another generic permission request. Keep exact
 pins and existing provider budgets; an upgrade does not enable a provider or Jev.
+An AI SDK or decision bump updates `SDK_PINS` in the same change.
 
 New journeys are written from this directory with
 `E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 mise exec -- npx e2e run --watch`
@@ -721,7 +728,7 @@ real journeys and never establish application or physical qualification.
 
 Agent goals can be added with an authorized model provider, one goal per call
 and exact critical-outcome assertions. No provider is configured by default.
-This package pins `@e2e-dev/decision` for one use only: the optional decision
+This package pins `@e2e-dev/decision` (in `SDK_PINS` too) for one use only: the optional decision
 filter of the PR parcours gate (`zones.mjs`, `decision-verdict.mjs`, installed
 `docs/filters.mdx`, OpenAI `gpt-6-luna`), which stays off until `OPENAI_API_KEY` is set. Its
 `decisionExecutor` for `agent.act` is not configured; exact journeys require no

@@ -15,7 +15,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FORBIDDEN_KEYS, FORBIDDEN_PROJECT_REFS } from '../../scripts/test-supabase-guard.mjs';
 import { sourceSnapshot, compareSnapshots, SDK_PINS } from './qualification.mjs';
-import { PERSONA_ACT_MODEL } from './persona-models.mjs';
+import { PERSONA_ACT_MODEL, PERSONA_PROVIDER } from './persona-models.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '../..');
@@ -111,7 +111,7 @@ export function charterResult(charter, exitCode, report, reportPath, expectedOri
   const identity = run?.runner?.name === 'e2e' && run.runner.version === SDK_PINS.e2e
     && target?.id === 'dreamer-web' && target.platform === 'web' && target.environment === 'test'
     && target.baseOrigin === expectedOrigin && target.engine?.name === 'web' && target.engine.version === SDK_PINS['@e2e-dev/web']
-    && models.length > 0 && models.every(model => model.provider === 'chatgpt.responses' && model.model === PERSONA_ACT_MODEL);
+    && models.length > 0 && models.every(model => model.provider === PERSONA_PROVIDER && model.model === PERSONA_ACT_MODEL);
   const incomplete = !valid || !identity || ![0, 1].includes(exitCode) || exploration.ended !== 'finished'
     || exploration.steps.length === 0 || exploration.steps.some(step => step.status !== 'passed');
   const findings = valid ? exploration.findings.map(finding => ({

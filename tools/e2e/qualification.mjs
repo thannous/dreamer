@@ -2,9 +2,13 @@ import { createHash } from 'node:crypto';
 import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, relative, sep, resolve, basename } from 'node:path';
+import { PERSONA_PROVIDER } from './persona-models.mjs';
 
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
-export const SDK_PINS = { e2e: '0.22.0', '@e2e-dev/web': '0.15.4', '@e2e-dev/mobile': '0.12.5', 'agent-device': '0.21.36' };
+// The model stack is pinned with it: agent steps load `ai` (e2e/dist/agent/ai-sdk.js), the
+// ChatGPT route wraps @ai-sdk/openai, and the gate's decision filter is @e2e-dev/decision.
+export const SDK_PINS = { e2e: '0.22.0', '@e2e-dev/web': '0.15.4', '@e2e-dev/mobile': '0.12.5', 'agent-device': '0.21.36',
+  ai: '7.0.162', '@ai-sdk/openai': '4.0.108', '@e2e-dev/decision': '0.3.1' };
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 // Preserve the former UTF-8 stdout.trim() identity without buffering a whole diff.
 // A hash copy marks the last content byte; later whitespace stays provisional.
@@ -213,11 +217,11 @@ export function verifyReport(document, options) {
       || !Array.isArray(attempt.artifacts)) fail('LIFECYCLE_INCOMPLETE');
     if (options.personaModel !== undefined) {
       const goals = attempt.steps.filter(step => step.api === 'agent.act');
-      if (!goals.length || goals.some(step => step.model?.model !== options.personaModel
+      if (!goals.length || goals.some(step => step.model?.provider !== PERSONA_PROVIDER || step.model?.model !== options.personaModel
         || !Number.isSafeInteger(step.model?.calls) || step.model.calls < 1 || step.model.calls > 12
         || step.cache?.mode === 'self-finalized')) fail('PERSONA_MODEL_UNPROVEN');
       const judgments = attempt.steps.filter(step => ['agent.assert', 'agent.waitFor', 'agent.extract'].includes(step.api));
-      if (judgments.some(step => !options.personaJudgeModel || step.model?.model !== options.personaJudgeModel
+      if (judgments.some(step => !options.personaJudgeModel || step.model?.provider !== PERSONA_PROVIDER || step.model?.model !== options.personaJudgeModel
         || !Number.isSafeInteger(step.model?.calls) || step.model.calls < 1)) fail('PERSONA_JUDGE_UNPROVEN');
     }
     if (options.video && !attempt.artifacts.some(a => a.kind === 'video')) fail('MEDIA_VIDEO_MISSING');
