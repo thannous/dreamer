@@ -95,18 +95,29 @@ function explore(charter, env, output) {
 
 // SDK findings are observations until a human/development agent triages them.
 // A missing report or an exhausted/blocked step is never a clean exploration.
-export function charterResult(charter, exitCode, report, reportPath) {
-  const exploration = report?.run?.explore;
+export function charterResult(charter, exitCode, report, reportPath, expectedOrigin = 'http://127.0.0.1:8096') {
+  const run = report?.run;
+  const exploration = run?.explore;
   const valid = report?.schemaVersion === 'report-1' && Array.isArray(exploration?.findings) && Array.isArray(exploration?.steps);
-  const incomplete = !valid || ![0, 1].includes(exitCode) || exploration.ended !== 'finished'
-    || exploration.steps.some(step => step.status !== 'passed');
+  const target = Array.isArray(run?.targets) && run.targets.length === 1 ? run.targets[0] : null;
+  const results = Array.isArray(run?.results) ? run.results : [];
+  const models = results.flatMap(result => (Array.isArray(result?.attempts) ? result.attempts : []).flatMap(attempt =>
+    (Array.isArray(attempt?.steps) ? attempt.steps : []).filter(step => Number.isSafeInteger(step.model?.calls) && step.model.calls > 0).map(step => ({
+      provider: step.model.provider, model: step.model.model,
+    }))));
+  const identity = run?.runner?.name === 'e2e' && run.runner.version === SDK_PINS.e2e
+    && target?.id === 'dreamer-web' && target.platform === 'web' && target.environment === 'test'
+    && target.baseOrigin === expectedOrigin && target.engine?.name === 'web' && target.engine.version === SDK_PINS['@e2e-dev/web']
+    && models.length > 0 && models.every(model => model.provider === 'chatgpt.responses' && model.model === PERSONA_ACT_MODEL);
+  const incomplete = !valid || !identity || ![0, 1].includes(exitCode) || exploration.ended !== 'finished'
+    || exploration.steps.length === 0 || exploration.steps.some(step => step.status !== 'passed');
   const findings = valid ? exploration.findings.map(finding => ({
     id: `${charter.slug}:${finding.id}`, observation: finding, status: 'unreviewed',
     reason: null, reproTest: null, reproReport: null, reproResult: null,
   })) : [];
   return { slug: charter.slug, agent: charter.agent, session: `bugbash-${charter.session}`,
     goal: charter.goal, exitCode, report: reportPath,
-    runner: report?.run?.runner ?? null, targets: report?.run?.targets ?? [], usage: report?.run?.usage ?? null,
+    runner: run?.runner ?? null, targets: run?.targets ?? [], models: [...new Map(models.map(model => [JSON.stringify(model), model])).values()], usage: run?.usage ?? null,
     state: incomplete ? 'incomplete' : findings.length || exitCode === 1 ? 'needs-triage' : 'no-findings',
     ended: exploration?.ended ?? null, findings };
 }
@@ -133,19 +144,33 @@ export function runBugbash({ exploreCharters = true, env = mockEnv(), login = ch
   const output = join(here, campaign);
   mkdirSync(output, { recursive: true });
   const before = sourceSnapshot(root, 'dreamer');
+  const installedSdk = Object.fromEntries(Object.keys(SDK_PINS).map(name => {
+    try { return [name, JSON.parse(readFileSync(join(here, 'node_modules', name, 'package.json'), 'utf8')).version]; }
+    catch { return [name, null]; }
+  }));
+  const port = Number(env.E2E_WEB_PORT ?? 8096);
+  const expectedOrigin = Number.isInteger(port) && port >= 1 && port <= 65535 ? `http://127.0.0.1:${port}` : null;
   const receipt = { schemaVersion: 1, startedAt: new Date().toISOString(), source: before,
-    scope: 'Dreamer web, local mock and synthetic sessions', model: PERSONA_ACT_MODEL, expectedSdk: SDK_PINS,
+    scope: 'Dreamer web, local mock and synthetic sessions', model: PERSONA_ACT_MODEL, expectedSdk: SDK_PINS, installedSdk, expectedOrigin,
     rerunCommand: `mise exec -- npm run test:bugbash:prerelease${only ? ` -- --charter ${only}` : ''}`,
     selected: selected.map(charter => charter.slug), charters: [] };
   const save = () => writeFileSync(join(output, 'receipt.json'), `${JSON.stringify(receipt, null, 2)}\n`);
   save();
+  if (!expectedOrigin || Object.entries(SDK_PINS).some(([name, version]) => installedSdk[name] !== version)) {
+    receipt.finishedAt = new Date().toISOString();
+    receipt.exitCode = 2;
+    receipt.error = !expectedOrigin ? 'INVALID_WEB_PORT' : 'INSTALLED_SDK_PINS';
+    save();
+    console.error(`Bug bash incomplete: ${receipt.error}. Receipt: ${join(output, 'receipt.json')}`);
+    return 2;
+  }
   for (const charter of selected) {
     const child = `${campaign}/${charter.slug}`;
     const status = explore(charter, env, child);
     const reportPath = join(here, child, 'report.json');
     let report;
     try { report = JSON.parse(readFileSync(reportPath, 'utf8')); } catch { /* Kept as incomplete. */ }
-    receipt.charters.push(charterResult(charter, status, report, reportPath));
+    receipt.charters.push(charterResult(charter, status, report, reportPath, expectedOrigin));
     save();
     if (![0, 1].includes(status)) break;
   }

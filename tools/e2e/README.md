@@ -279,7 +279,7 @@ E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:test
 ```
 
 Act uses `gpt-6.1-terra` and assert uses `gpt-6.1-sol` (`tools/e2e/persona-models.mjs`).
-e2e 0.21.3 `chatgpt(id)` forwards the id and does not embed a catalog; these are
+e2e 0.22.0 `chatgpt(id)` forwards the id and does not embed a catalog; these are
 the OpenAI ids, and `gpt-6.1-sol` is the id this repo already qualified.
 `E2E_PERSONA_MODEL` or `E2E_PERSONA_ACT_MODEL` overrides act.
 `E2E_PERSONA_JUDGE_MODEL` overrides the judge. Set both back to `gpt-6.1-sol`
@@ -344,8 +344,8 @@ E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
 ```
 
 Once the pilot passes, replace `persona-morning` with `personas` to run all seven tests
-on each platform. Do not set `E2E_WORKERS` for native: each invocation owns one
-leased or explicitly named device and its lock. The first recorded action is `app.open()`, followed
+on the chosen platform. Do not set `E2E_WORKERS` for native: each invocation owns one
+leased or explicitly named owned device and its lock. The first recorded action is `app.open()`, followed
 by a fresh synthetic app state. Native assertions use accessibility locators,
 keyboard dismissal, scroll-to-visible and the native AI consent dialog. Samira
 checks the completed reply and edits an unsent draft after reopening; Lucas checks
@@ -432,6 +432,12 @@ Run the affected check before a local native build; CI checks both manifests.
 
 ## Dreamer native recovery journeys
 
+`npm run release:simulators` chains the native build and run commands below for one candidate
+commit in a managed workspace and writes one report: the `mock-persistent` profile on the iOS
+Simulator and the Android emulator by default, plus `production-apk` and `local-backend` with
+`--suites all`. One platform's runs go on while the other platform builds; see
+[simulator tests](../../doc_web_interne/docs/tests-simulateurs.md).
+
 The [native journey runbook](native-journeys.md) covers real local Auth/storage,
 offline sync, account isolation, analysis/chat recovery and system recognition
 from a QA audio file. It gives identified iOS/Android build and run commands,
@@ -508,8 +514,13 @@ Optional `E2E_SIMLOCK_MODEL` and `E2E_SIMLOCK_OS` select an installed catalog
 entry; `E2E_SIMLOCK_TIMEOUT_SECONDS` bounds the wait (default 180), and
 `E2E_SIMLOCK_NO_WAIT=1` refuses when capacity is unavailable. The pool resets
 devices on release, so never place personal data or unique evidence there.
-Android requires Simlock to return its isolated ADB server port; the runner
-refuses a grant without it instead of using an unscoped server.
+Android requires Simlock to return the port of its private ADB server; the runner
+refuses a grant without it instead of using the shared default server. That
+server is private to Simlock, not to one lease: every Simlock emulator is on it,
+and a released one may stay attached for the next lease, so device commands
+must go through the shim. agent-device takes `adb` from `ANDROID_SDK_ROOT` or
+`ANDROID_HOME` before `PATH`, so the runner points both at a per-run SDK root whose
+only `adb` is the shim; the shim restores the real SDK for Simlock itself.
 The foreground lease holder renews while the runner lives and is bound to its PID.
 It runs in its own process group, so Ctrl-C reaches only the runner, which stops at
 its next checkpoint, cleans up and then releases. Simlock 0.4.0 keeps a request

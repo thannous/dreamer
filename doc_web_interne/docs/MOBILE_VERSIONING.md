@@ -21,6 +21,10 @@ Utiliser `--app lucid`, `--app meditation` ou `--app all` pour les autres périm
 
 Un second passage après commit/fusion ne remonte pas la version : les changements de version seuls sont exclus du calcul. Une nouvelle modification applicative depuis la préparation nécessite un nouveau plan. La préparation désigne une version de release, pas la preuve de sa publication sur un Store. Conserver le commit référencé par `sourceRef` dans l'historique fusionné ; si une correction de release a ajouté ce commit sur la branche, utiliser un merge commit plutôt qu'un squash qui le rendrait introuvable.
 
+## Tester le candidat sur simulateurs
+
+Avant les builds Store, lancer sur le Mac mini `mise exec -- npm run release:simulators -- --ref <commit préparé>` : builds Release pour le simulateur iPhone et l'émulateur Android, parcours natifs TesterArmy et rapport dans `outputs/release-simulators/` (`--suites all` si la configuration de build ou le serveur a changé). Le vrai téléphone ne sert ensuite qu'à la courte liste de [tests sur simulateurs](tests-simulateurs.md#ce-qui-demande-encore-un-vrai-téléphone) (App Attest, achat réel, installation depuis TestFlight ou Google Play, micro, fluidité). La commande ne lance ni build EAS ni envoi.
+
 ## Construire la release préparée
 
 Depuis le checkout propre de la release validée (validation complète locale réussie sur ce SHA exact, contrôles spécialisés compris ; voir le [guide CircleCI](circleci-migration.md#validation-complète-locale)), installer les dépendances **dans ce checkout** puis :

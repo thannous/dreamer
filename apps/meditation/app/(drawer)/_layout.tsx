@@ -1,8 +1,10 @@
+import { Redirect } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import React from 'react';
 
 import { DrawerContent } from '@/components/navigation/DrawerContent';
 import { useTranslation } from '@/context/LanguageContext';
+import { useOnboarding } from '@/context/OnboardingContext';
 import { useChromeTheme } from '@/hooks/useChromeTheme';
 
 /**
@@ -19,6 +21,15 @@ import { useChromeTheme } from '@/hooks/useChromeTheme';
 export default function DrawerLayout() {
   const { mode } = useChromeTheme();
   const { t } = useTranslation();
+  const { state, loaded } = useOnboarding();
+
+  // `/` opens this drawer directly: there is no startup screen in the root stack
+  // any more. Replacing one at launch ran a native transition, and iOS ignores
+  // touches until it ends, so a first tap on Home was lost (#660). The root
+  // layout keeps the splash until onboarding is read, so `loaded` is already
+  // true here at launch; only someone who has not finished onboarding leaves.
+  if (!loaded) return null;
+  if (!state.completed) return <Redirect href="/welcome" />;
 
   return (
     <Drawer

@@ -54,7 +54,7 @@ function scriptSafety(name) {
   if (/^docs:deploy:/.test(name)) return 'publishes';
   if (/^(docs:(build|build-guides|dev|release-check)|generate-sitemap|content:build-manifest$|content:build-site-manifest$)/.test(name)) return 'writes generated files';
   if (/^(subscription:qa:(evidence|play-state|revenuecat-subscriber-expiry|google-play-state)|android:.*-state)$/.test(name)) return 'writes QA evidence';
-  if (/^(android:release:local|build:(apk:|web$))/.test(name)) return 'builds artifacts';
+  if (/^(android:release:local|release:simulators$|build:(apk:|web$))/.test(name)) return 'builds artifacts';
   if (name === 'seo:gsc:export') return 'writes an external-data report';
   return 'read-only or runtime';
 }

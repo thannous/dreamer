@@ -12,6 +12,12 @@ const runner = process.env.E2E_SIMLOCK_RUNNER_PID;
 if (!binary || !lease || !device || !endMarker || !/^\d+$/.test(holder ?? '') || !/^\d+$/.test(runner ?? '')
   || !process.env.E2E_SIMLOCK_UNWRAPPED_PATH) throw new Error('SIMLOCK_DRIVER_CONTEXT_MISSING');
 const env = { ...process.env, PATH: process.env.E2E_SIMLOCK_UNWRAPPED_PATH };
+// On Android the runner points the SDK variables at a root holding only this shim.
+for (const [key, original] of Object.entries({ ANDROID_HOME: process.env.E2E_SIMLOCK_UNWRAPPED_ANDROID_HOME,
+  ANDROID_SDK_ROOT: process.env.E2E_SIMLOCK_UNWRAPPED_ANDROID_SDK_ROOT })) {
+  if (original) env[key] = original;
+  else if (original === '') delete env[key];
+}
 // A local Simlock worker treats --lease as advisory; once the lease is lost or
 // released the device may belong to another agent, so no command reaches it.
 if (existsSync(endMarker) || !existsSync(dirname(endMarker))) throw new Error('SIMLOCK_LEASE_ENDED');

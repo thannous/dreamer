@@ -51,8 +51,10 @@ jest.mock('@/context/LanguageContext', () => ({
 jest.mock('@/context/LibraryContext', () => ({
   LibraryProvider: ({ children }: React.PropsWithChildren) => children,
 }));
+let mockOnboardingLoaded = true;
 jest.mock('@/context/OnboardingContext', () => ({
   OnboardingProvider: ({ children }: React.PropsWithChildren) => children,
+  useOnboarding: () => ({ loaded: mockOnboardingLoaded, state: { completed: true } }),
 }));
 jest.mock('@/context/PlayerContext', () => ({
   usePlayerState: () => ({ session: null, status: 'idle' }),
@@ -88,10 +90,25 @@ jest.mock('@/context/WorldPurchaseContext', () => ({
 }));
 
 describe('root startup', () => {
+  beforeEach(() => {
+    mockOnboardingLoaded = true;
+    jest.mocked(SplashScreen.hideAsync).mockClear();
+  });
+
   it('hides the splash without waiting for world purchases', async () => {
     render(<RootLayout />);
 
     expect(screen.getByTestId('root-stack')).toBeTruthy();
     await waitFor(() => expect(SplashScreen.hideAsync).toHaveBeenCalled());
+  });
+
+  // The first screen is chosen from onboarding (Home or Welcome) as the stack mounts,
+  // so no startup screen is shown and then replaced under the user's finger (#660).
+  it('keeps the splash and mounts no screen until onboarding is read', () => {
+    mockOnboardingLoaded = false;
+    render(<RootLayout />);
+
+    expect(screen.queryByTestId('root-stack')).toBeNull();
+    expect(SplashScreen.hideAsync).not.toHaveBeenCalled();
   });
 });

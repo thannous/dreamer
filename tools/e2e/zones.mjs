@@ -92,6 +92,10 @@ export const ZONES = [
       'app/journal/',
       'app/(tabs)/journal.tsx',
       'components/journal/',
+      'lib/dreamFilters.ts',
+      'lib/dreamLabels.ts',
+      'lib/dreamUtils.ts',
+      'lib/journalFilterLink.ts',
       'hooks/useDreamJournal.ts',
       'hooks/useDreamPersistence.ts',
       'hooks/useRemoteJournalList.ts',
@@ -179,8 +183,8 @@ export const ZONES = [
     sources: [
       'app/(tabs)/explore.tsx', 'app/symbol-detail/', 'app/symbol-dictionary.tsx',
       'app/dream-guide/', 'app/dream-guides.tsx', 'app/collection.tsx',
-      'components/symbols/', 'components/badges/', 'services/symbol',
-      'services/dreamGuideService.ts', 'services/guideReading', 'services/badgeLedger', 'lib/badges/',
+      'components/symbols/', 'components/badges/', 'components/guides/', 'services/symbol',
+      'services/dreamGuideService.ts', 'services/guideReading', 'services/badgeLedger', 'lib/badges/', 'lib/guideReading',
     ],
     tests: [
       'tools/e2e/tests/dreamer-explorer-repertoire.web.e2e.ts',
@@ -193,7 +197,9 @@ export const ZONES = [
   },
   {
     id: 'lettre-recap', tags: ['zone-lettre-recap'], product: 'dreamer', platform: 'web',
-    sources: ['app/moon-letter.tsx', 'app/weekly-recap.tsx', 'services/moonLetterService.ts'],
+    sources: ['app/moon-letter.tsx', 'app/weekly-recap.tsx', 'components/moon/', 'components/recap/',
+      'components/home/HomeMoonLetterRow.tsx', 'components/home/HomeWeekNights.tsx', 'components/home/HomeRecurringCard.tsx',
+      'services/moonLetterService.ts', 'lib/moonLetter.ts', 'lib/weeklyRecap.ts'],
     tests: ['tools/e2e/tests/dreamer-moon-letter.web.e2e.ts', 'tools/e2e/tests/dreamer-weekly-recap.web.e2e.ts'],
   },
   {
@@ -284,13 +290,13 @@ export function parcoursExclude(tests, files, locale) {
 
 /**
  * Whether a `--changed-since` selection that runs nothing owes the PR gate nothing.
- * The engine marks static skips (locale-only journeys) before the zone filter runs, so
- * they reach the selection whatever the diff. A skip the zone filter would leave out
- * (untouched, or replayed by the smoke check) does not count. A skip the diff selects,
- * such as a changed locale-only journey, does: the gate must still fail on it.
+ * The engine lists static skips before applying the zone filter. Skips from a
+ * different locale, untouched journeys, or the smoke check do not count. A
+ * selected journey skipped in its own locale still fails the gate.
  * `pairs[].file` is relative to tools/e2e, as the engine lists it.
  * @param {readonly { id: string, tags: readonly string[], file: string, disposition: string }[]} pairs
  * @param {readonly string[]} files
+ * @param {string | undefined} locale
  */
 export function selectionOwesNothing(pairs, files, locale) {
   if (pairs.some(pair => pair.disposition === 'run')) return false;

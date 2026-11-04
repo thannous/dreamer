@@ -75,13 +75,19 @@ test('only static skips the diff does not select leave the parcours selection em
   assert.equal(selectionOwesNothing([...skips, { ...billing, file: 'tests/dreamer-billing.web.e2e.ts', disposition: 'run' }], []), false);
 });
 
-test('each language pass owes only its selected locale, even after model widening', () => {
-  const french = { id: 'fr-only', tags: ['zone-journal', 'locale-fr-FR'], file: 'tests/dreamer-journal-margin.web.e2e.ts', disposition: 'skip' };
-  const files = ['app/journal/[id].tsx'];
+test('a selected static skip is owed only in its own locale', () => {
+  const french = { id: 'dictionary-fr', tags: ['locale-fr-FR'], file: 'tests/dreamer-symbol-dictionary.web.e2e.ts', disposition: 'skip' };
+  const files = ['tools/e2e/tests/dreamer-symbol-dictionary.web.e2e.ts'];
   assert.equal(selectionOwesNothing([french], files, 'en-US'), true);
   assert.equal(selectionOwesNothing([french], files, 'fr-FR'), false);
-  const zones = parcoursExclude([{ ...french, file: `tools/e2e/${french.file}` }], files, 'en-US');
-  assert.ok(widenWithDecision(zones, { exclude: {} }).exclude[french.id]);
+  assert.equal(selectionOwesNothing([{ ...french, disposition: 'run' }], files, 'fr-FR'), false);
+});
+
+test('journal filter and label dependencies select the journal journeys', () => {
+  for (const file of ['lib/dreamFilters.ts', 'lib/dreamLabels.ts', 'lib/dreamUtils.ts', 'lib/journalFilterLink.ts']) {
+    assert.ok(zonesForFiles([file]).some(zone => zone.id === 'journal'), file);
+    assert.equal(parcoursExclude([{ id: 'journal-filter', tags: [], file: 'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts' }], [file]).exclude['journal-filter'], undefined, file);
+  }
 });
 
 test('the zone filter stays inactive unless --changed-since supplied changes', () => {
@@ -201,6 +207,11 @@ test('changes in behavioral owners select their journeys without selecting unrel
     ['lib/supabase.ts', 'dreamer-security-url.web.e2e.ts'],
     ['app/symbol-detail/[id].tsx', 'dreamer-symbol-links.web.e2e.ts'],
     ['app/moon-letter.tsx', 'dreamer-moon-letter.web.e2e.ts'],
+    ['lib/moonLetter.ts', 'dreamer-moon-letter.web.e2e.ts'],
+    ['lib/weeklyRecap.ts', 'dreamer-weekly-recap.web.e2e.ts'],
+    ['components/recap/WeeklyRecapScreen.tsx', 'dreamer-weekly-recap.web.e2e.ts'],
+    ['lib/guideReading.ts', 'dreamer-guide-progress.web.e2e.ts'],
+    ['components/guides/GuideReadingHost.tsx', 'dreamer-guide-progress.web.e2e.ts'],
   ];
   for (const [source, file] of cases) {
     const expected = { id: 'expected', file: `tools/e2e/tests/${file}`, tags: [] };
@@ -228,4 +239,11 @@ test('the rerun environment preserves both effective models, including judge ove
   assert.equal(personaModels({ ...env, E2E_PERSONA_MODEL: ' override ' }).personaModel, 'override');
   assert.deepEqual(personaModels({ E2E_PERSONA_MODEL: ' ', E2E_PERSONA_JUDGE_MODEL: ' ' }),
     { personaModel: PERSONA_ACT_MODEL, personaJudgeModel: PERSONA_ASSERT_MODEL });
+});
+
+test('the decision model cannot revive a journey in the wrong locale', () => {
+  const french = { id: 'fr-capture', tags: ['zone-capture', 'locale-fr-FR'], file: 'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts' };
+  const zones = parcoursExclude([french], ['app/recording.tsx'], 'en-US');
+  assert.equal(zones.exclude[french.id], 'ce parcours appartient à un autre contexte de langue');
+  assert.equal(widenWithDecision(zones, { exclude: {} }).exclude[french.id], zones.exclude[french.id]);
 });

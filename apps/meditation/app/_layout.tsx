@@ -25,7 +25,7 @@ import { LibraryPersistenceNotice } from '@/components/library/LibraryPersistenc
 import { BreathProvider } from '@/context/BreathContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { LibraryProvider } from '@/context/LibraryContext';
-import { OnboardingProvider } from '@/context/OnboardingContext';
+import { OnboardingProvider, useOnboarding } from '@/context/OnboardingContext';
 import { PlayerProvider, usePlayerState } from '@/context/PlayerContext';
 import { SettingsProvider } from '@/context/SettingsContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
@@ -90,6 +90,7 @@ const rootStackMotion =
 function RootNavigator() {
   const { mode, colors, loaded: themeLoaded } = useTheme();
   const { loaded: worldLoaded } = useWorld();
+  const { loaded: onboardingLoaded } = useOnboarding();
 
   const [fontsLoaded, fontError] = useFonts({
     Fraunces_400Regular,
@@ -104,8 +105,10 @@ function RootNavigator() {
     Lora_700Bold,
   });
 
-  // A missing font must not strand the user on the splash screen.
-  const ready = (fontsLoaded || !!fontError) && themeLoaded && worldLoaded;
+  // A missing font must not strand the user on the splash screen. Onboarding is
+  // read before the first screen mounts, so `/` lands on Home or Welcome
+  // directly instead of flashing one and replacing it.
+  const ready = (fontsLoaded || !!fontError) && themeLoaded && worldLoaded && onboardingLoaded;
 
   // The native surface can briefly expose the root view while routes mount.
   // Following the resolved theme keeps that hand-off invisible in both themes.

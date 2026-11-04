@@ -172,6 +172,10 @@ stays incomplete. Before an app release,
 `npm run test:bugbash:prerelease` explores the mock app; each confirmed bug
 becomes a failing `bugbash` test, which `verify:release` runs and the PR gate
 does not.
+Before a mobile Store submission, run `npm run release:simulators` on the Mac mini for the
+candidate commit, with `--suites all` when the build configuration or the server changed (owner
+decision 2026-10-30): the physical phone covers only the short list in
+[simulator tests](doc_web_interne/docs/tests-simulateurs.md).
 Native qualification identifies an installed Release, uses one worker per owned device
 and starts with `app.open()`. Use one goal per `agent.act()` and exact assertions for
 critical outcomes; exact steps need no model. A compatible pinned upgrade may be piloted
@@ -214,7 +218,7 @@ assets or the only retained evidence, and never empty Trash without authorizatio
 ## Livraison
 
 1. Avant chaque push, drafts inclus, lancer `npm run verify:pr` sur le commit à pousser ; échec ou preuve `incomplete` : ne pas pousser.
-2. La PR indique le commit vérifié, le résultat et les limites. Traiter la revue dans ses commentaires ; chaque nouveau head envoyé est vérifié.
+2. La PR indique le commit vérifié, le résultat et les limites. Traiter la revue dans ses commentaires ; chaque nouveau head envoyé est vérifié. Ouvrir les PR prêtes pour revue afin que les agents les prennent en charge ; réserver le draft à une demande explicite ou à une préparation encore non vérifiable. Les blocages de fusion restent explicites dans les contrôles et les remarques, sans attente générique de revue humaine.
 3. Sur demande explicite de thanh, fusion possible quand les commentaires sont réglés et rien ne bloque ; aucune intervention du CTO imposée.
 4. Rien ne part en production sans le go de thanh.
 

@@ -379,11 +379,10 @@ async function runSdk() {
   }
   const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
   const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
-  // A diff whose only journey is smoke-tagged leaves the parcours gate the static skips of
-  // untouched journeys: nothing it owes runs, so the selection is empty. A skipped journey
-  // the diff selects (a changed locale-only one) keeps the run, which then fails NO_PASS.
+  // Static skips from another locale do not block this context. A selected
+  // journey skipped in its own locale still runs and fails NO_PASS.
   if (!runnable.length || (passWithNoTests && changedSince
-    && selectionOwesNothing(runnable, changedFilesSince(changedSince), context().locale))) {
+    && selectionOwesNothing(runnable, changedFilesSince(changedSince), platform === 'web' ? context().locale : undefined))) {
     if (passWithNoTests) {
       emptySelection = true;
       console.log('Aucun test selectionne: le moteur n\'est pas lance.');

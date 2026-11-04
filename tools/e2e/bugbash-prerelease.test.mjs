@@ -15,7 +15,12 @@ test('the pre-release bash has one charter per named area and stays in mock mode
 });
 
 const report = (findings = [], ended = 'finished', steps = [{ status: 'passed' }]) => ({
-  schemaVersion: 'report-1', run: { explore: { findings, ended, steps } },
+  schemaVersion: 'report-1', run: {
+    runner: { name: 'e2e', version: '0.22.0' },
+    targets: [{ id: 'dreamer-web', platform: 'web', environment: 'test', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: '0.15.4' } }],
+    results: [{ attempts: [{ steps: [{ model: { provider: 'chatgpt.responses', model: 'gpt-6.1-terra', calls: 1 } }] }] }],
+    explore: { findings, ended, steps },
+  },
 });
 
 test('observations require triage even when the SDK returns zero; code one cannot disappear', () => {
@@ -28,11 +33,30 @@ test('observations require triage even when the SDK returns zero; code one canno
 });
 
 test('missing reports, failed steps, budget exhaustion and changing source remain incomplete', () => {
-  for (const [exit, evidence] of [[0, undefined], [2, report()], [0, report([], 'step-limit')], [0, report([], 'finished', [{ status: 'failed' }])]]) {
+  for (const [exit, evidence] of [[0, undefined], [2, report()], [0, report([], 'step-limit')], [0, report([], 'finished', [])], [0, report([], 'finished', [{ status: 'failed' }])]]) {
     assert.equal(campaignExit([charterResult(CHARTERS[0], exit, evidence, '/report.json')]), 2);
   }
   assert.equal(campaignExit([], false), 2);
   assert.throws(() => runBugbash({ exploreCharters: false, only: 'typo', login: false }), /Unknown/);
+});
+
+test('a clean charter requires the actual pinned SDK, local target and model', () => {
+  for (const mutate of [
+    run => { run.runner.version = '0.21.3'; },
+    run => { run.targets[0].engine.version = '0.15.3'; },
+    run => { run.targets[0].baseOrigin = 'https://example.com'; },
+    run => { run.targets[0].id = 'wrong-target'; },
+    run => { run.results[0].attempts[0].steps[0].model.model = 'other-model'; },
+    run => { run.results = []; },
+  ]) {
+    const evidence = report();
+    mutate(evidence.run);
+    assert.equal(charterResult(CHARTERS[0], 0, evidence, '/report.json').state, 'incomplete');
+  }
+  const evidence = report();
+  assert.equal(charterResult(CHARTERS[0], 0, evidence, '/report.json', 'http://127.0.0.1:4591').state, 'incomplete');
+  evidence.run.targets[0].baseOrigin = 'http://127.0.0.1:4591';
+  assert.equal(charterResult(CHARTERS[0], 0, evidence, '/report.json', 'http://127.0.0.1:4591').state, 'no-findings');
 });
 
 test('a production Supabase ref is refused before any explore', () => {
