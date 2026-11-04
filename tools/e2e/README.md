@@ -15,8 +15,12 @@ their separate identified Release/device requirements. See the
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
 from the application's Playwright version. The locked runtime is `e2e` 0.22.0,
-`@e2e-dev/web` 0.15.4, `@e2e-dev/mobile` 0.12.5 and `agent-device` 0.21.35
-(a direct pin with a matching override for the mobile engine). `SDK_PINS` in `qualification.mjs`
+`@e2e-dev/web` 0.15.4, `@e2e-dev/mobile` 0.12.5 and `agent-device` 0.21.36
+(a direct pin; the override gives it to the mobile engine, which itself depends on 0.21.35).
+0.21.36 rebuilds the iOS runner and changes iOS alert and modal-surface reads, deep
+accessibility snapshots, Android snapshot-helper retirement and daemon lease recovery
+([release notes](https://github.com/callstack/agent-device/releases/tag/v0.21.36)).
+A native campaign qualifies it; a web run does not use it. `SDK_PINS` in `qualification.mjs`
 holds the same four versions; the runner refuses another installed version and
 a report from another runner or engine. The engine peer ranges accept e2e 0.22.0.
 Web 0.15.4 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
@@ -723,7 +727,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package pins `agent-device` 0.21.35 for its local CLI and the mobile engine
+package pins `agent-device` 0.21.36 for its local CLI and the mobile engine
 through a targeted dependency override. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured
