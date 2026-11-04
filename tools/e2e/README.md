@@ -38,8 +38,9 @@ loader; the scoped public matcher preload is unchanged.
 Local web runs use several workers: half the CPU cores, at most eight, or
 `E2E_WORKERS=<n>`. Files run in parallel against the one local server, each
 attempt in its own browser context and storage; a file's tests stay in order.
-CI (`CI` set) keeps one worker and shards across containers, and native runs keep
-one worker per named device. e2e starts the slowest files first when the
+With `CI` set the runner keeps one worker; no hosted CI launches these campaigns,
+and `--shard` stays a local selection that `collect` unions. Native runs keep one
+worker per named device. e2e starts the slowest files first when the
 previous report sits in the same output directory. Each run gets a new one, so
 the runner keeps the report of the last run with no `--grep`, `--tag`, `--shard`
 or run budget in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
@@ -66,8 +67,8 @@ What 0.22.0 changes here:
   (#1297), a locator whose target changes during the transition wait or a newer
   snapshot is resolved again (#1300, #1413), `fill` and `clear` re-read the field
   first (#1410), and `press('Enter')` taps an unfocused field before the key
-  (#1421). It depends on `agent-device` 0.21.35 itself, the version already pinned,
-  so the override now matches it. The iOS keyboard helpers in
+  (#1421). It depends on `agent-device` 0.21.35 itself; the override gives it the
+  direct 0.21.36 pin (above). The iOS keyboard helpers in
   `native-backend-fixtures.ts` and the 44 pt tab clearance stay until a native run
   shows they are no longer needed.
 - Locators take `filter({ hasNot, hasNotText })` as in Playwright (#1334, #1037),
@@ -162,9 +163,11 @@ What 0.20 changes here:
   `results/<test>/attempt-<n>/`; `failures/` is gone and `summary.md` links each
   failure to its trace page.
 - `expect(screen).toHaveScreenshot()` compares the screen or one element with a
-  committed PNG per target and OS (`<test file>-snapshots/`). Mac baselines never
-  serve Linux CI. No journey uses it yet: a baseline needs its own reviewed
-  screen and a CI-written Linux file.
+  committed PNG per target and OS (`<test file>-snapshots/`, for example
+  `<name>-web-darwin.png`). No journey uses it. A baseline written on macOS does not serve a Linux or
+  Windows run, so one would be written on the machine that runs verify:pr, with
+  dynamic content masked. Adding one is an owner decision and needs a reviewed
+  change, since run.mjs refuses `--update-snapshots` today.
 - On a device, `device.setAirplaneMode(true)` takes an Android 11+ emulator
   offline (Wi-Fi and cellular); `setNetwork('offline')` cuts Wi-Fi only. Both
   are unsupported on an iOS Simulator. Restore the network in `afterEach`.
@@ -194,6 +197,22 @@ narrowing the run to that test: `list` exits 2, a run stops with exit 3 before
 the engine starts. Remove `.only` before a qualifying run. Its web worker count
 still follows the caller's own `CI`, and the guarded `mcp` entry stays out of CI mode.
 
+Before tagging a web mock journey `smoke` or `zone-*`, repeat it in the gate's
+context:
+
+```sh
+E2E_PERSONAS=0 E2E_BUGBASH=0 E2E_WEB_LOCALE=en-US EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
+  mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'TITLE' --repeat-each 5
+```
+
+Replace `dreamer` with `meditation`, or with `lucid` and `E2E_WEB_LOCALE=fr-FR`.
+A Dreamer zone journey runs in each `DREAMER_CAMPAIGN_CONTEXTS` entry
+(`verify-local.config.mjs`) that selects it: repeat it with that locale and
+feature-sheet value, since a locale-tagged journey run in another context is
+skipped, not repeated. Retries and the cache are off, so each
+repeat is independent. This is not for personas, agent steps (model calls) or
+backend journeys.
+
 From the repository root:
 
 ```sh
@@ -209,7 +228,7 @@ mise exec -- npm run test:testerarmy:typecheck
 
 `test:testerarmy:browsers` installs the engine's exact Chromium version and
 keeps the full browser for local `--headed` runs. For headless-only hosts, use
-`npm run test:testerarmy:browsers -- --only-shell`; Linux CI adds `--with-deps`.
+`npm run test:testerarmy:browsers -- --only-shell`; a fresh Linux host adds `--with-deps`.
 The headless shell is the same executable the unchanged engine already launches.
 The portable Node installer resolves Playwright from `@e2e-dev/web`, verifies
 matcher version parity and preserves other projects' installed browsers.
@@ -332,8 +351,12 @@ unexecuted journey is not a pass. Qualify a persona campaign with its `run`;
 `collect` is reserved for the historical four-locale regression campaign and
 does not aggregate persona runs. RTL, real service behaviour, physical-device
 performance and Store behaviour remain outside this campaign. See the [SDK's subscription guide](https://e2e.tester.army/docs/subscriptions)
-for access options; Claude uses an Anthropic API key rather than the Claude Code
-session.
+for access options. No Claude route is configured. The installed 0.22.0 docs
+(`node_modules/e2e/docs/acp.mdx`) describe running agent steps on a Claude Code
+or Codex login through the separate `@e2e-dev/acp` package. It is not installed
+or pinned here: using it would add a dependency and an exact pin, and a new model
+route that needs owner authorization, since its provider would see private
+project content.
 
 ### Native personas with Sol
 
@@ -379,18 +402,25 @@ The 83 historical browser cases across 16 families run through TesterArmy with
 their exact UI assertions, including mock billing, capture/edit/chat, continuous
 reading, reflection, symbol dictionary, Explorer, settings persistence, Home,
 Trends, responsive navigation, Journal geometry and feature-sheet stories.
-The original Playwright web suite remains for local runs. Since the owner decision
-of 2026-10-08, CI runs these 83 cases only here: every Playwright title has a
-TesterArmy counterpart, with a stricter quota assertion and one Europe/Paris
-browser timezone. Backend suites remain required. The relevant
+No Playwright Test suite remains: it was deleted on 2026-10-21 (#529). Since the
+owner decision of 2026-10-08 these 83 cases run only here: every former Playwright
+title has a TesterArmy counterpart, with a stricter quota assertion and one
+Europe/Paris browser timezone. Backend suites remain required. The relevant
 functional assertions protect the current contract.
 An obsolete expectation may be revised with a recorded product reason and a
 focused current journey. Preserve the old red/pass result as history; it does not
-automatically block feature or framework adoption or permit silently bypassing CI.
+automatically block feature or framework adoption or permit silently bypassing
+verify:pr or verify:release.
 
-The public `surfaceOf()` Page/context keeps CSS, geometry, keyboard, image and
-clock checks. TesterArmy owns isolated attempts and traces; the pinned isolated
-Playwright 1.64.1 package supplies matchers only. The parity fixture preserves
+New web bodies use the SDK surface, as the journeys on `traced-parity-test.ts`
+do (`browser.route`, SDK locators and `expect`, `browser.keyboard`/`browser.mouse`,
+`locator.boundingBox()`), so trace.md records their steps. `surfaceOf()` stays
+only for what e2e 0.22.0 and web 0.15.4 lack: `page.clock`, `toBeInViewport`,
+`toHaveCSS`, `toHaveRole`, `toBeEditable`, second contexts/pages and the branch
+target's `routeWebSocket`. Raw-page steps are not recorded, redacted or masked in
+trace.md. Existing parity bodies keep their coverage until a replacement passes.
+TesterArmy owns isolated attempts and traces; the pinned isolated Playwright
+1.64.1 package supplies matchers only. The parity fixture preserves
 Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
 30-second actions and 15-second exact assertions from the historical config.
 Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
@@ -411,9 +441,9 @@ EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=true E2E_WEB_LOCALE=de-DE mise exe
 EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise exec -- node tools/e2e/run.mjs dreamer web run --grep 'feature sheets stay disabled when switched off'
 ```
 
-The existing Dreamer CI check runs the same four passes and retains every
-timestamped report, screenshot, trace, source/input hashes and browser-context
-artifact. Lucid, Meditation and site commands keep their existing behavior;
+verify:release's `testerarmy-dreamer` check runs the same four passes and retains
+every timestamped report, screenshot, trace, source/input hashes and
+browser-context artifact. Lucid, Meditation and site commands keep their existing behavior;
 locale flags apply only to web. `E2E_WEB_PORT` can select an isolated local port.
 The matcher preload applies only to the CLI/workers. Expo receives the caller's
 original `NODE_OPTIONS` value or absence; native and inspection commands receive
@@ -426,7 +456,8 @@ across words instead of requiring one twenty-character word, which the mock
 French copy never contains. Remaining transcript, questions, symbols, state,
 geometry and action assertions are retained. This is UI/mock qualification;
 it does not prove backend interpretation, durability, purchases or native text.
-No original test is removed on the basis of these results.
+The original Playwright tests were removed on 2026-10-21 (#529) after the full
+TesterArmy migration.
 
 ## Continuous integration and SDK checks
 
@@ -449,7 +480,8 @@ for Dreamer and Lucid when explicitly requested; fingerprint isolation remains.
 dependencies before the app quality checks. Dreamer and Lucid share the root
 manifest. Meditation has its own manifest and check:
 `npm --prefix apps/meditation run dependencies:check`.
-Run the affected check before a local native build; CI checks both manifests.
+Run the affected check before a local native build; verify:release checks both
+manifests (`release-contracts` and `meditation`).
 
 ## Dreamer native recovery journeys
 
@@ -645,8 +677,8 @@ required intention/experience and entry to sleep settings; Meditation onboarding
 restart persistence and tabs; generated site homepage/internal navigation.
 Native counterparts exercise the explicit invariants in [NATIVE-MATRIX.md](NATIVE-MATRIX.md)
 on identified Release builds. Browser-only assertions remain covered on the web;
-existing CI gates still apply. Native gaps are explicit limits, not automatic
-blockers for unrelated functional work or adoption.
+the verify:pr and verify:release gates still apply. Native gaps are explicit
+limits, not automatic blockers for unrelated functional work or adoption.
 
 Lucid also checks dark time-field contrast, nondefault sleep times surviving a
 reload, full tab and shortcut labels at 320/360/390 pixels, light/dark programs,
@@ -654,16 +686,19 @@ beginner WBTB restrictions, shared account-form validation, two morning captures
 persisted in Journal and their confirmed sign linked to both Atlas sources,
 and stabilization/SSILD pause and resume after reload. Browser locale is French
 for this suite. These mock-service browser journeys do not qualify native Lucid.
-The existing Playwright visual journey remains; native Lucid runs here (`lucid.mobile.e2e.ts`).
+The manual Lucid visual script `tests/e2e/lucid-visual-journey.mjs` remains: it
+runs from a browser REPL, with no runner (see the
+[Lucid visual corrections](../../doc_web_interne/docs/qa/lucid-visual-corrections-2026-10-02.md)).
+Native Lucid runs here (`lucid.mobile.e2e.ts`).
 
 ## Complete verdict and immutable evidence
 
 Every invocation has a fresh UUID output under
 `tools/e2e/.e2e/<product>-<platform>/<timestamp>-<pid>-<uuid>/`; collisions never
 overwrite prior evidence. `sdk.log` and each managed server's `app.log` are inside
-that output, so all locale/flag partitions are uploaded by the existing CI artifact
-step. `evidence.json` carries exact command, campaign/context, pins, test source,
-build receipt and requested media. `source-start.json` / `source-end.json` retain
+that output, so all locale/flag partitions stay in the local `tools/e2e/.e2e/`
+tree, outside Git. `evidence.json` carries exact command, campaign/context, pins,
+test source, build receipt and requested media. `source-start.json` / `source-end.json` retain
 path→SHA inputs without raw diffs. `installed-start.json` / `installed-end.json`
 identify the installed binary. `files.json` hashes output files written before the
 final `end.json`; these two manifest files are deliberately outside that file set.
@@ -738,8 +773,8 @@ The model never receives `doc_web_interne/` or Markdown diffs. Its
 `decisionExecutor` for `agent.act` is not configured; exact journeys require no
 model dependency.
 Use a provider barrier when replay must never call a model; strict cache alone
-does not forbid a call on a cache miss. Existing Playwright, backend and
-CI checks remain until an explicitly reviewed pipeline change. Still-relevant
+does not forbid a call on a cache miss. Existing backend and local verify
+checks remain until an explicitly reviewed pipeline change. Still-relevant
 assertions remain until their replacement passes; obsolete historical criteria
 may be revised with their current product reason and old result preserved.
 A listed or
@@ -756,17 +791,20 @@ upgrade, not a floating `@latest` runtime or a global engine replacement.
 
 ```sh
 mise exec -- npm run agent-device:doctor
-E2E_DEVICE=emulator-5554 mise exec -- npm run agent-device:inspect -- dreamer android
-E2E_DEVICE='iPhone 17e' mise exec -- npm run agent-device:inspect -- dreamer ios
-E2E_DEVICE='iPhone 17e' mise exec -- npm run agent-device:mcp -- dreamer ios
+E2E_DEVICE=emulator-5554 E2E_RELEASE_RECEIPT=ANDROID_BUILD_RUN/release.json mise exec -- npm run agent-device:inspect -- dreamer android
+E2E_DEVICE='iPhone 17e' E2E_RELEASE_RECEIPT=IOS_BUILD_RUN/release.json mise exec -- npm run agent-device:inspect -- dreamer ios
+E2E_DEVICE='iPhone 17e' E2E_RELEASE_RECEIPT=IOS_BUILD_RUN/release.json mise exec -- npm run agent-device:mcp -- dreamer ios
 ```
 
 Replace `dreamer` with `lucid` or `meditation` to select that app. From
-`apps/meditation`, use `npm run agent-device:inspect -- android` or
-`npm run agent-device:mcp -- ios`, with the same explicit `E2E_DEVICE`.
-Inspection opens the installed Release app, retains its initial UI tree and a
-PNG, then closes the session. It neither installs nor clears app data, and it
-is not a passed E2E test. Evidence stays in the existing per-run output tree.
+`apps/meditation`, with the same explicit `E2E_DEVICE` and `E2E_RELEASE_RECEIPT`,
+use `npm run agent-device:inspect -- android` or `npm run agent-device:mcp -- ios`.
+The receipt is the one for the Release already installed on that device, and its
+binary must still exist in that build output: inspect and mcp check the installed
+app against it after taking the device lock (`--release-receipt <path>` after the
+platform does the same). Inspection opens the installed Release app, retains its
+initial UI tree and a PNG, then closes the session. It neither installs nor
+clears app data, and it is not a passed E2E test. Evidence stays in the existing per-run output tree.
 The same device lock covers inspection, tests and the live MCP process.
 
 The MCP entry uses `e2e mcp` with one session and the fixed native target. It
@@ -818,7 +856,7 @@ proof for qualification. After an interruption it inspects each owned campaign
 candidate independently and writes `campaign-incomplete.json` with `qualified:false`,
 missing proof files, SDK/wrapper exits and hashes of the available report/log bytes.
 It returns nonzero and never writes a qualifying `campaign.json`. The original
-reports, logs and partial media remain in the uploaded directory; an interrupted
+reports, logs and partial media remain in the output directory; an interrupted
 ZIP/video is not claimed complete. No SDK test or app is launched by collection.
 
 ## Physical iPhone Apple Sandbox billing

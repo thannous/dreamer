@@ -299,7 +299,8 @@ RevenueCat Test Store purchases follow the manual checklists of
 
 For native inspection/exploration, use the official `agent-device` skill with
 `npm run agent-device:inspect -- <product> <android|ios>` or
-`npm run agent-device:mcp -- <product> <android|ios>`, and explicit `E2E_DEVICE`.
+`npm run agent-device:mcp -- <product> <android|ios>`, explicit `E2E_DEVICE`
+and `E2E_RELEASE_RECEIPT=<build output>/release.json` of the installed Release.
 Read `tools/e2e/README.md`. These reuse the test runner's installed-build checks
 and exclusive device lock; direct CLI/MCP must not bypass ownership. Inspection
 captures UI evidence without resets and does not qualify a user journey. New

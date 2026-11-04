@@ -68,7 +68,10 @@ Mock UI passes prove the exercised interface and its local state transitions.
 The owned backend separately proves real local persistence/Auth/RLS; it blocks
 external AI, OAuth, analytics and billing. See the
 [backend qualification](../doc_web_interne/docs/e2e-backend-qualification.md).
-Backend traces are SDK Markdown steps, without HTTP token payload recording.
+Each backend test keeps a trace.md, but backend bodies drive the raw Playwright
+page and Supabase clients, which the trace does not record; the evidence is the
+assertion result, the outcome screenshot and the logs. No HTTP token payload is
+recorded.
 
 The persistent Supabase branch is optional and excluded from the complete command:
 its committed allowlist is empty, so it remains refused until an owned test branch
