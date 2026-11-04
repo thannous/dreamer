@@ -47,8 +47,7 @@ async function selectProfile(app: App, screen: Screen, browser: Browser, profile
 // The Noctalia modal asks for AI consent once its host is mounted, as in the app; only the
 // onboarding's leave confirmation is still the browser's own dialog.
 async function answerAiConsent(screen: Screen, answer: 'accept' | 'decline') {
-  // A read waits for the modal to appear, like an action does.
-  expect(await screen.getByTestId('modal.aiConsent', { visible: true }).textContent()).toContain(aiConsentDisclosure);
+  await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toContainText(aiConsentDisclosure);
   await screen.getByTestId(`btn.aiConsent.${answer}`, { visible: true }).tap();
   await expect(screen.getByTestId('modal.aiConsent')).toHaveCount(0);
 }

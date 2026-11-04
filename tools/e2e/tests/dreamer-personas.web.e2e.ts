@@ -14,7 +14,7 @@ if (process.env.E2E_PERSONAS === '1') {
       // Leaving the onboarding stories still uses the browser confirmation.
       const stop = await browser.onDialog('accept');
       try { await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap(); }
-      finally { stop(); }
+      finally { await stop(); }
     }
     await screen.getByTestId('btn.onboarding.skip').tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -50,7 +50,7 @@ if (process.env.E2E_PERSONAS === '1') {
     if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
       const stop = await browser.onDialog('accept');
       try { await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap(); }
-      finally { stop(); }
+      finally { await stop(); }
     }
     await screen.getByTestId('btn.onboarding.skip').tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();

@@ -11,7 +11,7 @@ test('declining AI preserves the saved dream and accepting later analyzes it onc
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
     const stop = await browser.onDialog('accept');
     try { await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap(); }
-    finally { stop(); }
+    finally { await stop(); }
   }
   await screen.getByTestId('btn.onboarding.skip').tap();
   const story = 'E2E consent: a silver wolf by a still lake.';
@@ -48,5 +48,5 @@ test('declining AI preserves the saved dream and accepting later analyzes it onc
     await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
     expect(browserDialogs).toEqual([]);
     await app.screenshot('consent-recovered-with-original-story');
-  } finally { stop(); }
+  } finally { await stop(); }
 });

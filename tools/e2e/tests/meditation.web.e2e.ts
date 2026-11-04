@@ -1,9 +1,16 @@
-import { test, surfaceOf } from '@e2e-dev/web';
-import { expect } from 'e2e';
-import type { Page } from 'playwright/test';
+import { test } from '@e2e-dev/web';
+import { expect, type Screen } from 'e2e';
 import { isolateWeb } from '../web-fixtures';
 import { meditationJourney } from '../journeys';
-import { webEngine } from '../web-engine';
+
+// SDK taps round to whole CSS pixels: stay 2 px inside the bar's right edge, or the
+// tap can land just past it and miss the seek.
+async function seekNearEnd(screen: Screen) {
+  const slider = screen.getByRole('slider', 'Playback position', { visible: true });
+  const bounds = await slider.boundingBox();
+  if (!bounds) throw new Error('Playback seek control is not visible.');
+  await slider.tap({ position: { x: bounds.width - 2, y: bounds.height / 2 } });
+}
 
 // CI probes Metro /status before the first static route compiles. The 180s test
 // and config.timeout lifecycle budgets cover cold app.open() and restart;
@@ -65,11 +72,7 @@ test('Meditation home moves to the next step of the path once the first one is p
   await screen.getByTestId('home.journey.cta', { visible: true }).tap();
   await screen.getByTestId('btn.session.play', { visible: true }).tap();
   await expect(screen.getByTestId('text.player.position', { visible: true })).not.toHaveText('0:00');
-  const page = surfaceOf(webEngine)!.page() as unknown as Page;
-  const slider = page.getByRole('slider', { name: 'Playback position', exact: true });
-  const bounds = await slider.boundingBox();
-  if (!bounds) throw new Error('Playback seek control is not visible.');
-  await slider.click({ position: { x: bounds.width - 0.1, y: bounds.height / 2 } });
+  await seekNearEnd(screen);
   await expect(screen.getByTestId('screen.sessionComplete', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.complete.home', { visible: true }).tap();
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
@@ -104,11 +107,7 @@ test('Meditation resumes audio after restart, completes it and records history a
   await expect.poll(elapsed).toBeGreaterThanOrEqual(paused + 15);
   await expect.poll(elapsed).toBeLessThan(paused + 30);
   // Use the actual accessible seek control; no completion/storage state injection.
-  const page = surfaceOf(webEngine)!.page() as unknown as Page;
-  const slider = page.getByRole('slider', { name: 'Playback position', exact: true });
-  const bounds = await slider.boundingBox();
-  if (!bounds) throw new Error('Playback seek control is not visible.');
-  await slider.click({ position: { x: bounds.width - 0.1, y: bounds.height / 2 } });
+  await seekNearEnd(screen);
   await expect(screen.getByTestId('screen.sessionComplete', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.complete.home', { visible: true }).tap();
   for (let restart = 0; restart < 2; restart++) {

@@ -16,7 +16,7 @@ test('withdrawing AI in settings asks again before the next reading and turning 
   if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
     const stop = await browser.onDialog('accept');
     try { await screen.getByTestId('btn.onboarding.feature.close', { visible: true }).tap(); }
-    finally { stop(); }
+    finally { await stop(); }
   }
   await screen.getByTestId('btn.onboarding.skip').tap();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -91,5 +91,5 @@ test('withdrawing AI in settings asks again before the next reading and turning 
     await expect(screen.getByTestId('component.transcriptCard')).toContainText(story);
     expect(browserDialogs).toEqual([]);
     await app.screenshot('ai-reading-after-consent-restored');
-  } finally { stop(); }
+  } finally { await stop(); }
 });
