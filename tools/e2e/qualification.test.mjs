@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { fileURLToPath } from 'node:url';
 import { virtualLinks } from './test-support/virtual-links.mjs';
-import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
+import { SDK_PINS, trackedDiffSha256, verifyReport, preserveStatus, qualifyingSdkEnvironment, compareSnapshots, aggregateReports, writeOnce, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const before = { revision: 'a'.repeat(40), files: { 'app/recording.tsx': sha('source') }, outputs: {} };
@@ -90,6 +90,15 @@ test('primary exit and SIGINT/SIGTERM survive secondary proof failure', () => {
   for (const code of [1, 2, 3, 130, 143]) assert.equal(preserveStatus(code, ['SECONDARY']), code);
   assert.equal(preserveStatus(0, ['SECONDARY']), 3);
   assert.equal(preserveStatus(0, []), 0);
+});
+test('qualifying SDK children run in CI mode without colour whatever the caller set, and the caller env stays as it was', () => {
+  for (const CI of [undefined, '', '0', 'false', 'true']) {
+    const caller = CI === undefined ? { PATH: '/usr/bin' } : { PATH: '/usr/bin', CI };
+    const unchanged = structuredClone(caller);
+    const child = qualifyingSdkEnvironment(caller);
+    assert.equal(child.CI, '1'); assert.equal(child.NO_COLOR, '1'); assert.equal(child.PATH, '/usr/bin');
+    assert.deepEqual(caller, unchanged, 'run.mjs picks its web worker count from the caller\'s own CI');
+  }
 });
 test('persistent source/test input mutation fails, declared output changes do not claim source clean', () => {
   const stable = structuredClone(before); stable.outputs = { 'docs-src/static/js/experience/experience.js': sha('output') };

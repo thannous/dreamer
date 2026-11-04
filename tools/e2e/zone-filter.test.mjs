@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
+import { qualifyingSdkEnvironment } from './qualification.mjs';
 import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, widenWithDecision, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -113,6 +114,16 @@ test('a full campaign does not pass --changed-since, and e2e 0.22.0 skips filter
   assert.match(slice, /filterSelection/);
   const gate = readFileSync(new URL('./run.mjs', import.meta.url), 'utf8');
   assert.match(gate, /args\[index\] === '--changed-since'/);
+});
+
+test('a leftover test.only fails the gate\'s e2e 0.22.0 selection instead of narrowing it', async () => {
+  const { isCiMode } = await import('./node_modules/e2e/dist/config/resolve.js');
+  const { select } = await import('./node_modules/e2e/dist/collect/select.js');
+  // A caller that turned CI off still hands the SDK child CI mode.
+  const ci = isCiMode(qualifyingSdkEnvironment({ CI: 'false' }));
+  assert.equal(ci, true);
+  const leftover = { tests: [{ id: 'leftover-only', mode: 'only', selected: true }] };
+  assert.throws(() => select(leftover, { ci, targets: [] }), { code: 'ONLY_IN_CI' });
 });
 
 test('the decision model only takes back parcours the zones left out as untouched', () => {

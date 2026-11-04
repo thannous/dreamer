@@ -41,6 +41,12 @@ export function createAttemptOutput(parent, name) {
   const path = join(parent, name); mkdirSync(path); return path;
 }
 export function preserveStatus(primary, errors) { return primary || (errors.length ? 3 : 0); }
+// Qualifying list/run children run e2e in CI mode: a test.only left from the
+// --watch authoring loop fails ONLY_IN_CI (collect/select.js) instead of
+// narrowing the run. Every config run.mjs loads sets workers, retries and cache,
+// so no other default changes. picocolors colors any CI output; NO_COLOR keeps
+// sdk.log plain. The caller's env is copied: run.mjs's worker default reads it.
+export const qualifyingSdkEnvironment = env => ({ ...env, CI: '1', NO_COLOR: '1' });
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 const fail = code => { throw new Error(code); };
 export function hashFiles(root, files) {

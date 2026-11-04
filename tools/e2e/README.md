@@ -176,6 +176,11 @@ pins and existing provider budgets; an upgrade does not enable a provider or Jev
 New journeys are written from this directory with `npx e2e run --watch`
 (e2e 0.22.0). Watch reruns when a test, a neighbouring source file, or the
 config is saved. It is for authoring. Qualifying runs stay on `run.mjs`.
+`run.mjs` starts its SDK `list` and `run` children with `CI=1` and `NO_COLOR=1`,
+so a `test.only` left from authoring fails with `ONLY_IN_CI` instead of
+narrowing the run to that test: `list` exits 2, a run stops with exit 3 before
+the engine starts. Remove `.only` before a qualifying run. Its web worker count
+still follows the caller's own `CI`, and the guarded `mcp` entry stays out of CI mode.
 
 From the repository root:
 

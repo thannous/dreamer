@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
+import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, qualifyingSdkEnvironment, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { seedDurations, keepDurations } from './duration-history.mjs';
@@ -107,7 +107,7 @@ if (sdk && existsSync(sdk)) {
 }
 if (command === 'list') {
   if (platform !== 'web' && !env.E2E_DEVICE) env.E2E_DEVICE = platform === 'android' ? 'emulator-0000' : 'iPhone Simulator';
-  const result = spawnSync(process.execPath, [...webNodeArgs, cli, command, ...args], { cwd, env, stdio: 'inherit' });
+  const result = spawnSync(process.execPath, [...webNodeArgs, cli, command, ...args], { cwd, env: qualifyingSdkEnvironment(env), stdio: 'inherit' });
   if (result.error) throw result.error;
   process.exit(result.status ?? 1);
 }
@@ -377,7 +377,7 @@ async function runSdk() {
     else if (args[index] === '--pass-with-no-tests') collectionArgs.push(args[index]);
     else if (selections.has(args[index])) collectionArgs.push(args[index], args[++index]);
   }
-  const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: cliEnvironment() }));
+  const collection = JSON.parse(read(process.execPath, [...webNodeArgs, cli, 'list', ...collectionArgs, '--reporter', 'json'], { cwd, env: qualifyingSdkEnvironment(cliEnvironment()) }));
   const runnable = (collection.pairs ?? []).filter(pair => pair.disposition === 'run' || pair.disposition === 'skip');
   // Static skips from another locale do not block this context. A selected
   // journey skipped in its own locale still runs and fails NO_PASS.
@@ -395,7 +395,7 @@ async function runSdk() {
   const seed = seedDurations(history, output);
   sdkLaunched = true;
   const stopStallMonitor = startHostStallMonitor();
-  try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', cliEnvironment()); }
+  try { primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', qualifyingSdkEnvironment(cliEnvironment())); }
   finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0, output); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
