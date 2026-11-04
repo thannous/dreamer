@@ -178,7 +178,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await app.screenshot('explorer-conversation-revisited');
     });
 
-  test('a guest at the offered chat limit is told so and invited to create an account',
+  test('a guest uses up the offered chat exchanges of a dream',
     { agent: 'guest', tags: ['personas', 'persona-guest', 'quota'] }, async ({ app, screen, browser, agent }) => {
       await startGuest(app, screen, browser);
       const story = 'Personas invitée : un verger de verre chante quand le vent passe.';
@@ -214,7 +214,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await expectSignupForm(screen, browser);
     });
 
-  test('a guest out of offered analyses is told so and invited to create an account',
+  test('a guest saves a dream after spending the offered analyses',
     { agent: 'guest', tags: ['personas', 'persona-guest', 'quota'] }, async ({ app, screen, browser, agent }) => {
       await startGuest(app, screen, browser, 2);
       const story = 'Personas invitée : une horloge de sable compte à rebours sous la mer.';
@@ -239,7 +239,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await expectSignupForm(screen, browser);
     });
 
-  test('a guest starts a remembered dream from the empty journal with one invitation to write',
+  test('a guest opens remembered capture from the empty journal',
     { agent: 'guest', tags: ['personas', 'persona-guest', 'capture'] }, async ({ app, screen, browser, agent }) => {
       await startGuest(app, screen, browser);
       await screen.getByTestId('tab.journal', { visible: true }).tap();
