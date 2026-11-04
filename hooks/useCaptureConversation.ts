@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestCaptureQuestion } from '@/services/captureConversation';
+import { captureQuestionDraftId, forgetCaptureQuestion, readCaptureQuestion, saveCaptureQuestion } from '@/services/captureQuestionStore';
 import { getCaptureFallbackQuestion } from '@/lib/dreamRecallQuestions';
 import { hasAiConsent } from '@/lib/aiConsent';
 
@@ -10,22 +10,6 @@ type ConversationState =
   | { status: 'idle' | 'asking' | 'decision' }
   | { status: 'question'; question: string | null; unavailable: boolean }
   | { status: 'done'; question: string | null };
-
-// The question Noctalia last asked, kept with the draft text it answers: reopening the
-// capture shows it again instead of asking the provider anew.
-type SavedQuestion = { key: string; question: string | null; done: boolean; previous: string[] };
-const savedQuestionKey = (scope?: string) => `noctalia.capture.question.v1:${scope ?? 'default'}`;
-
-async function readSavedQuestion(scope: string | undefined, key: string): Promise<SavedQuestion | null> {
-  try {
-    const saved = JSON.parse((await AsyncStorage.getItem(savedQuestionKey(scope))) ?? 'null') as SavedQuestion | null;
-    return saved?.key === key && Array.isArray(saved.previous) ? saved : null;
-  } catch { return null; }
-}
-
-function saveQuestion(scope: string | undefined, saved: SavedQuestion) {
-  AsyncStorage.setItem(savedQuestionKey(scope), JSON.stringify(saved)).catch(() => {});
-}
 
 // One shared idle snapshot: resetting an idle conversation does not re-render the screen.
 const IDLE: ConversationState = { status: 'idle' };
@@ -65,6 +49,12 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     finished.current = false;
   }, []);
 
+  // The draft ended (saved, cleared or discarded): forget its saved question with it.
+  const discard = useCallback(() => {
+    reset();
+    forgetCaptureQuestion(scope).catch(() => {});
+  }, [reset, scope]);
+
   const rememberQuestions = useCallback((text: string) => {
     const label = t('recording.conversation.question_label');
     const restored = text.split(/\r?\n/).filter(line => line.startsWith(label)).map(line => line.slice(label.length).trim()).filter(Boolean);
@@ -86,6 +76,7 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
   const ask = useCallback(async (transcript: string) => {
     const text = transcript.trim();
     const key = `${language}:${text}`;
+    const draft = captureQuestionDraftId(language, text);
     if (finished.current) return true;
     if (!text || requested.current === key) return;
     controller.current?.abort();
@@ -108,11 +99,11 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
       setState({ status: 'question', question: fallback, unavailable: failed });
       previous.current.push(fallback);
       // A failure is retried on the next visit; a general question chosen without consent is kept.
-      if (!failed) saveQuestion(scope, { key, question: fallback, done: false, previous: [...previous.current] });
+      if (!failed) saveCaptureQuestion(scope, { draft, question: fallback, done: false, previous: [...previous.current] });
     };
     try {
       // This draft was already answered: show the same question again, without a new request.
-      const saved = await readSavedQuestion(scope, key);
+      const saved = await readCaptureQuestion(scope, draft);
       if (generation.current !== owner) return;
       if (saved) {
         previous.current = [...saved.previous];
@@ -145,7 +136,7 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
         : { status: 'question', question: result.question, unavailable: false });
       finished.current = result.done;
       if (result.question) previous.current.push(result.question);
-      saveQuestion(scope, { key, question: result.question, done: result.done, previous: [...previous.current] });
+      saveCaptureQuestion(scope, { draft, question: result.question, done: result.done, previous: [...previous.current] });
       return result.done;
     } catch {
       if (generation.current !== owner) return;
@@ -171,6 +162,6 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     unavailable: state.status === 'question' && state.unavailable,
     done: state.status === 'done',
     needsDecision: state.status === 'decision',
-    ask, reset, cancel, invalidateSource,
+    ask, reset, discard, cancel, invalidateSource,
   };
 }

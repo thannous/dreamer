@@ -1104,6 +1104,14 @@ async function readRecordingDraft(scope: RecordingDraftScope, adoptGuest = true)
     await writeRecordingDraft(key, guest.value);
     try {
       await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, '');
+      // The guest's last capture question can quote this draft; it does not stay behind.
+      // Loaded lazily, like AsyncStorage itself here.
+      const { forgetCaptureQuestion } = await loadModule<typeof import('@/services/captureQuestionStore')>({
+        importModule: () => import('@/services/captureQuestionStore'),
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        requireModule: () => require('@/services/captureQuestionStore') as typeof import('@/services/captureQuestionStore'),
+      });
+      await forgetCaptureQuestion('guest');
     } catch {
       // The account copy and its ownership claim are durable; retry cleanup later.
     }

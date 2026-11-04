@@ -246,7 +246,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   // The guided questions need the AI: ask for consent when the first one is due, not before.
   const requestCaptureConsent = useCallback(() => requestAiConsent(t), [t]);
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope, requestConsent: requestCaptureConsent });
-  const { ask: askCaptureQuestion, reset: resetConversation, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
+  const { ask: askCaptureQuestion, discard: discardConversation, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
   // Freeze the question when an answer begins. Persist the pair as editable text
   // so draft restoration and analysis retain context without another AI request.
   const getAnswerInsertion = useCallback(() => {
@@ -659,7 +659,8 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     setReviewExitStep(null);
     setEditableCapture(null);
     cancelReviewPreparation();
-    resetConversation();
+    // Every caller ends the draft (cleared, saved or discarded), so its saved question goes too.
+    discardConversation();
     captureMicrophoneMutedRef.current = false;
     answerInsertionRef.current = null;
     setAnswerBase(null);
@@ -677,7 +678,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     setTranscriptSelection(undefined);
     captureStartedTrackedRef.current = false;
     voicedCaptureRef.current = false;
-  }, [cancelReviewPreparation, resetConversation]);
+  }, [cancelReviewPreparation, discardConversation]);
 
   const navigateToSavedDream = useCallback((
     dream: DreamAnalysis,

@@ -1,5 +1,7 @@
 import { forgetGuideReading } from '@/services/guideReadingStore';
 import { forgetBadgeLedger } from '@/services/badgeLedgerStore';
+import { forgetCaptureQuestion } from '@/services/captureQuestionStore';
+import { toAccountScope } from '@/lib/accountScope';
 import { signOut } from '@/lib/auth';
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
@@ -54,6 +56,12 @@ export async function finalizeAccountDeletion(deletedUserId: string): Promise<vo
   }
   try {
     await forgetGuideReading(deletedUserId);
+  } catch {
+    // Like the other caches, this remains scoped to the deleted account.
+  }
+  try {
+    // The last capture question can quote the dream it was asked about.
+    await forgetCaptureQuestion(toAccountScope(deletedUserId));
   } catch {
     // Like the other caches, this remains scoped to the deleted account.
   }

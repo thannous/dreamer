@@ -58,6 +58,11 @@ const mockAsyncStorage = {
 };
 
 const mockReportSyncQueueClearedWithPending = jest.fn();
+const mockForgetCaptureQuestion = jest.fn(async (_scope?: string) => undefined);
+
+jest.mock('@/services/captureQuestionStore', () => ({
+  forgetCaptureQuestion: (scope?: string) => mockForgetCaptureQuestion(scope),
+}));
 
 // Exercise the real record-store SQL against SQLite while retaining legacy KV fixtures.
 jest.mock('expo-sqlite', () => {
@@ -558,6 +563,8 @@ describe('storageServiceReal', () => {
         expect(await storage.getRecordingDraft(ACCOUNT_A)).toEqual({ status: 'loaded', value: 'typed before signing in' });
         expect(values.get(`${RECORDING_TRANSCRIPT_KEY}:${ACCOUNT_A}`)).toBe('typed before signing in');
         expect(persistedDraftText(values.get(GUEST_DRAFT_KEY))).toBe('');
+        // The guest's last capture question does not stay behind either.
+        expect(mockForgetCaptureQuestion).toHaveBeenCalledWith('guest');
         expect(await storage.getRecordingDraft('guest')).toEqual({ status: 'loaded', value: '' });
         expect(await storage.getRecordingDraft(ACCOUNT_B)).toEqual({ status: 'absent' });
       });

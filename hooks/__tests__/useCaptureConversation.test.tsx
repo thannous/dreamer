@@ -44,6 +44,22 @@ it('shows the answered question again when the capture reopens, without a new re
   expect(request).toHaveBeenCalledTimes(2);
 });
 
+it('keeps no dream text on the device and forgets the question when the draft ends', async () => {
+  request.mockResolvedValue({ question: 'Que voyais-tu dans ce jardin ?', done: false });
+  const first = renderHook(() => useCaptureConversation({ language: 'fr', t, scope: 'guest' }));
+  await act(async () => { await first.result.current.ask('Chez mon ex, un jardin.'); });
+  const stored = await AsyncStorage.multiGet(await AsyncStorage.getAllKeys());
+  expect(stored.length).toBe(1);
+  expect(JSON.stringify(stored)).not.toContain('Chez mon ex');
+  // Cleared, saved or discarded: the next draft with the same text asks again.
+  await act(async () => { first.result.current.discard(); await Promise.resolve(); });
+  expect(await AsyncStorage.getAllKeys()).toEqual([]);
+  first.unmount();
+  const reopened = renderHook(() => useCaptureConversation({ language: 'fr', t, scope: 'guest' }));
+  await act(async () => { await reopened.result.current.ask('Chez mon ex, un jardin.'); });
+  expect(request).toHaveBeenCalledTimes(2);
+});
+
 it('asks again on the next visit after a network failure', async () => {
   request.mockRejectedValueOnce(new Error('offline')).mockResolvedValue({ question: 'Et ensuite ?', done: false });
   const first = renderHook(() => useCaptureConversation({ language: 'fr', t }));
