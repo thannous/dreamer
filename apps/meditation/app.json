@@ -142,7 +142,8 @@
       [
         "./plugins/withAndroidDefaultLabel",
         "Meditation"
-      ]
+      ],
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
