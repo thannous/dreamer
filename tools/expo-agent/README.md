@@ -1,6 +1,6 @@
 # Expo agent CLI
 
-This private tooling package pins experimental `@expo/agent-cli` **1.0.22**.
+This private tooling package pins experimental `@expo/agent-cli` **1.0.23**.
 It is shared by Dreamer/Lucid (repository root) and Meditation (`apps/meditation`).
 Neither app's dependencies, lockfile, SDK nor npm scripts are changed by this tool.
 The separate package follows the existing `tools/e2e` isolation pattern and avoids

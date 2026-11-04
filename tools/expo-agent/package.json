@@ -13,6 +13,6 @@
     "skills:sync": "node run.cjs --project ../.. skills:sync --agent codex --json"
   },
   "devDependencies": {
-    "@expo/agent-cli": "1.0.22"
+    "@expo/agent-cli": "1.0.23"
   }
 }
