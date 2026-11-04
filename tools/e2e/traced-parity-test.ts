@@ -1,23 +1,18 @@
 import { test as base } from '@e2e-dev/web';
 import { expect } from 'e2e';
+import { guardNetwork } from './web-fixtures';
 
 // Preserve the historical network guard while migrated cases use SDK locators
 // and assertions. This fixture is acquired automatically for every case.
 export const test = base.extend<{ parityNetwork: void }>({
-  parityNetwork: async ({ app, browser }, use) => {
-    const origin = new URL(app.baseUrl!).origin;
-    const serviceRequests: string[] = [];
-    await browser.route('**/*', async route => {
-      const url = new URL(route.request.url);
-      if (url.origin === origin) await route.continue();
-      else if (/^(picsum\.photos|fastly\.picsum\.photos)$/.test(url.hostname)) {
-        await route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#eee"/></svg>' });
-      } else {
-        if (/revenuecat|supabase|stripe|purchases|billing/i.test(url.hostname)) serviceRequests.push(url.hostname);
-        await route.abort();
-      }
-    });
-    try { await use(undefined); }
-    finally { expect.soft(serviceRequests, 'No real billing/backend request is allowed').toEqual([]); }
+  parityNetwork: async ({ app, browser }, provide) => {
+    const serviceRequests = await guardNetwork(browser, app);
+    await provide(undefined);
+    // Soft collection is closed by teardown, so these fail the attempt like any expect.
+    expect(serviceRequests, 'No real billing/backend request is allowed').toEqual([]);
+    // web-engine.ts blocks the app's service worker only through `headers`; an engine
+    // upgrade that stops doing so must fail here rather than bypass the routes.
+    expect(await browser.evaluate(() => navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(registrations => registrations.length) : 0),
+      'Service workers stay blocked (web-engine.ts headers)').toBe(0);
   },
 });

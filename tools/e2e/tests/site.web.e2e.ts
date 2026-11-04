@@ -5,6 +5,11 @@ import { test } from '@e2e-dev/web';
 import type { Browser } from '@e2e-dev/web';
 import { expect } from 'e2e';
 
+// Every built page loads the production Ahrefs script (scripts/lib/ahrefs-analytics.js):
+// answer it with an empty script so local runs send it nothing, without logging an
+// aborted request on each page. scripts/check-docs-shell.js still checks the tag.
+test.beforeEach(({ browser }) => browser.route(/^https:\/\/analytics\.ahrefs\.com\//, route => route.fulfill({ contentType: 'text/javascript', body: '' })));
+
 const mediaPathname = (url: string) => new URL(url, 'https://noctalia.app').pathname.replace(/^\/releases\/[a-f0-9]{64}(?=\/img\/)/, '');
 
 test('the generated English homepage opens a real internal destination', async ({ app, screen, browser }) => {

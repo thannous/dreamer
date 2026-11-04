@@ -6,8 +6,8 @@ import { createRequire } from 'node:module';
 import { createHash } from 'node:crypto';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { appMediaResponse } from './app-media-fixtures';
 import { webEngine, webLocale } from './web-engine';
+import { guardNetwork } from './web-fixtures';
 
 // Keep the matcher library out of the test module bundler, as in SkillCodex's
 // existing baseline adapter. Resolve this isolated package's pinned version.
@@ -82,38 +82,26 @@ export function createParityTest(initial: Options = {}) {
   const skip = skipped || (locale !== webLocale ? `Requires the real ${locale} browser context; run E2E_WEB_LOCALE=${locale} with --tag locale-${locale}` : false);
   const parity = base.extend<{ page: Page }>({
     page: async ({ app, browser }, provide) => {
-      const origin = new URL(app.baseUrl!).origin;
-      const serviceRequests: string[] = [];
-      await browser.route('**/*', async route => {
-        const url = new URL(route.request.url);
-        const media = appMediaResponse(url);
-        if (url.origin === origin) await route.continue();
-        else if (media) await route.fulfill(media);
-        else if (/^(picsum\.photos|fastly\.picsum\.photos)$/.test(url.hostname))
-          await route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#eee"/></svg>' });
-        else {
-          if (/revenuecat|supabase|stripe|purchases|billing/i.test(url.hostname)) serviceRequests.push(url.hostname);
-          await route.abort();
-        }
-      });
+      const serviceRequests = await guardNetwork(browser, app);
       await browser.setViewport(active.viewport ?? { width: 1280, height: 720 });
       await app.open();
       const page = surfaceOf(webEngine)!.page() as unknown as Page;
       ownedBrowsers.set(page, browser);
       page.setDefaultTimeout(30_000);
       // Historical journeys predate the one-time AI permission dialog; give it up front.
-      await page.context().addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
+      await browser.addInitScript(() => window.localStorage.setItem('noctalia.aiConsent.v2', 'granted'));
       // The engine resolves app URLs itself; its raw page has no baseURL.
       // Preserve the historical relative goto contract on this attempt only.
       const goto = page.goto;
       page.goto = (url, options) => goto.call(page, new URL(url, app.baseUrl!).href, options);
       const reducedMotion = active.reducedMotion ?? active.contextOptions?.reducedMotion;
-      if (reducedMotion) await page.emulateMedia({ reducedMotion });
+      if (reducedMotion) await browser.emulateMedia({ reducedMotion });
       try { await provide(page); }
       finally {
         ownedBrowsers.delete(page);
         page.goto = goto;
-        e2eExpect.soft(serviceRequests, 'No real billing/backend request is allowed').toEqual([]);
+        // Soft collection is closed by teardown: this fails the attempt like any expect.
+        e2eExpect(serviceRequests, 'No real billing/backend request is allowed').toEqual([]);
       }
     },
   });
