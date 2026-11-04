@@ -8,6 +8,9 @@ import { TID } from '@/lib/testIDs';
 jest.mock('@/components/ui/NightSkyBand', () => ({ NightSkyBand: () => null }));
 // The seal's legend asks whether its face has loaded; expo-font needs native assets the test runtime lacks.
 jest.mock('expo-font', () => ({ isLoaded: () => true }));
+// The capture conversation keeps its last question in AsyncStorage; the native module is absent here.
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock'));
 
 let mockHydrated = false;
 let mockRestore: (value: string) => void;
@@ -145,9 +148,12 @@ jest.mock('@/components/recording/RecordingSheets', () => ({
 }));
 
 const { default: RecordingScreen } = require('@/app/recording');
+const AsyncStorage = require('@react-native-async-storage/async-storage');
 
 describe('Recording draft hydration boundary', () => {
   beforeEach(() => {
+    // A question saved by one test must not reopen in the next.
+    void AsyncStorage.clear();
     mockHydrated = false;
     mockRecordingRef.current = false;
     jest.clearAllMocks();
