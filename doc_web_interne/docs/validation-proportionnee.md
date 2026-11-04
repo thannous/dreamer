@@ -40,7 +40,8 @@ ou des vérifications plus larges des données et des cas d'échec.
   contrôles pertinents et, pour les changements web concernés, les parcours
   touchés et les parcours essentiels. La sélection par zones reste le socle ;
   selon la révision et sa configuration, un filtre IA facultatif peut ajouter
-  d'autres parcours. Une preuve échouée ou incomplète bloque le push. Voir les
+  d'autres parcours. Avec une preuve échouée ou incomplète, on ne pousse pas : le
+  hook `pre-push` affiche la preuve mais ne la bloque pas. Voir les
   [détails de la sélection](repository-operations.md#local-validation-and-ci).
 - **Avant une release de l'application.** On lance l'exploration
   `npm run test:bugbash:prerelease` en environnement simulé. Chaque bug confirmé
