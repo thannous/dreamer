@@ -176,6 +176,17 @@ export function verifyNativeCleanup(document, options) {
       || result.attempts[0].cleanup !== 'complete' || !Array.isArray(result.attempts[0].secondaryErrors) || result.attempts[0].secondaryErrors.length)) fail('NATIVE_CLEANUP_UNPROVEN');
   return true;
 }
+const defined = entries => Object.fromEntries(entries.filter(([, value]) => value !== undefined));
+// What the run's test filters judged and left out. A filter that failed or timed out
+// (`outcome`) left nothing out, so every candidate ran.
+function filterDecisions(run) {
+  const changes = run.changes;
+  return {
+    changes: changes ? defined([['base', changes.base], ['files', changes.files], ['skipped', changes.skipped]]) : null,
+    filters: (run.filters ?? []).map(({ name, candidates, excluded, note, outcome }) =>
+      defined([['name', name], ['candidates', candidates], ['excluded', excluded], ['note', note], ['outcome', outcome]])),
+  };
+}
 export function verifyReport(document, options) {
   const run = verifyProvenance(document, options);
   const passed = [], skipped = [], excluded = [], artifacts = [], seen = new Set();
@@ -236,7 +247,8 @@ export function verifyReport(document, options) {
     || summary.failed !== 0 || summary.interrupted !== 0 || summary.flaky !== 0) fail('SUMMARY_INCOMPLETE');
   return { schemaVersion: 1, runId: run.id, target: options.target, context: options.context ?? null,
     startedAt: run.startedAt, finishedAt: run.finishedAt, revision: options.revision,
-    runner: run.runner.version, engine: run.targets[0].engine.version, passed, skipped, excluded, artifacts };
+    runner: run.runner.version, engine: run.targets[0].engine.version, passed, skipped, excluded, artifacts,
+    ...filterDecisions(run) };
 }
 export function aggregateReports(proofs, required) {
   const key = row => JSON.stringify([row.targetId, row.testId, row.agent]);

@@ -691,7 +691,10 @@ After process completion the wrapper releases only its own lock, including when
 resource cleanup is failed/missing. `resourceCleanup` records that limitation and
 the final verdict remains nonqualifying; no unknown session/recorder is killed.
 `qualification.json` records SDK validation; only final `end.json` exit0 completes
-that invocation. Preserve both when reporting its verdict.
+that invocation. Preserve both when reporting its verdict. It also copies the
+report's `run.changes` and `run.filters`: what a `--changed-since` run judged and
+what each filter left out. A filter with an `outcome` (`failed`, `timed-out`) left
+nothing out, so every candidate ran; the wrapper prints that on the console.
 
 While the SDK runs, the wrapper keeps a 1 s heartbeat. A gap of 30 s or more means
 the whole host stopped running processes (a VM snapshot or pause, heavy memory

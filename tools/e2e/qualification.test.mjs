@@ -79,6 +79,19 @@ test('skips and excluded IDs are retained separately and never counted passed', 
   r.run.summary = { discovered: 2, selected: 1, executed: 0, passed: 0, skipped: 1, failed: 0, interrupted: 0, flaky: 0 };
   assert.throws(() => verifyReport(r, options()), /NO_PASS/);
 });
+test('the proof records what the filters left out, including a filter that failed and left nothing out', () => {
+  const r = report();
+  r.run.changes = { base: 'b'.repeat(40), files: 3 };
+  r.run.filters = [{ name: 'parcours-touches', candidates: 5, excluded: 2, note: 'journal' }];
+  const proof = verifyReport(r, options());
+  assert.deepEqual(proof.changes, { base: 'b'.repeat(40), files: 3 });
+  assert.deepEqual(proof.filters, [{ name: 'parcours-touches', candidates: 5, excluded: 2, note: 'journal' }]);
+  r.run.filters = [{ name: 'parcours-touches', candidates: 5, excluded: 0, note: 'parcours-touches threw: boom', outcome: 'failed' }];
+  assert.equal(verifyReport(r, options()).filters[0].outcome, 'failed');
+  // Without --changed-since no filter runs, and the report names neither.
+  const full = verifyReport(report(), options());
+  assert.deepEqual([full.changes, full.filters], [null, []]);
+});
 test('public collection pairs prevent a coherently shortened or wrongly skipped SDK report from passing', () => {
   const r = report(); r.run.results[0].file = 'tests/public.e2e.ts'; r.run.results[0].titlePath = ['public fixture'];
   const pair = { file: 'tests/public.e2e.ts', titlePath: ['public fixture'], target: 'dreamer-android', disposition: 'run' };

@@ -421,6 +421,9 @@ async function runSdk() {
       startedAt, output, context: context(), origin: expectedOrigin, video: args.includes('--video'), trace: true, collection: { ...collection, pairs: runnable }, repeatCount,
       ...(env.E2E_PERSONAS === '1' ? personaModels(env) : {}) });
     writeOnce(join(output, 'qualification.json'), proof);
+    // The SDK's own warning stays in sdk.log. A superset still qualifies; only the console says so.
+    for (const filter of proof.filters.filter(entry => entry.outcome))
+      console.error(`Filter ${filter.name} ${filter.outcome}: it left nothing out, so every candidate ran.`);
   }
   return primary;
 }

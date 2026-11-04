@@ -95,7 +95,9 @@ keeps the diff filter, and the PR gates explicitly disable personas and bug bash
 payment, sign-in) on every Dreamer app diff. A docs-only or non-app diff skips
 both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
 `tools/e2e/node_modules`, or Chromium is missing, the probe fails and the proof
-is incomplete, not passed. Rerun: `npm run test:e2e:parcours`
+is incomplete, not passed. Each run's `qualification.json` records the change
+the filter judged and its decision (`changes`, `filters`); a filter that failed
+or timed out left nothing out, and the console says so. Rerun: `npm run test:e2e:parcours`
 and `npm run test:e2e:smoke`.
 
 Optional decision model: with an OpenAI key in `OPENAI_API_KEY`,
