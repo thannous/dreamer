@@ -47,6 +47,7 @@ function scriptSafety(name) {
   if (name === 'verify:pr' || name === 'verify:release' || name === 'verify:release:site') return 'writes a local proof';
   if (name === 'release:build') return 'starts a remote build';
   if (name === 'release:prepare') return 'writes release manifests';
+  if (name === 'release:published') return 'writes release metadata';
   if (name === 'release:versions:sync') return 'writes local version mirrors';
   if (name === 'prepare') return 'writes local Git config';
   if (name === 'test:seed-users') return 'writes the Supabase test branch (accounts, dreams, quota, tier)';

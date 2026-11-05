@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main } = require('./mobile-release');
+const { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -73,6 +73,15 @@ describe('semantic release policy', () => {
     expect(changeLevel('refactor!: remove old interface')).toBe('major');
     expect(changeLevel('fix: migrate\n\nBREAKING CHANGE: incompatible data')).toBe('major');
     expect(changeLevel('Update Expo patches (#183)')).toBe('patch');
+    // Tooling scopes never make the app a feature or a breaking release.
+    expect(changeLevel('feat(e2e): mark the error card for a journey')).toBe('patch');
+    expect(changeLevel('feat(ci)!: new pipeline')).toBe('patch');
+    expect(changeLevel('feat(docs): guide')).toBe('patch');
+    expect(changeLevel('feat(release): stop a build without its keys')).toBe('minor');
+    expect(changeLevel('feat(ios): widgets')).toBe('minor');
+    expect(impliedLevel('3.8.0')).toBe('minor');
+    expect(impliedLevel('3.7.1')).toBe('patch');
+    expect(impliedLevel('4.0.0')).toBe('major');
     expect(bump('3.1.9', 'patch')).toBe('3.1.10');
     expect(bump('3.1.9', 'minor')).toBe('3.2.0');
     expect(bump('3.1.9', 'major')).toBe('4.0.0');
@@ -102,6 +111,13 @@ describe('semantic release policy', () => {
       .toBe(normalized('package.json', '{"version":"3.2.0","scripts":{"a":"b"}}'));
     expect(normalized('package.json', '{"version":"3.1.0","scripts":{}}'))
       .not.toBe(normalized('package.json', '{"version":"3.1.0","scripts":{"postinstall":"patch-native"}}'));
+    expect(normalized('package.json', '{"version":"3.1.0","scripts":{}}'))
+      .not.toBe(normalized('package.json', '{"version":"3.1.0","scripts":{"eas-build-pre-install":"node verify"}}'));
+    expect(normalized('package.json', '{"version":"3.1.0","scripts":{}}'))
+      .not.toBe(normalized('package.json', '{"version":"3.1.0","scripts":{"postprepare":"node patch-native"}}'));
+    // A test or CI script is tooling, not the app.
+    expect(normalized('package.json', '{"version":"3.1.0","scripts":{"test:e2e":"a"}}'))
+      .toBe(normalized('package.json', '{"version":"3.1.0","scripts":{"test:e2e":"b","verify:pr":"c"}}'));
     expect(() => parseArgs(['plan', '--app', 'wrong'])).toThrow();
     expect(() => parseArgs(['plan', '--force'])).toThrow();
   });
@@ -136,6 +152,73 @@ describe('release planning against real Git histories', () => {
     git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
     prepare(root, ['noctalia', 'lucid']);
     expect(git(root, 'status', '--porcelain')).toBe('');
+  });
+  it('does not release a commit that only changes tooling scripts in package.json', () => {
+    const root = fixture();
+    const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+    write(root, 'package.json', { ...pkg, scripts: { 'test:e2e': 'node e2e' } }); commit(root, 'feat(e2e): run journeys');
+    expect(plan(root, 'noctalia').level).toBe('none');
+    write(root, 'app/home.tsx', 'fix'); commit(root, 'fix: home');
+    const planned = plan(root, 'noctalia');
+    expect(planned.reasons.map(reason => reason.subject)).toEqual(['fix: home']);
+  });
+  it('keeps an unpublished version on the latest master until a change needs a higher number', () => {
+    const root = fixture();
+    write(root, 'app/home.tsx', 'feature'); commit(root, 'feat: new home');
+    git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
+    expect(prepare(root, ['noctalia'])[0]).toMatchObject({ next: '3.2.0', action: 'bump' });
+    const prepared = commit(root, 'chore(release): prepare 3.2.0');
+    expect(JSON.parse(fs.readFileSync(path.join(root, 'release/mobile-versions.json'))).apps.noctalia.published).toBe(false);
+    // Not on a Store yet: a fix and another feature stay in 3.2.0, which moves to the new head.
+    write(root, 'app/home.tsx', 'feature fixed'); commit(root, 'fix: home');
+    write(root, 'lib/extra.ts', 'more'); const head = commit(root, 'feat: more');
+    git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
+    expect(plan(root, 'noctalia')).toMatchObject({ level: 'minor', action: 'pin', next: '3.2.0' });
+    expect(prepare(root, ['noctalia'])[0].next).toBe('3.2.0');
+    const state = JSON.parse(fs.readFileSync(path.join(root, 'release/mobile-versions.json')));
+    expect(state.apps.noctalia).toMatchObject({ version: '3.2.0', sourceRef: head, published: false });
+    expect(git(root, 'status', '--porcelain')).toBe('M release/mobile-versions.json');
+    expect(verify(root, 'noctalia').version).toBe('3.2.0');
+    expect(prepared).not.toBe(head);
+    commit(root, 'chore(release): pin 3.2.0');
+    expect(plan(root, 'noctalia').level).toBe('none');
+    // A breaking change needs more than a minor number gives.
+    write(root, 'app/home.tsx', 'breaking'); commit(root, 'feat!: new data');
+    git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
+    expect(plan(root, 'noctalia')).toMatchObject({ action: 'bump', next: '4.0.0' });
+  });
+  it('raises an unpublished patch version when a feature arrives, and every version once published', () => {
+    const root = fixture();
+    write(root, 'app/home.tsx', 'fix'); commit(root, 'fix: home');
+    git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
+    expect(prepare(root, ['noctalia'])[0].next).toBe('3.1.1');
+    const shipped = commit(root, 'chore(release): prepare 3.1.1');
+    write(root, 'lib/extra.ts', 'feature'); commit(root, 'feat: more');
+    expect(plan(root, 'noctalia')).toMatchObject({ action: 'bump', next: '3.2.0' });
+    git(root, 'reset', '--hard', 'HEAD~1');
+    expect(() => markPublished(root, 'noctalia')).toThrow('--ref');
+    expect(() => markPublished(root, 'noctalia', git(root, 'rev-parse', 'HEAD~1'))).toThrow('carries noctalia 3.1.0');
+    expect(markPublished(root, 'noctalia', shipped)).toMatchObject({ version: '3.1.1', sourceRef: shipped, published: true });
+    commit(root, 'chore(release): 3.1.1 is on the Store');
+    write(root, 'app/home.tsx', 'second fix'); commit(root, 'fix: again');
+    expect(plan(root, 'noctalia')).toMatchObject({ action: 'bump', next: '3.1.2', published: true });
+  });
+  it('counts every commit after the published build, even one a later pin already covered', () => {
+    const root = fixture();
+    write(root, 'app/home.tsx', 'feature'); commit(root, 'feat: home');
+    git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
+    prepare(root, ['noctalia']);
+    const built = commit(root, 'chore(release): prepare 3.2.0');
+    // While 3.2.0 waits in review, a feature lands and the version is pinned past the build.
+    write(root, 'lib/extra.ts', 'feature F'); commit(root, 'feat: feature F');
+    git(root, 'update-ref', 'refs/remotes/origin/master', 'HEAD');
+    expect(prepare(root, ['noctalia'])[0]).toMatchObject({ action: 'pin', next: '3.2.0' });
+    commit(root, 'chore(release): pin 3.2.0');
+    markPublished(root, 'noctalia', built);
+    commit(root, 'chore(release): 3.2.0 is on the Store');
+    write(root, 'app/home.tsx', 'fix'); commit(root, 'fix: home');
+    // Feature F never shipped in 3.2.0, so the next number is a minor.
+    expect(plan(root, 'noctalia')).toMatchObject({ action: 'bump', next: '3.3.0' });
   });
   it('ignores reverted runtime changes and documentation-only commits', () => {
     const root = fixture();
@@ -251,10 +334,10 @@ describe('release planning against real Git histories', () => {
     const root = fixture();
     const builtCommit = git(root, 'rev-parse', 'HEAD');
     write(root, 'doc_web_interne/docs/note.md', 'documentation'); commit(root, 'docs: clarify release');
-    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).not.toThrow();
+    expect(() => assertBuildSource(root, { gitCommitHash: builtCommit })).not.toThrow();
     write(root, 'app/home.tsx', 'changed after build'); commit(root, 'fix: update home');
-    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).toThrow('app/home.tsx');
-    expect(() => assertIosBuildSource(root, { gitCommitHash: null })).toThrow('source commit');
+    expect(() => assertBuildSource(root, { gitCommitHash: builtCommit })).toThrow('app/home.tsx');
+    expect(() => assertBuildSource(root, { gitCommitHash: null })).toThrow('source commit');
   });
   it('accepts a recorded counter sync after an iOS build but rejects other config changes', () => {
     const root = fixture();
@@ -263,10 +346,10 @@ describe('release planning against real Git histories', () => {
     config.expo.android.versionCode = 82;
     config.expo.ios = { buildNumber: '11' };
     write(root, 'app.json', config); commit(root, 'chore: sync build counters');
-    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).not.toThrow();
+    expect(() => assertBuildSource(root, { gitCommitHash: builtCommit })).not.toThrow();
     config.expo.ios.requireFullScreen = true;
     write(root, 'app.json', config); commit(root, 'fix: change native configuration');
-    expect(() => assertIosBuildSource(root, { gitCommitHash: builtCommit })).toThrow('app.json');
+    expect(() => assertBuildSource(root, { gitCommitHash: builtCommit })).toThrow('app.json');
   });
   it('rejects distribution configurations that can reuse a build number', () => {
     const root = fixture();

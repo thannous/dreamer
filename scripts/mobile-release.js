@@ -12,6 +12,11 @@ const ROOT = path.resolve(__dirname, '..');
 const STATE = 'release/mobile-versions.json';
 const APPS = ['noctalia', 'lucid', 'meditation'];
 const LEVELS = ['none', 'patch', 'minor', 'major'];
+// Commits about the tooling around the app (tests, CI, release scripts) never make it a
+// feature or a breaking release, whatever their type says: at most a patch.
+const TOOLING_SCOPES = new Set(['e2e', 'test', 'tests', 'ci', 'verify', 'tooling', 'docs']);
+// package.json scripts that change what is installed or built; the others are tooling.
+const RUNTIME_SCRIPTS = new Set(['preinstall', 'install', 'postinstall', 'prepublish', 'preprepare', 'prepare', 'postprepare', 'dependencies']);
 
 function git(root, ...args) {
   return execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 32 * 1024 * 1024 });
@@ -53,6 +58,10 @@ function normalized(file, value) {
     const data = JSON.parse(value);
     if (data === null) return 'null';
     delete data.version;
+    if (/(^|\/)package\.json$/.test(file) && data.scripts) {
+      data.scripts = Object.fromEntries(Object.entries(data.scripts)
+        .filter(([name]) => RUNTIME_SCRIPTS.has(name) || name.startsWith('eas-build-')));
+    }
     if (data.packages?.['']) delete data.packages[''].version;
     if (data.expo) {
       delete data.expo.version;
@@ -134,6 +143,8 @@ function readCommitRange(root, sourceRef, head) {
 
 function changeLevel(message) {
   const subject = message.split('\n')[0];
+  const scope = subject.match(/^[a-z]+\(([^)\n]*)\)/i)?.[1]?.trim().toLowerCase();
+  if (scope && TOOLING_SCOPES.has(scope)) return 'patch';
   if (/^[a-z]+(?:\([^\n]*\))?!:/i.test(subject) || /^BREAKING[ -]CHANGE:\s/m.test(message)) return 'major';
   if (/^feat(?:\([^\n]*\))?:/i.test(subject)) return 'minor';
   // Runtime changes with non-conventional or maintenance titles still need a patch.
@@ -147,6 +158,7 @@ function verify(root, app) {
   const entry = state.apps[app];
   bump(entry.version, 'none');
   if (!/^[a-f0-9]{40}$/.test(entry.sourceRef)) throw new Error(`Invalid sourceRef for ${app}`);
+  if (entry.published !== undefined && typeof entry.published !== 'boolean') throw new Error(`Invalid published flag for ${app}`);
   const eas = readJson(root, app === 'meditation' ? 'apps/meditation/eas.json' : 'eas.json');
   const profile = app === 'lucid' ? 'lucid-production' : 'production';
   if (eas.cli?.appVersionSource !== 'remote' || eas.build?.[profile]?.autoIncrement !== true) {
@@ -177,6 +189,18 @@ function assertEasStoreBuildEnvironment(env = process.env) {
   catch (error) { throw new Error(`EAS production iOS build stopped before install: ${error.message} Set it in the EAS production environment.`); }
 }
 
+// The change a version number already stands for: x.0.0 a major, x.y.0 a minor, else a patch.
+function impliedLevel(version) {
+  const [, minor, patch] = version.split('.').map(Number);
+  return minor === 0 && patch === 0 ? 'major' : patch === 0 ? 'minor' : 'patch';
+}
+
+// A manifest counts in a commit only when its runtime content changed in that commit.
+function changedInCommit(root, commit, file) {
+  if (!/(^|\/)(package(-lock)?|app)\.json$/.test(file)) return true;
+  return normalized(file, contents(root, `${commit}^`, file) ?? 'null') !== normalized(file, contents(root, commit, file) ?? 'null');
+}
+
 function plan(root, app) {
   const entry = verify(root, app);
   const head = git(root, 'rev-parse', 'HEAD').trim();
@@ -192,13 +216,20 @@ function plan(root, app) {
   // No --first-parent: ordinary merge commits often hide the feat/fix subjects.
   const range = files.length ? readCommitRange(root, entry.sourceRef, head) : { commits: [], touched: new Map(), messages: new Map() };
   for (const commit of range.commits) {
-    if (!(range.touched.get(commit) ?? []).some(file => relevant.has(file))) continue;
+    if (!(range.touched.get(commit) ?? []).some(file => relevant.has(file) && changedInCommit(root, commit, file))) continue;
     const message = range.messages.get(commit) ?? '';
     const impact = changeLevel(message);
     if (LEVELS.indexOf(impact) > LEVELS.indexOf(level)) level = impact;
     reasons.push({ commit, impact, subject: message.split('\n')[0] });
   }
-  return { app, current: entry.version, next: bump(entry.version, level), level, sourceRef: entry.sourceRef, head, files, reasons };
+  // Until a build of the prepared version goes to App Review or past Play internal testing, the
+  // version takes the latest master: it moves to the new commit and keeps its number, unless the
+  // new changes need more than that number gives.
+  const unpublished = entry.published === false;
+  const action = level === 'none' ? 'none'
+    : unpublished && LEVELS.indexOf(level) <= LEVELS.indexOf(impliedLevel(entry.version)) ? 'pin' : 'bump';
+  const next = action === 'bump' ? bump(entry.version, level) : entry.version;
+  return { app, current: entry.version, next, level, action, published: !unpublished, sourceRef: entry.sourceRef, head, files, reasons };
 }
 
 function withoutBuildNumbers(data) {
@@ -230,12 +261,12 @@ function prepare(root, apps, allowMajor = false) {
     const head = git(root, 'rev-parse', 'HEAD').trim();
     if (head !== git(root, 'rev-parse', 'refs/remotes/origin/master').trim()) throw new Error('Prepare from the current origin/master snapshot (on a release branch). Fetch first.');
     const plans = apps.map(app => plan(root, app));
-    if (!allowMajor && plans.some(item => item.level === 'major')) throw new Error('Breaking change detected. Inspect release:plan, then use --allow-major intentionally.');
+    if (!allowMajor && plans.some(item => item.level === 'major' && item.action === 'bump')) throw new Error('Breaking change detected. Inspect release:plan, then use --allow-major intentionally.');
     const state = readJson(root, STATE);
     const writes = new Map();
     for (const item of plans.filter(item => item.level !== 'none')) {
-      state.apps[item.app] = { version: item.next, sourceRef: head, baseline: 'Prepared source snapshot; not a Store publication claim' };
-      if (item.app === 'lucid') continue;
+      state.apps[item.app] = { version: item.next, sourceRef: head, published: false, baseline: 'Prepared source snapshot; not a Store publication claim' };
+      if (item.app === 'lucid' || item.action === 'pin') continue;
       const prefix = item.app === 'meditation' ? 'apps/meditation/' : '';
       for (const name of ['app.json', 'package.json', 'package-lock.json']) {
         const file = prefix + name;
@@ -248,13 +279,29 @@ function prepare(root, apps, allowMajor = false) {
         writes.set(file, data);
       }
     }
-    if (writes.size || plans.some(item => item.app === 'lucid' && item.level !== 'none')) writes.set(STATE, state);
+    if (writes.size || plans.some(item => item.level !== 'none')) writes.set(STATE, state);
     // Validate every plan before writing any file. No commit, tag, build or upload here.
     for (const [file, value] of writes) fs.writeFileSync(path.join(root, file), `${JSON.stringify(value, null, 2)}\n`);
     return plans;
   } finally {
     commitRangeCache = null;
   }
+}
+
+// Once a build of a version goes to App Review or past Play internal testing, that number is
+// spent: record the commit that build came from, so every later commit counts toward the next.
+function markPublished(root, app, ref) {
+  if (!APPS.includes(app)) throw new Error('release:published takes one app: --app noctalia|lucid|meditation');
+  const entry = verify(root, app);
+  if (!/^[a-f0-9]{40}$/.test(ref ?? '')) throw new Error('release:published needs --ref <full commit SHA of the published build> (EAS gitCommitHash)');
+  try { git(root, 'merge-base', '--is-ancestor', ref, 'HEAD'); }
+  catch { throw new Error(`Published build commit ${ref} is not in this history; fetch it first.`); }
+  const shipped = JSON.parse(contents(root, ref, STATE) ?? 'null')?.apps?.[app]?.version;
+  if (shipped !== entry.version) throw new Error(`The build at ${ref.slice(0, 12)} carries ${app} ${shipped ?? 'no version'}, not ${entry.version}.`);
+  const state = readJson(root, STATE);
+  state.apps[app] = { version: entry.version, sourceRef: ref, published: true, baseline: 'Published build source' };
+  fs.writeFileSync(path.join(root, STATE), `${JSON.stringify(state, null, 2)}\n`);
+  return { app, version: entry.version, sourceRef: ref, published: true };
 }
 
 function parseArgs(args) {
@@ -265,10 +312,12 @@ function parseArgs(args) {
     else if (args[i] === '--id') options.id = args[++i];
     else if (args[i] === '--dry-run') options.dryRun = true;
     else if (args[i] === '--allow-major') options.allowMajor = true;
+    else if (args[i] === '--ref') options.ref = args[++i];
     else throw new Error(`Unknown option: ${args[i]}`);
   }
   if (![...APPS, 'all'].includes(options.app)) throw new Error('Choose --app noctalia|lucid|meditation|all');
   if (options.dryRun && options.action !== 'submit-internal') throw new Error('--dry-run is only available for submit-internal');
+  if (options.ref !== undefined && options.action !== 'published') throw new Error('--ref is only available for published');
   return options;
 }
 
@@ -299,16 +348,16 @@ function assertInternalBuild(build, platform, expected) {
   if (!build.artifacts?.buildUrl) throw new Error('EAS build has no downloadable Store artifact');
 }
 
-function assertIosBuildSource(root, build) {
+function assertBuildSource(root, build) {
   const ref = build?.gitCommitHash;
-  if (!/^[a-f0-9]{40}$/.test(ref ?? '')) throw new Error('iOS EAS build has no verifiable source commit');
+  if (!/^[a-f0-9]{40}$/.test(ref ?? '')) throw new Error('EAS build has no verifiable source commit');
   try { git(root, 'cat-file', '-e', `${ref}^{commit}`); }
-  catch { throw new Error(`iOS EAS build source commit ${ref} is unavailable locally; fetch it before submission`); }
+  catch { throw new Error(`EAS build source commit ${ref} is unavailable locally; fetch it before submission`); }
   const changed = git(root, 'diff', '--name-only', '--no-renames', '-z', ref, 'HEAD').split('\0').filter(Boolean)
     .filter(file => affects('noctalia', file))
     .filter(file => file !== 'app.json'
       || withoutBuildNumbers(JSON.parse(contents(root, ref, file))) !== withoutBuildNumbers(JSON.parse(contents(root, 'HEAD', file))));
-  if (changed.length) throw new Error(`iOS EAS build predates mobile source changes: ${changed.slice(0, 5).join(', ')}. Build a new IPA before submission.`);
+  if (changed.length) throw new Error(`EAS build predates mobile source changes: ${changed.slice(0, 5).join(', ')}. Build a new binary before submission.`);
 }
 
 function main(args = process.argv.slice(2), root = ROOT) {
@@ -330,7 +379,11 @@ function main(args = process.argv.slice(2), root = ROOT) {
     console.log(JSON.stringify(prepare(root, apps, options.allowMajor), null, 2));
     return;
   }
-  if (!['plan', 'check', 'build', 'submit-internal'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|check|verify|build|submit-internal|sync-versions|check-versions --app APP [--platform android|ios|all] [--id EAS_BUILD_ID] [--dry-run] [--allow-major]');
+  if (options.action === 'published') {
+    console.log(JSON.stringify(markPublished(root, options.app, options.ref), null, 2));
+    return;
+  }
+  if (!['plan', 'check', 'build', 'submit-internal'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|published|check|verify|build|submit-internal|sync-versions|check-versions --app APP [--platform android|ios|all] [--id EAS_BUILD_ID] [--dry-run] [--allow-major]');
   const plans = apps.map(app => plan(root, app));
   if (options.action === 'plan') {
     console.log(JSON.stringify(plans, null, 2));
@@ -360,7 +413,9 @@ function main(args = process.argv.slice(2), root = ROOT) {
     catch { throw new Error('EAS build inspection returned invalid JSON; no submission started'); }
     const appConfig = readJson(root, 'app.json').expo;
     assertInternalBuild(build, options.platform, { projectId: appConfig.extra?.eas?.projectId, version: appConfig.version });
-    if (options.platform === 'ios') assertIosBuildSource(root, build);
+    // A version keeps its number until it is published, so the number alone cannot tell a
+    // build that predates later runtime commits: compare the build's commit on both platforms.
+    assertBuildSource(root, build);
     const submissionLookup = spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', [
       'exec', '--yes', '--package=eas-cli@25.1.1', '--', 'node',
       path.join(root, 'scripts/check-eas-internal-submission.js'),
@@ -404,4 +459,4 @@ function main(args = process.argv.slice(2), root = ROOT) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main };
+module.exports = { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, main };

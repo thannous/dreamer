@@ -177,6 +177,7 @@
     "test:analysis-authorization:db": "node scripts/verify-analysis-authorization.mjs",
     "release:plan": "node ./scripts/mobile-release.js plan",
     "release:prepare": "node ./scripts/mobile-release.js prepare",
+    "release:published": "node ./scripts/mobile-release.js published",
     "release:check": "node ./scripts/mobile-release.js check",
     "release:simulators": "node ./scripts/release-simulators.mjs",
     "release:build": "node ./scripts/mobile-release.js build",

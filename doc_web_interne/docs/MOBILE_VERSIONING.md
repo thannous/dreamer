@@ -2,7 +2,7 @@
 
 La version visible et le numéro technique ont des responsabilités différentes.
 
-- **Version visible** : préparée une fois par release depuis les changements Git. `fix` → patch, `feat` → mineure, `!` ou `BREAKING CHANGE:` → majeure. Le niveau le plus élevé gagne. Un changement de runtime sans titre conventionnel compte comme un patch ; le script ne prétend pas comprendre sémantiquement le code.
+- **Version visible** : préparée une fois par release depuis les changements Git. `fix` → patch, `feat` → mineure, `!` ou `BREAKING CHANGE:` → majeure. Le niveau le plus élevé gagne. Un changement de runtime sans titre conventionnel compte comme un patch ; le script ne prétend pas comprendre sémantiquement le code. Un commit d'outillage (portées `e2e`, `test`, `tests`, `ci`, `verify`, `tooling`, `docs`) compte au plus comme un patch, et un changement des `scripts` de `package.json` ne compte pas, sauf ceux qui tournent à l'installation (`preinstall`, `install`, `postinstall`, `prepublish`, `preprepare`, `prepare`, `postprepare`, `dependencies`) et les hooks `eas-build-*`.
 - **Numéro technique** : EAS distant et `autoIncrement: true` sur les profils `production` et `lucid-production`. Chaque build distribué reçoit son propre code Android/build iOS. Ne pas utiliser le numéro du SDK Expo comme code de build.
 - **Trois versions indépendantes** : Noctalia, Lucid et Méditation. Le code partagé du runtime peut faire évoluer Noctalia et Lucid ensemble. Les docs et tests seuls ne déclenchent rien.
 
@@ -19,7 +19,17 @@ npm run release:prepare -- --app noctalia
 
 Utiliser `--app lucid`, `--app meditation` ou `--app all` pour les autres périmètres. Une majeure exige `--allow-major` après lecture du plan. Un historique absent, un checkout sale ou une préparation depuis un commit différent du dernier `origin/master` connu sont refusés. Exécuter `git fetch origin master` avant la préparation ; le script ne devine pas un historique manquant et ne fait pas de fetch implicite.
 
-Un second passage après commit/fusion ne remonte pas la version : les changements de version seuls sont exclus du calcul. Une nouvelle modification applicative depuis la préparation nécessite un nouveau plan. La préparation désigne une version de release, pas la preuve de sa publication sur un Store. Conserver le commit référencé par `sourceRef` dans l'historique fusionné ; si une correction de release a ajouté ce commit sur la branche, utiliser un merge commit plutôt qu'un squash qui le rendrait introuvable.
+Un second passage après commit/fusion ne remonte pas la version : les changements de version seuls sont exclus du calcul.
+
+**La version suit le dernier master jusqu'à sa publication.** Tant que la version préparée n'est pas publiée (`"published": false` dans `release/mobile-versions.json`), relancer `release:prepare` sur le dernier `origin/master` la garde et déplace seulement son `sourceRef` sur ce commit : la PR ne touche que `release/mobile-versions.json`. Elle ne monte que si un nouveau changement demande plus que son numéro : une nouveauté (`feat`) sur une version de correctif (`x.y.z` avec `z > 0`), ou un changement cassant sur une version qui n'est pas `x.0.0`. `release:plan` l'annonce avec `"action": "pin"` (même numéro) ou `"bump"` (nouveau numéro).
+
+Une version est publiée dès qu'un de ses builds part en review App Store, ou sur une piste Google Play autre que le test interne. Ce jour-là, avec le commit de ce build (le `gitCommitHash` du build EAS) :
+
+```bash
+npm run release:published -- --app noctalia --ref <SHA complet du build>
+```
+
+puis commiter le fichier. Le script refuse un commit dont le fichier d'état porte un autre numéro. Il enregistre ce commit comme base : tout ce qui est arrivé après, même déjà couvert par un ré-épinglage, compte pour le numéro suivant. Une entrée sans `published` est traitée comme publiée (chaque changement monte la version). Un envoi TestFlight ou en test interne Google Play ne compte pas comme une publication. Comme le numéro ne change plus à chaque commit, `submit-internal` compare aussi le commit du build Android au checkout, comme sur iOS. La préparation désigne une version de release, pas la preuve de sa publication sur un Store. Conserver le commit référencé par `sourceRef` dans l'historique fusionné ; si une correction de release a ajouté ce commit sur la branche, utiliser un merge commit plutôt qu'un squash qui le rendrait introuvable.
 
 ## Tester le candidat sur simulateurs
 
@@ -52,7 +62,7 @@ node scripts/mobile-release.js submit-internal --app noctalia --platform android
 # Retirer --dry-run pour effectuer l'envoi après vérification.
 ```
 
-La commande inspecte le build distant et refuse un statut autre que `FINISHED`, une mauvaise plateforme, un autre projet/version, un profil `preview`, une distribution non `STORE` ou un artefact absent. Sur iOS, elle refuse aussi un build antérieur à des changements mobiles toujours présents dans le checkout. Elle choisit `submit.production` pour iOS (TestFlight) et **`submit.internal` pour Android** (track Play Internal). Elle n'ajoute pas `--what-to-test` : ce paramètre a été refusé par le plan Expo Starter du compte le 24 septembre 2026. `submit.production.android` pointe vers le track **production** et ne doit pas servir aux tests internes.
+La commande inspecte le build distant et refuse un statut autre que `FINISHED`, une mauvaise plateforme, un autre projet/version, un profil `preview`, une distribution non `STORE` ou un artefact absent. Sur les deux plateformes, elle refuse aussi un build antérieur à des changements mobiles toujours présents dans le checkout. Elle choisit `submit.production` pour iOS (TestFlight) et **`submit.internal` pour Android** (track Play Internal). Elle n'ajoute pas `--what-to-test` : ce paramètre a été refusé par le plan Expo Starter du compte le 24 septembre 2026. `submit.production.android` pointe vers le track **production** et ne doit pas servir aux tests internes.
 
 Après l'envoi iOS, vérifier l'upload dans **App Store Connect → TestFlight → Build Uploads**, puis le traitement du build et son accès dans le groupe interne. Une commande EAS Submit `ERRORED` sans détail n'établit pas à elle seule si Apple a reçu le fichier : lire le statut Apple avant toute nouvelle tentative. Après l'envoi Android, vérifier la release sur le track **Test interne** de Google Play. `FINISHED` côté EAS atteste l'envoi, pas l'installation ni la validation sur appareil.
 
