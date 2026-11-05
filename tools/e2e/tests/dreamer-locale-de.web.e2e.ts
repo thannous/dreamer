@@ -45,7 +45,7 @@ test('German onboarding, offer and settings keep every action readable at 320px'
   await expect(screen.getByTestId('btn.paywall.purchase')).toContainText('Anmelden');
   await expect(screen.getByTestId('text.paywall.storeNotice')).toContainText('verlängert sich automatisch');
   await expect(screen.getByTestId('btn.paywall.termsOfUse')).toContainText('Nutzungsbedingungen');
-  for (const testId of ['btn.paywall.purchase', 'text.paywall.storeNotice', 'btn.paywall.termsOfUse'])
+  for (const testId of ['component.paywall.comparison', 'btn.paywall.purchase', 'text.paywall.storeNotice', 'btn.paywall.termsOfUse'])
     await expectReadable(screen, browser, testId);
   await expectNoSidewaysScroll(app, browser, 'offer-de-320');
   await screen.getByTestId('btn.paywall.close').tap();

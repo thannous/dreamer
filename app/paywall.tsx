@@ -697,6 +697,7 @@ function PaywallScreen() {
           {!isActive && !isDreamAnalysisOffer ? (
             <>
             <View
+              testID="component.paywall.comparison"
               style={[
                 styles.comparisonTable,
                 {
@@ -1140,7 +1141,7 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   comparisonFeatureCell: {
-    flex: 1.4,
+    flex: 1.3,
     minWidth: 0,
     paddingLeft: 14,
     paddingRight: 6,
@@ -1158,9 +1159,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   comparisonPlusCell: {
-    flex: 0.95,
+    flex: 1,
     minWidth: 0,
-    paddingHorizontal: 6,
+    paddingHorizontal: 4,
     paddingVertical: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1201,9 +1202,11 @@ const styles = StyleSheet.create({
   },
   comparisonPlusValue: {
     flexDirection: 'row',
+    // German 'Unbegrenzt' does not fit beside the ∞ on a 320 pt phone: the word wraps under it.
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+    columnGap: 4,
   },
   comparisonInfinity: {
     fontSize: TypeScale.h3.fontSize,
