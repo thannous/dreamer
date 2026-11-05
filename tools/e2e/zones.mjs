@@ -125,6 +125,8 @@ export const ZONES = [
       'services/journalMutationTransport.ts',
       'services/journalNativeImageAdapter.ts',
       'services/analysisPreviewService.ts',
+      // The reading modal opens from a journal dream (review, continuous reading).
+      'components/analysis/',
     ],
     tests: [
       'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts',

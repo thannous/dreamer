@@ -70,7 +70,7 @@ test('guest keeps the same draft when switching capture modes', { tags: ['smoke'
   await expect(transcript).toHaveValue('E2E draft: a lighthouse above the sea.');
 });
 
-test('guest saves the first dream and can read its simulated analysis', async ({ page }) => {
+test('guest saves the first dream and can read its simulated analysis', { tags: ['zone-sauvegarde'] }, async ({ page }) => {
   await startGuest(page);
   const story = 'E2E moonlit harbor with a golden lighthouse.';
   await page.getByTestId('input.dreamTranscript').fill(story);
@@ -102,7 +102,7 @@ test('free user saves a dream and finds the exact story in the journal', { tags:
 // the metadata/transcript draft" stays covered on Android and iOS by the mock-persistent
 // profile with EXPO_PUBLIC_MOCK_CATEGORIZATION_DELAY_MS=30000 (tools/e2e/NATIVE-MATRIX.md).
 
-test('free user searches, sees no match, and recovers the journal', async ({ page }, info) => {
+test('free user searches, sees no match, and recovers the journal', { tags: ['zone-journal'] }, async ({ page }, info) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await selectProfile(page, 'existing');
   await journal(page);
@@ -124,7 +124,7 @@ test('free user searches, sees no match, and recovers the journal', async ({ pag
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
 });
 
-test('a search typed in a scrolled journal keeps its field until the user scrolls', async ({ page }) => {
+test('a search typed in a scrolled journal keeps its field until the user scrolls', { tags: ['zone-journal'] }, async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await selectProfile(page, 'existing');
   await journal(page);
@@ -156,7 +156,7 @@ test('a search typed in a scrolled journal keeps its field until the user scroll
   await expect(field).not.toBeFocused();
 });
 
-test('free user edits a story, cancels deletion, then deletes only that dream', async ({ page }) => {
+test('free user edits a story, cancels deletion, then deletes only that dream', { tags: ['zone-journal'] }, async ({ page }) => {
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'The Infinite Library');
@@ -176,7 +176,7 @@ test('free user edits a story, cancels deletion, then deletes only that dream', 
   await expect(page.getByTestId(/^dream\.item\./)).toHaveCount(1);
 });
 
-test('free user can open the Plus offer and return without losing the journal', async ({ page }) => {
+test('free user can open the Plus offer and return without losing the journal', { tags: ['zone-paiement'] }, async ({ page }) => {
   await selectProfile(page, 'existing');
   await openSettings(page);
   await page.getByTestId('settings-section-subscription').click();
@@ -191,7 +191,7 @@ test('free user can open the Plus offer and return without losing the journal', 
 });
 
 for (const profile of ['existing', 'plus'] as const) {
-  test(`${profile === 'plus' ? 'Plus' : 'free'} user sees the matching analysis allowance`, async ({ page }) => {
+  test(`${profile === 'plus' ? 'Plus' : 'free'} user sees the matching analysis allowance`, { tags: ['zone-consentement-quota'] }, async ({ page }) => {
     await selectProfile(page, profile);
     await openSettings(page);
     if (profile === 'existing') {
@@ -206,7 +206,7 @@ for (const profile of ['existing', 'plus'] as const) {
   });
 }
 
-test('Plus user signs out and returns to guest without exposing the account journal', async ({ page }) => {
+test('Plus user signs out and returns to guest without exposing the account journal', { tags: ['zone-connexion'] }, async ({ page }) => {
   await selectProfile(page, 'plus');
   await openSettings(page);
   await page.getByTestId('btn.auth.signOut').click();
@@ -220,7 +220,7 @@ test('Plus user signs out and returns to guest without exposing the account jour
   await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
 });
 
-test('guest with a dream opens account creation from the journal, and the offer leaves once signed in', async ({ page }) => {
+test('guest with a dream opens account creation from the journal, and the offer leaves once signed in', { tags: ['zone-connexion'] }, async ({ page }) => {
   await startGuest(page);
   await page.getByTestId('input.dreamTranscript').fill('E2E guest dream kept only on this device.');
   await page.getByTestId('btn.saveDream').click();
@@ -236,7 +236,7 @@ test('guest with a dream opens account creation from the journal, and the offer 
   await expect(page.getByTestId('btn.guest.account.journal')).toHaveCount(0);
 });
 
-test('free user adds and removes a favorite through the filtered journal', async ({ page }) => {
+test('free user adds and removes a favorite through the filtered journal', { tags: ['zone-journal'] }, async ({ page }) => {
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'Garden in the Clouds');
@@ -257,7 +257,7 @@ test('free user adds and removes a favorite through the filtered journal', async
   await expect(transcript).toHaveText(originalStory!);
 });
 
-test('Plus user continues a reflection and sees the conversation on revisit', async ({ page }) => {
+test('Plus user continues a reflection and sees the conversation on revisit', { tags: ['zone-reflexion'] }, async ({ page }) => {
   await selectProfile(page, 'plus');
   await journal(page);
   await openDream(page, 'The Infinite Library');
@@ -296,7 +296,7 @@ test('Plus user continues a reflection and sees the conversation on revisit', as
   await expect(page.getByTestId('component.dreamDetail.actionCard')).toContainText('Continue my reflection');
 });
 
-test('exhausted free account can keep a dream and decline the analysis offer', async ({ page }) => {
+test('exhausted free account can keep a dream and decline the analysis offer', { tags: ['zone-consentement-quota'] }, async ({ page }) => {
   await selectProfile(page, 'existing');
   const story = 'E2E saved even when my analysis allowance is exhausted.';
   await page.getByTestId('input.dreamTranscript').fill(story);
@@ -310,7 +310,7 @@ test('exhausted free account can keep a dream and decline the analysis offer', a
 });
 
 for (const profile of ['new', 'plus'] as const) {
-  test(`${profile === 'new' ? 'fresh free' : 'Plus'} account can analyze a newly saved dream`, async ({ page }) => {
+  test(`${profile === 'new' ? 'fresh free' : 'Plus'} account can analyze a newly saved dream`, { tags: ['zone-consentement-quota'] }, async ({ page }) => {
     await selectProfile(page, profile);
     const story = `E2E ${profile} traveler finds a lantern on a silver bridge.`;
     await page.getByTestId('input.dreamTranscript').fill(story);
@@ -325,7 +325,7 @@ for (const profile of ['new', 'plus'] as const) {
   });
 }
 
-test('reflection offers an optional recap after one angle and updates it after another exchange', async ({ page }, testInfo) => {
+test('reflection offers an optional recap after one angle and updates it after another exchange', { tags: ['zone-reflexion'] }, async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 390, height: 867 });
   await selectProfile(page, 'plus');
@@ -374,7 +374,7 @@ test('reflection offers an optional recap after one angle and updates it after a
 
 // Preserved during the final runner migration: an exhausted account must not
 // enter chat before the offer, and declining must return to the same reflection.
-test('free reflection opens Plus directly and declining returns to reflection without entering chat', async ({ page }, testInfo) => {
+test('free reflection opens Plus directly and declining returns to reflection without entering chat', { tags: ['zone-reflexion'] }, async ({ page }, testInfo) => {
   await selectProfile(page, 'existing');
   await journal(page);
   await openDream(page, 'The Infinite Library');

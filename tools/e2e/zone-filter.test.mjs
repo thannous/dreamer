@@ -217,9 +217,12 @@ test('every web journey is reachable by a zone, or kept release-only with a reas
   const journeys = readdirSync(directory).filter(name => /^(dreamer|lucid|meditation).*\.web\.e2e\.ts$/.test(name));
   assert.ok(journeys.length > 40);
   const tags = ZONES.flatMap(zone => zone.tags);
+  // The parcours selection leaves smoke and bug-bash tests out, so their zone tags reach nothing.
+  const selectableTags = source => [...source.matchAll(/tags:\s*\[([^\]]*)\]/g)]
+    .map(match => match[1]).filter(list => !/'(smoke|bugbash)'/.test(list)).join(' ');
   for (const name of journeys) {
     const file = `tools/e2e/tests/${name}`;
-    const source = readFileSync(new URL(name, directory), 'utf8');
+    const source = selectableTags(readFileSync(new URL(name, directory), 'utf8'));
     const zoned = ZONES.some(zone => zone.tests.includes(file)) || tags.some(tag => source.includes(`'${tag}'`));
     assert.notEqual(zoned, Object.hasOwn(UNZONED, file), `${name} must be zoned or listed in UNZONED, not both`);
   }
@@ -249,6 +252,7 @@ test('changes in behavioral owners select their journeys without selecting unrel
     ['components/recap/WeeklyRecapScreen.tsx', 'dreamer-weekly-recap.web.e2e.ts'],
     ['lib/guideReading.ts', 'dreamer-guide-progress.web.e2e.ts'],
     ['components/guides/GuideReadingHost.tsx', 'dreamer-guide-progress.web.e2e.ts'],
+    ['components/analysis/AnalysisReadingModal.tsx', 'dreamer-review-accessibility.web.e2e.ts'],
     ['components/guides/GuideReadingHost.tsx', 'dreamer-dream-guides.web.e2e.ts', 'fr-FR'],
     ['app/settings.tsx', 'dreamer-settings.web.e2e.ts', 'fr-FR'],
     ['components/journal/DreamShareSheet.tsx', 'dreamer-web-share.web.e2e.ts'],
