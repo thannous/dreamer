@@ -476,6 +476,21 @@ describe('verify-local.config.mjs', () => {
     });
   });
 
+  it('runs the independent checks in one parallel step, and the writers, Jest and the browsers serially after it', () => {
+    const pr = config.checks.filter((check) => (check.kinds ?? ['pr', 'release']).includes('pr'));
+    const parallel = pr.filter((check) => check.parallel).map((check) => check.name);
+    // The engine overlaps consecutive parallel checks only: one step, from the first check on.
+    expect(pr.slice(0, parallel.length).map((check) => check.name)).toEqual(parallel);
+    expect(parallel).toEqual(expect.arrayContaining(['verify-local-engine', 'site-publish-guard', 'typecheck-app', 'lint-scripts', 'db-contracts', 'verify-config']));
+    // docs:build rewrites data/site-manifest.json, which lint-scripts reads, and docs/;
+    // root and Meditation Jest keep their deadlines; the browser gates come last.
+    for (const name of ['site', 'jest-changed', 'meditation', 'edge-functions', 'parcours-touches', 'smoke-journeys']) {
+      expect({ name, parallel: Boolean(checkNamed(name).parallel) }).toEqual({ name, parallel: false });
+    }
+    expect(pr.slice(-2).map((check) => check.name)).toEqual(['parcours-touches', 'smoke-journeys']);
+    expect(config.checks.filter((check) => check.kinds && !check.kinds.includes('pr') && check.parallel)).toEqual([]);
+  });
+
   it('reuses the web gates and the scoped contract checks across a docs-only commit, never across a file they read', () => {
     // A follow-up commit that only edits documents or the local backend reran
     // both browser gates (whole-tree fingerprints). The gates pick journeys from

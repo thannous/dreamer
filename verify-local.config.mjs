@@ -458,11 +458,19 @@ export default {
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
+    // The checks up to mobile-versions write no file another one reads (their
+    // scratch repositories and caches are their own), so they run as one
+    // parallel step: one supervised step and machine lock, each check with its
+    // own receipt, reuse and result. The step lasts about as long as its
+    // longest member, usually the engine tests. A check whose safety beside
+    // them is unclear stays serial after them, with its reason.
+
     // Its tests read scratch configs only: verify-config checks this file's
     // ENGINE_SHA256 pin, so an edit here does not rerun them.
     {
       name: 'verify-local-engine',
       command: 'npm run test:verify-local',
+      parallel: true,
       inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'tools/e2e/campaign-contexts.mjs'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
@@ -473,6 +481,7 @@ export default {
     {
       name: 'site-publish-guard',
       command: 'node --test scripts/test-check-site-publish-proof.mjs && npm run test:file -- scripts/docs-deploy.test.ts scripts/web-deploy.test.ts',
+      parallel: true,
       inputs: [
         'scripts/check-site-publish-proof.mjs',
         'scripts/test-check-site-publish-proof.mjs',
@@ -495,6 +504,7 @@ export default {
     {
       name: 'test-supabase-guard',
       command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
+      parallel: true,
       inputs: [
         'scripts/test-supabase-guard.mjs',
         'scripts/test-test-supabase-guard.mjs',
@@ -522,6 +532,7 @@ export default {
     {
       name: 'backend-runner-guards',
       command: 'node --test scripts/lib/backend-e2e-local.test.cjs scripts/lib/backend-e2e-process.test.cjs scripts/check-native-supabase-runtime.test.cjs',
+      parallel: true,
       inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs',
         'scripts/lib/backend-e2e-process.cjs', 'scripts/lib/backend-e2e-process.test.cjs',
         'scripts/check-native-supabase-runtime.cjs', 'scripts/check-native-supabase-runtime.test.cjs', 'supabase/config.toml'],
@@ -531,6 +542,7 @@ export default {
     {
       name: 'repository-hygiene',
       command: 'npm run repository:hygiene && npm run test:repository-hygiene',
+      parallel: true,
     },
     // A new public table gets no Data API grant (Supabase from 2026-10-30, and
     // auto_expose_new_tables = false locally): its migration must enable RLS and
@@ -538,9 +550,9 @@ export default {
     {
       name: 'migration-grants',
       command: 'npm run migrations:grants && npm run test:migration-grants',
+      parallel: true,
       inputs: ['supabase/migrations/**', 'scripts/check-migration-grants.cjs', 'scripts/check-migration-grants.test.cjs', 'package.json'],
     },
-    // Independent read-only checks share one supervised step and machine lock.
     // Route declarations are atomically replaced by generate-shared-route-types.
     // tsc keeps its incremental build info in the copy, and a PR run passes it
     // on to the next one (scripts/verify-cache.mjs): 32 s cold, 7 s from the
@@ -558,6 +570,35 @@ export default {
     // All of scripts/ with no warning allowed, for a PR that changes scripts/
     // or what they import (LINT_SCRIPTS): 21 to 29 s.
     { name: 'lint-scripts', command: 'npm run lint:scripts', parallel: true, inputs: LINT_SCRIPTS, when: LINT_SCRIPTS },
+    // A PR that changes nothing these tests read (DB) skips them: 11 s.
+    { name: 'db-contracts', command: DB_CONTRACTS, parallel: true, inputs: DB, when: DB },
+    // The tests of this configuration, scope guards and the engine pin
+    // included, read it and the engine through a child process: Jest relates no
+    // change of either to them, so jest-changed never runs them for a PR that
+    // only edits a scope. 21 s.
+    {
+      name: 'verify-config',
+      command: 'npm run test:file -- scripts/verify-local-config.test.js',
+      parallel: true,
+      when: ['verify-local.config.mjs', 'scripts/verify-local.mjs', '.gitattributes'],
+    },
+    // These read only the files of their `when` (and EAS_WORKFLOW_READS): a
+    // pass is reused by a later commit that leaves them as they were, as a PR
+    // that never touched them skips the check.
+    { name: 'ci-contracts', command: CI_CONTRACTS, parallel: true, inputs: CI_CONTRACT_READS, when: CI_CONTRACT_READS },
+    { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, parallel: true, inputs: EAS_WORKFLOW_READS, when: EAS_WORKFLOWS },
+    // The Mac mini simulator campaign (npm run release:simulators): its plan, profiles and report.
+    {
+      name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
+      parallel: true,
+      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs'],
+    },
+    // A bad version pin fails before push rather than at publication (offline, 0.1 s).
+    { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', parallel: true, inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
+
+    // ---- Serial from here.
+    // jest-changed: its own workers fill the machine, and a test under Jest's
+    // 5 s timeout would flake beside the step above.
     // Root Jest tests related to the files changed since the merge-base with
     // origin/master (scripts/run-jest-changed.js). Whole tree: tests read files.
     // Picks its tests from the diff: reused only against the same merge base.
@@ -574,17 +615,7 @@ export default {
       command: 'npm run test:changed -- --watchman=false',
       env: { JEST_CHANGED_SINCE: '' },
     },
-    // A PR that changes nothing these tests read (DB) skips them: 11 s.
-    { name: 'db-contracts', command: DB_CONTRACTS, inputs: DB, when: DB },
-    // The tests of this configuration, scope guards and the engine pin
-    // included, read it and the engine through a child process: Jest relates no
-    // change of either to them, so jest-changed never runs them for a PR that
-    // only edits a scope. 21 s.
-    {
-      name: 'verify-config',
-      command: 'npm run test:file -- scripts/verify-local-config.test.js',
-      when: ['verify-local.config.mjs', 'scripts/verify-local.mjs', '.gitattributes'],
-    },
+    // dependency-security: its probes give a child process 2 s.
     {
       name: 'dependency-security',
       command: 'node --test scripts/dependency-security.test.mjs scripts/dependency-security-scope.test.mjs',
@@ -617,32 +648,24 @@ export default {
         hint: 'install the standalone site dependencies first: (cd apps/site && npm ci)',
       },
     },
-
-    // ---- verify:pr, only when the commit changes that surface since origin/master.
+    // meditation: its Jest keeps two workers so that contention does not eat
+    // async test deadlines. edge-functions: Deno may update the linked
+    // supabase/functions/node_modules (nodeModulesDir auto) that lint resolves.
+    { name: 'meditation', command: MEDITATION_CHECKS, inputs: MEDITATION, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
+    { name: 'edge-functions', command: EDGE_CHECKS, inputs: EDGE_READS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
     // The site's scope test runs with the site check: a PR that wires a new
     // script into the site build without adding it to SITE fails here, before
     // later PRs that touch only that script skip the check. It also reads the
     // config and the engine, so a change to either reruns a reused pass.
+    // Serial and after the checks above: docs:build rewrites the tracked
+    // data/site-manifest.json that lint-scripts reads, and writes docs/.
     {
       name: 'site',
       command: `npm run docs:build && npm run docs:check && npm run test:file -- scripts/verify-local-config.test.js -t '${SITE_SCOPE_TEST}'`,
       inputs: [...SITE, ...SITE_SCOPE_TEST_READS],
       when: SITE,
     },
-    // These read only the files of their `when` (and EDGE_READS,
-    // EAS_WORKFLOW_READS): a pass is reused by a later commit that leaves them
-    // as they were, as a PR that never touched them skips the check.
-    { name: 'ci-contracts', command: CI_CONTRACTS, inputs: CI_CONTRACT_READS, when: CI_CONTRACT_READS },
-    { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, inputs: EAS_WORKFLOW_READS, when: EAS_WORKFLOWS },
-    // The Mac mini simulator campaign (npm run release:simulators): its plan, profiles and report.
-    {
-      name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
-      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs'],
-    },
-    // A bad version pin fails before push rather than at publication (offline, 0.1 s).
-    { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
-    { name: 'meditation', command: MEDITATION_CHECKS, inputs: MEDITATION, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
-    { name: 'edge-functions', command: EDGE_CHECKS, inputs: EDGE_READS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
+    // The two browser gates, serial and last (each starts its own Metro).
     // Web only, no Actions. No model unless OPENAI_API_KEY is set: the
     // decision model then judges the parcours the zones leave out (zones.mjs).
     // A diff with no web zone exits 0, or with the key, no Dreamer app path.
