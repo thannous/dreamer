@@ -1,7 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as StoreReview from 'expo-store-review';
+import { Linking, Platform } from 'react-native';
 import {
+  canOpenStoreReviewPage,
   markStoreReviewPaywallSeen,
+  openStoreReviewPage,
   recordStoreReviewAnalysisRead,
   requestStoreReviewIfDue,
 } from '@/lib/storeReview';
@@ -90,5 +93,23 @@ describe('store review pacing', () => {
     now = START + 3 * DAY_MS;
     await expect(requestStoreReviewIfDue({ kind: 'analysis_read' })).resolves.toBe(false);
     await expect(requestStoreReviewIfDue({ kind: 'analysis_read' })).resolves.toBe(true);
+  });
+});
+
+// Settings shows "Rate app" only where the store page that takes a review exists.
+describe('store review page from Settings', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it('offers the Play Store page, and no App Store page before the first iOS release is on sale', async () => {
+    const openURL = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    jest.replaceProperty(Platform, 'OS', 'android');
+    expect(canOpenStoreReviewPage()).toBe(true);
+    await openStoreReviewPage();
+    expect(openURL).toHaveBeenCalledWith('market://details?id=com.tanuki75.noctalia');
+
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    expect(canOpenStoreReviewPage()).toBe(false);
+    jest.replaceProperty(Platform, 'OS', 'web');
+    expect(canOpenStoreReviewPage()).toBe(false);
   });
 });

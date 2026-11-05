@@ -135,8 +135,15 @@ export async function requestStoreReviewIfDue(trigger: StoreReviewTrigger): Prom
   }
 }
 
+/**
+ * The App Store page that takes a review exists once the first iOS version is on sale. Until
+ * then the link opens an error, the reviewer's first tap included: set this to true in the
+ * release that follows Apple's approval.
+ */
+export const IOS_APP_STORE_PAGE_LIVE = false;
+
 export function canOpenStoreReviewPage(): boolean {
-  return Platform.OS === 'ios' || Platform.OS === 'android';
+  return Platform.OS === 'android' || (Platform.OS === 'ios' && IOS_APP_STORE_PAGE_LIVE);
 }
 
 /** Manual entry from settings: opens the store page where a review can be written. */
