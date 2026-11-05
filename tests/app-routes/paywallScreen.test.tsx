@@ -229,9 +229,13 @@ jest.doMock('@/hooks/useTranslation', () => ({
 
 const mockRequestReturnToPaywallIntent = jest.fn();
 const mockClearReturnToPaywallIntent = jest.fn();
+const mockPeekReturnToPaywallRestore = jest.fn(() => false);
+const mockClearReturnToPaywallRestore = jest.fn();
 jest.doMock('@/lib/navigationIntents', () => ({
   requestReturnToPaywallIntent: mockRequestReturnToPaywallIntent,
   clearReturnToPaywallIntent: mockClearReturnToPaywallIntent,
+  peekReturnToPaywallRestore: mockPeekReturnToPaywallRestore,
+  clearReturnToPaywallRestore: mockClearReturnToPaywallRestore,
 }));
 
 jest.doMock('@/lib/analytics', () => ({
@@ -273,6 +277,7 @@ describe('Paywall screen', () => {
   beforeEach(() => {
     mockParams = { trigger: 'settings' };
     mockUser = { id: 'user-1' };
+    mockPeekReturnToPaywallRestore.mockReturnValue(false);
     mockCanGoBack.mockReturnValue(true);
     mockPurchase.mockResolvedValue({ tier: 'plus', isActive: true, serverConfirmed: true, storeActive: true });
     mockRestore.mockResolvedValue({ tier: 'free', isActive: false, serverConfirmed: true, storeActive: false });
@@ -645,6 +650,49 @@ describe('Paywall screen', () => {
     expect(mockRequestReturnToPaywallIntent).toHaveBeenCalledWith('settings', { persist: true });
     expect(mockReplace).toHaveBeenCalledWith('/settings?section=account');
     expect(mockPurchase).not.toHaveBeenCalled();
+  });
+
+  // App Review (3.1.1): a reviewer testing as a guest must find Restore on the paywall.
+  it('shows Restore to a guest, who signs in first and is brought back to restore', () => {
+    mockUseSubscription.mockReturnValue({ ...mockUseSubscription(), requiresAuth: true });
+    render(<PaywallScreen />);
+
+    fireEvent.click(screen.getByTestId(TID.Button.PaywallRestore));
+
+    expect(mockRequestReturnToPaywallIntent).toHaveBeenCalledWith('settings', { persist: true, restore: true });
+    expect(mockReplace).toHaveBeenCalledWith('/settings?section=account');
+    expect(mockRestore).not.toHaveBeenCalled();
+  });
+
+  it('restores once when the guest who asked for it comes back signed in', async () => {
+    mockPeekReturnToPaywallRestore.mockReturnValue(true);
+    const subscription = mockUseSubscription();
+    mockUseSubscription.mockReturnValue({ ...subscription, loading: true });
+    const view = render(<PaywallScreen />);
+    // Not before the account's subscription has loaded.
+    expect(mockRestore).not.toHaveBeenCalled();
+
+    mockUseSubscription.mockReturnValue(subscription);
+    view.rerender(<PaywallScreen />);
+    await waitFor(() => expect(mockTrackProductEvent).toHaveBeenCalledWith('restore_completed', {
+      trigger: 'settings',
+      outcome: 'nothing_to_restore',
+    }));
+    view.rerender(<PaywallScreen />);
+    expect(mockRestore).toHaveBeenCalledTimes(1);
+    expect(mockClearReturnToPaywallRestore).toHaveBeenCalledTimes(1);
+    expect((await screen.findByTestId(TID.Toast.PaywallInfo)).textContent).toBe('subscription.paywall.toast.nothing_to_restore');
+  });
+
+  it('never restores on its own for a guest or without the request', () => {
+    render(<PaywallScreen />);
+    cleanup();
+    mockPeekReturnToPaywallRestore.mockReturnValue(true);
+    mockUser = null as unknown as { id: string };
+    mockUseSubscription.mockReturnValue({ ...mockUseSubscription(), requiresAuth: true });
+    render(<PaywallScreen />);
+
+    expect(mockRestore).not.toHaveBeenCalled();
   });
 
   it('clears the return-to-paywall intent when the paywall is closed on purpose', () => {

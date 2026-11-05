@@ -67,7 +67,8 @@ const RETURN_TO_PAYWALL_KEY = 'dreamer:return_to_paywall';
 /** A sign-in that takes longer than this is no longer "coming from the paywall". */
 export const RETURN_TO_PAYWALL_TTL_MS = 10 * 60 * 1000;
 
-type ReturnToPaywallIntent = { trigger: string; createdAt: number };
+/** `restore`: the guest tapped Restore purchases, which runs once they are signed in. */
+type ReturnToPaywallIntent = { trigger: string; createdAt: number; restore?: true };
 
 let returnToPaywallIntent: ReturnToPaywallIntent | null = null;
 
@@ -77,7 +78,7 @@ const parseIntent = (raw: string | null): ReturnToPaywallIntent | null => {
   try {
     const parsed = JSON.parse(raw) as Partial<ReturnToPaywallIntent>;
     if (typeof parsed?.trigger === 'string' && typeof parsed?.createdAt === 'number') {
-      return { trigger: parsed.trigger, createdAt: parsed.createdAt };
+      return { trigger: parsed.trigger, createdAt: parsed.createdAt, ...(parsed.restore === true ? { restore: true } : {}) };
     }
   } catch {
     // Legacy or corrupt value: ignore it.
@@ -105,9 +106,13 @@ const readPendingIntent = (now: number): ReturnToPaywallIntent | null => {
  */
 export function requestReturnToPaywallIntent(
   trigger: string,
-  options?: { persist?: boolean; now?: number }
+  options?: { persist?: boolean; now?: number; restore?: boolean }
 ) {
-  const intent: ReturnToPaywallIntent = { trigger, createdAt: options?.now ?? Date.now() };
+  const intent: ReturnToPaywallIntent = {
+    trigger,
+    createdAt: options?.now ?? Date.now(),
+    ...(options?.restore ? { restore: true } : {}),
+  };
   returnToPaywallIntent = intent;
   if (options?.persist) {
     getSessionStorage()?.setItem(RETURN_TO_PAYWALL_KEY, serializeIntent(intent));
@@ -117,6 +122,21 @@ export function requestReturnToPaywallIntent(
 /** Reads the pending paywall trigger without consuming it (null when absent or expired). */
 export function peekReturnToPaywallTrigger(now: number = Date.now()): string | null {
   return readPendingIntent(now)?.trigger ?? null;
+}
+
+/** Whether the pending paywall return also asked to restore purchases. */
+export function peekReturnToPaywallRestore(now: number = Date.now()): boolean {
+  return readPendingIntent(now)?.restore === true;
+}
+
+/** Drops the restore request and keeps the way back to the paywall, so it runs only once. */
+export function clearReturnToPaywallRestore() {
+  const intent = readPendingIntent(Date.now());
+  if (!intent?.restore) return;
+  const kept: ReturnToPaywallIntent = { trigger: intent.trigger, createdAt: intent.createdAt };
+  returnToPaywallIntent = kept;
+  const storage = getSessionStorage();
+  if (storage?.getItem(RETURN_TO_PAYWALL_KEY)) storage.setItem(RETURN_TO_PAYWALL_KEY, serializeIntent(kept));
 }
 
 export function clearReturnToPaywallIntent() {

@@ -98,7 +98,7 @@ test('guest Plus offer shows the yearly bill, the sign-in reason and the renewal
     .toHaveText('Sign in to unlock and sync your subscription across devices.');
   await expect(screen.getByTestId('text.paywall.storeNotice', { visible: true })).toContainText('renews automatically');
   await expect(screen.getByTestId('btn.paywall.termsOfUse', { visible: true })).toBeVisible();
-  await expect(screen.getByTestId('btn.paywall.restore')).toHaveCount(0);
+  await expect(screen.getByTestId('btn.paywall.restore', { visible: true })).toBeVisible();
   await app.screenshot('guest-plus-offer');
 });
 

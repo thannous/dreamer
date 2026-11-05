@@ -2,9 +2,11 @@
 
 import {
   clearReturnToPaywallIntent,
+  clearReturnToPaywallRestore,
   clearStayOnSettingsIntent,
   consumeReturnToPaywallTrigger,
   consumeStayOnSettingsDestination,
+  peekReturnToPaywallRestore,
   peekReturnToPaywallTrigger,
   requestReturnToPaywallIntent,
   requestStayOnSettingsIntent,
@@ -36,6 +38,25 @@ describe('navigation intents', () => {
 
     expect(consumeReturnToPaywallTrigger()).toBe('stats_profile');
     expect(sessionStorage.getItem('dreamer:return_to_paywall')).toBeNull();
+  });
+
+  it('carries a guest restore request across a web reload and drops it once, keeping the way back', () => {
+    requestReturnToPaywallIntent('settings', { persist: true });
+    expect(peekReturnToPaywallRestore()).toBe(false);
+
+    requestReturnToPaywallIntent('settings', { persist: true, restore: true });
+    expect(JSON.parse(sessionStorage.getItem('dreamer:return_to_paywall') ?? 'null')?.restore).toBe(true);
+    expect(peekReturnToPaywallRestore()).toBe(true);
+
+    clearReturnToPaywallRestore();
+    expect(peekReturnToPaywallRestore()).toBe(false);
+    expect(JSON.parse(sessionStorage.getItem('dreamer:return_to_paywall') ?? 'null')?.restore).toBeUndefined();
+    expect(peekReturnToPaywallTrigger()).toBe('settings');
+  });
+
+  it('expires a restore request with its paywall intent', () => {
+    requestReturnToPaywallIntent('settings', { now: 1_000, restore: true });
+    expect(peekReturnToPaywallRestore(1_000 + 11 * 60 * 1000)).toBe(false);
   });
 
   it('expires the paywall intent after its TTL', () => {

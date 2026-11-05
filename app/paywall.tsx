@@ -30,7 +30,12 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { markStoreReviewPaywallSeen } from '@/lib/storeReview';
-import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
+import {
+  clearReturnToPaywallIntent,
+  clearReturnToPaywallRestore,
+  peekReturnToPaywallRestore,
+  requestReturnToPaywallIntent,
+} from '@/lib/navigationIntents';
 import {
   calculateAnnualDiscount,
   calculateMonthlyEquivalent,
@@ -108,6 +113,9 @@ function PaywallScreen() {
   const viewedAnalyticsKeyRef = useRef<string | null>(null);
   const purchaseOutcomeRef = useRef<'none' | 'completed' | 'restored'>('none');
   const dismissedTrackedRef = useRef(false);
+  // Read on arrival: the root layout drops the paywall intent once this screen shows.
+  const [restoreAfterSignIn] = useState(() => Boolean(userId) && peekReturnToPaywallRestore());
+  const restoreAfterSignInStartedRef = useRef(false);
 
   const rootStyle = useMemo(
     () => [styles.root, { backgroundColor: noctalia.screen.background }],
@@ -232,12 +240,15 @@ function PaywallScreen() {
     }
   }, [analyticsTier, paywallTrigger, sortedPackages]);
 
-  const handleOpenAuth = useCallback(() => {
+  const openAuth = useCallback((options?: { restore: true }) => {
     // Remember the paywall context so a successful sign-in comes straight back
     // here instead of leaving the user on the Settings tab.
-    requestReturnToPaywallIntent(paywallTrigger, { persist: true });
+    requestReturnToPaywallIntent(paywallTrigger, { persist: true, ...options });
     router.replace('/settings?section=account');
   }, [paywallTrigger]);
+  const handleOpenAuth = useCallback(() => openAuth(), [openAuth]);
+  // Plus belongs to an account: a guest signs in first, then the restore runs here.
+  const handleRestoreAfterSignIn = useCallback(() => openAuth({ restore: true }), [openAuth]);
 
   const handleOpenLegalLink = useCallback((kind: LegalLinkKind) => {
     void Linking.openURL(getLegalLink(kind, currentLang)).catch(() => {
@@ -352,6 +363,13 @@ function PaywallScreen() {
       setOperationPending(false);
     }
   }, [awaitingServerAccess, confirmAccessAndResume, paywallTrigger, processing, requiresAuth, restore, t]);
+
+  useEffect(() => {
+    if (!restoreAfterSignIn || restoreAfterSignInStartedRef.current || requiresAuth || loading || processing) return;
+    restoreAfterSignInStartedRef.current = true;
+    clearReturnToPaywallRestore();
+    void handleRestore();
+  }, [handleRestore, loading, processing, requiresAuth, restoreAfterSignIn]);
 
   const handleHideToast = useCallback(() => {
     setToast(null);
@@ -916,22 +934,19 @@ function PaywallScreen() {
               {t(STORE_NOTICE_KEY)}
             </Text>
           ) : null}
-          {!requiresAuth ? (
-            <>
-              {/* A utility, not an offer: it sits with the fine print, still a full 44pt target. */}
-              <Pressable
-                style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
-                onPress={handleRestore}
-                disabled={busy || awaitingServerAccess}
-                accessibilityRole="button"
-                testID={TID.Button.PaywallRestore}
-              >
-                <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
-                  {t('subscription.paywall.button.restore')}
-                </Text>
-              </Pressable>
-            </>
-          ) : null}
+          {/* A utility, not an offer: it sits with the fine print, still a full 44pt target.
+              Everyone sees it (App Review 3.1.1); a guest signs in on the way. */}
+          <Pressable
+            style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
+            onPress={requiresAuth ? handleRestoreAfterSignIn : handleRestore}
+            disabled={busy || awaitingServerAccess}
+            accessibilityRole="button"
+            testID={TID.Button.PaywallRestore}
+          >
+            <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
+              {t('subscription.paywall.button.restore')}
+            </Text>
+          </Pressable>
 
           {/* Reviewers and readers tap these on a phone: each keeps a full 44pt target. */}
           <View style={styles.legalLinks}>
