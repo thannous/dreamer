@@ -687,10 +687,11 @@ try {
     const coded = secondary.filter(code => typeof code === 'string' && /^[A-Z][A-Z0-9_]+$/.test(code));
     const uncoded = secondary.length - coded.length;
     console.error(`E2E exit ${finalExit}: sdk=${sdkExit ?? 'not launched'}; wrapper=${coded.join(',') || 'none'}${uncoded ? ` (+${uncoded} uncoded)` : ''}`);
-    // verify:pr and verify:release both run here from an isolated copy they delete at the end.
+    // verify:pr and verify:release[:site] run here from an isolated copy they delete at the end;
+    // both release scripts share the kind, so the note names them rather than guess the target.
     if (env.VERIFY_LOCAL_SHA) {
-      const kind = env.VERIFY_LOCAL_KIND === 'release' ? 'release' : 'pr';
-      console.error(`E2E note: verify:${kind} removes its isolated copy when it ends; keep it with VERIFY_LOCAL_KEEP_FAILED=1 or npm run verify:${kind} -- --keep, or rerun this check in the main checkout.`);
+      const command = env.VERIFY_LOCAL_KIND === 'release' ? 'verify:release (or verify:release:site)' : 'verify:pr';
+      console.error(`E2E note: ${command} removes its isolated copy when it ends; keep it with VERIFY_LOCAL_KEEP_FAILED=1 or the same npm run command with -- --keep, or rerun this check in the main checkout.`);
     }
   }
   console.log('E2E evidence: ' + output);

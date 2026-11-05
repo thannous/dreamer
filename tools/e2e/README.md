@@ -165,10 +165,14 @@ What 0.20 changes here:
 - `expect(screen).toHaveScreenshot()` compares the screen or one element with a
   committed PNG per target and OS (`<test file>-snapshots/`, named
   `<name>-<target>-<os>.png`, for example `<name>-dreamer-web-darwin.png`). No journey
-  uses it. A first run outside CI writes a missing baseline and fails; only rewriting
-  one needs `--update-snapshots`, which run.mjs refuses. Each OS that runs verify:pr
-  needs its own reviewed file, with dynamic content masked. Adding one is an owner
-  decision and needs a reviewed change.
+  uses it. run.mjs runs the SDK with `CI=1`, so it never writes a baseline: a missing
+  one fails and the capture is attached under
+  `results/<test>/attempt-<n>/snapshots/<test file>-snapshots/`. A first one comes from
+  a direct `npx e2e run` in tools/e2e (CI unset, as in the authoring `--watch` loop)
+  or from that attached capture, reviewed and committed; rewriting one needs
+  `--update-snapshots`, which run.mjs refuses. Each OS that runs verify:pr needs its
+  own reviewed file, with dynamic content masked. Adding one is an owner decision and
+  needs a reviewed change.
 - On a device, `device.setAirplaneMode(true)` takes an Android 11+ emulator
   offline (Wi-Fi and cellular); `setNetwork('offline')` cuts Wi-Fi only. Both
   are unsupported on an iOS Simulator. Restore the network in `afterEach`.
@@ -857,9 +861,10 @@ log, which can quote the user's text; a trace path carries the SDK's slug of the
 test title, written by the developer. It stops at about 20 lines.
 `verify:pr` and `verify:release` delete their isolated copy when they end, traces
 included: the digest's codes and lines remain in the terminal. Keep the copy with
-`VERIFY_LOCAL_KEEP_FAILED=1` or `npm run verify:pr -- --keep` (`verify:release`
-likewise), or rerun the check in the main checkout, for example
-`npm run test:e2e:parcours` / `test:e2e:smoke` for the PR gate.
+`VERIFY_LOCAL_KEEP_FAILED=1` or by rerunning the same command with `-- --keep`
+(`verify:pr`, `verify:release` or `verify:release:site`), or rerun the check in the
+main checkout, for example `npm run test:e2e:parcours` / `test:e2e:smoke` for the
+PR gate.
 
 `web collect` still requires all exact current contexts and complete finalized
 proof for qualification. After an interruption it inspects each owned campaign

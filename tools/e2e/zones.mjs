@@ -125,8 +125,6 @@ export const ZONES = [
       'services/journalMutationTransport.ts',
       'services/journalNativeImageAdapter.ts',
       'services/analysisPreviewService.ts',
-      // The reading modal opens from a journal dream (review, continuous reading).
-      'components/analysis/',
     ],
     tests: [
       'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts',
@@ -167,6 +165,7 @@ export const ZONES = [
       'app/auth/',
       'app/settings.tsx',
       'components/auth/',
+      'components/guest/GuestAccountRow.tsx',
       'components/settings/',
       'context/AuthContext.tsx',
       'lib/auth',
@@ -188,6 +187,8 @@ export const ZONES = [
       'app/dream-chat/', 'app/dream-categories/', 'components/chat/',
       'context/ChatContext.tsx', 'hooks/useDreamChatSend.ts', 'hooks/useChat',
       'services/dreamChatSend.ts', 'lib/chat/',
+      // The reading modal opens only from the reflection screen (app/dream-categories/[id].tsx).
+      'components/analysis/AnalysisReadingModal.tsx', 'components/analysis/ImageGenerationDots.tsx',
     ],
     tests: [
       'tools/e2e/tests/dreamer-chat-category.web.e2e.ts',

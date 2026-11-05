@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
 import { qualifyingSdkEnvironment } from './qualification.mjs';
 import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, sentToDecisionModel, widenWithDecision, zonesForFiles } from './zones.mjs';
@@ -212,26 +214,45 @@ test('seven smoke journeys carry the smoke tag and a zone tag', () => {
   assert.equal(smokeTags, 7);
 });
 
+// The engine's own collection, with no browser and no app: each test with its resolved
+// tags, describe and fixture levels included. A source scan cannot tell which test a tag is on.
+function collectedWebTests(product) {
+  // Each product's own default locale: other-locale tests are still listed, as skips.
+  const inherited = { ...process.env };
+  delete inherited.E2E_WEB_LOCALE;
+  const result = spawnSync(process.execPath, ['--import', './preload-web-matchers.mjs', 'node_modules/e2e/dist/cli/bin.js', 'list', '--reporter', 'json'], {
+    cwd: fileURLToPath(new URL('.', import.meta.url)), encoding: 'utf8',
+    env: { ...inherited, E2E_PRODUCT: product, E2E_PLATFORM: 'web', E2E_PERSONAS: '0', E2E_BUGBASH: '0',
+      E2E_TELEMETRY_DISABLED: '1', DO_NOT_TRACK: '1', CI: '1', NO_COLOR: '1' },
+  });
+  assert.equal(result.status, 0, result.stderr);
+  return JSON.parse(result.stdout).pairs;
+}
+
 test('every web journey is reachable by a zone, or kept release-only with a reason', () => {
-  const directory = new URL('./tests/', import.meta.url);
-  const journeys = readdirSync(directory).filter(name => /^(dreamer|lucid|meditation).*\.web\.e2e\.ts$/.test(name));
-  assert.ok(journeys.length > 40);
-  const tags = ZONES.flatMap(zone => zone.tags);
-  // The parcours selection leaves smoke and bug-bash tests out, so their zone tags reach nothing.
-  const selectableTags = source => [...source.matchAll(/tags:\s*\[([^\]]*)\]/g)]
-    .map(match => match[1]).filter(list => !/'(smoke|bugbash)'/.test(list)).join(' ');
-  for (const name of journeys) {
-    const file = `tools/e2e/tests/${name}`;
-    const source = selectableTags(readFileSync(new URL(name, directory), 'utf8'));
-    const zoned = ZONES.some(zone => zone.tests.includes(file)) || tags.some(tag => source.includes(`'${tag}'`));
-    assert.notEqual(zoned, Object.hasOwn(UNZONED, file), `${name} must be zoned or listed in UNZONED, not both`);
+  const zoneTags = new Set(ZONES.flatMap(zone => zone.tags));
+  const listed = new Set(ZONES.flatMap(zone => zone.tests));
+  const files = new Set();
+  for (const product of ['dreamer', 'lucid', 'meditation']) {
+    for (const pair of collectedWebTests(product)) {
+      const file = `tools/e2e/${pair.file}`;
+      if (!/^tools\/e2e\/tests\/(dreamer|lucid|meditation)[^/]*\.web\.e2e\.ts$/.test(file)) continue;
+      files.add(file);
+      if (listed.has(file) || Object.hasOwn(UNZONED, file)) continue;
+      // Smoke tests run in their own gate and bug-bash repros in verify:release; the parcours
+      // selects a test of an unlisted file only through one of its zone tags.
+      assert.ok(pair.tags.some(tag => tag === 'smoke' || tag === 'bugbash' || zoneTags.has(tag)),
+        `${pair.file} › ${pair.title}: no zone reaches it; tag it with its zone or list the file in UNZONED`);
+    }
   }
+  assert.ok(files.size > 40);
   for (const [file, reason] of Object.entries(UNZONED)) {
     assert.ok(existsSync(new URL(`../../${file}`, import.meta.url)), file);
     assert.ok(reason.trim(), file);
+    assert.equal(listed.has(file), false, `${file} must be zoned or listed in UNZONED, not both`);
   }
   // A renamed journey must not silently drop out of its zone.
-  for (const file of ZONES.flatMap(zone => zone.tests)) assert.ok(existsSync(new URL(`../../${file}`, import.meta.url)), file);
+  for (const file of listed) assert.ok(existsSync(new URL(`../../${file}`, import.meta.url)), file);
 });
 
 test('changes in behavioral owners select their journeys without selecting unrelated billing', () => {
@@ -252,7 +273,7 @@ test('changes in behavioral owners select their journeys without selecting unrel
     ['components/recap/WeeklyRecapScreen.tsx', 'dreamer-weekly-recap.web.e2e.ts'],
     ['lib/guideReading.ts', 'dreamer-guide-progress.web.e2e.ts'],
     ['components/guides/GuideReadingHost.tsx', 'dreamer-guide-progress.web.e2e.ts'],
-    ['components/analysis/AnalysisReadingModal.tsx', 'dreamer-review-accessibility.web.e2e.ts'],
+    ['components/analysis/AnalysisReadingModal.tsx', 'dreamer-reflection-context.web.e2e.ts'],
     ['components/guides/GuideReadingHost.tsx', 'dreamer-dream-guides.web.e2e.ts', 'fr-FR'],
     ['app/settings.tsx', 'dreamer-settings.web.e2e.ts', 'fr-FR'],
     ['components/journal/DreamShareSheet.tsx', 'dreamer-web-share.web.e2e.ts'],
@@ -278,6 +299,11 @@ test('changes in behavioral owners select their journeys without selecting unrel
   for (const source of ['hooks/useSubscription.ts', 'hooks/useSubscriptionExpiryTimer.ts', 'hooks/useQuota.ts']) {
     assert.equal(parcoursExclude([billing], [source]).exclude.billing, undefined, source);
   }
+});
+
+test('the guest account row selects the journey that opens account creation from it', () => {
+  const row = { id: 'row', tags: ['zone-connexion'], file: 'tools/e2e/tests/dreamer-journeys.web.e2e.ts' };
+  assert.equal(parcoursExclude([row], ['components/guest/GuestAccountRow.tsx']).exclude.row, undefined);
 });
 
 test('a French-only selected journey runs in French rather than becoming an English skipped pass', () => {
