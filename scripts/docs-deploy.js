@@ -120,7 +120,7 @@ that runtime-only directory to Cloudflare Pages. The upload records git HEAD
 with --commit-hash. Configuration lives in ${CONFIG_PATH}.
 
 prod refuses unless HEAD is the fetched origin/master, the checkout is clean,
-and \`npm run verify:release:site\` (or \`npm run verify:release\`) passed on HEAD
+and \`npm run verify:release:site\` (the site target) passed on HEAD
 (scripts/check-site-publish-proof.mjs). There is no override. preview is not guarded.`);
 }
 
@@ -133,13 +133,13 @@ function parseTarget(argv = process.argv.slice(2)) {
 
 // The production guard (scripts/check-site-publish-proof.mjs): HEAD is the
 // fetched origin/master, the checkout is clean, and a passed `release` proof
-// exists for HEAD, from `npm run verify:release:site` or `npm run
-// verify:release`: it asks for no target, so the app checks (native backend journey, TesterArmy
-// app campaigns) are not needed. It throws the refusal. There is no override.
-// Preview uploads are not guarded.
+// of HEAD covers the `site` target, which `npm run verify:release:site` runs
+// (the TesterArmy site campaign); the app checks (native backend journey,
+// TesterArmy app campaigns) are not needed. It throws the refusal. There is no
+// override. Preview uploads are not guarded.
 async function guardProductionPublish() {
-  const { assertSitePublishProof } = await import('./check-site-publish-proof.mjs');
-  return assertSitePublishProof({ root: ROOT_DIR });
+  const { SITE_TARGETS, assertSitePublishProof } = await import('./check-site-publish-proof.mjs');
+  return assertSitePublishProof({ root: ROOT_DIR, targets: [...SITE_TARGETS] });
 }
 
 async function main(argv = process.argv.slice(2), deps = {}) {

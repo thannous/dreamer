@@ -124,7 +124,7 @@
     "verify:pr": "node scripts/verify-local.mjs pr",
     "verify:pr:status": "node scripts/verify-local.mjs pr --post-status",
     "verify:release": "node scripts/verify-local.mjs release --target app",
-    "verify:release:site": "node scripts/verify-local.mjs release",
+    "verify:release:site": "node scripts/verify-local.mjs release --target site",
     "test:node": "jest --selectProjects node",
     "test:expo": "jest --selectProjects expo",
     "test:coverage": "npm run test:coverage:jest && npm run test:coverage:edge",

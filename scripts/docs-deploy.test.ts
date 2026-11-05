@@ -327,6 +327,8 @@ describe('docs-deploy production guard', () => {
     const source = fs.readFileSync(path.join(__dirname, 'docs-deploy.js'), 'utf8');
     expect(source).toContain("await import('./check-site-publish-proof.mjs')");
     expect(source).toContain('guardProduction = guardProductionPublish');
+    // The proof must cover the site target: an app release alone does not run the site campaign.
+    expect(source).toContain('assertSitePublishProof({ root: ROOT_DIR, targets: [...SITE_TARGETS] })');
     expect(source).not.toMatch(/OVERRIDE|--force|--override/);
   });
 });

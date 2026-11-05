@@ -4,8 +4,8 @@
 // `node scripts/check-site-publish-proof.mjs`.
 //
 // A production publish uploads only the exact commit of origin/master on which
-// `npm run verify:release:site` (or `npm run verify:release`, which also runs
-// the checks of the `app` target) passed. The checks are those of the common delivery
+// `npm run verify:release:site` (`release --target site`: the shared checks and
+// the TesterArmy site campaign) passed. The checks are those of the common delivery
 // rule (doc_web_interne/docs/regle-commune-livraison.md), run by
 // checkReleaseProof of scripts/verify-local.mjs. The guard fetches master and
 // refuses to continue when:
@@ -30,11 +30,11 @@
 //   - a check is still open: its latest real result did not pass and no later
 //     run reran it and passed (proof-open-check); a check of a target this
 //     publish does not ask for is left out,
-//   - a publish that asks for a release target (web:deploy:prod asks for
-//     `app`) finds a proof that does not cover it (proof-target).
-// The site publish asks for no target, so the checks of the `app` target (the
-// web app build, its native backend journey, the TesterArmy app
-// campaigns) do not hold it back.
+//   - the proof does not cover the release target the publish asks for: `site`
+//     here, `app` for web:deploy:prod (proof-target).
+// The site publish asks for the `site` target, so the checks of the `app`
+// target (the web app build, its native backend journey, the TesterArmy app
+// campaigns) do not hold it back, and an app release alone does not unlock it.
 // There is no override of any kind: a refused publish is fixed by publishing
 // the right commit after verify:release, never by a flag or a variable.
 // Preview uploads (`npm run docs:deploy:preview`) are not guarded.
@@ -57,13 +57,15 @@ const defaultRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const PREFIX = '[site-publish-proof]';
 
 export const MAIN_BRANCH = 'master';
-// `release --target app` and `release` (package.json): the only target is app.
+// `release --target app` and `release --target site` (package.json).
 export const RELEASE_COMMAND = 'npm run verify:release';
 export const SITE_RELEASE_COMMAND = 'npm run verify:release:site';
+/** The release target of verify-local.config.mjs a site publish needs. */
+export const SITE_TARGETS = Object.freeze(['site']);
 
-/** The command whose proof covers `targets`: the site needs none. */
-export function releaseCommand(targets = []) {
-  return targets.length ? RELEASE_COMMAND : SITE_RELEASE_COMMAND;
+/** The command whose proof covers `targets`. */
+export function releaseCommand(targets = SITE_TARGETS) {
+  return targets.includes('app') ? RELEASE_COMMAND : SITE_RELEASE_COMMAND;
 }
 
 /** Every check the guard runs, named as checkReleaseProof names them. */
@@ -87,9 +89,9 @@ export const SITE_PUBLISH_PROOF_CHECKS = Object.freeze([
  * `fetch: false` skips `git fetch origin master` (tests of a fixture that
  * has no network); the guard itself always fetches. `gitEnv` is the
  * environment of the git commands (tests pass a scratch git environment).
- * `targets` are the release targets the proof must cover (none for the site).
+ * `targets` are the release targets the proof must cover (`site` for the site).
  */
-export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch = true, targets = [] } = {}) {
+export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch = true, targets = SITE_TARGETS } = {}) {
   const gitVariables = cleanGitEnv(gitEnv ?? process.env);
   const release = await checkReleaseProof({
     cwd: root,
@@ -112,8 +114,9 @@ export async function checkSitePublishProof({ root = defaultRoot, gitEnv, fetch 
 // by `npm run verify:release` on a machine without the native Supabase runtime must not block the
 // site publish that `npm run verify:release:site` proves, whether that app run
 // came before the site run (it left the check open) or after it (it is also
-// the latest release run). Any other open or unpassed check, an unreadable run
-// log line, or a latest release run of another engine still refuses.
+// the latest release run); nor does a failed site campaign block the app.
+// Any other open or unpassed check, an unreadable run log line, or a latest
+// release run of another engine still refuses.
 const TARGET_FAILURES = new Set(['proof-open-check', 'proof-latest-release']);
 
 async function withoutOtherTargets(failures, { root, env, head, targets }) {
@@ -137,7 +140,7 @@ async function withoutOtherTargets(failures, { root, env, head, targets }) {
 
 export const DEFAULT_LABEL = 'noctalia.app';
 
-export function formatRefusal(result, label = DEFAULT_LABEL, targets = []) {
+export function formatRefusal(result, label = DEFAULT_LABEL, targets = SITE_TARGETS) {
   const problems = result.failures.map((failure) => failure.message);
   const command = releaseCommand(targets);
   return (
@@ -150,7 +153,7 @@ export function formatRefusal(result, label = DEFAULT_LABEL, targets = []) {
   );
 }
 
-export function formatAccepted(result, targets = []) {
+export function formatAccepted(result, targets = SITE_TARGETS) {
   return `${PREFIX} OK: HEAD ${result.head} is origin/${MAIN_BRANCH}, the checkout is clean, and ${releaseCommand(targets)} passed on it (tree ${result.tree}).`;
 }
 
@@ -160,7 +163,7 @@ export function formatAccepted(result, targets = []) {
  * scripts/docs-deploy.js awaits it before any build of a production publish,
  * and again right before the upload, which must find the same HEAD.
  */
-export async function assertSitePublishProof({ label = DEFAULT_LABEL, targets = [], ...options } = {}) {
+export async function assertSitePublishProof({ label = DEFAULT_LABEL, targets = SITE_TARGETS, ...options } = {}) {
   let result;
   try {
     result = await checkSitePublishProof({ ...options, targets });

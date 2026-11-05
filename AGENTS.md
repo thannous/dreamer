@@ -237,8 +237,8 @@ See [the current CI guide](doc_web_interne/docs/circleci-migration.md).
 ## Publishing to production
 
 Production is manual; a push/merge must not deploy. Publish only an authorized fetched
-`origin/master` SHA from a clean checkout with passed `verify:release` proof, or
-`verify:release:site` for the site alone. Only `web:deploy:prod` (Vercel) and
+`origin/master` SHA from a clean checkout with passed `verify:release` proof for the app, or
+`verify:release:site` for the site (each target needs its own run; both on one SHA cover both). Only `web:deploy:prod` (Vercel) and
 `docs:deploy:prod` (Cloudflare) publish production: never raw CLIs. Their guards run again
 before upload, with no override; app publishing requires the app target. Check production
 health/touched routes and record SHA/deployment. Only thanh decides a rollback of a

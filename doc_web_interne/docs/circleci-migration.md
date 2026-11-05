@@ -16,9 +16,10 @@ types, lint, build, backend ou publication.
    `node scripts/verify-local.mjs proof-block`. Répondre aux commentaires avec
    une nouvelle preuve pour chaque nouveau head envoyé. Si master a bougé,
    l'intégrer et revérifier avant le push.
-4. Avant publication autorisée, lancer `npm run verify:release` sur le SHA exact
-   de master, ou `npm run verify:release:site` pour noctalia.app seul. Un benchmark
-   CircleCI ne constitue jamais cette preuve.
+4. Avant publication autorisée, lancer sur le SHA exact de master
+   `npm run verify:release` pour l'application, `npm run verify:release:site` pour
+   noctalia.app, ou les deux si les deux partent. Un benchmark CircleCI ne
+   constitue jamais cette preuve.
 
 ### Validation complète locale
 
@@ -38,7 +39,10 @@ Python et sur Linux, avec leurs prérequis. La configuration conserve :
 
 `npm run verify:release` utilise `release --target app`. Les contrôles `app`
 sont le build web, `e2e-backend` et les campagnes Dreamer/Lucid/Meditation.
-`verify:release:site` garde les autres contrôles, y compris la campagne site.
+`verify:release:site` utilise `release --target site` : les mêmes contrôles
+communs, plus la campagne site, seule de la cible `site`. Une publication du site
+exige cette cible, une publication de l'application la cible `app` ; deux runs
+réussis sur le même SHA couvrent les deux.
 Les builds EAS et les vérifications sur appareil restent des preuves séparées,
 avec leurs autorisations et prérequis de plateforme.
 

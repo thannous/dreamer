@@ -32,11 +32,13 @@ export default {
   deps: { mode: 'link' },
   externalSources: [],
   checks: [
-    { name: 'suite', command: 'echo suite >> "$RUN_LOG"' },
+    { name: 'suite', command: 'echo suite >> "$RUN_LOG" && test -z "$SUITE_FAILS"' },
+    // Like testerarmy-site: only in a release of the site target.
     {
       name: 'site-e2e',
       command: 'echo site-e2e >> "$RUN_LOG"',
       kinds: ['release'],
+      targets: ['site'],
       specialised: true,
       requires: { command: 'test -z "$SITE_E2E_UNAVAILABLE"', hint: 'run it locally or pass owner-machine evidence' },
     },
@@ -82,6 +84,7 @@ async function withRepository(run) {
     };
     delete env.SITE_E2E_UNAVAILABLE;
     delete env.APP_E2E_AVAILABLE;
+    delete env.SUITE_FAILS;
     const remote = path.join(root, 'remote.git');
     const work = path.join(root, 'work');
     execFileSync('git', ['init', '-q', '--bare', '-b', 'master', remote], { env });
@@ -99,7 +102,7 @@ async function withRepository(run) {
     const engine = (kind, args = [], { extraEnv = {} } = {}) =>
       verify(kind, args, { cwd: work, env: { ...env, ...extraEnv }, log: () => {}, worktreeRoot: path.join(root, 'copies') });
     const runs = () => (existsSync(runLog) ? readFileSync(runLog, 'utf8').split('\n').filter(Boolean) : []);
-    const check = async ({ cwd = work, fetch = true, targets = [] } = {}) => {
+    const check = async ({ cwd = work, fetch = true, targets = ['site'] } = {}) => {
       const result = await checkSitePublishProof({ root: cwd, gitEnv: env, fetch, targets });
       for (const failure of result.failures) {
         assert.ok(SITE_PUBLISH_PROOF_CHECKS.includes(failure.check), `${failure.check} is listed in SITE_PUBLISH_PROOF_CHECKS`);
@@ -113,10 +116,12 @@ async function withRepository(run) {
 }
 
 const failedChecks = (result) => result.failures.map((failure) => failure.check);
+// npm run verify:release:site is `release --target site`.
+const SITE = ['--target', 'site'];
 
 test('a release proof of HEAD = origin/master on a clean checkout passes', async () => {
   await withRepository(async ({ check, engine, env, git, runs, work }) => {
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     assert.deepEqual(runs(), ['suite', 'site-e2e']);
     const tree = git(['rev-parse', 'HEAD^{tree}']);
     const proof = JSON.parse(readFileSync(path.join(work, '.git', 'verify-proofs', `${tree}.json`), 'utf8'));
@@ -138,7 +143,7 @@ test('HEAD ahead of origin/master is refused, even with a release proof for it',
   await withRepository(async ({ check, engine, git, work }) => {
     writeFileSync(path.join(work, 'tracked.txt'), 'local\n');
     git(['commit', '-q', '-am', 'local only']);
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     const result = await check();
     assert.deepEqual(failedChecks(result), ['head-is-origin-main']);
     assert.match(result.failures[0].message, /is not origin\/master/);
@@ -147,7 +152,7 @@ test('HEAD ahead of origin/master is refused, even with a release proof for it',
 
 test('the guard fetches master, so a stale origin/master does not hide a newer master', async () => {
   await withRepository(async ({ check, engine, env, git, remote, root }) => {
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     const other = path.join(root, 'other');
     execFileSync('git', ['clone', '-q', remote, other], { env });
     writeFileSync(path.join(other, 'tracked.txt'), 'pushed elsewhere\n');
@@ -159,7 +164,7 @@ test('the guard fetches master, so a stale origin/master does not hide a newer m
 
 test('modified or untracked files are refused, ignored build output is not', async () => {
   await withRepository(async ({ check, engine, work }) => {
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     execFileSync('mkdir', ['-p', path.join(work, 'docs')]);
     writeFileSync(path.join(work, 'docs', 'index.html'), '<html></html>\n');
     assert.equal((await check()).ok, true);
@@ -185,27 +190,27 @@ test('a pr proof never unlocks a production publish', async () => {
   await withRepository(async ({ check, engine }) => {
     assert.equal((await engine('pr')).status, 0);
     // A pr run is not a release run, so the run log has no release run either.
-    assert.deepEqual(failedChecks(await check()), ['proof-kind', 'proof-latest-release']);
+    assert.deepEqual(failedChecks(await check()), ['proof-kind', 'proof-latest-release', 'proof-target']);
   });
 });
 
 test('an incomplete release is refused until the missing check has owner-machine evidence', async () => {
   await withRepository(async ({ check, engine, git }) => {
     const unavailable = { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } };
-    assert.equal((await engine('release', [], unavailable)).status, 2);
+    assert.equal((await engine('release', SITE, unavailable)).status, 2);
     // The incomplete release run is the latest one, and its missing check stays open.
     assert.deepEqual(failedChecks(await check()), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
 
     const head = git(['rev-parse', 'HEAD']);
-    assert.equal((await engine('release', ['--external', `site-e2e=owner-machine: tanuki site-e2e on ${head}`], unavailable)).status, 0);
+    assert.equal((await engine('release', [...SITE, '--external', `site-e2e=owner-machine: tanuki site-e2e on ${head}`], unavailable)).status, 0);
     assert.deepEqual((await check()).failures, []);
   });
 });
 
-test('the site publish needs no app check; a publish that asks for the app target does', async () => {
+test('the site publish needs the site target and no app check; a publish that asks for the app target does', async () => {
   await withRepository(async ({ check, engine, env, git, runs, work }) => {
     // The machine cannot run the app check, and a site release never asks for it.
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     assert.deepEqual(runs(), ['suite', 'site-e2e']);
     assert.deepEqual((await check()).failures, []);
 
@@ -216,13 +221,33 @@ test('the site publish needs no app check; a publish that asks for the app targe
     );
     assert.match((await assertSitePublishProof({ root: work, gitEnv: env })).message, /npm run verify:release:site passed on it/);
 
-    // npm run verify:release is `release --target app`.
+    // npm run verify:release is `release --target app`: the same commit's proof then covers both.
     const head = git(['rev-parse', 'HEAD']);
     assert.equal((await engine('release', ['--target', 'app', '--external', `app-e2e=owner-machine: tanuki app-e2e on ${head}`])).status, 0);
+    assert.deepEqual(runs(), ['suite', 'site-e2e', 'suite'], 'an app release does not run the site campaign');
     assert.deepEqual((await check({ targets: ['app'] })).failures, []);
-    assert.deepEqual((await check()).failures, [], 'an app release also unlocks the site');
+    assert.deepEqual((await check()).failures, [], 'the site target stays covered');
     const accepted = await assertSitePublishProof({ root: work, gitEnv: env, targets: ['app'] });
     assert.match(accepted.message, /npm run verify:release passed on it/);
+  });
+});
+
+test('an app release alone does not unlock the site, and a failed site campaign does not hold back the app', async () => {
+  await withRepository(async ({ check, engine, env, git, runs, work }) => {
+    const head = git(['rev-parse', 'HEAD']);
+    assert.equal((await engine('release', ['--target', 'app', '--external', `app-e2e=owner-machine: tanuki app-e2e on ${head}`])).status, 0);
+    assert.deepEqual(runs(), ['suite']);
+    assert.deepEqual((await check({ targets: ['app'] })).failures, []);
+    assert.deepEqual(failedChecks(await check()), ['proof-target']);
+    await assert.rejects(
+      assertSitePublishProof({ root: work, gitEnv: env }),
+      /refused: the proof does not cover target site\. .*run `npm run verify:release:site` \(/,
+    );
+
+    // npm run verify:release:site where the site campaign cannot run: the app proof is kept.
+    assert.equal((await engine('release', SITE, { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } })).status, 2);
+    assert.deepEqual((await check({ targets: ['app'] })).failures, []);
+    assert.deepEqual(failedChecks(await check()), ['proof-latest-release', 'proof-open-check', 'proof-target']);
   });
 });
 
@@ -230,11 +255,11 @@ test('an app check left open by an app release does not block the site release t
   await withRepository(async ({ check, engine }) => {
     // npm run verify:release where the native Supabase runtime is missing: app-e2e is unavailable.
     assert.equal((await engine('release', ['--target', 'app'])).status, 2);
-    assert.deepEqual(failedChecks(await check()), ['proof-passed'], 'no release has passed yet');
+    assert.deepEqual(failedChecks(await check()), ['proof-passed', 'proof-target'], 'no site release has run yet');
     assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-passed', 'proof-latest-release', 'proof-open-check']);
 
     // npm run verify:release:site then passes: the site may publish, the app may not.
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     assert.deepEqual((await check()).failures, []);
     assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-open-check', 'proof-target']);
   });
@@ -242,15 +267,15 @@ test('an app check left open by an app release does not block the site release t
 
 test('an app release left incomplete after a passed site release does not block the site', async () => {
   await withRepository(async ({ check, engine }) => {
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     // npm run verify:release where the native Supabase runtime is missing: the passed site proof is
     // kept, and the incomplete app run is now the latest release run.
     assert.equal((await engine('release', ['--target', 'app'])).status, 2);
     assert.deepEqual((await check()).failures, []);
     assert.deepEqual(failedChecks(await check({ targets: ['app'] })), ['proof-latest-release', 'proof-open-check', 'proof-target']);
 
-    // A shared check left unpassed by a later app run still refuses the site.
-    assert.equal((await engine('release', ['--target', 'app'], { extraEnv: { SITE_E2E_UNAVAILABLE: '1' } })).status, 2);
+    // A shared check failed by a later app run still refuses the site.
+    assert.equal((await engine('release', ['--target', 'app'], { extraEnv: { SUITE_FAILS: '1' } })).status, 1);
     assert.deepEqual(failedChecks(await check()), ['proof-latest-release', 'proof-open-check']);
   });
 });
@@ -260,7 +285,7 @@ test('a stale proof (written for another commit of the same tree) is refused', a
     git(['switch', '-q', '-c', 'feature']);
     writeFileSync(path.join(work, 'tracked.txt'), 'feature\n');
     git(['commit', '-q', '-am', 'feature change']);
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
 
     const squash = git(['commit-tree', 'HEAD^{tree}', '-p', 'master', '-m', 'squash']);
     git(['switch', '-q', 'master']);
@@ -269,14 +294,14 @@ test('a stale proof (written for another commit of the same tree) is refused', a
     // The release run was logged for the feature commit, not for the squash.
     assert.deepEqual(failedChecks(await check()), ['proof-matches-head', 'proof-latest-release']);
 
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     assert.deepEqual((await check()).failures, []);
   });
 });
 
 test('a proof left from the previous master commit is refused after master moves', async () => {
   await withRepository(async ({ check, engine, git, work }) => {
-    assert.equal((await engine('release')).status, 0);
+    assert.equal((await engine('release', SITE)).status, 0);
     writeFileSync(path.join(work, 'tracked.txt'), 'next\n');
     git(['commit', '-q', '-am', 'next master']);
     git(['push', '-q', 'origin', 'master']);

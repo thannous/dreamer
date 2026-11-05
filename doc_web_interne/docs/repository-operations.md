@@ -144,10 +144,14 @@ It posts nothing (exit 3 after a pass) if the checkout changed or moved during
 the run, or if github.com does not know the commit yet: push it, then run again
 (the passed checks are reused). Success needs exit 0 and a passed proof; a run
 that throws posts nothing. The default `verify:pr` posts nothing.
-`verify:release` runs the complete release set afresh on the delivered SHA and
-rebuilds the site and app web output. `verify:release:site` excludes only the app
-target (web app build, backend browser qualification and Dreamer/Lucid/Meditation
-campaigns); it qualifies a site-only publish. Device QA and EAS builds remain separate.
+`verify:release` runs the release set of the `app` target afresh on the delivered
+SHA and rebuilds the site and app web output. `verify:release:site` runs the same
+shared checks with the `site` target instead (the TesterArmy site campaign) and
+leaves out the `app` one (web app build, backend browser qualification and
+Dreamer/Lucid/Meditation campaigns); it qualifies a site publish. Both runs on one
+SHA merge into one proof that covers both targets. Inside a release the PR web
+gates launch nothing: the target's full campaigns replace them. Device QA and EAS
+builds remain separate.
 
 Fetch `origin/master` before proving a commit. The engine tests the committed
 head in an isolated worktree linked to the main checkout's dependencies;
@@ -325,16 +329,18 @@ Publish one `master` SHA. From a clean checkout where `HEAD` is the fetched `ori
 `npm run verify:release` and publish only when it ends `passed`. It reruns every check on this
 commit, reusing nothing, rebuilds the site (`docs:build`, `docs:check`) and the web app
 (`build:web`) for this commit, and runs the full local validation; `node scripts/verify-local.mjs
-status` shows the proof of `HEAD`. When only the site ships, `npm run verify:release:site` is
-enough: the same run without the checks of the `app` target (`build:web`, `e2e-backend` on the
-native Supabase runtime, the TesterArmy Dreamer, Lucid and Meditation campaigns). A check this
+status` shows the proof of `HEAD`. The site needs `npm run verify:release:site` instead: the
+shared checks plus the `site` target (the TesterArmy site campaign), without the checks of the
+`app` target (`build:web`, `e2e-backend` on the native Supabase runtime, the TesterArmy Dreamer,
+Lucid and Meditation campaigns). Shipping both from one SHA takes both runs. A check this
 machine cannot run (Deno, native Supabase runtime, TesterArmy) leaves the proof `incomplete`: run it on a machine
 that can and rerun with `--external <check>="owner-machine: <host> <note> on <SHA>"`. `npm run
 docs:deploy:prod` (site) and `npm run web:deploy:prod` (Vercel web app) then refuse unless `HEAD` is
 `origin/master` after `git fetch`, the checkout is clean, and a passed `release` proof exists for
 this `master` SHA (`scripts/check-site-publish-proof.mjs`, through the engine's
-`checkReleaseProof`); `web:deploy:prod` also requires that proof to cover the `app` target, which
-only `npm run verify:release` does. There is no override flag or variable. Only then does the site
+`checkReleaseProof`); `docs:deploy:prod` requires that proof to cover the `site` target, which
+only `npm run verify:release:site` runs, and `web:deploy:prod` the `app` target, which only
+`npm run verify:release` runs. There is no override flag or variable. Only then does the site
 publish run `docs:release-check` before the upload. After the publish, check production (health,
 touched pages) and record the SHA and the deployment.
 
@@ -444,7 +450,7 @@ publish-on-decision:
 Until step 2 is saved, a push to `master` still publishes the site.
 
 After that, from a clean checkout where `HEAD` is the fetched `origin/master`, run `npm run
-verify:release:site` (or `npm run verify:release`) on that SHA until it ends `passed`, then set
+verify:release:site` on that SHA until it ends `passed`, then set
 `CLOUDFLARE_API_TOKEN` (Pages edit) and `CLOUDFLARE_ACCOUNT_ID`. Do not commit either value.
 
 ```sh

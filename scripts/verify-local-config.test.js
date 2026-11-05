@@ -157,7 +157,8 @@ describe('verify-local.config.mjs', () => {
   });
 
   it('runs every step of the CircleCI portfolio on a published master commit', () => {
-    // A release of the app target runs every release check, `when` ones included.
+    // A release runs every release check of its target, `when` ones included;
+    // verify:release and verify:release:site together run them all.
     const release = config.checks
       .filter((check) => (check.kinds ?? ['pr', 'release']).includes('release'))
       .map((check) => check.command)
@@ -177,25 +178,34 @@ describe('verify-local.config.mjs', () => {
     expect([...expected].filter((step) => !release.includes(step))).toEqual([]);
   });
 
-  it('verify:release runs the app checks the web app publish requires; verify:release:site leaves them out', () => {
-    // The site publish asks the guard for no target, so the backend journey and the app
-    // campaigns never hold back noctalia.app. A target dropped on any side
-    // would let the web app or a mobile release ship without those checks.
+  it('verify:release runs the app checks the web app publish requires; verify:release:site runs the site campaign instead', () => {
+    // The site publish asks the guard for the site target, so the backend journey and the app
+    // campaigns never hold back noctalia.app, and the site campaign never holds back the app.
+    // A target dropped on any side would let a publish ship without its checks.
     const { RELEASE_TARGETS } = require('./web-deploy');
     expect(RELEASE_TARGETS).toEqual(['app']);
+    const siteTargets = JSON.parse(execFileSync(process.execPath, ['--input-type=module', '-e',
+      `const { SITE_TARGETS } = await import(${JSON.stringify(pathToFileURL(path.join(ROOT, 'scripts/check-site-publish-proof.mjs')).href)});
+       process.stdout.write(JSON.stringify(SITE_TARGETS));`], { encoding: 'utf8' }));
+    expect(siteTargets).toEqual(['site']);
     const scripts = scriptsOf('package.json');
     expect(scripts['verify:release']).toBe('node scripts/verify-local.mjs release --target app');
-    expect(scripts['verify:release:site']).toBe('node scripts/verify-local.mjs release');
+    expect(scripts['verify:release:site']).toBe('node scripts/verify-local.mjs release --target site');
     const app = config.checks.filter((check) => check.targets).map((check) => [check.name, check.targets]);
     expect(app).toEqual([
       ['web-build', ['app']],
       ['app-media-published', ['app']],
       ['e2e-backend', ['app']],
+      // It drives the docs/ that `site`, earlier in every release, built.
+      ['testerarmy-site', ['site']],
       ['testerarmy-dreamer', ['app']],
       ['testerarmy-lucid', ['app']],
       ['testerarmy-meditation', ['app']],
       ['bugbash-repros', ['app']],
     ]);
+    const names = config.checks.map((check) => check.name);
+    expect(names.indexOf('site')).toBeLessThan(names.indexOf('testerarmy-site'));
+    expect(checkNamed('testerarmy-site').command).toBe('npm run test:testerarmy:site');
     // targets apply on release only. A target here would drop the PR gates.
     // A missing browser on a touched zone must be incomplete, not a green pass.
     for (const [name, probe] of [['parcours-touches', 'probe parcours'], ['smoke-journeys', 'probe smoke']]) {

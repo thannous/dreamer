@@ -13,17 +13,18 @@
 //                           No model call and no GitHub Actions minutes. A
 //                           docs-only diff skips both. A missing browser or
 //                           emulator prints a skip line and does not fail.
-//   npm run verify:release  before a publish: the PR checks, run again, plus the
-//                           full local validation of
+//   npm run verify:release  before an app publish: the PR checks, run again,
+//                           plus the full local validation of
 //                           doc_web_interne/docs/circleci-migration.md
 //                           (`release --target app`). The web app and mobile
 //                           releases need it.
 //   npm run verify:release:site
-//                           before a noctalia.app publish only: the same run
-//                           without the checks of the `app` target (the web
-//                           app build, its native backend journey and
-//                           the TesterArmy app campaigns), which the static
-//                           site does not ship.
+//                           before a noctalia.app publish: the same shared
+//                           checks plus the `site` target (the TesterArmy site
+//                           campaign) instead of the `app` one (the web app
+//                           build, its native backend journey and the
+//                           TesterArmy app campaigns). Both on one commit
+//                           cover both targets.
 //
 // A check without `when` is reused by a later PR run whose inputs are identical;
 // a release reuses nothing. A `when` check runs only
@@ -659,11 +660,11 @@ export default {
       kinds: ['release'],
     },
     { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },
-    // The Vercel web app, rebuilt for the delivered commit. noctalia.app needs no
-    // check of its own here: a release runs `site` above on that commit too.
+    // The Vercel web app, rebuilt for the delivered commit. Every release runs
+    // `site` above on that commit too.
     // `targets: ['app']` marks what only an app release runs (npm run
     // verify:release, which web:deploy:prod requires); npm run
-    // verify:release:site, enough for the static site, leaves it out.
+    // verify:release:site, for the static site, leaves it out.
     { name: 'web-build', command: 'npm run build:web', kinds: ['release'], targets: ['app'], perCommit: true },
     // The app's CDN paintings (assets/remote/app-media.json) must all be in the CDN
     // read-back receipt before an app build or OTA references them.
@@ -690,10 +691,15 @@ export default {
       specialised: true,
       requires: TESTERARMY,
     },
+    // The noctalia.app browser campaign: only a site release (npm run
+    // verify:release:site, `release --target site`, which docs:deploy:prod
+    // requires) runs it, since the web app and mobile releases do not ship the
+    // site. It drives the docs/ that `site` built earlier in this copy.
     {
       name: 'testerarmy-site',
-      command: 'npm run docs:build && npm run test:testerarmy:site',
+      command: 'npm run test:testerarmy:site',
       kinds: ['release'],
+      targets: ['site'],
       specialised: true,
       requires: TESTERARMY,
     },
