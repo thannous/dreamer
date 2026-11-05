@@ -9,7 +9,7 @@ const path = require('node:path');
 // missing, empty or plugin-removed HealthKit descriptions make Apple reject an IPA;
 // a QA bundle identifier can be selected accidentally for the store build;
 // local Gradle output inside a fingerprinted native package can diverge from EAS npm ci.
-const { assertPortableFingerprint, assertCleanNativeModules, assertIosStoreConfig, assertAndroidStoreConfig } = require('./check-eas-build-inputs');
+const { assertPortableFingerprint, assertCleanNativeModules, assertIosStoreConfig, assertAndroidStoreConfig, checkBuildInputs } = require('./check-eas-build-inputs');
 const { iosLinksHealthKit } = require('./lib/ios-healthkit-linking');
 
 const infoPlist = {
@@ -54,6 +54,20 @@ describe('EAS store build input preflight', () => {
   it('requires the HealthKit purpose strings only from a binary that links HealthKit', () => {
     expect(() => assertIosStoreConfig(resolved({}), 'noctalia', false)).not.toThrow();
     expect(() => assertIosStoreConfig(resolved({}, 'com.tanuki75.noctalia.lucid'), 'lucid', true)).toThrow('NSHealthShareUsageDescription');
+  });
+  // A prebuild left in the main checkout (ios/ from 3.7.1) made introspection report its
+  // HealthKit keys and old version, while EAS builds without that folder.
+  it('refuses to check a project that still holds a local native folder for that platform', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-eas-native-'));
+    try {
+      fs.mkdirSync(path.join(root, 'ios'));
+      await expect(checkBuildInputs(root, 'noctalia', 'ios')).rejects.toThrow('clean checkout');
+      await expect(checkBuildInputs(root, 'lucid', 'ios')).rejects.toThrow('No EAS build started');
+      // Android is checked against android/ only: here it goes on to read eas.json.
+      await expect(checkBuildInputs(root, 'noctalia', 'android')).rejects.toThrow('eas.json');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
   it('links HealthKit and its Nitro runtime into the Lucid iOS build only', () => {
     const root = path.join(__dirname, '..');

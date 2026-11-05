@@ -61,11 +61,21 @@ function assertIosStoreConfig(config, app, healthKitLinked = true) {
   if (missing.length) throw new Error(`Resolved iOS Info.plist is missing ${missing.join(', ')}; Apple can reject the upload with 90683. No EAS build started.`);
 }
 
+// Expo introspection reads an existing native project before the config plugins: a local
+// prebuild left in the checkout made this preflight check its old Info.plist. EAS uploads
+// without it (.easignore), so the preflight must run without it too.
+function assertNoLocalNativeProject(projectRoot, platform) {
+  if (fs.existsSync(path.join(projectRoot, platform))) {
+    throw new Error(`${path.join(projectRoot, platform)} is a local native project that EAS does not upload; checks against it would read its old config. Run the release from a clean checkout (MOBILE_VERSIONING.md). No EAS build started.`);
+  }
+}
+
 async function checkBuildInputs(root, app, platform) {
   if (!['noctalia', 'lucid', 'meditation'].includes(app) || !['android', 'ios'].includes(platform)) {
     throw new Error('Use --app noctalia|lucid|meditation --platform android|ios');
   }
   const projectRoot = app === 'meditation' ? path.join(root, 'apps/meditation') : root;
+  if (app !== 'meditation') assertNoLocalNativeProject(projectRoot, platform);
   const eas = JSON.parse(fs.readFileSync(path.join(projectRoot, 'eas.json'), 'utf8'));
   const profile = app === 'lucid' ? 'lucid-production' : 'production';
   Object.assign(process.env, eas.build?.base?.env ?? {}, eas.build?.[profile]?.env ?? {}, {
@@ -115,4 +125,4 @@ if (require.main === module) {
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
 
-module.exports = { assertPortableFingerprint, assertCleanNativeModules, assertIosStoreConfig, assertAndroidStoreConfig, checkBuildInputs };
+module.exports = { assertPortableFingerprint, assertCleanNativeModules, assertIosStoreConfig, assertAndroidStoreConfig, assertNoLocalNativeProject, checkBuildInputs };
