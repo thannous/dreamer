@@ -180,6 +180,9 @@ const MOBILE_VERSIONS = [
 
 // Deno runtime sources; the Edge tests also read supabase/migrations.
 const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'deno.lock', 'tools/dev-local/'];
+// What edge-functions reads beyond EDGE: the target guard tools/dev-local
+// imports, and the pinned Deno version.
+const EDGE_READS = [...EDGE, 'scripts/lib/backend-e2e-local.cjs', 'mise.toml'];
 
 // The EAS workflow contracts. These suites read .eas/workflows and eas.json as
 // files, so Jest's related-test selection (jest-changed) never picks them when
@@ -199,7 +202,22 @@ const EAS_WORKFLOW_CONTRACTS = [
   'scripts/check-android-release-ref.test.js',
   'scripts/check-android-release-gates.test.js',
 ].join(' ');
+// What those suites read beyond EAS_WORKFLOWS: the scripts the guards
+// require (and the suites themselves), the persona pins qualification.mjs
+// imports, and Jest.
+const EAS_WORKFLOW_READS = [
+  ...EAS_WORKFLOWS, 'scripts/', 'tools/e2e/persona-models.mjs',
+  'jest.config*.js', 'babel.config.js', 'package.json', 'package-lock.json',
+];
 
+// What ci-contracts reads: the CI files and tests, the root package.json
+// (the benchmark's canonical command) and the e2e install manifests and tools.
+const CI_CONTRACT_READS = [
+  '.circleci/', 'package.json',
+  'tools/e2e/package.json', 'tools/e2e/package-lock.json',
+  'tools/e2e/benchmark-setup.mjs', 'tools/e2e/benchmark-setup.test.mjs',
+  'tools/e2e/install-browsers.mjs', 'tools/e2e/install-browsers.test.mjs',
+];
 const CI_CONTRACTS = [
   'bash .circleci/tests/classify-changes.test.sh',
   'python3 .circleci/tests/shared-build-impact.test.py',
@@ -306,6 +324,12 @@ export const PARCOURS_WHEN = [
   'tools/e2e/tests/dreamer*.web.e2e.ts', 'tools/e2e/tests/lucid.web.e2e.ts', 'tools/e2e/tests/meditation.web.e2e.ts',
   'tools/e2e/tests/bugbash/', 'verify-local.config.mjs',
 ];
+
+// What the two web gates read: everything but documents and the local
+// development backend, which no web journey starts. They pick their journeys
+// from the diff against the merge base, hence perBase: a docs-only follow-up
+// commit on the same base reuses their pass.
+const E2E_GATE_READS = ['**', ...not(DOCS), '!tools/dev-local/'];
 
 // The full campaign and release gate share these four complete coverage contexts.
 export const DREAMER_CAMPAIGN_CONTEXTS = [
@@ -605,16 +629,11 @@ export default {
       inputs: [...SITE, ...SITE_SCOPE_TEST_READS],
       when: SITE,
     },
-    {
-      name: 'ci-contracts', command: CI_CONTRACTS,
-      when: [
-        '.circleci/', 'package.json',
-        'tools/e2e/package.json', 'tools/e2e/package-lock.json',
-        'tools/e2e/benchmark-setup.mjs', 'tools/e2e/benchmark-setup.test.mjs',
-        'tools/e2e/install-browsers.mjs', 'tools/e2e/install-browsers.test.mjs',
-      ],
-    },
-    { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, when: EAS_WORKFLOWS },
+    // These read only the files of their `when` (and EDGE_READS,
+    // EAS_WORKFLOW_READS): a pass is reused by a later commit that leaves them
+    // as they were, as a PR that never touched them skips the check.
+    { name: 'ci-contracts', command: CI_CONTRACTS, inputs: CI_CONTRACT_READS, when: CI_CONTRACT_READS },
+    { name: 'eas-workflow-contracts', command: EAS_WORKFLOW_CONTRACTS, inputs: EAS_WORKFLOW_READS, when: EAS_WORKFLOWS },
     // The Mac mini simulator campaign (npm run release:simulators): its plan, profiles and report.
     {
       name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
@@ -622,8 +641,8 @@ export default {
     },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
-    { name: 'meditation', command: MEDITATION_CHECKS, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
-    { name: 'edge-functions', command: EDGE_CHECKS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
+    { name: 'meditation', command: MEDITATION_CHECKS, inputs: MEDITATION, when: MEDITATION, releaseAlways: true, requires: MEDITATION_DEPS },
+    { name: 'edge-functions', command: EDGE_CHECKS, inputs: EDGE_READS, when: EDGE, releaseAlways: true, specialised: true, requires: DENO },
     // Web only, no Actions. No model unless OPENAI_API_KEY is set: the
     // decision model then judges the parcours the zones leave out (zones.mjs).
     // A diff with no web zone exits 0, or with the key, no Dreamer app path.
@@ -639,6 +658,8 @@ export default {
       // (DECISION_KEY_ENV and decisionEnabled in tools/e2e/zones.mjs).
       env: { E2E_DECISION_FILTER: process.env.OPENAI_API_KEY?.trim() ? 'on' : 'off' },
       when: PARCOURS_WHEN,
+      inputs: E2E_GATE_READS,
+      perBase: true,
       specialised: true,
       requires: {
         command: 'node tools/e2e/pr-gate.mjs probe parcours',
@@ -649,6 +670,8 @@ export default {
       name: 'smoke-journeys',
       command: 'npm run test:e2e:smoke',
       when: SMOKE_WHEN,
+      inputs: E2E_GATE_READS,
+      perBase: true,
       specialised: true,
       requires: {
         command: 'node tools/e2e/pr-gate.mjs probe smoke',

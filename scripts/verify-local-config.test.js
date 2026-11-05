@@ -476,6 +476,41 @@ describe('verify-local.config.mjs', () => {
     });
   });
 
+  it('reuses the web gates and the scoped contract checks across a docs-only commit, never across a file they read', () => {
+    // A follow-up commit that only edits documents or the local backend reran
+    // both browser gates (whole-tree fingerprints). The gates pick journeys from
+    // the diff against the merge base, so their pass is reused only on that base.
+    const result = JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module', '-e',
+      `import { normaliseConfig, checkFingerprint } from ${JSON.stringify(ENGINE)};
+       const config = normaliseConfig(${JSON.stringify(config)});
+       const names = ['parcours-touches', 'smoke-journeys', 'meditation', 'edge-functions', 'ci-contracts', 'eas-workflow-contracts'];
+       const checks = config.checks.filter(check => names.includes(check.name));
+       const paths = ['doc_web_interne/docs/repository-operations.md', 'tools/dev-local/api-server.ts', 'app/index.tsx',
+         'apps/meditation/app/index.tsx', 'supabase/functions/api/router.ts', 'scripts/lib/backend-e2e-local.cjs',
+         '.circleci/config.yml', 'eas.json'];
+       const fingerprint = (check, file, object, mergeBase = 'base') => checkFingerprint({ check, files: [{ path: file, mode: '100644', object }], tree: object, sha: object, environment: {}, mergeBase });
+       process.stdout.write(JSON.stringify({
+         reused: Object.fromEntries(paths.map(file => [file, checks.filter(check => fingerprint(check, file, 'a') === fingerprint(check, file, 'b')).map(check => check.name).sort()])),
+         perBase: checks.filter(check => fingerprint(check, 'app/index.tsx', 'a', 'one') !== fingerprint(check, 'app/index.tsx', 'a', 'two')).map(check => check.name).sort(),
+       }));`,
+    ], { encoding: 'utf8' }));
+    const gates = ['parcours-touches', 'smoke-journeys'];
+    const all = ['ci-contracts', 'eas-workflow-contracts', 'edge-functions', 'meditation', ...gates].sort();
+    const without = (...names) => all.filter((name) => !names.includes(name));
+    expect(result.reused).toEqual({
+      'doc_web_interne/docs/repository-operations.md': all,
+      'tools/dev-local/api-server.ts': without('edge-functions'),
+      'app/index.tsx': without(...gates),
+      'apps/meditation/app/index.tsx': without('meditation', ...gates),
+      'supabase/functions/api/router.ts': without('edge-functions', ...gates),
+      'scripts/lib/backend-e2e-local.cjs': without('edge-functions', 'eas-workflow-contracts', ...gates),
+      '.circleci/config.yml': without('ci-contracts', ...gates),
+      'eas.json': without('eas-workflow-contracts', ...gates),
+    });
+    expect(result.perBase).toEqual(gates);
+  });
+
   it('discovers every tracked Edge test in local and coverage commands', () => {
     // UI journeys cannot detect a worker suite silently omitted by a Deno path.
     // Current CircleCI only benchmarks installation; local verification owns Edge execution.
