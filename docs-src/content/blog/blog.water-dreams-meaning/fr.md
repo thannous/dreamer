@@ -329,8 +329,8 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Enregistrez l’eau, le lieu, vos actions et votre émotion avant de chercher une interprétation. Noctalia vous aide à comparer les motifs qui reviennent avec le temps.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencez votre journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=seo_fr_en_2026&amp;utm_content=water_fr_final" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <section class="mt-16">

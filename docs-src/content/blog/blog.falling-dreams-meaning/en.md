@@ -4,7 +4,7 @@
   "layout": "blogArticle",
   "lang": "en",
   "slug": "falling-dreams-meaning",
-  "title": "Falling Dreams Meaning: Why You Dream of Falling - Noctalia",
+  "title": "Why Do You Dream of Falling and Wake Up? | Noctalia",
   "description": "Dreaming of falling: a hypnic jerk or a dream about losing control? The causes, the common scenarios, and what to note when you wake up to understand yours.",
   "robots": "max-image-preview:large",
   "themeColor": "#0a0514",
@@ -13,12 +13,12 @@
   "bodyStyle": "background-color: #0a0514;",
   "mainClass": "pt-32 pb-20 px-4",
   "ogType": "article",
-  "ogTitle": "Falling Dreams Meaning: Why You Dream of Falling - Noctalia",
+  "ogTitle": "Why Do You Dream of Falling and Wake Up? | Noctalia",
   "ogDescription": "Hypnic jerk or a dream about losing control? Why we dream of falling, and what to note when you wake up.",
   "ogImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "ogImageAlt": "Abstract visual of a person falling through soft clouds",
   "twitterCard": "summary_large_image",
-  "twitterTitle": "Falling Dreams Meaning: Why You Dream of Falling - Noctalia",
+  "twitterTitle": "Why Do You Dream of Falling and Wake Up? | Noctalia",
   "twitterDescription": "Dreaming of falling: what happens in the body, and what the fall may be telling you.",
   "twitterImage": "https://noctalia.app/img/blog/falling-dreams-meaning.webp",
   "twitterImageAlt": "Abstract visual of a person falling through soft clouds",
@@ -29,7 +29,7 @@
   "nextPath": "/en/blog/flying-dreams-meaning",
   "preloadImage": "/img/blog/falling-dreams-meaning.webp",
   "jsonLd": [
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Falling dreams: why you dream of falling, and what it can mean\",\n    \"description\": \"Dreaming of falling: a hypnic jerk or a dream about losing control? The causes, the common scenarios, and what to note when you wake up to understand yours.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/falling-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-10\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/falling-dreams-meaning\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2025,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/en/blog/falling-dreams-meaning\"\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Why do you dream of falling and wake up?\",\n    \"description\": \"Dreaming of falling: a hypnic jerk or a dream about losing control? The causes, the common scenarios, and what to note when you wake up to understand yours.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/falling-dreams-meaning.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/en/about#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/en/about\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-01-10\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/en/blog/falling-dreams-meaning\"\n    },\n    \"inLanguage\": \"en\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2025,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/en/blog/falling-dreams-meaning\"\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"What does it mean to dream of falling?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"There is no single meaning. Falling dreams often go with a feeling of losing control, fear of failing, a period of overload or a life transition. How you felt in the dream and what is happening in your life right now are the best clues to which lead applies to you.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Why do you jolt awake when you dream of falling?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"As you fall asleep, it is often a hypnic jerk: a brief, harmless muscle contraction, sometimes with an image of falling. Up to 70% of people experience it, according to the Sleep Foundation. Caffeine, stress and lack of sleep make it more frequent.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Does dreaming of falling predict something?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"No. A falling dream does not predict an accident or a failure. It stages a current emotion or concern, or simply a sensation from falling asleep.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Should I worry if these dreams keep coming back?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Usually not. If they come back several times a week, disrupt your sleep or leave you anxious during the day, talk to a doctor or a sleep specialist, as you would for frequent nightmares.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Home\",\n            \"item\": \"https://noctalia.app/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Resources\",\n            \"item\": \"https://noctalia.app/en/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Falling dreams\",\n            \"item\": \"https://noctalia.app/en/blog/falling-dreams-meaning\"\n        }\n    ]\n}"
   ],
@@ -66,7 +66,7 @@
 <span class="text-sm text-purple-300/60">10 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
-                    Falling dreams: why you dream of falling, and what it can mean
+                    Why do you dream of falling and wake up?
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
                     The floor gives way, your stomach drops, and you wake with a jolt, heart racing. Falling is one of the most common dream themes there is. Sometimes the cause is physical, tied to the moment you drift off. Sometimes the dream echoes something in your life. Here is how to tell the two apart.
@@ -85,7 +85,7 @@
 
 <!-- Quick Answer (AI SEO) -->
 <section class="glass-panel rounded-2xl p-6 mb-8 border border-dream-salmon/20 bg-white/5" aria-labelledby="quick-answer-title">
-    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Quick answer</h2>
+    <h2 id="quick-answer-title" class="font-serif text-xl text-dream-cream mb-3">Why the fall can wake you</h2>
     <p class="text-purple-100/80 leading-relaxed">Dreaming of falling is very common. If the fall comes just as you drift off and jolts you awake, it is often a hypnic jerk, a harmless muscle reflex. If the fall is part of a longer dream, it often goes with a sense of losing control, insecurity or change. How you felt in the dream, and what is going on in your life right now, are the best clues.</p>
 </section>
 <!-- Featured Image -->
@@ -110,7 +110,7 @@
 <div class="prose max-w-none text-gray-300">
 <h2 id="science">What happens when you dream of falling?</h2>
 <p>
-                    Two different experiences go by the name "falling dream". The first is a flash: you are drifting off, you feel as if you missed a step, and your whole body twitches. The second is a real dream, often during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, with a setting and a story: a <a class="text-dream-salmon hover:underline" href="../symbols/cliff">cliff</a>, a building, an elevator that gives way.
+                    Two different experiences go by the name "falling dream". The first is a flash: you are drifting off, you feel as if you missed a step, and your whole body twitches. The second is a real dream, often during <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, with a setting and a story: a <a class="text-dream-salmon hover:underline" href="../symbols/cliff">cliff</a>, a building, an elevator that gives way. The <a class="text-dream-salmon hover:underline" href="/en/guides/dream-locations">dream locations guide</a> can help you explore the setting as well as the fall.
                 </p>
 <p>
                     The first is mostly about the body, and we come back to it below. The second is widely shared. In a survey of 1,181 Canadian university students, <a class="text-dream-salmon hover:underline" href="../symbols/falling">falling</a> was one of four dream themes reported by more than 60% of respondents, alongside being chased, school and sex. Dreaming of falling is nothing unusual. It is the detail of <em>your</em> fall that can tell you something.
@@ -232,8 +232,8 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Capture the fall before it fades</h4>
 <p class="text-sm text-gray-400 mb-4">In Noctalia, tell your dream out loud when you wake up. It is transcribed, saved to your journal, and you can read your falling dreams side by side.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
+<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/ai-dream-interpretation-app">
+                                Explore Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
 </a>
 </div>
 </div>
@@ -332,8 +332,8 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Keep your falling dreams in Noctalia, along with how you felt. Reading them together shows you when they come back and what tends to come with them.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=seo_fr_en_2026&amp;utm_content=falling_en_final" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
 </a>
 </aside>
 <!-- Symbol Guide CTA -->

@@ -107,7 +107,7 @@
 
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
 <h3 class="font-serif text-lg text-dream-cream mb-3">Exam dreams long after school</h3>
-<p class="text-sm text-gray-300 leading-relaxed">You graduated years ago and still find yourself back in a classroom. An old setting can return when something today feels like an evaluation: a new job, a project under scrutiny, a new role in the family. It can also be a memory resurfacing, nothing more. Both are possible.</p>
+<p class="text-sm text-gray-300 leading-relaxed">You graduated years ago and still find yourself back in a classroom. An old setting can return when something today feels like an evaluation: a new job, a project under scrutiny, a new role in the family. It can also be a memory resurfacing, nothing more. Both are possible. The <a class="text-dream-salmon hover:underline" href="/en/guides/dream-locations">dream locations guide</a> explores how the setting adds context.</p>
 </div>
 </div>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
