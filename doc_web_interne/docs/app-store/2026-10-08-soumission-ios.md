@@ -1,5 +1,7 @@
 # Soumission App Store iOS — Noctalia 3.5.0
 
+> **Remplacé** par [la soumission du 5 novembre 2026](2026-11-05-soumission-ios.md). Les notes de revue ci-dessous sont fausses pour la version actuelle (le texte vient d'Anthropic, l'app ne contient plus HealthKit). La fiche corrigée est `marketing/aso/app-store-listing-2026-11-05.json` ; le texte 3.5.0 reste dans l'historique Git de `marketing/aso/app-store-listing-2026-10-08.json`.
+
 Préparé dans la nuit du 7 au 8 octobre 2026. Rien n'a été écrit dans App Store Connect, aucune build EAS n'a été lancée et rien n'a été soumis.
 
 ## Verdict
@@ -20,7 +22,7 @@ Préparé dans la nuit du 7 au 8 octobre 2026. Rien n'a été écrit dans App St
 ## Tes actions, dans l'ordre
 
 1. Répondre « oui » dans le fil : je commit, je pousse la branche `claude/mobile-symbols-polish`, j'ouvre la PR brouillon, puis je lance `npm run release:build -- --app noctalia --platform ios` (profil `production`, version 3.5.0 calculée par `release:plan`) et l'envoi TestFlight avec `scripts/mobile-release.js submit-internal`.
-2. App Store Connect → ta version 3.5.0 : coller les textes de [la fiche](../../../marketing/aso/app-store-listing-2026-10-08.json), téléverser les captures et les vidéos, choisir la build traitée.
+2. App Store Connect → ta version 3.5.0 : coller les textes de la fiche (`marketing/aso/app-store-listing-2026-10-08.json`, remplacée), téléverser les captures et les vidéos, choisir la build traitée.
 3. App Store Connect → Abonnements : vérifier les produits Noctalia Plus (prix, description, capture de revue). Pour une première mise en vente, ils doivent être soumis **avec** la version.
 4. App Store Connect → Confidentialité de l'app : reprendre le tableau plus bas.
 5. Installer la build TestFlight sur ton iPhone, faire un rêve → analyse → conversation, puis appuyer sur « Soumettre pour vérification ».
@@ -42,7 +44,7 @@ Une étape demandera ta connexion Apple et la validation à deux facteurs : l'en
 
 ## Textes de la fiche
 
-Source unique : [`marketing/aso/app-store-listing-2026-10-08.json`](../../../marketing/aso/app-store-listing-2026-10-08.json). Toutes les limites Apple sont respectées :
+Source unique à l'époque : `marketing/aso/app-store-listing-2026-10-08.json` (remplacée, voir l'historique Git). Toutes les limites Apple sont respectées :
 
 | Champ | FR | EN | Limite |
 | --- | --- | --- | --- |
