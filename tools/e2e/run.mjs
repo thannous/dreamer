@@ -6,7 +6,7 @@ import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, qualifyingSdkEnvironment, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, failureDigest, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
-import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary } from './native-release.mjs';
+import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary, agentSession, simulatorIdentity } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
@@ -453,6 +453,7 @@ try {
   }
   const device = env.E2E_DEVICE;
   let binary = null;
+  let deviceIdentity = null;
   if (platform !== 'web' && command !== 'build') {
     if (!device) throw new Error('E2E_DEVICE must name a dedicated emulator or iOS Simulator.');
     if (platform === 'android') {
@@ -462,16 +463,19 @@ try {
       writeFileSync(join(output, 'avd-raw.txt'), rawAvd, { flag: 'wx' });
       if (normalizeAvdName(rawAvd) !== (env.E2E_AVD_NAME ?? 'Pixel_9_API_37')) throw new Error('Unrelated Android AVD refused.');
       if (read('adb', ['-s', device, 'shell', 'getprop', 'sys.boot_completed']) !== '1') throw new Error('Android target is not booted.');
-      identity = device;
+      const property = name => read('adb', ['-s', device, 'shell', 'getprop', name]);
+      deviceIdentity = { id: device, name: normalizeAvdName(rawAvd), osVersion: property('ro.build.version.release'), model: property('ro.product.model') };
     } else {
-      const devices = Object.values(JSON.parse(read('xcrun', ['simctl', 'list', 'devices', 'available', '--json'])).devices).flat();
-      const matches = devices.filter(entry => entry.name === device || entry.udid === device);
-      if (matches.length !== 1) throw new Error('E2E_DEVICE must resolve to exactly one available iOS Simulator.');
-      identity = matches[0].udid;
+      deviceIdentity = simulatorIdentity(JSON.parse(read('xcrun', ['simctl', 'list', 'devices', 'available', '--json'])).devices, device);
     }
+    identity = deviceIdentity.id;
+    // The SDK, the lock and the evidence name the resolved device, never a Simulator name
+    // that another device can take; its own agent-device session keeps parallel runs apart.
+    env.E2E_DEVICE = identity;
+    env.E2E_AGENT_SESSION = agentSession(platform, identity);
     lock = join(tmpdir(), `noctalia-testerarmy-${createHash('sha256').update(identity).digest('hex')}.lock`);
     fd = openSync(lock, 'wx');
-    writeFileSync(fd, JSON.stringify({ pid: process.pid, product, platform, device }));
+    writeFileSync(fd, JSON.stringify({ pid: process.pid, product, platform, device: identity }));
     if (!releaseFile) throw new Error('E2E_RELEASE_RECEIPT is required; create it through the explicit native build command.');
     release = releaseShape(JSON.parse(readFileSync(resolve(releaseFile), 'utf8')));
     if (nativeJourneys) {
@@ -518,7 +522,7 @@ try {
   const diffSha256 = await trackedDiffSha256(root, env);
   writeOnce(join(output, 'source-start.json'), sourceBefore);
   writeOnce(join(output, 'evidence.json'), {
-    startedAt: new Date(startedAt).toISOString(), product, platform, device: env.E2E_DEVICE ?? null, bundle, binary,
+    startedAt: new Date(startedAt).toISOString(), product, platform, device: env.E2E_DEVICE ?? null, deviceIdentity, bundle, binary,
     campaignId, pins, origin: expectedOrigin, repeatCount: args.includes('--repeat-each') ? Number(args[args.indexOf('--repeat-each') + 1]) : 1, context: context(), requestedMedia: { video: args.includes('--video'), trace: true },
     revision: read('git', ['rev-parse', 'HEAD']), workingTree: read('git', ['status', '--porcelain']),
     trackedDiffSha256: diffSha256,

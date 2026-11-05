@@ -17,6 +17,27 @@ export function normalizeAvdName(raw) {
   if (!lines[0] || lines.length > 2 || (lines.length === 2 && lines[1] !== 'OK')) refusal('AVD_PROTOCOL');
   return lines[0];
 }
+/**
+ * The agent-device session of the runs on one device. The default `e2e-<target>-<slot>` is
+ * the same for every device on the shared daemon, where two concurrent runs would interleave
+ * their taps; this name differs per device and stays the same on reruns.
+ */
+export function agentSession(platform, identity) {
+  return `noctalia-${platform}-${digest(identity).slice(0, 12)}`;
+}
+/**
+ * The one available Simulator that a name or UDID names in `simctl list devices available
+ * --json`, with the OS version of its runtime and the model of its device type.
+ */
+export function simulatorIdentity(devices, requested) {
+  const matches = Object.entries(devices).flatMap(([runtime, list]) => list
+    .filter(entry => entry.name === requested || entry.udid === requested).map(entry => ({ ...entry, runtime })));
+  if (matches.length !== 1) throw new Error('E2E_DEVICE must resolve to exactly one available iOS Simulator.');
+  const [{ udid, name, runtime, deviceTypeIdentifier }] = matches;
+  return { id: udid, name,
+    osVersion: runtime.match(/SimRuntime\.[A-Za-z]+-(\d+(?:-\d+)*)$/)?.[1].replaceAll('-', '.') ?? runtime,
+    model: deviceTypeIdentifier?.replace(/^com\.apple\.CoreSimulator\.SimDeviceType\./, '').replaceAll('-', ' ') ?? null };
+}
 export function nativeInputs(root, product, platform) {
   const prefix = (product === 'meditation' ? 'apps/meditation/' : '') + (platform === 'android' ? 'android' : 'ios');
   if (!existsSync(join(root, prefix, platform === 'android' ? 'gradlew' : 'Podfile.lock'))) refusal('NATIVE_PROJECT_MISSING');

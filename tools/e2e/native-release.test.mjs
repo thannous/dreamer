@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary, releaseMetadata } from './native-release.mjs';
+import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary, releaseMetadata, agentSession, simulatorIdentity } from './native-release.mjs';
 import { virtualLinks } from './test-support/virtual-links.mjs';
 // The Simlock reservation and native tap guards join this file instead of a new
 // package.json script: root scripts feed the Expo runtime fingerprint.
@@ -171,4 +171,26 @@ test('OTA provenance reads the complete boolean belonging to ENABLED only', () =
     assert.throws(() => metadata(node('0x01') + other), /OTA_NOT_PINNED/);
     assert.equal(metadata(node('0x0') + other).otaEnabled, false);
   } finally { rmSync(root, { recursive: true, force: true }); }
+});
+test('each device gets its own stable agent-device session', () => {
+  const udid = '0220EB9F-6117-4F95-BAF6-D2D9BAF2C6FD';
+  assert.match(agentSession('ios', udid), /^noctalia-ios-[a-f0-9]{12}$/);
+  assert.equal(agentSession('ios', udid), agentSession('ios', udid));
+  assert.notEqual(agentSession('ios', udid), agentSession('ios', '9ACD9962-82C0-4AEB-8F9B-EC99327F6B45'));
+  assert.notEqual(agentSession('android', 'emulator-5554'), agentSession('android', 'emulator-5556'));
+});
+test('a Simulator name or UDID resolves to one UDID with its OS version and model', () => {
+  const entry = (udid, name, type) => ({ udid, name, isAvailable: true, state: 'Shutdown',
+    deviceTypeIdentifier: `com.apple.CoreSimulator.SimDeviceType.${type}` });
+  const devices = {
+    'com.apple.CoreSimulator.SimRuntime.iOS-27-2': [entry('AAAA-1', 'iPhone 17', 'iPhone-17'), entry('BBBB-2', 'Noctalia_QA', 'iPhone-17-Pro')],
+    'com.apple.CoreSimulator.SimRuntime.iOS-26-4': [entry('CCCC-3', 'iPhone 16e', 'iPhone-16e'), entry('DDDD-4', 'Twin', 'iPhone-Air')],
+    'com.apple.CoreSimulator.SimRuntime.iOS-27-1': [entry('EEEE-5', 'Twin', 'iPhone-Air')],
+  };
+  assert.deepEqual(simulatorIdentity(devices, 'iPhone 17'), { id: 'AAAA-1', name: 'iPhone 17', osVersion: '27.2', model: 'iPhone 17' });
+  assert.deepEqual(simulatorIdentity(devices, 'BBBB-2'), { id: 'BBBB-2', name: 'Noctalia_QA', osVersion: '27.2', model: 'iPhone 17 Pro' });
+  assert.equal(simulatorIdentity(devices, 'iPhone 16e').osVersion, '26.4');
+  // A name shared across runtimes, or no match, names no single device.
+  assert.throws(() => simulatorIdentity(devices, 'Twin'), /exactly one available iOS Simulator/);
+  assert.throws(() => simulatorIdentity(devices, 'iPhone 99'), /exactly one available iOS Simulator/);
 });

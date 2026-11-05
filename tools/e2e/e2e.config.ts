@@ -83,9 +83,9 @@ export default {
     name: `${product}-${platform}`,
     engine: native
       ? mobile({ platform: platform as 'android' | 'ios', device, videoTouches: false,
-        // iOS sheets and fades outlast the default 500 ms the engine gives a control that came
-        // with the last action.
-        transition: platform === 'ios' ? 800 : undefined })
+        // run.mjs names one agent-device session per device; iOS sheets and fades outlast the
+        // default 500 ms the engine gives a control that came with the last action.
+        session: process.env.E2E_AGENT_SESSION, transition: platform === 'ios' ? 800 : undefined })
       : webEngine,
     app: native ? { bundleId, environment: 'test' as const } : {
       url: `http://127.0.0.1:${port}`,
