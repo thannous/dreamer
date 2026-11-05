@@ -72,7 +72,9 @@ export default {
     : branch ? 'tests/branch.web.e2e.ts' : backend ? 'tests/backend-*.web.e2e.ts' : personas ? `tests/dreamer-personas.${native ? 'mobile' : 'web'}.e2e.ts`
     : process.env.E2E_BUGBASH === '1' && product === 'dreamer' && !native
       ? ['tests/dreamer*.web.e2e.ts', 'tests/bugbash/**/*.e2e.ts']
-      : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
+      : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts'
+      // Each file runs on one worker: the site's journeys are split into files that run side by side.
+      : product === 'site' ? 'tests/site*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
   ...(personas ? { agents: createDreamerPersonaAgents(
     process.env.E2E_PERSONA_MODEL?.trim() || process.env.E2E_PERSONA_ACT_MODEL?.trim() || undefined,
     process.env.E2E_PERSONA_JUDGE_MODEL?.trim() || undefined,
