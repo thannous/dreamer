@@ -371,6 +371,10 @@ export default {
   // https:// URL prefixes of the external CI runs --external may cite. None
   // here, so only owner-machine evidence counts.
   externalSources: [],
+  // The engine keeps a failed copy when its own environment sets
+  // VERIFY_LOCAL_KEEP_FAILED=1; a check never inherits it (the engine tests,
+  // which expect their scratch copies removed, would fail).
+  stripEnv: ['VERIFY_LOCAL_KEEP_FAILED'],
   // The scripts these checks run: changing them changes what a proof proves,
   // so proof-block flags them for the owner's review like this file.
   deliveryFiles: [
@@ -703,9 +707,11 @@ export default {
     },
 
     // ---- verify:release only: the full local validation, then the delivered builds.
+    // The pins and CI contracts are already in every release: mobile-versions
+    // and ci-contracts above run whatever their `when`.
     {
       name: 'release-contracts',
-      command: `EXPO_OFFLINE=1 npm run dependencies:check && npm run boundaries:check && node scripts/mobile-release.js verify --app all && ${CI_CONTRACTS}`,
+      command: 'EXPO_OFFLINE=1 npm run dependencies:check && npm run boundaries:check',
       kinds: ['release'],
     },
     { name: 'jest-full', command: 'npm run test:fast', kinds: ['release'] },

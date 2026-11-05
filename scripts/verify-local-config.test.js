@@ -203,6 +203,16 @@ describe('verify-local.config.mjs', () => {
       expect(expected.delete(setup)).toBe(true);
     }
     expect([...expected].filter((step) => !release.includes(step))).toEqual([]);
+    // Each runs once per release: release-contracts no longer repeats the pins and CI contracts.
+    for (const step of ['node scripts/mobile-release.js verify --app all', 'bash .circleci/tests/classify-changes.test.sh']) {
+      expect({ step, runs: release.split(step).length - 1 }).toEqual({ step, runs: 1 });
+    }
+  });
+
+  it('never hands VERIFY_LOCAL_KEEP_FAILED to a check', () => {
+    // The engine reads it from its own environment to keep a failed copy; the
+    // engine tests, which expect their scratch copies removed, must not see it.
+    expect(config.stripEnv).toEqual(['VERIFY_LOCAL_KEEP_FAILED']);
   });
 
   it('verify:release runs the app checks the web app publish requires; verify:release:site runs the site campaign instead', () => {
