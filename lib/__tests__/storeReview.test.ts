@@ -101,7 +101,7 @@ describe('store review page from Settings', () => {
   afterEach(() => jest.restoreAllMocks());
 
   it('offers the Play Store page, and no App Store page before the first iOS release is on sale', async () => {
-    const openURL = jest.spyOn(Linking, 'openURL').mockResolvedValue(true);
+    const openURL = jest.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
     jest.replaceProperty(Platform, 'OS', 'android');
     expect(canOpenStoreReviewPage()).toBe(true);
     await openStoreReviewPage();
