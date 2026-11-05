@@ -307,6 +307,11 @@ export const SMOKE_WHEN = [
   '!routes/lucid/', '!components/lucid/', '!services/lucid*', '!apps/meditation/', ...UNIT_TESTS,
   // A changed Dreamer journey: its smoke-tagged tests run only in this check.
   'tools/e2e/tests/dreamer*.web.e2e.ts',
+  // The stack every journey runs on (tools/e2e/zones.mjs SMOKE_STACK).
+  'package.json', 'package-lock.json', 'patches/', 'app.json', 'app.config.ts', 'metro.config.js', 'babel.config.js',
+  'tools/e2e/package.json', 'tools/e2e/package-lock.json', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs',
+  'tools/e2e/qualification.mjs', 'tools/e2e/web-ports.mjs', 'tools/e2e/web-engine.ts', 'tools/e2e/preload-web-matchers.mjs',
+  'tools/e2e/traced-parity-test.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-fixtures.ts',
 ];
 
 // App paths plus the gate itself. A docs-only diff matches none of these, so
@@ -320,6 +325,8 @@ export const PARCOURS_WHEN = [
   'tools/e2e/pr-gate.mjs', 'tools/e2e/pr-gate.test.mjs', 'tools/e2e/e2e.config.ts', 'tools/e2e/e2e.bugbash.config.ts',
   'tools/e2e/run.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/persona-models.d.mts',
   'tools/e2e/bugbash-prerelease.mjs', 'tools/e2e/bugbash-prerelease.test.mjs', 'tools/e2e/web-parity-fixtures.ts',
+  // Shared steps of the onboarding zone's journeys (a zone source in zones.mjs).
+  'tools/e2e/onboarding-fixtures.ts',
   // Every web journey of the three campaigns: a changed journey runs (pr-gate.mjs changedJourneyProduct).
   'tools/e2e/tests/dreamer*.web.e2e.ts', 'tools/e2e/tests/lucid.web.e2e.ts', 'tools/e2e/tests/meditation.web.e2e.ts',
   'tools/e2e/tests/bugbash/', 'verify-local.config.mjs',

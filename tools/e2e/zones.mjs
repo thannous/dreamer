@@ -268,7 +268,7 @@ export const ZONES = [
   },
   {
     id: 'onboarding', tags: ['zone-onboarding'], product: 'dreamer', platform: 'web',
-    sources: ['app/onboarding.tsx', 'components/onboarding/', 'context/OnboardingContext.tsx', 'lib/onboardingState.ts'],
+    sources: ['tools/e2e/onboarding-fixtures.ts', 'app/onboarding.tsx', 'components/onboarding/', 'context/OnboardingContext.tsx', 'lib/onboardingState.ts'],
     // Settings replays the introduction and keeps a finished onboarding finished.
     tests: ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-stories.web.e2e.ts',
       'tools/e2e/tests/dreamer-onboarding-features-explorer.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts'],
@@ -325,6 +325,23 @@ export const UNZONED = Object.freeze({
  */
 export function isUnitTestPath(file) {
   return file.includes('__tests__/') || /\.test\.[^/]+$/.test(file) || file.endsWith('.snap');
+}
+
+/**
+ * What every web journey runs on: the app's dependencies and build config, and
+ * the e2e runner with its shared helpers. A change here starts the smoke
+ * journeys (about 25 s), the cheapest proof that the stack still drives the app.
+ */
+export const SMOKE_STACK = Object.freeze([
+  'package.json', 'package-lock.json', 'patches/', 'app.json', 'app.config.ts', 'metro.config.js', 'babel.config.js',
+  'tools/e2e/package.json', 'tools/e2e/package-lock.json', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs',
+  'tools/e2e/qualification.mjs', 'tools/e2e/web-ports.mjs', 'tools/e2e/web-engine.ts', 'tools/e2e/preload-web-matchers.mjs',
+  'tools/e2e/traced-parity-test.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-fixtures.ts',
+]);
+
+/** @param {string} file */
+export function isSmokeStackPath(file) {
+  return SMOKE_STACK.some(path => (path.endsWith('/') ? file.startsWith(path) : file === path));
 }
 
 /**

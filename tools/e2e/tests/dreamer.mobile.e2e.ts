@@ -1,6 +1,6 @@
 import { afterEach, test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
-import { tapWhenStill } from '../native-settle';
+import { tapWhenStill, waitUntilStill } from '../native-settle';
 // The persistent mock profile seeds this entry. Explicit expectations keep
 // Node collection independent of the app's React Native/media imports.
 const SEEDED_OTHER_DREAM = {
@@ -1122,24 +1122,8 @@ for (const offline of [false, true]) {
 // Release journeys App Review goes through on a first session (2026-11-05). They run in the
 // default campaign: release-simulators leaves out only the contextual-backgrounds captures.
 
-type ReleaseControl = ReturnType<TestFixtures['screen']['getByTestId']>;
-
 /** The mock chat's replies (mock-data/generators.ts), English in every UI language. */
 const MOCK_CHAT_REPLY = /^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/;
-
-/** Read twice at the same place: the node has stopped moving. */
-async function releaseHoldsStill(control: ReleaseControl) {
-  let previous = '';
-  let stable = 0;
-  await expect.poll(async () => {
-    const frame = await control.boundingBox();
-    if (!frame || frame.width <= 0 || frame.height <= 0) return false;
-    const current = [frame.x, frame.y, frame.width, frame.height].map(Math.round).join(':');
-    stable = current === previous ? stable + 1 : 0;
-    previous = current;
-    return stable >= 2;
-  }).toBe(true);
-}
 
 /** The dream page's header scrolls with it; its return tab stays inside the usable screen. */
 async function releaseJournalFromDream(screen: TestFixtures['screen']) {
@@ -1168,7 +1152,7 @@ test('Dreamer release guest reads its first dream and asks one question that sur
   const reading = screen.getByTestId('component.dreamDetail.interpretation', { visible: true });
   await expect(reading).toBeVisible();
   // The reading moves the page as it arrives.
-  await releaseHoldsStill(reading);
+  await waitUntilStill(reading);
   // iOS exposes a separate drop cap and an object-replacement marker in the transcript.
   await expect(screen.getByTestId('text.dreamDetail.transcript')).toContainText(story.slice(1));
   await app.screenshot('release-core-loop-reading');

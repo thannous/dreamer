@@ -99,6 +99,16 @@ test('a native-only diff skips instead of failing', () => {
   assert.equal(decideSmoke(files).launch, false);
 });
 
+test('a change to the stack every journey runs on starts the smoke set, docs and unrelated tooling do not', () => {
+  for (const file of ['package-lock.json', 'patches/expo+58.0.23.patch', 'app.json', 'tools/e2e/package.json',
+    'tools/e2e/e2e.config.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/traced-parity-test.ts']) {
+    assert.deepEqual(decideSmoke([file]).products, ['dreamer'], file);
+  }
+  for (const file of ['README.md', 'tools/e2e/README.md', 'tools/dev-local/manifest.mts', 'scripts/verify-local-config.test.js']) {
+    assert.equal(decideSmoke([file]).launch, false, file);
+  }
+});
+
 test('Lucid and Meditation do not start the Dreamer smoke set', () => {
   assert.equal(decideSmoke(['routes/lucid/lucid/index.tsx']).launch, false);
   assert.deepEqual(decideParcours(['routes/lucid/lucid/index.tsx']).products, ['lucid']);

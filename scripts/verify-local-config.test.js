@@ -562,3 +562,13 @@ describe('verify-local.config.mjs', () => {
     }
   });
 });
+
+test('the smoke check runs on every path of the stack the smoke gate watches', () => {
+  const { stack, when } = JSON.parse(execFileSync(process.execPath, [
+    '--input-type=module', '-e',
+    `const { SMOKE_STACK } = await import(${JSON.stringify(pathToFileURL(path.join(ROOT, 'tools/e2e/zones.mjs')).href)});
+     const { SMOKE_WHEN } = await import(${JSON.stringify(pathToFileURL(path.join(ROOT, 'verify-local.config.mjs')).href)});
+     process.stdout.write(JSON.stringify({ stack: SMOKE_STACK, when: SMOKE_WHEN }));`,
+  ], { encoding: 'utf8' }));
+  expect(stack.filter((entry) => !when.includes(entry))).toEqual([]);
+});

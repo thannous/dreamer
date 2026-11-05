@@ -13,7 +13,7 @@ import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DECISION_PRODUCTS, decisionEnabled, isDreamerAppPath, isNativeJourney, isUnzonedJourney, zonesForFiles } from './zones.mjs';
+import { DECISION_PRODUCTS, decisionEnabled, isDreamerAppPath, isNativeJourney, isSmokeStackPath, isUnzonedJourney, zonesForFiles } from './zones.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -69,11 +69,12 @@ export function decideParcours(files, { model = decisionEnabled(process.env) } =
 
 export function decideSmoke(files) {
   // The parcours selection leaves smoke-tagged tests to this gate, so a changed
-  // Dreamer journey also starts it: its smoke tests then run here.
-  if (!files.some(isDreamerAppPath) && !files.some(file => changedJourneyProduct(file) === 'dreamer')) {
+  // Dreamer journey also starts it: its smoke tests then run here. So does a
+  // change to the stack every journey runs on (dependencies, build config, runner).
+  if (!files.some(isDreamerAppPath) && !files.some(isSmokeStackPath) && !files.some(file => changedJourneyProduct(file) === 'dreamer')) {
     return {
       launch: false,
-      reason: 'FUMEE SAUTEE: aucun chemin Dreamer (app, components, services, context, hooks, lib, constants) ni parcours Dreamer modifie. Une PR documentation, Lucid seule ou Meditation seule ne lance pas cette fumee.',
+      reason: 'FUMEE SAUTEE: aucun chemin Dreamer (app, components, services, context, hooks, lib, constants), ni dependance, config de build ou runner e2e, ni parcours Dreamer modifie. Une PR documentation, Lucid seule ou Meditation seule ne lance pas cette fumee.',
     };
   }
   return { launch: true, products: ['dreamer'] };

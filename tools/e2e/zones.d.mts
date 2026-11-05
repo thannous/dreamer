@@ -22,6 +22,10 @@ export function sourceMatches(source: string, file: string): boolean;
 export function zonesForFiles(files: readonly string[]): Zone[];
 export function isDreamerAppPath(file: string): boolean;
 export function isNativeJourney(file: string): boolean;
+export function isUnitTestPath(file: string): boolean;
+export function isUnzonedJourney(file: string): boolean;
+export const SMOKE_STACK: readonly string[];
+export function isSmokeStackPath(file: string): boolean;
 
 export function filterIsActive(context: { changes?: { files?: readonly string[] } } | undefined): boolean;
 
