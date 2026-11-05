@@ -22,7 +22,8 @@ Each campaign keeps a unique `.e2e/bugbash/<id>/receipt.json`, source identity,
 effective SDK/model, session, exit status and links to the original SDK evidence.
 Exit 0 means the completed exploration reported no observations; 1 means triage
 is required; 2 means incomplete execution (including missing evidence, failed
-steps, a budget limit or changed sources). Findings remain unconfirmed.
+steps, running out of time, getting stuck or changed sources). Since e2e 0.23 a charter that spends its
+step budget with every step passed (`step-limit`) is complete. Findings remain unconfirmed.
 
 Keep the raw receipt intact. Save `triage.json` beside it, keyed by each finding's
 `id`, with `status` (`rejected`, `warning`, `confirmed`, `unresolved`), `reason`,

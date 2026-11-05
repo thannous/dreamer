@@ -7,8 +7,8 @@ import { PERSONA_PROVIDER } from './persona-models.mjs';
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
 // The model stack is pinned with it: agent steps load `ai` (e2e/dist/agent/ai-sdk.js), the
 // ChatGPT route wraps @ai-sdk/openai, and the gate's decision filter is @e2e-dev/decision.
-export const SDK_PINS = { e2e: '0.22.0', '@e2e-dev/web': '0.15.4', '@e2e-dev/mobile': '0.12.5', 'agent-device': '0.21.36',
-  ai: '7.0.162', '@ai-sdk/openai': '4.0.108', '@e2e-dev/decision': '0.3.1' };
+export const SDK_PINS = { e2e: '0.23.0', '@e2e-dev/web': '0.15.5', '@e2e-dev/mobile': '0.12.6', 'agent-device': '0.21.36',
+  ai: '7.0.162', '@ai-sdk/openai': '4.0.108', '@e2e-dev/decision': '0.3.2' };
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 // Preserve the former UTF-8 stdout.trim() identity without buffering a whole diff.
 // A hash copy marks the last content byte; later whitespace stays provisional.
@@ -217,6 +217,8 @@ export function verifyReport(document, options) {
     seen.add(key);
     if (!result.selected) { excluded.push(row); continue; }
     if (result.status === 'skipped' && result.attempts.length === 0) { skipped.push(row); continue; }
+    // e2e 0.23 test.fail turns an expected failure into `passed`; it never counts as a journey proof.
+    if (result.expectedFailure !== undefined || result.attempts.some(attempt => attempt?.expectedFailure !== undefined)) fail('EXPECTED_FAILURE_NOT_PROOF');
     if (result.status !== 'passed' || result.attempts.length !== 1) fail('RESULT_FAILED');
     const attempt = result.attempts[0];
     if (attempt.status !== 'passed' || attempt.index !== 0 || attempt.cleanup !== 'complete'

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { CHARTERS, assertLocalMock, mockEnv, runBugbash, charterResult, campaignExit } from './bugbash-prerelease.mjs';
+import { SDK_PINS } from './qualification.mjs';
 import { FORBIDDEN_PROJECT_REFS } from '../../scripts/test-supabase-guard.mjs';
 
 test('the pre-release bash has one charter per named area and stays in mock mode', () => {
@@ -22,8 +23,8 @@ test('the pre-release bash has one charter per named area and stays in mock mode
 
 const report = (findings = [], ended = 'finished', steps = [{ status: 'passed' }]) => ({
   schemaVersion: 'report-1', run: {
-    runner: { name: 'e2e', version: '0.22.0' },
-    targets: [{ id: 'dreamer-web', platform: 'web', environment: 'test', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: '0.15.4' } }],
+    runner: { name: 'e2e', version: SDK_PINS.e2e },
+    targets: [{ id: 'dreamer-web', platform: 'web', environment: 'test', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: SDK_PINS['@e2e-dev/web'] } }],
     results: [{ attempts: [{ steps: [{ model: { provider: 'chatgpt.responses', model: 'gpt-6.1-terra', calls: 1 } }] }] }],
     explore: { findings, ended, steps },
   },
@@ -38,12 +39,17 @@ test('observations require triage even when the SDK returns zero; code one canno
   assert.equal(campaignExit([charterResult(CHARTERS[0], 0, report(), '/report.json')]), 0);
 });
 
-test('missing reports, failed steps, budget exhaustion and changing source remain incomplete', () => {
-  for (const [exit, evidence] of [[0, undefined], [2, report()], [0, report([], 'step-limit')], [0, report([], 'finished', [])], [0, report([], 'finished', [{ status: 'failed' }])]]) {
+test('missing reports, failed steps, running out of time, getting stuck and changing source remain incomplete', () => {
+  for (const [exit, evidence] of [[0, undefined], [2, report()], [0, report([], 'time')], [0, report([], 'stuck')], [0, report([], 'finished', [])], [0, report([], 'finished', [{ status: 'failed' }])]]) {
     assert.equal(campaignExit([charterResult(CHARTERS[0], exit, evidence, '/report.json')]), 2);
   }
   assert.equal(campaignExit([], false), 2);
   assert.throws(() => runBugbash({ exploreCharters: false, only: 'typo', login: false }), /Unknown/);
+});
+
+test('a charter that spends its step budget with every step passed is complete', () => {
+  assert.equal(campaignExit([charterResult(CHARTERS[0], 0, report([], 'step-limit'), '/report.json')]), 0);
+  assert.equal(campaignExit([charterResult(CHARTERS[0], 0, report([], 'step-limit', [{ status: 'failed' }]), '/report.json')]), 2);
 });
 
 test('a clean charter requires the actual pinned SDK, local target and model', () => {

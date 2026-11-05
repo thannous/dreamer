@@ -79,7 +79,7 @@ function chatgptLoginPresent(env = process.env) {
 function explore(charter, env, output) {
   const cli = join(here, 'node_modules/e2e/dist/cli/bin.js');
   if (!existsSync(cli)) {
-    console.error('e2e 0.22.0 n\'est pas installe. npm run test:testerarmy:setup && npm run test:testerarmy:browsers');
+    console.error(`e2e ${SDK_PINS.e2e} n'est pas installe. npm run test:testerarmy:setup && npm run test:testerarmy:browsers`);
     return 2;
   }
   console.log(`\n# ${charter.slug}`);
@@ -112,7 +112,9 @@ export function charterResult(charter, exitCode, report, reportPath, expectedOri
     && target?.id === 'dreamer-web' && target.platform === 'web' && target.environment === 'test'
     && target.baseOrigin === expectedOrigin && target.engine?.name === 'web' && target.engine.version === SDK_PINS['@e2e-dev/web']
     && models.length > 0 && models.every(model => model.provider === PERSONA_PROVIDER && model.model === PERSONA_ACT_MODEL);
-  const incomplete = !valid || !identity || ![0, 1].includes(exitCode) || exploration.ended !== 'finished'
+  // e2e 0.23's planner keeps trying new lenses while steps remain, so the step budget this
+  // script sets ends a clean charter as often as `finished`; running out of time or getting stuck does not.
+  const incomplete = !valid || !identity || ![0, 1].includes(exitCode) || !['finished', 'step-limit'].includes(exploration.ended)
     || exploration.steps.length === 0 || exploration.steps.some(step => step.status !== 'passed');
   const findings = valid ? exploration.findings.map(finding => ({
     id: `${charter.slug}:${finding.id}`, observation: finding, status: 'unreviewed',

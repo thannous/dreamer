@@ -14,24 +14,25 @@ their separate identified Release/device requirements. See the
 
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.22.0,
-`@e2e-dev/web` 0.15.4, `@e2e-dev/mobile` 0.12.5 and `agent-device` 0.21.36
-(a direct pin; the override gives it to the mobile engine, which itself depends on 0.21.35).
+from the application's Playwright version. The locked runtime is `e2e` 0.23.0,
+`@e2e-dev/web` 0.15.5, `@e2e-dev/mobile` 0.12.6 and `agent-device` 0.21.36
+(a direct pin; the mobile engine depends on 0.21.36 too, and the override keeps a
+future engine bump from nesting another version unnoticed).
 0.21.36 rebuilds the iOS runner and changes iOS alert and modal-surface reads, deep
 accessibility snapshots, Android snapshot-helper retirement and daemon lease recovery
 ([release notes](https://github.com/callstack/agent-device/releases/tag/v0.21.36)).
 A native campaign qualifies it; a web run does not use it. The model stack is
 pinned too: `ai` 7.0.162 runs the agent steps, `@ai-sdk/openai` 4.0.108 wraps the
-saved ChatGPT login, and `@e2e-dev/decision` 0.3.1 is the PR gate's decision filter.
+saved ChatGPT login, and `@e2e-dev/decision` 0.3.2 is the PR gate's decision filter.
 `SDK_PINS` in `qualification.mjs` holds these four runtime versions and those three.
 A run, collection, build, inspection or MCP session refuses another installed version
 of any of them, `evidence.json` `pins` records all seven, and a report from another
 runner or engine does not qualify. Nor does a persona step whose provider is not
 `chatgpt.responses`, the saved login's route: an API-key `openai(…)` reports
-`openai.responses`. The engine peer ranges accept e2e 0.22.0.
-Web 0.15.4 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
+`openai.responses`. The engine peer ranges ask for e2e `>=0.22.1 <1`.
+Web 0.15.5 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
 1.64.1 too and both share one Chromium build.
-Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.22's
+Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.23's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
 
@@ -47,6 +48,37 @@ or run budget in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/`
 seeds it into the next output directory; a seed the run does not replace is
 deleted. A blocked run, or one where no test passed, leaves the kept report as
 it was. Without that file, files start in collection order.
+
+What 0.23.0 changes here:
+
+- `test.fail` (or `{ fail: 'reason' }`) marks a test expected to fail: its failure
+  is reported `passed` and a pass fails with `UNEXPECTED_PASS`. Qualification
+  refuses such a result (`EXPECTED_FAILURE_NOT_PROOF`), so it never counts as a
+  journey proof. No test uses it; a confirmed bug stays a red `bugbash` repro.
+- `e2e doctor` checks that a run can start (config, browser build, agent-device,
+  toolchain, devices, app build, models) without starting one:
+  `npm run test:testerarmy:doctor` runs it through `run.mjs`.
+- `inputValue()` on a node with no value and `isChecked()` on a node with no
+  checked state now throw `ACTION_FAILED` instead of returning `''` or `false`.
+- Mobile 0.12.6: snapshots and screenshots run within the timeout of the call
+  that takes them, so a stalled device fails the step with `ACTION_FAILED`
+  instead of the test timeout; `waitFor` and `expect` give their last snapshot
+  extra time. Rerun the platform once before diagnosing such a failure.
+- The `list` reporter prints each test as it finishes when stdout is not a TTY
+  and ends with a `Failed` row per failure; failures and `.e2e/summary.md` quote
+  the app's first 3 errors, redacted. `run.mjs` writes SDK output to `sdk.log`,
+  so the terminal keeps the red-run digest, which quotes no app text.
+- The explore planner tries another lens instead of finishing while steps
+  remain, so a bug-bash charter usually ends on `step-limit`; with every step
+  passed that is a complete charter. The agent gains `resize_viewport` (web).
+- `app.baseUrl` never ends with a slash (every use here is `new URL(…, baseUrl)`),
+  `timeout: 0` on a call means "until the test timeout", `route.fetch()` gains
+  `body()`, and `e2e mcp` adds `run_tests` and `screenshot { path }`. A
+  `run_tests` result is not evidence (it bypasses `run.mjs`); never start one beside
+  an open native session.
+- Engines run over the new engine protocol, still in the runner's process for
+  `web()` and `mobile()`, so the matcher preload, the network guard and the
+  service-worker probe are unchanged.
 
 What 0.22.0 changes here:
 
@@ -190,7 +222,7 @@ An AI SDK or decision bump updates `SDK_PINS` in the same change.
 
 New journeys are written from this directory with
 `E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 mise exec -- npx e2e run --watch`
-(e2e 0.22.0). Watch reruns when a test, a neighbouring source file, or the
+(e2e 0.23.0). Watch reruns when a test, a neighbouring source file, or the
 config is saved. It is for authoring. Qualifying runs stay on `run.mjs`.
 `run.mjs`, `full-campaign.mjs`, the bug bash, the iPhone sandbox runner and
 `npm run test:testerarmy:login` set both variables themselves; a direct `npx e2e`
@@ -324,7 +356,7 @@ E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:test
 ```
 
 Act uses `gpt-6.1-terra` and assert uses `gpt-6.1-sol` (`tools/e2e/persona-models.mjs`).
-e2e 0.22.0 `chatgpt(id)` forwards the id and does not embed a catalog; these are
+e2e 0.23.0 `chatgpt(id)` forwards the id and does not embed a catalog; these are
 the OpenAI ids, and `gpt-6.1-sol` is the id this repo already qualified.
 `E2E_PERSONA_MODEL` or `E2E_PERSONA_ACT_MODEL` overrides act.
 `E2E_PERSONA_JUDGE_MODEL` overrides the judge. Set both back to `gpt-6.1-sol`
@@ -356,8 +388,8 @@ unexecuted journey is not a pass. Qualify a persona campaign with its `run`;
 `collect` is reserved for the historical four-locale regression campaign and
 does not aggregate persona runs. RTL, real service behaviour, physical-device
 performance and Store behaviour remain outside this campaign. See the [SDK's subscription guide](https://e2e.tester.army/docs/subscriptions)
-for access options. No Claude route is configured. The installed 0.22.0 docs
-(`node_modules/e2e/docs/acp.mdx`) describe running agent steps on a Claude Code
+for access options. No Claude route is configured. The installed 0.23.0 docs
+(`node_modules/e2e/docs/subscriptions.mdx`, "Use your coding agent") describe running agent steps on a Claude Code
 or Codex login through the separate `@e2e-dev/acp` package. It is not installed
 or pinned here: using it would add a dependency and an exact pin, and a new model
 route that needs owner authorization, since its provider would see private
@@ -420,8 +452,8 @@ verify:pr or verify:release.
 New web bodies use the SDK surface, as the journeys on `traced-parity-test.ts`
 do (`browser.route`, SDK locators and `expect`, `locator.boundingBox()`), so
 trace.md records their steps; `browser.keyboard` and `browser.mouse` replace
-`page.keyboard` and `page.mouse`. `surfaceOf()` stays only for what e2e 0.22.0 and
-web 0.15.4 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
+`page.keyboard` and `page.mouse`. `surfaceOf()` stays only for what e2e 0.23.0 and
+web 0.15.5 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
 `toHaveRole`, `toBeEditable`, `context.setOffline`, per-test `grantPermissions`,
 page events (`page.on`), `addStyleTag` (or `browser.evaluate`), second
 contexts/pages and the branch target's `routeWebSocket`. Raw-page steps are not recorded, redacted or masked in
@@ -798,7 +830,9 @@ or `help debugging` for specialized work. Use exact compatible pins for a measur
 upgrade, not a floating `@latest` runtime or a global engine replacement.
 
 ```sh
-mise exec -- npm run agent-device:doctor
+mise exec -- npm run test:testerarmy:doctor   # e2e doctor: config, browser, models
+E2E_DEVICE=emulator-5554 mise exec -- node tools/e2e/run.mjs dreamer android doctor   # agent-device, toolchain, device
+mise exec -- npm run agent-device:doctor   # agent-device daemon only
 E2E_DEVICE=emulator-5554 E2E_RELEASE_RECEIPT=ANDROID_BUILD_RUN/release.json mise exec -- npm run agent-device:inspect -- dreamer android
 E2E_DEVICE='iPhone 17e' E2E_RELEASE_RECEIPT=IOS_BUILD_RUN/release.json mise exec -- npm run agent-device:inspect -- dreamer ios
 E2E_DEVICE='iPhone 17e' E2E_RELEASE_RECEIPT=IOS_BUILD_RUN/release.json mise exec -- npm run agent-device:mcp -- dreamer ios

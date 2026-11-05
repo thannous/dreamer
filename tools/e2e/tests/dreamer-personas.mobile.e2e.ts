@@ -1,6 +1,12 @@
 import { test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
 
+// e2e 0.23 throws ACTION_FAILED when a button exposes no value; read that as collapsed.
+const collapsedWithoutValue = (error: unknown) => {
+  if ((error as { code?: string } | undefined)?.code === 'ACTION_FAILED') return '';
+  throw error;
+};
+
 type NativeFixtures = TestFixtures & { device: Device };
 
 // These are usage goals on real native UI. Account data, AI replies and billing
@@ -317,7 +323,7 @@ if (process.env.E2E_PERSONAS === '1') {
       await screen.scrollUntilVisible(toggle);
       // Android does not expose RN's expanded value; Settings just opened with
       // the QA panel collapsed. iOS exposes that state as an accessibility value.
-      if (platform === 'android' || await toggle.inputValue() !== 'expanded') await toggle.tap();
+      if (platform === 'android' || await toggle.inputValue().catch(collapsedWithoutValue) !== 'expanded') await toggle.tap();
       for (const id of ['purchaseCalls', 'restoreCalls']) {
         const count = screen.getByTestId(`text.subscription.qa.${id}`, { visible: true });
         await screen.scrollUntilVisible(count);

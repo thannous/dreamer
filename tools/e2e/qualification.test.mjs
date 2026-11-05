@@ -74,6 +74,12 @@ test('a requested trace is the own non-empty trace page of each passed result', 
     assert.throws(() => verifyReport(r, options({ output: dir, trace: true })), /MEDIA_TRACE_MISSING/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+test('a test.fail expected failure is refused as a journey proof', () => {
+  for (const mark of [r => { r.run.results[0].expectedFailure = { reason: 'known gap' }; },
+    r => { r.run.results[0].attempts[0].expectedFailure = { reason: 'known gap' }; }]) {
+    const r = report(); mark(r); assert.throws(() => verifyReport(r, options()), /EXPECTED_FAILURE_NOT_PROOF/);
+  }
+});
 test('skips and excluded IDs are retained separately and never counted passed', () => {
   const r = report(); r.run.results[0].status = 'skipped'; r.run.results[0].attempts = [];
   r.run.summary = { discovered: 2, selected: 1, executed: 0, passed: 0, skipped: 1, failed: 0, interrupted: 0, flaky: 0 };

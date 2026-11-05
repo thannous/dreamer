@@ -102,7 +102,7 @@ test('the zone filter stays inactive unless --changed-since supplied changes', (
   assert.match(source, /if \(!filterIsActive\(context\)\) return \{ exclude: \{\} \}/);
 });
 
-test('a full campaign does not pass --changed-since, and e2e 0.22.0 skips filters without it', async () => {
+test('a full campaign does not pass --changed-since, and e2e 0.23.0 skips filters without it', async () => {
   const { default: config } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
   for (const name of ['testerarmy-dreamer', 'testerarmy-lucid', 'testerarmy-meditation', 'testerarmy-site', 'bugbash-repros']) {
     const check = config.checks.find(entry => entry.name === name);
@@ -110,7 +110,7 @@ test('a full campaign does not pass --changed-since, and e2e 0.22.0 skips filter
   }
   const runner = readFileSync(new URL('./node_modules/e2e/dist/run/runner.js', import.meta.url), 'utf8');
   const at = runner.indexOf('changedSince === undefined');
-  assert.ok(at > 0, 'e2e 0.22.0 listSelection short-circuits when --changed-since is absent');
+  assert.ok(at > 0, 'e2e 0.23.0 listSelection short-circuits when --changed-since is absent');
   const slice = runner.slice(at, at + 280);
   assert.match(slice, /changedSince === undefined\s*\?\s*first/);
   assert.match(slice, /filterSelection/);
@@ -118,7 +118,7 @@ test('a full campaign does not pass --changed-since, and e2e 0.22.0 skips filter
   assert.match(gate, /args\[index\] === '--changed-since'/);
 });
 
-test('a leftover test.only fails the gate\'s e2e 0.22.0 selection instead of narrowing it', async () => {
+test('a leftover test.only fails the gate\'s e2e 0.23.0 selection instead of narrowing it', async () => {
   const { isCiMode } = await import('./node_modules/e2e/dist/config/resolve.js');
   const { select } = await import('./node_modules/e2e/dist/collect/select.js');
   // A caller that turned CI off still hands the SDK child CI mode.

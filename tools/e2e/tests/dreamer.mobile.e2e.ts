@@ -7,6 +7,12 @@ const SEEDED_OTHER_DREAM = {
   transcript: 'I found myself in an enormous library with endless shelves reaching up into darkness. Books were floating around me, their pages turning on their own. I picked up a golden book that seemed to glow, and when I opened it, I could see memories from my childhood playing out on the pages like a movie.',
 };
 
+// e2e 0.23 throws ACTION_FAILED when a button exposes no value; read that as collapsed.
+const collapsedWithoutValue = (error: unknown) => {
+  if ((error as { code?: string } | undefined)?.code === 'ACTION_FAILED') return '';
+  throw error;
+};
+
 type NativeBackgroundFixtures = TestFixtures & { device: Device };
 
 // Billing uses only the runner's identified, disposable mock Release. Store
@@ -179,7 +185,7 @@ async function billingCounts({ screen, platform }: NativeBackgroundFixtures, pur
   await screen.scrollUntilVisible(toggle);
   // UIKit exposes this button's expansion as its accessibility value. A
   // clipped status cell being absent does not mean the panel is collapsed.
-  if (platform === 'android' || await toggle.inputValue() !== 'expanded') await toggle.tap();
+  if (platform === 'android' || await toggle.inputValue().catch(collapsedWithoutValue) !== 'expanded') await toggle.tap();
   for (const [id, count] of [['purchaseCalls', purchases], ['restoreCalls', restores]]) {
     const value = screen.getByTestId(`text.subscription.qa.${id}`, { visible: true });
     await screen.scrollUntilVisible(value);

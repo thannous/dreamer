@@ -41,8 +41,8 @@ for (let index = 0; index < rawArgs.length; index++) {
   } else if (rawArgs[index] === '--install-release') installRelease = true;
   else args.push(rawArgs[index]);
 }
-if (!['dreamer', 'lucid', 'meditation', 'site', 'backend', 'branch'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'report', 'mcp', 'inspect', 'build', 'collect'].includes(command))
-  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site|backend|branch web|android|ios [run|list|mcp|inspect] [e2e flags]');
+if (!['dreamer', 'lucid', 'meditation', 'site', 'backend', 'branch'].includes(product) || !['web', 'android', 'ios'].includes(platform) || !['run', 'list', 'doctor', 'report', 'mcp', 'inspect', 'build', 'collect'].includes(command))
+  throw new Error('Usage: run.mjs dreamer|lucid|meditation|site|backend|branch web|android|ios [run|list|doctor|mcp|inspect] [e2e flags]');
 if (['site', 'backend', 'branch'].includes(product) && platform !== 'web') throw new Error('Site and backend support web only.');
 if ((releaseFile || installRelease || command === 'build') && platform === 'web') throw new Error('Release options require a native target.');
 if (installRelease && command !== 'run') throw new Error('Only a native run can request installation.');
@@ -50,6 +50,9 @@ if (command === 'build' && args.length) throw new Error('Build uses the explicit
 if (command === 'collect' && (platform !== 'web' || args.length)) throw new Error('Campaign collection takes one web product and no selections.');
 if (command === 'inspect' && (platform === 'web' || args.length)) throw new Error('Inspection takes one native product/platform and no test flags.');
 if (command === 'mcp' && args.length) throw new Error('The guarded MCP entry fixes its target and one session; pass no additional flags.');
+// `e2e doctor` (0.23) checks that a run can start without starting one; it takes no selection.
+const doctorFlags = new Set(['--json', '--check-model', '--headed']);
+if (command === 'doctor' && args.some(flag => !doctorFlags.has(flag))) throw new Error('Doctor takes only --json, --check-model and --headed.');
 // Selection cannot replace the owned config, device target or evidence directory.
 const switches = new Set(['--video', '--trace', '--headed', '--debug', '--no-cache', '--strict-cache', '--pass-with-no-tests']);
 const valued = new Set(['--changed-since']);
@@ -57,7 +60,7 @@ const selections = new Set(['--grep', '--grep-invert', '--repeat-each', '--tag',
 // Run-only budgets: a red run stops early, its rest skipped as failure-limit or time-limit.
 // `e2e list` takes neither, so they never reach a collection.
 const budgets = new Set(['--max-failures', '--max-duration']);
-for (let index = 0; index < args.length; index++) {
+for (let index = 0; command !== 'doctor' && index < args.length; index++) {
   const flag = args[index];
   if (switches.has(flag)) continue;
   if (!valued.has(flag) && !selections.has(flag) && !budgets.has(flag)) throw new Error(`Unsupported E2E option: ${flag}`);
@@ -113,7 +116,9 @@ if (sdk && existsSync(sdk)) {
   env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
   env[pathKey] = [join(sdk, 'platform-tools'), join(sdk, 'emulator'), env[pathKey]].join(delimiter);
 }
-if (command === 'list') {
+if (command === 'doctor' && platform !== 'web' && !env.E2E_DEVICE)
+  throw new Error('Doctor checks the named device: set E2E_DEVICE to a booted simulator or emulator.');
+if (command === 'list' || command === 'doctor') {
   if (platform !== 'web' && !env.E2E_DEVICE) env.E2E_DEVICE = platform === 'android' ? 'emulator-0000' : 'iPhone Simulator';
   const result = spawnSync(process.execPath, [...webNodeArgs, cli, command, ...args], { cwd, env: qualifyingSdkEnvironment(env), stdio: 'inherit' });
   if (result.error) throw result.error;
