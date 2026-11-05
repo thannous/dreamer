@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, readFileSync, existsSync, writeFileSync, rmSync
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOptions, planSteps, runPlan, cleanEnv, stepFailure, disableAndroidUpdates, suiteBuildEnv,
-  buildCommand, runSelection, readRun, renderReport, finishWorkspace, iosScheme, buildUntilAccepted, readRefusals, PHONE_ONLY, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
+  buildCommand, runSelection, readRun, renderReport, finishWorkspace, iosScheme, buildUntilAccepted, readRefusals, PHONE_ONLY, SUITES, WORKSPACE_REGENERABLE } from './release-simulators.mjs';
 import { validateBuildCommand } from '../tools/e2e/native-release.mjs';
 
 test('defaults to the user journeys on both platforms, the other layers on demand', () => {
@@ -209,6 +209,23 @@ test('a focused iPhone mock campaign names every unexecuted layer and platform',
   const full = renderReport({ ...base, platforms: ['ios', 'android'], suites: ['production', 'mock', 'backend'], results });
   assert.match(full, /Tout est passé sur les simulateurs/);
   assert.doesNotMatch(full, /Couverture simulateur non exécutée/);
+});
+
+test('the report says which layer runs the App Review journeys and leaves real Apple sign-in to a phone', () => {
+  // dream-coverage J1-J10 (2026-11-05): the default mock layer now reads a dream and chats.
+  assert.match(SUITES.mock.covers, /premier rêve lu et une question au chat/);
+  assert.match(SUITES.production.covers, /Sign in with Apple proposé/);
+  assert.match(SUITES.backend.covers, /suppression du compte/);
+  // No layer's selection leaves those journeys out (their own skips choose the layer).
+  for (const platform of ['ios', 'android']) for (const suite of Object.keys(SUITES)) for (const tag of ['native-core-loop',
+    'native-paywall-compliance', 'native-microphone-first-prompt', 'native-release-tour', 'native-sleep-sounds',
+    'native-apple-sign-in', 'native-account-deletion']) assert.ok(!runSelection(platform, suite).includes(tag), `${suite} ${platform} ${tag}`);
+  // The simulator has no Apple Account: a real sign-in, then deleting that account, needs a phone.
+  assert.ok(PHONE_ONLY.some(item => /^Sign in with Apple avec un vrai compte/.test(item) && /suppression de ce compte/.test(item)));
+  const report = renderReport({ revision: 'c'.repeat(40), ref: 'candidate', startedAt: 's', finishedAt: 'f',
+    platforms: ['ios'], suites: ['mock'], results: { 'mock:ios': { qualified: true, passed: 26 } } });
+  assert.ok(report.includes(SUITES.mock.covers));
+  assert.doesNotMatch(report, /—/);
 });
 
 test('keeps the only evidence when relocation fails and releases only after a successful move', () => {

@@ -18,15 +18,17 @@ const require = createRequire(import.meta.url);
 const NODE = 'v24.22.1';
 export const SUITES = {
   production: { label: 'Configuration production', profile: 'production-apk',
-    covers: 'le build tel que publié (configuration de eas.json `production`, OTA coupée) : ouverture, accueil, réglages, langue et thème, menu, offre Plus, liens des widgets' },
+    covers: 'le build tel que publié (configuration de eas.json `production`, OTA coupée) : ouverture, accueil, réglages, langue et thème, menu, offre Plus, liens des widgets, micro autorisé à la première demande, son de sommeil qui continue en arrière-plan, Sign in with Apple proposé (iPhone)' },
   mock: { label: 'Compte et achats simulés', profile: 'mock-persistent',
-    covers: 'les mêmes parcours avec un compte de test, plus achat, restauration, quotas Free/Plus, collection et liens de réinitialisation' },
+    covers: 'les mêmes parcours avec un compte de test, plus premier rêve lu et une question au chat (IA simulée), achat, restauration, quotas Free/Plus, prix, renouvellement et liens légaux de l’offre, toutes les destinations en mode sombre système, collection et liens de réinitialisation' },
   backend: { label: 'Serveur local réel', profile: 'local-backend',
-    covers: 'vrai Auth/Postgres et vraies routes en local (IA déterministe) : hors ligne puis synchro, invité vers compte, séparation des comptes, analyse et chat repris après coupure, permission micro' },
+    covers: 'vrai Auth/Postgres et vraies routes en local (IA déterministe) : hors ligne puis synchro, invité vers compte, séparation des comptes, analyse et chat repris après coupure, permission micro, inscription puis suppression du compte' },
 };
 export const PHONE_ONLY = [
   'App Attest : une analyse en invité sur iPhone (le simulateur n’a pas App Attest). Sur Android, Play Integrity demande aussi un vrai téléphone.',
   'Achat et restauration réels avec un compte de test Apple ou Google (les simulateurs ne testent que l’achat simulé).',
+  // The simulator has no Apple Account: it only proves the button is offered and a cancel is harmless.
+  'Sign in with Apple avec un vrai compte Apple, puis suppression de ce compte dans Réglages (révocation du jeton Apple).',
   'Installation depuis TestFlight ou Google Play : signature de production, groupe partagé app + widget, mise à jour par-dessus la version précédente.',
   'Micro physique et dictée en direct (le simulateur reconnaît un fichier audio, pas une voix).',
   'Fluidité ressentie sur un vrai téléphone.',
@@ -411,7 +413,7 @@ outputs/release-simulators/<run>/rapport.md.
   --ref <commit>        commit to test (default origin/master, fetched first)
   --platform <p>        ios, android or all (default all)
   --suites <list>       all, or a list of production,mock,backend (default mock: the user
-                        journeys; add the others when build config or the server changed)
+                        journeys; a Store candidate takes all)
   --wait-minutes <n>    how long each run waits for a Simlock device (default ${DEFAULTS['wait-minutes']})
   --min-free-gb <n>     refuse to start below this free disk space (default ${DEFAULTS['min-free-gb']})
   --no-fetch            do not fetch origin before resolving --ref
