@@ -20,7 +20,9 @@ refusé.
 Par défaut, elle joue les parcours utilisateurs (couche compte et achats simulés) sur
 iPhone et sur Android : compter environ 40 minutes et 50 Go libres sur le disque.
 `--suites all` ajoute la configuration production et le serveur local réel (six builds
-au lieu de deux, 1 h 30 à 2 h 30 estimées). Le Mac reste éveillé tant que la commande
+au lieu de deux, 1 h 30 à 2 h 30 estimées). Pour un candidat App Store ou Google Play,
+`--suites all` est obligatoire : la couche par défaut ne joue ni le build tel que publié,
+ni le vrai serveur, ni la suppression de compte. Le Mac reste éveillé tant que la commande
 tourne. `--plan` affiche les étapes sans rien lancer ; `--platform ios` limite la
 campagne à une plateforme. `--help` liste les options.
 
@@ -40,10 +42,10 @@ La commande applique la [validation proportionnée](validation-proportionnee.md)
 natif ; elle ne remplace ni `verify:pr` avant un push, ni `verify:release`, ni le bug
 bash en environnement simulé avant une release.
 
-- Avant une soumission aux Stores : la commande par défaut, sur le commit exact du
-  candidat. Ajouter `--suites all` quand la configuration de build (`eas.json`,
-  `app.config`, variables publiques) ou le serveur (API, synchronisation, comptes) a
-  changé depuis la dernière campagne complète.
+- Avant une soumission aux Stores : `--suites all`, obligatoire, sur le commit exact du
+  candidat. La commande par défaut ne qualifie pas un candidat : sans les couches
+  production et serveur local, la version publiée, l'analyse sur un vrai serveur, les
+  comptes et leur suppression ne tournent pas.
 - Entre deux releases, pour un changement qui touche le natif : seulement la
   plateforme ou la couche concernée, par exemple `--platform ios` pour un écran,
   `--suites backend` pour la synchronisation ou les comptes.
@@ -87,9 +89,9 @@ que le vrai téléphone » est réservé à une campagne complète passée.
 
 | Couche | Build | Ce qui est vérifié | Ce qui ne l'est pas |
 | --- | --- | --- | --- |
-| Configuration production | Profil `production` de `eas.json`, services réels | Le build tel que publié s'ouvre ; accueil, réglages, langue et thème gardés après redémarrage, menu, page de connexion, offre Plus ouverte puis fermée, liens des widgets | Aucun compte, aucun achat, aucune analyse : ces parcours ne dépendent pas du réseau |
-| Compte et achats simulés | `mock-persistent` | Les mêmes parcours avec un compte de test, plus achat, restauration avec et sans reçu, achat différé, quotas Free et Plus, retour après connexion, collection hors ligne, liens de réinitialisation refusés | Pas de vrai Store ni de vrai serveur |
-| Serveur local réel | `local-backend` (app QA `com.tanuki75.noctalia.qa`) | Vrai Auth/Postgres et vraies routes en local : création hors ligne puis synchro sans doublon, invité vers compte, séparation des comptes, analyse et chat repris après coupure sans double crédit, permission micro refusée puis rendue | Réponses IA fixes (pas la qualité IA), pas la production, pas la dictée en direct |
+| Configuration production | Profil `production` de `eas.json`, services réels | Le build tel que publié s'ouvre ; accueil, réglages, langue et thème gardés après redémarrage, menu, page de connexion, offre Plus ouverte puis fermée, liens des widgets, micro autorisé à la première demande sans perte du texte saisi, son de sommeil qui continue en arrière-plan, Sign in with Apple proposé sur iPhone (une demande annulée laisse l'invité déconnecté) | Aucun compte, aucun achat, aucune analyse, aucune vraie connexion Apple (le simulateur n'a pas de compte Apple) |
+| Compte et achats simulés | `mock-persistent` | Les mêmes parcours avec un compte de test, plus : premier rêve d'un invité lu par l'IA simulée (consentement IA sur iPhone) puis une question au chat, retrouvés après redémarrage ; offre conforme (prix et période, renouvellement automatique, Restaurer, Conditions et Confidentialité d'au moins 44 pt qui ouvrent le navigateur et reviennent à l'offre) ; tous les onglets, la recherche du journal, le dictionnaire et un symbole, les guides et un guide, le récap de la semaine et la lettre de la lune en mode sombre système avec le thème Automatique, sans écran d'erreur ; achat, restauration avec et sans reçu, achat différé, quotas Free et Plus, retour après connexion, collection hors ligne, liens de réinitialisation refusés | Pas de vrai Store ni de vrai serveur, réponses IA simulées |
+| Serveur local réel | `local-backend` (app QA `com.tanuki75.noctalia.qa`) | Vrai Auth/Postgres et vraies routes en local : création hors ligne puis synchro sans doublon, invité vers compte, séparation des comptes, analyse et chat repris après coupure sans double crédit, permission micro refusée puis rendue, inscription dans l'app puis suppression du compte (deux confirmations, plus de compte ni de rêve sur le serveur) | Réponses IA fixes (pas la qualité IA), pas la production, pas la dictée en direct |
 
 Le détail des parcours et de leurs limites est dans la
 [matrice native](../../tools/e2e/NATIVE-MATRIX.md) et le
@@ -120,13 +122,27 @@ soumission :
 - App Attest : une analyse en invité sur iPhone (le simulateur n'a pas App Attest). Sur
   Android, Play Integrity demande aussi un vrai téléphone.
 - Achat et restauration réels avec un compte de test Apple ou Google.
+- Sign in with Apple avec un vrai compte Apple, puis suppression de ce compte dans
+  Réglages (révocation du jeton Apple).
 - Installation depuis TestFlight ou Google Play : signature de production, groupe
   partagé app + widget, mise à jour par-dessus la version précédente.
 - Micro physique et dictée en direct.
 - Fluidité ressentie sur un vrai téléphone.
 
-Tout le reste (écrans, navigation, journal, analyse côté app, offre Plus, langues,
-thèmes) est couvert par la campagne. Les widgets, l'activité en direct et la Dynamic
+Ce que couvre la campagne, couche par couche :
+
+- La couche par défaut (simulée) : les écrans et la navigation, le journal et sa
+  recherche, le premier rêve lu et une question au chat avec des réponses simulées,
+  l'offre Plus et ses mentions, le français choisi dans les réglages rapides, les thèmes
+  clair, sombre et automatique.
+- Seulement avec `--suites all` : le build tel que publié, l'analyse et le chat sur un vrai
+  serveur (local, réponses IA fixes), la synchronisation, les comptes et leur suppression.
+- Pas encore dans la campagne : l'allemand et les autres langues, le premier lancement
+  dans la langue de l'appareil, la vraie demande d'autorisation des notifications (le
+  service simulé accepte toujours), une analyse demandée hors ligne, Siri et les réponses
+  aux notifications, l'iPad (l'app y tourne en mode compatibilité iPhone).
+
+Les widgets, l'activité en direct et la Dynamic
 Island se vérifient aussi sur le simulateur (essai du 25 octobre 2026), tout comme la
 reprise des données après une mise à jour : installer d'abord le build Release de la
 version précédente, ajouter des données, puis installer le candidat par-dessus. Ces
@@ -138,8 +154,8 @@ deux vérifications ne font pas encore partie de la commande.
 2. Bug bash en mode simulé (`npm run test:bugbash:prerelease`) : chaque anomalie confirmée
    devient un test qui échoue d'abord pour la bonne raison, puis passe après correction.
 3. `npm run verify:release` sur ce commit (il rejoue aussi les tests du bug bash).
-4. `npm run release:simulators -- --ref <ce commit>` sur le Mac mini, avec `--suites all`
-   si la configuration ou le serveur a changé : tout `OK`.
+4. `npm run release:simulators -- --ref <ce commit> --suites all` sur le Mac mini
+   (`--suites all` est obligatoire pour un candidat Store) : tout `OK`.
 5. Builds Store et envoi TestFlight / test interne, sur le go de Thanh.
 6. La courte session sur téléphone ci-dessus.
 7. Soumission, sur le go de Thanh.
@@ -147,7 +163,8 @@ deux vérifications ne font pas encore partie de la commande.
 ## Limites connues
 
 - La couche production parle aux serveurs de production au lancement, comme une
-  installation neuve : pas de compte, pas d'achat. Sur le simulateur iPhone, l'app
+  installation neuve, et télécharge un son de sommeil depuis `noctalia.app` : pas de
+  compte, pas d'achat, pas d'analyse. Sur le simulateur iPhone, l'app
   met la session invité en mode dégradé faute d'App Attest, sans la demander au
   serveur : c'est attendu.
 - L'APK Android est construit en local pour arm64 avec la signature de debug : il

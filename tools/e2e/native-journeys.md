@@ -183,3 +183,11 @@ Une preuve antérieure peut être réutilisée si les changements ultérieurs la
 Les manifestes, mots de passe, clés, jetons de contrôle, profils locaux, logs et artefacts restent hors Git. `expo.env` ne contient que la configuration publique client ; la clé service-role et le jeton de contrôle ne doivent jamais devenir des variables `EXPO_PUBLIC_*`. Les ports sont locaux et la pile ne vise aucun compte hébergé.
 
 Après fermeture des runners, arrêter d’abord l’API (terminal B), puis le démarreur de pile (terminal A) avec Ctrl-C. Le démarreur détruit uniquement sa propre pile jetable et retire ses manifestes/profils privés. Ne pas arrêter une pile encore nécessaire à une reprise du binaire identifié.
+
+## Suppression du compte (ajout du 5 novembre 2026)
+
+Le fichier [synchronisation et comptes](tests/dreamer-sync-account.mobile.e2e.ts) ajoute un cas sur les deux plateformes, `--tag native-account-deletion` (règle App Store 5.1.1(v)). Il s'inscrit dans l'app avec une adresse jetable `native-delete-<uuid>@example.test`, enregistre un rêve et attend sa ligne sur le serveur, annule une première demande de suppression (le compte reste), puis confirme les deux questions. Il vérifie ensuite l'invité dans Réglages (connexion proposée, plus de suppression ni de déconnexion), l'absence de l'utilisateur Auth et de ses rêves sur le serveur, le refus de l'ancien mot de passe, puis l'invité après redémarrage. Les comptes `native-delete-` restants sont supprimés avant et après le cas.
+
+Le serveur local sert pour cela `DELETE /account` avec le vrai `handleDeleteAccount` (stockage, quotas, utilisateur Auth et rêves en cascade) ; toutes les autres routes restent en POST. Ce cas ne tourne que sur la pile locale : un build simulé enverrait cette requête à la production.
+
+La sélection de la campagne (`--suites backend`) compte désormais dix cas sur Android et neuf sur iOS. Ce cas qualifie la suppression d'un compte e-mail ; un compte Sign in with Apple demande en plus la révocation du jeton Apple, qui reste sur la [courte liste du vrai téléphone](../../doc_web_interne/docs/tests-simulateurs.md#ce-qui-demande-encore-un-vrai-téléphone).
