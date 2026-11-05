@@ -19,8 +19,16 @@ type NativeBackgroundFixtures = TestFixtures & { device: Device };
 // A failed or timed-out journey must not hand the next one a rotated or offline device. A
 // finally block cannot promise that: a timed-out body's device calls are cancelled, while
 // afterEach runs with its own budget. A journey sets its flag before it changes the state.
-const restore = { portrait: false, airplane: false };
+const restore = { portrait: false, airplane: false, microphone: false, appearance: false };
 afterEach(async ({ device }) => {
+  if (restore.microphone) {
+    restore.microphone = false;
+    await device.setPermission('microphone', 'reset');
+  }
+  if (restore.appearance) {
+    restore.appearance = false;
+    await device.setAppearance('light');
+  }
   if (restore.portrait) {
     restore.portrait = false;
     await device.setOrientation('portrait');
@@ -1247,56 +1255,53 @@ test('Dreamer release first microphone prompt allows recording and keeps the typ
   platforms: ['ios', 'android'], tags: ['native-microphone-first-prompt'], timeout: 240_000,
 }, async (fixtures) => {
   const { app, screen, device, platform } = fixtures;
-  // app.clearState() in onboardToCapture also resets the app's permissions: the OS asks again.
+  // The OS must ask again: Android's pm clear (app.clearState) resets the grant, iOS keeps it.
+  restore.microphone = true;
+  if (platform === 'ios') await device.setPermission('microphone', 'reset');
   await onboardToCapture(fixtures);
-  try {
-    await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
-    const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
-    const draft = 'Microphone fixture: an orange kite above a sleeping town.';
-    await editor.fill(draft);
-    await dismissCaptureKeyboard(fixtures);
-    // Dictation adds to the story; the typed words must stay in it.
-    const kept = new RegExp(draft.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-    await billingTap(screen, 'btn.recordToggle');
-    // The app explains first; only its Allow brings the OS prompt.
-    const allow = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
-    await expect(allow).toBeVisible();
-    await allow.tap();
-    const listening = screen.getByTestId('recording-write-listening-status', { visible: true });
-    // iOS asks for the microphone, then for speech recognition; Android for the microphone.
-    const prompt = platform === 'ios'
-      ? screen.getByRole('alert', /micro|speech recognition|reconnaissance vocale/i, { visible: true })
-      : screen.getByTestId(/^com\.android\.permissioncontroller:id\/permission_allow_(foreground_only_)?button$/, { visible: true });
-    const voicePack = screen.getByTestId('btn.offline-model.cancel', { visible: true });
-    let answered = 0;
-    let nextAnswerAt = 0;
-    await expect.poll(async () => {
-      if (await listening.count()) return true;
-      // One answer per prompt: a dismissed prompt can stay in the tree for a moment.
-      if (Date.now() >= nextAnswerAt && answered < 3 && await prompt.count()) {
-        if (platform === 'ios') await screen.getByRole('button', /^(Allow|Autoriser|OK)$/i, { visible: true }).tap();
-        else await prompt.tap();
-        answered += 1;
-        nextAnswerAt = Date.now() + 1_500;
-      } else if (platform === 'android' && await voicePack.count()) await voicePack.tap();
-      return false;
-    }, { timeout: 60_000 }).toBe(true);
-    expect(answered).toBeGreaterThanOrEqual(1);
-    await expect(screen.getByText(/Microphone permission is required/)).toHaveCount(0);
-    await app.screenshot('release-microphone-allowed-listening');
-    // iOS can end a silent dictation by itself; a tap after that would start another one.
-    if (await listening.count()) await screen.getByTestId('btn.recordToggle', { visible: true }).tap();
-    await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
-    await expect(editor).toHaveValue(kept);
-    await expect(screen.getByTestId('btn.saveDream', { visible: true })).toBeEnabled();
-    await app.restart();
-    await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-    await expect(editor).toHaveValue(kept);
-    await app.screenshot('release-microphone-draft-after-restart');
-  } finally {
-    // The next journeys start from a fresh state; leave no granted microphone behind.
-    await device.setPermission('microphone', 'reset');
-  }
+  await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
+  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+  const draft = 'Microphone fixture: an orange kite above a sleeping town.';
+  await editor.fill(draft);
+  await dismissCaptureKeyboard(fixtures);
+  // Dictation adds to the story; the typed words must stay in it.
+  const kept = new RegExp(draft.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  await billingTap(screen, 'btn.recordToggle');
+  // The app explains first; only its Allow brings the OS prompt.
+  const allow = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
+  await expect(allow).toBeVisible();
+  await allow.tap();
+  const listening = screen.getByTestId('recording-write-listening-status', { visible: true });
+  // iOS asks for the microphone, then for speech recognition; Android for the microphone.
+  const prompt = platform === 'ios'
+    ? screen.getByRole('alert', /micro|speech recognition|reconnaissance vocale/i, { visible: true })
+    : screen.getByTestId(/^com\.android\.permissioncontroller:id\/permission_allow_(foreground_only_)?button$/, { visible: true });
+  const voicePack = screen.getByTestId('btn.offline-model.cancel', { visible: true });
+  let answered = 0;
+  let nextAnswerAt = 0;
+  await expect.poll(async () => {
+    if (await listening.count()) return true;
+    // One answer per prompt: a dismissed prompt can stay in the tree for a moment.
+    if (Date.now() >= nextAnswerAt && answered < 3 && await prompt.count()) {
+      if (platform === 'ios') await screen.getByRole('button', /^(Allow|Autoriser|OK)$/i, { visible: true }).tap();
+      else await prompt.tap();
+      answered += 1;
+      nextAnswerAt = Date.now() + 1_500;
+    } else if (platform === 'android' && await voicePack.count()) await voicePack.tap();
+    return false;
+  }, { timeout: 60_000 }).toBe(true);
+  expect(answered).toBeGreaterThanOrEqual(1);
+  await expect(screen.getByText(/Microphone permission is required/)).toHaveCount(0);
+  await app.screenshot('release-microphone-allowed-listening');
+  // iOS can end a silent dictation by itself; a tap after that would start another one.
+  if (await listening.count()) await screen.getByTestId('btn.recordToggle', { visible: true }).tap();
+  await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
+  await expect(editor).toHaveValue(kept);
+  await expect(screen.getByTestId('btn.saveDream', { visible: true })).toBeEnabled();
+  await app.restart();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await expect(editor).toHaveValue(kept);
+  await app.screenshot('release-microphone-draft-after-restart');
 });
 
 test('Dreamer release every destination opens in system dark mode', {
@@ -1310,77 +1315,74 @@ test('Dreamer release every destination opens in system dark mode', {
     await expect(screen.getByTestId('screen.errorBoundary')).toHaveCount(0);
     await app.screenshot(`release-tour-${label}`);
   };
-  try {
-    await device.setAppearance('dark');
-    await billingGuest(fixtures);
-    // The seeded profile fills the Journal, Trends and the weekly recap.
-    await billingSettings(screen);
-    await billingTap(screen, 'settings-account-open-signin', 'up');
-    await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
-    await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-    // Automatic follows the system appearance; the default Dynamic theme follows the clock.
-    const settings = screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first();
-    await screen.scrollUntilVisible(settings, { direction: 'up' });
-    await settings.tap();
-    const auto = screen.getByTestId('quick-settings.theme.auto', { visible: true });
-    if (platform === 'android') await screen.scrollUntilVisible(auto);
-    await auto.tap();
-    await expect(auto).toBeChecked();
-    // As in billingGuest: on iOS the backdrop closes the drawer wherever it is scrolled.
-    const close = screen.getByTestId('quick-settings.close', { visible: true });
-    if (platform === 'ios') await screen.getByRole('button', 'Close quick settings', { visible: true }).first().tap();
-    else if (await close.count() === 1) await close.tap();
-    else await screen.getByRole('button', 'Close quick settings', { visible: true }).tap();
-    await expect(screen.getByTestId('quick-settings.drawer', { visible: true })).toHaveCount(0);
-    await shown('screen.recording', 'capture-dark');
-    await billingHome(screen);
-    await shown('screen.home', 'home-dark');
-    await screen.getByTestId('tab.journal', { visible: true }).tap();
-    await shown('screen.journal', 'journal-dark');
-    const search = screen.getByTestId('input.searchDreams', { visible: true });
-    await search.fill('zzqx');
-    if (platform === 'ios') await submitIosSearch(screen);
-    else await device.dismissKeyboard();
-    await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
-    await billingTap(screen, 'btn.empty.clearFilters');
-    await expect(search).toHaveValue('');
-    await expect(screen.getByTestId(/^dream\.item\./, { visible: true }).first()).toBeVisible();
-    await screen.getByTestId('tab.stats', { visible: true }).tap();
-    await shown('screen.trends', 'trends-dark');
-    await screen.getByTestId('tab.explore', { visible: true }).tap();
-    await shown('screen.explore', 'explore-dark');
-    await billingTap(screen, 'btn.explorer.symbols');
-    await shown('screen.symbolDictionary', 'symbols-dark');
-    const symbol = screen.getByTestId(/^symbol\.item\./, { visible: true }).first();
-    await screen.scrollUntilVisible(symbol);
-    await symbol.tap();
-    await shown('screen.symbolDetail', 'symbol-detail-dark');
-    await device.back();
-    await expect(screen.getByTestId('screen.symbolDictionary', { visible: true })).toBeVisible();
-    await billingTap(screen, 'symbol-dictionary-back', 'up');
-    await expect(screen.getByTestId('screen.explore', { visible: true })).toBeVisible();
-    await billingTap(screen, 'btn.explorer.guides');
-    await shown('screen.dreamGuides', 'guides-dark');
-    const guide = screen.getByTestId(/^dream-guide-/, { visible: true }).first();
-    await screen.scrollUntilVisible(guide);
-    await guide.tap();
-    await shown('screen.dreamGuideDetail', 'guide-detail-dark');
-    await device.back();
-    await expect(screen.getByTestId('screen.dreamGuides', { visible: true })).toBeVisible();
-    for (const [route, id] of [['weekly-recap', 'screen.weeklyRecap'], ['moon-letter', 'screen.moonLetter']]) {
-      await openBackgroundRoute(fixtures, route);
-      await shown(id, `${route}-dark`);
-    }
-    // The system turns light while the app runs: the open screen follows, without a restart.
-    await device.setAppearance('light');
-    await shown('screen.moonLetter', 'moon-letter-light');
-  } finally {
-    await device.setAppearance('light');
+  restore.appearance = true;
+  await device.setAppearance('dark');
+  await billingGuest(fixtures);
+  // The seeded profile fills the Journal, Trends and the weekly recap.
+  await billingSettings(screen);
+  await billingTap(screen, 'settings-account-open-signin', 'up');
+  await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  // Automatic follows the system appearance; the default Dynamic theme follows the clock.
+  const settings = screen.getByRole('button', /^(Settings|Paramètres)$/, { visible: true }).first();
+  await screen.scrollUntilVisible(settings, { direction: 'up' });
+  await settings.tap();
+  const auto = screen.getByTestId('quick-settings.theme.auto', { visible: true });
+  if (platform === 'android') await screen.scrollUntilVisible(auto);
+  await auto.tap();
+  await expect(auto).toBeChecked();
+  // As in billingGuest: on iOS the backdrop closes the drawer wherever it is scrolled.
+  const close = screen.getByTestId('quick-settings.close', { visible: true });
+  if (platform === 'ios') await screen.getByRole('button', 'Close quick settings', { visible: true }).first().tap();
+  else if (await close.count() === 1) await close.tap();
+  else await screen.getByRole('button', 'Close quick settings', { visible: true }).tap();
+  await expect(screen.getByTestId('quick-settings.drawer', { visible: true })).toHaveCount(0);
+  await shown('screen.recording', 'capture-dark');
+  await billingHome(screen);
+  await shown('screen.home', 'home-dark');
+  await screen.getByTestId('tab.journal', { visible: true }).tap();
+  await shown('screen.journal', 'journal-dark');
+  const search = screen.getByTestId('input.searchDreams', { visible: true });
+  await search.fill('zzqx');
+  if (platform === 'ios') await submitIosSearch(screen);
+  else await device.dismissKeyboard();
+  await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);
+  await billingTap(screen, 'btn.empty.clearFilters');
+  await expect(search).toHaveValue('');
+  await expect(screen.getByTestId(/^dream\.item\./, { visible: true }).first()).toBeVisible();
+  await screen.getByTestId('tab.stats', { visible: true }).tap();
+  await shown('screen.trends', 'trends-dark');
+  await screen.getByTestId('tab.explore', { visible: true }).tap();
+  await shown('screen.explore', 'explore-dark');
+  await billingTap(screen, 'btn.explorer.symbols');
+  await shown('screen.symbolDictionary', 'symbols-dark');
+  const symbol = screen.getByTestId(/^symbol\.item\./, { visible: true }).first();
+  await screen.scrollUntilVisible(symbol);
+  await symbol.tap();
+  await shown('screen.symbolDetail', 'symbol-detail-dark');
+  await device.back();
+  await expect(screen.getByTestId('screen.symbolDictionary', { visible: true })).toBeVisible();
+  await billingTap(screen, 'symbol-dictionary-back', 'up');
+  await expect(screen.getByTestId('screen.explore', { visible: true })).toBeVisible();
+  await billingTap(screen, 'btn.explorer.guides');
+  await shown('screen.dreamGuides', 'guides-dark');
+  const guide = screen.getByTestId(/^dream-guide-/, { visible: true }).first();
+  await screen.scrollUntilVisible(guide);
+  await guide.tap();
+  await shown('screen.dreamGuideDetail', 'guide-detail-dark');
+  await device.back();
+  await expect(screen.getByTestId('screen.dreamGuides', { visible: true })).toBeVisible();
+  for (const [route, id] of [['weekly-recap', 'screen.weeklyRecap'], ['moon-letter', 'screen.moonLetter']]) {
+    await openBackgroundRoute(fixtures, route);
+    await shown(id, `${route}-dark`);
   }
+  // The system turns light while the app runs: the open screen follows, without a restart.
+  await device.setAppearance('light');
+  await shown('screen.moonLetter', 'moon-letter-light');
 });
 
-// Guideline 2.5.4: the audio background mode is used. The countdown runs on the clock and stops
-// with the player, so a lower count with the choices still locked means it played meanwhile.
+// Guideline 2.5.4: the audio background mode is used. The countdown runs only while the player
+// plays, so a count 15 s lower after 20 s in the background means it played meanwhile.
 test('Dreamer release sleep sound keeps its timer running in the background', {
   platforms: ['ios', 'android'], tags: ['native-sleep-sounds'], timeout: 240_000,
 }, async ({ app, screen, device }) => {
@@ -1397,21 +1399,21 @@ test('Dreamer release sleep sound keeps its timer running in the background', {
   await screen.scrollUntilVisible(fifteen);
   await fifteen.tap();
   await expect(fifteen).toBeChecked();
-  await billingTap(screen, 'sleep-playback-toggle');
-  // The sound downloads once, then plays. The choices lock while it plays, in any language.
-  await expect(rain).toBeDisabled({ timeout: 60_000 });
-  await expect(screen.getByTestId('sleep-sound-error')).toHaveCount(0);
   const remaining = screen.getByTestId('sleep-remaining-time', { visible: true });
   const seconds = async () => {
     const [minutes, rest] = ((await remaining.textContent()) ?? '').split(':').map(Number);
     return minutes * 60 + rest;
   };
+  await billingTap(screen, 'sleep-playback-toggle');
+  // The sound downloads once, then plays and the countdown starts. While it plays the app hides
+  // the choices from accessibility, so the countdown is the proof, in any language.
+  await expect.poll(seconds, { timeout: 60_000 }).toBeLessThan(15 * 60);
+  await expect(screen.getByTestId('sleep-sound-error')).toHaveCount(0);
   const before = await seconds();
   await device.home();
   await new Promise(resolve => setTimeout(resolve, 20_000));
   await device.openApp('com.tanuki75.noctalia');
   await expect(screen.getByTestId('screen.sleepSounds', { visible: true })).toBeVisible();
-  await expect(rain).toBeDisabled();
   await expect(screen.getByTestId('sleep-sound-error')).toHaveCount(0);
   // The count shows on its next tick; a short wait cannot make up for 20 s that did not run.
   await expect.poll(async () => before - await seconds(), { timeout: 5_000 }).toBeGreaterThanOrEqual(15);
