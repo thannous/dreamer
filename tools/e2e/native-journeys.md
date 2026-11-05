@@ -164,6 +164,16 @@ Pour une reprise ciblée sur la même plateforme et le même reçu, remplacer le
 
 Le cas `native-real-dictation` reste hors sélection : le build actuel fournit un fichier au moteur vocal et ne peut pas qualifier l’injection microphone. Son exclusion n’est pas un succès.
 
+## Écrire une étape native
+
+- Un contrôle qui vient d’arriver par un défilement ou une feuille se touche avec `tapWhenStill` ([native-settle.ts](native-settle.ts)), une fois immobile. Sur iOS, un toucher pendant que la page glisse encore après `scrollUntilVisible` ne fait que l’arrêter ; sur Android, agent-device refuse comme « couvert » un bouton d’une feuille encore en mouvement. Le moteur n’attend l’arrivée d’un contrôle (`transition` : 800 ms sur iOS, 500 ms sur Android) qu’après l’action qui l’a fait venir. Ne pas l’utiliser sur un contrôle qui bouge en permanence, et ne jamais retoucher un interrupteur pour réessayer : un second toucher le remet dans son état précédent.
+- L’orientation, le mode avion et la permission micro se rétablissent dans `afterEach`, avec un drapeau posé avant le changement. Un `finally` ne suffit pas : après un dépassement du délai du test, les appels à l’appareil du corps sont annulés, alors que `afterEach` dispose de son propre budget.
+- Ce qu’efface la remise à zéro d’un parcours :
+  - iOS : `app.clearState()` vide seulement le conteneur de données de l’app. Le trousseau (Keychain) reste, avec la session Supabase et l’empreinte d’appareil enregistrées par SecureStore. La fixture se déconnecte donc d’abord par l’interface ; `device.clearKeychain()` effacerait le trousseau de tout le Simulator et n’est pas utilisé.
+  - Android : `app.clearState()` exécute `pm clear`, qui efface les données de l’app, y compris le contenu de SecureStore.
+  - Le billing simulé garde son état en mémoire : il repart de zéro à chaque relance de l’app.
+  - La libération d’un appareil Simlock réinitialise tout l’appareil ; un appareil nommé par `E2E_DEVICE` garde son état d’une exécution à l’autre.
+
 ## Résultats et arrêt
 
 Conserver les rapports immuables des runs utiles sous `tools/e2e/.e2e/dreamer-<platform>/<RUN>/`, puis un seul [rapport de synthèse](../../doc_web_interne/docs/qa/dreamer-native-missing-journeys-20261022.md) : pour chaque parcours et plateforme, résultat, première erreur éventuelle, trace/log utile, reçu Release, révisions des tests et du binaire, identité du backend et commande exacte. Une campagne fraîche « 6/6 » exige un même run identifié avec les six cas attendus réussis et les contrôles d’identité/cleanup ; six cas réussis répartis entre plusieurs runs constituent une **preuve composite**, pas une campagne fraîche 6/6.

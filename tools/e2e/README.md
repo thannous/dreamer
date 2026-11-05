@@ -561,7 +561,10 @@ shared-backend locking, owned-app termination between platforms, and the explici
 limit: file recognition does not qualify physical microphone capture. The
 [campaign evidence](../../doc_web_interne/docs/qa/dreamer-native-missing-journeys-20261022.md)
 identifies fresh runs and justified reuse separately: composite coverage is not a
-fresh 6/6 campaign, and excluded iOS speech remains unqualified.
+fresh 6/6 campaign, and excluded iOS speech remains unqualified. The runbook's
+section « Écrire une étape native » applies to every native journey: a control that
+just arrived is tapped once it holds still (`tapWhenStill`), device state is restored
+in `afterEach`, and it says what each platform's reset clears.
 
 ## Android release evidence
 
@@ -657,6 +660,12 @@ register that storage campaign automatically.
 
 An explicit `E2E_DEVICE` keeps the existing owned-device flow and does not acquire
 a Simlock lease. `list`, `build`, `inspect` and `mcp` do not auto-reserve devices.
+A run resolves an iOS Simulator name to its UDID, and refuses a name that two available
+Simulators share. The SDK, the device lock and the rerun environment then use that UDID
+(or the emulator serial). The device gets its own agent-device session,
+`noctalia-<platform>-<12 hex of the id's sha256>`. The default `e2e-<target>-0` is the
+same for every device on the shared daemon, where two runs would interleave their taps.
+`evidence.json` records the device's id, name, OS version and model as `deviceIdentity`.
 The Simlock lease and the existing runner lock serve different purposes; neither
 replaces the Release receipt, installed identity checks or native evidence.
 
@@ -970,9 +979,10 @@ for the documented unsafe-device/stale-evidence counterexamples without touching
 Run the `pr633-collection` tag on an identified owned `mock-persistent` Release.
 The journey saves a fresh story, returns to the journal, reveals a card, closes it
 and reopens it; Android also runs with a cold image cache and airplane mode,
-restoring connectivity in `finally`. Inspect the retained screenshots and verify
-the full 720 px source through the native cache or image-decoder trace; an
-accessible image wrapper alone does not prove the artwork loaded.
+restoring connectivity in `afterEach`, which also runs after a failure or timeout.
+Inspect the retained screenshots and verify the full 720 px source through the
+native cache or image-decoder trace; an accessible image wrapper alone does not
+prove the artwork loaded.
 
 The saved-dream journey uses one ordinary locator tap and asserts the journal
 immediately after it; a second tap or an app restart must not stand in for that
