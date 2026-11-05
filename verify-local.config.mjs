@@ -277,11 +277,15 @@ const TESTERARMY = {
   hint: 'run it locally where you run verify:pr (after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
+// Unit tests and snapshots under the app folders: no bundle loads them and
+// jest-changed runs them (isUnitTestPath in tools/e2e/zones.mjs).
+const UNIT_TESTS = ['!**/__tests__/', '!**/*.test.*', '!**/*.snap'];
+
 // Dreamer paths that run the tagged smoke journeys. Lucid, Meditation and docs
 // stay out: Lucid and Meditation have their own parcours zones.
 export const SMOKE_WHEN = [
   'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/',
-  '!routes/lucid/', '!components/lucid/', '!services/lucid*', '!apps/meditation/',
+  '!routes/lucid/', '!components/lucid/', '!services/lucid*', '!apps/meditation/', ...UNIT_TESTS,
   // A changed Dreamer journey: its smoke-tagged tests run only in this check.
   'tools/e2e/tests/dreamer*.web.e2e.ts',
 ];
@@ -291,6 +295,7 @@ export const SMOKE_WHEN = [
 // named zone (see tools/e2e/pr-gate.mjs).
 export const PARCOURS_WHEN = [
   'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/', 'apps/meditation/',
+  ...UNIT_TESTS,
   'tools/e2e/zones.mjs', 'tools/e2e/zones.d.mts', 'tools/e2e/zone-filter.ts', 'tools/e2e/zone-filter.test.mjs',
   'tools/e2e/decision-verdict.mjs', 'tools/e2e/decision-verdict.d.mts', 'tools/e2e/decision-verdict.test.mjs',
   'tools/e2e/pr-gate.mjs', 'tools/e2e/pr-gate.test.mjs', 'tools/e2e/e2e.config.ts', 'tools/e2e/e2e.bugbash.config.ts',

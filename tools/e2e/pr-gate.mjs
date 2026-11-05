@@ -5,22 +5,34 @@
  * A native-only diff does too: this gate has no emulator. When a zone is touched, a missing
  * pinned Node, e2e install, or Chromium exits 1. verify:pr probes the same
  * condition first and records the check unavailable, so the proof is
- * incomplete instead of passed.
+ * incomplete instead of passed. Inside verify:release it launches nothing
+ * (releaseSkip): the release's own campaigns run the journeys.
  */
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DECISION_PRODUCTS, decisionEnabled, isDreamerAppPath, isNativeJourney, zonesForFiles } from './zones.mjs';
+import { DECISION_PRODUCTS, decisionEnabled, isDreamerAppPath, isNativeJourney, isUnzonedJourney, zonesForFiles } from './zones.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PINNED_NODE = 'v24.22.1';
 
-/** The web product whose campaign holds a changed journey file, if any. */
+/**
+ * Inside verify:release the gate launches nothing: the release target's full
+ * campaigns (testerarmy-*) run every journey on the delivered commit, and a
+ * site release ships no app code.
+ */
+export function releaseSkip(env = process.env) {
+  return env.VERIFY_LOCAL_KIND === 'release'
+    ? 'PORTE PR SAUTEE: verify:release joue les campagnes completes de sa cible a la place de la porte PR.'
+    : null;
+}
+
+/** The web product whose campaign holds a changed journey file, if any. A release-only file (UNZONED) has none. */
 export function changedJourneyProduct(file) {
-  if (!file.startsWith('tools/e2e/tests/') || !file.endsWith('.web.e2e.ts') || isNativeJourney(file)) return null;
+  if (!file.startsWith('tools/e2e/tests/') || !file.endsWith('.web.e2e.ts') || isNativeJourney(file) || isUnzonedJourney(file)) return null;
   const name = file.slice('tools/e2e/tests/'.length);
   if (name.includes('/')) return null;
   if (name.startsWith('dreamer')) return 'dreamer';
@@ -163,6 +175,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     if (which !== 'parcours' && which !== 'smoke') {
       console.error('Usage: pr-gate.mjs probe parcours|smoke');
       process.exitCode = 2;
+    } else if (releaseSkip()) {
+      console.log(releaseSkip());
     } else {
       const root = repoRoot();
       const diff = changedFiles(root);

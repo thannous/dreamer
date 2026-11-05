@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
-import { GATE_MAX_FAILURES, decideParcours, decideSmoke, runGate } from './pr-gate.mjs';
-import { selectionOwesNothing } from './zones.mjs';
+import { fileURLToPath } from 'node:url';
+import { GATE_MAX_FAILURES, decideParcours, decideSmoke, releaseSkip, runGate } from './pr-gate.mjs';
+import { UNZONED, parcoursExclude, selectionOwesNothing } from './zones.mjs';
 
 test('docs-only and non-app diffs skip both gates', () => {
   const files = ['doc_web_interne/docs/README.md', 'AGENTS.md', 'specs/noctalia-lucid-trainer.md'];
@@ -126,6 +128,15 @@ test('verify:pr scopes skip docs and keep the named app paths', async () => {
   assert.equal(matchesAny('app/journal/[id].tsx', PARCOURS_WHEN), true);
   assert.equal(matchesAny('tools/e2e/zones.mjs', PARCOURS_WHEN), true);
   assert.equal(matchesAny('tools/e2e/pr-gate.mjs', PARCOURS_WHEN), true);
+  // Unit tests next to app code skip both checks; the gate's own tests still reach parcours.
+  for (const file of ['lib/__tests__/dreamUtils.test.ts', 'hooks/useSubscription.test.tsx',
+    'components/journal/__tests__/__snapshots__/DreamCard.test.tsx.snap', 'apps/meditation/app/__tests__/index.test.tsx']) {
+    assert.equal(matchesAny(file, SMOKE_WHEN), false, file);
+    assert.equal(matchesAny(file, PARCOURS_WHEN), false, file);
+  }
+  assert.equal(matchesAny('tools/e2e/pr-gate.test.mjs', PARCOURS_WHEN), true);
+  assert.equal(matchesAny('tools/e2e/zone-filter.test.mjs', PARCOURS_WHEN), true);
+  assert.equal(matchesAny('tools/e2e/tests/dreamer-billing.web.e2e.ts', SMOKE_WHEN), true);
 });
 
 test('a changed web journey runs its campaign even without a source zone', () => {
@@ -136,6 +147,41 @@ test('a changed web journey runs its campaign even without a source zone', () =>
   for (const file of ['tools/e2e/tests/dreamer.mobile.e2e.ts', 'tools/e2e/tests/bugbash/example.e2e.ts',
     'tools/e2e/tests/backend-sync.web.e2e.ts', 'tools/e2e/zones.mjs']) {
     assert.equal(decideParcours([file]).launch, false, file);
+  }
+});
+
+test('an edit to a release-only journey file starts neither gate; the release campaign runs it', () => {
+  const files = Object.keys(UNZONED);
+  assert.ok(files.length > 0);
+  for (const file of files) {
+    assert.equal(decideParcours([file], { model: false }).launch, false, file);
+    assert.equal(decideSmoke([file]).launch, false, file);
+  }
+  // With a zone touched in the same diff, the zone's journeys run, not the release-only file.
+  const release = { id: 'broad', tags: [], file: files[0] };
+  assert.equal(parcoursExclude([release], [files[0], 'app/journal/[id].tsx']).exclude.broad, 'le diff ne touche pas ce parcours');
+});
+
+test('unit tests and snapshots under the app folders start neither gate', () => {
+  const files = ['lib/__tests__/dreamUtils.test.ts', 'hooks/useSubscription.test.tsx',
+    'components/journal/__tests__/__snapshots__/DreamCard.test.tsx.snap'];
+  assert.equal(decideParcours(files, { model: true }).launch, false);
+  assert.equal(decideSmoke(files).launch, false);
+  // The source next to them still starts both.
+  assert.equal(decideSmoke(['hooks/useSubscription.ts']).launch, true);
+  assert.deepEqual(decideParcours(['hooks/useSubscription.ts'], { model: false }).products, ['dreamer']);
+});
+
+test('inside verify:release the gate launches nothing and touches no git state', () => {
+  assert.equal(releaseSkip({}), null);
+  assert.equal(releaseSkip({ VERIFY_LOCAL_KIND: 'pr' }), null);
+  assert.match(releaseSkip({ VERIFY_LOCAL_KIND: 'release' }), /PORTE PR SAUTEE/);
+  const gate = fileURLToPath(new URL('./pr-gate.mjs', import.meta.url));
+  for (const args of [['parcours'], ['smoke'], ['probe', 'parcours']]) {
+    // Nothing on PATH: the gate would fail if it asked git for a diff, and never reaches a browser.
+    const run = spawnSync(process.execPath, [gate, ...args], { encoding: 'utf8', env: { PATH: '', VERIFY_LOCAL_KIND: 'release' } });
+    assert.equal(run.status, 0, `${args.join(' ')}: ${run.stderr}`);
+    assert.match(run.stdout, /PORTE PR SAUTEE/);
   }
 });
 

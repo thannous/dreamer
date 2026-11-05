@@ -68,6 +68,7 @@ export const ZONES = [
       'services/captureReviewPreparation.ts',
       'services/microphoneHold.ts',
       'services/nativeSpeechRecognition.ts',
+      'lib/recordingPermissions.ts',
       // On the web every Alert.alert of the capture (refused microphone, restart) is a browser dialog.
       'lib/browserAlert.ts',
     ],
@@ -153,6 +154,8 @@ export const ZONES = [
       'hooks/useSubscription',
       'context/SubscriptionContext.tsx',
       'services/quotaService.ts',
+      'lib/revenuecat.ts',
+      'lib/subscriptionErrors.ts',
     ],
     tests: ['tools/e2e/tests/dreamer-billing.web.e2e.ts'],
   },
@@ -173,6 +176,10 @@ export const ZONES = [
       'services/accountDeletionService.ts',
       'services/productOAuthSession.ts',
       'services/productOAuthNativeStorage.ts',
+      'lib/appleAuth.ts',
+      // Settings owns the reminder switches (dreamer-settings).
+      'services/notificationService',
+      'lib/reminderOptIn.ts',
     ],
     tests: [
       'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts',
@@ -189,11 +196,15 @@ export const ZONES = [
       'services/dreamChatSend.ts', 'lib/chat/',
       // The reading modal opens only from the reflection screen (app/dream-categories/[id].tsx).
       'components/analysis/AnalysisReadingModal.tsx', 'components/analysis/ImageGenerationDots.tsx',
+      // The model client and the analysis it writes.
+      'services/geminiService', 'services/journalAnalysis.ts',
     ],
     tests: [
       'tools/e2e/tests/dreamer-chat-category.web.e2e.ts',
       'tools/e2e/tests/dreamer-reflection-context.web.e2e.ts',
       'tools/e2e/tests/dreamer-plus-channels.web.e2e.ts',
+      'tools/e2e/tests/dreamer-analysis-preview.web.e2e.ts',
+      'tools/e2e/tests/dreamer-ai-consent.web.e2e.ts',
     ],
   },
   {
@@ -202,6 +213,7 @@ export const ZONES = [
       'hooks/useQuota.ts', 'services/quota/', 'services/quotaService.ts',
       'components/quota/', 'components/privacy/', 'components/settings/useAiConsentController.ts',
       'lib/aiConsent', 'constants/limits.ts',
+      'services/geminiService', 'services/journalAnalysis.ts',
     ],
     tests: [
       'tools/e2e/tests/dreamer-ai-consent.web.e2e.ts',
@@ -303,8 +315,27 @@ export const UNZONED = Object.freeze({
   'tools/e2e/tests/dreamer-personas.web.e2e.ts': 'aucun test sans E2E_PERSONAS=1 : la campagne personas, facultative, appelle des modèles',
 });
 
+/**
+ * A unit test or snapshot under an app folder: no bundle loads it, so it
+ * starts no web journey (Jest runs it in verify:pr).
+ * @param {string} file
+ */
+export function isUnitTestPath(file) {
+  return file.includes('__tests__/') || /\.test\.[^/]+$/.test(file) || file.endsWith('.snap');
+}
+
+/**
+ * A changed web journey of a release-only file (UNZONED) stays in the
+ * release campaign: the PR gate does not run it for its own edit.
+ * @param {string} file
+ */
+export function isUnzonedJourney(file) {
+  return Object.hasOwn(UNZONED, file);
+}
+
 /** @param {string} source @param {string} file */
 export function sourceMatches(source, file) {
+  if (isUnitTestPath(file)) return false;
   if (source.endsWith('/')) return file.startsWith(source);
   if (file === source) return true;
   if (!source.includes('.')) return file.startsWith(source);
@@ -318,6 +349,7 @@ export function zonesForFiles(files) {
 
 /** @param {string} file */
 export function isDreamerAppPath(file) {
+  if (isUnitTestPath(file)) return false;
   if (file.startsWith('routes/lucid/') || file.startsWith('components/lucid/') || file.startsWith('services/lucid')) return false;
   if (file.startsWith('apps/meditation/')) return false;
   return DREAMER_APP_ROOTS.some(root => file === root.slice(0, -1) || file.startsWith(root));
@@ -344,7 +376,8 @@ export function filterIsActive(context) {
 
 export function parcoursExclude(tests, files, locale) {
   const zones = zonesForFiles(files);
-  const changedTests = new Set(files.filter(file => file.startsWith('tools/e2e/tests/') && file.endsWith('.e2e.ts') && !isNativeJourney(file)));
+  const changedTests = new Set(files.filter(file => file.startsWith('tools/e2e/tests/') && file.endsWith('.e2e.ts')
+    && !isNativeJourney(file) && !isUnzonedJourney(file)));
   const tags = new Set(zones.flatMap(zone => zone.tags));
   const testFiles = new Set(zones.flatMap(zone => zone.tests));
   const exclude = {};

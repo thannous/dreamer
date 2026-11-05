@@ -296,8 +296,44 @@ test('changes in behavioral owners select their journeys without selecting unrel
     assert.ok(selection.exclude.billing, source);
     assert.ok(selection.exclude.bug, source);
   }
-  for (const source of ['hooks/useSubscription.ts', 'hooks/useSubscriptionExpiryTimer.ts', 'hooks/useQuota.ts']) {
+  for (const source of ['hooks/useSubscription.ts', 'hooks/useSubscriptionExpiryTimer.ts', 'hooks/useQuota.ts',
+    'lib/revenuecat.ts', 'lib/subscriptionErrors.ts']) {
     assert.equal(parcoursExclude([billing], [source]).exclude.billing, undefined, source);
+  }
+});
+
+test('release-sensitive Dreamer sources select the journeys that exercise them', () => {
+  const cases = [
+    ['lib/appleAuth.ts', 'dreamer-forgot-password.web.e2e.ts'],
+    ['services/notificationServiceReal.ts', 'dreamer-settings.web.e2e.ts'],
+    ['lib/reminderOptIn.ts', 'dreamer-settings.web.e2e.ts'],
+    ['lib/recordingPermissions.ts', 'dreamer-capture-chat.web.e2e.ts'],
+    ['services/geminiService.ts', 'dreamer-reflection-context.web.e2e.ts'],
+    ['services/geminiServiceReal.ts', 'dreamer-ai-consent.web.e2e.ts'],
+    ['services/journalAnalysis.ts', 'dreamer-analysis-preview.web.e2e.ts'],
+    ['services/journalAnalysis.ts', 'dreamer-guest-limits.web.e2e.ts'],
+  ];
+  for (const [source, file] of cases) {
+    const expected = { id: 'expected', file: `tools/e2e/tests/${file}`, tags: [] };
+    assert.equal(parcoursExclude([expected, bug], [source]).exclude.expected, undefined, `${source} -> ${file}`);
+  }
+});
+
+test('a unit test or snapshot next to app code selects no zone and is not app code', () => {
+  for (const file of ['hooks/useSubscription.test.tsx', 'lib/__tests__/dreamUtils.test.ts',
+    'components/journal/__tests__/__snapshots__/DreamCard.test.tsx.snap', 'apps/meditation/app/__tests__/index.test.tsx']) {
+    assert.deepEqual(zonesForFiles([file]), [], file);
+    assert.equal(isDreamerAppPath(file), false, file);
+  }
+  assert.deepEqual(zonesForFiles(['hooks/useSubscription.ts']).map(zone => zone.id), ['paiement']);
+});
+
+test('a changed release-only journey file is not a parcours the PR gate owes', () => {
+  for (const file of Object.keys(UNZONED)) {
+    const broad = { id: 'broad', tags: [], file };
+    const decision = parcoursExclude([broad], [file]);
+    assert.equal(decision.exclude.broad, UNTOUCHED, file);
+    assert.equal(decision.note, 'aucun-parcours', file);
   }
 });
 
