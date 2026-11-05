@@ -148,7 +148,12 @@ tests du moteur. Selon les chemins changés depuis `origin/master`, il ajoute
 de paquet), les contrats CI/benchmark (`.circleci/` et outils d’installation E2E), Meditation
 (`apps/meditation` et fichiers partagés) et les Edge Functions sous Deno
 (`supabase/functions`, `supabase/lib`, `supabase/migrations`, `deno.lock`).
-La liste exacte est dans `verify-local.config.mjs`.
+La liste exacte est dans `verify-local.config.mjs`. Les contrôles indépendants
+(moteur, gardes, types, lint, contrats) passent en une seule étape parallèle ;
+Jest, Meditation, Edge, le site et les parcours web suivent un par un. Un diff
+limité aux tests unitaires sous les dossiers de l'application ne lance aucun
+parcours web, et un commit documentaire qui suit réutilise les parcours déjà
+passés sur la même base.
 
 La preuve est liée à l'arbre vérifié et écrite dans
 `$(git rev-parse --git-common-dir)/verify-proofs/`. Un contrôle déjà réussi sur

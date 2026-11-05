@@ -93,7 +93,13 @@ locale-specific selected journeys execute in their matching context. Each pass
 keeps the diff filter, and the PR gates explicitly disable personas and bug bash.
 `smoke-journeys` runs the seven tagged smoke journeys (capture, save, journal,
 payment, sign-in) on every Dreamer app diff. A docs-only or non-app diff skips
-both. A native-only diff exits 0. If a zone is touched and Node 24.22.1,
+both, and so does a diff limited to unit tests and snapshots under the app folders
+(`__tests__/`, `*.test.*`, `*.snap`), which `jest-changed` runs. An edit to a
+release-only journey file listed in `UNZONED` starts neither gate: the release
+campaign runs it. A native-only diff exits 0. Both gates fingerprint every file
+but documents and `tools/dev-local/`, on the same merge base, so a docs-only
+follow-up commit reuses their pass. Inside `verify:release` they launch nothing:
+the target's full campaigns run every journey. If a zone is touched and Node 24.22.1,
 `tools/e2e/node_modules`, or Chromium is missing, the probe fails and the proof
 is incomplete, not passed. Each run's `qualification.json` records the change
 the filter judged and its decision (`changes`, `filters`); a filter that failed
@@ -133,7 +139,14 @@ it reads: their scopes in the configuration are checked against the two tsc
 programs, the lint import graph, the Jest projects and the files the database
 tests open, and a PR changing the configuration or the engine runs those
 guards. Changed inputs add site build/check, CI/benchmark contracts, mobile
-version pins, Meditation and Deno Edge checks. `npm run verify:pr -- --plan`
+version pins, Meditation and Deno Edge checks. The checks that write nothing another
+one reads (engine and guard tests, typechecks, lints, database, configuration, CI
+and EAS contracts, version pins) run first as one parallel step, which lasts about
+as long as the engine tests; `jest-changed`, dependency security, Meditation, Edge,
+the site build (it rewrites `data/site-manifest.json` and `docs/`) and the two
+browser gates follow one at a time. In a verify copy, `docs:build` clones the CDN
+media from `.git/verify-cache/site-media/` instead of downloading them again
+([site media storage](site-media-storage.md)). `npm run verify:pr -- --plan`
 prints what each check would do (run, reused, out of scope, cannot run here) and
 a time from this clone's earlier runs, without running anything.
 `npm run verify:pr:status` (`verify:pr -- --post-status`, opt-in) then posts the

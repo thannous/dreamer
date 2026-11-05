@@ -53,6 +53,12 @@ CDN et vérifie les tailles, types et SHA-256. Une image locale modifiée bloque
 restauration ; elle n'est jamais remplacée silencieusement. Une réponse HTML,
 corrompue ou incomplète ne devient pas un fichier image.
 
+Dans la copie isolée de `verify:pr` ou `verify:release`, le build garde chaque
+image vérifiée dans `.git/verify-cache/site-media/` (un fichier par SHA-256, la
+release courante seulement) et la copie suivante la clone depuis ce cache au lieu
+de retélécharger 1,1 Go. Une copie en cache ne compte que si ses propres octets
+correspondent au manifeste ; sinon l'image est retéléchargée et la remplace.
+
 En présence du manifeste, le build **ne lance aucun encodeur d'images** : un
 changement de police ou de version de l'encodeur ne doit pas modifier les peintures
 pendant une migration ou un déploiement. Sans configuration média, le comportement

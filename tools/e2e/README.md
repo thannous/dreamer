@@ -501,7 +501,14 @@ TesterArmy migration.
 ## Continuous integration and SDK checks
 
 All validation runs locally through `verify:pr` and `verify:release` on Windows
-and Linux, with the same common cases and assertions. CircleCI runs only an
+and Linux, with the same common cases and assertions. The PR gate
+(`tools/e2e/pr-gate.mjs`: `parcours-touches` and `smoke-journeys`) starts a browser
+only for an app diff or a changed web journey: documents, unit tests and snapshots
+under the app folders, and an edit to a release-only file listed in `UNZONED`
+start nothing, and inside `verify:release` it launches nothing, since the
+release target's campaigns run every journey. The site campaign
+(`testerarmy-site`) runs only in `npm run verify:release:site`, on the `docs/`
+that its `site` check built. CircleCI runs only an
 optional installation benchmark (manual/API trigger plus `run_e2e_benchmark=true`);
 see the [CircleCI guide](../../doc_web_interne/docs/circleci-migration.md).
 `npm run test:testerarmy:benchmark` reproduces it locally without root dependencies:
