@@ -323,7 +323,7 @@ test('a red run digest names each failure by line, code and trace page, never th
     const skippedRow = testId => ({ ...structuredClone(base), id: undefined, testId, status: 'skipped', attempts: [],
       skip: { cause: 'failure-limit', reason: 'run stopped after 1 failure (--max-failures 1)' } });
     red.run.results = [
-      { ...structuredClone(base), id: failedId, titlePath: ['DREAM TEXT title'], status: 'failed', source: { file: 'tests/x.web.e2e.ts', line: 8, column: 1 },
+      { ...structuredClone(base), id: failedId, titlePath: ['capture'], status: 'failed', source: { file: 'tests/x.web.e2e.ts', line: 8, column: 1 },
         attempts: [attempt('failed', { code: 'EXPECT_TIMEOUT', message: 'expected "DREAM TEXT" to be visible', source: { file: 'tests/x.web.e2e.ts', line: 12, column: 5 } })] },
       { ...structuredClone(base), id: 'cd'.repeat(32), testId: 'other-worker', status: 'interrupted', source: { file: 'tests/y.web.e2e.ts', line: 4, column: 1 },
         attempts: [attempt('interrupted', { code: 'INTERRUPTED', message: 'run interrupted in phase body: DREAM TEXT' })] },

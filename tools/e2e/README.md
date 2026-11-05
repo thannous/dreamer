@@ -163,11 +163,12 @@ What 0.20 changes here:
   `results/<test>/attempt-<n>/`; `failures/` is gone and `summary.md` links each
   failure to its trace page.
 - `expect(screen).toHaveScreenshot()` compares the screen or one element with a
-  committed PNG per target and OS (`<test file>-snapshots/`, for example
-  `<name>-web-darwin.png`). No journey uses it. A baseline written on macOS does not serve a Linux or
-  Windows run, so one would be written on the machine that runs verify:pr, with
-  dynamic content masked. Adding one is an owner decision and needs a reviewed
-  change, since run.mjs refuses `--update-snapshots` today.
+  committed PNG per target and OS (`<test file>-snapshots/`, named
+  `<name>-<target>-<os>.png`, for example `<name>-dreamer-web-darwin.png`). No journey
+  uses it. A first run outside CI writes a missing baseline and fails; only rewriting
+  one needs `--update-snapshots`, which run.mjs refuses. Each OS that runs verify:pr
+  needs its own reviewed file, with dynamic content masked. Adding one is an owner
+  decision and needs a reviewed change.
 - On a device, `device.setAirplaneMode(true)` takes an Android 11+ emulator
   offline (Wi-Fi and cellular); `setNetwork('offline')` cuts Wi-Fi only. Both
   are unsupported on an iOS Simulator. Restore the network in `afterEach`.
@@ -198,7 +199,7 @@ the engine starts. Remove `.only` before a qualifying run. Its web worker count
 still follows the caller's own `CI`, and the guarded `mcp` entry stays out of CI mode.
 
 Before tagging a web mock journey `smoke` or `zone-*`, repeat it in the gate's
-context:
+context, from the repository root:
 
 ```sh
 E2E_PERSONAS=0 E2E_BUGBASH=0 E2E_WEB_LOCALE=en-US EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false \
@@ -413,11 +414,13 @@ automatically block feature or framework adoption or permit silently bypassing
 verify:pr or verify:release.
 
 New web bodies use the SDK surface, as the journeys on `traced-parity-test.ts`
-do (`browser.route`, SDK locators and `expect`, `browser.keyboard`/`browser.mouse`,
-`locator.boundingBox()`), so trace.md records their steps. `surfaceOf()` stays
-only for what e2e 0.22.0 and web 0.15.4 lack: `page.clock`, `toBeInViewport`,
-`toHaveCSS`, `toHaveRole`, `toBeEditable`, second contexts/pages and the branch
-target's `routeWebSocket`. Raw-page steps are not recorded, redacted or masked in
+do (`browser.route`, SDK locators and `expect`, `locator.boundingBox()`), so
+trace.md records their steps; `browser.keyboard` and `browser.mouse` replace
+`page.keyboard` and `page.mouse`. `surfaceOf()` stays only for what e2e 0.22.0 and
+web 0.15.4 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
+`toHaveRole`, `toBeEditable`, `context.setOffline`, per-test `grantPermissions`,
+page events (`page.on`), `addStyleTag` (or `browser.evaluate`), second
+contexts/pages and the branch target's `routeWebSocket`. Raw-page steps are not recorded, redacted or masked in
 trace.md. Existing parity bodies keep their coverage until a replacement passes.
 TesterArmy owns isolated attempts and traces; the pinned isolated Playwright
 1.64.1 package supplies matchers only. The parity fixture preserves
@@ -686,7 +689,8 @@ beginner WBTB restrictions, shared account-form validation, two morning captures
 persisted in Journal and their confirmed sign linked to both Atlas sources,
 and stabilization/SSILD pause and resume after reload. Browser locale is French
 for this suite. These mock-service browser journeys do not qualify native Lucid.
-The manual Lucid visual script `tests/e2e/lucid-visual-journey.mjs` remains: it
+The manual Lucid visual script [`tests/e2e/lucid-visual-journey.mjs`](../../tests/e2e/lucid-visual-journey.mjs)
+(repository root) remains: it
 runs from a browser REPL, with no runner (see the
 [Lucid visual corrections](../../doc_web_interne/docs/qa/lucid-visual-corrections-2026-10-02.md)).
 Native Lucid runs here (`lucid.mobile.e2e.ts`).
@@ -802,7 +806,11 @@ use `npm run agent-device:inspect -- android` or `npm run agent-device:mcp -- io
 The receipt is the one for the Release already installed on that device, and its
 binary must still exist in that build output: inspect and mcp check the installed
 app against it after taking the device lock (`--release-receipt <path>` after the
-platform does the same). Inspection opens the installed Release app, retains its
+platform does the same). The path is absolute or relative to the directory the
+command runs from (from `apps/meditation`:
+`../../tools/e2e/.e2e/meditation-android/<run>/release.json`), and the checkout's
+app and native input hashes must still match the build: a source change needs a
+rebuild. Inspection opens the installed Release app, retains its
 initial UI tree and a PNG, then closes the session. It neither installs nor
 clears app data, and it is not a passed E2E test. Evidence stays in the existing per-run output tree.
 The same device lock covers inspection, tests and the live MCP process.
@@ -844,12 +852,14 @@ A red run prints a digest to stderr after `end.json`, before the final
 run's own report: one line per failed, timed-out or interrupted test with its file
 and line, error code and `trace.md` path, then the `failure-limit`/`time-limit`
 skip counts, the run's error codes, the `summary.md` path and the exit split
-between the SDK and the wrapper's coded refusals. It holds no error message, title
-or app log, which can quote the user's text, and stops at about 20 lines.
-`verify:pr` deletes its isolated copy when it ends, traces included: the digest's
-codes and lines remain in the terminal. Keep the copy with
-`VERIFY_LOCAL_KEEP_FAILED=1` or `npm run verify:pr -- --keep`, or rerun
-`npm run test:e2e:parcours` / `test:e2e:smoke` in the main checkout.
+between the SDK and the wrapper's coded refusals. It holds no error message or app
+log, which can quote the user's text; a trace path carries the SDK's slug of the
+test title, written by the developer. It stops at about 20 lines.
+`verify:pr` and `verify:release` delete their isolated copy when they end, traces
+included: the digest's codes and lines remain in the terminal. Keep the copy with
+`VERIFY_LOCAL_KEEP_FAILED=1` or `npm run verify:pr -- --keep` (`verify:release`
+likewise), or rerun the check in the main checkout, for example
+`npm run test:e2e:parcours` / `test:e2e:smoke` for the PR gate.
 
 `web collect` still requires all exact current contexts and complete finalized
 proof for qualification. After an interruption it inspects each owned campaign

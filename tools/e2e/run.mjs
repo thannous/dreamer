@@ -687,7 +687,11 @@ try {
     const coded = secondary.filter(code => typeof code === 'string' && /^[A-Z][A-Z0-9_]+$/.test(code));
     const uncoded = secondary.length - coded.length;
     console.error(`E2E exit ${finalExit}: sdk=${sdkExit ?? 'not launched'}; wrapper=${coded.join(',') || 'none'}${uncoded ? ` (+${uncoded} uncoded)` : ''}`);
-    if (env.VERIFY_LOCAL_SHA) console.error('E2E note: verify:pr removes its isolated copy when it ends; keep it with VERIFY_LOCAL_KEEP_FAILED=1 or npm run verify:pr -- --keep, or rerun npm run test:e2e:parcours / test:e2e:smoke in the main checkout.');
+    // verify:pr and verify:release both run here from an isolated copy they delete at the end.
+    if (env.VERIFY_LOCAL_SHA) {
+      const kind = env.VERIFY_LOCAL_KIND === 'release' ? 'release' : 'pr';
+      console.error(`E2E note: verify:${kind} removes its isolated copy when it ends; keep it with VERIFY_LOCAL_KEEP_FAILED=1 or npm run verify:${kind} -- --keep, or rerun this check in the main checkout.`);
+    }
   }
   console.log('E2E evidence: ' + output);
 }

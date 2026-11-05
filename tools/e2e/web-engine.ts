@@ -26,8 +26,9 @@ export const webEngine = web({
   timezoneId: 'Europe/Paris',
   // `headers`, even empty, makes @e2e-dev/web create contexts with service workers
   // blocked (installed e2e docs/reference/web.mdx, `headers` note), as the historical
-  // config did: the app registers /sw.js on load (app/+html.tsx), and a worker would
-  // answer requests the routes never see. It introduces no headers; parity network
-  // routing already disables cache. traced-parity-test.ts asserts no registration.
+  // config did. Under web.output 'single' the E2E app never renders app/+html.tsx, so
+  // nothing registers /sw.js today; the block keeps a future worker from answering
+  // requests the routes never see. It introduces no headers; parity network routing
+  // already disables cache. traced-parity-test.ts tries a registration to prove the block.
   headers: {},
 });

@@ -10,9 +10,13 @@ export const test = base.extend<{ parityNetwork: void }>({
     await provide(undefined);
     // Soft collection is closed by teardown, so these fail the attempt like any expect.
     expect(serviceRequests, 'No real billing/backend request is allowed').toEqual([]);
-    // web-engine.ts blocks the app's service worker only through `headers`; an engine
-    // upgrade that stops doing so must fail here rather than bypass the routes.
-    expect(await browser.evaluate(() => navigator.serviceWorker ? navigator.serviceWorker.getRegistrations().then(registrations => registrations.length) : 0),
-      'Service workers stay blocked (web-engine.ts headers)').toBe(0);
+    // web-engine.ts blocks service workers only through `headers`. The E2E app registers
+    // none itself (web.output 'single' never renders app/+html.tsx), so try one: under the
+    // block the registration is a no-op; an engine upgrade that drops it fails here.
+    expect(await browser.evaluate(async () => {
+      if (!navigator.serviceWorker) return 0;
+      await navigator.serviceWorker.register('/sw.js').catch(() => undefined);
+      return (await navigator.serviceWorker.getRegistrations()).length;
+    }), 'Service workers stay blocked (web-engine.ts headers)').toBe(0);
   },
 });
