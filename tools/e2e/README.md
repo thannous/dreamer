@@ -520,10 +520,12 @@ TesterArmy migration.
 All validation runs locally through `verify:pr` and `verify:release` on Windows
 and Linux, with the same common cases and assertions. The PR gate
 (`tools/e2e/pr-gate.mjs`: `parcours-touches` and `smoke-journeys`) starts a browser
-only for an app diff or a changed web journey: documents, unit tests and snapshots
-under the app folders, and an edit to a release-only file listed in `UNZONED`
-start nothing, and inside `verify:release` it launches nothing, since the
-release target's campaigns run every journey. The site campaign
+only for an app diff, a changed web journey or one of its shared steps, or a
+change to the stack every journey runs on (`SMOKE_STACK` in `zones.mjs`:
+dependencies, build config, the mock web app, the e2e runner and its web helpers).
+Documents, unit tests and snapshots under the app folders, and an edit to a
+release-only file listed in `UNZONED` start nothing. On a published master the
+diff is empty, so a release run launches nothing. The site campaign
 (`testerarmy-site`) runs only in `npm run verify:release:site`, on the `docs/`
 that its `site` check built. CircleCI runs only an
 optional installation benchmark (manual/API trigger plus `run_e2e_benchmark=true`);

@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
 import { qualifyingSdkEnvironment } from './qualification.mjs';
-import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, sentToDecisionModel, widenWithDecision, zonesForFiles } from './zones.mjs';
+import { DECISION_KEY_ENV, DECISION_MODEL, SHARED_JOURNEY_STEPS, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, sentToDecisionModel, widenWithDecision, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
 const billingSmoke = { id: 'billing-smoke', tags: ['smoke', 'zone-paiement'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -363,4 +363,17 @@ test('the decision model cannot revive a journey in the wrong locale', () => {
   const zones = parcoursExclude([french], ['app/recording.tsx'], 'en-US');
   assert.equal(zones.exclude[french.id], 'ce parcours appartient à un autre contexte de langue');
   assert.equal(widenWithDecision(zones, { exclude: {} }).exclude[french.id], zones.exclude[french.id]);
+});
+
+test('each shared journey step lists exactly the gated web journeys that import it, and a change to it runs them', () => {
+  const tests = new URL('./tests/', import.meta.url);
+  const journeys = readdirSync(tests).filter(name => name.endsWith('.web.e2e.ts'));
+  for (const [step, listed] of Object.entries(SHARED_JOURNEY_STEPS)) {
+    const module = step.slice('tools/e2e/'.length).replace(/\.ts$/, '');
+    const importers = journeys.filter(name => readFileSync(new URL(name, tests), 'utf8').includes(`from '../${module}'`))
+      .map(name => `tools/e2e/tests/${name}`).filter(file => !Object.hasOwn(UNZONED, file)).sort();
+    assert.deepEqual([...listed].sort(), importers, step);
+    const journey = { id: 'shared', tags: [], file: listed[0] };
+    assert.equal(parcoursExclude([journey], [step]).exclude.shared, undefined, step);
+  }
 });

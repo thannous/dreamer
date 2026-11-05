@@ -92,14 +92,17 @@ Dreamer uses the shared English/French/German and feature-sheet contexts so that
 locale-specific selected journeys execute in their matching context. Each pass
 keeps the diff filter, and the PR gates explicitly disable personas and bug bash.
 `smoke-journeys` runs the seven tagged smoke journeys (capture, save, journal,
-payment, sign-in) on every Dreamer app diff. A docs-only or non-app diff skips
+payment, sign-in) on every Dreamer app diff, and on a change to the stack every
+journey runs on (`SMOKE_STACK` in `tools/e2e/zones.mjs`: dependencies and
+lockfiles, `patches/`, `app.json`/`app.config.ts`, Metro/Babel config, the mock
+web app, the e2e runner and its shared web helpers). A docs-only diff skips
 both, and so does a diff limited to unit tests and snapshots under the app folders
 (`__tests__/`, `*.test.*`, `*.snap`), which `jest-changed` runs. An edit to a
 release-only journey file listed in `UNZONED` starts neither gate: the release
 campaign runs it. A native-only diff exits 0. Both gates fingerprint every file
 but documents and `tools/dev-local/`, on the same merge base, so a docs-only
-follow-up commit reuses their pass. Inside `verify:release` they launch nothing:
-the target's full campaigns run every journey. If a zone is touched and Node 24.22.1,
+follow-up commit reuses their pass. On a published master their diff is empty,
+so a release run launches nothing. If a zone is touched and Node 24.22.1,
 `tools/e2e/node_modules`, or Chromium is missing, the probe fails and the proof
 is incomplete, not passed. Each run's `qualification.json` records the change
 the filter judged and its decision (`changes`, `filters`); a filter that failed
@@ -162,8 +165,7 @@ SHA and rebuilds the site and app web output. `verify:release:site` runs the sam
 shared checks with the `site` target instead (the TesterArmy site campaign) and
 leaves out the `app` one (web app build, backend browser qualification and
 Dreamer/Lucid/Meditation campaigns); it qualifies a site publish. Both runs on one
-SHA merge into one proof that covers both targets. Inside a release the PR web
-gates launch nothing: the target's full campaigns replace them. Device QA and EAS
+SHA merge into one proof that covers both targets. Device QA and EAS
 builds remain separate.
 
 Fetch `origin/master` before proving a commit. The engine tests the committed

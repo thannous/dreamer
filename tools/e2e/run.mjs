@@ -119,6 +119,14 @@ if (sdk && existsSync(sdk)) {
 }
 if (command === 'doctor' && platform !== 'web' && !env.E2E_DEVICE)
   throw new Error('Doctor checks the named device: set E2E_DEVICE to a booted simulator or emulator.');
+// Every pin is read from its install, so a new SDK_PINS entry is checked and recorded too.
+function installedPins() {
+  const pins = Object.fromEntries(Object.keys(SDK_PINS).map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
+  if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
+  return pins;
+}
+// A doctor that says "ready" must mean a run would not refuse the install.
+if (command === 'doctor') installedPins();
 if (command === 'list' || command === 'doctor') {
   if (platform !== 'web' && !env.E2E_DEVICE) env.E2E_DEVICE = platform === 'android' ? 'emulator-0000' : 'iPhone Simulator';
   const result = spawnSync(process.execPath, [...webNodeArgs, cli, command, ...args], { cwd, env: qualifyingSdkEnvironment(env), stdio: 'inherit' });
@@ -208,9 +216,7 @@ const installationErrorDetails = [];
 const startedAt = Date.now();
 // The declared origin: port 0 asks for a free port, which the report names as baseOrigin.
 const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${webPort(product, env)}` : undefined;
-// Every pin is read from its install, so a new SDK_PINS entry is checked and recorded too.
-const pins = Object.fromEntries(Object.keys(SDK_PINS).map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
-if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
+const pins = installedPins();
 const campaignId = env.E2E_CAMPAIGN_ID ?? env.CIRCLE_WORKFLOW_JOB_ID ?? null;
 const context = () => ({ locale: platform !== 'web' && env.E2E_PERSONAS === '1' ? 'fr-FR' : env.E2E_WEB_LOCALE ?? (product === 'lucid' ? 'fr-FR' : 'en-US'), featureSheets: env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true',
   ...(env.E2E_PERSONAS === '1' ? { personas: true, ...personaModels(env) } : {}) });

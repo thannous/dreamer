@@ -268,7 +268,7 @@ export const ZONES = [
   },
   {
     id: 'onboarding', tags: ['zone-onboarding'], product: 'dreamer', platform: 'web',
-    sources: ['tools/e2e/onboarding-fixtures.ts', 'app/onboarding.tsx', 'components/onboarding/', 'context/OnboardingContext.tsx', 'lib/onboardingState.ts'],
+    sources: ['app/onboarding.tsx', 'components/onboarding/', 'context/OnboardingContext.tsx', 'lib/onboardingState.ts'],
     // Settings replays the introduction and keeps a finished onboarding finished.
     tests: ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-stories.web.e2e.ts',
       'tools/e2e/tests/dreamer-onboarding-features-explorer.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts'],
@@ -334,6 +334,8 @@ export function isUnitTestPath(file) {
  */
 export const SMOKE_STACK = Object.freeze([
   'package.json', 'package-lock.json', 'patches/', 'app.json', 'app.config.ts', 'metro.config.js', 'babel.config.js',
+  // The mock web app every Dreamer journey starts (npm run start:mock).
+  '.env.mock', 'scripts/expo-safe-runner.js', 'global.css', 'mock-data/',
   'tools/e2e/package.json', 'tools/e2e/package-lock.json', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs',
   'tools/e2e/qualification.mjs', 'tools/e2e/web-ports.mjs', 'tools/e2e/web-engine.ts', 'tools/e2e/preload-web-matchers.mjs',
   'tools/e2e/traced-parity-test.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-fixtures.ts',
@@ -351,6 +353,28 @@ export function isSmokeStackPath(file) {
  */
 export function isUnzonedJourney(file) {
   return Object.hasOwn(UNZONED, file);
+}
+
+/**
+ * Shared steps of web journeys, with the journeys that import them. A change to
+ * one runs those journeys in the PR gate, as an edit to the journeys would.
+ * zone-filter.test.mjs keeps each list equal to the files that import the module.
+ */
+export const SHARED_JOURNEY_STEPS = Object.freeze({
+  'tools/e2e/web-journeys.ts': ['tools/e2e/tests/dreamer-billing.web.e2e.ts', 'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts', 'tools/e2e/tests/dreamer-journeys.web.e2e.ts', 'tools/e2e/tests/dreamer-locale-de.web.e2e.ts'],
+  'tools/e2e/traced-parity-test.ts': ['tools/e2e/tests/dreamer-billing.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-save.web.e2e.ts', 'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-type-filter.web.e2e.ts', 'tools/e2e/tests/dreamer-journeys.web.e2e.ts', 'tools/e2e/tests/dreamer-locale-de.web.e2e.ts', 'tools/e2e/tests/dreamer-reflection-context.web.e2e.ts', 'tools/e2e/tests/dreamer-system-speech.web.e2e.ts'],
+  'tools/e2e/onboarding-fixtures.ts': ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-explorer.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-stories.web.e2e.ts'],
+});
+
+/**
+ * The web journey files a changed file stands for: itself when it is a journey
+ * the PR gate runs, the importers of a shared step, else none.
+ * @param {string} file
+ */
+export function journeysOfChange(file) {
+  if (Object.hasOwn(SHARED_JOURNEY_STEPS, file)) return SHARED_JOURNEY_STEPS[file];
+  return file.startsWith('tools/e2e/tests/') && file.endsWith('.e2e.ts') && !isNativeJourney(file) && !isUnzonedJourney(file)
+    ? [file] : [];
 }
 
 /** @param {string} source @param {string} file */
@@ -396,8 +420,7 @@ export function filterIsActive(context) {
 
 export function parcoursExclude(tests, files, locale) {
   const zones = zonesForFiles(files);
-  const changedTests = new Set(files.filter(file => file.startsWith('tools/e2e/tests/') && file.endsWith('.e2e.ts')
-    && !isNativeJourney(file) && !isUnzonedJourney(file)));
+  const changedTests = new Set(files.flatMap(journeysOfChange));
   const tags = new Set(zones.flatMap(zone => zone.tags));
   const testFiles = new Set(zones.flatMap(zone => zone.tests));
   const exclude = {};

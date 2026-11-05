@@ -24,6 +24,8 @@ export function isDreamerAppPath(file: string): boolean;
 export function isNativeJourney(file: string): boolean;
 export function isUnitTestPath(file: string): boolean;
 export function isUnzonedJourney(file: string): boolean;
+export const SHARED_JOURNEY_STEPS: Readonly<Record<string, readonly string[]>>;
+export function journeysOfChange(file: string): readonly string[];
 export const SMOKE_STACK: readonly string[];
 export function isSmokeStackPath(file: string): boolean;
 

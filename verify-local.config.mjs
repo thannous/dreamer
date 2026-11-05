@@ -206,14 +206,18 @@ const EAS_WORKFLOW_CONTRACTS = [
 // require (and the suites themselves), the persona pins qualification.mjs
 // imports, and Jest.
 const EAS_WORKFLOW_READS = [
-  ...EAS_WORKFLOWS, 'scripts/', 'tools/e2e/persona-models.mjs',
+  ...EAS_WORKFLOWS, 'scripts/', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs',
   'jest.config*.js', 'babel.config.js', 'package.json', 'package-lock.json',
+  // The Android smoke workflow test reads the release identity (version, runtimeVersion policy).
+  'app.json',
 ];
 
 // What ci-contracts reads: the CI files and tests, the root package.json
 // (the benchmark's canonical command) and the e2e install manifests and tools.
 const CI_CONTRACT_READS = [
   '.circleci/', 'package.json',
+  // shared-build-impact.test.py also checks the Vercel deployment switches and .github/.
+  'vercel.json', 'scripts/vercel-ignore-build.mjs', '.github/',
   'tools/e2e/package.json', 'tools/e2e/package-lock.json',
   'tools/e2e/benchmark-setup.mjs', 'tools/e2e/benchmark-setup.test.mjs',
   'tools/e2e/install-browsers.mjs', 'tools/e2e/install-browsers.test.mjs',
@@ -309,6 +313,7 @@ export const SMOKE_WHEN = [
   'tools/e2e/tests/dreamer*.web.e2e.ts',
   // The stack every journey runs on (tools/e2e/zones.mjs SMOKE_STACK).
   'package.json', 'package-lock.json', 'patches/', 'app.json', 'app.config.ts', 'metro.config.js', 'babel.config.js',
+  '.env.mock', 'scripts/expo-safe-runner.js', 'global.css', 'mock-data/',
   'tools/e2e/package.json', 'tools/e2e/package-lock.json', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs',
   'tools/e2e/qualification.mjs', 'tools/e2e/web-ports.mjs', 'tools/e2e/web-engine.ts', 'tools/e2e/preload-web-matchers.mjs',
   'tools/e2e/traced-parity-test.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-fixtures.ts',
@@ -325,8 +330,8 @@ export const PARCOURS_WHEN = [
   'tools/e2e/pr-gate.mjs', 'tools/e2e/pr-gate.test.mjs', 'tools/e2e/e2e.config.ts', 'tools/e2e/e2e.bugbash.config.ts',
   'tools/e2e/run.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/persona-models.d.mts',
   'tools/e2e/bugbash-prerelease.mjs', 'tools/e2e/bugbash-prerelease.test.mjs', 'tools/e2e/web-parity-fixtures.ts',
-  // Shared steps of the onboarding zone's journeys (a zone source in zones.mjs).
-  'tools/e2e/onboarding-fixtures.ts',
+  // Shared steps of web journeys (SHARED_JOURNEY_STEPS in zones.mjs): a change runs their importers.
+  'tools/e2e/web-journeys.ts', 'tools/e2e/traced-parity-test.ts', 'tools/e2e/onboarding-fixtures.ts',
   // Every web journey of the three campaigns: a changed journey runs (pr-gate.mjs changedJourneyProduct).
   'tools/e2e/tests/dreamer*.web.e2e.ts', 'tools/e2e/tests/lucid.web.e2e.ts', 'tools/e2e/tests/meditation.web.e2e.ts',
   'tools/e2e/tests/bugbash/', 'verify-local.config.mjs',
@@ -533,7 +538,8 @@ export default {
         'supabase/migrations/20260722124500_add_ai_sync_admission_control.sql',
         'supabase/functions/api/services/aiAdmission.ts',
         'supabase/functions/api/services/storage.ts',
-        'tools/e2e/e2e.config.ts',
+        // The branch login origin is pinned against the e2e port map.
+        'tools/e2e/web-ports.mjs',
         '.gitignore',
         // The production ref is pinned against app.json.
         'app.json',
@@ -602,7 +608,7 @@ export default {
     {
       name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
       parallel: true,
-      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs'],
+      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs'],
     },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', parallel: true, inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
@@ -709,7 +715,7 @@ export default {
       specialised: true,
       requires: {
         command: 'node tools/e2e/pr-gate.mjs probe smoke',
-        hint: 'a Dreamer app diff needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the smoke journeys, pass --external smoke-journeys="owner-machine: <host> <note> on <SHA>". A diff that does not touch Dreamer app paths does not need the browser and the probe passes',
+        hint: 'a Dreamer app diff needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the smoke journeys, pass --external smoke-journeys="owner-machine: <host> <note> on <SHA>". A diff that touches neither Dreamer app paths nor the SMOKE_STACK paths of tools/e2e/zones.mjs (dependencies, build config, the mock web app, the e2e runner and its shared web helpers) does not need the browser and the probe passes',
       },
     },
 

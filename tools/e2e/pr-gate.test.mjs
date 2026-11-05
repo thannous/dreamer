@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { GATE_MAX_FAILURES, decideParcours, decideSmoke, releaseSkip, runGate } from './pr-gate.mjs';
-import { UNZONED, parcoursExclude, selectionOwesNothing } from './zones.mjs';
+import { GATE_MAX_FAILURES, decideParcours, decideSmoke, runGate } from './pr-gate.mjs';
+import { SMOKE_STACK, UNZONED, parcoursExclude, selectionOwesNothing } from './zones.mjs';
 
 test('docs-only and non-app diffs skip both gates', () => {
   const files = ['doc_web_interne/docs/README.md', 'AGENTS.md', 'specs/noctalia-lucid-trainer.md'];
@@ -125,6 +125,25 @@ test('a missing runner fails only when a web zone would actually run', () => {
   assert.equal(runGate('smoke', '/tmp', ['components/ui/Toast.tsx'], missing), 1);
 });
 
+test('a change to a shared journey step runs the journeys that import it', async () => {
+  const { matchesAny } = await import(new URL('../../scripts/verify-local.mjs', import.meta.url).href);
+  const { PARCOURS_WHEN } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
+  for (const step of ['tools/e2e/web-journeys.ts', 'tools/e2e/traced-parity-test.ts', 'tools/e2e/onboarding-fixtures.ts']) {
+    assert.equal(matchesAny(step, PARCOURS_WHEN), true, step);
+    assert.deepEqual(decideParcours([step], { model: false }).products, ['dreamer'], step);
+  }
+});
+
+test('verify:pr reaches the smoke check for every path of the stack the smoke gate watches', async () => {
+  const { matchesAny } = await import(new URL('../../scripts/verify-local.mjs', import.meta.url).href);
+  const { SMOKE_WHEN } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
+  for (const entry of SMOKE_STACK) {
+    const file = entry.endsWith('/') ? `${entry}sample.ts` : entry;
+    assert.equal(matchesAny(file, SMOKE_WHEN), true, file);
+    assert.deepEqual(decideSmoke([file]).products, ['dreamer'], file);
+  }
+});
+
 test('verify:pr scopes skip docs and keep the named app paths', async () => {
   const { matchesAny } = await import(new URL('../../scripts/verify-local.mjs', import.meta.url).href);
   const { SMOKE_WHEN, PARCOURS_WHEN } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
@@ -180,19 +199,6 @@ test('unit tests and snapshots under the app folders start neither gate', () => 
   // The source next to them still starts both.
   assert.equal(decideSmoke(['hooks/useSubscription.ts']).launch, true);
   assert.deepEqual(decideParcours(['hooks/useSubscription.ts'], { model: false }).products, ['dreamer']);
-});
-
-test('inside verify:release the gate launches nothing and touches no git state', () => {
-  assert.equal(releaseSkip({}), null);
-  assert.equal(releaseSkip({ VERIFY_LOCAL_KIND: 'pr' }), null);
-  assert.match(releaseSkip({ VERIFY_LOCAL_KIND: 'release' }), /PORTE PR SAUTEE/);
-  const gate = fileURLToPath(new URL('./pr-gate.mjs', import.meta.url));
-  for (const args of [['parcours'], ['smoke'], ['probe', 'parcours']]) {
-    // Nothing on PATH: the gate would fail if it asked git for a diff, and never reaches a browser.
-    const run = spawnSync(process.execPath, [gate, ...args], { encoding: 'utf8', env: { PATH: '', VERIFY_LOCAL_KIND: 'release' } });
-    assert.equal(run.status, 0, `${args.join(' ')}: ${run.stderr}`);
-    assert.match(run.stdout, /PORTE PR SAUTEE/);
-  }
 });
 
 test('verify:pr reaches the gate for every web journey the gate would run', async () => {
