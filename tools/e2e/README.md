@@ -39,6 +39,10 @@ loader; the scoped public matcher preload is unchanged.
 Local web runs use several workers: half the CPU cores, at most eight, or
 `E2E_WORKERS=<n>`. Files run in parallel against the one local server, each
 attempt in its own browser context and storage; a file's tests stay in order.
+One long file therefore sets a campaign's length, so long journeys are split into
+files of a few minutes at most: the site's `tests/site*.web.e2e.ts` (shared code in
+`site-fixtures.ts`), Dreamer's `dreamer-onboarding-features*.web.e2e.ts` and the
+release-only `dreamer-release-*.web.e2e.ts`.
 With `CI` set the runner keeps one worker; no hosted CI launches these campaigns,
 and `--shard` stays a local selection that `collect` unions. Native runs keep one
 worker per named device. e2e starts the slowest files first when the

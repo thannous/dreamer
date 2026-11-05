@@ -270,7 +270,8 @@ export const ZONES = [
     id: 'onboarding', tags: ['zone-onboarding'], product: 'dreamer', platform: 'web',
     sources: ['app/onboarding.tsx', 'components/onboarding/', 'context/OnboardingContext.tsx', 'lib/onboardingState.ts'],
     // Settings replays the introduction and keeps a finished onboarding finished.
-    tests: ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts'],
+    tests: ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-stories.web.e2e.ts',
+      'tools/e2e/tests/dreamer-onboarding-features-explorer.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts'],
   },
   {
     id: 'navigation', tags: ['zone-navigation'], product: 'dreamer', platform: 'web',
@@ -311,7 +312,9 @@ export const ZONES = [
  * by omission.
  */
 export const UNZONED = Object.freeze({
-  'tools/e2e/tests/dreamer.web.e2e.ts': 'régression large de toutes les surfaces, jouée par la campagne de release',
+  'tools/e2e/tests/dreamer-release-guest.web.e2e.ts': 'régression large de toutes les surfaces, jouée par la campagne de release',
+  'tools/e2e/tests/dreamer-release-story.web.e2e.ts': 'régression large de toutes les surfaces, jouée par la campagne de release',
+  'tools/e2e/tests/dreamer-release-journal.web.e2e.ts': 'régression large de toutes les surfaces, jouée par la campagne de release',
   'tools/e2e/tests/dreamer-personas.web.e2e.ts': 'aucun test sans E2E_PERSONAS=1 : la campagne personas, facultative, appelle des modèles',
 });
 
