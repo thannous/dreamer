@@ -35,7 +35,8 @@ function ScreenErrorFallback({ error, resetError, onGoHome }: ScreenErrorFallbac
       : onGoHome;
 
   return (
-    <View style={[styles.container, { backgroundColor: noctalia.screen.background }]}>
+    // Native release journeys assert this card never shows on a destination.
+    <View style={[styles.container, { backgroundColor: noctalia.screen.background }]} testID="screen.errorBoundary">
       <View
         style={[
           styles.card,
