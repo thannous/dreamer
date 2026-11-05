@@ -299,8 +299,10 @@ describe('product route roots', () => {
       plugins.findIndex((plugin) => (Array.isArray(plugin) ? plugin[0] : plugin) === name);
     const widgets = plugins[indexOf('expo-widgets')] as [string, { widgets: { displayName: string; description: string }[] }];
     const strings = plugins[indexOf('./plugins/withWidgetGalleryStrings')] as [string, Record<string, Record<string, string>>];
-    // Its mods must run after expo-widgets' own, which creates the extension target.
+    // Their mods must run after expo-widgets' own, which creates the extension target.
     expect(indexOf('./plugins/withWidgetGalleryStrings')).toBeLessThan(indexOf('expo-widgets'));
+    expect(indexOf('./plugins/withWidgetPrivacyManifest')).toBeGreaterThan(-1);
+    expect(indexOf('./plugins/withWidgetPrivacyManifest')).toBeLessThan(indexOf('expo-widgets'));
     const english = widgets[1].widgets.flatMap(({ displayName, description }) => [displayName, description]).sort();
     // The app's own languages (lib/i18n), English being the one app.json writes.
     const languages = readdirSync(join(__dirname, '../lib/i18n'))

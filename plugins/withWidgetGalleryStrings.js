@@ -149,3 +149,4 @@ const withWidgetGalleryStrings = (config, translations = {}) =>
 module.exports = withWidgetGalleryStrings;
 module.exports.applyWidgetGalleryStrings = applyWidgetGalleryStrings;
 module.exports.stringsFileContent = stringsFileContent;
+module.exports.resourcesPhaseOf = resourcesPhaseOf;
