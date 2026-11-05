@@ -140,7 +140,7 @@ async function nativeDestinationAfterPasswordPrompt(
   }
 }
 
-async function nativeRecordingAfterAuth(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
+export async function nativeRecordingAfterAuth(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
   const onboarding = screen.getByTestId('screen.onboarding', { visible: true });
   const recording = screen.getByTestId('screen.recording', { visible: true });
   await nativeDestinationAfterPasswordPrompt(screen, platform,

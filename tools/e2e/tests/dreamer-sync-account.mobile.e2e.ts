@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { expect } from 'e2e';
-import { test, nativeLogin, nativeSignOut, nativeJournal, nativeCapture, nativeDismissCaptureKeyboard, nativeSave, nativeTap, nativeTranscript } from '../native-backend-fixtures';
+import { test, nativeLogin, nativeSignOut, nativeJournal, nativeCapture, nativeDismissCaptureKeyboard, nativeSave, nativeTap, nativeTranscript,
+  nativeRecordingAfterAuth, nativeSettings, type NativeFixtures } from '../native-backend-fixtures';
 
 const options = { platforms: ['ios', 'android'], tags: ['native-real-backend'], timeout: 360_000 };
 const IOS_TAB_TOUCH_CLEARANCE = 44;
@@ -186,4 +188,98 @@ test('Dreamer native guest dream and draft survive real sign-in, reconnect and a
     const restoredDraft = screen.getByTestId('input.dreamTranscript', { visible: true });
     await expect(restoredDraft).toBeEnabled();
     await expect(restoredDraft).toHaveValue('');
+  });
+
+// Deletion accounts are created by this journey alone: a run stopped midway leaves none behind.
+async function removeDeletionAccounts(admin: SupabaseClient) {
+  const listed = await admin.auth.admin.listUsers({ perPage: 1000 });
+  if (listed.error) throw listed.error;
+  for (const user of listed.data.users.filter(user => user.email?.startsWith('native-delete-'))) {
+    await admin.from('quota_usage').delete().eq('user_id', user.id);
+    await admin.auth.admin.deleteUser(user.id);
+  }
+}
+
+// iOS lists the alert's buttons; Android's dialog answers to the device's own accept and dismiss.
+async function answerAlert({ screen, device, platform }: NativeFixtures, button: RegExp, action: 'accept' | 'dismiss') {
+  if (platform === 'ios') await screen.getByRole('button', button, { visible: true }).tap();
+  else await device.alert(action);
+}
+
+// App Store guideline 5.1.1(v): an account made in the app can be deleted in the app. A mock
+// build would send this DELETE to production, so it runs against the local server only.
+test('Dreamer native account deletion asks twice, then removes the new account and its dreams from the server',
+  { ...options, tags: [...options.tags, 'native-account-deletion'] }, async (fixtures) => {
+    const { app, screen, device, platform, backend } = fixtures;
+    const { status } = backend.state;
+    const session = { auth: { persistSession: false, autoRefreshToken: false } };
+    const admin = createClient(status.API_URL, status.SERVICE_ROLE_KEY, session);
+    await removeDeletionAccounts(admin);
+    const email = `native-delete-${randomUUID()}@example.test`;
+    const password = `Native!${randomUUID()}`;
+    try {
+      // The app's own sign-up; local Auth confirms new addresses at once.
+      await nativeSettings(screen);
+      await nativeTap(screen, 'settings-account-open-signin', 'up');
+      await screen.getByTestId('input.auth.email', { visible: true }).fill(email);
+      await screen.getByTestId('input.auth.password', { visible: true }).fill(password);
+      await device.dismissKeyboard();
+      await nativeTap(screen, 'btn.auth.signUp');
+      await nativeRecordingAfterAuth(screen, platform);
+      const listed = await admin.auth.admin.listUsers({ perPage: 1000 });
+      expect(listed.error).toBeNull();
+      const userId = listed.data.users.find(user => user.email === email)?.id;
+      if (!userId) throw new Error('The sign-up created no account on the local server.');
+      const dreams = async () => {
+        const result = await admin.from('dreams').select('id').eq('user_id', userId);
+        expect(result.error).toBeNull();
+        return result.data?.length;
+      };
+      await nativeSave(fixtures, `Deletion lantern ${randomUUID().slice(0, 8)} over a river.`);
+      await expect.poll(dreams).toBe(1);
+
+      await nativeSettings(screen);
+      const row = screen.getByTestId('settings-delete-account', { visible: true });
+      await screen.scrollUntilVisible(row);
+      const confirm = screen.getByText(/^This action is irreversible\./, { visible: true });
+      await row.tap();
+      await expect(confirm).toBeVisible();
+      await answerAlert(fixtures, /^Cancel$/i, 'dismiss');
+      await expect(confirm).toHaveCount(0);
+      expect((await admin.auth.admin.getUserById(userId)).data.user?.id).toBe(userId);
+
+      await row.tap();
+      await expect(confirm).toBeVisible();
+      await answerAlert(fixtures, /^Delete permanently$/i, 'accept');
+      // The second question warns that a Store subscription goes on until cancelled there.
+      await expect(screen.getByText(/^Deleting your account doesn.t cancel your store subscription/, { visible: true })).toBeVisible();
+      await answerAlert(fixtures, /^Delete permanently$/i, 'accept');
+      await expect(screen.getByText(/^Your account and your data have been deleted\.$/, { visible: true })).toBeVisible();
+      await app.screenshot('native-account-deleted');
+      await answerAlert(fixtures, /^OK$/i, 'accept');
+      await nativeRecordingAfterAuth(screen, platform);
+
+      // The device is a guest again, with nothing left to delete.
+      await nativeSettings(screen);
+      const signIn = screen.getByTestId('settings-account-open-signin', { visible: true });
+      await screen.scrollUntilVisible(signIn, { direction: 'up' });
+      await expect(signIn).toBeVisible();
+      await expect(screen.getByTestId('text.auth.email')).toHaveCount(0);
+      await expect(screen.getByTestId('btn.auth.signOut')).toHaveCount(0);
+      await expect(screen.getByTestId('settings-delete-account')).toHaveCount(0);
+      // On the server: no Auth user, no dream, and the old password opens nothing.
+      expect((await admin.auth.admin.getUserById(userId)).data.user ?? null).toBeNull();
+      expect(await dreams()).toBe(0);
+      const again = await createClient(status.API_URL, status.ANON_KEY, session).auth.signInWithPassword({ email, password });
+      expect(again.error).not.toBeNull();
+
+      await app.restart();
+      await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+      await nativeSettings(screen);
+      await screen.scrollUntilVisible(signIn, { direction: 'up' });
+      await expect(signIn).toBeVisible();
+      await expect(screen.getByTestId('text.auth.email')).toHaveCount(0);
+    } finally {
+      await removeDeletionAccounts(admin);
+    }
   });

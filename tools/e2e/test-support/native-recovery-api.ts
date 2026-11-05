@@ -12,6 +12,7 @@ import { handleCreateAnalysisJob, handleGetAnalysisJobStatus } from '../../../su
 import { handleChat } from '../../../supabase/functions/api/routes/chat.ts';
 import { handleQuotaStatus } from '../../../supabase/functions/api/routes/quota.ts';
 import { handleCategorizeDream } from '../../../supabase/functions/api/routes/dreams.ts';
+import { handleDeleteAccount } from '../../../supabase/functions/api/routes/account.ts';
 import { claudeProviderCircuit } from '../../../supabase/functions/api/services/claude.ts';
 import { processAnalysisJob } from '../../../supabase/functions/analysis-job-worker/index.ts';
 
@@ -177,13 +178,17 @@ Deno.serve({ hostname: '127.0.0.1', port, onListen: () => console.log(`Native re
     if (typeof command.chatDropDone === 'boolean') chatDropDone = command.chatDropDone;
     return json({ ok: true });
   }
-  if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+  const route = path.replace(/^\/functions\/v1\/api/, '');
+  // Account deletion (App Store 5.1.1(v)) is the one DELETE route; every other route is a POST.
+  if (req.method !== (route === '/account' ? 'DELETE' : 'POST')) return json({ error: 'Method not allowed' }, 405);
   try {
     const context = await apiContext(req);
     // Guest AI is outside these authenticated recovery journeys. Failure is
     // explicit, never a fabricated session or a fabricated successful result.
     if (!context.user) return json({ error: 'Sign in required' }, 401);
-    switch (path.replace(/^\/functions\/v1\/api/, '')) {
+    switch (route) {
+      // The real handler: Storage, quota rows and the Auth user, whose dreams cascade.
+      case '/account': return handleDeleteAccount(context);
       case '/analysis-jobs': {
         const body = await req.clone().json();
         state.analysisRequests.push(body.analysisRequestId);
