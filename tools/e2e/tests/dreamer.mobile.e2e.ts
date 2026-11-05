@@ -1,5 +1,6 @@
 import { test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
+import { tapWhenStill } from '../native-settle';
 // The persistent mock profile seeds this entry. Explicit expectations keep
 // Node collection independent of the app's React Native/media imports.
 const SEEDED_OTHER_DREAM = {
@@ -27,7 +28,8 @@ const nativeBillingOptions = {
 async function billingTap(screen: TestFixtures['screen'], id: string, direction: 'up' | 'down' = 'down') {
   const target = screen.getByTestId(id, { visible: true });
   await screen.scrollUntilVisible(target, { direction });
-  await target.tap();
+  // The page can still glide when the target comes into view.
+  await tapWhenStill(target);
 }
 
 async function billingHome(screen: TestFixtures['screen']) {
@@ -60,19 +62,6 @@ type Control = ReturnType<TestFixtures['screen']['getByTestId']>;
 async function submitIosSearch(screen: TestFixtures['screen']) {
   const key = screen.getByTestId('Search', { visible: true });
   if (await key.count()) await key.tap();
-}
-
-/**
- * iOS takes a tap that lands while a page still glides, or while a sheet still fades, for a
- * touch that only stops it: nothing opens. The control is touched again, at most twice, when
- * what it opens has not appeared after a short wait and the control is still there.
- */
-async function tapUntilShown(control: Control, shown: Control) {
-  for (let tap = 0; tap < 3 && await control.count() > 0; tap += 1) {
-    await control.tap();
-    for (let wait = 0; wait < 5 && await shown.count() === 0; wait += 1) await new Promise(resolve => setTimeout(resolve, 300));
-    if (await shown.count() > 0) return;
-  }
 }
 
 /**
@@ -153,8 +142,9 @@ async function billingFree(fixtures: NativeBackgroundFixtures) {
   await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
   const lab = screen.getByTestId('screen.subscription.qaLab.toggle', { visible: true });
   await screen.scrollUntilVisible(lab);
-  // The lab's rows exist only while it is open.
-  await tapUntilShown(lab, screen.getByTestId('text.subscription.qa.mode'));
+  // One tap only: a second one closes the lab again. Its rows exist only while it is open.
+  await tapWhenStill(lab);
+  await expect(screen.getByTestId('text.subscription.qa.mode')).toBeAttached();
   const mode = screen.getByTestId('text.subscription.qa.mode', { visible: true });
   await screen.scrollUntilVisible(mode);
   await expect(mode).toHaveText('Mock services');
@@ -540,18 +530,15 @@ for (const editor of ['metadata', 'transcript'] as const) {
     // Switch is no longer an element of its own there.
     const ai = screen.getByTestId(platform === 'ios' ? 'settings-ai-consent' : 'btn.settings.aiConsent', { visible: true });
     await screen.scrollUntilVisible(ai);
-    // Android allows AI at once, with no sheet to wait for.
-    if (platform === 'ios') await tapUntilShown(ai, screen.getByTestId('modal.aiConsent', { visible: true }));
-    else await ai.tap();
+    // One tap only: a second one turns AI off again. iOS asks in a sheet, Android allows at once.
+    await tapWhenStill(ai);
     await acceptAiConsent(screen, platform);
     await expect(ai).toBeChecked();
     const signin = screen.getByTestId('settings-account-open-signin', { visible: true });
     await settingsScrollUp({ screen, platform }, signin);
-    const existing = screen.getByTestId('btn.mockProfile.existing', { visible: true });
     // The page still glides after the drags that brought the row in.
-    if (platform === 'ios') await tapUntilShown(signin, existing);
-    else await signin.tap();
-    await existing.tap();
+    await tapWhenStill(signin);
+    await screen.getByTestId('btn.mockProfile.existing', { visible: true }).tap();
     await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
     await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
     const story = 'E2E sapphire lighthouse above the quiet ocean.';
@@ -599,13 +586,11 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
     await expect(card).toHaveCount(1);
-    // The results are still settling after Search, and a tap then can miss the card or only
-    // close the keyboard: the page itself, not the card's own title, proves it opened.
-    if (platform === 'ios') {
-      const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
-      await tapUntilShown(card, detail);
-      await expect(detail).toBeVisible();
-    } else await card.tap();
+    // The results are still settling after Search, and a tap then can miss the card: the page
+    // itself, not the card's own title, proves it opened.
+    const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
+    await tapWhenStill(card);
+    await expect(detail).toBeVisible();
     // The new name shows as the page title and in the page's header.
     if (editor === 'metadata') await expect(screen.getByText(draft, { visible: true }).first()).toBeVisible();
     else {
@@ -644,8 +629,8 @@ for (const editor of ['metadata', 'transcript'] as const) {
     await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
     const other = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'The Infinite Library' });
     await expect(other).toHaveCount(1);
-    if (platform === 'ios') await tapUntilShown(other, screen.getByTestId('screen.dreamDetail', { visible: true }));
-    else await other.tap();
+    await tapWhenStill(other);
+    await expect(detail).toBeVisible();
     await expect(input).toHaveCount(0);
     await tapClearOfActionDock(screen, button);
     await expect(input).toHaveValue(editor === 'metadata' ? SEEDED_OTHER_DREAM.title : SEEDED_OTHER_DREAM.transcript);
@@ -673,10 +658,10 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
   // Speech with a draft owes its first question: iOS asks before any provider call, and
   // declining keeps that question local. Either way the draft itself is not rewritten.
   await declineAiConsent(screen, platform);
-  // The declined sheet is still fading out when it leaves the tree, and a tap then lands on it.
-  const textMode = screen.getByTestId('btn.recording.inputMode.text', { visible: true });
+  // The declined sheet is still fading out when it leaves the tree, and a tap then lands on it:
+  // declineAiConsent waits for its stable absence, and this tap for a still page.
   const transcript = screen.getByTestId('input.dreamTranscript', { visible: true });
-  await tapUntilShown(textMode, transcript);
+  await tapWhenStill(screen.getByTestId('btn.recording.inputMode.text', { visible: true }));
   await expect(transcript).toHaveValue(draft);
   await expect(screen.getByTestId('btn.saveDream')).toBeEnabled();
   await app.screenshot('release-capture');
@@ -803,6 +788,16 @@ test('Dreamer release drawer sign-in opens its account destination', async ({ ap
 });
 
 
+/**
+ * A story button rises into place once its scene has played; Android reports it in flight, and
+ * agent-device refuses a tap on it there as covered. Tap it once it is ready and still.
+ */
+async function storyStep(screen: TestFixtures['screen'], id: string) {
+  const button = screen.getByTestId(id, { visible: true });
+  await expect(button).toBeEnabled();
+  await tapWhenStill(button);
+}
+
 test('Dreamer release opt-in feature story bridges capture to exploration', {
   skip: process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true'
     ? 'Requires an identified Release built with feature sheets enabled.' : false,
@@ -810,34 +805,23 @@ test('Dreamer release opt-in feature story bridges capture to exploration', {
   await app.open();
   await app.clearState();
   await screen.getByTestId('btn.onboarding.feature.capture', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
+  await storyStep(screen, 'btn.onboarding.story.next');
+  await storyStep(screen, 'btn.onboarding.story.next');
+  await storyStep(screen, 'btn.onboarding.story.next');
   await expect(screen.getByTestId('component.onboarding.story.capture.3', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.onboarding.globeCard.1', { visible: true }).tap();
   await expect(screen.getByTestId('component.onboarding.dreamEntry', { visible: true })).toBeVisible();
   await expect(screen.getByText(/^(Flying over the harbour|Voler au-dessus du port)$/, { visible: true })).toBeVisible();
-  await expect(screen.getByTestId('btn.onboarding.story.continue', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.continue', { visible: true }).tap();
+  await storyStep(screen, 'btn.onboarding.story.continue');
   await expect(screen.getByTestId('component.onboarding.story.connect.0', { visible: true })).toBeVisible();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.continue', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.continue', { visible: true }).tap();
+  await storyStep(screen, 'btn.onboarding.story.next');
+  await storyStep(screen, 'btn.onboarding.story.next');
+  await storyStep(screen, 'btn.onboarding.story.next');
+  await storyStep(screen, 'btn.onboarding.story.continue');
   await expect(screen.getByTestId('component.onboarding.story.explore.0', { visible: true })).toBeVisible();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
-  await expect(screen.getByTestId('btn.onboarding.story.next', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.next', { visible: true }).tap();
+  await storyStep(screen, 'btn.onboarding.story.next');
+  await storyStep(screen, 'btn.onboarding.story.next');
+  await storyStep(screen, 'btn.onboarding.story.next');
   await expect(screen.getByTestId('component.onboarding.story.explore.3', { visible: true })).toBeVisible();
   // Nothing is chosen ahead of time. Skip is the way on until the reader answers;
   // the door button arrives only after Noctalia's closing line.
@@ -847,8 +831,7 @@ test('Dreamer release opt-in feature story bridges capture to exploration', {
   await expect(screen.getByTestId('component.onboarding.dialogue.followup', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('text.onboarding.dialogue.closing', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('btn.onboarding.story.skip')).toHaveCount(0);
-  await expect(screen.getByTestId('btn.onboarding.story.continue', { visible: true })).toBeEnabled();
-  await screen.getByTestId('btn.onboarding.story.continue', { visible: true }).tap();
+  await storyStep(screen, 'btn.onboarding.story.continue');
   await expect(screen.getByTestId('sheet.onboarding.feature')).toHaveCount(0);
   // The last story ends through the blue door, which opens on the path step.
   await expect(screen.getByTestId('component.onboarding.path', { visible: true })).toBeVisible();

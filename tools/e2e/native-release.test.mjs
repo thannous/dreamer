@@ -5,9 +5,10 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { validateReleaseReceipt, runWithInstallDiagnostics, normalizeAvdName, validateBuildCommand, nativeInputs, archiveReleaseBinary, releaseMetadata } from './native-release.mjs';
 import { virtualLinks } from './test-support/virtual-links.mjs';
-// The Simlock reservation guards join this file instead of a new package.json
-// script: root scripts feed the Expo runtime fingerprint.
+// The Simlock reservation and native tap guards join this file instead of a new
+// package.json script: root scripts feed the Expo runtime fingerprint.
 import './simlock-native.test.mjs';
+import './native-settle.test.mjs';
 const sha = 'a'.repeat(64);
 test('iteration APK commands never qualify as Release on either path syntax', () => {
   for (const wrapper of ['/repo/android/gradlew', 'C:\\repo\\android\\gradlew.bat']) {

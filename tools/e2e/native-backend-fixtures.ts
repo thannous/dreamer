@@ -3,6 +3,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { test as base, type Device } from '@e2e-dev/mobile';
 import { credentials, expect, type TestFixtures } from 'e2e';
 import { readNativeBackendState, type NativeBackendState } from './native-backend-state';
+import { tapWhenStill } from './native-settle';
 
 const { Client } = createRequire(import.meta.url)('pg');
 
@@ -80,7 +81,8 @@ export async function nativeTap(screen: TestFixtures['screen'], id: string, dire
   } else {
     await screen.scrollUntilVisible(target, { direction });
   }
-  await target.tap();
+  // The page or drawer can still glide when the target comes into view.
+  await tapWhenStill(target);
 }
 
 export async function nativeHome(screen: TestFixtures['screen']) {
