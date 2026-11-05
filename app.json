@@ -21,8 +21,8 @@
         "applinks:dream.noctalia.app"
       ],
       "infoPlist": {
-        "NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
-        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to use the microphone.",
+        "NSSpeechRecognitionUsageDescription": "Noctalia turns the dream you tell aloud into text with Apple’s speech recognition, on your iPhone when possible. Noctalia keeps no recording of your voice.",
+        "NSMicrophoneUsageDescription": "Noctalia uses the microphone only while you dictate a dream, so you can tell it aloud instead of typing it.",
         "NSCameraUsageDescription": "Noctalia does not use the camera. A picture you give a dream comes from your photo library.",
         "NSPhotoLibraryUsageDescription": "Allow Noctalia to use a photo from your library as the picture of a dream.",
         "CADisableMinimumFrameDurationOnPhone": true,
@@ -71,6 +71,44 @@
       ],
       "package": "com.tanuki75.noctalia"
     },
+    "locales": {
+      "en": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "Noctalia uses the microphone only while you dictate a dream, so you can tell it aloud instead of typing it.",
+          "NSSpeechRecognitionUsageDescription": "Noctalia turns the dream you tell aloud into text with Apple’s speech recognition, on your iPhone when possible. Noctalia keeps no recording of your voice."
+        }
+      },
+      "fr": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "Noctalia utilise le micro seulement pendant que tu dictes un rêve, pour que tu puisses le raconter à voix haute au lieu de l’écrire.",
+          "NSSpeechRecognitionUsageDescription": "Noctalia transforme en texte le rêve que tu racontes à voix haute grâce à la reconnaissance vocale d’Apple, sur ton iPhone quand c’est possible. Noctalia ne garde aucun enregistrement de ta voix."
+        }
+      },
+      "de": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "Noctalia nutzt das Mikrofon nur, während du einen Traum diktierst, damit du ihn laut erzählen kannst, statt ihn zu tippen.",
+          "NSSpeechRecognitionUsageDescription": "Noctalia wandelt den Traum, den du laut erzählst, mit der Spracherkennung von Apple in Text um, wenn möglich direkt auf deinem iPhone. Noctalia speichert keine Aufnahme deiner Stimme."
+        }
+      },
+      "es": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "Noctalia usa el micrófono solo mientras dictas un sueño, para que puedas contarlo en voz alta en lugar de escribirlo.",
+          "NSSpeechRecognitionUsageDescription": "Noctalia convierte en texto el sueño que cuentas en voz alta con el reconocimiento de voz de Apple, en tu iPhone cuando es posible. Noctalia no guarda ninguna grabación de tu voz."
+        }
+      },
+      "it": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "Noctalia usa il microfono solo mentre detti un sogno, così puoi raccontarlo a voce invece di scriverlo.",
+          "NSSpeechRecognitionUsageDescription": "Noctalia trasforma in testo il sogno che racconti a voce con il riconoscimento vocale di Apple, sul tuo iPhone quando possibile. Noctalia non conserva alcuna registrazione della tua voce."
+        }
+      },
+      "pt-BR": {
+        "ios": {
+          "NSMicrophoneUsageDescription": "O Noctalia usa o microfone só enquanto você dita um sonho, para que você possa contá-lo em voz alta em vez de digitá-lo.",
+          "NSSpeechRecognitionUsageDescription": "O Noctalia transforma em texto o sonho que você conta em voz alta com o reconhecimento de fala da Apple, no seu iPhone quando possível. O Noctalia não guarda nenhuma gravação da sua voz."
+        }
+      }
+    },
     "web": {
       "output": "single",
       "favicon": "./assets/images/favicon.png",
@@ -100,7 +138,6 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Allow Noctalia to access your microphone to record your dreams.",
           "enableBackgroundPlayback": true
         }
       ],
@@ -108,7 +145,12 @@
       "expo-font",
       "expo-web-browser",
       "expo-asset",
-      "expo-secure-store",
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": false
+        }
+      ],
       [
         "@react-native-google-signin/google-signin",
         {

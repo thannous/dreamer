@@ -271,6 +271,28 @@ describe('product route roots', () => {
     });
   });
 
+  it('asks for the microphone and speech recognition in each language of the app, Lucid in its own words', () => {
+    const permissionKeys = ['NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription'];
+    // Portuguese is Brazilian, like the Siri strings already in the app bundle (app-intents/pt-BR.lproj).
+    const languages = readdirSync(join(__dirname, '../lib/i18n'))
+      .filter((file) => /^[a-z]{2}\.ts$/.test(file))
+      .map((file) => (file === 'pt.ts' ? 'pt-BR' : file.slice(0, 2)))
+      .sort();
+    withEnv({}, () => {
+      const locales = resolveExpoConfig({ config: baseExpo() } as any).locales as Record<string, { ios: Record<string, string> }>;
+      expect(Object.keys(locales).sort()).toEqual(languages);
+      for (const { ios } of Object.values(locales)) {
+        expect(Object.keys(ios).sort()).toEqual(permissionKeys);
+        expect(Object.values(ios).every((text) => text.includes('Noctalia') && !text.includes('$('))).toBe(true);
+      }
+      // English, as the Info.plist itself says it.
+      for (const key of permissionKeys) expect(locales.en.ios[key]).toBe(appJson.expo.ios?.infoPlist?.[key]);
+    });
+    withEnv({ NOCTALIA_APP_VARIANT: 'lucid', EXPO_PUBLIC_APP_VARIANT: 'lucid-trainer' }, () => {
+      expect(resolveExpoConfig({ config: baseExpo() } as any).locales).toBeUndefined();
+    });
+  });
+
   it('names every widget in the gallery in each language of the app', () => {
     const plugins = (appJson.expo.plugins ?? []) as unknown[];
     const indexOf = (name: string) =>

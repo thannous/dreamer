@@ -347,6 +347,8 @@ function createLucidExpoConfig(baseExpo: ExpoConfig): ExpoConfig {
     },
     experiments: lucidExperiments,
     updates: undefined,
+    // Dreamer's translated permission texts would replace Lucid's own microphone text.
+    locales: undefined,
   };
 }
 

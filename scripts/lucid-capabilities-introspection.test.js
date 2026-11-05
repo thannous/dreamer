@@ -48,8 +48,9 @@ describe('resolved variant capabilities (no native files generated)', () => {
       expect(lucid.android.blockedPermissions).not.toContain('android.permission.RECORD_AUDIO');
       expect(lucidPlist.NSMicrophoneUsageDescription).toContain('on this device');
       expect(lucidPlist.NSSpeechRecognitionUsageDescription).toBeUndefined();
+      // Neither app unlocks anything with Face ID, so neither asks for it.
       expect(lucidPlist.NSFaceIDUsageDescription).toBeUndefined();
-      expect(journalPlist.NSFaceIDUsageDescription).toBeTruthy();
+      expect(journalPlist.NSFaceIDUsageDescription).toBeUndefined();
       expect(lucidPlist.NSCameraUsageDescription).toBeUndefined();
       expect(lucidPlist.NSPhotoLibraryUsageDescription).toBeUndefined();
       expect(lucidPlist.NSHealthShareUsageDescription).toContain('does not read Apple Health');
@@ -57,7 +58,9 @@ describe('resolved variant capabilities (no native files generated)', () => {
       expect(lucid._internal.modResults.ios.entitlements['com.apple.developer.healthkit']).toBeUndefined();
       expect(journalPlist.NSCameraUsageDescription).toBeTruthy();
       expect(journalPlist.NSPhotoLibraryUsageDescription).toBeTruthy();
-      expect(journalPlist.NSMicrophoneUsageDescription).toBeTruthy();
+      // app.json's own texts, not a plugin's generic default (App Review 5.1.1).
+      expect(journalPlist.NSMicrophoneUsageDescription).toMatch(/^Noctalia uses the microphone only while you dictate/);
+      expect(journalPlist.NSSpeechRecognitionUsageDescription).toMatch(/^Noctalia turns the dream you tell aloud into text/);
     } finally {
       fs.rmSync(cwd, { recursive: true, force: true });
     }
