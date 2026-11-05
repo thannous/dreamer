@@ -27,6 +27,15 @@ export function decisionEnabled(env) {
   return Boolean(env[DECISION_KEY_ENV]?.trim());
 }
 
+/**
+ * Paths the decision model never reads: internal docs and Markdown. No app
+ * bundle loads them (metro.config.js assetExts has no md); revisit if it ever does.
+ * @param {string} file
+ */
+export function sentToDecisionModel(file) {
+  return !file.startsWith('doc_web_interne/') && !file.toLowerCase().endsWith('.md');
+}
+
 /** Dreamer surfaces that should run the smoke tag, even with no named zone. */
 export const DREAMER_APP_ROOTS = [
   'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/',

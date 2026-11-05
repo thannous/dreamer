@@ -12,7 +12,7 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { DECISION_MODEL } from './zones.mjs';
+import { DECISION_MODEL, sentToDecisionModel } from './zones.mjs';
 
 /** @param {{ model: string, base: string, head: string, files: readonly string[], tests: readonly string[] }} input */
 export function verdictKey({ model, base, head, files, tests }) {
@@ -45,23 +45,30 @@ function keep(file, value) {
 
 async function loadDecisionFilter() {
   const [{ decisionFilter }, { openai }] = await Promise.all([import('@e2e-dev/decision'), import('@ai-sdk/openai')]);
-  // Reads OPENAI_API_KEY. The diff and the journey files go to OpenAI's API.
+  // Reads OPENAI_API_KEY. The diff (no internal docs, no Markdown) and the journey files go to OpenAI's API.
   return decisionFilter({ model: openai.decisionModel(DECISION_MODEL) });
 }
 
 /**
  * Asks the decision filter about `asked`, or reuses its answer for the same
- * commit, base, changed files and tests. Throws when the model cannot answer
+ * commit, base, changed files and tests. The model sees the change without
+ * internal docs and Markdown; a change of only those asks nothing and leaves
+ * out every asked parcours, as the zones did. Throws when the model cannot answer
  * at all (no route, every call failed, past the caller's deadline); the caller
  * then keeps the zones alone. An interrupted run keeps no failure.
  * @param {readonly import('e2e').TestFilterCandidate[]} asked
  * @param {import('e2e').TestFilterContext} context
  */
 export async function decisionVerdict(asked, context, { load = loadDecisionFilter, git = execFileSync, now = Date.now } = {}) {
+  const files = context.changes.files.filter(sentToDecisionModel);
+  // e2e promises a non-empty list; an empty one makes the filter keep every parcours.
+  if (files.length === 0)
+    return { exclude: Object.fromEntries(asked.map(test => [test.id, 'documentation seule'])), note: 'documentation seule, modele non consulte' };
+  const judged = { ...context, changes: { ...context.changes, files } };
   const root = context.changes.root;
   const key = verdictKey({
     model: DECISION_MODEL, base: context.changes.base, head: gitRead(git, root, ['rev-parse', 'HEAD']),
-    files: context.changes.files, tests: asked.map(test => test.id),
+    files, tests: asked.map(test => test.id),
   });
   const file = join(gitRead(git, root, ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'verify-cache', 'e2e-decision', `${key}.json`);
   const cached = readVerdict(file, now());
@@ -69,7 +76,7 @@ export async function decisionVerdict(asked, context, { load = loadDecisionFilte
   if (cached) return { exclude: cached.exclude, note: ['verdict repris', cached.note].filter(Boolean).join(', ') };
   let verdict;
   try {
-    verdict = await (await load()).filter(asked, context);
+    verdict = await (await load()).filter(asked, judged);
   } catch (error) {
     const interrupted = context.signal.aborted && context.signal.reason?.name !== 'TimeoutError';
     if (!interrupted) keep(file, { failed: (error instanceof Error ? error.message : String(error)).split('\n')[0], at: now() });

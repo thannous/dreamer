@@ -32,6 +32,7 @@ export function parcoursExclude(
 ): { exclude: Record<string, string>; note?: string };
 
 export function decisionEnabled(env: Record<string, string | undefined>): boolean;
+export function sentToDecisionModel(file: string): boolean;
 
 export function widenWithDecision(
   zones: { exclude: Record<string, string>; note?: string },

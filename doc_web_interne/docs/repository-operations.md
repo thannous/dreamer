@@ -104,8 +104,9 @@ Optional decision model: with an OpenAI key in `OPENAI_API_KEY`,
 `parcours-touches` also asks the TesterArmy decision filter (OpenAI's
 Decisions API, `gpt-6-luna`, named in `tools/e2e/zones.mjs`) about every
 Dreamer and Lucid parcours the zones leave out, on any Dreamer app diff, named
-zone or not. The model sees the committed diff and the journey files; a file
-only the working tree changes reaches it by name alone. A
+zone or not. The model sees the committed diff, without `doc_web_interne/` and
+Markdown files, and the journey files; a change limited to those files never
+asks it. A file only the working tree changes reaches it by name alone. A
 parcours runs unless the model rates it under 20% likely affected; the zones
 stay the floor, smoke and bug-bash tests keep their own checks, and a parcours
 the model cannot judge runs. A lockfile or e2e config change makes it keep

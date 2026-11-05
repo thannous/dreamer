@@ -9,8 +9,13 @@ import { FAILURE_TTL_MS, decisionVerdict, verdictKey } from './decision-verdict.
 
 const git = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
 
-/** A repository whose last commit changes one app file the two journeys may or may not reach. */
-function repository() {
+const INTERNAL = 'SENTINEL-INTERNE';
+
+/**
+ * A repository whose last commit changes one app file the two journeys may or may not reach,
+ * and with `docs`, an internal doc and a Markdown file too.
+ */
+function repository({ docs = false } = {}) {
   const root = realpathSync(mkdtempSync(join(tmpdir(), 'decision-verdict-')));
   git(root, 'init', '-q', '-b', 'master');
   git(root, 'config', 'user.email', 'test@example.com');
@@ -24,6 +29,12 @@ function repository() {
   git(root, 'commit', '-q', '-m', 'base');
   const base = git(root, 'rev-parse', 'HEAD');
   writeFileSync(join(root, 'components/MoonCard.tsx'), 'export const phase = 2;\n');
+  if (docs) {
+    mkdirSync(join(root, 'doc_web_interne'));
+    writeFileSync(join(root, 'doc_web_interne/ops.md'), `${INTERNAL}: the moon card ships on Fridays.\n`);
+    writeFileSync(join(root, 'AGENTS.md'), `${INTERNAL}: read the moon card first.\n`);
+    git(root, 'add', '.');
+  }
   git(root, 'commit', '-qam', 'change');
   return { root, base };
 }
@@ -40,12 +51,13 @@ function context(root, base) {
   };
 }
 
-/** An offline decision model: the moon journey is likely affected, the billing one is not. */
-function fakeModel(calls, fail = false) {
+/** An offline decision model: the moon journey is likely affected, the billing one is not. `states` keeps what it was sent. */
+function fakeModel(calls, fail = false, states = []) {
   return {
     specificationVersion: 'v4', provider: 'fake', modelId: 'fake-decisions', supportedQuestionTypes: ['boolean'],
-    async doDecide({ questions }) {
+    async doDecide({ state, questions }) {
       calls.push(Object.keys(questions).length);
+      states.push(JSON.stringify(state));
       if (fail) throw new Error('401 invalid key');
       return {
         answers: Object.fromEntries(Object.entries(questions).map(([id, question]) =>
@@ -76,6 +88,25 @@ test('the real decision filter leaves out the journey the change cannot reach, a
     await decisionVerdict(tests.slice(0, 1), context(root, base), { load });
     assert.equal(loads, 2);
     assert.equal(readdirSync(join(root, '.git/verify-cache/e2e-decision')).length, 2);
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('internal docs and Markdown never reach the model, and a change of only those asks nothing', async () => {
+  const { root, base } = repository({ docs: true });
+  try {
+    const calls = [], states = [];
+    let loads = 0;
+    const load = async () => { loads += 1; return decisionFilter({ model: fakeModel(calls, false, states) }); };
+    const changed = files => ({ ...context(root, base), changes: { base, root, files } });
+    const verdict = await decisionVerdict(tests, changed(['AGENTS.md', 'components/MoonCard.tsx', 'doc_web_interne/ops.md']), { load });
+    assert.deepEqual(Object.keys(verdict.exclude), ['tests/billing.web.e2e.ts::billing opens the paywall']);
+    assert.equal(states.length, 1);
+    assert.match(states[0], /components\/MoonCard\.tsx/);
+    assert.doesNotMatch(states[0], new RegExp(`${INTERNAL}|doc_web_interne|AGENTS\\.md`));
+    // Only docs changed: the model is not asked and every parcours the zones left out stays out.
+    const docsOnly = await decisionVerdict(tests, changed(['doc_web_interne/ops.md']), { load });
+    assert.equal(loads, 1);
+    assert.deepEqual(Object.keys(docsOnly.exclude).sort(), tests.map(row => row.id).sort());
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 

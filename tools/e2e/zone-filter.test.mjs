@@ -3,7 +3,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { test } from 'node:test';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
 import { qualifyingSdkEnvironment } from './qualification.mjs';
-import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, widenWithDecision, zonesForFiles } from './zones.mjs';
+import { DECISION_KEY_ENV, DECISION_MODEL, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, sentToDecisionModel, widenWithDecision, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
 const billingSmoke = { id: 'billing-smoke', tags: ['smoke', 'zone-paiement'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -148,6 +148,13 @@ test('the decision model is off without an OpenAI key and is OpenAI\'s decision 
   assert.equal(DECISION_MODEL, 'gpt-6-luna');
   const source = readFileSync(new URL('./decision-verdict.mjs', import.meta.url), 'utf8');
   assert.match(source, /openai\.decisionModel\(DECISION_MODEL\)/);
+});
+
+test('internal docs and Markdown stay out of the model\'s diff; app code and lockfiles, which keep every parcours, stay in', () => {
+  assert.equal(sentToDecisionModel('doc_web_interne/docs/security/audit.example.json'), false);
+  assert.equal(sentToDecisionModel('specs/a.md'), false);
+  assert.equal(sentToDecisionModel('package-lock.json'), true);
+  assert.equal(sentToDecisionModel('components/ui/Toast.tsx'), true);
 });
 
 test('the zone filter keeps the zones when the model is off or cannot answer', async () => {
