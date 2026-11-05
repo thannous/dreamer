@@ -28,3 +28,22 @@ export async function tapWhenStill(control: Locator, quietMs = 400) {
   await waitUntilStill(control, quietMs);
   await control.tap();
 }
+
+/**
+ * Taps a still control until what it opens appears, at most three times. Android swallowed the
+ * first taps on the QA lab toggle right after a drawer closed (2026-11-05: three taps on
+ * 3aa6da399, one tap never opened it on 41a230133). Each tap waits 3 s for the result before the
+ * next, so a slow opening is not closed again by a second tap.
+ */
+export async function tapUntilShown(control: Locator, shown: Locator) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if (await shown.count() > 0) return;
+    await tapWhenStill(control);
+    try {
+      await expect(shown).toBeAttached({ timeout: 3_000 });
+      return;
+    } catch (error) {
+      if (attempt === 2) throw error;
+    }
+  }
+}

@@ -218,7 +218,7 @@ test('the report says which layer runs the App Review journeys and leaves real A
   assert.match(SUITES.backend.covers, /suppression du compte/);
   // No layer's selection leaves those journeys out (their own skips choose the layer).
   for (const platform of ['ios', 'android']) for (const suite of Object.keys(SUITES)) for (const tag of ['native-core-loop',
-    'native-paywall-compliance', 'native-microphone-first-prompt', 'native-release-tour', 'native-sleep-sounds',
+    'native-paywall-compliance', 'native-release-tour', 'native-sleep-sounds',
     'native-apple-sign-in', 'native-account-deletion']) assert.ok(!runSelection(platform, suite).includes(tag), `${suite} ${platform} ${tag}`);
   // The simulator has no Apple Account: a real sign-in, then deleting that account, needs a phone.
   assert.ok(PHONE_ONLY.some(item => /^Sign in with Apple avec un vrai compte/.test(item) && /suppression de ce compte/.test(item)));

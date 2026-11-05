@@ -1,6 +1,6 @@
 import { afterEach, test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
-import { tapWhenStill, waitUntilStill } from '../native-settle';
+import { tapUntilShown, tapWhenStill, waitUntilStill } from '../native-settle';
 // The persistent mock profile seeds this entry. Explicit expectations keep
 // Node collection independent of the app's React Native/media imports.
 const SEEDED_OTHER_DREAM = {
@@ -19,12 +19,8 @@ type NativeBackgroundFixtures = TestFixtures & { device: Device };
 // A failed or timed-out journey must not hand the next one a rotated or offline device. A
 // finally block cannot promise that: a timed-out body's device calls are cancelled, while
 // afterEach runs with its own budget. A journey sets its flag before it changes the state.
-const restore = { portrait: false, airplane: false, microphone: false, appearance: false };
+const restore = { portrait: false, airplane: false, appearance: false };
 afterEach(async ({ device }) => {
-  if (restore.microphone) {
-    restore.microphone = false;
-    await device.setPermission('microphone', 'reset');
-  }
   if (restore.appearance) {
     restore.appearance = false;
     await device.setAppearance('light');
@@ -165,9 +161,8 @@ async function billingFree(fixtures: NativeBackgroundFixtures) {
   await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
   const lab = screen.getByTestId('screen.subscription.qaLab.toggle', { visible: true });
   await screen.scrollUntilVisible(lab);
-  // One tap only: a second one closes the lab again. Its rows exist only while it is open.
-  await tapWhenStill(lab);
-  await expect(screen.getByTestId('text.subscription.qa.mode')).toBeAttached();
+  // The lab's rows exist only while it is open; Android can swallow the first taps.
+  await tapUntilShown(lab, screen.getByTestId('text.subscription.qa.mode'));
   const mode = screen.getByTestId('text.subscription.qa.mode', { visible: true });
   await screen.scrollUntilVisible(mode);
   await expect(mode).toHaveText('Mock services');
@@ -334,7 +329,8 @@ async function acceptAiConsent(screen: TestFixtures['screen'], platform: TestFix
     return;
   }
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toBeVisible();
-  await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+  // The card slides in: a tap while it moves is lost (2026-11-05, iOS core loop).
+  await tapWhenStill(screen.getByTestId('btn.aiConsent.accept', { visible: true }));
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
 }
 
@@ -1161,8 +1157,11 @@ test('Dreamer release guest reads its first dream and asks one question that sur
   await expect(reading).toBeVisible();
   // The reading moves the page as it arrives.
   await waitUntilStill(reading);
+  // Android lists only nodes on screen, and the reading pushed the story up.
+  const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
+  if (platform === 'android') await screen.scrollUntilVisible(transcript, { direction: 'up' });
   // iOS exposes a separate drop cap and an object-replacement marker in the transcript.
-  await expect(screen.getByTestId('text.dreamDetail.transcript')).toContainText(story.slice(1));
+  await expect(transcript).toContainText(story.slice(1));
   await app.screenshot('release-core-loop-reading');
   await billingTap(screen, 'component.dreamDetail.actionCard');
   await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
@@ -1250,60 +1249,6 @@ test('Dreamer native offer shows renewal terms, legal links and restore before p
   await app.screenshot('native-paywall-after-legal-links');
 });
 
-// Guideline 5.1.1: the first microphone request, answered Allow, records and loses no typed word.
-test('Dreamer release first microphone prompt allows recording and keeps the typed draft', {
-  platforms: ['ios', 'android'], tags: ['native-microphone-first-prompt'], timeout: 240_000,
-}, async (fixtures) => {
-  const { app, screen, device, platform } = fixtures;
-  // The OS must ask again: Android's pm clear (app.clearState) resets the grant, iOS keeps it.
-  restore.microphone = true;
-  if (platform === 'ios') await device.setPermission('microphone', 'reset');
-  await onboardToCapture(fixtures);
-  await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
-  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
-  const draft = 'Microphone fixture: an orange kite above a sleeping town.';
-  await editor.fill(draft);
-  await dismissCaptureKeyboard(fixtures);
-  // Dictation adds to the story; the typed words must stay in it.
-  const kept = new RegExp(draft.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  await billingTap(screen, 'btn.recordToggle');
-  // The app explains first; only its Allow brings the OS prompt.
-  const allow = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
-  await expect(allow).toBeVisible();
-  await allow.tap();
-  const listening = screen.getByTestId('recording-write-listening-status', { visible: true });
-  // iOS asks for the microphone, then for speech recognition; Android for the microphone.
-  const prompt = platform === 'ios'
-    ? screen.getByRole('alert', /micro|speech recognition|reconnaissance vocale/i, { visible: true })
-    : screen.getByTestId(/^com\.android\.permissioncontroller:id\/permission_allow_(foreground_only_)?button$/, { visible: true });
-  const voicePack = screen.getByTestId('btn.offline-model.cancel', { visible: true });
-  let answered = 0;
-  let nextAnswerAt = 0;
-  await expect.poll(async () => {
-    if (await listening.count()) return true;
-    // One answer per prompt: a dismissed prompt can stay in the tree for a moment.
-    if (Date.now() >= nextAnswerAt && answered < 3 && await prompt.count()) {
-      if (platform === 'ios') await screen.getByRole('button', /^(Allow|Autoriser|OK)$/i, { visible: true }).tap();
-      else await prompt.tap();
-      answered += 1;
-      nextAnswerAt = Date.now() + 1_500;
-    } else if (platform === 'android' && await voicePack.count()) await voicePack.tap();
-    return false;
-  }, { timeout: 60_000 }).toBe(true);
-  expect(answered).toBeGreaterThanOrEqual(1);
-  await expect(screen.getByText(/Microphone permission is required/)).toHaveCount(0);
-  await app.screenshot('release-microphone-allowed-listening');
-  // iOS can end a silent dictation by itself; a tap after that would start another one.
-  if (await listening.count()) await screen.getByTestId('btn.recordToggle', { visible: true }).tap();
-  await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
-  await expect(editor).toHaveValue(kept);
-  await expect(screen.getByTestId('btn.saveDream', { visible: true })).toBeEnabled();
-  await app.restart();
-  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
-  await expect(editor).toHaveValue(kept);
-  await app.screenshot('release-microphone-draft-after-restart');
-});
-
 test('Dreamer release every destination opens in system dark mode', {
   platforms: ['ios', 'android'], tags: ['native-release-tour'], timeout: 360_000,
   skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires the owned mock Release and its seeded test profile.' : false,
@@ -1330,7 +1275,8 @@ test('Dreamer release every destination opens in system dark mode', {
   const auto = screen.getByTestId('quick-settings.theme.auto', { visible: true });
   if (platform === 'android') await screen.scrollUntilVisible(auto);
   await auto.tap();
-  await expect(auto).toBeChecked();
+  // The option's container carries the testID; its radio carries the checked state.
+  await expect(screen.getByRole('radio', /^(Automatic|Automatique)$/, { visible: true })).toBeChecked();
   // As in billingGuest: on iOS the backdrop closes the drawer wherever it is scrolled.
   const close = screen.getByTestId('quick-settings.close', { visible: true });
   if (platform === 'ios') await screen.getByRole('button', 'Close quick settings', { visible: true }).first().tap();

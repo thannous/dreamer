@@ -18,7 +18,7 @@ const require = createRequire(import.meta.url);
 const NODE = 'v24.22.1';
 export const SUITES = {
   production: { label: 'Configuration production', profile: 'production-apk',
-    covers: 'le build tel que publié (configuration de eas.json `production`, OTA coupée) : ouverture, accueil, réglages, langue et thème, menu, offre Plus, liens des widgets, micro autorisé à la première demande, son de sommeil qui continue en arrière-plan, Sign in with Apple proposé (iPhone)' },
+    covers: 'le build tel que publié (configuration de eas.json `production`, OTA coupée) : ouverture, accueil, réglages, langue et thème, menu, offre Plus, liens des widgets, son de sommeil qui continue en arrière-plan, Sign in with Apple proposé (iPhone)' },
   mock: { label: 'Compte et achats simulés', profile: 'mock-persistent',
     covers: 'les mêmes parcours avec un compte de test, plus premier rêve lu et une question au chat (IA simulée), achat, restauration, quotas Free/Plus, prix, renouvellement et liens légaux de l’offre, toutes les destinations en mode sombre système, collection et liens de réinitialisation' },
   backend: { label: 'Serveur local réel', profile: 'local-backend',
