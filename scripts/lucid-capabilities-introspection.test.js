@@ -58,6 +58,9 @@ describe('resolved variant capabilities (no native files generated)', () => {
       expect(lucid._internal.modResults.ios.entitlements['com.apple.developer.healthkit']).toBeUndefined();
       expect(journalPlist.NSCameraUsageDescription).toBeTruthy();
       expect(journalPlist.NSPhotoLibraryUsageDescription).toBeTruthy();
+      // Built with the iOS 27 SDK, the app-level status bar calls do nothing: StatusBar from
+      // JavaScript needs the per-view-controller appearance, over Expo's default NO.
+      expect(journalPlist.UIViewControllerBasedStatusBarAppearance).toBe(true);
       // app.json's own texts, not a plugin's generic default (App Review 5.1.1).
       expect(journalPlist.NSMicrophoneUsageDescription).toMatch(/^Noctalia uses the microphone only while you dictate/);
       expect(journalPlist.NSSpeechRecognitionUsageDescription).toMatch(/^Noctalia turns the dream you tell aloud into text/);

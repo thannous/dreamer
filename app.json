@@ -26,6 +26,7 @@
         "NSCameraUsageDescription": "Noctalia does not use the camera. A picture you give a dream comes from your photo library.",
         "NSPhotoLibraryUsageDescription": "Allow Noctalia to use a photo from your library as the picture of a dream.",
         "CADisableMinimumFrameDurationOnPhone": true,
+        "UIViewControllerBasedStatusBarAppearance": true,
         "LSApplicationQueriesSchemes": [
           "mailto",
           "tel"
