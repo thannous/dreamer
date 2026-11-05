@@ -413,7 +413,7 @@ outputs/release-simulators/<run>/rapport.md.
   --ref <commit>        commit to test (default origin/master, fetched first)
   --platform <p>        ios, android or all (default all)
   --suites <list>       all, or a list of production,mock,backend (default mock: the user
-                        journeys; a Store candidate takes all)
+                        journeys; all when the build config or the server changed)
   --wait-minutes <n>    how long each run waits for a Simlock device (default ${DEFAULTS['wait-minutes']})
   --min-free-gb <n>     refuse to start below this free disk space (default ${DEFAULTS['min-free-gb']})
   --no-fetch            do not fetch origin before resolving --ref
