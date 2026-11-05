@@ -188,6 +188,8 @@ function filterDecisions(run) {
       defined([['name', name], ['candidates', candidates], ['excluded', excluded], ['note', note], ['outcome', outcome]])),
   };
 }
+// A web fixture prepares the browser before the first app.open(); no UI step may precede it.
+const WEB_SETUP_BEFORE_OPEN = ['browser.route', 'browser.setViewport', 'browser.emulateMedia', 'browser.addInitScript'];
 export function verifyReport(document, options) {
   const run = verifyProvenance(document, options);
   const passed = [], skipped = [], excluded = [], artifacts = [], seen = new Set();
@@ -226,7 +228,7 @@ export function verifyReport(document, options) {
       || !Array.isArray(attempt.secondaryErrors) || attempt.secondaryErrors.length
       || !Array.isArray(attempt.steps)
       || (options.platform !== 'web' ? attempt.steps[0]?.api !== 'app.open'
-        : !attempt.steps.some(step => step.api === 'app.open') || attempt.steps.slice(0, attempt.steps.findIndex(step => step.api === 'app.open')).some(step => !['browser.route', 'browser.setViewport'].includes(step.api)))
+        : !attempt.steps.some(step => step.api === 'app.open') || attempt.steps.slice(0, attempt.steps.findIndex(step => step.api === 'app.open')).some(step => !WEB_SETUP_BEFORE_OPEN.includes(step.api)))
       || attempt.steps.some(step => step.status !== 'passed')
       || !Array.isArray(attempt.artifacts)) fail('LIFECYCLE_INCOMPLETE');
     if (options.personaModel !== undefined) {

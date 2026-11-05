@@ -2,10 +2,13 @@
 // the advanced sheet adds the analysis status (unanalyzed, analyzed, deepened) and the
 // order. Each filter narrows the search, shows as a chip, and Clear brings every dream
 // back. The mock journal holds eight dreams, newest first in this order.
-import type { Locator, Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import type { Browser } from '@e2e-dev/web';
+import type { Locator, Screen } from 'e2e';
+import { expect } from 'e2e';
+import { journeyTest } from '../traced-parity-test';
+import { dreamCards, searchField, selectProfile } from '../web-journeys';
 // Tall enough for the desktop grid to draw all eight dreams.
-const test = createParityTest({ viewport: { width: 1280, height: 1600 }, tags: ['zone-journal'] });
+const test = journeyTest({ viewport: { width: 1280, height: 1600 }, tags: ['zone-journal'] });
 
 const TITLES = [
   'The Infinite Library', // analyzed, favorite
@@ -18,37 +21,21 @@ const TITLES = [
   'The Broken Mirror', // never analyzed
 ];
 
-async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId(`btn.mockProfile.${profile}`).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+async function openJournal(screen: Screen, browser: Browser) {
+  await selectProfile(screen, browser, 'existing');
+  await screen.getByTestId('tab.journal', { visible: true }).tap();
+  await expect(journal(screen)).toHaveCount(1);
+  await expect(card(screen, 'The Infinite Library')).toBeVisible();
 }
 
-async function openJournal(page: Page) {
-  await selectProfile(page, 'existing');
-  await page.getByTestId('tab.journal').filter({ visible: true }).click();
-  await expect(journal(page)).toHaveCount(1);
-  await expect(card(page, 'The Infinite Library')).toBeVisible();
-}
-
-const journal = (page: Page) => page.getByTestId('screen.journal').filter({ visible: true });
-const sheet = (page: Page) => page.getByTestId('modal.advancedFilters');
-const card = (page: Page, title: string) => page.getByTestId(/^dream\.item\./).filter({ hasText: title, visible: true });
+const journal = (screen: Screen) => screen.getByTestId('screen.journal', { visible: true });
+const sheet = (screen: Screen) => screen.getByTestId('modal.advancedFilters');
+const card = (screen: Screen, title: string) => dreamCards(screen).filter({ hasText: title });
 
 // The titles of the dreams on screen, in reading order (the desktop journal is a grid). One
 // snapshot: each new result remounts the list, so a card read a moment later may be gone.
-function shownTitles(page: Page) {
-  return page.evaluate((titles) => Array.from(document.querySelectorAll<HTMLElement>('[data-testid^="dream.item."]'))
+function shownTitles(browser: Browser) {
+  return browser.evaluate((titles) => Array.from(document.querySelectorAll<HTMLElement>('[data-testid^="dream.item."]'))
     .map((item) => ({ box: item.getBoundingClientRect(), text: item.textContent ?? '' }))
     .filter(({ box }) => box.width > 0 && box.height > 0)
     .sort((a, b) => (Math.abs(a.box.y - b.box.y) > 24 ? a.box.y - b.box.y : a.box.x - b.box.x))
@@ -58,144 +45,144 @@ function shownTitles(page: Page) {
 // A filter is a toggle: a screen reader hears whether it is on.
 const expectPressed = (control: Locator, on: boolean) => expect(control).toHaveAttribute('aria-pressed', String(on));
 
-async function expectShown(page: Page, titles: string[]) {
-  await expect.poll(() => shownTitles(page)).toEqual(titles);
+async function expectShown(browser: Browser, titles: string[]) {
+  await expect.poll(() => shownTitles(browser)).toEqual(titles);
 }
 
-async function expectEveryDream(page: Page) {
-  await expectShown(page, TITLES);
-  await expect(journal(page).getByTestId('btn.clearFilters')).toHaveCount(0);
+async function expectEveryDream(screen: Screen, browser: Browser) {
+  await expectShown(browser, TITLES);
+  await expect(journal(screen).getByTestId('btn.clearFilters')).toHaveCount(0);
 }
 
-async function chooseInSheet(page: Page, choose: (filters: Locator) => Promise<unknown>) {
-  await journal(page).getByTestId('btn.filterMore').click();
-  await expect(sheet(page)).toBeVisible();
-  await choose(sheet(page));
-  await sheet(page).getByRole('button', { name: 'Done', exact: true }).click();
-  await expect(sheet(page)).not.toBeVisible();
+async function chooseInSheet(screen: Screen, choose: (filters: Locator) => Promise<unknown>) {
+  await journal(screen).getByTestId('btn.filterMore').tap();
+  await expect(sheet(screen)).toBeVisible();
+  await choose(sheet(screen));
+  await sheet(screen).getByRole('button', 'Done').tap();
+  await expect(sheet(screen)).toBeHidden();
 }
 
-test('the bar keeps the favorite dreams or those left to deepen, and a second tap shows every dream again', { tags: ['smoke'] }, async ({ page }) => {
-  await openJournal(page);
-  await expectEveryDream(page);
-  const favorites = journal(page).getByTestId('btn.filterFavorites');
+test('the bar keeps the favorite dreams or those left to deepen, and a second tap shows every dream again', { tags: ['smoke'] }, async ({ screen, browser }) => {
+  await openJournal(screen, browser);
+  await expectEveryDream(screen, browser);
+  const favorites = journal(screen).getByTestId('btn.filterFavorites');
   await expectPressed(favorites, false);
-  await favorites.click();
-  await expectShown(page, ['The Infinite Library', 'Ocean of Stars', 'Meeting My Future Self']);
+  await favorites.tap();
+  await expectShown(browser, ['The Infinite Library', 'Ocean of Stars', 'Meeting My Future Self']);
   await expectPressed(favorites, true);
   // Each card's heart says it is a favorite.
-  const library = await card(page, 'The Infinite Library').getAttribute('data-testid');
-  await expectPressed(journal(page).getByTestId(`journal.favorite.${library}`), true);
+  const library = await card(screen, 'The Infinite Library').getAttribute('data-testid');
+  await expectPressed(journal(screen).getByTestId(`journal.favorite.${library}`), true);
 
   // To deepen takes the place of Favorites: analyzed dreams without a reflection yet.
-  const toDeepen = journal(page).getByTestId('btn.filterToDeepen');
-  await toDeepen.click();
-  await expectShown(page, ['The Infinite Library', 'Garden in the Clouds', 'Meeting My Future Self', 'The Singing Forest']);
+  const toDeepen = journal(screen).getByTestId('btn.filterToDeepen');
+  await toDeepen.tap();
+  await expectShown(browser, ['The Infinite Library', 'Garden in the Clouds', 'Meeting My Future Self', 'The Singing Forest']);
   await expectPressed(toDeepen, true);
   await expectPressed(favorites, false);
-  const garden = await card(page, 'Garden in the Clouds').getAttribute('data-testid');
-  await expectPressed(journal(page).getByTestId(`journal.favorite.${garden}`), false);
+  const garden = await card(screen, 'Garden in the Clouds').getAttribute('data-testid');
+  await expectPressed(journal(screen).getByTestId(`journal.favorite.${garden}`), false);
 
-  await toDeepen.click();
-  await expectEveryDream(page);
+  await toDeepen.tap();
+  await expectEveryDream(screen, browser);
   await expectPressed(toDeepen, false);
 });
 
-test('the analysis status keeps the dreams not yet read, those read, or those already deepened', async ({ page }) => {
-  await openJournal(page);
-  const more = journal(page).getByTestId('btn.filterMore');
+test('the analysis status keeps the dreams not yet read, those read, or those already deepened', async ({ screen, browser }) => {
+  await openJournal(screen, browser);
+  const more = journal(screen).getByTestId('btn.filterMore');
   await expectPressed(more, false);
-  await more.click();
-  const filters = sheet(page);
+  await more.tap();
+  const filters = sheet(screen);
   await expect(filters).toContainText('Advanced filters');
   await expectPressed(filters.getByTestId('btn.filterStatus.all'), true);
 
   // A failed or running analysis has not read the dream yet.
-  await filters.getByTestId('btn.filterStatus.unanalyzed').click();
-  await expectShown(page, ['The Shadowy Pursuer', 'The Forgotten Classroom', 'The Broken Mirror']);
+  await filters.getByTestId('btn.filterStatus.unanalyzed').tap();
+  await expectShown(browser, ['The Shadowy Pursuer', 'The Forgotten Classroom', 'The Broken Mirror']);
   await expectPressed(filters.getByTestId('btn.filterStatus.unanalyzed'), true);
   await expectPressed(filters.getByTestId('btn.filterStatus.all'), false);
 
-  await filters.getByTestId('btn.filterStatus.analyzed').click();
-  await expectShown(page, ['The Infinite Library', 'Ocean of Stars', 'Garden in the Clouds', 'Meeting My Future Self', 'The Singing Forest']);
+  await filters.getByTestId('btn.filterStatus.analyzed').tap();
+  await expectShown(browser, ['The Infinite Library', 'Ocean of Stars', 'Garden in the Clouds', 'Meeting My Future Self', 'The Singing Forest']);
 
-  await filters.getByTestId('btn.filterStatus.explored').click();
-  await expectShown(page, ['Ocean of Stars']);
-  await filters.getByRole('button', { name: 'Done', exact: true }).click();
-  await expect(filters).not.toBeVisible();
+  await filters.getByTestId('btn.filterStatus.explored').tap();
+  await expectShown(browser, ['Ocean of Stars']);
+  await filters.getByRole('button', 'Done').tap();
+  await expect(filters).toBeHidden();
   // The button that opens the sheet shows an advanced filter is on.
   await expectPressed(more, true);
 
   // The status stays on as a chip in the bar; tapping it lets every dream back.
-  const chip = journal(page).getByTestId('btn.filterExplored');
+  const chip = journal(screen).getByTestId('btn.filterExplored');
   await expect(chip).toContainText('Deepened');
   await expectPressed(chip, true);
-  await chip.click();
+  await chip.tap();
   await expect(chip).toHaveCount(0);
-  await expectEveryDream(page);
+  await expectEveryDream(screen, browser);
   await expectPressed(more, false);
 });
 
-test('the oldest dream comes first on request, within a status filter, until the order is cleared', async ({ page }) => {
-  await openJournal(page);
-  await chooseInSheet(page, async (filters) => {
-    await filters.getByTestId('btn.filterStatus.unanalyzed').click();
+test('the oldest dream comes first on request, within a status filter, until the order is cleared', async ({ screen, browser }) => {
+  await openJournal(screen, browser);
+  await chooseInSheet(screen, async (filters) => {
+    await filters.getByTestId('btn.filterStatus.unanalyzed').tap();
     const order = filters.getByTestId('component.journal.sortOptions');
-    await expectPressed(order.getByRole('button', { name: 'Newest first', exact: true }), true);
-    await order.getByRole('button', { name: 'Oldest first', exact: true }).click();
-    await expectPressed(order.getByRole('button', { name: 'Oldest first', exact: true }), true);
-    await expectPressed(order.getByRole('button', { name: 'Newest first', exact: true }), false);
+    await expectPressed(order.getByRole('button', 'Newest first'), true);
+    await order.getByRole('button', 'Oldest first').tap();
+    await expectPressed(order.getByRole('button', 'Oldest first'), true);
+    await expectPressed(order.getByRole('button', 'Newest first'), false);
   });
-  await expectShown(page, ['The Broken Mirror', 'The Forgotten Classroom', 'The Shadowy Pursuer']);
-  const bar = journal(page).getByTestId('journal-filter-bar');
+  await expectShown(browser, ['The Broken Mirror', 'The Forgotten Classroom', 'The Shadowy Pursuer']);
+  const bar = journal(screen).getByTestId('journal-filter-bar');
   await expect(bar.getByTestId('btn.filterAnalyzed')).toContainText('Unanalyzed');
 
   // The order's chip puts the newest first again and keeps the status.
-  await bar.getByRole('button', { name: 'Oldest first', exact: true }).click();
-  await expectShown(page, ['The Shadowy Pursuer', 'The Forgotten Classroom', 'The Broken Mirror']);
-  await expect(bar.getByRole('button', { name: 'Oldest first', exact: true })).toHaveCount(0);
+  await bar.getByRole('button', 'Oldest first').tap();
+  await expectShown(browser, ['The Shadowy Pursuer', 'The Forgotten Classroom', 'The Broken Mirror']);
+  await expect(bar.getByRole('button', 'Oldest first')).toHaveCount(0);
 
-  await chooseInSheet(page, async (filters) => {
-    await filters.getByTestId('component.journal.sortOptions').getByRole('button', { name: 'Oldest first', exact: true }).click();
+  await chooseInSheet(screen, async (filters) => {
+    await filters.getByTestId('component.journal.sortOptions').getByRole('button', 'Oldest first').tap();
   });
-  await expectShown(page, ['The Broken Mirror', 'The Forgotten Classroom', 'The Shadowy Pursuer']);
+  await expectShown(browser, ['The Broken Mirror', 'The Forgotten Classroom', 'The Shadowy Pursuer']);
   // The sheet's Clear removes the status and the order together.
-  await journal(page).getByTestId('btn.filterMore').click();
-  await sheet(page).getByTestId('btn.advancedFilters.clear').click();
-  await page.keyboard.press('Escape');
-  await expect(sheet(page)).not.toBeVisible();
+  await journal(screen).getByTestId('btn.filterMore').tap();
+  await sheet(screen).getByTestId('btn.advancedFilters.clear').tap();
+  await browser.keyboard.press('Escape');
+  await expect(sheet(screen)).toBeHidden();
   await expect(bar.getByTestId('btn.filterAnalyzed')).toHaveCount(0);
-  await expectEveryDream(page);
+  await expectEveryDream(screen, browser);
 });
 
-test('a filter narrows a search, and clearing an empty result brings back every dream', async ({ page }) => {
-  await openJournal(page);
-  const field = page.getByRole('textbox', { name: 'Search dreams…' });
+test('a filter narrows a search, and clearing an empty result brings back every dream', async ({ screen, browser }) => {
+  await openJournal(screen, browser);
+  const field = searchField(screen);
   await field.fill('light');
-  await expectShown(page, ['Ocean of Stars', 'The Shadowy Pursuer', 'Garden in the Clouds']);
-  await expect(journal(page).getByTestId('btn.filterSearch')).toContainText('light');
+  await expectShown(browser, ['Ocean of Stars', 'The Shadowy Pursuer', 'Garden in the Clouds']);
+  await expect(journal(screen).getByTestId('btn.filterSearch')).toContainText('light');
 
-  await journal(page).getByTestId('btn.filterToDeepen').click();
-  await expectShown(page, ['Garden in the Clouds']);
-  await journal(page).getByTestId('btn.filterToDeepen').click();
-  await chooseInSheet(page, (filters) => filters.getByTestId('btn.filterStatus.explored').click());
-  await expectShown(page, ['Ocean of Stars']);
+  await journal(screen).getByTestId('btn.filterToDeepen').tap();
+  await expectShown(browser, ['Garden in the Clouds']);
+  await journal(screen).getByTestId('btn.filterToDeepen').tap();
+  await chooseInSheet(screen, (filters) => filters.getByTestId('btn.filterStatus.explored').tap());
+  await expectShown(browser, ['Ocean of Stars']);
 
   // Another search keeps the status: no deepened dream speaks of the dark.
   await field.fill('dark');
-  await expect(page.getByTestId(/^dream\.item\./).filter({ visible: true })).toHaveCount(0);
-  await expect(journal(page)).toContainText('No dreams match your filters');
-  await journal(page).getByTestId('btn.empty.clearFilters').click();
+  await expect(dreamCards(screen)).toHaveCount(0);
+  await expect(journal(screen)).toContainText('No dreams match your filters');
+  await journal(screen).getByTestId('btn.empty.clearFilters').tap();
   await expect(field).toHaveValue('');
-  await expect(journal(page).getByTestId('btn.filterExplored')).toHaveCount(0);
-  await expect(journal(page).getByTestId('btn.filterSearch')).toHaveCount(0);
-  await expectEveryDream(page);
+  await expect(journal(screen).getByTestId('btn.filterExplored')).toHaveCount(0);
+  await expect(journal(screen).getByTestId('btn.filterSearch')).toHaveCount(0);
+  await expectEveryDream(screen, browser);
 
   // Clear in the bar ends a search and a filter at once.
   await field.fill('light');
-  await journal(page).getByTestId('btn.filterFavorites').click();
-  await expectShown(page, ['Ocean of Stars']);
-  await journal(page).getByTestId('btn.clearFilters').click();
+  await journal(screen).getByTestId('btn.filterFavorites').tap();
+  await expectShown(browser, ['Ocean of Stars']);
+  await journal(screen).getByTestId('btn.clearFilters').tap();
   await expect(field).toHaveValue('');
-  await expectEveryDream(page);
+  await expectEveryDream(screen, browser);
 });

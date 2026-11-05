@@ -460,8 +460,16 @@ verify:pr or verify:release.
 
 New web bodies use the SDK surface, as the journeys on `traced-parity-test.ts`
 do (`browser.route`, SDK locators and `expect`, `locator.boundingBox()`), so
-trace.md records their steps; `browser.keyboard` and `browser.mouse` replace
-`page.keyboard` and `page.mouse`. `surfaceOf()` stays only for what e2e 0.23.0 and
+trace.md numbers each tap and expect with its file:line; `browser.keyboard` and
+`browser.mouse` replace `page.keyboard` and `page.mouse`. The smoke files
+(`dreamer-journeys`, `dreamer-forgot-password`, `dreamer-journal-filters`,
+`dreamer-billing`) and `dreamer-locale-de` register through `journeyTest()`: before
+the first `app.open()` it sets the viewport, reduced motion when asked and the AI
+consent, then opens `/`, so a body starts on onboarding. Their shared steps
+(`startGuest`, `openSettings`, `selectProfile`, `journal`, `openDream`…) live in
+`web-journeys.ts`. A password field's attributes are withheld, so its masking is
+read with a `browser.locator` count; the forgot-password cooldown moves
+`Date.now()` because e2e has no clock yet. `surfaceOf()` stays only for what e2e 0.23.0 and
 web 0.15.5 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
 `toHaveRole`, `toBeEditable`, `context.setOffline`, per-test `grantPermissions`,
 page events (`page.on`), `addStyleTag` (or `browser.evaluate`), second
@@ -769,8 +777,8 @@ release check needs it. This does not remove the runner's identity, artifact or
 final verdict checks. Optional video need not be enabled to qualify screenshot/UI
 journeys; media actually requested by a body remains required for that run.
 
-Browser fixtures may perform only their existing public `browser.route` and
-`browser.setViewport` setup before the first `app.open()`. UI actions before that
+Browser fixtures may perform only their public `browser.route`, `browser.setViewport`,
+`browser.emulateMedia` and `browser.addInitScript` setup before the first `app.open()`. UI actions before that
 open are refused; native ordering stays strict. SDK exit0 alone is insufficient. A qualified run needs the exact fresh report,
 runner/engine/target/agent/source/origin, unchanged inputs, zero model use, every
 selected runnable pair passed once, native `app.open()` first, complete cleanup, no

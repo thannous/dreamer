@@ -158,7 +158,7 @@ function changedFilesSince(ref) {
 }
 function webInputIdentity() {
   const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'decision-verdict.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
-    'traced-parity-test.ts', 'web-ports.mjs', 'app-media-fixtures.ts', 'backend-recovery-fixtures.ts', 'managed-app.ts', 'qualification.mjs',
+    'traced-parity-test.ts', 'web-journeys.ts', 'web-ports.mjs', 'app-media-fixtures.ts', 'backend-recovery-fixtures.ts', 'managed-app.ts', 'qualification.mjs',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));

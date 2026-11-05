@@ -3,120 +3,105 @@
 // The link opens the reset page, which takes a new password of six characters or more,
 // typed twice; a link this browser did not ask for is no longer valid. The mock has no
 // mailbox: the link always "leaves", and the page is reached as the link would reach it.
-import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
-const test = createParityTest({ tags: ['zone-connexion'] });
+import type { Browser } from '@e2e-dev/web';
+import type { Screen } from 'e2e';
+import { expect } from 'e2e';
+import { journeyTest } from '../traced-parity-test';
+import { openHome, selectProfile, startGuest } from '../web-journeys';
+const test = journeyTest({ tags: ['zone-connexion'] });
 
 const SENT = 'If an account exists for this address, we sent a link to reset your password. Check your inbox and spam folder.';
 
-async function start(page: Page) {
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
-}
-
-async function home(page: Page) {
-  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await expect(page.getByTestId('screen.home')).toBeVisible();
-}
-
-async function openSignIn(page: Page) {
-  await start(page);
-  await home(page);
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.signin').click();
-  await expect(signIn(page).getByTestId('btn.auth.signIn')).toBeVisible();
-}
-
-async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
-  await start(page);
-  await home(page);
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId(`btn.mockProfile.${profile}`).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+async function openSignIn(screen: Screen, browser: Browser) {
+  await startGuest(screen, browser);
+  await openHome(screen);
+  await screen.getByTestId('btn.header.home.settings').tap();
+  await screen.getByTestId('quick-settings.signin').tap();
+  await expect(signIn(screen).getByTestId('btn.auth.signIn')).toBeVisible();
 }
 
 // Browser history keeps the session; a page load would start a new app launch.
-async function openResetPage(page: Page) {
-  await page.evaluate(() => {
+async function openResetPage(screen: Screen, browser: Browser) {
+  await browser.evaluate(() => {
     window.history.pushState({}, '', '/auth/reset-password');
     window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }));
+    return null;
   });
-  await expect(resetPage(page)).toBeVisible();
+  await expect(resetPage(screen)).toBeVisible();
 }
 
-const signIn = (page: Page) => page.getByTestId('screen.account');
-const panel = (page: Page) => signIn(page).getByTestId('component.auth.forgotPasswordPanel');
-const resetPage = (page: Page) => page.getByTestId('screen.auth.resetPassword');
+const signIn = (screen: Screen) => screen.getByTestId('screen.account');
+const panel = (screen: Screen) => signIn(screen).getByTestId('component.auth.forgotPasswordPanel');
+const resetPage = (screen: Screen) => screen.getByTestId('screen.auth.resetPassword');
 // The send button carries no button role, so its state is read from the attribute.
-const sendLink = (page: Page) => panel(page).getByTestId('btn.auth.sendPasswordReset');
+const sendLink = (screen: Screen) => panel(screen).getByTestId('btn.auth.sendPasswordReset');
+// e2e withholds a password field's attributes; a masked field is one still typed password.
+const masked = (browser: Browser, testId: string) => browser.locator(`input[data-testid="${testId}"][type="password"]`);
 
-test('a forgotten password asks for a valid email, then confirms the link without saying whether the account exists', { tags: ['smoke'] }, async ({ page }) => {
-  await openSignIn(page);
-  await signIn(page).getByTestId('btn.auth.forgotPassword').click();
-  await expect(panel(page)).toContainText('Reset your password');
-  await expect(panel(page)).toContainText('Enter your account email and we will send you a link to choose a new password.');
-  await expect(panel(page).getByTestId('input.auth.forgotPasswordEmail')).toHaveValue('');
-  await expect(sendLink(page)).toHaveAttribute('aria-disabled', 'true');
+test('a forgotten password asks for a valid email, then confirms the link without saying whether the account exists', { tags: ['smoke'] }, async ({ screen, browser }) => {
+  await openSignIn(screen, browser);
+  await signIn(screen).getByTestId('btn.auth.forgotPassword').tap();
+  await expect(panel(screen)).toContainText('Reset your password');
+  await expect(panel(screen)).toContainText('Enter your account email and we will send you a link to choose a new password.');
+  await expect(panel(screen).getByTestId('input.auth.forgotPasswordEmail')).toHaveValue('');
+  await expect(sendLink(screen)).toHaveAttribute('aria-disabled', 'true');
   // Cancel gives the sign-in form back.
-  await panel(page).getByTestId('btn.auth.closeForgotPassword').click();
-  await expect(panel(page)).toHaveCount(0);
+  await panel(screen).getByTestId('btn.auth.closeForgotPassword').tap();
+  await expect(panel(screen)).toHaveCount(0);
 
   // The panel starts from the address typed in the sign-in form, here an incomplete one.
-  await signIn(page).getByTestId('input.auth.email').fill('dreamer@example');
-  await signIn(page).getByTestId('btn.auth.forgotPassword').click();
-  const email = panel(page).getByTestId('input.auth.forgotPasswordEmail');
+  await signIn(screen).getByTestId('input.auth.email').fill('dreamer@example');
+  await signIn(screen).getByTestId('btn.auth.forgotPassword').tap();
+  const email = panel(screen).getByTestId('input.auth.forgotPasswordEmail');
   await expect(email).toHaveValue('dreamer@example');
-  await expect(sendLink(page)).toHaveAttribute('aria-disabled', 'true');
+  await expect(sendLink(screen)).toHaveAttribute('aria-disabled', 'true');
   await email.fill('dreamer@example.com');
-  await expect(sendLink(page)).not.toHaveAttribute('aria-disabled', 'true');
-  await sendLink(page).click();
+  await expect(sendLink(screen)).not.toHaveAttribute('aria-disabled', 'true');
+  await sendLink(screen).tap();
 
-  await expect(panel(page).getByTestId('text.auth.forgotPasswordStatus')).toHaveText(SENT);
+  await expect(panel(screen).getByTestId('text.auth.forgotPasswordStatus')).toHaveText(SENT);
   await expect(email).toHaveCount(0);
-  await expect(sendLink(page)).toHaveCount(0);
-  const done = panel(page).getByTestId('btn.auth.closeForgotPassword');
+  await expect(sendLink(screen)).toHaveCount(0);
+  const done = panel(screen).getByTestId('btn.auth.closeForgotPassword');
   await expect(done).toHaveText('Done');
-  await done.click();
-  await expect(panel(page)).toHaveCount(0);
-  await expect(signIn(page).getByTestId('btn.auth.forgotPassword')).toHaveText('Forgot password?');
-  await expect(signIn(page).getByTestId('input.auth.email')).toHaveValue('dreamer@example');
+  await done.tap();
+  await expect(panel(screen)).toHaveCount(0);
+  await expect(signIn(screen).getByTestId('btn.auth.forgotPassword')).toHaveText('Forgot password?');
+  await expect(signIn(screen).getByTestId('input.auth.email')).toHaveValue('dreamer@example');
 });
 
-test('a second reset link waits a minute after the first', async ({ page }) => {
-  await openSignIn(page);
-  await signIn(page).getByTestId('btn.auth.forgotPassword').click();
+test('a second reset link waits a minute after the first', async ({ screen, browser }) => {
+  await openSignIn(screen, browser);
+  await signIn(screen).getByTestId('btn.auth.forgotPassword').tap();
   // Enter in the address sends the link, as the button does.
-  await panel(page).getByTestId('input.auth.forgotPasswordEmail').fill('dreamer@example.com');
-  await panel(page).getByTestId('input.auth.forgotPasswordEmail').press('Enter');
-  await expect(panel(page).getByTestId('text.auth.forgotPasswordStatus')).toHaveText(SENT);
-  await panel(page).getByTestId('btn.auth.closeForgotPassword').click();
+  const email = panel(screen).getByTestId('input.auth.forgotPasswordEmail');
+  await email.fill('dreamer@example.com');
+  await email.press('Enter');
+  await expect(panel(screen).getByTestId('text.auth.forgotPasswordStatus')).toHaveText(SENT);
+  await panel(screen).getByTestId('btn.auth.closeForgotPassword').tap();
 
-  await signIn(page).getByTestId('btn.auth.forgotPassword').click();
-  await expect(panel(page).getByTestId('input.auth.forgotPasswordEmail')).toHaveValue('');
-  await panel(page).getByTestId('input.auth.forgotPasswordEmail').fill('dreamer@example.com');
-  await expect(panel(page)).toContainText(/You can resend in \d+s/);
-  await expect(sendLink(page)).toHaveAttribute('aria-disabled', 'true');
+  await signIn(screen).getByTestId('btn.auth.forgotPassword').tap();
+  await expect(email).toHaveValue('');
+  await email.fill('dreamer@example.com');
+  await expect(panel(screen)).toContainText(/You can resend in \d+s/);
+  await expect(sendLink(screen)).toHaveAttribute('aria-disabled', 'true');
 
-  const now = await page.evaluate(() => Date.now());
-  await page.clock.setSystemTime(now + 61_000);
-  await expect(panel(page)).not.toContainText('You can resend in');
-  await expect(sendLink(page)).not.toHaveAttribute('aria-disabled', 'true');
-  await sendLink(page).click();
-  await expect(panel(page).getByTestId('text.auth.forgotPasswordStatus')).toHaveText(SENT);
+  // e2e has no clock yet; the cooldown counts with Date.now(), so move it a minute on.
+  await browser.evaluate(() => {
+    const now = Date.now;
+    Date.now = () => now() + 61_000;
+    return null;
+  });
+  await expect(panel(screen)).not.toContainText('You can resend in');
+  await expect(sendLink(screen)).not.toHaveAttribute('aria-disabled', 'true');
+  await sendLink(screen).tap();
+  await expect(panel(screen).getByTestId('text.auth.forgotPasswordStatus')).toHaveText(SENT);
 });
 
-test('a signed-in account sets a new password of six characters typed twice, then continues', async ({ page }) => {
-  await selectProfile(page, 'existing');
-  await openResetPage(page);
-  const reset = resetPage(page);
+test('a signed-in account sets a new password of six characters typed twice, then continues', async ({ screen, browser }) => {
+  await selectProfile(screen, browser, 'existing');
+  await openResetPage(screen, browser);
+  const reset = resetPage(screen);
   await expect(reset).toContainText('Choose a new password');
   await expect(reset).toContainText('Pick a new password for your account.');
   // The account's own session stands for the link: no address to confirm.
@@ -136,45 +121,45 @@ test('a signed-in account sets a new password of six characters typed twice, the
   await expect(update).toBeDisabled();
 
   // One eye shows and hides both fields.
-  await expect(password).toHaveAttribute('type', 'password');
-  await reset.getByTestId('btn.auth.togglePassword').click();
-  await expect(password).not.toHaveAttribute('type', 'password');
-  await expect(confirmation).not.toHaveAttribute('type', 'password');
-  await reset.getByTestId('btn.auth.togglePassword').click();
-  await expect(password).toHaveAttribute('type', 'password');
-  await expect(confirmation).toHaveAttribute('type', 'password');
+  await expect(masked(browser, 'input.auth.newPassword')).toHaveCount(1);
+  await reset.getByTestId('btn.auth.togglePassword').tap();
+  await expect(masked(browser, 'input.auth.newPassword')).toHaveCount(0);
+  await expect(masked(browser, 'input.auth.confirmPassword')).toHaveCount(0);
+  await reset.getByTestId('btn.auth.togglePassword').tap();
+  await expect(masked(browser, 'input.auth.newPassword')).toHaveCount(1);
+  await expect(masked(browser, 'input.auth.confirmPassword')).toHaveCount(1);
 
   await confirmation.fill('moonlit-1');
   await expect(reset).not.toContainText('The passwords do not match.');
   await expect(update).toBeEnabled();
-  await update.click();
+  await update.tap();
   await expect(reset).toContainText('Password updated');
   await expect(reset).toContainText('Your new password is saved and you are signed in.');
   await expect(password).toHaveCount(0);
   const next = reset.getByTestId('btn.auth.resetContinue');
   await expect(next).toHaveText('Continue');
-  await next.click();
-  await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
+  await next.tap();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toHaveCount(1);
 });
 
-test('a reset link opened in a browser that did not ask for it is no longer valid and leads back to sign in', async ({ page }) => {
-  await start(page);
+test('a reset link opened in a browser that did not ask for it is no longer valid and leads back to sign in', async ({ screen, browser }) => {
+  await startGuest(screen, browser);
   // A recovery code proves nothing without the request this browser would have kept.
-  await page.goto('/auth/reset-password?code=e2e-unrequested-recovery-code', { waitUntil: 'domcontentloaded' });
-  const reset = resetPage(page);
+  await browser.goto('/auth/reset-password?code=e2e-unrequested-recovery-code', { waitUntil: 'domcontentloaded' });
+  const reset = resetPage(screen);
   await expect(reset).toContainText('This link is no longer valid');
   await expect(reset).toContainText('Reset links expire quickly and can only be used once. Go back to sign in and request a new one.');
-  await expect(page).toHaveURL(/\/auth\/reset-password$/);
+  await expect(browser).toHaveURL(/\/auth\/reset-password$/);
   await expect(reset.getByTestId('input.auth.newPassword')).toHaveCount(0);
-  await reset.getByTestId('btn.auth.resetBackToSignIn').click();
-  await expect(page.getByTestId('screen.settings')).toBeVisible();
-  await expect(page.getByTestId('settings-account-open-signin')).toBeVisible();
+  await reset.getByTestId('btn.auth.resetBackToSignIn').tap();
+  await expect(screen.getByTestId('screen.settings')).toBeVisible();
+  await expect(screen.getByTestId('settings-account-open-signin')).toBeVisible();
 });
 
-test('a reset link asks for its account email before the new password can be saved', async ({ page }) => {
-  await start(page);
-  await page.goto('/auth/reset-password?token_hash=e2e-synthetic-recovery-hash&type=recovery', { waitUntil: 'domcontentloaded' });
-  const reset = resetPage(page);
+test('a reset link asks for its account email before the new password can be saved', async ({ screen, browser }) => {
+  await startGuest(screen, browser);
+  await browser.goto('/auth/reset-password?token_hash=e2e-synthetic-recovery-hash&type=recovery', { waitUntil: 'domcontentloaded' });
+  const reset = resetPage(screen);
   await expect(reset).toContainText('Enter the email address that received this reset link to confirm the account.');
   const email = reset.getByTestId('input.auth.recoveryEmail');
   const update = reset.getByTestId('btn.auth.updatePassword');

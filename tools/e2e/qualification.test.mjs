@@ -257,8 +257,11 @@ test('web public fixture setup precedes app.open, other UI before it and every n
   const r = report(); r.run.targets[0] = { id: 'dreamer-web', platform: 'web', baseOrigin: 'http://127.0.0.1:8096', engine: { name: 'web', version: SDK_PINS['@e2e-dev/web'] } };
   for (const row of r.run.results) { row.targetId = 'dreamer-web'; row.platform = 'web'; }
   const opts = options({ target: 'dreamer-web', platform: 'web', origin: 'http://127.0.0.1:8096' });
-  r.run.results[0].attempts[0].steps.unshift({ api: 'browser.route', status: 'passed' }, { api: 'browser.setViewport', status: 'passed' });
+  r.run.results[0].attempts[0].steps.unshift({ api: 'browser.route', status: 'passed' }, { api: 'browser.setViewport', status: 'passed' },
+    { api: 'browser.emulateMedia', status: 'passed' }, { api: 'browser.addInitScript', status: 'passed' });
   assert.equal(verifyReport(r, opts).passed.length, 1);
+  r.run.results[0].attempts[0].steps.unshift({ api: 'browser.evaluate', status: 'passed' }); assert.throws(() => verifyReport(r, opts), /LIFECYCLE/);
+  r.run.results[0].attempts[0].steps.shift();
   r.run.results[0].attempts[0].steps.unshift({ api: 'locator.tap', status: 'passed' }); assert.throws(() => verifyReport(r, opts), /LIFECYCLE/);
   const native = report(); native.run.results[0].attempts[0].steps.unshift({ api: 'browser.route', status: 'passed' }); assert.throws(() => verifyReport(native, options()), /LIFECYCLE/);
 });
