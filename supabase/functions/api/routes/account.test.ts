@@ -31,7 +31,7 @@ type FakeAdminResults = {
   removeError?: { message: string } | null;
   quotaError?: { code: string } | null;
   deleteUserError?: { message: string } | null;
-  identities?: { provider: string }[];
+  identities?: { provider: string; identity_data?: { sub: string } }[];
   privateAppleToken?: string | null;
   privateAppleTokenError?: { message: string } | null;
 };
@@ -224,14 +224,14 @@ Deno.test('/account asks the app for a fresh Apple authorization when none was k
 });
 
 Deno.test('/account revokes the token from a fresh Apple authorization, then deletes the account', async () => {
-  const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple' }], privateAppleToken: null });
+  const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple', identity_data: { sub: 'apple-sub-1' } }], privateAppleToken: null });
   const exchanged: string[] = [];
   const revokeCalls: { refreshToken?: string | null }[] = [];
   const res = await handleDeleteAccount(
     context({ req: deleteRequest({ appleAuthorizationCode: ' fresh-code ' }) }) as never,
     factory,
     async (input) => { revokeCalls.push(input); calls.push('apple.revoke'); },
-    async (code) => { exchanged.push(code); return 'fresh-refresh'; },
+    async (code) => { exchanged.push(code); return { refreshToken: 'fresh-refresh', subject: 'apple-sub-1' }; },
   );
   assertEquals(res.status, 200);
   assertEquals(await res.json(), { deleted: true });
@@ -257,6 +257,22 @@ Deno.test('/account keeps everything when the fresh Apple authorization cannot b
   assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
 });
 
+Deno.test('/account refuses a fresh Apple authorization from another Apple account, revoking and deleting nothing', async () => {
+  const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple', identity_data: { sub: 'apple-sub-1' } }], privateAppleToken: null });
+  let revoked = false;
+  const res = await handleDeleteAccount(
+    context({ req: deleteRequest({ appleAuthorizationCode: 'other-code' }) }) as never,
+    factory,
+    async () => { revoked = true; },
+    async () => ({ refreshToken: 'other-refresh', subject: 'apple-sub-2' }),
+  );
+  assertEquals(res.status, 403);
+  assertEquals(await res.json(), { error: 'Apple account mismatch' });
+  assertEquals(revoked, false);
+  assertEquals(calls.some((call) => call.startsWith('storage.')), false);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+});
+
 Deno.test('/account uses the kept Apple token over a code sent with the request', async () => {
   const { factory } = fakeAdminClient({ identities: [{ provider: 'apple' }], privateAppleToken: 'kept-refresh' });
   const revokeCalls: { refreshToken?: string | null }[] = [];
@@ -265,7 +281,7 @@ Deno.test('/account uses the kept Apple token over a code sent with the request'
     context({ req: deleteRequest({ appleAuthorizationCode: 'fresh-code' }) }) as never,
     factory,
     async (input) => { revokeCalls.push(input); },
-    async () => { exchanged = true; return 'unused'; },
+    async () => { exchanged = true; return { refreshToken: 'unused', subject: 'unused' }; },
   );
   assertEquals(res.status, 200);
   assertEquals(revokeCalls, [{ refreshToken: 'kept-refresh' }]);
@@ -332,4 +348,15 @@ Deno.test('/account deletion keeps the auth user when nesting exceeds the folder
   assertEquals(await res.json(), { error: 'Deletion failed' });
   assertEquals(tree.objects.size, 1);
   assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+});
+
+Deno.test('appleSubjectOf reads the Apple user from an id_token and refuses one without it', async () => {
+  const { appleSubjectOf } = await import('../lib/appleTokenRevoke.ts');
+  const encode = (value: unknown) => btoa(JSON.stringify(value)).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
+  assertEquals(appleSubjectOf(`${encode({ alg: 'RS256' })}.${encode({ sub: '001234.abcd.0042', aud: 'com.tanuki75.noctalia' })}.sig`), '001234.abcd.0042');
+  let refused = 0;
+  for (const token of [undefined, 'not-a-jwt', `${encode({})}.${encode({ aud: 'x' })}.sig`]) {
+    try { appleSubjectOf(token); } catch { refused += 1; }
+  }
+  assertEquals(refused, 3);
 });

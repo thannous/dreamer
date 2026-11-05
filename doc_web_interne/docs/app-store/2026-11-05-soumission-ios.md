@@ -88,7 +88,7 @@ Depuis un checkout propre du SHA préparé (sans dossier `ios/` : le préflight 
 ```bash
 npm ci
 npm run verify:release            # jamais avec VERIFY_LOCAL_KEEP_FAILED=1
-mise exec -- npm run release:simulators -- --ref <sha> --suites all
+mise exec -- npm run release:simulators -- --ref <sha> --suites all   # app.json et le serveur ont changé
 npm run release:check -- --app noctalia
 npm run release:build -- --app noctalia --platform ios
 node scripts/mobile-release.js submit-internal --app noctalia --platform ios --id <EAS_UUID> --dry-run
@@ -111,7 +111,7 @@ Source unique : [`marketing/aso/app-store-listing-2026-11-05.json`](../../../mar
 | Sous-titre | 28 | 28 | 30 |
 | Texte promotionnel | 164 | 152 | 170 |
 | Mots-clés | 95 | 90 | 100 |
-| Description | 2 248 | 2 028 | 4 000 |
+| Description | 2 238 | 2 016 | 4 000 |
 
 - URL d'assistance : https://noctalia.app/fr/a-propos et https://noctalia.app/en/about, qui donnent contact@noctalia.app (règle 1.5).
 - URL marketing : https://noctalia.app/
@@ -124,7 +124,7 @@ Source unique : [`marketing/aso/app-store-listing-2026-11-05.json`](../../../mar
 >
 > AI: dream analyses and the guided conversation are written by Anthropic (Claude); dream illustrations are made by Google (Gemini). Before the first AI request the app asks for permission in a dialog that names both providers ("Bring your dream to life?"). Declining keeps the journal fully usable without AI. Each analysis has a "Report generated content" action.
 >
-> Noctalia Plus is an optional auto-renewable subscription (monthly or annual): Settings → Subscription, or the offer shown when the free analyses are used up. Plus belongs to a Noctalia account because its benefits are AI quotas kept on our server and shared across iPhone, Android and the web app (dream.noctalia.app). A guest who taps Subscribe or Restore Purchases is asked to sign in first; Sign in with Apple takes one tap. Restore Purchases is on the paywall for everyone and runs right after sign-in. The paywall shows the price, the billing period, the renewal terms, the Terms of Use (Apple's standard EULA) and the Privacy Policy.
+> Noctalia Plus is an optional auto-renewable subscription (monthly or annual): Settings → Subscription, or the offer shown when the free analyses are used up. Plus belongs to a Noctalia account because its benefits are AI quotas kept on our server and shared across iPhone, Android and the web app (dream.noctalia.app). A guest who taps Subscribe or Restore Purchases is asked to sign in first; Sign in with Apple takes one tap. Restore Purchases is on the paywall for everyone and runs right after sign-in. The paywall shows the price, the billing period, the renewal terms, the Terms of Use (https://noctalia.app/en/terms, which incorporate Apple's standard EULA) and the Privacy Policy.
 >
 > Demo accounts (Settings → Account → Sign in, then email and password):
 > - Free: `<free account email>` / `<password>`

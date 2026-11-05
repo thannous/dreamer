@@ -3,7 +3,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { PREVIEW_OBJECT_PREFIX } from '../lib/analysisPreview.ts';
 import {
   AppleTokenRevokeError,
-  exchangeAppleAuthorizationCode,
+  exchangeAppleAuthorization,
   readAppleAuthConfig,
   revokeAppleTokens,
 } from '../lib/appleTokenRevoke.ts';
@@ -27,7 +27,7 @@ type StorageEntry = { id: string | null; name: string };
 // Injectable for tests; the default builds the real service-role client.
 type AdminClientFactory = (url: string, serviceRoleKey: string) => any;
 type AppleRevokeFn = typeof revokeAppleTokens;
-type AppleCodeExchangeFn = (authorizationCode: string) => Promise<string>;
+type AppleCodeExchangeFn = (authorizationCode: string) => Promise<{ refreshToken: string; subject: string }>;
 
 /** The app answers this by asking Apple for a fresh authorization code (services/accountDeletionService.ts). */
 export const APPLE_AUTHORIZATION_REQUIRED = 'apple_authorization_required';
@@ -35,7 +35,7 @@ export const APPLE_AUTHORIZATION_REQUIRED = 'apple_authorization_required';
 const exchangeAppleCode: AppleCodeExchangeFn = (authorizationCode) => {
   const config = readAppleAuthConfig();
   if (!config) return Promise.reject(new AppleTokenRevokeError('Apple token revocation is not configured'));
-  return exchangeAppleAuthorizationCode(authorizationCode, config);
+  return exchangeAppleAuthorization(authorizationCode, config);
 };
 
 async function readAppleAuthorizationCode(req: Request): Promise<string> {
@@ -107,8 +107,17 @@ async function deleteStorageObjectsUnder(
   return false;
 }
 
-function userHasAppleIdentity(user: { identities?: { provider?: string }[] | null } | null): boolean {
+type AuthIdentity = { provider?: string; id?: string; provider_id?: string; identity_data?: { sub?: unknown } | null };
+
+function userHasAppleIdentity(user: { identities?: AuthIdentity[] | null } | null): boolean {
   return Boolean(user?.identities?.some((identity) => identity.provider === 'apple'));
+}
+
+/** The Apple user ids (`sub`) this account signed in with. */
+function appleSubjectsOf(user: { identities?: AuthIdentity[] | null } | null): string[] {
+  return (user?.identities ?? []).filter((identity) => identity.provider === 'apple')
+    .flatMap((identity) => [identity.identity_data?.sub, identity.provider_id, identity.id])
+    .filter((id): id is string => typeof id === 'string' && id.length > 0);
 }
 
 export async function handleDeleteAccount(
@@ -157,7 +166,12 @@ export async function handleDeleteAccount(
         if (!authorizationCode) {
           return jsonResponse({ error: 'Apple authorization required', code: APPLE_AUTHORIZATION_REQUIRED }, 409);
         }
-        refreshToken = await exchangeAppleAuthorization(authorizationCode);
+        const exchanged = await exchangeAppleAuthorization(authorizationCode);
+        // A code from another Apple account must not revoke that account's tokens, nor delete this one.
+        if (!appleSubjectsOf(authUserData.user).includes(exchanged.subject)) {
+          return jsonResponse({ error: 'Apple account mismatch' }, 403);
+        }
+        refreshToken = exchanged.refreshToken;
       }
       await revokeAppleUserTokens({ refreshToken });
     } catch {

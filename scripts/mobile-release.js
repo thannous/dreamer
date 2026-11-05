@@ -321,7 +321,8 @@ function main(args = process.argv.slice(2), root = ROOT) {
   }
   if (options.action === 'verify') {
     apps.forEach(app => verify(root, app));
-    assertEasStoreBuildEnvironment();
+    // Dreamer's store keys; Meditation's own hook (--app meditation) builds another app.
+    if (apps.includes('noctalia')) assertEasStoreBuildEnvironment();
     console.log(`Mobile version metadata consistent: ${apps.join(', ')}`);
     return;
   }

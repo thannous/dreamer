@@ -211,6 +211,8 @@ describe('release planning against real Git histories', () => {
       keys.forEach(key => delete process.env[key]);
       Object.assign(process.env, { EAS_BUILD_PLATFORM: 'ios', EAS_BUILD_PROFILE: 'production', EXPO_PUBLIC_MOCK_MODE: 'false' });
       expect(() => main(['verify'], root)).toThrow('EAS production iOS build stopped before install');
+      // Meditation's hook runs the same command for its own app and keys.
+      expect(() => main(['verify', '--app', 'meditation'], root)).not.toThrow();
     } finally {
       keys.forEach(key => { if (saved[key] === undefined) delete process.env[key]; else process.env[key] = saved[key]; });
     }

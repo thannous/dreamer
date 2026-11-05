@@ -88,6 +88,24 @@ export async function exchangeAppleAuthorizationCode(
   authorizationCode: string,
   config: AppleAuthConfig
 ): Promise<string> {
+  return (await exchangeAppleAuthorization(authorizationCode, config)).refreshToken;
+}
+
+/** The Apple user (`sub`) an id_token names. It comes straight from Apple over TLS, so its signature is not rechecked. */
+export function appleSubjectOf(idToken: unknown): string {
+  const payload = typeof idToken === 'string' ? idToken.split('.')[1] : undefined;
+  if (!payload) throw new AppleTokenRevokeError('Apple token exchange returned no id_token');
+  const json = atob(payload.replaceAll('-', '+').replaceAll('_', '/').padEnd(Math.ceil(payload.length / 4) * 4, '='));
+  const subject = (JSON.parse(json) as { sub?: unknown }).sub;
+  if (typeof subject !== 'string' || !subject) throw new AppleTokenRevokeError('Apple id_token names no user');
+  return subject;
+}
+
+/** Exchanges a Sign in with Apple authorization code for its refresh token and the Apple user it belongs to. */
+export async function exchangeAppleAuthorization(
+  authorizationCode: string,
+  config: AppleAuthConfig
+): Promise<{ refreshToken: string; subject: string }> {
   const clientSecret = await createAppleClientSecret(config);
   const response = await fetch(APPLE_TOKEN_URL, {
     method: 'POST',
@@ -102,11 +120,11 @@ export async function exchangeAppleAuthorizationCode(
   if (!response.ok) {
     throw new AppleTokenRevokeError(`Apple token exchange failed (${response.status})`);
   }
-  const body = await response.json() as { refresh_token?: unknown };
+  const body = await response.json() as { refresh_token?: unknown; id_token?: unknown };
   if (typeof body.refresh_token !== 'string' || !body.refresh_token) {
     throw new AppleTokenRevokeError('Apple token exchange returned no refresh token');
   }
-  return body.refresh_token;
+  return { refreshToken: body.refresh_token, subject: appleSubjectOf(body.id_token) };
 }
 
 export async function revokeAppleTokens(input: AppleRevokeInput): Promise<void> {
