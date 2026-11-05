@@ -88,6 +88,33 @@ function circleciCommands() {
 }
 
 describe('verify-local.config.mjs', () => {
+  // The pin lives here, in verify-config, which runs on any edit of the
+  // config, the engine or .gitattributes: the engine's own tests read only
+  // scratch configs, so a config edit does not rerun them.
+  it('pins the engine as committed (LF), and .gitattributes keeps both files LF', () => {
+    const { createHash } = require('node:crypto');
+    const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
+    const pinned = execFileSync(process.execPath, ['--input-type=module', '-e',
+      `const { ENGINE_SHA256 } = await import(${JSON.stringify(pathToFileURL(path.join(ROOT, 'verify-local.config.mjs')).href)});
+       process.stdout.write(String(ENGINE_SHA256));`], { encoding: 'utf8' });
+    expect(pinned).toMatch(/^[0-9a-f]{64}$/);
+    // Update the pin after a deliberate engine edit.
+    expect(sha256(readFileSync(path.join(ROOT, 'scripts/verify-local.mjs')))).toBe(pinned);
+    const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !name.startsWith('GIT_')));
+    // Commit the engine, then pin the hash of its blob.
+    const blob = spawnSync('git', ['show', 'HEAD:scripts/verify-local.mjs'], { cwd: ROOT, env, maxBuffer: 64 << 20 });
+    expect({ status: blob.status, stderr: String(blob.stderr) }).toEqual({ status: 0, stderr: '' });
+    expect(sha256(blob.stdout)).toBe(pinned);
+    const attributes = readFileSync(path.join(ROOT, '.gitattributes'), 'utf8').split(/\r?\n/);
+    expect(attributes).toEqual(expect.arrayContaining(['scripts/verify-local*.mjs text eol=lf', 'verify-local.config.mjs text eol=lf']));
+    const eol = spawnSync('git', ['check-attr', 'eol', '--', 'scripts/verify-local.mjs', 'verify-local.config.mjs'], { cwd: ROOT, env, encoding: 'utf8' });
+    expect(eol.stdout.trim().split('\n').filter((line) => line.endsWith(': eol: lf'))).toHaveLength(2);
+    // Neither engine-level check reruns for a config edit any more.
+    for (const name of ['verify-local-engine', 'site-publish-guard']) {
+      expect({ name, inputs: checkNamed(name).inputs.filter((input) => ['verify-local.config.mjs', '.gitattributes'].includes(input)) }).toEqual({ name, inputs: [] });
+    }
+  });
+
   it('flags any EAS workflow, eas.json or release guard edit as a delivery check change', () => {
     const files = [
       '.eas/workflows/android-release-qualification.yml',
@@ -390,7 +417,7 @@ describe('verify-local.config.mjs', () => {
     // A narrowed scope must meet its guard before release, not at release.
     const check = checkNamed('verify-config');
     expect(check.command).toBe('npm run test:file -- scripts/verify-local-config.test.js');
-    expect(outside(check.when, ['verify-local.config.mjs', 'scripts/verify-local.mjs'])).toEqual([]);
+    expect(outside(check.when, ['verify-local.config.mjs', 'scripts/verify-local.mjs', '.gitattributes'])).toEqual([]);
   });
 
   it('checks each independent security graph when only its manifest or lockfile changes', () => {

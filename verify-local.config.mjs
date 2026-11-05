@@ -434,15 +434,18 @@ export default {
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
+    // Its tests read scratch configs only: verify-config checks this file's
+    // ENGINE_SHA256 pin, so an edit here does not rerun them.
     {
       name: 'verify-local-engine',
       command: 'npm run test:verify-local',
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'verify-local.config.mjs', 'tools/e2e/campaign-contexts.mjs', '.gitattributes'],
+      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'tools/e2e/campaign-contexts.mjs'],
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
-    // proofs written by this engine in scratch repositories.
+    // proofs written by this engine in scratch repositories (scratch configs).
     // Also the two production publishes that await it (docs:deploy:prod,
-    // web:deploy:prod), whose tests mock the guard.
+    // web:deploy:prod), whose tests mock the guard; verify-config checks their
+    // release targets against this file.
     {
       name: 'site-publish-guard',
       command: 'node --test scripts/test-check-site-publish-proof.mjs && npm run test:file -- scripts/docs-deploy.test.ts scripts/web-deploy.test.ts',
@@ -450,7 +453,6 @@ export default {
         'scripts/check-site-publish-proof.mjs',
         'scripts/test-check-site-publish-proof.mjs',
         'scripts/verify-local.mjs',
-        'verify-local.config.mjs',
         'scripts/docs-deploy.js',
         'scripts/docs-deploy.test.ts',
         'scripts/web-deploy.js',
@@ -550,13 +552,14 @@ export default {
     },
     // A PR that changes nothing these tests read (DB) skips them: 11 s.
     { name: 'db-contracts', command: DB_CONTRACTS, inputs: DB, when: DB },
-    // The tests of this configuration, scope guards included, read it and the
-    // engine through a child process: Jest relates no change of either to them,
-    // so jest-changed never runs them for a PR that only edits a scope. 21 s.
+    // The tests of this configuration, scope guards and the engine pin
+    // included, read it and the engine through a child process: Jest relates no
+    // change of either to them, so jest-changed never runs them for a PR that
+    // only edits a scope. 21 s.
     {
       name: 'verify-config',
       command: 'npm run test:file -- scripts/verify-local-config.test.js',
-      when: ['verify-local.config.mjs', 'scripts/verify-local.mjs'],
+      when: ['verify-local.config.mjs', 'scripts/verify-local.mjs', '.gitattributes'],
     },
     {
       name: 'dependency-security',

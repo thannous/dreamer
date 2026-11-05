@@ -6,9 +6,6 @@ import { after } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { cleanGitEnv, ENGINE_FILE_SHA256 } from '../verify-local.mjs';
 export const ENGINE = fileURLToPath(new URL('../verify-local.mjs', import.meta.url));
-// The engine's sha256 is pinned in this repository's own verify-local.config.mjs
-// (export ENGINE_SHA256). No other repository is read or compared.
-export const CONFIG_PATH = fileURLToPath(new URL('../../verify-local.config.mjs', import.meta.url));
 export const scratch = mkdtempSync(path.join(os.tmpdir(), 'verify-local-test-'));
 
 /** Whether a process is gone (or a zombie waiting to be reaped), within about 5 s. */

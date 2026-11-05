@@ -13,33 +13,11 @@ import { pathToFileURL } from 'node:url';
 
 import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, matchesAny, pastDurations, writeProof, verify, githubSlug, commitStatusFor, statusRefusal, STATUS_DESCRIPTION_MAX, STATUS_NOT_POSTED } from './verify-local.mjs';
 
-import { ENGINE, CONFIG_PATH, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
+import { ENGINE, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
 
-describe('engine pin', () => {
-  test('the engine matches the ENGINE_SHA256 pinned in this repository config', async () => {
-    const {
-  ENGINE_SHA256
-} = await import(pathToFileURL(CONFIG_PATH).href);
-    assert.match(ENGINE_SHA256 ?? '', /^[0-9a-f]{64}$/, 'verify-local.config.mjs exports ENGINE_SHA256');
-    const actual = createHash('sha256').update(readFileSync(ENGINE)).digest('hex');
-    assert.equal(actual, ENGINE_SHA256, 'scripts/verify-local.mjs differs from the ENGINE_SHA256 pin of verify-local.config.mjs; update the pin after a deliberate engine edit');
-  });
-
-  test('the pin is the hash of the committed (LF) engine blob, and .gitattributes keeps the engine files LF', async () => {
-    const {
-  ENGINE_SHA256
-} = await import(pathToFileURL(CONFIG_PATH).href);
-    const root = path.dirname(CONFIG_PATH);
-    const env = Object.fromEntries(Object.entries(process.env).filter(([name]) => !name.startsWith('GIT_')));
-    const blob = spawnSync('git', ['show', 'HEAD:scripts/verify-local.mjs'], { cwd: root, env, maxBuffer: 64 * 1024 * 1024 });
-    assert.equal(blob.status, 0, String(blob.stderr));
-    assert.equal(createHash('sha256').update(blob.stdout).digest('hex'), ENGINE_SHA256, 'commit the engine, then pin the hash of its blob');
-    const attributes = readFileSync(path.join(root, '.gitattributes'), 'utf8').split(/\r?\n/);
-    for (const line of ['scripts/verify-local*.mjs text eol=lf', 'verify-local.config.mjs text eol=lf']) assert.ok(attributes.includes(line), line);
-    const eol = spawnSync('git', ['check-attr', 'eol', '--', 'scripts/verify-local.mjs', 'verify-local.config.mjs'], { cwd: root, env, encoding: 'utf8' });
-    assert.equal(eol.stdout.trim().split('\n').filter((line) => line.endsWith(': eol: lf')).length, 2, eol.stdout);
-  });
-});
+// The ENGINE_SHA256 pin of this repository's config is checked by
+// scripts/verify-local-config.test.js (verify-config): these tests read only
+// scratch configs, so a config edit does not rerun them.
 
 describe('globs', () => {
   test('** crosses directories, * does not, a trailing slash is a prefix', () => {
