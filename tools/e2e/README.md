@@ -288,7 +288,12 @@ loopback DevTools HTTP or WebSocket URL before running the same commands.
 The engine creates its own test context, preserves existing tabs and sessions,
 and disconnects without closing Chrome. An invalid or unreachable endpoint
 fails the run; it does not fall back to launching another browser.
-The web products start separate local servers on ports 8096–8099; root app
+Each web run starts its own local server on a free port: the config declares
+`http://127.0.0.1:0`, e2e picks the port when the config loads, hands it to the
+command as `{port}` and reports the served origin as `baseOrigin`, so worktrees and
+parallel runs no longer collide (`web-ports.mjs`). The backend (8085) and branch
+(8087) targets keep their fixed port, which their CORS answer and saved sessions
+name. `E2E_WEB_PORT` pins a port. Root app
 services are mocked and external requests are blocked in app tests. Meditation
 web proves routing/storage on the web only, not native audio or purchases.
 Dreamer and Lucid retain Metro transforms by default and set both variant markers
@@ -487,7 +492,7 @@ EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED=false E2E_WEB_LOCALE=en-US mise ex
 verify:release's `testerarmy-dreamer` check runs the same four passes and retains
 every timestamped report, screenshot, trace, source/input hashes and
 browser-context artifact. Lucid, Meditation and site commands keep their existing behavior;
-locale flags apply only to web. `E2E_WEB_PORT` can select an isolated local port.
+locale flags apply only to web. The port is free unless `E2E_WEB_PORT` pins one.
 The matcher preload applies only to the CLI/workers. Expo receives the caller's
 original `NODE_OPTIONS` value or absence; native and inspection commands receive
 no preload. No model or replay is needed for these bodies.
@@ -719,8 +724,8 @@ story loss, exhausted-quota refusal without story loss, exact fixture allowance
 These are real browser UI journeys with the historical mock profiles, not
 qualification of backend durability, RLS, native storage or real purchases.
 Run selections after the explicit `run` argument, for example:
-`E2E_WEB_PORT=4511 mise exec -- npm run test:testerarmy -- run --grep 'account allowance'`.
-The optional web port override is ignored for native targets.
+`mise exec -- npm run test:testerarmy -- run --grep 'account allowance'`.
+The optional `E2E_WEB_PORT` pin is ignored for native targets.
 
 Other coverage: Dreamer onboarding/empty-save/draft mode continuity; Lucid
 required intention/experience and entry to sleep settings; Meditation onboarding,

@@ -3,6 +3,7 @@ import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, relative, sep, resolve, basename } from 'node:path';
 import { PERSONA_PROVIDER } from './persona-models.mjs';
+import { sameServedOrigin } from './web-ports.mjs';
 
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
 // The model stack is pinned with it: agent steps load `ai` (e2e/dist/agent/ai-sdk.js), the
@@ -159,7 +160,7 @@ function verifyProvenance(document, options, requirePass = true) {
     || !Array.isArray(run.targets) || run.targets.length !== 1
     || run.targets[0].id !== options.target || run.targets[0].platform !== options.platform
     || run.targets[0].engine?.name !== (options.platform === 'web' ? 'web' : 'mobile')
-    || (options.platform === 'web' && run.targets[0].baseOrigin !== options.origin)
+    || (options.platform === 'web' && !sameServedOrigin(options.origin, run.targets[0].baseOrigin))
     || run.targets[0].engine?.version !== SDK_PINS[options.platform === 'web' ? '@e2e-dev/web' : '@e2e-dev/mobile']
     || typeof run.startedAt !== 'string' || typeof run.finishedAt !== 'string'
     || !Number.isFinite(Date.parse(run.startedAt)) || !Number.isFinite(Date.parse(run.finishedAt)) || Date.parse(run.startedAt) < options.startedAt

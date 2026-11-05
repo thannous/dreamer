@@ -226,6 +226,13 @@ test('web report must identify the exact loopback origin and engine', () => {
   const opts = options({ target: 'dreamer-web', platform: 'web', origin: 'http://127.0.0.1:8096' });
   assert.equal(verifyReport(r, opts).passed.length, 1);
   r.run.targets[0].baseOrigin = 'https://foreign.invalid'; assert.throws(() => verifyReport(r, opts), /PROVENANCE/);
+  r.run.targets[0].baseOrigin = 'http://127.0.0.1:53111'; assert.throws(() => verifyReport(r, opts), /PROVENANCE/);
+  // A free-port declaration (:0) qualifies the loopback port the run was given, and only that.
+  const free = { ...opts, origin: 'http://127.0.0.1:0' };
+  assert.equal(verifyReport(r, free).passed.length, 1);
+  for (const served of ['http://localhost:53111', 'https://foreign.invalid', 'http://127.0.0.1:0', undefined]) {
+    r.run.targets[0].baseOrigin = served; assert.throws(() => verifyReport(r, free), /PROVENANCE/, String(served));
+  }
 });
 
 test('campaign refuses modified or undeclared retained evidence files', () => {

@@ -14,6 +14,7 @@ import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './nati
 import { personaModels, personaEnvironment } from './persona-models.mjs';
 import { selectionOwesNothing } from './zones.mjs';
 import { acquireSimlock, needsSimlock } from './simlock-native.mjs';
+import { webPort } from './web-ports.mjs';
 
 const cwd = fileURLToPath(new URL('.', import.meta.url));
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -157,7 +158,7 @@ function changedFilesSince(ref) {
 }
 function webInputIdentity() {
   const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'decision-verdict.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
-    'traced-parity-test.ts', 'app-media-fixtures.ts', 'backend-recovery-fixtures.ts', 'managed-app.ts', 'qualification.mjs',
+    'traced-parity-test.ts', 'web-ports.mjs', 'app-media-fixtures.ts', 'backend-recovery-fixtures.ts', 'managed-app.ts', 'qualification.mjs',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
   return Object.fromEntries(sourceFiles.map(path => [path, createHash('sha256').update(readFileSync(join(cwd, path))).digest('hex')]));
@@ -205,7 +206,8 @@ function releaseShape(receipt) {
 const secondary = [];
 const installationErrorDetails = [];
 const startedAt = Date.now();
-const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${env.E2E_WEB_PORT ?? ({ dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099, backend: 8085, branch: 8087 }[product])}` : undefined;
+// The declared origin: port 0 asks for a free port, which the report names as baseOrigin.
+const expectedOrigin = platform === 'web' ? `http://127.0.0.1:${webPort(product, env)}` : undefined;
 // Every pin is read from its install, so a new SDK_PINS entry is checked and recorded too.
 const pins = Object.fromEntries(Object.keys(SDK_PINS).map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
 if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');

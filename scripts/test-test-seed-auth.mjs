@@ -258,8 +258,8 @@ test('auth setup fails clearly on bad credentials and prints no password', async
 });
 
 test('the saved origin matches the TesterArmy branch target and .auth/ is gitignored', () => {
-  const config = fs.readFileSync(new URL('../tools/e2e/e2e.config.ts', import.meta.url), 'utf8');
-  assert.match(config, /branch: BRANCH_WEB_PORT/);
+  const ports = fs.readFileSync(new URL('../tools/e2e/web-ports.mjs', import.meta.url), 'utf8');
+  assert.match(ports, /branch: BRANCH_WEB_PORT/);
   assert.equal(BRANCH_WEB_PORT, 8087);
   assert.match(fs.readFileSync(new URL('../.gitignore', import.meta.url), 'utf8'), /^\.auth\/$/m);
 });

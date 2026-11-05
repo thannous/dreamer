@@ -7,7 +7,8 @@ import { createDreamerPersonaAgents } from './dreamer-personas';
 import { parcoursTouches } from './zone-filter';
 import { readFileSync } from 'node:fs';
 import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
-import { assertTestSupabaseTarget, readTestEnv, BRANCH_WEB_PORT } from './branch-target';
+import { assertTestSupabaseTarget, readTestEnv } from './branch-target';
+import { webPort } from './web-ports.mjs';
 import { nativeBackendCredentials } from './native-backend-state';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -35,12 +36,8 @@ if (process.env.E2E_PERSONAS !== undefined && !['0', '1'].includes(process.env.E
 if (personas && product !== 'dreamer') throw new Error('Personas require Dreamer.');
 const output = process.env.E2E_OUTPUT ?? `.e2e/${product}-${platform}`;
 const appLog = `${fileURLToPath(new URL('.', import.meta.url))}${output}/app.log`;
-const ports = { dreamer: 8096, lucid: 8097, meditation: 8098, site: 8099, backend: 8085, branch: BRANCH_WEB_PORT };
-const port = Number(!native ? process.env.E2E_WEB_PORT ?? ports[product as keyof typeof ports] : ports[product as keyof typeof ports]);
-if (!native && (!Number.isInteger(port) || port < 1 || port > 65535))
-  throw new Error('E2E_WEB_PORT must be a valid TCP port.');
-if ((backend || branch) && port !== ports[product as 'backend' | 'branch'])
-  throw new Error('Backend and saved branch sessions require their fixed local origin.');
+// 0 asks e2e for a free port, which it hands the command as {port} (web-ports.mjs).
+const port = native ? 0 : webPort(product, process.env);
 const bundles: Record<string, string> = { dreamer: 'com.tanuki75.noctalia', lucid: 'com.tanuki75.noctalia.lucid', meditation: 'com.noctalia.meditation' };
 const bundleId = nativeJourneys ? 'com.tanuki75.noctalia.qa' : bundles[product];
 // Managed app commands inherit only the runner's public environment allowlist.
@@ -92,16 +89,16 @@ export default {
       environment: 'test' as const,
       // Static Expo routes compile during the first request; probe Metro without
       // repeatedly starting SSR bundles. app.open() and the journey verify the UI.
-      ...(product !== 'site' ? { readyUrl: `http://127.0.0.1:${port}/status` } : {}),
+      ...(product !== 'site' ? { readyUrl: 'http://127.0.0.1:{port}/status' } : {}),
       // Keep readiness cheap; the repository's Node preview server serves the real
       // images concurrently without Python HTTP/1.0 connection resets on macOS.
-      ...(product === 'site' ? { readyUrl: `http://127.0.0.1:${port}/robots.txt` } : {}),
+      ...(product === 'site' ? { readyUrl: 'http://127.0.0.1:{port}/robots.txt' } : {}),
       command: product === 'site' ? {
-        executable: process.execPath, args: ['--run', 'serve:docs', '--', '--port=' + port, '--host=127.0.0.1'], cwd: root,
+        executable: process.execPath, args: ['--run', 'serve:docs', '--', '--port={port}', '--host=127.0.0.1'], cwd: root,
         startupTimeout: 180_000, log: appLog,
       } : {
         executable: managedCommand!.executable,
-        args: [...managedCommand!.args, ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', String(port)],
+        args: [...managedCommand!.args, ...(product === 'meditation' ? [] : ['--web']), ...(keepMetroCache ? [] : ['--clear']), '--port', '{port}'],
         cwd: appRoot,
         env: {
           ...(appNodeOptions === undefined ? {} : { NODE_OPTIONS: appNodeOptions }),

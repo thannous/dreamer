@@ -69,6 +69,12 @@ test('a clean charter requires the actual pinned SDK, local target and model', (
   assert.equal(charterResult(CHARTERS[0], 0, evidence, '/report.json', 'http://127.0.0.1:4591').state, 'incomplete');
   evidence.run.targets[0].baseOrigin = 'http://127.0.0.1:4591';
   assert.equal(charterResult(CHARTERS[0], 0, evidence, '/report.json', 'http://127.0.0.1:4591').state, 'no-findings');
+  // Without E2E_WEB_PORT each charter gets a free loopback port; any other origin stays incomplete.
+  assert.equal(charterResult(CHARTERS[0], 0, evidence, '/report.json').state, 'no-findings');
+  for (const origin of ['http://localhost:4591', 'http://127.0.0.1:0']) {
+    evidence.run.targets[0].baseOrigin = origin;
+    assert.equal(charterResult(CHARTERS[0], 0, evidence, '/report.json').state, 'incomplete', origin);
+  }
 });
 
 test('a production Supabase ref is refused before any explore', () => {

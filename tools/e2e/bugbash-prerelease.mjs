@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 import { FORBIDDEN_KEYS, FORBIDDEN_PROJECT_REFS } from '../../scripts/test-supabase-guard.mjs';
 import { sourceSnapshot, compareSnapshots, SDK_PINS } from './qualification.mjs';
 import { PERSONA_ACT_MODEL, PERSONA_PROVIDER } from './persona-models.mjs';
+import { sameServedOrigin, webPort } from './web-ports.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '../..');
@@ -98,7 +99,7 @@ function explore(charter, env, output) {
 
 // SDK findings are observations until a human/development agent triages them.
 // A missing report or an exhausted/blocked step is never a clean exploration.
-export function charterResult(charter, exitCode, report, reportPath, expectedOrigin = 'http://127.0.0.1:8096') {
+export function charterResult(charter, exitCode, report, reportPath, expectedOrigin = 'http://127.0.0.1:0') {
   const run = report?.run;
   const exploration = run?.explore;
   const valid = report?.schemaVersion === 'report-1' && Array.isArray(exploration?.findings) && Array.isArray(exploration?.steps);
@@ -110,7 +111,7 @@ export function charterResult(charter, exitCode, report, reportPath, expectedOri
     }))));
   const identity = run?.runner?.name === 'e2e' && run.runner.version === SDK_PINS.e2e
     && target?.id === 'dreamer-web' && target.platform === 'web' && target.environment === 'test'
-    && target.baseOrigin === expectedOrigin && target.engine?.name === 'web' && target.engine.version === SDK_PINS['@e2e-dev/web']
+    && sameServedOrigin(expectedOrigin, target.baseOrigin) && target.engine?.name === 'web' && target.engine.version === SDK_PINS['@e2e-dev/web']
     && models.length > 0 && models.every(model => model.provider === PERSONA_PROVIDER && model.model === PERSONA_ACT_MODEL);
   // e2e 0.23's planner keeps trying new lenses while steps remain, so the step budget this
   // script sets ends a clean charter as often as `finished`; running out of time or getting stuck does not.
@@ -153,8 +154,9 @@ export function runBugbash({ exploreCharters = true, env = mockEnv(), login = ch
     try { return [name, JSON.parse(readFileSync(join(here, 'node_modules', name, 'package.json'), 'utf8')).version]; }
     catch { return [name, null]; }
   }));
-  const port = Number(env.E2E_WEB_PORT ?? 8096);
-  const expectedOrigin = Number.isInteger(port) && port >= 1 && port <= 65535 ? `http://127.0.0.1:${port}` : null;
+  // A free port (0) unless E2E_WEB_PORT pins one; each charter's report names the port it got.
+  let expectedOrigin = null;
+  try { expectedOrigin = `http://127.0.0.1:${webPort('dreamer', env)}`; } catch { /* Refused below as INVALID_WEB_PORT. */ }
   const receipt = { schemaVersion: 1, startedAt: new Date().toISOString(), source: before,
     scope: 'Dreamer web, local mock and synthetic sessions', model: PERSONA_ACT_MODEL, expectedSdk: SDK_PINS, installedSdk, expectedOrigin,
     rerunCommand: `mise exec -- npm run test:bugbash:prerelease${only ? ` -- --charter ${only}` : ''}`,
