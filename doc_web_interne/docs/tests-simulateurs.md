@@ -63,7 +63,10 @@ bash en environnement simulé avant une release.
    et les mises à jour OTA coupées, puis reçu de build. Le build ne vise aucun appareil.
 3. Chaque run réserve un simulateur iPhone ou un émulateur Android du pool Simlock du
    Mac, comme les autres agents, en attendant au plus 30 minutes s'il est pris
-   (`--wait-minutes`). Il installe la Release du reçu, joue les parcours natifs
+   (`--wait-minutes`). Sur Android, un téléphone inscrit dans la flotte Simlock
+   (aujourd'hui le Motorola edge 60 fusion) passe en premier quand il est libre
+   (décision du 2026-11-06) ; sinon l'émulateur prend le relais. En fin de run, Simlock
+   désinstalle du téléphone les apps installées depuis son inscription. Il installe la Release du reçu, joue les parcours natifs
    TesterArmy avec les contrôles habituels de `tools/e2e/run.mjs` (identité du binaire
    installé, source inchangée, nettoyage), puis rend l'appareil, que Simlock remet à
    zéro. Une réservation perdue ou non rendue rend la couche non qualifiée. Voir

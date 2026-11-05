@@ -36,13 +36,18 @@ if (args[0] === 'catalog') {
     return;
   }
   if (process.env.FAKE_DENY === '1') { process.stderr.write('capacity unavailable'); process.exit(11); }
+  // No fleet phone unless the test enrols one; --no-wait answers at once.
+  if (args.includes('--physical') && process.env.FAKE_PHONE !== '1') { process.stderr.write('no enrolled phone is free'); process.exit(11); }
   const platform = args[args.indexOf('--platform') + 1];
   const device = platform === 'ios' ? '12345678-1234-1234-1234-123456789abc' : 'emulator-5558';
   const requester = requesterId();
+  const phone = args.includes('--physical');
   const grant = { lease: { id: 'lse_ours', deviceId: 'dev_ours', grantedAt: 1, requesterId: process.env.FAKE_FOREIGN === '1' ? 'foreign' : requester },
-    device: { id: 'dev_ours', address: device, physical: process.env.FAKE_PHYSICAL === '1',
-      spec: { platform, model: 'phone', osVersion: '1', physical: false } },
-    environment: platform === 'ios' ? (process.env.FAKE_NO_IOS_SET === '1' ? {} : { SIMLOCK_IOS_DEVICE_SET: '/private/qa-set' }) : { ANDROID_ADB_SERVER_PORT: '5042' } };
+    device: phone
+      ? { id: 'dev_ours', address: null, physical: true, spec: { platform, model: 'motorola edge 60 fusion', osVersion: '36', physical: true } }
+      : { id: 'dev_ours', address: device, physical: process.env.FAKE_PHYSICAL === '1', spec: { platform, model: 'phone', osVersion: '1', physical: false } },
+    environment: phone ? { ANDROID_ADB_SERVER_PORT: '5037', ANDROID_SERIAL: 'ZY22TEST01' }
+      : platform === 'ios' ? (process.env.FAKE_NO_IOS_SET === '1' ? {} : { SIMLOCK_IOS_DEVICE_SET: '/private/qa-set' }) : { ANDROID_ADB_SERVER_PORT: '5042' } };
   process.stdout.write(JSON.stringify(grant) + '\\n');
   record(['holder', process.pid]);
   process.on('SIGTERM', () => process.exit(0));
@@ -145,8 +150,14 @@ for (const platform of ['ios', 'android']) test(`${platform}: scopes the device 
   assert.equal(existsSync(state), false);
   assert.throws(() => execFileSync(process.execPath, [driver, platform === 'ios' ? 'xcrun' : 'adb', ...(platform === 'ios' ? ['simctl', 'list'] : ['devices'])], { env, stdio: 'pipe' }), /SIMLOCK_LEASE_ENDED/);
   const invocations = calls(events);
-  assert.equal(invocations[0][0], 'catalog');
-  const lease = invocations.find(args => args[0] === 'lease');
+  const leases = invocations.filter(args => args[0] === 'lease');
+  if (platform === 'android') {
+    // A free fleet phone is asked for first, without waiting, then the emulator pool.
+    assert.ok(leases[0].includes('--physical') && leases[0].includes('--no-wait'));
+    assert.deepEqual(invocations.slice(0, 3).map(args => args[0]), ['lease', 'catalog', 'lease']);
+  } else assert.equal(invocations[0][0], 'catalog');
+  const lease = leases.at(-1);
+  assert.equal(lease.includes('--physical'), false);
   assert.ok(lease.includes('--bind-pid'));
   assert.equal(lease.includes('--allow-download'), false);
   assert.deepEqual(invocations.at(-1), ['release', 'lse_ours']);
@@ -310,4 +321,37 @@ test('a terminal interrupt reaches the runner, not the granted holder', async t 
   await new Promise(resolve => setTimeout(resolve, 200));
   assert.equal(calls(events).some(args => args[0] === 'holder-sigint'), false);
   process.kill(holder, 0);
+});
+
+test('android: a free fleet phone is leased by its serial, marked for the runner, and returned', async t => {
+  const { root, env, events } = setup(t, { FAKE_PHONE: '1' });
+  const handle = await acquireSimlock({ platform: 'android', env, shimDirectory: join(root, 'shims') });
+  assert.equal(env.E2E_DEVICE, 'ZY22TEST01');
+  assert.equal(env.E2E_SIMLOCK_PHYSICAL_GRANT, '1');
+  assert.equal(env.E2E_AVD_NAME, undefined);
+  assert.equal(env.ADB_SERVER_SOCKET, 'tcp:127.0.0.1:5037');
+  assert.equal(handle.evidence.physical, true);
+  assert.equal(handle.evidence.model, 'motorola edge 60 fusion');
+  execFileSync(process.execPath, [driver, 'adb', '-s', 'ZY22TEST01', 'get-state'], { env });
+  assert.throws(() => execFileSync(process.execPath, [driver, 'adb', '-s', 'emulator-5558', 'get-state'], { env, stdio: 'pipe' }));
+  await handle.release();
+  // No emulator was asked for, and no AVD read on a phone.
+  assert.deepEqual(calls(events).filter(args => ['catalog', 'lease', 'release'].includes(args[0])).map(args => args[0]), ['lease', 'release']);
+  assert.equal(calls(events).some(args => args.includes('avd')), false);
+});
+
+test('android: the fleet phone choice follows E2E_SIMLOCK_PHYSICAL', async t => {
+  const never = setup(t, { FAKE_PHONE: '1', E2E_SIMLOCK_PHYSICAL: 'never' });
+  const emulator = await acquireSimlock({ platform: 'android', env: never.env, shimDirectory: join(never.root, 'shims') });
+  assert.equal(never.env.E2E_DEVICE, 'emulator-5558');
+  assert.equal(never.env.E2E_SIMLOCK_PHYSICAL_GRANT, undefined);
+  assert.equal(calls(never.events).some(args => args.includes('--physical')), false);
+  await emulator.release();
+  // 'only' waits for a phone and never falls back to an emulator.
+  const only = setup(t, { E2E_SIMLOCK_PHYSICAL: 'only' });
+  await assert.rejects(acquireSimlock({ platform: 'android', env: only.env, shimDirectory: join(only.root, 'shims') }), /SIMLOCK_LEASE_FAILED/);
+  assert.deepEqual(calls(only.events).map(args => args[0]), ['lease']);
+  assert.equal(calls(only.events)[0].includes('--no-wait'), false);
+  const wrong = setup(t, { E2E_SIMLOCK_PHYSICAL: 'yes' });
+  await assert.rejects(acquireSimlock({ platform: 'android', env: wrong.env, shimDirectory: join(wrong.root, 'shims') }), /SIMLOCK_PHYSICAL_MODE_INVALID/);
 });

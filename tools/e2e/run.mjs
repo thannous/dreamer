@@ -463,14 +463,21 @@ try {
   if (platform !== 'web' && command !== 'build') {
     if (!device) throw new Error('E2E_DEVICE must name a dedicated emulator or iOS Simulator.');
     if (platform === 'android') {
-      if (!/^emulator-\d+$/.test(device)) throw new Error('Physical phones are excluded. Select an emulator serial.');
+      // A phone only through a fleet lease (owner decision 2026-11-06); never a named serial.
+      const fleetPhone = env.E2E_SIMLOCK_PHYSICAL_GRANT === '1' && Boolean(simlock) && !/^emulator-/.test(device);
+      if (!fleetPhone && !/^emulator-\d+$/.test(device)) throw new Error('A phone is used only when Simlock leases it from the fleet. Select an emulator serial.');
       if (read('adb', ['-s', device, 'get-state']) !== 'device') throw new Error('Android target is not ready.');
-      const rawAvd = read('adb', ['-s', device, 'emu', 'avd', 'name']);
-      writeFileSync(join(output, 'avd-raw.txt'), rawAvd, { flag: 'wx' });
-      if (normalizeAvdName(rawAvd) !== (env.E2E_AVD_NAME ?? 'Pixel_9_API_37')) throw new Error('Unrelated Android AVD refused.');
+      let name;
+      if (fleetPhone) name = read('adb', ['-s', device, 'shell', 'getprop', 'ro.product.model']);
+      else {
+        const rawAvd = read('adb', ['-s', device, 'emu', 'avd', 'name']);
+        writeFileSync(join(output, 'avd-raw.txt'), rawAvd, { flag: 'wx' });
+        if (normalizeAvdName(rawAvd) !== (env.E2E_AVD_NAME ?? 'Pixel_9_API_37')) throw new Error('Unrelated Android AVD refused.');
+        name = normalizeAvdName(rawAvd);
+      }
       if (read('adb', ['-s', device, 'shell', 'getprop', 'sys.boot_completed']) !== '1') throw new Error('Android target is not booted.');
-      const property = name => read('adb', ['-s', device, 'shell', 'getprop', name]);
-      deviceIdentity = { id: device, name: normalizeAvdName(rawAvd), osVersion: property('ro.build.version.release'), model: property('ro.product.model') };
+      const property = key => read('adb', ['-s', device, 'shell', 'getprop', key]);
+      deviceIdentity = { id: device, name, osVersion: property('ro.build.version.release'), model: property('ro.product.model'), physical: fleetPhone };
     } else {
       deviceIdentity = simulatorIdentity(JSON.parse(read('xcrun', ['simctl', 'list', 'devices', 'available', '--json'])).devices, device);
     }
@@ -537,7 +544,7 @@ try {
       ...(env.E2E_PERSONAS === '1' ? personaEnvironment(env) : {}) } : { ...(simlock
         ? { E2E_SIMLOCK_BIN: env.E2E_SIMLOCK_BIN, E2E_SIMLOCK_MODEL: env.E2E_SIMLOCK_MODEL ?? null,
           E2E_SIMLOCK_OS: env.E2E_SIMLOCK_OS ?? null, E2E_SIMLOCK_TIMEOUT_SECONDS: env.E2E_SIMLOCK_TIMEOUT_SECONDS ?? null,
-          E2E_SIMLOCK_NO_WAIT: env.E2E_SIMLOCK_NO_WAIT ?? null }
+          E2E_SIMLOCK_NO_WAIT: env.E2E_SIMLOCK_NO_WAIT ?? null, E2E_SIMLOCK_PHYSICAL: env.E2E_SIMLOCK_PHYSICAL ?? null }
         : { E2E_DEVICE: env.E2E_DEVICE ?? null, E2E_AVD_NAME: env.E2E_AVD_NAME ?? 'Pixel_9_API_37' }),
       ...(env.E2E_PERSONAS === '1' ? personaEnvironment(env) : {}),
       ...(nativeJourneys ? { E2E_NATIVE_JOURNEYS: '1', E2E_NATIVE_BACKEND_MANIFEST: env.E2E_NATIVE_BACKEND_MANIFEST,

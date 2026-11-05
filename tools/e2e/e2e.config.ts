@@ -51,8 +51,10 @@ const device = process.env.E2E_DEVICE;
 if (process.env.E2E_KEEP_METRO_CACHE !== undefined && !['0', '1'].includes(process.env.E2E_KEEP_METRO_CACHE))
   throw new Error('E2E_KEEP_METRO_CACHE takes 0 or 1.');
 const keepMetroCache = process.env.E2E_KEEP_METRO_CACHE !== '0' && product !== 'meditation';
-if (native && (!device || (platform === 'android' && !/^emulator-\d+$/.test(device))))
-  throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; physical devices are excluded.');
+// A phone serial only with the marker run.mjs sets for a Simlock fleet lease (owner decision 2026-11-06).
+const fleetPhone = platform === 'android' && process.env.E2E_SIMLOCK_PHYSICAL_GRANT === '1' && Boolean(process.env.E2E_SIMLOCK_LEASE_ID);
+if (native && (!device || (platform === 'android' && !fleetPhone && !/^emulator-\d+$/.test(device))))
+  throw new Error('Name an explicit emulator/simulator with E2E_DEVICE; a phone comes only from a Simlock fleet lease.');
 // run.mjs resolves the web worker count and records it; a native target drives its one device.
 const requestedWorkers = process.env.E2E_WORKERS;
 if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))

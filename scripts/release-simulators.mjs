@@ -197,10 +197,11 @@ export function readRun(dir) {
   const lease = end?.simlock;
   return { qualified: end?.applicationQualified === true, exitCode: end?.exitCode ?? null, passed: summary.passed ?? 0,
     failed: summary.failed ?? failures.length, skipped: summary.skipped ?? 0, failures,
-    causes: [...causes].map(([text, count]) => ({ text, count })), errors: end?.secondaryErrors ?? [], device: lease ? `${lease.model}, ${lease.osVersion} (Simlock ${lease.deviceId})` : null };
+    causes: [...causes].map(([text, count]) => ({ text, count })), errors: end?.secondaryErrors ?? [], device: lease ? `${lease.model}, ${lease.osVersion}${lease.physical ? ', téléphone de la flotte' : ''} (Simlock ${lease.deviceId})` : null };
 }
 
-const PLATFORM_LABEL = { ios: 'iPhone (simulateur)', android: 'Android (émulateur)' };
+// Android may run on a free fleet phone (owner decision 2026-11-06); the device line says which.
+const PLATFORM_LABEL = { ios: 'iPhone (simulateur)', android: 'Android (émulateur ou téléphone)' };
 function cell(result) {
   if (!result) return 'non lancé';
   if (result.error) return `ÉCHEC : ${result.error}`;

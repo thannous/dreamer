@@ -615,8 +615,14 @@ iOS requires an existing project/Pods, an embedded JS bundle and a Simulator bui
 For a native `run` without `E2E_DEVICE`, the runner reserves one disposable
 simulator or emulator from the configured Simlock pool, installs the Release
 identified by `E2E_RELEASE_RECEIPT`, runs the selected journeys and releases its
-own lease after the SDK and device checks finish. It waits for capacity by default;
-it never downloads a runtime or selects a physical phone. A missing or malformed
+own lease after the SDK and device checks finish. It waits for capacity by default
+and never downloads a runtime. On Android it first asks, without waiting, for a free
+phone enrolled in the Simlock fleet (owner decision 2026-11-06), and falls back to the
+emulator pool when none is free: `E2E_SIMLOCK_PHYSICAL=auto` (default), `only` (wait
+for a phone) or `never`. A phone serial is accepted only from such a lease, never from
+`E2E_DEVICE`; its evidence says `physical: true`. Releasing a phone lease uninstalls
+every app installed after the phone was enrolled (`simlock device add`); it erases
+nothing else. iOS uses Simulators only. A missing or malformed
 receipt is refused before reserving; a lost lease or unconfirmed release fails
 the run. `simlock-lease.json` and `simlock-release.json` in the run directory
 record the reservation and its acknowledged release; the existing `end.json`

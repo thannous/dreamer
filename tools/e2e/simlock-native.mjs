@@ -18,17 +18,37 @@ export function simlockBinary(env) {
   return existsSync(installed) ? installed : 'simlock';
 }
 
-function checkedGrant(grant, platform) {
+/**
+ * Android leases an enrolled phone of the Simlock fleet when one is free (`auto`, the default),
+ * only a phone (`only`), or only an emulator (`never`); owner decision 2026-11-06. A phone is
+ * reached only through a lease, never by naming its serial. iOS leases Simulators only.
+ */
+export function physicalMode(platform, env) {
+  if (platform !== 'android') return 'never';
+  const mode = env.E2E_SIMLOCK_PHYSICAL ?? 'auto';
+  if (!['auto', 'only', 'never'].includes(mode)) throw new Error('SIMLOCK_PHYSICAL_MODE_INVALID');
+  return mode;
+}
+
+// A fleet phone has no address in the grant: its serial comes in ANDROID_SERIAL.
+const physicalSerial = grant => {
+  const serial = grant?.environment?.ANDROID_SERIAL;
+  return typeof serial === 'string' && /^[A-Za-z0-9._:-]{3,64}$/.test(serial) && !serial.startsWith('emulator-') ? serial : null;
+};
+
+function checkedGrant(grant, platform, physical = false) {
   const { device, lease, environment } = grant ?? {};
-  if (!device || !lease || !environment || device.physical !== false || device.spec?.physical !== false
+  const address = physical ? physicalSerial(grant) : device?.address;
+  if (!device || !lease || !environment || device.physical !== physical || device.spec?.physical !== physical
+    || (physical && (platform !== 'android' || !address))
     || device.spec.platform !== platform || lease.deviceId !== device.id
     || typeof device.spec.model !== 'string' || !device.spec.model.trim()
     || typeof device.spec.osVersion !== 'string' || !device.spec.osVersion.trim()
     || !Number.isSafeInteger(lease.grantedAt)
     || typeof lease.requesterId !== 'string' || !lease.requesterId.trim()
     || !/^[A-Za-z0-9_-]{1,128}$/.test(lease.id ?? '')
-    || (platform === 'android' && !/^emulator-\d+$/.test(device.address ?? ''))
-    || (platform === 'ios' && !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(device.address ?? '')))
+    || (platform === 'android' && !physical && !/^emulator-\d+$/.test(address ?? ''))
+    || (platform === 'ios' && !/^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i.test(address ?? '')))
     throw new Error('SIMLOCK_GRANT_INVALID');
   if (platform === 'ios' && environment.SIMLOCK_IOS_DEVICE_SET !== undefined
     && (typeof environment.SIMLOCK_IOS_DEVICE_SET !== 'string'
@@ -78,8 +98,16 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   const earlyInterrupt = early('SIGINT'), earlyTerminate = early('SIGTERM');
   process.on('SIGINT', earlyInterrupt);
   process.on('SIGTERM', earlyTerminate);
+  const mode = physicalMode(platform, env);
   let catalog;
   try {
+    // A free fleet phone first: --no-wait answers at once when none is enrolled or all are busy.
+    if (mode !== 'never') {
+      try { return await leaseWith(true); }
+      catch (error) {
+        if (mode === 'only' || earlySignal || !/^SIMLOCK_LEASE_FAILED/.test(error.message)) throw error;
+      }
+    }
     catalog = JSON.parse(await command(binary, ['catalog', '--platform', platform, '--json'], env));
   } finally {
     process.off('SIGINT', earlyInterrupt);
@@ -90,153 +118,170 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
   if (!Array.isArray(available?.runtimes) || available.runtimes.length === 0
     || !available.modelRuntimes || !Object.values(available.modelRuntimes).some(runtimes => Array.isArray(runtimes) && runtimes.length > 0))
     throw new Error('SIMLOCK_NO_INSTALLED_DEVICE_RUNTIME');
-  const args = ['lease', '--platform', platform, '--bind-pid', String(process.pid), '--ttl', '30m', '--timeout', `${timeout}s`];
-  if (env.E2E_SIMLOCK_MODEL?.trim()) args.push('--device', env.E2E_SIMLOCK_MODEL.trim());
-  else args.push('--class', 'phone');
-  if (env.E2E_SIMLOCK_OS?.trim()) args.push('--os', env.E2E_SIMLOCK_OS.trim());
-  if (env.E2E_SIMLOCK_NO_WAIT === '1') args.push('--no-wait');
+  return leaseWith(false);
 
-  // Its own process group: a terminal Ctrl-C reaches only the runner, which
-  // releases after the SDK and device cleanup. --bind-pid covers a dead runner.
-  const child = spawn(binary, args, { env, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
-  let closing = false, granted = false, stderr = '', stdout = '', receivedSignal, loss, endMarker;
-  let resolveGrant, rejectGrant;
-  const grantResult = new Promise((resolve, reject) => { resolveGrant = resolve; rejectGrant = reject; });
-  const closed = new Promise(resolve => child.once('close', (code, signal) => {
-    if (!granted) rejectGrant(new Error(`SIMLOCK_LEASE_FAILED: ${stderr.trim() || `exit ${code ?? signal}`}`));
-    else if (!closing) {
-      loss = { code, signal, message: stderr.slice(-4096) };
-      markEnded({ lost: loss });
-      onLoss(loss);
-    }
-    resolve({ code, signal });
-  }));
-  // The shims refuse every device command once the lease is lost or released,
-  // including from an agent-device daemon left behind by a failed cleanup.
-  function markEnded(reason) {
-    if (endMarker) try { writeFileSync(endMarker, JSON.stringify(reason)); } catch { /* the runner still records why */ }
-  }
-  child.once('error', error => rejectGrant(new Error(`SIMLOCK_START_FAILED: ${error.message}`)));
-  child.stderr.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(-8192); });
-  child.stdout.on('data', chunk => {
-    stdout += chunk.toString();
-    if (stdout.length > MAX_OUTPUT) { rejectGrant(new Error('SIMLOCK_GRANT_TOO_LARGE')); return; }
-    const newline = stdout.indexOf('\n');
-    if (newline !== -1 && !granted) {
-      try {
-        const parsed = JSON.parse(stdout.slice(0, newline));
-        granted = true;
-        resolveGrant(parsed);
-      } catch { rejectGrant(new Error('SIMLOCK_GRANT_NOT_JSON')); }
-    }
-  });
-  const signal = value => {
-    receivedSignal = value;
-    onSignal(value);
-    if (child.exitCode === null && child.signalCode === null) {
-      child.kill(value);
-      // Simlock 0.4.0 keeps a queued request after its client dies and grants it
-      // into the void, so the holder is never killed: once granted or timed out,
-      // it releases at once and exits.
-      if (!granted) console.error('SIMLOCK_INTERRUPTED: waiting for Simlock to grant or drop the queued request.');
-    }
-  };
-  const onInterrupt = () => signal('SIGINT');
-  const onTerminate = () => signal('SIGTERM');
-  process.on('SIGINT', onInterrupt);
-  process.on('SIGTERM', onTerminate);
-  let grant;
-  try {
-    grant = await grantResult;
-    if (receivedSignal) throw new Error('SIMLOCK_INTERRUPTED');
-    checkedGrant(grant, platform);
-    if (grant.lease.requesterId !== requester)
-      throw new Error('SIMLOCK_REQUESTER_MISMATCH');
-  } catch (error) {
-    closing = true;
-    let cleanupError;
-    // If the grant arrived but failed validation, release only its own ID.
-    if (grant?.lease?.requesterId === requester && /^[A-Za-z0-9_-]{1,128}$/.test(grant?.lease?.id ?? '')) {
-      try { await command(binary, ['release', grant.lease.id], env); } catch (failure) { cleanupError = failure; }
-    } else if (grant) {
-      cleanupError = new Error('SIMLOCK_REQUESTER_UNPROVEN');
-    }
-    try { await closeWithin(child, closed); } catch (failure) { cleanupError ??= failure; }
-    if (cleanupError) throw new Error(`${error.message}; SIMLOCK_RELEASE_UNPROVEN: ${cleanupError.message}`);
-    throw error;
-  } finally {
-    process.off('SIGINT', onInterrupt);
-    process.off('SIGTERM', onTerminate);
-  }
-
-  let stateDirectory;
-  const cleanupState = () => { if (stateDirectory) rmSync(stateDirectory, { recursive: true, force: true }); };
-  const release = async ({ preserveState = false } = {}) => {
-    closing = true;
-    markEnded({ released: grant.lease.id });
-    let releaseError;
-    try {
-      const acknowledgement = JSON.parse(await command(binary, ['release', grant.lease.id], env));
-      if (acknowledgement.leaseId !== grant.lease.id) throw new Error('SIMLOCK_RELEASE_ID_MISMATCH');
-    } catch (error) { releaseError = error; }
-    try { await closeWithin(child, closed); } catch (error) { releaseError ??= error; }
-    if (!preserveState) try { cleanupState(); } catch (error) { releaseError ??= error; }
-    if (releaseError) throw new Error(`SIMLOCK_RELEASE_UNPROVEN: ${releaseError.message}`);
-    return { leaseId: grant.lease.id, released: true, releasedAt: new Date().toISOString(),
-      ...(preserveState ? { retainedStateDirectory: stateDirectory } : {}) };
-  };
-  try {
-    stateDirectory = mkdtempSync(join(tmpdir(), 'noctalia-simlock-agent-'));
-    endMarker = join(stateDirectory, 'simlock-lease-ended.json');
-    Object.assign(env, {
-      E2E_DEVICE: grant.device.address,
-      E2E_SIMLOCK_BIN: binary,
-      E2E_SIMLOCK_LEASE_ID: grant.lease.id,
-      AGENT_DEVICE_STATE_DIR: stateDirectory,
-      E2E_SIMLOCK_END_MARKER: endMarker,
-      E2E_SIMLOCK_HOLDER_PID: String(child.pid),
-      E2E_SIMLOCK_RUNNER_PID: String(process.pid),
-    });
-    if (platform === 'ios') {
-      const deviceSet = grant.environment.SIMLOCK_IOS_DEVICE_SET;
-      if (deviceSet) {
-        env.SIMLOCK_IOS_DEVICE_SET = deviceSet;
-        env.AGENT_DEVICE_IOS_SIMULATOR_DEVICE_SET = deviceSet;
-      } else {
-        delete env.SIMLOCK_IOS_DEVICE_SET;
-        delete env.AGENT_DEVICE_IOS_SIMULATOR_DEVICE_SET;
-      }
+  async function leaseWith(physical) {
+    const args = ['lease', '--platform', platform, '--bind-pid', String(process.pid), '--ttl', '30m', '--timeout', `${timeout}s`];
+    if (physical) {
+      args.push('--physical');
+      if (mode === 'auto') args.push('--no-wait');
     } else {
-      const port = String(grant.environment.ANDROID_ADB_SERVER_PORT);
-      env.ANDROID_ADB_SERVER_PORT = port;
-      env.ADB_SERVER_SOCKET = `tcp:127.0.0.1:${port}`;
-      const raw = await command(binary, ['adb', '--lease', grant.lease.id, '-s', grant.device.address, 'emu', 'avd', 'name'], env);
-      const lines = raw.split(/\r?\n/).map(line => line.trim());
-      if (!lines[0] || lines.length > 2 || (lines.length === 2 && lines[1] !== 'OK')) throw new Error('SIMLOCK_AVD_PROTOCOL');
-      env.E2E_AVD_NAME = lines[0];
-      // agent-device takes adb from ANDROID_SDK_ROOT/ANDROID_HOME before PATH and puts that
-      // SDK's platform-tools first on its own PATH, so the PATH shim never sees its commands.
-      // This SDK root holds only the shim; the driver restores the real one for Simlock.
-      const sdk = join(stateDirectory, 'android-sdk');
-      mkdirSync(join(sdk, 'platform-tools'), { recursive: true });
-      writeFileSync(join(sdk, 'platform-tools', 'adb'),
-        `#!/bin/sh\nexec '${join(shimDirectory, 'adb').replaceAll("'", `'\\''`)}' "$@"\n`, { mode: 0o755 });
-      env.E2E_SIMLOCK_UNWRAPPED_ANDROID_HOME = env.ANDROID_HOME ?? '';
-      env.E2E_SIMLOCK_UNWRAPPED_ANDROID_SDK_ROOT = env.ANDROID_SDK_ROOT ?? '';
-      env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
+      if (env.E2E_SIMLOCK_MODEL?.trim()) args.push('--device', env.E2E_SIMLOCK_MODEL.trim());
+      else args.push('--class', 'phone');
+      if (env.E2E_SIMLOCK_OS?.trim()) args.push('--os', env.E2E_SIMLOCK_OS.trim());
+      if (env.E2E_SIMLOCK_NO_WAIT === '1') args.push('--no-wait');
     }
-    const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') ?? 'PATH';
-    env.E2E_SIMLOCK_UNWRAPPED_PATH = env[pathKey];
-    env[pathKey] = [shimDirectory, env[pathKey]].join(delimiter);
-    if (loss) throw new Error('SIMLOCK_LEASE_LOST_DURING_SETUP');
-    return {
-      release,
-      evidence: { leaseId: grant.lease.id, deviceId: grant.device.id, address: grant.device.address,
-        requesterId: grant.lease.requesterId, platform, model: grant.device.spec.model,
-        osVersion: grant.device.spec.osVersion, grantedAt: grant.lease.grantedAt },
+
+    // Its own process group: a terminal Ctrl-C reaches only the runner, which
+    // releases after the SDK and device cleanup. --bind-pid covers a dead runner.
+    const child = spawn(binary, args, { env, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
+    let closing = false, granted = false, stderr = '', stdout = '', receivedSignal, loss, endMarker;
+    let resolveGrant, rejectGrant;
+    const grantResult = new Promise((resolve, reject) => { resolveGrant = resolve; rejectGrant = reject; });
+    const closed = new Promise(resolve => child.once('close', (code, signal) => {
+      if (!granted) rejectGrant(new Error(`SIMLOCK_LEASE_FAILED: ${stderr.trim() || `exit ${code ?? signal}`}`));
+      else if (!closing) {
+        loss = { code, signal, message: stderr.slice(-4096) };
+        markEnded({ lost: loss });
+        onLoss(loss);
+      }
+      resolve({ code, signal });
+    }));
+    // The shims refuse every device command once the lease is lost or released,
+    // including from an agent-device daemon left behind by a failed cleanup.
+    function markEnded(reason) {
+      if (endMarker) try { writeFileSync(endMarker, JSON.stringify(reason)); } catch { /* the runner still records why */ }
+    }
+    child.once('error', error => rejectGrant(new Error(`SIMLOCK_START_FAILED: ${error.message}`)));
+    child.stderr.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(-8192); });
+    child.stdout.on('data', chunk => {
+      stdout += chunk.toString();
+      if (stdout.length > MAX_OUTPUT) { rejectGrant(new Error('SIMLOCK_GRANT_TOO_LARGE')); return; }
+      const newline = stdout.indexOf('\n');
+      if (newline !== -1 && !granted) {
+        try {
+          const parsed = JSON.parse(stdout.slice(0, newline));
+          granted = true;
+          resolveGrant(parsed);
+        } catch { rejectGrant(new Error('SIMLOCK_GRANT_NOT_JSON')); }
+      }
+    });
+    const signal = value => {
+      receivedSignal = value;
+      onSignal(value);
+      if (child.exitCode === null && child.signalCode === null) {
+        child.kill(value);
+        // Simlock 0.4.0 keeps a queued request after its client dies and grants it
+        // into the void, so the holder is never killed: once granted or timed out,
+        // it releases at once and exits.
+        if (!granted) console.error('SIMLOCK_INTERRUPTED: waiting for Simlock to grant or drop the queued request.');
+      }
     };
-  } catch (error) {
-    try { await release(); } catch (cleanupError) { throw new Error(`${error.message}; ${cleanupError.message}`); }
-    throw error;
+    const onInterrupt = () => signal('SIGINT');
+    const onTerminate = () => signal('SIGTERM');
+    process.on('SIGINT', onInterrupt);
+    process.on('SIGTERM', onTerminate);
+    let grant;
+    try {
+      grant = await grantResult;
+      if (receivedSignal) throw new Error('SIMLOCK_INTERRUPTED');
+      checkedGrant(grant, platform, physical);
+      if (grant.lease.requesterId !== requester)
+        throw new Error('SIMLOCK_REQUESTER_MISMATCH');
+    } catch (error) {
+      closing = true;
+      let cleanupError;
+      // If the grant arrived but failed validation, release only its own ID.
+      if (grant?.lease?.requesterId === requester && /^[A-Za-z0-9_-]{1,128}$/.test(grant?.lease?.id ?? '')) {
+        try { await command(binary, ['release', grant.lease.id], env); } catch (failure) { cleanupError = failure; }
+      } else if (grant) {
+        cleanupError = new Error('SIMLOCK_REQUESTER_UNPROVEN');
+      }
+      try { await closeWithin(child, closed); } catch (failure) { cleanupError ??= failure; }
+      if (cleanupError) throw new Error(`${error.message}; SIMLOCK_RELEASE_UNPROVEN: ${cleanupError.message}`);
+      throw error;
+    } finally {
+      process.off('SIGINT', onInterrupt);
+      process.off('SIGTERM', onTerminate);
+    }
+
+    let stateDirectory;
+    const cleanupState = () => { if (stateDirectory) rmSync(stateDirectory, { recursive: true, force: true }); };
+    const release = async ({ preserveState = false } = {}) => {
+      closing = true;
+      markEnded({ released: grant.lease.id });
+      let releaseError;
+      try {
+        const acknowledgement = JSON.parse(await command(binary, ['release', grant.lease.id], env));
+        if (acknowledgement.leaseId !== grant.lease.id) throw new Error('SIMLOCK_RELEASE_ID_MISMATCH');
+      } catch (error) { releaseError = error; }
+      try { await closeWithin(child, closed); } catch (error) { releaseError ??= error; }
+      if (!preserveState) try { cleanupState(); } catch (error) { releaseError ??= error; }
+      if (releaseError) throw new Error(`SIMLOCK_RELEASE_UNPROVEN: ${releaseError.message}`);
+      return { leaseId: grant.lease.id, released: true, releasedAt: new Date().toISOString(),
+        ...(preserveState ? { retainedStateDirectory: stateDirectory } : {}) };
+    };
+    try {
+      stateDirectory = mkdtempSync(join(tmpdir(), 'noctalia-simlock-agent-'));
+      endMarker = join(stateDirectory, 'simlock-lease-ended.json');
+      const address = physical ? physicalSerial(grant) : grant.device.address;
+      Object.assign(env, {
+        E2E_DEVICE: address,
+        E2E_SIMLOCK_BIN: binary,
+        E2E_SIMLOCK_LEASE_ID: grant.lease.id,
+        AGENT_DEVICE_STATE_DIR: stateDirectory,
+        E2E_SIMLOCK_END_MARKER: endMarker,
+        E2E_SIMLOCK_HOLDER_PID: String(child.pid),
+        E2E_SIMLOCK_RUNNER_PID: String(process.pid),
+      });
+      if (platform === 'ios') {
+        const deviceSet = grant.environment.SIMLOCK_IOS_DEVICE_SET;
+        if (deviceSet) {
+          env.SIMLOCK_IOS_DEVICE_SET = deviceSet;
+          env.AGENT_DEVICE_IOS_SIMULATOR_DEVICE_SET = deviceSet;
+        } else {
+          delete env.SIMLOCK_IOS_DEVICE_SET;
+          delete env.AGENT_DEVICE_IOS_SIMULATOR_DEVICE_SET;
+        }
+      } else {
+        const port = String(grant.environment.ANDROID_ADB_SERVER_PORT);
+        env.ANDROID_ADB_SERVER_PORT = port;
+        env.ADB_SERVER_SOCKET = `tcp:127.0.0.1:${port}`;
+        if (physical) {
+          // The runner and the config accept this phone's serial only with this marker.
+          env.E2E_SIMLOCK_PHYSICAL_GRANT = '1';
+          delete env.E2E_AVD_NAME;
+        } else {
+          delete env.E2E_SIMLOCK_PHYSICAL_GRANT;
+          const raw = await command(binary, ['adb', '--lease', grant.lease.id, '-s', address, 'emu', 'avd', 'name'], env);
+          const lines = raw.split(/\r?\n/).map(line => line.trim());
+          if (!lines[0] || lines.length > 2 || (lines.length === 2 && lines[1] !== 'OK')) throw new Error('SIMLOCK_AVD_PROTOCOL');
+          env.E2E_AVD_NAME = lines[0];
+        }
+        // agent-device takes adb from ANDROID_SDK_ROOT/ANDROID_HOME before PATH and puts that
+        // SDK's platform-tools first on its own PATH, so the PATH shim never sees its commands.
+        // This SDK root holds only the shim; the driver restores the real one for Simlock.
+        const sdk = join(stateDirectory, 'android-sdk');
+        mkdirSync(join(sdk, 'platform-tools'), { recursive: true });
+        writeFileSync(join(sdk, 'platform-tools', 'adb'),
+          `#!/bin/sh\nexec '${join(shimDirectory, 'adb').replaceAll("'", `'\\''`)}' "$@"\n`, { mode: 0o755 });
+        env.E2E_SIMLOCK_UNWRAPPED_ANDROID_HOME = env.ANDROID_HOME ?? '';
+        env.E2E_SIMLOCK_UNWRAPPED_ANDROID_SDK_ROOT = env.ANDROID_SDK_ROOT ?? '';
+        env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
+      }
+      const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') ?? 'PATH';
+      env.E2E_SIMLOCK_UNWRAPPED_PATH = env[pathKey];
+      env[pathKey] = [shimDirectory, env[pathKey]].join(delimiter);
+      if (loss) throw new Error('SIMLOCK_LEASE_LOST_DURING_SETUP');
+      return {
+        release,
+        evidence: { leaseId: grant.lease.id, deviceId: grant.device.id, address, physical,
+          requesterId: grant.lease.requesterId, platform, model: grant.device.spec.model,
+          osVersion: grant.device.spec.osVersion, grantedAt: grant.lease.grantedAt },
+      };
+    } catch (error) {
+      try { await release(); } catch (cleanupError) { throw new Error(`${error.message}; ${cleanupError.message}`); }
+      throw error;
+    }
   }
 }
