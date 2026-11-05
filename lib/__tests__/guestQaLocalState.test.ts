@@ -8,6 +8,7 @@ const mockResetDreamQuota = jest.fn();
 const mockClearTranscript = jest.fn();
 const mockGetSavedDreams = jest.fn() as jest.MockedFunction<() => Promise<DreamListReadResult>>;
 const mockSaveOnboardingSnapshot = jest.fn();
+const mockForgetCaptureQuestion = jest.fn();
 
 const setSavedDreams = (value: { id: number }[]) =>
   mockGetSavedDreams.mockResolvedValue({ status: 'loaded', value: value as DreamAnalysis[] });
@@ -26,6 +27,9 @@ jest.mock('@/services/quota/GuestAnalysisCounter', () => ({
 }));
 jest.mock('@/services/quota/GuestDreamCounter', () => ({
   resetGuestDreamRecordingCount: () => mockResetDreamQuota(),
+}));
+jest.mock('@/services/captureQuestionStore', () => ({
+  forgetCaptureQuestion: (...args: unknown[]) => mockForgetCaptureQuestion(...args),
 }));
 jest.mock('@/services/storageService', () => ({
   clearSavedTranscript: () => mockClearTranscript(),
@@ -47,6 +51,7 @@ describe('guest QA local preparation', () => {
     mockResetDreamQuota.mockResolvedValue(undefined);
     mockClearTranscript.mockResolvedValue(undefined);
     mockSaveOnboardingSnapshot.mockResolvedValue(undefined);
+    mockForgetCaptureQuestion.mockResolvedValue(undefined);
   });
 
   it('refuses to discard unsynchronized guest dreams', async () => {
@@ -70,6 +75,8 @@ describe('guest QA local preparation', () => {
     expect(mockResetAnalysisQuota).toHaveBeenCalledTimes(1);
     expect(mockResetDreamQuota).toHaveBeenCalledTimes(1);
     expect(mockClearTranscript).toHaveBeenCalledTimes(1);
+    // A replayed scripted dream must reach the provider again, not reopen the last run's question.
+    expect(mockForgetCaptureQuestion).toHaveBeenCalledWith('guest');
     expect(mockSaveOnboardingSnapshot).toHaveBeenCalledWith(
       'guest',
       JSON.stringify({ status: 'not_started', schemaVersion: 1 })

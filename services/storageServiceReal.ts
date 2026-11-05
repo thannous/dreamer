@@ -1078,6 +1078,23 @@ async function writeRecordingDraft(key: string, transcript: string): Promise<voi
  * next guest or account. A guest draft follows the account that signs in, and
  * only into an empty account draft: two texts are never merged or dropped.
  */
+/**
+ * The guest's last capture question can quote a draft that has moved into an account, so it
+ * does not stay behind; best-effort, and loaded lazily like AsyncStorage itself here.
+ */
+async function forgetGuestCaptureQuestion(): Promise<void> {
+  try {
+    const { forgetCaptureQuestion } = await loadModule<typeof import('@/services/captureQuestionStore')>({
+      importModule: () => import('@/services/captureQuestionStore'),
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      requireModule: () => require('@/services/captureQuestionStore') as typeof import('@/services/captureQuestionStore'),
+    });
+    await forgetCaptureQuestion('guest');
+  } catch {
+    // The record names its draft by a digest only and is overwritten by the next question.
+  }
+}
+
 export function getRecordingDraft(scope: RecordingDraftScope): Promise<RecordingDraftReadResult> {
   return withRecordingDraftLock(() => readRecordingDraft(scope));
 }
@@ -1102,16 +1119,9 @@ async function readRecordingDraft(scope: RecordingDraftScope, adoptGuest = true)
       await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, encodeGuestRecordingDraft(guest.value, scope));
     }
     await writeRecordingDraft(key, guest.value);
+    await forgetGuestCaptureQuestion();
     try {
       await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, '');
-      // The guest's last capture question can quote this draft; it does not stay behind.
-      // Loaded lazily, like AsyncStorage itself here.
-      const { forgetCaptureQuestion } = await loadModule<typeof import('@/services/captureQuestionStore')>({
-        importModule: () => import('@/services/captureQuestionStore'),
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        requireModule: () => require('@/services/captureQuestionStore') as typeof import('@/services/captureQuestionStore'),
-      });
-      await forgetCaptureQuestion('guest');
     } catch {
       // The account copy and its ownership claim are durable; retry cleanup later.
     }
@@ -1135,6 +1145,7 @@ export async function saveTranscript(transcript: string, scope: RecordingDraftSc
             if (own.status === 'error') throw new Error('Recording draft owner unavailable');
             if (own.status === 'absent' || !own.value) await writeRecordingDraft(recordingDraftKey(scope), pending.value);
             await writeRecordingDraft(GUEST_RECORDING_DRAFT_KEY, '');
+            await forgetGuestCaptureQuestion();
           }
         }
         return writeRecordingDraft(recordingDraftKey(scope), transcript);

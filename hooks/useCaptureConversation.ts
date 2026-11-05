@@ -49,11 +49,14 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     finished.current = false;
   }, []);
 
+  // The saved question goes with the draft it was asked about.
+  const forgetSaved = useCallback(() => { forgetCaptureQuestion(scope).catch(() => {}); }, [scope]);
+
   // The draft ended (saved, cleared or discarded): forget its saved question with it.
   const discard = useCallback(() => {
     reset();
-    forgetCaptureQuestion(scope).catch(() => {});
-  }, [reset, scope]);
+    forgetSaved();
+  }, [forgetSaved, reset]);
 
   const rememberQuestions = useCallback((text: string) => {
     const label = t('recording.conversation.question_label');
@@ -162,6 +165,6 @@ export function useCaptureConversation({ language, t, scope, requestConsent }: O
     unavailable: state.status === 'question' && state.unavailable,
     done: state.status === 'done',
     needsDecision: state.status === 'decision',
-    ask, reset, discard, cancel, invalidateSource,
+    ask, reset, discard, forgetSaved, cancel, invalidateSource,
   };
 }

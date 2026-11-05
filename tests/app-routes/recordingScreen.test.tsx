@@ -1117,6 +1117,8 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
+    const savedQuestions = async () => (await AsyncStorage.getAllKeys()).filter((key: string) => key.startsWith('noctalia.capture.question'));
+    await waitFor(async () => expect(await savedQuestions()).toHaveLength(1));
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     act(() => mockOnPartialTranscript?.('Une réponse.'));
@@ -1139,6 +1141,8 @@ describe('Recording screen', () => {
       await pending;
     });
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
+    // The cleared draft's question, which can quote it, is gone from the device too.
+    await waitFor(async () => expect(await savedQuestions()).toEqual([]));
     act(() => mockOnPartialTranscript?.('Résultat reçu après effacement.'));
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
     // Starting over keeps the dreamer in Tell, with an empty conversation.

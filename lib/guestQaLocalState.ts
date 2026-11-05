@@ -3,6 +3,7 @@ import { getDefaultOnboardingState } from '@/lib/onboardingState';
 import { invalidateGuestSession } from '@/lib/guestSession';
 import { resetGuestAnalysisQuotaForQa } from '@/services/quota/GuestAnalysisCounter';
 import { resetGuestDreamRecordingCount } from '@/services/quota/GuestDreamCounter';
+import { forgetCaptureQuestion } from '@/services/captureQuestionStore';
 import {
   clearSavedTranscript,
   getSavedDreams,
@@ -33,6 +34,7 @@ export async function prepareGuestQaLocalState(): Promise<void> {
     resetGuestAnalysisQuotaForQa(),
     resetGuestDreamRecordingCount(),
     clearSavedTranscript('guest'),
+    forgetCaptureQuestion('guest'),
     saveOnboardingStateSnapshot('guest', JSON.stringify(getDefaultOnboardingState())),
     invalidateGuestSession(),
   ]);

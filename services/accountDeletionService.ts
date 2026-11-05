@@ -8,7 +8,7 @@ import { fetchJSON } from '@/lib/http';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import { notificationDreamScope } from '@/lib/notificationDreamCapture';
 import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
-import { clearRemoteDreamStorage } from '@/services/storageService';
+import { clearRemoteDreamStorage, clearSavedTranscript } from '@/services/storageService';
 
 export type AccountDeletionResponse = {
   deleted: boolean;
@@ -56,6 +56,12 @@ export async function finalizeAccountDeletion(deletedUserId: string): Promise<vo
   }
   try {
     await forgetGuideReading(deletedUserId);
+  } catch {
+    // Like the other caches, this remains scoped to the deleted account.
+  }
+  try {
+    // The unsaved capture draft holds the whole dream and the questions asked about it.
+    await clearSavedTranscript(toAccountScope(deletedUserId));
   } catch {
     // Like the other caches, this remains scoped to the deleted account.
   }

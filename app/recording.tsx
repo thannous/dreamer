@@ -246,7 +246,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   // The guided questions need the AI: ask for consent when the first one is due, not before.
   const requestCaptureConsent = useCallback(() => requestAiConsent(t), [t]);
   const conversation = useCaptureConversation({ language, t, scope: onboardingScope, requestConsent: requestCaptureConsent });
-  const { ask: askCaptureQuestion, discard: discardConversation, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
+  const { ask: askCaptureQuestion, discard: discardConversation, forgetSaved: forgetSavedQuestion, cancel: cancelConversation, invalidateSource: invalidateCaptureSource } = conversation;
   // Freeze the question when an answer begins. Persist the pair as editable text
   // so draft restoration and analysis retain context without another AI request.
   const getAnswerInsertion = useCallback(() => {
@@ -488,6 +488,8 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   const handleTranscriptChange = useCallback(
     (text: string) => {
       if (!isHydrated || noteInput(text) !== true) return;
+      // A draft emptied by hand has ended too: its saved question must not outlive it.
+      if (!text.trim()) forgetSavedQuestion();
       lastInputSourceRef.current = 'text';
       if (!captureStartedTrackedRef.current && text.trim().length > 0) {
         captureStartedTrackedRef.current = true;
@@ -505,7 +507,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       transcriptSelectionRef.current = undefined;
       setTranscriptSelection(undefined);
     },
-    [captureIntent, isHydrated, noteInput]
+    [captureIntent, forgetSavedQuestion, isHydrated, noteInput]
   );
 
   const noteReviewAnswer = useCallback((answer: string): boolean => {

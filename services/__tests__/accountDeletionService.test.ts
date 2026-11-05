@@ -6,7 +6,7 @@ import { signOut } from '@/lib/auth';
 import { forgetBadgeLedger } from '@/services/badgeLedgerStore';
 import { forgetCaptureQuestion } from '@/services/captureQuestionStore';
 import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
-import { clearRemoteDreamStorage } from '@/services/storageService';
+import { clearRemoteDreamStorage, clearSavedTranscript } from '@/services/storageService';
 import {
   finalizeAccountDeletion,
   requestAccountDeletion,
@@ -36,11 +36,13 @@ jest.mock('@/services/notificationDreamInbox', () => ({
 
 jest.mock('@/services/storageService', () => ({
   clearRemoteDreamStorage: jest.fn(),
+  clearSavedTranscript: jest.fn(),
 }));
 
 const mockFetchJSON = jest.mocked(fetchJSON);
 const mockSignOut = jest.mocked(signOut);
 const mockClearRemoteDreamStorage = jest.mocked(clearRemoteDreamStorage);
+const mockClearSavedTranscript = jest.mocked(clearSavedTranscript);
 const mockForgetGuideReading = jest.mocked(forgetGuideReading);
 const mockForgetBadgeLedger = jest.mocked(forgetBadgeLedger);
 const mockForgetNotificationDreams = jest.mocked(forgetNotificationDreams);
@@ -87,6 +89,7 @@ describe('finalizeAccountDeletion', () => {
     });
     mockForgetBadgeLedger.mockImplementation(async (id: string) => { calls.push(`badges ${id}`); });
     mockForgetGuideReading.mockImplementation(async (id: string) => { calls.push(`guides ${id}`); });
+    mockClearSavedTranscript.mockImplementation(async (scope: string) => { calls.push(`draft ${scope}`); });
     mockForgetCaptureQuestion.mockImplementation(async (scope?: string) => { calls.push(`question ${scope}`); });
     mockSignOut.mockImplementation(async () => {
       calls.push('signOut');
@@ -94,13 +97,14 @@ describe('finalizeAccountDeletion', () => {
 
     await finalizeAccountDeletion('user-1');
 
-    expect(calls).toEqual(['clear', 'forget user:user-1', 'badges user-1', 'guides user-1', 'question user:user-1', 'signOut']);
+    expect(calls).toEqual(['clear', 'forget user:user-1', 'badges user-1', 'guides user-1', 'draft user:user-1', 'question user:user-1', 'signOut']);
   });
 
   it('still signs out when cache clearing fails', async () => {
     mockClearRemoteDreamStorage.mockRejectedValue(new Error('sqlite busy'));
     mockForgetBadgeLedger.mockRejectedValue(new Error('badge storage busy'));
     mockForgetGuideReading.mockRejectedValue(new Error('guide storage busy'));
+    mockClearSavedTranscript.mockRejectedValue(new Error('draft storage busy'));
     mockForgetCaptureQuestion.mockRejectedValue(new Error('question storage busy'));
     mockSignOut.mockResolvedValue(undefined);
 
