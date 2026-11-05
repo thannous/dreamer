@@ -2,7 +2,7 @@ import { forgetGuideReading } from '@/services/guideReadingStore';
 import { forgetBadgeLedger } from '@/services/badgeLedgerStore';
 import { forgetCaptureQuestion } from '@/services/captureQuestionStore';
 import { toAccountScope } from '@/lib/accountScope';
-import { signOut } from '@/lib/auth';
+import { requestAppleAuthorizationCode, signOut } from '@/lib/auth';
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSON } from '@/lib/http';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
@@ -14,18 +14,37 @@ export type AccountDeletionResponse = {
   deleted: boolean;
 };
 
+/** The server's answer for an Apple account whose sign-in token was never kept. */
+const APPLE_AUTHORIZATION_REQUIRED = 'apple_authorization_required';
+
+function deleteAccount(body?: { appleAuthorizationCode: string }): Promise<AccountDeletionResponse> {
+  return fetchJSON<AccountDeletionResponse>(`${getApiBaseUrl()}/account`, {
+    method: 'DELETE',
+    ...(body ? { body } : {}),
+    ...NETWORK_REQUEST_POLICIES.accountDeletion,
+  });
+}
+
 /**
  * Asks the backend to permanently delete the authenticated account and all
  * associated personal data (dreams, chat history, quota usage, generated
  * images, subscription state). fetchJSON attaches the current session token;
  * the backend identifies the user from the JWT only.
+ *
+ * Apple requires the account's Sign in with Apple token to be revoked. When the
+ * server kept none at sign-in, Apple is asked once more on this iPhone and the
+ * server revokes the token from that fresh authorization before deleting.
  */
 export async function requestAccountDeletion(): Promise<AccountDeletionResponse> {
-  const base = getApiBaseUrl();
-  return fetchJSON<AccountDeletionResponse>(`${base}/account`, {
-    method: 'DELETE',
-    ...NETWORK_REQUEST_POLICIES.accountDeletion,
-  });
+  try {
+    return await deleteAccount();
+  } catch (error) {
+    // fetchJSON's HttpError keeps the parsed answer in `body`.
+    if ((error as { body?: { code?: unknown } } | null)?.body?.code !== APPLE_AUTHORIZATION_REQUIRED) throw error;
+    const authorizationCode = await requestAppleAuthorizationCode();
+    if (!authorizationCode) throw error;
+    return deleteAccount({ appleAuthorizationCode: authorizationCode });
+  }
 }
 
 /**

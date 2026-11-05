@@ -117,8 +117,10 @@ export function LegalSection() {
           t('settings.deleteAccount.successMessage')
         );
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         setIsDeleting(false);
+        // Closing the Sign in with Apple sheet keeps the account: nothing went wrong.
+        if ((error as { code?: unknown } | null)?.code === 'ERR_REQUEST_CANCELED') return;
         tell(t('settings.deleteAccount.errorMessage'));
       });
   }, [isDeleting, t, user]);

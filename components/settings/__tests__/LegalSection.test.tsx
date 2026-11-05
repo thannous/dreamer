@@ -293,4 +293,25 @@ describe('LegalSection', () => {
     expect(alertSpy.mock.calls[2][0]).toBe('settings.deleteAccount.errorMessage');
     expect(mockFinalizeAccountDeletion).not.toHaveBeenCalled();
   });
+
+  // An Apple account whose token the server never kept is asked to sign in with Apple once more.
+  it('keeps the account quietly when that Apple sheet is closed, and lets the person try again', async () => {
+    mockRequestAccountDeletion.mockRejectedValueOnce(Object.assign(new Error('canceled'), { code: 'ERR_REQUEST_CANCELED' }));
+    mockRequestAccountDeletion.mockResolvedValueOnce({ deleted: true });
+
+    const { getByTestId } = render(<LegalSection />);
+    const confirmTwice = () => {
+      fireEvent.press(getByTestId('settings-delete-account'));
+      lastAlertButtons()[1].onPress?.();
+      lastAlertButtons().find((button) => button.style === 'destructive')?.onPress?.();
+    };
+    confirmTwice();
+    await waitFor(() => expect(mockRequestAccountDeletion).toHaveBeenCalledTimes(1));
+    expect(alertSpy).toHaveBeenCalledTimes(2);
+    expect(mockFinalizeAccountDeletion).not.toHaveBeenCalled();
+
+    await waitFor(() => expect(getByTestId('settings-delete-account').props.accessibilityState).not.toEqual(expect.objectContaining({ disabled: true })));
+    confirmTwice();
+    await waitFor(() => expect(mockFinalizeAccountDeletion).toHaveBeenCalledWith('user-1'));
+  });
 });

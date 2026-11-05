@@ -1,7 +1,12 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 import { PREVIEW_OBJECT_PREFIX } from '../lib/analysisPreview.ts';
-import { revokeAppleTokens } from '../lib/appleTokenRevoke.ts';
+import {
+  AppleTokenRevokeError,
+  exchangeAppleAuthorizationCode,
+  readAppleAuthConfig,
+  revokeAppleTokens,
+} from '../lib/appleTokenRevoke.ts';
 import { corsHeaders } from '../lib/constants.ts';
 import type { ApiContext } from '../types.ts';
 
@@ -22,6 +27,21 @@ type StorageEntry = { id: string | null; name: string };
 // Injectable for tests; the default builds the real service-role client.
 type AdminClientFactory = (url: string, serviceRoleKey: string) => any;
 type AppleRevokeFn = typeof revokeAppleTokens;
+type AppleCodeExchangeFn = (authorizationCode: string) => Promise<string>;
+
+/** The app answers this by asking Apple for a fresh authorization code (services/accountDeletionService.ts). */
+export const APPLE_AUTHORIZATION_REQUIRED = 'apple_authorization_required';
+
+const exchangeAppleCode: AppleCodeExchangeFn = (authorizationCode) => {
+  const config = readAppleAuthConfig();
+  if (!config) return Promise.reject(new AppleTokenRevokeError('Apple token revocation is not configured'));
+  return exchangeAppleAuthorizationCode(authorizationCode, config);
+};
+
+async function readAppleAuthorizationCode(req: Request): Promise<string> {
+  const body = await req.json().catch(() => null) as { appleAuthorizationCode?: unknown } | null;
+  return typeof body?.appleAuthorizationCode === 'string' ? body.appleAuthorizationCode.trim() : '';
+}
 
 const defaultAdminClientFactory: AdminClientFactory = (url, serviceRoleKey) =>
   createClient(url, serviceRoleKey, {
@@ -94,7 +114,8 @@ function userHasAppleIdentity(user: { identities?: { provider?: string }[] | nul
 export async function handleDeleteAccount(
   ctx: ApiContext,
   createAdminClient: AdminClientFactory = defaultAdminClientFactory,
-  revokeAppleUserTokens: AppleRevokeFn = revokeAppleTokens
+  revokeAppleUserTokens: AppleRevokeFn = revokeAppleTokens,
+  exchangeAppleAuthorization: AppleCodeExchangeFn = exchangeAppleCode
 ): Promise<Response> {
   const { user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
 
@@ -110,26 +131,10 @@ export async function handleDeleteAccount(
   const userId = user.id as string;
   const adminClient = createAdminClient(supabaseUrl, supabaseServiceRoleKey);
 
-  // 1. Generated dream images in Storage (not covered by any FK cascade).
-  const storageCleared = await deleteUserStorageObjects(adminClient, storageBucket, userId);
-  if (!storageCleared) {
-    return jsonResponse({ error: 'Deletion failed' }, 500);
-  }
-
-  // 2. public.quota_usage keeps user_id WITHOUT a foreign key to auth.users
-  //    (see 20251220000000_unify_quota_tables.sql), so it never cascades.
-  const { error: quotaError } = await adminClient
-    .from('quota_usage')
-    .delete()
-    .eq('user_id', userId);
-  if (quotaError) {
-    console.warn('[api] /account: quota_usage deletion failed', { code: quotaError.code ?? 'unknown' });
-    return jsonResponse({ error: 'Deletion failed' }, 500);
-  }
-
-  // 3. Sign in with Apple requires token revocation before the account is
-  //    destroyed (App Store guideline). Missing Apple REST credentials fail
-  //    the delete instead of skipping revoke.
+  // 1. Sign in with Apple requires token revocation when the account is deleted
+  //    (App Store guideline 5.1.1(v)). It comes first, so a refusal deletes
+  //    nothing. Missing Apple REST credentials fail the delete instead of
+  //    skipping revoke.
   const { data: authUserData, error: getUserError } = await adminClient.auth.admin.getUserById(userId);
   if (getUserError || !authUserData?.user) {
     console.warn('[api] /account: failed to load auth user before delete', {
@@ -139,11 +144,20 @@ export async function handleDeleteAccount(
   }
   if (userHasAppleIdentity(authUserData.user)) {
     try {
-      const { data: refreshToken, error } = await adminClient.rpc('read_apple_refresh_token', {
+      const { data: storedToken, error } = await adminClient.rpc('read_apple_refresh_token', {
         p_user_id: userId,
       });
-      if (error || typeof refreshToken !== 'string' || !refreshToken) {
+      if (error) {
         throw new Error('Private Apple credential unavailable');
+      }
+      let refreshToken = typeof storedToken === 'string' ? storedToken : '';
+      if (!refreshToken) {
+        // No token was kept at sign-in: the app asks Apple for a fresh code and sends it.
+        const authorizationCode = await readAppleAuthorizationCode(ctx.req);
+        if (!authorizationCode) {
+          return jsonResponse({ error: 'Apple authorization required', code: APPLE_AUTHORIZATION_REQUIRED }, 409);
+        }
+        refreshToken = await exchangeAppleAuthorization(authorizationCode);
       }
       await revokeAppleUserTokens({ refreshToken });
     } catch {
@@ -151,6 +165,23 @@ export async function handleDeleteAccount(
       console.warn('[api] /account: Apple token revoke failed');
       return jsonResponse({ error: 'Apple token revocation failed' }, 503);
     }
+  }
+
+  // 2. Generated dream images in Storage (not covered by any FK cascade).
+  const storageCleared = await deleteUserStorageObjects(adminClient, storageBucket, userId);
+  if (!storageCleared) {
+    return jsonResponse({ error: 'Deletion failed' }, 500);
+  }
+
+  // 3. public.quota_usage keeps user_id WITHOUT a foreign key to auth.users
+  //    (see 20251220000000_unify_quota_tables.sql), so it never cascades.
+  const { error: quotaError } = await adminClient
+    .from('quota_usage')
+    .delete()
+    .eq('user_id', userId);
+  if (quotaError) {
+    console.warn('[api] /account: quota_usage deletion failed', { code: quotaError.code ?? 'unknown' });
+    return jsonResponse({ error: 'Deletion failed' }, 500);
   }
 
   // 4. Deleting the Auth user cascades to every table holding an

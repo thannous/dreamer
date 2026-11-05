@@ -787,6 +787,22 @@ describe('auth helpers', () => {
     await expect(auth.signInWithApple()).rejects.toThrow('SIGN_IN_CANCELLED');
   });
 
+  it('asks Apple again for a fresh authorization code, for account deletion, without a new session', async () => {
+    defaultAppleModule.signInAsync.mockResolvedValueOnce({
+      identityToken: 'apple-id-token',
+      authorizationCode: 'fresh-code',
+      user: 'apple-user',
+    });
+    const auth = await loadAuth();
+
+    await expect(auth.requestAppleAuthorizationCode()).resolves.toBe('fresh-code');
+    expect(mockSupabaseAuth.signInWithIdToken).not.toHaveBeenCalled();
+
+    // Settings keeps the account quietly when the person closes Apple's sheet.
+    defaultAppleModule.signInAsync.mockRejectedValueOnce({ code: 'ERR_REQUEST_CANCELED' });
+    await expect(auth.requestAppleAuthorizationCode()).rejects.toEqual({ code: 'ERR_REQUEST_CANCELED' });
+  });
+
   it('reports Apple sign-in available on iOS', async () => {
     const auth = await loadAuth({ platformOS: 'ios' });
 

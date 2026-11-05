@@ -726,6 +726,18 @@ export async function signInWithApple(): Promise<User> {
   }
 }
 
+/**
+ * Asks Apple once more for the signed-in Apple account (iOS only). Account deletion
+ * sends this code when the server kept no token to revoke.
+ */
+export async function requestAppleAuthorizationCode(): Promise<string | undefined> {
+  const { requestAppleIdentityCredential } = await loadModuleWithJestRequire(
+    () => import('./appleAuth'),
+    () => require('./appleAuth') as typeof import('./appleAuth')
+  );
+  return (await requestAppleIdentityCredential()).authorizationCode;
+}
+
 async function storeAppleAuthorizationCode(authorizationCode: string): Promise<void> {
   const { getApiBaseUrl } = await loadModuleWithJestRequire(
     () => import('./config'),

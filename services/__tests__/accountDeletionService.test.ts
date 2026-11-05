@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { forgetGuideReading } from '@/services/guideReadingStore';
 
 import { fetchJSON } from '@/lib/http';
-import { signOut } from '@/lib/auth';
+import { requestAppleAuthorizationCode, signOut } from '@/lib/auth';
 import { forgetBadgeLedger } from '@/services/badgeLedgerStore';
 import { forgetCaptureQuestion } from '@/services/captureQuestionStore';
 import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
@@ -21,6 +21,7 @@ jest.mock('@/lib/http', () => ({
 }));
 
 jest.mock('@/lib/auth', () => ({
+  requestAppleAuthorizationCode: jest.fn(),
   signOut: jest.fn(),
 }));
 
@@ -41,6 +42,7 @@ jest.mock('@/services/storageService', () => ({
 
 const mockFetchJSON = jest.mocked(fetchJSON);
 const mockSignOut = jest.mocked(signOut);
+const mockRequestAppleAuthorizationCode = jest.mocked(requestAppleAuthorizationCode);
 const mockClearRemoteDreamStorage = jest.mocked(clearRemoteDreamStorage);
 const mockClearSavedTranscript = jest.mocked(clearSavedTranscript);
 const mockForgetGuideReading = jest.mocked(forgetGuideReading);
@@ -51,6 +53,8 @@ const mockForgetCaptureQuestion = jest.mocked(forgetCaptureQuestion);
 describe('requestAccountDeletion', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchJSON.mockReset();
+    mockRequestAppleAuthorizationCode.mockReset();
   });
 
   it('issues a DELETE request against the account endpoint', async () => {
@@ -71,6 +75,39 @@ describe('requestAccountDeletion', () => {
   it('propagates backend and network errors', async () => {
     mockFetchJSON.mockRejectedValue(new Error('HTTP 500 Internal Server Error'));
     await expect(requestAccountDeletion()).rejects.toThrow('HTTP 500');
+    expect(mockRequestAppleAuthorizationCode).not.toHaveBeenCalled();
+  });
+
+  // The server answers this for an Apple account whose sign-in token it never kept.
+  const appleAuthorizationRequired = Object.assign(new Error('HTTP 409 Conflict'), {
+    status: 409,
+    body: { error: 'Apple authorization required', code: 'apple_authorization_required' },
+  });
+
+  it('asks Apple once more and sends that fresh authorization when the server kept no Apple token', async () => {
+    mockFetchJSON.mockRejectedValueOnce(appleAuthorizationRequired).mockResolvedValueOnce({ deleted: true });
+    mockRequestAppleAuthorizationCode.mockResolvedValue('fresh-code');
+
+    await expect(requestAccountDeletion()).resolves.toEqual({ deleted: true });
+
+    expect(mockRequestAppleAuthorizationCode).toHaveBeenCalledTimes(1);
+    expect(mockFetchJSON).toHaveBeenCalledTimes(2);
+    const [url, options] = mockFetchJSON.mock.calls[1];
+    expect(url).toBe('https://example.functions.supabase.co/api/account');
+    expect(options?.method).toBe('DELETE');
+    expect(options?.retries).toBe(0);
+    expect(options?.body).toEqual({ appleAuthorizationCode: 'fresh-code' });
+  });
+
+  it('stops when Apple gives no authorization code or the sheet is closed', async () => {
+    mockFetchJSON.mockRejectedValue(appleAuthorizationRequired);
+    mockRequestAppleAuthorizationCode.mockResolvedValueOnce(undefined);
+    await expect(requestAccountDeletion()).rejects.toBe(appleAuthorizationRequired);
+
+    const canceled = Object.assign(new Error('canceled'), { code: 'ERR_REQUEST_CANCELED' });
+    mockRequestAppleAuthorizationCode.mockRejectedValueOnce(canceled);
+    await expect(requestAccountDeletion()).rejects.toBe(canceled);
+    expect(mockFetchJSON).toHaveBeenCalledTimes(2);
   });
 });
 

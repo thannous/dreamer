@@ -105,13 +105,13 @@ Deno.test('/account deletion removes storage, prepared paintings included, quota
   assertEquals(await res.json(), { deleted: true });
   assertEquals(calls, [
     'factory',
+    `auth.getUserById:${USER_ID}`,
     `storage.list:dream-images:${USER_ID}/`,
     `storage.remove:${USER_ID}/dream.png`,
     `storage.list:dream-images:${USER_ID}/`,
     // The paintings of prepared analyses, kept out of the account's own prefix.
     `storage.list:dream-images:previews/${USER_ID}/`,
     `db.delete:quota_usage.user_id=${USER_ID}`,
-    `auth.getUserById:${USER_ID}`,
     `auth.deleteUser:${USER_ID}`,
   ]);
 });
@@ -156,6 +156,8 @@ Deno.test('/account deletion revokes Apple tokens before deleting an Apple user'
   assertEquals(calls.includes(`auth.getUserById:${USER_ID}`), true);
   assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), true);
   assertEquals(calls.indexOf(`rpc:read_apple_refresh_token:${USER_ID}`) < calls.indexOf('apple.revoke'), true);
+  // Revoked before anything is deleted, so a refusal leaves the account whole.
+  assertEquals(calls.indexOf('apple.revoke') < calls.indexOf(`storage.list:dream-images:${USER_ID}/`), true);
   assertEquals(calls.indexOf('apple.revoke') < calls.indexOf(`auth.deleteUser:${USER_ID}`), true);
 });
 
@@ -170,7 +172,7 @@ Deno.test('/account deletion skips Apple revoke for non-Apple users', async () =
   assertEquals(revoked, false);
 });
 
-Deno.test('/account deletion fails honestly when Apple revoke fails', async () => {
+Deno.test('/account deletion deletes nothing when Apple revoke fails', async () => {
   const { factory, calls } = fakeAdminClient({
     identities: [{ provider: 'apple' }],
     privateAppleToken: 'apple-refresh',
@@ -180,25 +182,95 @@ Deno.test('/account deletion fails honestly when Apple revoke fails', async () =
   });
   assertEquals(res.status, 503);
   assertEquals(await res.json(), { error: 'Apple token revocation failed' });
+  assertEquals(calls.some((call) => call.startsWith('storage.')), false);
+  assertEquals(calls.some((call) => call.startsWith('db.delete:')), false);
   assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
 });
 
 // Isolation gap: real Apple provider failures cannot be safely forced by a local
 // Auth journey. These cases protect fail-closed deletion without provider calls.
-for (const results of [
-  { privateAppleToken: null },
-  { privateAppleTokenError: { message: 'private storage unavailable' } },
-]) {
-  Deno.test(`/account preserves the Apple user when private credentials are unavailable (${JSON.stringify(results)})`, async () => {
-    const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple' }], ...results });
-    let revoked = false;
-    const res = await handleDeleteAccount(context() as never, factory, async () => { revoked = true; });
-    assertEquals(res.status, 503);
-    assertEquals(await res.json(), { error: 'Apple token revocation failed' });
-    assertEquals(revoked, false);
-    assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+Deno.test('/account preserves the Apple user when private credentials cannot be read', async () => {
+  const { factory, calls } = fakeAdminClient({
+    identities: [{ provider: 'apple' }],
+    privateAppleTokenError: { message: 'private storage unavailable' },
+  });
+  let revoked = false;
+  const res = await handleDeleteAccount(context() as never, factory, async () => { revoked = true; });
+  assertEquals(res.status, 503);
+  assertEquals(await res.json(), { error: 'Apple token revocation failed' });
+  assertEquals(revoked, false);
+  assertEquals(calls.some((call) => call.startsWith('storage.')), false);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+});
+
+function deleteRequest(body: unknown) {
+  return new Request('https://example.supabase.co/api/account', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   });
 }
+
+// No refresh token is kept when the Apple exchange failed at sign-in (secrets missing).
+Deno.test('/account asks the app for a fresh Apple authorization when none was kept, deleting nothing', async () => {
+  const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple' }], privateAppleToken: null });
+  let revoked = false;
+  const res = await handleDeleteAccount(context() as never, factory, async () => { revoked = true; });
+  assertEquals(res.status, 409);
+  assertEquals(await res.json(), { error: 'Apple authorization required', code: 'apple_authorization_required' });
+  assertEquals(revoked, false);
+  assertEquals(calls.some((call) => call.startsWith('storage.')), false);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+});
+
+Deno.test('/account revokes the token from a fresh Apple authorization, then deletes the account', async () => {
+  const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple' }], privateAppleToken: null });
+  const exchanged: string[] = [];
+  const revokeCalls: { refreshToken?: string | null }[] = [];
+  const res = await handleDeleteAccount(
+    context({ req: deleteRequest({ appleAuthorizationCode: ' fresh-code ' }) }) as never,
+    factory,
+    async (input) => { revokeCalls.push(input); calls.push('apple.revoke'); },
+    async (code) => { exchanged.push(code); return 'fresh-refresh'; },
+  );
+  assertEquals(res.status, 200);
+  assertEquals(await res.json(), { deleted: true });
+  assertEquals(exchanged, ['fresh-code']);
+  assertEquals(revokeCalls, [{ refreshToken: 'fresh-refresh' }]);
+  assertEquals(calls.indexOf('apple.revoke') < calls.indexOf(`storage.list:dream-images:${USER_ID}/`), true);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), true);
+});
+
+Deno.test('/account keeps everything when the fresh Apple authorization cannot be exchanged', async () => {
+  const { factory, calls } = fakeAdminClient({ identities: [{ provider: 'apple' }], privateAppleToken: null });
+  let revoked = false;
+  const res = await handleDeleteAccount(
+    context({ req: deleteRequest({ appleAuthorizationCode: 'expired-code' }) }) as never,
+    factory,
+    async () => { revoked = true; },
+    () => Promise.reject(new Error('Apple token exchange failed (400)')),
+  );
+  assertEquals(res.status, 503);
+  assertEquals(await res.json(), { error: 'Apple token revocation failed' });
+  assertEquals(revoked, false);
+  assertEquals(calls.some((call) => call.startsWith('storage.')), false);
+  assertEquals(calls.includes(`auth.deleteUser:${USER_ID}`), false);
+});
+
+Deno.test('/account uses the kept Apple token over a code sent with the request', async () => {
+  const { factory } = fakeAdminClient({ identities: [{ provider: 'apple' }], privateAppleToken: 'kept-refresh' });
+  const revokeCalls: { refreshToken?: string | null }[] = [];
+  let exchanged = false;
+  const res = await handleDeleteAccount(
+    context({ req: deleteRequest({ appleAuthorizationCode: 'fresh-code' }) }) as never,
+    factory,
+    async (input) => { revokeCalls.push(input); },
+    async () => { exchanged = true; return 'unused'; },
+  );
+  assertEquals(res.status, 200);
+  assertEquals(revokeCalls, [{ refreshToken: 'kept-refresh' }]);
+  assertEquals(exchanged, false);
+});
 
 // A bucket that lists one folder level at a time, like Supabase Storage:
 // files carry an id, folders have a null id and vanish once emptied.
