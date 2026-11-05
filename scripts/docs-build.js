@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { readMedia, hydrate, rewriteWebMedia, verifyLocal: verifyMediaLocal } = require('./lib/site-media');
+const { readMedia, hydrate, mediaCacheDir, rewriteWebMedia, verifyLocal: verifyMediaLocal } = require('./lib/site-media');
 const { spawnSync } = require('child_process');
 const {
   DATA_DIR,
@@ -245,7 +245,7 @@ function copyStaticFiles() {
 
 async function main() {
   markDocsBuildStarted(ROOT_DIR);
-  await hydrate(ROOT_DIR);
+  await hydrate(ROOT_DIR, { cacheDir: mediaCacheDir() });
 
   // Content quality is a hard prerequisite for generating or expanding the
   // programmatic symbol inventory.

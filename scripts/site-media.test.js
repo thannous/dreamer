@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { inventory, readMedia, hydrate, sha256, localPath, cdnRedirect, publishedMediaPaths, mediaUrl, rewriteMediaReferences, rewriteWebMedia } = require('./lib/site-media');
+const { inventory, readMedia, hydrate, mediaCacheDir, sha256, localPath, cdnRedirect, publishedMediaPaths, mediaUrl, rewriteMediaReferences, rewriteWebMedia } = require('./lib/site-media');
 const { detach, verifyRemote } = require('./site-media');
 const { createDeployStaging } = require('./lib/docs-deploy-staging');
 
@@ -82,6 +82,49 @@ describe('media preservation and recovery', () => {
     await hydrate(root, { fetcher: offline, log: () => {} });
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(offline).not.toHaveBeenCalled();
+  });
+
+  it('keeps verified downloads in the verify cache, so the next fresh copy restores them offline', async () => {
+    setup();
+    const cacheDir = path.join(root, 'verify-cache', 'site-media');
+    fs.unlinkSync(localPath(root, relative));
+    const fetcher = jest.fn(async () => response(original));
+    const lines = [];
+    await hydrate(root, { fetcher, log: line => lines.push(line), cacheDir });
+    expect(fs.readFileSync(path.join(cacheDir, sha256(original)))).toEqual(original);
+    expect(lines).toEqual(['[site-media] 1 checked, 1 restored without re-encoding (0 from the verify cache).']);
+
+    fs.unlinkSync(localPath(root, relative));
+    const offline = jest.fn(() => { throw new Error('offline'); });
+    await hydrate(root, { fetcher: offline, log: line => lines.push(line), cacheDir });
+    expect(offline).not.toHaveBeenCalled();
+    expect(fs.readFileSync(localPath(root, relative))).toEqual(original);
+    expect(lines[1]).toBe('[site-media] 1 checked, 1 restored without re-encoding (1 from the verify cache).');
+    // Two names for the same bytes, never one shared file a later edit could reach.
+    expect(fs.statSync(localPath(root, relative)).ino).not.toBe(fs.statSync(path.join(cacheDir, sha256(original))).ino);
+    expect(fs.readdirSync(path.dirname(localPath(root, relative)))).toEqual(['gift.webp']);
+  });
+
+  it('downloads again over a corrupt cache entry, and drops bytes the manifest no longer names', async () => {
+    setup();
+    const cacheDir = path.join(root, 'verify-cache', 'site-media');
+    fs.mkdirSync(cacheDir, { recursive: true });
+    fs.writeFileSync(path.join(cacheDir, sha256(original)), 'corrupted same size!');
+    const stale = path.join(cacheDir, sha256(Buffer.from('an older painting')));
+    fs.writeFileSync(stale, 'an older painting');
+    fs.unlinkSync(localPath(root, relative));
+    const fetcher = jest.fn(async () => response(original));
+    await hydrate(root, { fetcher, log: () => {}, cacheDir });
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    expect(fs.readFileSync(localPath(root, relative))).toEqual(original);
+    expect(fs.readFileSync(path.join(cacheDir, sha256(original)))).toEqual(original);
+    expect(fs.existsSync(stale)).toBe(false);
+  });
+
+  it('uses the verify cache only inside a verify run, in its shared git directory', () => {
+    expect(mediaCacheDir({})).toBeNull();
+    expect(mediaCacheDir({ VERIFY_LOCAL_COMMON_DIR: '/repo/.git' })).toBe(path.join('/repo/.git', 'verify-cache', 'site-media'));
+    expect(fs.readFileSync(path.join(__dirname, 'docs-build.js'), 'utf8')).toContain('await hydrate(ROOT_DIR, { cacheDir: mediaCacheDir() });');
   });
 
   it('rejects corrupt downloads without leaving a bogus image or success receipt', async () => {

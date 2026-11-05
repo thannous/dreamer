@@ -166,7 +166,49 @@ async function download(media, entry, fetcher = fetch, url = publicUrl(media, en
   }
 }
 
-async function hydrate(root, { fetcher = fetch, log = console.log } = {}) {
+// verify:pr and verify:release build the site in a fresh copy without the
+// ignored media: docs:build keeps the verified bytes in the clone's shared git
+// directory, named by sha256, so the next copy clones them instead of
+// downloading the whole release again (1.1 GB). A build outside the engine
+// has no cache, and hydrate uses one only when its caller passes it.
+function mediaCacheDir(env = process.env) {
+  return env.VERIFY_LOCAL_COMMON_DIR ? path.join(env.VERIFY_LOCAL_COMMON_DIR, 'verify-cache', 'site-media') : null;
+}
+
+const temporaryName = file => `${file}.${process.pid}.${crypto.randomBytes(6).toString('hex')}.tmp`;
+
+// A cached copy counts only when its own bytes match the manifest; anything
+// else (absent, truncated, changed) leaves the entry to the download.
+function fromCache(cacheDir, entry, temporary) {
+  if (!cacheDir) return false;
+  try {
+    fs.copyFileSync(path.join(cacheDir, entry[2]), temporary, fs.constants.COPYFILE_EXCL | fs.constants.COPYFILE_FICLONE);
+    if (fs.statSync(temporary).size === entry[1] && sha256(fs.readFileSync(temporary)) === entry[2]) return true;
+  } catch { /* not cached */ }
+  fs.rmSync(temporary, { force: true });
+  return false;
+}
+
+// A cache that cannot be written only costs the next run a download.
+function keepInCache(cacheDir, entry, file) {
+  if (!cacheDir) return;
+  const target = path.join(cacheDir, entry[2]);
+  const temporary = temporaryName(target);
+  try {
+    fs.mkdirSync(cacheDir, { recursive: true });
+    fs.copyFileSync(file, temporary, fs.constants.COPYFILE_EXCL | fs.constants.COPYFILE_FICLONE);
+    fs.renameSync(temporary, target);
+  } catch { fs.rmSync(temporary, { force: true }); }
+}
+
+// The cache holds the current release only: older bytes go once a build no longer names them.
+function pruneCache(cacheDir, media) {
+  if (!cacheDir || !fs.existsSync(cacheDir)) return;
+  const kept = new Set(media.manifest.files.map(entry => entry[2]));
+  for (const name of fs.readdirSync(cacheDir)) if (!kept.has(name)) fs.rmSync(path.join(cacheDir, name), { force: true });
+}
+
+async function hydrate(root, { fetcher = fetch, log = console.log, cacheDir = null } = {}) {
   const media = readMedia(root);
   if (!media) return;
   // A changed local illustration must be explicitly inventoried/published. Never overwrite it.
@@ -176,19 +218,25 @@ async function hydrate(root, { fetcher = fetch, log = console.log } = {}) {
     if (fs.existsSync(localPath(root, entry[0]))) throw new Error(`Local media changed; publish a new inventory: ${entry[0]}`);
     missing.push(entry);
   }
-  if (missing.length && !media.config.publicOrigin) throw new Error('Missing media; CDN not yet configured');
-  await parallel(missing, async entry => {
-    const bytes = await download(media, entry, fetcher);
+  let cached = 0;
+  const restore = async entry => {
     const file = localPath(root, entry[0]);
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    const temporary = `${file}.${process.pid}.${crypto.randomBytes(6).toString('hex')}.tmp`;
+    const temporary = temporaryName(file);
     try {
-      fs.writeFileSync(temporary, bytes, { flag: 'wx' });
+      if (fromCache(cacheDir, entry, temporary)) cached += 1;
+      else {
+        if (!media.config.publicOrigin) throw new Error('Missing media; CDN not yet configured');
+        fs.writeFileSync(temporary, await download(media, entry, fetcher), { flag: 'wx' });
+        keepInCache(cacheDir, entry, temporary);
+      }
       // Another worktree/process must never have its different edit replaced.
       fs.linkSync(temporary, file);
     } finally { fs.rmSync(temporary, { force: true }); }
-  });
-  log(`[site-media] ${media.manifest.files.length} checked, ${missing.length} restored without re-encoding.`);
+  };
+  await parallel(missing, restore);
+  pruneCache(cacheDir, media);
+  log(`[site-media] ${media.manifest.files.length} checked, ${missing.length} restored without re-encoding${cacheDir ? ` (${cached} from the verify cache)` : ''}.`);
 }
 
 function verifyLocal(root) {
@@ -241,4 +289,4 @@ function publishedMediaPaths(root, docsDir) {
 }
 
 module.exports = { CONFIG, MANIFEST, STATIC, MIME, sha256, readMedia, inventory, localPath,
-  entriesDigest, publicUrl, mediaUrl, mediaRelativePath, rewriteMediaReferences, rewriteWebMedia, validLocal, parallel, download, hydrate, verifyLocal, assertRemoteReceipt, mediaCorsHtml, cdnRedirect, publishedMediaPaths };
+  entriesDigest, publicUrl, mediaUrl, mediaRelativePath, rewriteMediaReferences, rewriteWebMedia, validLocal, parallel, download, mediaCacheDir, hydrate, verifyLocal, assertRemoteReceipt, mediaCorsHtml, cdnRedirect, publishedMediaPaths };
