@@ -1,4 +1,4 @@
-import { test, type Device } from '@e2e-dev/mobile';
+import { afterEach, test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
 import { tapWhenStill } from '../native-settle';
 // The persistent mock profile seeds this entry. Explicit expectations keep
@@ -15,6 +15,21 @@ const collapsedWithoutValue = (error: unknown) => {
 };
 
 type NativeBackgroundFixtures = TestFixtures & { device: Device };
+
+// A failed or timed-out journey must not hand the next one a rotated or offline device. A
+// finally block cannot promise that: a timed-out body's device calls are cancelled, while
+// afterEach runs with its own budget. A journey sets its flag before it changes the state.
+const restore = { portrait: false, airplane: false };
+afterEach(async ({ device }) => {
+  if (restore.portrait) {
+    restore.portrait = false;
+    await device.setOrientation('portrait');
+  }
+  if (restore.airplane) {
+    restore.airplane = false;
+    await device.setAirplaneMode(false);
+  }
+});
 
 // Billing uses only the runner's identified, disposable mock Release. Store
 // operations and entitlement convergence are simulated; no Store account is used.
@@ -920,13 +935,12 @@ test('Dreamer Release scroll dogfood preserves its journal and painted resource 
   await app.open();
   await screen.getByTestId('tab.home', { visible: true }).tap();
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
-  try {
-    await device.setOrientation('landscape-left');
-    await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
-    await app.screenshot('scroll-dogfood-landscape');
-  } finally {
-    await device.setOrientation('portrait');
-  }
+  restore.portrait = true;
+  await device.setOrientation('landscape-left');
+  await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+  await app.screenshot('scroll-dogfood-landscape');
+  await device.setOrientation('portrait');
+  restore.portrait = false;
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
 });
 
@@ -1077,31 +1091,30 @@ for (const offline of [false, true]) {
     const { app, screen, device } = fixtures;
     // collection633Start begins with app.open() through billingGuest.
     await collection633Start(fixtures);
-    try {
-      if (offline) await device.setAirplaneMode(true);
-      const collectionFrame = await collection633Open(screen);
-      await expect(screen.getByRole('button', 'New Bronze card: Night Journal. Ready to reveal.', { visible: true })).toBeVisible();
-      await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-grid`);
-      await screen.getByTestId('collection.summary.new', { visible: true }).tap();
-      await screen.getByTestId('collection.detail.reveal', { visible: true }).tap();
-      await expect(screen.getByTestId('collection.detail.tier.bronze', { visible: true })).toBeVisible();
-      await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
-      await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-revealed`);
-      const close = screen.getByTestId('collection.detail.close', { visible: true });
-      const closeFrame = await close.boundingBox();
-      if (!closeFrame) throw new Error('Card close control frame is missing');
-      expect(closeFrame.x).toBeGreaterThanOrEqual(collectionFrame.x);
-      expect(closeFrame.x + closeFrame.width).toBeLessThanOrEqual(collectionFrame.x + collectionFrame.width);
-      await close.tap();
-      await expect(screen.getByTestId('collection.detail', { visible: true })).toHaveCount(0);
-      await expect(screen.getByTestId('collection.summary.new')).toHaveCount(0);
-      await screen.scrollUntilVisible(screen.getByTestId('collection.card.night-journal', { visible: true }));
-      await screen.getByTestId('collection.card.night-journal', { visible: true }).tap();
-      await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
-      await expect(screen.getByTestId('collection.detail.reveal')).toHaveCount(0);
-      await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-reopened`);
-    } finally {
-      if (offline) await device.setAirplaneMode(false);
+    if (offline) {
+      restore.airplane = true;
+      await device.setAirplaneMode(true);
     }
+    const collectionFrame = await collection633Open(screen);
+    await expect(screen.getByRole('button', 'New Bronze card: Night Journal. Ready to reveal.', { visible: true })).toBeVisible();
+    await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-grid`);
+    await screen.getByTestId('collection.summary.new', { visible: true }).tap();
+    await screen.getByTestId('collection.detail.reveal', { visible: true }).tap();
+    await expect(screen.getByTestId('collection.detail.tier.bronze', { visible: true })).toBeVisible();
+    await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
+    await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-revealed`);
+    const close = screen.getByTestId('collection.detail.close', { visible: true });
+    const closeFrame = await close.boundingBox();
+    if (!closeFrame) throw new Error('Card close control frame is missing');
+    expect(closeFrame.x).toBeGreaterThanOrEqual(collectionFrame.x);
+    expect(closeFrame.x + closeFrame.width).toBeLessThanOrEqual(collectionFrame.x + collectionFrame.width);
+    await close.tap();
+    await expect(screen.getByTestId('collection.detail', { visible: true })).toHaveCount(0);
+    await expect(screen.getByTestId('collection.summary.new')).toHaveCount(0);
+    await screen.scrollUntilVisible(screen.getByTestId('collection.card.night-journal', { visible: true }));
+    await screen.getByTestId('collection.card.night-journal', { visible: true }).tap();
+    await expect(screen.getByRole('image', 'Night Journal, Bronze', { visible: true })).toBeVisible();
+    await expect(screen.getByTestId('collection.detail.reveal')).toHaveCount(0);
+    await app.screenshot(`pr633-${offline ? 'offline' : 'online'}-reopened`);
   });
 }

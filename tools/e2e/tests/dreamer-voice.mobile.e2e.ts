@@ -1,4 +1,4 @@
-import { test, type Device } from '@e2e-dev/mobile';
+import { afterEach, test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
 import { injectAndroidMicrophone, voiceInputUnavailable } from '../native-voice-input';
 import { nativeDismissCaptureKeyboard, nativeGuest, nativeJournal, nativeTranscript } from '../native-backend-fixtures';
@@ -7,6 +7,16 @@ type VoiceFixtures = TestFixtures & { device: Device };
 const profileUnavailable = process.env.E2E_NATIVE_MOCK_MODE !== 'false' || !process.env.E2E_NATIVE_BACKEND_MANIFEST
   ? 'Requires the identified owned local-backend Release; native speech is not mocked.' : false;
 const options = { platforms: ['ios', 'android'], tags: ['native-voice', 'native-priority'], timeout: 240_000, skip: profileUnavailable };
+
+// Only the owned QA app's microphone permission is reset, never a host audio setting. Revoking
+// it also stops a capture a failed assertion left running. afterEach runs after a timeout too,
+// when the body's device calls are cancelled; a test sets the flag before it changes the permission.
+let microphoneChanged = false;
+afterEach(async ({ device }) => {
+  if (!microphoneChanged) return;
+  microphoneChanged = false;
+  await device.setPermission('microphone', 'reset');
+});
 
 async function tap(screen: TestFixtures['screen'], id: string, direction: 'up' | 'down' = 'down') {
   const locator = screen.getByTestId(id, { visible: true });
@@ -98,50 +108,46 @@ test('Dreamer native denied microphone preserves typed fallback through reauthor
   await nativeDismissCaptureKeyboard(fixtures);
   // Leaving Capture flushes the current draft before the OS may kill the process.
   await device.home();
-  try {
-    // The OS can mutate permission before reporting an error or failing to reopen.
-    await device.setPermission('microphone', 'deny');
-    await app.open();
-    await expect(editor).toHaveValue(draft);
-    await startMicrophone(fixtures);
-    if (platform === 'android') {
-      // The pilot reported a successful tap while this OS dialog stayed visible.
-      // Retry only that observed dialog once; the app's denial is still required.
-      const deny = screen.getByTestId('com.android.permissioncontroller:id/permission_deny_button', { visible: true });
-      await expect(deny).toBeVisible();
-      let attempts = 0;
-      let nextAttemptAt = 0;
-      await expect.poll(async () => {
-        if (await deny.count() && attempts < 2 && Date.now() >= nextAttemptAt) {
-          await deny.tap();
-          attempts += 1;
-          nextAttemptAt = Date.now() + 1_000;
-        }
-        return await screen.getByText('Microphone permission is required to record dreams.', { visible: true }).count();
-      }, { timeout: 15_000 }).toBe(1);
-      await expect(deny).toHaveCount(0);
-    }
-    await expect(screen.getByText('Microphone permission is required to record dreams.', { visible: true })).toBeVisible();
-    if (platform === 'ios') {
-      await screen.getByRole('button', /^OK$/i, { visible: true }).tap();
-      await expect(screen.getByText('Microphone permission is required to record dreams.', { visible: true })).toHaveCount(0);
-    } else await device.alert('accept');
-    await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
-    await expect(editor).toHaveValue(draft);
-    await expect(screen.getByTestId('btn.saveDream', { visible: true })).toBeEnabled();
-    await app.screenshot('native-voice-denied-draft-preserved');
-    // OS permission changes terminate iOS; reopen before claiming preservation.
-    await device.setPermission('microphone', 'grant');
-    await app.open();
-    await expect(editor).toHaveValue(draft);
-    const corrected = `${draft} I added this sentence after allowing the microphone.`;
-    await editor.fill(corrected);
-    await nativeDismissCaptureKeyboard(fixtures);
-    await expectSavedOnceAfterRestart(fixtures, corrected);
-  } finally {
-    // Only the owned QA app permission is reset; no host audio settings are changed.
-    await device.setPermission('microphone', 'reset');
+  // The OS can mutate permission before reporting an error or failing to reopen.
+  microphoneChanged = true;
+  await device.setPermission('microphone', 'deny');
+  await app.open();
+  await expect(editor).toHaveValue(draft);
+  await startMicrophone(fixtures);
+  if (platform === 'android') {
+    // The pilot reported a successful tap while this OS dialog stayed visible.
+    // Retry only that observed dialog once; the app's denial is still required.
+    const deny = screen.getByTestId('com.android.permissioncontroller:id/permission_deny_button', { visible: true });
+    await expect(deny).toBeVisible();
+    let attempts = 0;
+    let nextAttemptAt = 0;
+    await expect.poll(async () => {
+      if (await deny.count() && attempts < 2 && Date.now() >= nextAttemptAt) {
+        await deny.tap();
+        attempts += 1;
+        nextAttemptAt = Date.now() + 1_000;
+      }
+      return await screen.getByText('Microphone permission is required to record dreams.', { visible: true }).count();
+    }, { timeout: 15_000 }).toBe(1);
+    await expect(deny).toHaveCount(0);
   }
+  await expect(screen.getByText('Microphone permission is required to record dreams.', { visible: true })).toBeVisible();
+  if (platform === 'ios') {
+    await screen.getByRole('button', /^OK$/i, { visible: true }).tap();
+    await expect(screen.getByText('Microphone permission is required to record dreams.', { visible: true })).toHaveCount(0);
+  } else await device.alert('accept');
+  await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
+  await expect(editor).toHaveValue(draft);
+  await expect(screen.getByTestId('btn.saveDream', { visible: true })).toBeEnabled();
+  await app.screenshot('native-voice-denied-draft-preserved');
+  // OS permission changes terminate iOS; reopen before claiming preservation.
+  await device.setPermission('microphone', 'grant');
+  await app.open();
+  await expect(editor).toHaveValue(draft);
+  const corrected = `${draft} I added this sentence after allowing the microphone.`;
+  await editor.fill(corrected);
+  await nativeDismissCaptureKeyboard(fixtures);
+  await expectSavedOnceAfterRestart(fixtures, corrected);
 });
 
 test('Dreamer native real microphone dictation is recognized before correction and saved exactly once', {
@@ -153,31 +159,27 @@ test('Dreamer native real microphone dictation is recognized before correction a
 }, async fixtures => {
   const { app, screen, device } = fixtures;
   await prepareVoice(fixtures);
-  try {
-    await device.setPermission('microphone', 'grant');
-    await app.open();
-    await startMicrophone(fixtures);
-    await expect(screen.getByTestId('recording-write-listening-status', { visible: true })).toBeVisible();
-    // The fixture enters the emulator microphone, exercising the actual speech
-    // service and app listeners. Never fill the editor before these assertions.
-    await injectAndroidMicrophone();
-    const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
-    await expect(editor).toHaveValue(/blue lighthouse/i);
-    await expect(editor).toHaveValue(/golden boat/i);
-    await expect(editor).toHaveValue(/(?:seven|7) windows/i);
-    await app.screenshot('native-real-speech-before-any-text-edit');
-    await tap(screen, 'btn.recordToggle');
-    await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
-    const recognized = await editor.inputValue();
-    const corrected = recognized.replace(/blue lighthouse/i, 'green lighthouse') + ' I felt peaceful when I woke up.';
-    await editor.fill(corrected);
-    await nativeDismissCaptureKeyboard(fixtures);
-    await expect(editor).toHaveValue(corrected);
-    await expectSavedOnceAfterRestart(fixtures, corrected);
-  } finally {
-    // Revoking the app's permission also stops capture if a preceding assertion failed.
-    await device.setPermission('microphone', 'reset');
-  }
+  microphoneChanged = true;
+  await device.setPermission('microphone', 'grant');
+  await app.open();
+  await startMicrophone(fixtures);
+  await expect(screen.getByTestId('recording-write-listening-status', { visible: true })).toBeVisible();
+  // The fixture enters the emulator microphone, exercising the actual speech
+  // service and app listeners. Never fill the editor before these assertions.
+  await injectAndroidMicrophone();
+  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+  await expect(editor).toHaveValue(/blue lighthouse/i);
+  await expect(editor).toHaveValue(/golden boat/i);
+  await expect(editor).toHaveValue(/(?:seven|7) windows/i);
+  await app.screenshot('native-real-speech-before-any-text-edit');
+  await tap(screen, 'btn.recordToggle');
+  await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
+  const recognized = await editor.inputValue();
+  const corrected = recognized.replace(/blue lighthouse/i, 'green lighthouse') + ' I felt peaceful when I woke up.';
+  await editor.fill(corrected);
+  await nativeDismissCaptureKeyboard(fixtures);
+  await expect(editor).toHaveValue(corrected);
+  await expectSavedOnceAfterRestart(fixtures, corrected);
 });
 
 
@@ -189,58 +191,55 @@ test('Dreamer native system speech recognizes a QA audio file before correction 
 }, async fixtures => {
   const { app, screen, device, platform } = fixtures;
   await prepareVoice(fixtures);
-  try {
-    await device.setPermission('microphone', 'grant');
-    await app.open();
-    await startMicrophone(fixtures);
-    const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
-    if (platform === 'ios') {
-      // iOS may separately request speech authorization even with microphone access.
-      const speechPrompt = screen.getByText(/(?:Access Speech Recognition|Speech Recognition|reconnaissance vocale)/i, { visible: true });
-      await expect.poll(async () => (await speechPrompt.count()) > 0
-        || (await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) > 0
-        || /blue lighthouse/i.test(await editor.inputValue()), { timeout: 30_000 }).toBe(true);
-      if (await speechPrompt.count()) {
-        // The owned Simulator uses French system dialogs even when the app is
-        // English. Tap the observed affirmative button instead of alert guessing.
-        await screen.getByRole('button', /^(?:Allow|Autoriser|OK)$/i, { visible: true }).tap();
-        await expect(speechPrompt).toHaveCount(0);
-      }
+  microphoneChanged = true;
+  await device.setPermission('microphone', 'grant');
+  await app.open();
+  await startMicrophone(fixtures);
+  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+  if (platform === 'ios') {
+    // iOS may separately request speech authorization even with microphone access.
+    const speechPrompt = screen.getByText(/(?:Access Speech Recognition|Speech Recognition|reconnaissance vocale)/i, { visible: true });
+    await expect.poll(async () => (await speechPrompt.count()) > 0
+      || (await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) > 0
+      || /blue lighthouse/i.test(await editor.inputValue()), { timeout: 30_000 }).toBe(true);
+    if (await speechPrompt.count()) {
+      // The owned Simulator uses French system dialogs even when the app is
+      // English. Tap the observed affirmative button instead of alert guessing.
+      await screen.getByRole('button', /^(?:Allow|Autoriser|OK)$/i, { visible: true }).tap();
+      await expect(speechPrompt).toHaveCount(0);
     }
-    // Assert landmarks at the beginning and end before supplying any text.
-    // The native Android recognizer hears "boat" as "bowed" on this fixture;
-    // lexical accuracy of that homophone is not the persistence contract.
-    await expect(editor).toHaveValue(/blue lighthouse[\s\S]*(?:seven|7) windows/i);
-    // Android restarts hands-free dictation after each phrase, which can replay
-    // this finite QA file. Pause immediately, before screenshots or text edits.
-    // iOS can finish by itself; don't start it again after its natural end.
-    const pause = screen.getByTestId('btn.recordToggle', { visible: true });
-    const beforePause = await Promise.all([pause.boundingBox(), editor.boundingBox(), pause.isEnabled()]);
-    try {
-      if (platform === 'android'
-        || await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) {
-        await pause.tap();
-      }
-      await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
-    } catch (error) {
-      // Resetting microphone permission can terminate Android. Keep the actual
-      // failed capture, including control geometry, before that cleanup runs.
-      await app.screenshot('native-voice-pause-failed-before-permission-reset').catch(() => undefined);
-      const afterPause = await Promise.allSettled([
-        pause.boundingBox(), editor.boundingBox(), pause.isEnabled(), editor.inputValue(),
-        screen.getByTestId('recording-write-listening-status').count(),
-      ]);
-      const observed = { beforePause, afterPause: afterPause.map(result =>
-        result.status === 'fulfilled' ? result.value : String(result.reason)) };
-      throw new Error(`${error instanceof Error ? error.message : String(error)}\nNative pause state: ${JSON.stringify(observed)}`, { cause: error });
-    }
-    await app.screenshot('native-speech-file-recognized-before-text-edit');
-    const recognized = await editor.inputValue();
-    const corrected = recognized.replace(/blue lighthouse/i, 'green lighthouse') + ' I felt peaceful when I woke up.';
-    await editor.fill(corrected);
-    await nativeDismissCaptureKeyboard(fixtures);
-    await expectSavedOnceAfterRestart(fixtures, corrected);
-  } finally {
-    await device.setPermission('microphone', 'reset');
   }
+  // Assert landmarks at the beginning and end before supplying any text.
+  // The native Android recognizer hears "boat" as "bowed" on this fixture;
+  // lexical accuracy of that homophone is not the persistence contract.
+  await expect(editor).toHaveValue(/blue lighthouse[\s\S]*(?:seven|7) windows/i);
+  // Android restarts hands-free dictation after each phrase, which can replay
+  // this finite QA file. Pause immediately, before screenshots or text edits.
+  // iOS can finish by itself; don't start it again after its natural end.
+  const pause = screen.getByTestId('btn.recordToggle', { visible: true });
+  const beforePause = await Promise.all([pause.boundingBox(), editor.boundingBox(), pause.isEnabled()]);
+  try {
+    if (platform === 'android'
+      || await screen.getByTestId('recording-write-listening-status', { visible: true }).count()) {
+      await pause.tap();
+    }
+    await expect(screen.getByTestId('recording-write-listening-status')).toHaveCount(0);
+  } catch (error) {
+    // Resetting microphone permission can terminate Android. Keep the actual
+    // failed capture, including control geometry, before that cleanup runs.
+    await app.screenshot('native-voice-pause-failed-before-permission-reset').catch(() => undefined);
+    const afterPause = await Promise.allSettled([
+      pause.boundingBox(), editor.boundingBox(), pause.isEnabled(), editor.inputValue(),
+      screen.getByTestId('recording-write-listening-status').count(),
+    ]);
+    const observed = { beforePause, afterPause: afterPause.map(result =>
+      result.status === 'fulfilled' ? result.value : String(result.reason)) };
+    throw new Error(`${error instanceof Error ? error.message : String(error)}\nNative pause state: ${JSON.stringify(observed)}`, { cause: error });
+  }
+  await app.screenshot('native-speech-file-recognized-before-text-edit');
+  const recognized = await editor.inputValue();
+  const corrected = recognized.replace(/blue lighthouse/i, 'green lighthouse') + ' I felt peaceful when I woke up.';
+  await editor.fill(corrected);
+  await nativeDismissCaptureKeyboard(fixtures);
+  await expectSavedOnceAfterRestart(fixtures, corrected);
 });
