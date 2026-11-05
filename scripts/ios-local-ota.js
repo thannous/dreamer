@@ -7,6 +7,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const plist = require('plist');
 const { loadEnvProfile } = require('./expo-safe-runner');
+const { requireBuildRuntimeEnvironment } = require('./lib/ios-build-environment');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUTPUT = path.join(ROOT, '.tmp/ios-local-ota');
@@ -52,19 +53,6 @@ function assertBuildReady(readiness, team) {
   if (!readiness.signingIdentities) throw new Error('No valid Apple signing identity on this Mac. Configure signing in Xcode first.');
   if (!/^[A-Z0-9]{10}$/.test(team || '')) throw new Error('Provide your Apple team with --team <TEAM_ID>.');
   if (readiness.remoteUpdatesEnabled === true) throw new Error('Disable remote updates in ios/Noctalia/Supporting/Expo.plist for this local binary OTA workflow.');
-}
-
-function requireBuildRuntimeEnvironment(env) {
-  if (env.EXPO_PUBLIC_MOCK_MODE?.toLowerCase() === 'true') return;
-  for (const key of ['EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID', 'EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID', 'EXPO_PUBLIC_REVENUECAT_IOS_KEY']) {
-    if (!env[key]?.trim()) {
-      throw new Error(`${key} is required for a real iOS build. Select --profile <file> or provide the build environment.`);
-    }
-  }
-  if (!/^appl_\S+$/.test(env.EXPO_PUBLIC_REVENUECAT_IOS_KEY)) {
-    throw new Error('EXPO_PUBLIC_REVENUECAT_IOS_KEY must be an Apple App Store public SDK key (appl_) for a real iOS Release build. Test Store and other platform keys are not supported.');
-  }
-  return env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 }
 
 function assertBuildEnvironment(env, nativeUrlSchemes) {

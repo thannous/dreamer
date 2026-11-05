@@ -6,6 +6,7 @@ const path = require('node:path');
 const { execFileSync, spawnSync } = require('node:child_process');
 const { syncMobileBuildVersions } = require('./sync-mobile-build-versions');
 const { iosLinksHealthKit, missingHealthPurposeKeys } = require('./lib/ios-healthkit-linking');
+const { requireBuildRuntimeEnvironment } = require('./lib/ios-build-environment');
 
 const ROOT = path.resolve(__dirname, '..');
 const STATE = 'release/mobile-versions.json';
@@ -168,6 +169,14 @@ function verify(root, app) {
   return entry;
 }
 
+// EAS runs `verify` as the eas-build-pre-install hook, with the build's EAS environment: a Store
+// IPA without the App Store RevenueCat key or the Google client IDs stops here, not in review.
+function assertEasStoreBuildEnvironment(env = process.env) {
+  if (env.EAS_BUILD_PLATFORM !== 'ios' || env.EAS_BUILD_PROFILE !== 'production') return;
+  try { requireBuildRuntimeEnvironment(env); }
+  catch (error) { throw new Error(`EAS production iOS build stopped before install: ${error.message} Set it in the EAS production environment.`); }
+}
+
 function plan(root, app) {
   const entry = verify(root, app);
   const head = git(root, 'rev-parse', 'HEAD').trim();
@@ -312,6 +321,7 @@ function main(args = process.argv.slice(2), root = ROOT) {
   }
   if (options.action === 'verify') {
     apps.forEach(app => verify(root, app));
+    assertEasStoreBuildEnvironment();
     console.log(`Mobile version metadata consistent: ${apps.join(', ')}`);
     return;
   }
@@ -393,4 +403,4 @@ function main(args = process.argv.slice(2), root = ROOT) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main };
+module.exports = { affects, bump, changeLevel, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main };

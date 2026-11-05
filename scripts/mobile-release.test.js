@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, normalized, plan, prepare, verify, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main } = require('./mobile-release');
+const { affects, bump, changeLevel, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertIosBuildSource, assertClean, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -183,6 +183,37 @@ describe('release planning against real Git histories', () => {
     write(root, 'package.json', { version: '3.1.0', scripts: {}, dependencies: { '@kingstinct/react-native-healthkit': '14.1.0' } });
     write(root, 'react-native.config.js', fs.readFileSync(path.join(__dirname, '..', 'react-native.config.js'), 'utf8'));
     expect(verify(root, 'noctalia').version).toBe('3.1.0');
+  });
+  // eas.json leaves these to the EAS environment, which no local check can read. Without
+  // them the Store IPA has no Plus products and Google sign-in throws.
+  it('stops an EAS production iOS build missing the App Store RevenueCat key or the Google client IDs', () => {
+    const complete = {
+      EAS_BUILD_PLATFORM: 'ios', EAS_BUILD_PROFILE: 'production', EXPO_PUBLIC_MOCK_MODE: 'false',
+      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '123-web.apps.googleusercontent.com',
+      EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '123-ios.apps.googleusercontent.com',
+      EXPO_PUBLIC_REVENUECAT_IOS_KEY: 'appl_fixture',
+    };
+    expect(() => assertEasStoreBuildEnvironment(complete)).not.toThrow();
+    expect(() => assertEasStoreBuildEnvironment({ ...complete, EXPO_PUBLIC_REVENUECAT_IOS_KEY: 'test_fixture' })).toThrow('appl_');
+    expect(() => assertEasStoreBuildEnvironment({ ...complete, EXPO_PUBLIC_REVENUECAT_IOS_KEY: '' })).toThrow('EXPO_PUBLIC_REVENUECAT_IOS_KEY is required');
+    expect(() => assertEasStoreBuildEnvironment({ ...complete, EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: ' ' })).toThrow('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID');
+    expect(() => assertEasStoreBuildEnvironment({ ...complete, EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: undefined })).toThrow('EAS production environment');
+    // Android, the other profiles (Lucid's included) and local runs are left as they were.
+    for (const other of [{ EAS_BUILD_PLATFORM: 'android' }, { EAS_BUILD_PROFILE: 'lucid-production' }, { EAS_BUILD_PLATFORM: undefined, EAS_BUILD_PROFILE: undefined }]) {
+      expect(() => assertEasStoreBuildEnvironment({ ...complete, EXPO_PUBLIC_REVENUECAT_IOS_KEY: undefined, ...other })).not.toThrow();
+    }
+  });
+  it('runs that check in the verify command EAS calls before installing dependencies', () => {
+    const root = fixture();
+    const keys = ['EAS_BUILD_PLATFORM', 'EAS_BUILD_PROFILE', 'EXPO_PUBLIC_MOCK_MODE', 'EXPO_PUBLIC_REVENUECAT_IOS_KEY', 'NOCTALIA_APP_VARIANT'];
+    const saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+    try {
+      keys.forEach(key => delete process.env[key]);
+      Object.assign(process.env, { EAS_BUILD_PLATFORM: 'ios', EAS_BUILD_PROFILE: 'production', EXPO_PUBLIC_MOCK_MODE: 'false' });
+      expect(() => main(['verify'], root)).toThrow('EAS production iOS build stopped before install');
+    } finally {
+      keys.forEach(key => { if (saved[key] === undefined) delete process.env[key]; else process.env[key] = saved[key]; });
+    }
   });
   it('fingerprints a local Store build with the profile EAS Build will use', () => {
     const base = { PATH: '/bin', EAS_BUILD_PROFILE: 'release-smoke' };
