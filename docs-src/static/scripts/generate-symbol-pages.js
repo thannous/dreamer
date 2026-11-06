@@ -369,7 +369,7 @@ function renderSymbolConversionActions(lang, content, pagePath = '') {
                         ${escapeHtml(copy.details)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
                     </a>
                 </div>
-                <p class="symbol-webapp-note text-xs mt-3 max-w-lg mx-auto">${escapeHtml(sharedLocale.webAppNote)}</p>`;
+                <p${lang === 'en' && content === 'guide-dream-locations' ? ' data-web-app-cta' : ''} class="symbol-webapp-note text-xs mt-3 max-w-lg mx-auto">${escapeHtml(sharedLocale.webAppNote)}</p>`;
 }
 
 function loadSiteManifest() {
