@@ -92,7 +92,7 @@ restent bloquantes pour un build production fiable, sauf waiver explicite.
   - État local : valeur câblée dans `.env.playstore` et dans `eas.json` (`preview`, `release`, `production`, `production-apk`).
   - Test Store QA : `.env.teststore` et le profil EAS `revenuecat-teststore` doivent utiliser la clé `test_zqltcBoDiTWPWmuyXTXTbYkJPrz` et ne doivent jamais servir à une soumission Play.
   - Produits RevenueCat/Google Play confirmés : `noctalia_plus:monthly` et `noctalia_plus:annual`.
-- [ ] `EXPO_PUBLIC_REVENUECAT_IOS_KEY` (si iOS)  
+- [x] `EXPO_PUBLIC_REVENUECAT_IOS_KEY` (si iOS, présente dans l'environnement EAS `production`, vérifiée le 2026-11-06)  
   - Pourquoi : clé SDK RevenueCat côté iOS.  
   - Où récupérer : RevenueCat Dashboard → Public SDK Key (iOS) (https://app.revenuecat.com/projects).  
   - Où placer : variable EAS en `plaintext` (ex : `eas env:create --environment production --scope project --visibility plaintext --name EXPO_PUBLIC_REVENUECAT_IOS_KEY --value <public_sdk_key_ios>`).

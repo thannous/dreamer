@@ -4,7 +4,7 @@ Préparé le 5 novembre 2026 à partir de l'audit App Store du même jour. Rien 
 
 ## Verdict
 
-**NOT READY TO SUBMIT.** La partie code est faite (ci-dessous) ; la soumission attend tes actions, dans l'ordre de la [liste](#tes-actions-dans-lordre). Les trois bloquantes : Sign in with Apple en production (B1), le choix de version (B2) et la vérification des variables EAS (B3).
+**NOT READY TO SUBMIT.** La partie code est faite (ci-dessous) ; la soumission attend tes actions, dans l'ordre de la [liste](#tes-actions-dans-lordre). Reste une bloquante : Sign in with Apple en production (B1). La version est tranchée (B2, 3.8.0) et les variables EAS de production sont vérifiées (B3, 2026-11-06).
 
 ## Ce que le code règle déjà
 
@@ -26,12 +26,7 @@ Ces changements modifient l'empreinte native : une nouvelle build est nécessair
 
 ### Décisions
 
-1. **B2 Version.** `release:build` refuse tant que la version n'est pas préparée. Le commit `feat(ios)` de ce lot (manifestes de confidentialité) rend la montée mineure inévitable : `release:plan` proposera **3.9.0**. Pour garder 3.8.0, il faudrait re-pointer `release/mobile-versions.json` (`apps.noctalia.sourceRef`) comme les PR « chore(release): pin Noctalia 3.7.0 to master ». Recommandation : 3.9.0.
-   ```bash
-   git fetch origin master && git switch -c release/dreamer-ios-3.9.0 origin/master
-   npm run release:prepare -- --app noctalia
-   ```
-   Puis commit d'`app.json`, `package.json`, `package-lock.json` et `release/mobile-versions.json`, fusion avec un merge commit ([MOBILE_VERSIONING.md](../MOBILE_VERSIONING.md)).
+1. **B2 Version : 3.8.0, tranché le 2026-11-06.** 3.8.0 n'a jamais été publiée : depuis `2d097c846`, elle garde son numéro et `release:prepare` la ré-épingle sur le dernier `origin/master` (`"action": "pin"`), sans toucher `app.json` ni les lockfiles. Quand un build part en review App Store, enregistrer son commit : `npm run release:published -- --app noctalia --ref <gitCommitHash du build>` ([MOBILE_VERSIONING.md](../MOBILE_VERSIONING.md)).
 2. **S5 Crise et automutilation.** La conversation IA ne traite pas ces sujets à part. À décider : une réponse fixe et localisée avec des ressources d'aide (3114 en France, 988 aux États-Unis, findahelpline.com) quand un rêve ou un message en parle, au lieu d'une réponse du modèle. Tes réponses au questionnaire d'âge en dépendent.
 3. **S7 « Échanges illimités ».** Le paywall vend Plus « illimité » alors que `constants/limits.ts` plafonne à 100 messages par rêve. Soit écrire « jusqu'à 100 échanges par rêve » dans les six langues, soit confirmer que le serveur n'a pas de plafond Plus et retirer la constante.
 4. **S4 Icône.** `assets/images/icon.png` fait 512 × 512 : l'icône App Store 1024 est agrandie, donc floue. Exporter un PNG 1024 × 1024 sans transparence et remplacer le fichier (nouvelle build native).
@@ -59,7 +54,7 @@ En lecture seule : `npx eas-cli@25.1.1 env:list --environment production`. Doive
 - `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=359653779023-d3ddevr4qepqa13uqlv1ckd0th6k79gf.apps.googleusercontent.com` (le même que l'`iosUrlScheme` d'app.json) ;
 - `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`.
 
-La build s'arrête désormais dès `eas-build-pre-install` s'il en manque une. Cocher ensuite la ligne iOS de [PRODUCTION_CONSTANTS.md](../PRODUCTION_CONSTANTS.md).
+La build s'arrête désormais dès `eas-build-pre-install` s'il en manque une. **Vérifié le 2026-11-06** sur l'environnement EAS `production` ; la ligne iOS de [PRODUCTION_CONSTANTS.md](../PRODUCTION_CONSTANTS.md) est cochée.
 
 ### App Store Connect (O1, O2)
 
@@ -164,7 +159,7 @@ L'audio n'est pas collecté : la dictée passe par la reconnaissance vocale d'Ap
 - **4.8 / 5.1.1(v) Sign in with Apple et suppression** : code prêt ; secrets et test TestFlight à faire (B1).
 - **3.1.1 Restaurer les achats** : visible pour tous sur le paywall.
 - **5.1.1 Textes d'autorisation** : spécifiques, traduits, sans Face ID.
-- **2.1 Paywall sans produit** : la build s'arrête sans clé `appl_` (B3), à vérifier dans EAS.
+- **2.1 Paywall sans produit** : la build s'arrête sans clé `appl_` (B3) ; clé présente dans EAS `production`, vérifiée le 2026-11-06.
 - **2.3 Métadonnées** : fournisseurs d'IA et URL d'assistance corrigés ; « illimité » à trancher (S7).
 - **Confidentialité des API** : manifestes de l'app et du widget déclarés ; rapport Xcode à vérifier après l'archive.
 - **Sécurité de l'IA et classement d'âge** : décision S5 avant le questionnaire.
