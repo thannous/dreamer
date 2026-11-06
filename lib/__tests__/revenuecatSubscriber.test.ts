@@ -5,7 +5,7 @@ import {
   inferTierFromSubscriber,
   isActiveEntitlement,
   type RevenueCatV1SubscriberResponse,
-} from '@/supabase/lib/revenuecatSubscriber';
+} from '@/supabase/functions/api/lib/revenuecatSubscriber';
 
 describe('server revenuecatSubscriber entitlement contract', () => {
   it('returns free when entitlement keys are empty', () => {

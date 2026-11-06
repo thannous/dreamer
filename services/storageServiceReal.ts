@@ -3,9 +3,9 @@ import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { parsePendingDreamMutationsPayload } from '@/lib/dreamMutationPayload';
 import { createJournalRecordStore } from './journalRecordStore';
 import { markPerformance, performanceTraceId } from '@/lib/performanceTrace';
-import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { logger } from '@/lib/logger';
 import { createSerialLock } from '@/lib/serialLock';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
@@ -1720,65 +1720,6 @@ export async function saveCachedRemoteDreams(
     }
     throw new Error('Failed to cache remote dreams');
   }
-}
-
-function parsePendingDreamMutationsPayload(
-  payload: string | null,
-  userScope?: string | null
-): DreamMutation[] {
-  if (!payload) {
-    return [];
-  }
-
-  const parsed = JSON.parse(payload) as unknown;
-  if (!Array.isArray(parsed)) {
-    throw new Error('Pending dream mutation payload must be an array');
-  }
-
-  return parsed.map((entry) => {
-      if (
-        typeof entry === 'object' &&
-        entry !== null &&
-        'version' in entry &&
-        (entry as { version?: unknown }).version === 1
-      ) {
-        const mutation = entry as Partial<DreamMutation>;
-        const valid =
-          typeof mutation.id === 'string' &&
-          typeof mutation.userScope === 'string' &&
-          (!userScope || mutation.userScope === userScope) &&
-          mutation.entityType === 'dream' &&
-          typeof mutation.entityKey === 'string' &&
-          (mutation.operation === 'create' ||
-            mutation.operation === 'update' ||
-            mutation.operation === 'delete') &&
-          typeof mutation.clientRequestId === 'string' &&
-          typeof mutation.clientUpdatedAt === 'number' &&
-          typeof mutation.payload === 'object' &&
-          mutation.payload !== null &&
-          (mutation.status === 'pending' ||
-            mutation.status === 'sending' ||
-            mutation.status === 'failed' ||
-            mutation.status === 'acked' ||
-            mutation.status === 'blocked') &&
-          typeof mutation.retryCount === 'number' &&
-          typeof mutation.createdAt === 'number';
-        if (!valid) {
-          throw new Error('Invalid pending dream mutation');
-        }
-        return mutation as DreamMutation;
-      }
-
-      if (!userScope) {
-        throw new Error('Legacy pending dream mutation requires an account scope');
-      }
-
-      const migrated = migrateLegacyDreamMutation(entry as Record<string, unknown>, userScope);
-      if (!migrated) {
-        throw new Error('Invalid legacy pending dream mutation');
-      }
-      return migrated;
-    });
 }
 
 async function getPendingDreamMutationsBeforeClear(userScope?: string | null): Promise<DreamMutation[]> {

@@ -1,3 +1,4 @@
+import { createKeyedSerialLock } from '@/lib/serialLock';
 import {
   getLucidKeyValueStorage,
   isLucidNativeKeyValueStorage,
@@ -56,7 +57,7 @@ export class LucidDreamAtlasStorageError extends Error {
   }
 }
 
-const scopeLocks = new Map<string, Promise<void>>();
+const { run: withScopeLock, countKeys: countScopeLocks } = createKeyedSerialLock();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
   return isLucidNativeKeyValueStorage(storage);
@@ -165,25 +166,8 @@ async function writePlaintext(
   }
 }
 
-async function withScopeLock<T>(userScope: string, work: () => Promise<T>): Promise<T> {
-  const previous = scopeLocks.get(userScope) ?? Promise.resolve();
-  let release: () => void = () => undefined;
-  const gate = new Promise<void>((resolve) => {
-    release = resolve;
-  });
-  const tail = previous.then(() => gate);
-  scopeLocks.set(userScope, tail);
-  await previous;
-  try {
-    return await work();
-  } finally {
-    release();
-    if (scopeLocks.get(userScope) === tail) scopeLocks.delete(userScope);
-  }
-}
-
 export function countLucidDreamAtlasScopeLocksForTests(): number {
-  return scopeLocks.size;
+  return countScopeLocks();
 }
 
 export type LucidDreamAtlasCompanionSnapshot =
