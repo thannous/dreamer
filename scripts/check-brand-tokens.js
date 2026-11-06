@@ -36,7 +36,7 @@ const MEDITATION = {
   ink: 'background', 'ink-card': 'backgroundCard', 'ink-panel': 'backgroundSecondary',
   'ink-raised': 'backgroundRaised', ivory: 'textPrimary', 'ivory-muted': 'textSecondary',
   'ivory-faint': 'textTertiary', champagne: 'accent', 'champagne-text': 'accentText',
-  'champagne-deep': 'accentDark', 'champagne-soft': 'accentLight', 'champagne-on': 'textOnAccent',
+  'champagne-deep': 'accentDark', 'champagne-soft': 'accentBorder', 'champagne-on': 'textOnAccent',
   hairline: 'divider', navbar: 'navbarBg', 'navbar-border': 'navbarBorder',
 };
 

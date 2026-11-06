@@ -334,7 +334,7 @@ function StepRail({ current, labels, progressLabel, copy }: { current: StepIndex
     const complete = index < current;
     const selected = index === current;
     const stateLabel = complete ? copy.complete : selected ? copy.current : copy.upcoming;
-    return <React.Fragment key={label}><View accessible accessibilityLabel={`${label}, ${stateLabel}`} accessibilityState={{ selected }} style={styles.stepItem}><View style={[styles.stepDot, { backgroundColor: complete || selected ? palette.accent : palette.surfaceRaised, borderColor: complete || selected ? palette.accent : palette.borderInteractive }]}>{complete ? <Ionicons color={palette.backgroundDeep} name="checkmark" size={LucidIcon.sm} /> : <Text style={[styles.stepDotText, { color: selected ? palette.backgroundDeep : palette.textMuted }]}>{index + 1}</Text>}</View><Text style={[styles.stepName, { color: selected ? palette.accent : complete ? palette.text : palette.textMuted }]}>{label}</Text></View>{index < labels.length - 1 ? <View style={[styles.stepLine, { backgroundColor: index < current ? palette.accent : palette.borderInteractive }]} /> : null}</React.Fragment>;
+    return <React.Fragment key={label}><View accessible accessibilityLabel={`${label}, ${stateLabel}`} accessibilityState={{ selected }} style={styles.stepItem}><View style={[styles.stepDot, { backgroundColor: complete || selected ? palette.accent : palette.surfaceRaised, borderColor: complete || selected ? palette.accent : palette.borderInteractive }]}>{complete ? <Ionicons color={palette.onAccent} name="checkmark" size={LucidIcon.sm} /> : <Text style={[styles.stepDotText, { color: selected ? palette.onAccent : palette.textMuted }]}>{index + 1}</Text>}</View><Text style={[styles.stepName, { color: selected ? palette.accent : complete ? palette.text : palette.textMuted }]}>{label}</Text></View>{index < labels.length - 1 ? <View style={[styles.stepLine, { backgroundColor: index < current ? palette.accent : palette.borderInteractive }]} /> : null}</React.Fragment>;
   })}</View>;
 }
 
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
   hero: { alignItems: 'center', gap: LucidSpace.sm },
   guideLabel: { flexDirection: 'row', alignItems: 'center', gap: LucidSpace.sm },
   guideText: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], letterSpacing: 0.4 },
-  title: { maxWidth: 520, fontFamily: 'Fraunces_600SemiBold', fontSize: LucidType.display[0], lineHeight: LucidType.display[1], letterSpacing: -0.8, textAlign: 'center' },
+  title: { maxWidth: 520, fontFamily: 'Fraunces_400Regular', fontSize: LucidType.display[0], lineHeight: LucidType.display[1], letterSpacing: -0.8, textAlign: 'center' },
   subtitle: { maxWidth: 520, fontFamily: 'Outfit_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1], textAlign: 'center' },
   stepRail: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', paddingHorizontal: LucidSpace.xs },
   stepItem: { flex: 1, minWidth: 42, alignItems: 'center', gap: LucidSpace.xs },

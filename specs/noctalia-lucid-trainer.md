@@ -154,7 +154,7 @@ app/lucid/
 ├── permissions.tsx · science.tsx · privacy.tsx · data.tsx · help.tsx · about.tsx
 ├── account.tsx · subscription.tsx
 components/lucid/                   # LucidUI (kit), LucidGlass (verre), LucidInfoPage (pages de texte)
-constants/lucidTheme.ts             # palette « nuit jade » + bloc normatif
+constants/lucidTheme.ts             # adaptateur de la palette Noctalia partagée
 context/LucidTrainerContext.tsx     # état, commits, synchronisation, consentements
 hooks/useLucidNightAudio.ts · hooks/useLucidNow.ts
 lib/lucid/
@@ -179,33 +179,25 @@ supabase/migrations/20260813010000_lucid_trainer_sync.sql
 
 ---
 
-## 3. Identité visuelle « nuit jade »
+## 3. Direction artistique Noctalia
 
-Le bloc normatif est **en tête de `constants/lucidTheme.ts`** et fait autorité. Il n'est pas recopié
-ici : toute valeur ajoutée à la palette doit s'y plier, et le lire est la première chose à faire avant
-de toucher une couleur du module. Ses quatre règles, par leur nom :
+Décision propriétaire du 6 novembre 2026 : Lucid applique la même direction
+artistique que Noctalia. L'ancienne identité « nuit jade » est remplacée par
+l'encre/champagne de nuit et le papier ivoire chaud de jour.
 
-1. **Un seul accent de marque.** `accent` porte l'état actif, la sélection et la progression. `amber`
-   est un signal sémantique (le matin, la vigilance), jamais une deuxième marque.
-2. **Une teinte remplit, elle n'écrit pas.** Texte sur surface teintée → déclinaison `*On`
-   (`accentOn` sur `accentSoft`), comme `champagne` / `champagne-on` côté Noctalia.
-3. **Le fond est chromatique, pas gris.** L'élévation se lit à la teinte
-   (`background` → `surface` → `surfaceRaised`), pas à un filet d'un pixel partout.
-4. **`border` est un filet décoratif ; `borderInteractive` délimite les cibles tactiles**, et tient
-   3:1 sur les quatre surfaces des deux thèmes (WCAG 1.4.11). Ne jamais remettre `border` sur un contrôle.
+`constants/noctaliaPalette.ts` porte les couleurs validées ;
+`constants/lucidTheme.ts` conserve les noms sémantiques utilisés par les parcours.
+Les états de sécurité restent explicites. `onAccent` est réservé au texte sur un
+bouton rempli, `accentOn` au texte sur une surface teintée. Les contrôles gardent
+une bordure contrastée distincte du filet décoratif des cartes.
 
-Tous les couples texte/surface tiennent 4,5:1 au pire cas, mesurés sur les quatre surfaces de chaque thème.
+### 3.1 Matériaux partagés
 
-### 3.1 Parenté et distinction avec Noctalia
-
-Sœur par le vocabulaire — mêmes fontes, même rayon de carte (24), même matériau de verre que
-`components/inspiration/GlassCard.tsx`. Distincte par la teinte : là où Noctalia pose du champagne sur
-l'encre, Lucid pose du jade sur un pétrole nocturne. L'atmosphère d'écran est **un token**
-(`palette.atmosphere`, trois arrêts passés à un `LinearGradient` dans `LucidScreen`), pas six `rgba`
-en dur : changer l'accent doit changer l'ambiance.
-
-En dehors de la palette, le module ne contient que trois couleurs littérales : `'#000'` (ombre portée
-de la barre d'onglets) et deux blancs de filet dans `LucidGlass`.
+Les cartes gardent le rayon de 24 points ; la navigation utilise directement
+`components/navigation/TabBarGlass.tsx`, comme Noctalia, avec son reflet, son
+contour et sa lentille active. La réduction des effets conserve un fond opaque.
+Les illustrations des pratiques restent en place sans filtre jade ou rose global.
+Morning reprend Paper ; Afterglow reprend Night, comme Noctalia.
 
 ### 3.2 Typographie — Fraunces est la voix, pas l'interface
 
@@ -213,7 +205,7 @@ Deux graisses de Fraunces, deux rôles, et rien d'autre :
 
 | Fonte | Emploi |
 |---|---|
-| `Fraunces_600SemiBold` 34/40 | **le titre d'écran**, un seul par écran (`LucidScreen.title`) |
+| `Fraunces_400Regular` 34/40 | **le titre d'écran**, un seul par écran (`LucidScreen.title`) |
 | `Fraunces_500Medium` 17–18 | **la phrase de principe** qu'on lit une fois : rappel neutre du matin, principe du test de réalité, invite de réflexion d'une séance, et l'argumentaire d'ouverture de l'écran d'abonnement (`subscription.tsx`, `styles.heroBody`) |
 | `Outfit_*` (Space Grotesk jusqu'au 20/10/2026, remplacée sur décision de Thanh) | tout ce qui se scanne : titres de carte, valeurs, libellés, boutons, listes |
 

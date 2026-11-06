@@ -1,4 +1,5 @@
 import { buildChatHistory, buildChatSystem } from '../services/chatContext.ts';
+import { selfHarmSupportReply } from '../lib/selfHarmSupport.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
@@ -687,31 +688,6 @@ export async function handleChat(
       });
     }
 
-    const anthropicApiKey = requireAnthropicApiKey();
-
-    const systemPreamble = buildChatSystem(lang);
-
-    const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
-    const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);
-    contents.push({ role: 'user', parts: [{ text: dreamContextPrompt }] });
-
-    console.log('[api] /chat: injected dream context', {
-      lang,
-      transcriptLength: String(dream.transcript ?? '').length,
-      interpretationLength: String(dream.interpretation ?? '').length,
-      transcriptTruncated: contextDebug.transcriptTruncated,
-      interpretationTruncated: contextDebug.interpretationTruncated,
-      historyLength: historyWithUserMsg.length,
-    });
-
-    const { recentMessages, olderUserNotes } = buildChatHistory(historyWithUserMsg);
-    if (olderUserNotes) contents.push({ role: 'user', parts: [{ text: olderUserNotes }] });
-    for (const turn of recentMessages) {
-      const r = turn.role === 'model' ? 'model' : 'user';
-      const parts = toContentParts(turn);
-      if (parts.length > 0) contents.push({ role: r, parts });
-    }
-
     const buildModelMessage = (reply: string, rawParts: GeminiPart[] | null): StoredChatMessage => {
       const modelParts = sanitizeParts(rawParts);
       return {
@@ -744,6 +720,50 @@ export async function handleChat(
         throw new Error('Failed to persist chat response');
       }
     };
+
+    // The fixed response uses the same durable turn and replay contract, but
+    // never needs a provider key, prompt, generation or streamed partial answer.
+    const supportReply = selfHarmSupportReply(userMessage, lang);
+    if (supportReply) {
+      const modelMessage = buildModelMessage(supportReply, [{ text: supportReply }]);
+      await persistModelMessage(modelMessage);
+      const payload = { text: supportReply, message: modelMessage };
+      return new Response(wantsStream
+        ? `data: ${JSON.stringify({ done: true, ...payload })}\n\n`
+        : JSON.stringify(payload), {
+        status: 200,
+        headers: {
+          'Content-Type': wantsStream ? 'text/event-stream' : 'application/json',
+          'Cache-Control': 'no-cache',
+          ...corsHeaders,
+        },
+      });
+    }
+
+    const anthropicApiKey = requireAnthropicApiKey();
+
+    const systemPreamble = buildChatSystem(lang);
+
+    const contents: { role: 'user' | 'model'; parts: GeminiPart[] }[] = [];
+    const { prompt: dreamContextPrompt, debug: contextDebug } = buildDreamContextPrompt(dream, lang);
+    contents.push({ role: 'user', parts: [{ text: dreamContextPrompt }] });
+
+    console.log('[api] /chat: injected dream context', {
+      lang,
+      transcriptLength: String(dream.transcript ?? '').length,
+      interpretationLength: String(dream.interpretation ?? '').length,
+      transcriptTruncated: contextDebug.transcriptTruncated,
+      interpretationTruncated: contextDebug.interpretationTruncated,
+      historyLength: historyWithUserMsg.length,
+    });
+
+    const { recentMessages, olderUserNotes } = buildChatHistory(historyWithUserMsg);
+    if (olderUserNotes) contents.push({ role: 'user', parts: [{ text: olderUserNotes }] });
+    for (const turn of recentMessages) {
+      const r = turn.role === 'model' ? 'model' : 'user';
+      const parts = toContentParts(turn);
+      if (parts.length > 0) contents.push({ role: r, parts });
+    }
 
     // Legacy signed parts remain readable, but only visible text is sent to Claude.
     const claudeMessages = toClaudeMessages(contents);

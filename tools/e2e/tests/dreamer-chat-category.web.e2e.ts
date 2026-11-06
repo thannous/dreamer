@@ -96,3 +96,33 @@ test('plus opens a symbols question once and resumes the saved exchange from its
   await expect(consent).toBeHidden();
   await app.screenshot('symbols-category-resumes-one-exchange');
 });
+
+test('self-harm mentions receive fixed support with working resource links and survive reopening', async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await startPlus(app, screen, browser);
+  await openLibrary(screen);
+  await screen.getByTestId('btn.dreamCategory.freeChat', { visible: true }).tap();
+  const input = screen.getByTestId('chat.input.message', { visible: true });
+  await input.fill('I want to hurt myself.');
+  await screen.getByTestId('chat.button.send', { visible: true }).tap();
+  await screen.getByTestId('btn.aiConsent.accept', { visible: true }).tap();
+  const phone = screen.getByRole('link', '3114', { exact: true, visible: true });
+  const website = screen.getByRole('link', 'https://3114.fr/', { exact: true, visible: true });
+  await expect(phone).toBeVisible();
+  await expect(phone).toHaveAttribute('href', 'tel:3114?oai_link_source=model_response_hotline');
+  await expect(website).toHaveAttribute('href', 'https://3114.fr/?oai_link_source=model_response_hotline');
+  await expect(screen.getByText('This message mentions self-harm or suicide.', { exact: false, visible: true })).toBeVisible();
+  await expect(screen.getByText(mockReply, { visible: true })).toHaveCount(0);
+  await expect(input).not.toHaveAttribute('readonly');
+  await app.screenshot('self-harm-fixed-support');
+  await screen.getByRole('button', 'Back', { exact: true, visible: true }).tap();
+  await screen.getByTestId('btn.dreamCategory.freeChat', { visible: true }).tap();
+  await expect(phone).toHaveCount(1);
+  await expect(website).toHaveCount(1);
+  await expect(screen.getByText('I want to hurt myself.', { exact: true, visible: true })).toHaveCount(1);
+  // A later ordinary message can still receive a normal reply.
+  await input.fill('What could the library in my dream represent?');
+  await screen.getByTestId('chat.button.send', { visible: true }).tap();
+  await expect(screen.getByText(mockReply, { visible: true })).toHaveCount(1);
+  await expect(phone).toHaveCount(1);
+});

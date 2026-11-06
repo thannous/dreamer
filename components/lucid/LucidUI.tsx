@@ -339,7 +339,7 @@ export function LucidButton({
   const palette = getLucidPalette(colors, mode);
   const primary = variant === 'primary';
   const danger = variant === 'danger';
-  const foreground = primary ? palette.backgroundDeep : danger ? palette.danger : palette.text;
+  const foreground = primary ? palette.onAccent : danger ? palette.danger : palette.text;
   const background = primary
     ? palette.accentStrong
     : danger
@@ -408,7 +408,7 @@ export function LucidIconTile({ icon, tone = 'accent', size = 'md' }: { icon: Ic
   const palette = getLucidPalette(colors, mode);
   // `solid` existe pour les surfaces déjà teintées en `accentSoft` : une tuile
   // `accentSoft` y était invisible, fond sur fond.
-  const color = tone === 'solid' ? palette.backgroundDeep : tone === 'amber' ? palette.amber : tone === 'neutral' ? palette.textSecondary : palette.accent;
+  const color = tone === 'solid' ? palette.onAccent : tone === 'amber' ? palette.amber : tone === 'neutral' ? palette.textSecondary : palette.accent;
   const background = tone === 'solid' ? palette.accent : tone === 'amber' ? palette.amberSoft : tone === 'neutral' ? palette.surfaceRaised : palette.accentSoft;
   const box = size === 'sm' ? styles.tileSm : size === 'lg' ? styles.tileLg : styles.tileMd;
   const glyph = size === 'sm' ? LucidIcon.md : size === 'lg' ? LucidIcon.xl : LucidIcon.lg;
@@ -670,7 +670,7 @@ const styles = StyleSheet.create({
   // Tout ce qui se scanne — titres de carte, valeurs, libellés, boutons —
   // descend sur Outfit. Du serif sur chaque titre de carte donnait un ton
   // éditorial à un écran qu'on consulte, pas qu'on lit.
-  title: { fontFamily: 'Fraunces_600SemiBold', fontSize: LucidType.display[0], lineHeight: LucidType.display[1], letterSpacing: -0.8 },
+  title: { fontFamily: 'Fraunces_400Regular', fontSize: LucidType.display[0], lineHeight: LucidType.display[1], letterSpacing: -0.8 },
   subtitle: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   card: { borderRadius: LucidRadius.xl, borderWidth: 1, padding: LucidSpace.lg, gap: LucidSpace.md },
   pressed: { opacity: LucidPress.opacity, transform: [{ scale: LucidPress.scale }] },
@@ -690,7 +690,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonLabel: { fontFamily: 'Outfit_700Bold', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center', flexShrink: 1 },
+  buttonLabel: { fontFamily: 'Outfit_500Medium', fontSize: LucidType.body[0], lineHeight: LucidType.body[1], textAlign: 'center', flexShrink: 1 },
   buttonBlock: { gap: LucidSpace.sm },
   buttonReason: { fontFamily: 'Outfit_500Medium', fontSize: LucidType.caption[0], lineHeight: LucidType.caption[1], textAlign: 'center' },
   sectionHeader: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: LucidSpace.md, marginTop: LucidSpace.lg },

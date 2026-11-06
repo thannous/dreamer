@@ -32,6 +32,7 @@ import {
   LucidIcon,
   LucidRadius,
   LucidSpace,
+  LucidScene,
   LucidType,
 } from '@/constants/lucidTheme';
 import { useContentWindow } from '@/context/ContentWindowContext';
@@ -175,9 +176,7 @@ export function LucidGoalSelector({
   const reflow = width < 380 || fontScale >= 1.3;
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const artworkTextShadowColor = mode === 'dark'
-    ? 'rgba(2, 8, 12, 0.94)'
-    : 'rgba(255, 252, 244, 0.68)';
+  const artworkTextShadowColor = palette.overlay;
 
   return (
     <View style={styles.fill}>
@@ -414,7 +413,7 @@ export function LucidRhythmSelector({
                 </View>
                 {isSelected ? (
                   <View style={[styles.choiceBadge, { backgroundColor: palette.accentStrong }]}>
-                    <Ionicons color={palette.backgroundDeep} name="checkmark" size={LucidIcon.sm} />
+                    <Ionicons color={palette.onAccent} name="checkmark" size={LucidIcon.sm} />
                   </View>
                 ) : null}
               </View>
@@ -454,9 +453,7 @@ function SelectionOrb({
 }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const artworkShadowColor = mode === 'dark'
-    ? 'rgba(3, 11, 16, 0.5)'
-    : 'rgba(255, 252, 244, 0.64)';
+  const artworkShadowColor = palette.overlay;
 
   return (
     <View
@@ -508,7 +505,7 @@ function SelectionOrb({
           ]}
         >
           <Ionicons
-            color={palette.backgroundDeep}
+            color={palette.onAccent}
             name="checkmark"
             size={LucidIcon.sm}
           />
@@ -700,7 +697,7 @@ const styles = StyleSheet.create({
     top: LucidSpace.xs,
     left: 0,
     right: 0,
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.h2[0],
     lineHeight: LucidType.h2[1],
     letterSpacing: -0.5,
@@ -746,13 +743,13 @@ const styles = StyleSheet.create({
   goalWaypointOrb: { borderWidth: 0 },
   goalWaypointActiveOrb: { transform: [{ translateY: 8 }] },
   goalWaypointIcon: {
-    textShadowColor: 'rgba(3, 11, 16, 0.35)',
+    textShadowColor: LucidScene.shadow,
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
   goalWaypointInactiveIcon: {
     opacity: 0.82,
-    textShadowColor: 'rgba(3, 11, 16, 0.35)',
+    textShadowColor: LucidScene.shadow,
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
@@ -831,7 +828,7 @@ const styles = StyleSheet.create({
   },
   startingPointSpacer: { minHeight: LucidType.overline[1] },
   experienceTitle: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.h2[0],
     lineHeight: LucidType.h2[1],
   },
@@ -841,7 +838,7 @@ const styles = StyleSheet.create({
     lineHeight: LucidType.bodySm[1],
   },
   experienceTextShadow: {
-    textShadowColor: 'rgba(2, 8, 12, 0.94)',
+    textShadowColor: LucidScene.shadow,
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
   },
@@ -850,7 +847,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     top: '92%',
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.h1[0],
     lineHeight: LucidType.h1[1],
     letterSpacing: -0.5,
@@ -858,7 +855,7 @@ const styles = StyleSheet.create({
   rhythmContent: { position: 'absolute', left: 0, right: 0, bottom: LucidSpace.gutter + LucidSpace.xl, alignItems: 'center' },
   rhythmContentReflow: { position: 'relative', paddingTop: '62%' },
   rhythmTitle: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.h1[0],
     lineHeight: LucidType.h1[1],
     letterSpacing: -0.5,

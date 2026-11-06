@@ -69,7 +69,7 @@ test('each palette mode is read separately, including inherited ambience palette
 
 test('formatting and case do not create false colour differences', () => {
   const f = fixture();
-  f.change('apps/meditation/global.css', 'rgba(20, 18, 40, 0.55)', 'RGBA( 020 , 18 , 40 , .550 )');
+  f.change('apps/meditation/global.css', 'rgba(20, 19, 26, 0.84)', 'RGBA( 020 , 19 , 26 , .840 )');
   f.change('global.css', '#FFF9EF', '#fff9ef');
   assert.deepEqual(f.check().errors, []);
   assert.equal(normalizeColor('#ABC'), normalizeColor('#aabbcc'));
@@ -77,7 +77,7 @@ test('formatting and case do not create false colour differences', () => {
 
 test('CSS defaults in Meditation are checked against its light palette', () => {
   const f = fixture();
-  f.change('apps/meditation/global.css', '--color-champagne-on: #4a2f1b;', '--color-champagne-on: #9a6332;');
+  f.change('apps/meditation/global.css', '--color-champagne-on: #FFF9EF;', '--color-champagne-on: #9a6332;');
   assert.match(f.check().errors.join('\n'), /Meditation default --color-champagne-on ↔ textOnAccent/);
 });
 

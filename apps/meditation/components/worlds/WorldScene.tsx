@@ -300,7 +300,7 @@ export function WorldScene({
         <ImmersiveScene
           motionPaused={ambientMotionPaused}
           palette={{
-            fog: Atmosphere[world.appearance].aurora[1].color,
+            fog: Atmosphere[world.appearance].glow,
             glow: world.atmosphere.overlayColor,
             light: colors.accentLight,
             ground: world.atmosphere.scrimColor,

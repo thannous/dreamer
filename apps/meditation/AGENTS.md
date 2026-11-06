@@ -49,8 +49,11 @@ et gates du dépôt parent ; un plan ou smoke ne remplace pas TesterArmy.
    pas en recréer.
 2. **Aucune couleur en dur.** Les tokens vivent dans `global.css` (`@theme` pour
    l'invariant, `@layer theme` + `@variant` pour les couleurs par thème) et
-   `constants/theme.ts` (valeurs brutes pour SVG et dégradés). Les deux fichiers
-   doivent rester synchronisés.
+   `constants/theme.ts` (valeurs brutes pour SVG et dégradés). Les blocs de palette,
+   navigation et atmosphère dérivent de `../../constants/noctaliaPalette.ts` :
+   lancer `npm run uniwind:types` à la racine, puis
+   `npx uniwind generate-artifacts --css ./global.css --dts ./uniwind-types.d.ts`
+   ici. Ne pas modifier ces blocs générés à la main.
 3. **`accent` est un remplissage, jamais une couleur de texte.** Pour du texte
    accentué : `tone="accent"` (`--n-accent-text`). Sur un fond champagne :
    `tone="onAccent"`. C'est ce qui garantit le contraste AA dans les deux thèmes.
@@ -80,8 +83,8 @@ et gates du dépôt parent ; un plan ou smoke ne remplace pas TesterArmy.
    plage d'opacité animée doit plafonner à 1,00 : au-delà, c'est écrêté.
 8. **Le verre vient des tokens, le flou est rare.** `bg-ink-card` et
    `bg-ink-panel` sont translucides : les surfaces échantillonnent l'aurore
-   d'`Atmosphere` posée par `NightBackground`, et c'est ce qui les fait lire
-   comme du verre. Ne jamais les repasser en opaque — une carte opaque perce un
+   du décor posé par `NightBackground` ou `WorldScene`, avec les teintes et
+   reflets de la direction Noctalia validée. Ne jamais les repasser en opaque — une carte opaque perce un
    trou plat dans l'atmosphère. Le vrai `BlurView` reste réservé au chrome qui
    flotte au-dessus d'un contenu qui bouge : la pilule d'onglets, et un
    `GlassCard` par écran au maximum. Jamais dans une liste qui défile.

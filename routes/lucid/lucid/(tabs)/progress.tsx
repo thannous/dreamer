@@ -868,8 +868,8 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderWidth: 3,
-    borderColor: 'rgba(231, 255, 248, 0.72)',
-    shadowColor: '#78E6C6',
+    borderColor: LucidScene.accent,
+    shadowColor: LucidScene.accent,
     shadowOpacity: 0.9,
     shadowRadius: 9,
     shadowOffset: { width: 0, height: 0 },
@@ -880,7 +880,7 @@ const styles = StyleSheet.create({
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 10, 18, 0.92)',
+    textShadowColor: LucidScene.shadow,
     textShadowRadius: 5,
   },
   starMeta: {
@@ -888,7 +888,7 @@ const styles = StyleSheet.create({
     fontSize: LucidType.overline[0],
     lineHeight: LucidType.overline[1],
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 10, 18, 0.92)',
+    textShadowColor: LucidScene.shadow,
     textShadowRadius: 5,
   },
   mainContent: {

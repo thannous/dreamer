@@ -394,7 +394,7 @@ function LucidDayThread({
                 ]}
               >
                 <Ionicons
-                  color={now ? palette.backgroundDeep : palette.textMuted}
+                  color={now ? palette.onAccent : palette.textMuted}
                   name={icon}
                   size={LucidIcon.sm}
                 />
@@ -625,7 +625,7 @@ export default function LucidTodayScreen() {
               size={LucidIcon.lg}
             />
           </View>
-          <Text style={[styles.primaryLabel, { color: palette.backgroundDeep }]}>
+          <Text style={[styles.primaryLabel, { color: palette.onAccent }]}>
             {primaryPresentation.label}
           </Text>
         </PressableScale>

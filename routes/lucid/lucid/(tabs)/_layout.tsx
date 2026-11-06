@@ -4,9 +4,10 @@ import React, { useMemo, type ComponentProps } from 'react';
 import { Platform, StyleSheet, Text, useWindowDimensions, type ColorValue } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ActiveTabPill } from '@/components/navigation/TabBarGlass';
 import { HapticTab } from '@/components/haptic-tab';
 import { LucidGlass } from '@/components/lucid/LucidGlass';
-import { getLucidPalette, LucidIcon, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
+import { getLucidPalette, LucidIcon, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -42,7 +43,12 @@ export default function LucidTabsLayout() {
     const screen = (title: string, icon: IconName, testID: string) => ({
       title,
       tabBarButton: (props: ComponentProps<typeof HapticTab>) => (
-        <HapticTab {...props} testID={testID} accessibilityLabel={title} />
+        <HapticTab {...props} testID={testID} accessibilityLabel={title}>
+          {(props.accessibilityState?.selected || props['aria-selected']) ? (
+            <ActiveTabPill style={{ position: 'absolute', top: 0, bottom: 0, left: 2, right: 2, borderRadius: 28 }} />
+          ) : null}
+          {props.children}
+        </HapticTab>
       ),
       // L'icône reste seule dans son emplacement : c'est le navigateur qui empile
       // le libellé dessous, lui seul connaît la hauteur disponible.
@@ -101,14 +107,12 @@ export default function LucidTabsLayout() {
       tabBarShowLabel: true,
       tabBarLabelPosition: 'below-icon' as const,
       animation: 'none' as const,
-      tabBarActiveTintColor: palette.accentStrong,
+      tabBarActiveTintColor: palette.text,
       tabBarInactiveTintColor: palette.textMuted,
       tabBarHideOnKeyboard: true,
       tabBarButton: HapticTab,
-      // La barre flottait déjà au-dessus du contenu avec un overlay à 0,86 :
-      // c'était du verre qui s'ignorait. `tabBarBackground` le rend explicite,
-      // avec flou sur iOS et l'overlay seul partout ailleurs.
-      tabBarBackground: () => <LucidGlass pointerEvents="none" radius={24} style={StyleSheet.absoluteFill as never} />,
+      // The same frosted material and active lens as Dreamer's floating navigation.
+      tabBarBackground: () => <LucidGlass pointerEvents="none" radius={36} style={StyleSheet.absoluteFill as never} />,
       tabBarItemStyle: styles.tabBarItem,
       tabBarStyle: {
         position: 'absolute' as const,
@@ -123,7 +127,7 @@ export default function LucidTabsLayout() {
         borderTopColor: 'transparent',
         borderColor: 'transparent',
         borderWidth: 0,
-        borderRadius: LucidRadius.xl,
+        borderRadius: 36,
         elevation: 12,
         shadowColor: '#000',
         shadowOpacity: mode === 'dark' ? 0.38 : 0.12,
@@ -135,7 +139,7 @@ export default function LucidTabsLayout() {
     [
       insets.bottom,
       mode,
-      palette.accentStrong,
+      palette.text,
       palette.background,
       palette.textMuted,
       tabBarHeight,

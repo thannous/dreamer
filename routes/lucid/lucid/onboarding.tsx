@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   immersiveTitle: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.display[0],
     lineHeight: LucidType.display[1],
     letterSpacing: -0.8,
@@ -882,7 +882,7 @@ const styles = StyleSheet.create({
     gap: LucidSpace.lg,
   },
   pickerTitle: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.h2[0],
     lineHeight: LucidType.h2[1],
     textAlign: 'center',

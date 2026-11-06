@@ -1,8 +1,11 @@
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs, useNavigation } from 'expo-router';
 import type { DrawerNavigationProp } from 'expo-router/drawer';
 import React from 'react';
 import {
+  Platform,
+  StyleSheet,
   Pressable,
   Text,
   useWindowDimensions,
@@ -16,7 +19,7 @@ import { CompactTabBar, TabBar } from '@/constants/layout';
 
 import { IconSymbol } from '@/components/ui';
 import { usePressMotion } from '@/hooks/usePressMotion';
-import { Radius } from '@/constants/theme';
+import { NavigationMaterial, Radius } from '@/constants/theme';
 import { FontFamily } from '@/constants/typography';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
@@ -123,7 +126,11 @@ export function AccessibleTabBar({ state, descriptors, emitter, navigateToTab, i
   const { width, fontScale } = useWindowDimensions();
   const compact = useCompactLayout();
   const tabBar = compact ? CompactTabBar : TabBar;
+  const material = NavigationMaterial[mode];
+  const blurs = Platform.OS !== 'android';
   const tabBarHeight = accessibleTabBarHeight(tabBar.height, fontScale);
+  const floatingBottom = Math.max(insets.bottom, tabBar.margin);
+  const verticalPadding = compact ? 2 : 6;
   const iconSize = compact ? 20 : 22;
   const labelMaxWidth = tabLabelMaxWidth(width, state.routes.length, compact);
 
@@ -138,26 +145,22 @@ export function AccessibleTabBar({ state, descriptors, emitter, navigateToTab, i
         left: 0,
         right: 0,
         bottom: 0,
-        height: tabBarHeight + insets.bottom,
-        paddingBottom: insets.bottom,
-        paddingTop: compact ? 3 : 6,
+        height: tabBarHeight + floatingBottom,
+        paddingBottom: floatingBottom + verticalPadding,
+        paddingTop: verticalPadding,
       }}>
-      <BlurView
-        intensity={mode === 'dark' ? 32 : 40}
-        tint={mode === 'dark' ? 'dark' : 'light'}
-        style={{
-          position: 'absolute',
-          left: tabBar.margin,
-          right: tabBar.margin,
-          top: 0,
-          bottom: Math.max(insets.bottom - tabBar.margin, tabBar.margin),
-          backgroundColor: colors.navbarBg,
-          borderColor: colors.navbarBorder,
-          borderWidth: 1,
-          borderRadius: Radius.full,
-          overflow: 'hidden',
-        }}
-      />
+      <View pointerEvents="none" style={{
+        position: 'absolute', left: tabBar.margin, right: tabBar.margin, top: 0,
+        bottom: floatingBottom,
+        borderColor: material.glass.rim, borderWidth: StyleSheet.hairlineWidth,
+        borderRadius: 36, overflow: 'hidden',
+      }}>
+        {blurs ? <BlurView intensity={70}
+          tint={mode === 'dark' ? 'systemUltraThinMaterialDark' : 'systemUltraThinMaterialLight'}
+          style={StyleSheet.absoluteFill} /> : null}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: blurs ? material.glass.tint : material.glass.solid }]} />
+        <LinearGradient colors={material.glass.highlight} end={{ x: 0.5, y: 0.6 }} style={StyleSheet.absoluteFill} />
+      </View>
       <View className="flex-1 flex-row" style={{ paddingHorizontal: tabBar.margin }}>
         {state.routes.map((route) => {
           const focused = state.routes[state.index].key === route.key;
@@ -184,6 +187,15 @@ export function AccessibleTabBar({ state, descriptors, emitter, navigateToTab, i
               onPress={onPress}
               onLongPress={() => emitter.emit({ type: 'tabLongPress', target: route.key })}
               style={{ flex: 1, minHeight: 48, alignItems: 'center', justifyContent: 'center', overflow: 'visible' }}>
+              {focused ? (
+                <View pointerEvents="none" style={{
+                  position: 'absolute', top: 0, bottom: 0, left: 3, right: 3,
+                  borderRadius: 28, overflow: 'hidden', backgroundColor: material.active.fill,
+                  borderColor: material.active.rim, borderWidth: StyleSheet.hairlineWidth,
+                }}>
+                  <LinearGradient colors={material.active.sheen} end={{ x: 0.5, y: 0.7 }} style={StyleSheet.absoluteFill} />
+                </View>
+              ) : null}
               <IconSymbol name={tabIconName(route.name)} color={color} size={iconSize} />
               <TabLabel
                 compact={compact}

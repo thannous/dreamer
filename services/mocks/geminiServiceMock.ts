@@ -1,3 +1,4 @@
+import { selfHarmSupportReply } from '@/supabase/functions/api/lib/selfHarmSupport';
 /**
  * Mock implementation of geminiService for development mode
  * Simulates API calls with realistic delays and data
@@ -302,9 +303,10 @@ export async function startOrContinueChat(
 
   // In mock mode, generate response based on message
   // Server-side quota tracking is handled by quota service
-  const response = generateChatResponse(message, 'your dream');
+  const supportReply = selfHarmSupportReply(message, lang);
+  const response = supportReply ?? generateChatResponse(message, 'your dream');
 
-  if (_options?.onDelta) {
+  if (_options?.onDelta && !supportReply) {
     // Simulate streaming: reveal the reply a few words at a time.
     const words = response.split(' ');
     let accumulated = '';

@@ -1014,7 +1014,7 @@ function Score({
               { backgroundColor: score === value ? palette.accent : palette.surfaceRaised, opacity: pressed ? LucidPress.opacity : 1 },
             ]}
           >
-            <Text style={[styles.scoreText, { color: score === value ? palette.backgroundDeep : palette.textSecondary }]}>{score}</Text>
+            <Text style={[styles.scoreText, { color: score === value ? palette.onAccent : palette.textSecondary }]}>{score}</Text>
           </Pressable>
         ))}
       </View>

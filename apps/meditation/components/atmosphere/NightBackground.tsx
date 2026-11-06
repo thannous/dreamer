@@ -69,9 +69,7 @@ export function NightBackground({ variant = 'immersive' }: Props) {
   const starOpacity = isSubtle ? 0.35 : 1;
   const baseGlow = isSubtle ? atmosphere.glowOpacity * 0.5 : atmosphere.glowOpacity;
   const horizonOpacity = isSubtle ? (isDark ? 0.22 : 0.16) : isDark ? 0.74 : 0.48;
-  // Keep the night ground ink-dark, including behind translucent settings
-  // panels. Broad auroras must not lift it into a competing purple palette.
-  const auroraOpacity = isDark ? 0.3 : isSubtle ? 0.85 : 1;
+
 
   // The halo lives in its own layer so the breath animates a plain opacity on
   // the UI thread, instead of driving SVG props frame by frame.
@@ -95,30 +93,6 @@ export function NightBackground({ variant = 'immersive' }: Props) {
         end={{ x: 0.9, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
-
-      {/* Aurora: a few very wide colour fields under everything else. They are
-          what the translucent surfaces sample — without them the light theme
-          has nothing but beige behind the glass. Static, so they stay in their
-          own layer rather than re-rendering with the breath. */}
-      <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
-        <Defs>
-          {atmosphere.aurora.map((field, index) => (
-            <RadialGradient key={index} id={`aurora-${index}`} cx="50%" cy="50%" r="50%">
-              <Stop offset="0" stopColor={field.color} stopOpacity={field.opacity * auroraOpacity} />
-              <Stop offset="1" stopColor={field.color} stopOpacity={0} />
-            </RadialGradient>
-          ))}
-        </Defs>
-        {atmosphere.aurora.map((field, index) => (
-          <Circle
-            key={index}
-            cx={width * field.cx}
-            cy={height * field.cy}
-            r={Math.max(width, height) * field.r}
-            fill={`url(#aurora-${index})`}
-          />
-        ))}
-      </Svg>
 
       <Animated.View style={[StyleSheet.absoluteFill, haloStyle]}>
         <Svg width={width} height={height}>

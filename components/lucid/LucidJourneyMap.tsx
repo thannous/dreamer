@@ -23,6 +23,7 @@ import {
   LucidPress,
   LucidRadius,
   LucidSpace,
+  LucidScene,
   LucidType,
 } from '@/constants/lucidTheme';
 import { useContentWindow } from '@/context/ContentWindowContext';
@@ -789,13 +790,13 @@ function CurrentSessionCard({
         ]}
       >
         {loading ? (
-          <ActivityIndicator color={palette.backgroundDeep} />
+          <ActivityIndicator color={palette.onAccent} />
         ) : (
           <>
-            <Text style={[styles.ctaLabel, { color: disabled ? palette.textMuted : palette.backgroundDeep }]}>
+            <Text style={[styles.ctaLabel, { color: disabled ? palette.textMuted : palette.onAccent }]}>
               {actionLabel}
             </Text>
-            <Ionicons name="arrow-forward" size={LucidIcon.md} color={disabled ? palette.textMuted : palette.backgroundDeep} />
+            <Ionicons name="arrow-forward" size={LucidIcon.md} color={disabled ? palette.textMuted : palette.onAccent} />
           </>
         )}
       </PressableScale>
@@ -903,7 +904,7 @@ const styles = StyleSheet.create({
   },
   segmentedImage: { position: 'absolute', left: 0 },
   sceneSkyBlend: { position: 'absolute', top: 0, right: 0, left: 0, height: LucidSpace.xl },
-  scrim: { backgroundColor: 'rgba(3, 11, 16, 0.24)' },
+  scrim: { backgroundColor: LucidScene.scrim },
   header: {
     marginTop: LucidSpace.lg,
     marginHorizontal: LucidSpace.lg,
@@ -1130,7 +1131,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   currentTitle: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.h2[0],
     lineHeight: LucidType.h2[1],
   },

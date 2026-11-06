@@ -788,7 +788,7 @@ export default function LucidNightScreen() {
                     <Text
                       style={[
                         styles.levelText,
-                        { color: selected ? palette.backgroundDeep : palette.textSecondary },
+                        { color: selected ? palette.onAccent : palette.textSecondary },
                       ]}
                     >
                       {label}
@@ -865,7 +865,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   title: {
-    fontFamily: 'Fraunces_600SemiBold',
+    fontFamily: 'Fraunces_400Regular',
     fontSize: LucidType.display[0],
     lineHeight: LucidType.display[1],
     letterSpacing: -0.8,

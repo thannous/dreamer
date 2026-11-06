@@ -10,6 +10,7 @@ import {
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 
 import { DURATION, EASE } from '@/components/motion/motion';
+import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
 import { getLucidPalette } from '@/constants/lucidTheme';
 import { useTheme } from '@/context/ThemeContext';
 import type { ThemeAmbience } from '@/lib/themeAmbience';
@@ -25,58 +26,23 @@ const ONBOARDING_SCENES = [
 const PARALLAX_DISTANCE = 16;
 const FOREGROUND_DISTANCE = PARALLAX_DISTANCE * 2;
 
-const AMBIENCE_STYLES = {
-  dark: {
-    sceneOpacity: 1,
-    gradient: [
-      'rgba(4, 20, 29, 0.04)',
-      'rgba(2, 13, 20, 0.02)',
-      'rgba(0, 8, 14, 0.12)',
-    ],
-    scrim: 'rgba(2, 10, 14, 0.28)',
-    introScrim: 'rgba(2, 10, 14, 0.22)',
-    experienceScrim: 'rgba(2, 10, 14, 0.34)',
-  },
-  afterglow: {
-    sceneOpacity: 0.98,
-    gradient: [
-      'rgba(72, 45, 112, 0.2)',
-      'rgba(164, 74, 105, 0.18)',
-      'rgba(240, 148, 91, 0.16)',
-    ],
-    scrim: 'rgba(18, 7, 24, 0.12)',
-    introScrim: 'rgba(18, 7, 24, 0.1)',
-    experienceScrim: 'rgba(18, 7, 24, 0.18)',
-  },
-  morning: {
-    sceneOpacity: 1,
-    gradient: [
-      'rgba(190, 224, 235, 0.18)',
-      'rgba(249, 218, 185, 0.14)',
-      'rgba(255, 209, 160, 0.2)',
-    ],
-    scrim: 'rgba(255, 248, 230, 0.1)',
-    introScrim: 'rgba(255, 248, 230, 0.08)',
-    experienceScrim: 'rgba(255, 248, 230, 0.14)',
-  },
-  light: {
-    sceneOpacity: 1,
-    gradient: [
-      'rgba(202, 231, 239, 0.22)',
-      'rgba(236, 245, 238, 0.12)',
-      'rgba(218, 237, 226, 0.18)',
-    ],
-    scrim: 'rgba(243, 249, 246, 0.12)',
-    introScrim: 'rgba(243, 249, 246, 0.1)',
-    experienceScrim: 'rgba(243, 249, 246, 0.16)',
-  },
-} as const satisfies Record<ThemeAmbience, {
-  sceneOpacity: number;
-  gradient: readonly [string, string, string];
-  scrim: string;
-  introScrim: string;
-  experienceScrim: string;
-}>;
+const night = getNoctaliaPalette('dark');
+const paper = getNoctaliaPalette('light');
+const nightScene = {
+  sceneOpacity: 1,
+  gradient: [night.backgroundArtwork.transparent, night.backgroundArtwork.transparent, night.backgroundArtwork.transparent],
+  scrim: night.backgroundArtwork.scrim,
+  introScrim: night.backgroundArtwork.scrim,
+  experienceScrim: night.backgroundArtwork.scrim,
+} as const;
+const paperScene = {
+  sceneOpacity: 1,
+  gradient: [paper.backgroundArtwork.transparent, paper.backgroundArtwork.transparent, paper.backgroundArtwork.transparent],
+  scrim: paper.backgroundArtwork.scrim,
+  introScrim: paper.backgroundArtwork.scrim,
+  experienceScrim: paper.backgroundArtwork.scrim,
+} as const;
+const AMBIENCE_STYLES = { dark: nightScene, afterglow: nightScene, light: paperScene, morning: paperScene } satisfies Record<ThemeAmbience, typeof nightScene>;
 
 /**
  * Five bundled night scenes form one continuous approach to the lucid portal.

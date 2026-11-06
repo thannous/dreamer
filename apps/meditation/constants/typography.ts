@@ -6,7 +6,7 @@
 export const TypeScale = {
   display: { fontSize: 34, lineHeight: 40 },
   hero: { fontSize: 40, lineHeight: 46 },
-  saga: { fontSize: 52, lineHeight: 56 },
+  saga: { fontSize: 44, lineHeight: 48 },
   h1: { fontSize: 28, lineHeight: 34 },
   h2: { fontSize: 22, lineHeight: 28 },
   chapter: { fontSize: 22, lineHeight: 28 },
@@ -22,7 +22,7 @@ export const TypeScale = {
 } as const;
 
 export const FontFamily = {
-  display: 'Fraunces_600SemiBold',
+  display: 'Fraunces_400Regular',
   displayBold: 'Fraunces_700Bold',
   displayLight: 'Fraunces_400Regular',
   sans: 'Outfit_400Regular',

@@ -1,17 +1,19 @@
 # Contrat de cohérence des couleurs Noctalia
 
-## Décision
+## Direction actuelle — 6 novembre 2026
 
-Ce lot prépare le partage des primitives de marque en vérifiant les miroirs CSS
-et TypeScript existants. Il ne déplace pas les configurations natives et ne crée
-pas de package partagé avant d'avoir stabilisé les responsabilités des tokens.
-Les interfaces restent inchangées. Les valeurs CSS restent la référence ; les
-surfaces TypeScript Morning/Afterglow sont alignées sur cette référence.
+Le propriétaire a validé la direction artistique de Noctalia et demandé son
+application exacte à Lucid et Meditation. `constants/noctaliaPalette.ts` devient
+la référence commune pour les fonds, textes, accents, états et matériaux de verre.
+Lucid utilise cette palette directement via son adaptateur ; Meditation garde
+son package autonome et reçoit des valeurs générées dans `constants/theme.ts`
+et `global.css` par `npm run theme:generate` à la racine. Ne pas éditer ces blocs
+à la main. `npm run theme:check` vérifie que les trois sorties sont à jour.
 
-Journal et Lucid utilisent les palettes de `constants/journalTheme.ts` et la
-feuille racine `global.css`. Meditation possède ses propres surfaces dans
-`apps/meditation/constants/theme.ts` et `apps/meditation/global.css`. Une même
-marque n'exige pas des surfaces identiques entre ces produits.
+Les trois apps emploient Fraunces regular pour les titres, Outfit pour
+l'interface et Lora pour les passages éditoriaux. Les peintures et contenus
+propres aux pratiques restent en place. La navigation utilise les mêmes teintes,
+reflets et contours ; son organisation et ses destinations restent propres au produit.
 
 ## Sémantique explicite
 
@@ -27,13 +29,13 @@ Ces conventions existantes sont contrôlées, pas renommées dans ce lot. Un fut
 package doit exposer des rôles non ambigus et conserver des adaptateurs produit.
 Le contrat fonctionnel reste `specs/noctalia-brand-contract.md`.
 
-## Périmètre
+## Périmètre des contrôles
 
 Le contrôle porte sur les couleurs des palettes Journal dark/light/morning/
 afterglow et Meditation dark/light. Les surfaces calculées par
 `getNoctaliaDesignTokens` sont contrôlées pour les quatre combinaisons réelles :
-Dark/dark, Light/light, Morning/light et Afterglow/dark. Le mode binaire ne
-suffit pas à distinguer les surfaces : la fonction lit aussi `colors.ambience`.
+Dark/dark, Light/light, Morning/light et Afterglow/dark. Les variantes Morning et Afterglow reprennent respectivement les surfaces
+Paper et Night ; elles ne créent plus de palettes indépendantes.
 
 Chaque déclaration `--color-*` des palettes doit être enregistrée dans le
 mapping approprié. Le parseur limite ces palettes à `@layer theme > :root` ;
@@ -48,8 +50,8 @@ contraste existants et la qualification native restent distincts.
 Les commandes canoniques sont `npm run brand:check` depuis la racine et depuis
 `apps/meditation`. Le contrôle est exécuté avant le lint de chaque produit afin
 que les jobs qualité existants le vérifient sans modifier les pipelines.
-Les divergences doivent être examinées : ne pas recopier mécaniquement une
-valeur d'un produit à l'autre pour obtenir un contrôle vert.
+Les divergences doivent être corrigées depuis la palette canonique, puis
+régénérées. Les mappings préservent les rôles sémantiques de chaque produit.
 
 ## Preuves du lot initial (PR #118)
 

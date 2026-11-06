@@ -1,6 +1,8 @@
 import { assertEquals, assertThrows } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 
 import type { ApiContext } from '../types.ts';
+import { SELF_HARM_SUPPORT } from '../lib/selfHarmSupport.ts';
+import { createGuestToken } from '../lib/guestToken.ts';
 import { handleChat, sanitizeClientHistoryMessage, sanitizeGuestModelParts } from './chat.ts';
 
 const buildContext = (body: Record<string, unknown>) => ({
@@ -312,3 +314,72 @@ Deno.test('an interrupted Claude stream reports retryable failure without commit
   assertEquals(writes, ['fail_authenticated_chat_turn']);
   assertEquals(hosts, ['api.anthropic.com']);
 }));
+
+for (const stream of [false, true]) {
+  Deno.test(`self-harm reply is fixed, persisted and provider-free (stream=${stream})`, async () => {
+    const previousKey = Deno.env.get('ANTHROPIC_API_KEY');
+    const previousFetch = globalThis.fetch;
+    let providerCalls = 0;
+    Deno.env.delete('ANTHROPIC_API_KEY');
+    globalThis.fetch = () => { providerCalls += 1; throw new Error('No network expected'); };
+    try {
+      const { context, committed, createAdminClient } = streamingTurn();
+      context.req = new Request(context.req.url, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dreamId: '42', message: 'Je veux me faire du mal.', lang: 'fr', stream }),
+      });
+      const response = await handleChat(context, {
+        admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }), createAdminClient,
+      });
+      assertEquals(response.status, 200);
+      const wire = await response.text();
+      const result = JSON.parse(stream ? wire.trim().replace(/^data: /, '') : wire);
+      assertEquals(result.text, SELF_HARM_SUPPORT.fr);
+      assertEquals(result.message.text, SELF_HARM_SUPPORT.fr);
+      assertEquals(committed, [result.message]);
+      assertEquals(providerCalls, 0);
+      if (stream) {
+        assertEquals(result.done, true);
+        assertEquals(result.delta, undefined);
+        assertEquals(response.headers.get('content-type'), 'text/event-stream');
+      }
+    } finally {
+      globalThis.fetch = previousFetch;
+      if (previousKey === undefined) Deno.env.delete('ANTHROPIC_API_KEY');
+      else Deno.env.set('ANTHROPIC_API_KEY', previousKey);
+    }
+  });
+}
+
+Deno.test('guest self-harm reply keeps session and quota guards without calling AI', async () => {
+  const previousSecret = Deno.env.get('GUEST_SESSION_SECRET');
+  const previousFetch = globalThis.fetch;
+  Deno.env.set('GUEST_SESSION_SECRET', 'synthetic-self-harm-test-secret');
+  const requests: string[] = [];
+  try {
+    const fingerprint = 'synthetic-support-guest';
+    const { token } = await createGuestToken(fingerprint, 'android');
+    const context = buildContext({
+      dreamId: 'local-dream', message: 'I want to hurt myself.', lang: 'en',
+      fingerprint, dreamContext: { transcript: 'A dream', title: 'Test' },
+    });
+    context.user = null;
+    context.req.headers.set('x-guest-token', token);
+    context.req.headers.set('x-guest-platform', 'android');
+    globalThis.fetch = async (input, init) => {
+      const url = new URL(new Request(input, init).url);
+      requests.push(url.pathname);
+      assertEquals(url.hostname, 'example.test');
+      assertEquals(url.pathname, '/rest/v1/rpc/claim_guest_chat_message');
+      return new Response(JSON.stringify({ allowed: true }), { headers: { 'Content-Type': 'application/json' } });
+    };
+    const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'GUEST' }) });
+    assertEquals(response.status, 200);
+    assertEquals((await response.json()).text, SELF_HARM_SUPPORT.en);
+    assertEquals(requests, ['/rest/v1/rpc/claim_guest_chat_message']);
+  } finally {
+    globalThis.fetch = previousFetch;
+    if (previousSecret === undefined) Deno.env.delete('GUEST_SESSION_SECRET');
+    else Deno.env.set('GUEST_SESSION_SECRET', previousSecret);
+  }
+});

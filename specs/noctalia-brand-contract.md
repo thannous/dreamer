@@ -77,10 +77,14 @@ qualification ; ce document n'affirme pas qu'une instrumentation existe déjà.
 - Écarter les promesses de diagnostic, vérité cachée, guérison ou résultat lucide
   garanti de l'interface et du site eux-mêmes. Une mention légale en bas de page
   ne corrige pas une promesse excessive dans un titre.
-- Partager les rôles sémantiques des tokens, le contraste, la lisibilité et le
-  respect des préférences système. Conserver les palettes et compositions propres
-  aux apps. Champagne est un accent de surface ; employer le token de texte
-  accessible prévu par chaque thème. Aucun store applicatif ou tarif partagé
+- Appliquer aux trois apps la direction artistique Noctalia validée (décision
+  propriétaire du 6 novembre 2026) : palette encre/champagne et papier ivoire,
+  titres Fraunces regular, interface Outfit, cartes et navigation en verre.
+  `constants/noctaliaPalette.ts` est la source chromatique commune ; Lucid
+  l'adapte directement et Meditation en reçoit des tokens générés dans son
+  package autonome. Les contenus, illustrations de pratique et compositions
+  fonctionnelles restent propres aux apps. Champagne est un accent de surface ;
+  employer le token de texte accessible prévu par chaque thème. Aucun store applicatif ou tarif partagé
   n'est déduit de ces primitives visuelles.
 
 ## Écarts documentaires et décisions restantes

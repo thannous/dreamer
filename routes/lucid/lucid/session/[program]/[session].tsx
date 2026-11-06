@@ -358,7 +358,7 @@ export default function LucidSessionScreen() {
               transitionProperties={['backgroundColor']}
             >
               <View style={[styles.check, { backgroundColor: done ? palette.accent : 'transparent', borderColor: done ? palette.accent : palette.borderInteractive }]}>
-                {done ? <Ionicons name="checkmark" size={LucidIcon.sm} color={palette.backgroundDeep} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}
+                {done ? <Ionicons name="checkmark" size={LucidIcon.sm} color={palette.onAccent} /> : <Text style={[styles.checkNumber, { color: palette.textSecondary }]}>{index + 1}</Text>}
               </View>
               <Text style={[styles.stepText, { color: done ? palette.textSecondary : palette.text }]}>{stepText}</Text>
             </PressableScale>
@@ -819,7 +819,7 @@ const styles = StyleSheet.create({
   heroTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: LucidSpace.md },
   heroCopy: { gap: LucidSpace.sm },
   meta: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.xs },
-  title: { fontFamily: 'Fraunces_600SemiBold', fontSize: LucidType.h1[0], lineHeight: LucidType.h1[1], letterSpacing: -0.4 },
+  title: { fontFamily: 'Fraunces_400Regular', fontSize: LucidType.h1[0], lineHeight: LucidType.h1[1], letterSpacing: -0.4 },
   objective: { fontFamily: 'Outfit_400Regular', fontSize: LucidType.bodySm[0], lineHeight: LucidType.bodySm[1] },
   progressBlock: { gap: LucidSpace.sm, paddingHorizontal: LucidSpace.xs },
   progressCopy: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: LucidSpace.md },

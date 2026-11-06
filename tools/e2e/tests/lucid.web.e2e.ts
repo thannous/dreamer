@@ -215,7 +215,9 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
     const surface = Array.from(sheet.querySelectorAll('*')).find(node => getComputedStyle(node).backgroundColor !== 'rgba(0, 0, 0, 0)' && node.getBoundingClientRect().width > sheet.getBoundingClientRect().width * 0.8 && node.getBoundingClientRect().height > 200);
     return getComputedStyle(surface ?? sheet).backgroundColor;
   });
-  expect(surface).toBe('rgb(255, 255, 255)');
+  // The shared Noctalia paper surface replaces pure white. Keep this opaque:
+  // a transparent sheet would let the underlying page interfere with the form.
+  expect(surface).toBe('rgb(245, 234, 219)');
   await screen.getByTestId('input.auth.email', { visible: true }).fill('invalid-email');
   await expect(screen.getByTestId('btn.auth.signIn', { visible: true })).toBeDisabled();
   await app.screenshot('lucid-invalid-account-form');

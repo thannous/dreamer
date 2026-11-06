@@ -88,7 +88,7 @@ export function ArtworkGlassPanel({
 const styles = StyleSheet.create({
   material: {
     overflow: 'hidden',
-    borderRadius: Radius.lg,
+    borderRadius: Radius.xl,
     borderWidth: 1,
   },
   specularEdge: {

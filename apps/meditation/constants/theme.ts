@@ -33,6 +33,7 @@ export interface ThemeColors {
   accentText: string;
   accentDark: string;
   accentLight: string;
+  accentBorder: string;
   textOnAccent: string;
   divider: string;
   navbarBg: string;
@@ -41,99 +42,130 @@ export interface ThemeColors {
 
 export const NightTheme: ThemeColors = {
   background: '#03040D',
-  backgroundCard: 'rgba(20, 18, 40, 0.55)',
-  backgroundSecondary: 'rgba(25, 35, 68, 0.42)',
-  backgroundRaised: 'rgba(8, 8, 20, 0.92)',
-  glassTint: '#0D0B1C',
+  backgroundCard: 'rgba(20, 19, 26, 0.84)',
+  backgroundSecondary: 'rgba(234, 212, 180, 0.06)',
+  backgroundRaised: 'rgba(20, 19, 26, 0.9)',
+  glassTint: '#14131A',
   textPrimary: '#FFF9EF',
   textSecondary: '#B7AEC9',
-  textTertiary: '#8E84A7',
-  accent: '#D4A574',
+  textTertiary: '#B7AEC9',
+  accent: '#EAD4B4',
   accentText: '#EAD4B4',
-  accentDark: '#9A6332',
+  accentDark: '#EAD4B4',
   accentLight: '#EAD4B4',
-  textOnAccent: '#3B2412',
-  divider: 'rgba(234, 212, 180, 0.16)',
-  navbarBg: 'rgba(8, 8, 20, 0.92)',
-  navbarBorder: 'rgba(234, 212, 180, 0.14)',
+  accentBorder: '#514637',
+  textOnAccent: '#382D35',
+  divider: '#514637',
+  navbarBg: 'rgba(20, 19, 26, 0.9)',
+  navbarBorder: 'rgba(234, 212, 180, 0.18)'
 };
 
 export const PaperTheme: ThemeColors = {
-  background: '#F5F0E8',
-  backgroundCard: 'rgba(255, 253, 248, 0.62)',
-  backgroundSecondary: 'rgba(243, 239, 231, 0.55)',
-  backgroundRaised: 'rgba(252, 251, 248, 0.92)',
-  glassTint: '#FFFDF8',
-  textPrimary: '#2A2838',
-  textSecondary: '#4F4C63',
-  textTertiary: '#5C5870',
-  accent: '#D4A574',
-  // Small bronze copy needs more contrast than the decorative accent.
-  accentText: '#76471F',
-  accentDark: '#9A6332',
-  accentLight: '#EAD4B4',
-  textOnAccent: '#4A2F1B',
-  divider: 'rgba(154, 99, 50, 0.16)',
-  navbarBg: 'rgba(252, 251, 248, 0.92)',
-  navbarBorder: 'rgba(154, 99, 50, 0.14)',
+  background: '#F0E4D4',
+  backgroundCard: 'rgba(245, 234, 219, 0.88)',
+  backgroundSecondary: 'rgba(255, 249, 239, 0.14)',
+  backgroundRaised: 'rgba(245, 234, 219, 0.94)',
+  glassTint: '#F5EADB',
+  textPrimary: '#382D35',
+  textSecondary: '#64514F',
+  textTertiary: '#64514F',
+  accent: '#7C4C2B',
+  accentText: '#7C4C2B',
+  accentDark: '#7C4C2B',
+  accentLight: '#7C4C2B',
+  accentBorder: 'rgba(126, 83, 49, 0.25)',
+  textOnAccent: '#FFF9EF',
+  divider: 'rgba(126, 83, 49, 0.25)',
+  navbarBg: 'rgba(245, 234, 219, 0.94)',
+  navbarBorder: 'rgba(124, 76, 43, 0.16)'
 };
 
-export const Themes: Record<ThemeMode, ThemeColors> = {
-  dark: NightTheme,
-  light: PaperTheme,
-};
+export const Themes: Record<ThemeMode, ThemeColors> = { dark: NightTheme, light: PaperTheme };
 
-/**
- * Atmosphere — the Noctalia answer to the template's "aurora gradients".
- * An ink wash, thin gold orbits, star dust, and a few very wide colour fields.
- *
- * Those colour fields used to be ruled out on purpose. They came back because
- * translucent surfaces need something to refract: the light gradient was three
- * near-identical off-whites, so every card sampled the same beige and the glass
- * read as flat paper. Warm ground, cool counterpoint — that tension is what the
- * light theme was missing, and the dark theme already had.
- *
- * They stay wide (radius near the screen's long side) and low in opacity: the
- * eye should read a coloured light, never a blob with an edge.
- */
-export const Atmosphere = {
+/** Generated from constants/noctaliaPalette.ts by npm run theme:generate. */
+export const NavigationMaterial = {
   dark: {
-    gradient: ['#03040D', '#120D23', '#0D0B1C'] as const,
-    gradientLocations: [0, 0.55, 1] as const,
-    orbit: 'rgba(234, 212, 180, 0.24)',
-    star: 'rgba(234, 212, 180, 0.70)',
-    veil: 'rgba(3, 4, 13, 0.42)',
-    glow: '#D4A574',
-    glowOpacity: 0.16,
-    horizon: 'rgba(255, 249, 239, 0.08)',
-    aurora: [
-      { cx: 0.12, cy: 0.26, r: 0.82, color: '#4F3D6B', opacity: 0.5 },
-      { cx: 0.9, cy: 0.58, r: 0.72, color: '#26456B', opacity: 0.42 },
-      { cx: 0.42, cy: 0.9, r: 0.66, color: '#6C568F', opacity: 0.26 },
-    ] as const,
+    glass: {
+      tint: 'rgba(20, 19, 26, 0.7)',
+      solid: 'rgba(20, 19, 26, 0.9)',
+      highlight: [
+        'rgba(255, 249, 239, 0.09)',
+        'rgba(255, 249, 239, 0)'
+      ],
+      rim: 'rgba(234, 212, 180, 0.18)'
+    },
+    active: {
+      fill: 'rgba(234, 212, 180, 0.12)',
+      sheen: [
+        'rgba(255, 249, 239, 0.12)',
+        'rgba(255, 249, 239, 0)'
+      ],
+      rim: 'rgba(234, 212, 180, 0.26)'
+    }
   },
   light: {
-    // Deeper than the cards on purpose. A near-white ground under a
-    // near-white translucent card gives no separation at all — the panels
-    // have to read as lighter than what they float on.
-    gradient: ['#F5F0E8', '#EFE9E1', '#E8E5EF'] as const,
-    gradientLocations: [0, 0.55, 1] as const,
-    orbit: 'rgba(154, 99, 50, 0.18)',
-    star: 'rgba(154, 99, 50, 0.45)',
-    // Much lighter than its dark counterpart. The veil exists so text stays
-    // readable over the lower half, but in this theme the text is ink on a pale
-    // ground and was never at risk — all a heavy veil did was wash the aurora
-    // out precisely where the cards sit and most need something to sample.
-    veil: 'rgba(243, 239, 231, 0.3)',
-    glow: '#D4A574',
-    glowOpacity: 0.3,
-    horizon: 'rgba(154, 99, 50, 0.10)',
-    aurora: [
-      { cx: 0.08, cy: 0.34, r: 0.85, color: '#9B86C4', opacity: 0.44 },
-      { cx: 0.88, cy: 0.62, r: 0.74, color: '#87AFD6', opacity: 0.36 },
-      { cx: 0.5, cy: 0.94, r: 0.68, color: '#E8CBA4', opacity: 0.52 },
-    ] as const,
+    glass: {
+      tint: 'rgba(245, 234, 219, 0.6)',
+      solid: 'rgba(245, 234, 219, 0.94)',
+      highlight: [
+        'rgba(255, 255, 255, 0.55)',
+        'rgba(255, 255, 255, 0)'
+      ],
+      rim: 'rgba(124, 76, 43, 0.16)'
+    },
+    active: {
+      fill: 'rgba(124, 76, 43, 0.08)',
+      sheen: [
+        'rgba(255, 255, 255, 0.6)',
+        'rgba(255, 255, 255, 0)'
+      ],
+      rim: 'rgba(124, 76, 43, 0.2)'
+    }
+  }
+} as const;
+
+/** Noctalia's atmosphere; paintings carry the colour, without a second aurora palette. */
+export const Atmosphere = {
+  dark: {
+    glow: '#EAD4B4',
+    glowOpacity: 0.16,
+    particle: 'rgba(234, 212, 180, 0.22)',
+    star: 'rgba(234, 212, 180, 0.7)',
+    veil: 'rgba(25, 35, 68, 0.42)',
+    orbit: 'rgba(234, 212, 180, 0.24)',
+    horizon: 'rgba(255, 249, 239, 0.08)',
+    sheen: '#FFF9EF',
+    gradient: [
+      '#03040D',
+      '#03040D',
+      '#03040D'
+    ],
+    gradientLocations: [
+      0,
+      0.55,
+      1
+    ]
   },
+  light: {
+    glow: '#7C4C2B',
+    glowOpacity: 0.08,
+    particle: 'rgba(124, 76, 43, 0.12)',
+    star: 'rgba(124, 76, 43, 0.25)',
+    veil: 'rgba(240, 228, 212, 0.7)',
+    orbit: 'rgba(124, 76, 43, 0.12)',
+    horizon: 'rgba(124, 76, 43, 0.06)',
+    sheen: '#93571F',
+    gradient: [
+      '#F0E4D4',
+      '#F0E4D4',
+      '#F0E4D4'
+    ],
+    gradientLocations: [
+      0,
+      0.55,
+      1
+    ]
+  }
 } as const;
 
 /** Opacity of the glass card fill, per mode (matches the Noctalia journal app). */
@@ -167,24 +199,24 @@ export const ArtworkGlass = {
   light: {
     fill: PaperTheme.backgroundCard,
     border: PaperTheme.divider,
-    specular: 'rgba(255, 255, 255, 0.56)',
-    artworkFill: 'rgba(255, 253, 248, 0.12)',
-    artworkBorder: 'rgba(154, 99, 50, 0.08)',
+    specular: NavigationMaterial.light.glass.highlight[0],
+    artworkFill: PaperTheme.backgroundSecondary,
+    artworkBorder: PaperTheme.divider,
     artworkOpacity: 1,
     artworkScrim: [
-      'rgba(245, 240, 232, 0.56)',
-      'rgba(245, 240, 232, 0.16)',
-      'rgba(245, 240, 232, 0.00)',
+      'rgba(240, 228, 212, 0.56)',
+      'rgba(240, 228, 212, 0.16)',
+      'rgba(240, 228, 212, 0.00)',
     ],
     artworkScrimLocations: [0, 0.42, 1],
     artworkScrimEnd: { x: 0.76, y: 0 },
   },
   dark: {
     fill: NightTheme.backgroundCard,
-    border: 'rgba(255, 249, 239, 0.12)',
-    specular: 'rgba(255, 249, 239, 0.24)',
-    artworkFill: 'rgba(20, 18, 40, 0.18)',
-    artworkBorder: 'rgba(255, 249, 239, 0.08)',
+    border: NightTheme.divider,
+    specular: NavigationMaterial.dark.glass.highlight[0],
+    artworkFill: NightTheme.backgroundSecondary,
+    artworkBorder: NightTheme.divider,
     artworkOpacity: 1,
     artworkScrim: [
       'rgba(3, 4, 13, 0.90)',

@@ -6,7 +6,7 @@
  * No tailwind.config.js: colours live per theme, everything else is invariant.
  */
 @theme {
-  --font-display: 'Fraunces_600SemiBold';
+  --font-display: 'Fraunces_400Regular';
   --font-display-bold: 'Fraunces_700Bold';
   --font-display-light: 'Fraunces_400Regular';
   --font-sans: 'Outfit_400Regular';
@@ -20,8 +20,8 @@
   --text-hero: 40px;
   --text-hero--line-height: 46px;
   /* One name per screen, at the scale of the landing; Fraunces regular, as in Dreams. */
-  --text-saga: 52px;
-  --text-saga--line-height: 56px;
+  --text-saga: 44px;
+  --text-saga--line-height: 48px;
   --text-h1: 28px;
   --text-h1--line-height: 34px;
   --text-h2: 22px;
@@ -48,61 +48,60 @@
 
   --spacing-gutter: 20px;
 
-  /* Declared so the utilities exist; real values come from the themes below. */
-  --color-ink: #f5f0e8;
-  --color-ink-card: rgba(255, 253, 248, 0.62);
-  --color-ink-panel: rgba(243, 239, 231, 0.55);
-  --color-ink-raised: rgba(252, 251, 248, 0.92);
-  --color-ivory: #2a2838;
-  --color-ivory-muted: #4f4c63;
-  --color-ivory-faint: #5c5870;
-  --color-champagne: #d4a574;
-  --color-champagne-text: #76471f;
-  --color-champagne-deep: #9a6332;
-  --color-champagne-soft: #ead4b4;
-  --color-champagne-on: #4a2f1b;
-  --color-hairline: rgba(154, 99, 50, 0.16);
-  --color-navbar: rgba(252, 251, 248, 0.92);
-  --color-navbar-border: rgba(154, 99, 50, 0.14);
+  /* Declared so the utilities exist; generated from constants/noctaliaPalette.ts. */
+  --color-ink: #F0E4D4;
+  --color-ink-card: rgba(245, 234, 219, 0.88);
+  --color-ink-panel: rgba(255, 249, 239, 0.14);
+  --color-ink-raised: rgba(245, 234, 219, 0.94);
+  --color-ivory: #382D35;
+  --color-ivory-muted: #64514F;
+  --color-ivory-faint: #64514F;
+  --color-champagne: #7C4C2B;
+  --color-champagne-text: #7C4C2B;
+  --color-champagne-deep: #7C4C2B;
+  --color-champagne-soft: rgba(126, 83, 49, 0.25);
+  --color-champagne-on: #FFF9EF;
+  --color-hairline: rgba(126, 83, 49, 0.25);
+  --color-navbar: rgba(245, 234, 219, 0.94);
+  --color-navbar-border: rgba(124, 76, 43, 0.16);
 }
 
 @layer theme {
   :root {
     @variant light {
-      --color-ink: #f5f0e8;
-      --color-ink-card: rgba(255, 253, 248, 0.62);
-      --color-ink-panel: rgba(243, 239, 231, 0.55);
-      --color-ink-raised: rgba(252, 251, 248, 0.92);
-      --color-ivory: #2a2838;
-      --color-ivory-muted: #4f4c63;
-      --color-ivory-faint: #5c5870;
-      /* `champagne` is a FILL, never a text colour — use champagne-text. */
-      --color-champagne: #d4a574;
-      --color-champagne-text: #76471f;
-      --color-champagne-deep: #9a6332;
-      --color-champagne-soft: #ead4b4;
-      --color-champagne-on: #4a2f1b;
-      --color-hairline: rgba(154, 99, 50, 0.16);
-      --color-navbar: rgba(252, 251, 248, 0.92);
-      --color-navbar-border: rgba(154, 99, 50, 0.14);
+      --color-ink: #F0E4D4;
+      --color-ink-card: rgba(245, 234, 219, 0.88);
+      --color-ink-panel: rgba(255, 249, 239, 0.14);
+      --color-ink-raised: rgba(245, 234, 219, 0.94);
+      --color-ivory: #382D35;
+      --color-ivory-muted: #64514F;
+      --color-ivory-faint: #64514F;
+      --color-champagne: #7C4C2B;
+      --color-champagne-text: #7C4C2B;
+      --color-champagne-deep: #7C4C2B;
+      --color-champagne-soft: rgba(126, 83, 49, 0.25);
+      --color-champagne-on: #FFF9EF;
+      --color-hairline: rgba(126, 83, 49, 0.25);
+      --color-navbar: rgba(245, 234, 219, 0.94);
+      --color-navbar-border: rgba(124, 76, 43, 0.16);
     }
 
     @variant dark {
-      --color-ink: #03040d;
-      --color-ink-card: rgba(20, 18, 40, 0.55);
-      --color-ink-panel: rgba(25, 35, 68, 0.42);
-      --color-ink-raised: rgba(8, 8, 20, 0.92);
-      --color-ivory: #fff9ef;
-      --color-ivory-muted: #b7aec9;
-      --color-ivory-faint: #8e84a7;
-      --color-champagne: #d4a574;
-      --color-champagne-text: #ead4b4;
-      --color-champagne-deep: #9a6332;
-      --color-champagne-soft: #ead4b4;
-      --color-champagne-on: #3b2412;
-      --color-hairline: rgba(234, 212, 180, 0.16);
-      --color-navbar: rgba(8, 8, 20, 0.92);
-      --color-navbar-border: rgba(234, 212, 180, 0.14);
+      --color-ink: #03040D;
+      --color-ink-card: rgba(20, 19, 26, 0.84);
+      --color-ink-panel: rgba(234, 212, 180, 0.06);
+      --color-ink-raised: rgba(20, 19, 26, 0.9);
+      --color-ivory: #FFF9EF;
+      --color-ivory-muted: #B7AEC9;
+      --color-ivory-faint: #B7AEC9;
+      --color-champagne: #EAD4B4;
+      --color-champagne-text: #EAD4B4;
+      --color-champagne-deep: #EAD4B4;
+      --color-champagne-soft: #514637;
+      --color-champagne-on: #382D35;
+      --color-hairline: #514637;
+      --color-navbar: rgba(20, 19, 26, 0.9);
+      --color-navbar-border: rgba(234, 212, 180, 0.18);
     }
   }
 }
