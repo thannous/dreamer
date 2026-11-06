@@ -620,9 +620,18 @@ and never downloads a runtime. On Android it first asks, without waiting, for a 
 phone enrolled in the Simlock fleet (owner decision 2026-11-06), and falls back to the
 emulator pool when none is free: `E2E_SIMLOCK_PHYSICAL=auto` (default), `only` (wait
 for a phone) or `never`. A phone serial is accepted only from such a lease, never from
-`E2E_DEVICE`; its evidence says `physical: true`. Releasing a phone lease uninstalls
-every app installed after the phone was enrolled (`simlock device add`); it erases
-nothing else. iOS uses Simulators only. A missing or malformed
+`E2E_DEVICE`; its evidence says `physical: true`. A pinned `E2E_SIMLOCK_MODEL` or
+`E2E_SIMLOCK_OS` asks for an emulator. Before using a phone the runner checks, over the
+default adb server, that it answers over USB and does not already hold the run's app:
+a run would replace that app and clear its data, and Simlock's release, which only
+uninstalls apps installed after the phone was enrolled (`simlock device add`), would
+leave the test build in place. Such a phone is returned and an emulator taken instead.
+The local Simlock worker sends `adb --lease` to its private emulator server, which
+does not see USB, so the shim drives a leased phone through the default server
+(port 5037), after the same lease checks, and refuses the commands Simlock's own phone
+handler refuses plus `emu`. Journeys that change a device-wide setting (airplane mode,
+appearance, orientation) skip on a phone, since its release restores none of them.
+iOS uses Simulators only. A missing or malformed
 receipt is refused before reserving; a lost lease or unconfirmed release fails
 the run. `simlock-lease.json` and `simlock-release.json` in the run directory
 record the reservation and its acknowledged release; the existing `end.json`

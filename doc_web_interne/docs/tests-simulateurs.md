@@ -64,12 +64,14 @@ bash en environnement simulé avant une release.
 3. Chaque run réserve un simulateur iPhone ou un émulateur Android du pool Simlock du
    Mac, comme les autres agents, en attendant au plus 30 minutes s'il est pris
    (`--wait-minutes`). Sur Android, un téléphone inscrit dans la flotte Simlock
-   (aujourd'hui le Motorola edge 60 fusion) passe en premier quand il est libre
-   (décision du 2026-11-06) ; sinon l'émulateur prend le relais. En fin de run, Simlock
-   désinstalle du téléphone les apps installées depuis son inscription. Il installe la Release du reçu, joue les parcours natifs
+   (aujourd'hui le Motorola edge 60 fusion) passe en premier quand il est libre et
+   qu'il n'a pas déjà l'app testée (décision du 2026-11-06) ; sinon l'émulateur prend le
+   relais. Un téléphone qui a l'app est rendu : le run remplacerait l'app et effacerait
+   ses données. En fin de run, Simlock désinstalle du téléphone les apps installées
+   depuis son inscription. Les parcours qui changent un réglage de l'appareil (mode
+   avion, apparence, orientation) ne tournent pas sur un téléphone. Il installe la Release du reçu, joue les parcours natifs
    TesterArmy avec les contrôles habituels de `tools/e2e/run.mjs` (identité du binaire
-   installé, source inchangée, nettoyage), puis rend l'appareil, que Simlock remet à
-   zéro. Une réservation perdue ou non rendue rend la couche non qualifiée. Voir
+   installé, source inchangée, nettoyage), puis rend l'appareil, que Simlock remet à zéro (sur un téléphone : il désinstalle les apps du run). Une réservation perdue ou non rendue rend la couche non qualifiée. Voir
    [la réservation Simlock](../../tools/e2e/README.md#automatic-simlock-reservation).
    Les parcours d'une plateforme continuent pendant que l'autre plateforme compile ;
    un seul build tourne à la fois, et la couche serveur local joue ses runs l'un après

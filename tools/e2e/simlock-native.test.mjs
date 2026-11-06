@@ -323,23 +323,57 @@ test('a terminal interrupt reaches the runner, not the granted holder', async t 
   process.kill(holder, 0);
 });
 
-test('android: a free fleet phone is leased by its serial, marked for the runner, and returned', async t => {
+// The phone answers over the default adb server, outside Simlock: a fake SDK adb records it.
+function phoneSdk(root, events, { hasApp = false } = {}) {
+  const sdk = join(root, 'phone-sdk');
+  mkdirSync(join(sdk, 'platform-tools'), { recursive: true });
+  writeFileSync(join(sdk, 'platform-tools', 'adb'), `#!/bin/sh
+printf '["phone-adb","%s","%s"]\\n' "$ANDROID_ADB_SERVER_PORT" "$*" >> '${events}'
+case "$*" in
+  *get-state*) echo device ;;
+  *"pm path"*) ${hasApp ? 'echo package:/data/app/noctalia/base.apk' : 'exit 1'} ;;
+esac
+`, { mode: 0o700 });
+  return sdk;
+}
+
+test('android: a free fleet phone is leased by its serial, marked for the runner, and driven over USB', async t => {
   const { root, env, events } = setup(t, { FAKE_PHONE: '1' });
-  const handle = await acquireSimlock({ platform: 'android', env, shimDirectory: join(root, 'shims') });
+  env.ANDROID_HOME = env.ANDROID_SDK_ROOT = phoneSdk(root, events);
+  const handle = await acquireSimlock({ platform: 'android', env, bundle: 'com.tanuki75.noctalia', shimDirectory: join(root, 'shims') });
   assert.equal(env.E2E_DEVICE, 'ZY22TEST01');
   assert.equal(env.E2E_SIMLOCK_PHYSICAL_GRANT, '1');
   assert.equal(env.E2E_AVD_NAME, undefined);
-  assert.equal(env.ADB_SERVER_SOCKET, 'tcp:127.0.0.1:5037');
   assert.equal(handle.evidence.physical, true);
   assert.equal(handle.evidence.model, 'motorola edge 60 fusion');
+  // The leased phone was checked over the default server: reachable, and without the run's app.
+  assert.ok(calls(events).some(args => args[0] === 'phone-adb' && args[2] === '-P 5037 -s ZY22TEST01 get-state'));
+  assert.ok(calls(events).some(args => args[0] === 'phone-adb' && args[2].endsWith('shell pm path com.tanuki75.noctalia')));
+  // Device commands go to that server, never to Simlock's private one, and only to that phone.
   execFileSync(process.execPath, [driver, 'adb', '-s', 'ZY22TEST01', 'get-state'], { env });
-  assert.throws(() => execFileSync(process.execPath, [driver, 'adb', '-s', 'emulator-5558', 'get-state'], { env, stdio: 'pipe' }));
+  assert.deepEqual(calls(events).at(-1), ['phone-adb', '5037', '-s ZY22TEST01 get-state']);
+  for (const refused of [['-s', 'emulator-5558', 'get-state'], ['emu', 'avd', 'name'], ['kill-server'], ['reboot', 'bootloader']])
+    assert.throws(() => execFileSync(process.execPath, [driver, 'adb', ...refused], { env, stdio: 'pipe' }), undefined, refused.join(' '));
   await handle.release();
-  // No emulator was asked for, and no AVD read on a phone.
   assert.deepEqual(calls(events).filter(args => ['catalog', 'lease', 'release'].includes(args[0])).map(args => args[0]), ['lease', 'release']);
-  assert.equal(calls(events).some(args => args.includes('avd')), false);
+  assert.equal(calls(events).some(args => args[0] === 'adb'), false);
 });
 
+test('android: a fleet phone that already has the app is returned and the emulator pool used', async t => {
+  const { root, env, events } = setup(t, { FAKE_PHONE: '1' });
+  env.ANDROID_HOME = env.ANDROID_SDK_ROOT = phoneSdk(root, events, { hasApp: true });
+  const handle = await acquireSimlock({ platform: 'android', env, bundle: 'com.tanuki75.noctalia', shimDirectory: join(root, 'shims') });
+  assert.equal(env.E2E_DEVICE, 'emulator-5558');
+  assert.equal(env.E2E_SIMLOCK_PHYSICAL_GRANT, undefined);
+  await handle.release();
+  // The phone lease went back before the emulator was asked for.
+  assert.deepEqual(calls(events).filter(args => ['catalog', 'lease', 'release'].includes(args[0])).map(args => args[0]),
+    ['lease', 'release', 'catalog', 'lease', 'release']);
+  // With no app id to check, the phone is not used either.
+  const blind = setup(t, { FAKE_PHONE: '1', E2E_SIMLOCK_PHYSICAL: 'only' });
+  blind.env.ANDROID_HOME = blind.env.ANDROID_SDK_ROOT = phoneSdk(blind.root, blind.events);
+  await assert.rejects(acquireSimlock({ platform: 'android', env: blind.env, shimDirectory: join(blind.root, 'shims') }), /no app id/);
+});
 test('android: the fleet phone choice follows E2E_SIMLOCK_PHYSICAL', async t => {
   const never = setup(t, { FAKE_PHONE: '1', E2E_SIMLOCK_PHYSICAL: 'never' });
   const emulator = await acquireSimlock({ platform: 'android', env: never.env, shimDirectory: join(never.root, 'shims') });
@@ -352,6 +386,11 @@ test('android: the fleet phone choice follows E2E_SIMLOCK_PHYSICAL', async t => 
   await assert.rejects(acquireSimlock({ platform: 'android', env: only.env, shimDirectory: join(only.root, 'shims') }), /SIMLOCK_LEASE_FAILED/);
   assert.deepEqual(calls(only.events).map(args => args[0]), ['lease']);
   assert.equal(calls(only.events)[0].includes('--no-wait'), false);
+  // A pinned emulator model asks for an emulator.
+  const pinned = setup(t, { FAKE_PHONE: '1', E2E_SIMLOCK_MODEL: 'Pixel 9' });
+  const pinnedHandle = await acquireSimlock({ platform: 'android', env: pinned.env, shimDirectory: join(pinned.root, 'shims') });
+  assert.equal(pinned.env.E2E_DEVICE, 'emulator-5558');
+  await pinnedHandle.release();
   const wrong = setup(t, { E2E_SIMLOCK_PHYSICAL: 'yes' });
   await assert.rejects(acquireSimlock({ platform: 'android', env: wrong.env, shimDirectory: join(wrong.root, 'shims') }), /SIMLOCK_PHYSICAL_MODE_INVALID/);
 });

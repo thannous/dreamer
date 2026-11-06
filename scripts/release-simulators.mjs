@@ -4,7 +4,8 @@
 // and one French report. A physical phone is then needed only for PHONE_ONLY below.
 // It chains the guarded runners (tools/e2e/run.mjs build/run, native-backend-stack,
 // native-recovery-api) in a managed workspace of the commit; their checks stay in force.
-// Each run leases its simulator or emulator from the shared Simlock pool, like other agents.
+// Each run leases its simulator or emulator from the shared Simlock pool, like other agents;
+// on Android a free fleet phone without the app comes first (E2E_SIMLOCK_PHYSICAL=never to opt out).
 import { spawn, spawnSync } from 'node:child_process';
 import { createWriteStream, existsSync, mkdirSync, openSync, closeSync, readFileSync, readdirSync, renameSync, statfsSync, unlinkSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -72,7 +73,9 @@ export function parseOptions(argv) {
 
 // production and mock share one generated project; the local backend needs the QA app
 // (its own bundle id) and a live stack, so it runs last, after a second generation.
-// Simlock resets each device on release, so no run inherits an app from the previous one.
+// Simlock resets each simulator and emulator on release, and uninstalls from a fleet phone the
+// apps installed during the lease (the runner refuses a phone that already has the app), so no
+// run inherits an app from the previous one.
 export function planSteps({ platforms, suites }) {
   const ordinary = suites.filter(suite => suite !== 'backend');
   const steps = ordinary.length ? platforms.map(platform => ({ kind: 'prebuild', platform, qa: false })) : [];
@@ -420,7 +423,9 @@ outputs/release-simulators/<run>/rapport.md.
   --no-fetch            do not fetch origin before resolving --ref
   --keep                keep the workspace (faster rerun of the same commit)
   --plan                print the steps and stop
-No EAS build, Store submission, deployment or physical phone is involved.`;
+On Android a free Simlock fleet phone without the app is used first; set
+E2E_SIMLOCK_PHYSICAL=never for emulators only. No EAS build, Store submission or deployment
+is involved.`;
 
 // ---------------------------------------------------------------- host side effects
 

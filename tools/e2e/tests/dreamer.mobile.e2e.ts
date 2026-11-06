@@ -16,6 +16,12 @@ const collapsedWithoutValue = (error: unknown) => {
 
 type NativeBackgroundFixtures = TestFixtures & { device: Device };
 
+// A fleet phone is someone's device and its release only uninstalls apps: a journey that
+// changes a device-wide setting (airplane mode, appearance, orientation) runs on emulators and
+// simulators only, so a lost lease cannot leave the phone changed.
+const FLEET_PHONE = process.env.E2E_SIMLOCK_PHYSICAL_GRANT === '1';
+const PHONE_SETTINGS_SKIP = 'Changes a device-wide setting; not on a fleet phone.';
+
 // A failed or timed-out journey must not hand the next one a rotated or offline device. A
 // finally block cannot promise that: a timed-out body's device calls are cancelled, while
 // afterEach runs with its own budget. A journey sets its flag before it changes the state.
@@ -889,7 +895,7 @@ test('Dreamer release drawer Plus opens its offer and closes back to Capture', a
 test('Dreamer Release scroll dogfood preserves its journal and painted resource screens', {
   tags: ['framerate'], timeout: 600_000,
   skip: process.env.E2E_SCROLL_DOGFOOD !== 'synthetic200'
-    ? 'Requires the work package’s owned 200-dream Release fixture.' : false,
+    ? 'Requires the work package’s owned 200-dream Release fixture.' : FLEET_PHONE ? PHONE_SETTINGS_SKIP : false,
 }, async (fixtures) => {
   const { app, screen, device } = fixtures;
   await app.open();
@@ -1090,7 +1096,8 @@ for (const offline of [false, true]) {
   test(`PR633 native collection: grid, reveal and retained detail ${offline ? 'offline with cold cache' : 'online'}`, {
     tags: ['pr633-collection'], timeout: 240_000,
     platforms: offline ? ['android'] : ['ios', 'android'],
-    skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires owned mock-persistent Release.' : false,
+    skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires owned mock-persistent Release.'
+      : offline && FLEET_PHONE ? PHONE_SETTINGS_SKIP : false,
   }, async (fixtures) => {
     const { app, screen, device } = fixtures;
     // collection633Start begins with app.open() through billingGuest.
@@ -1251,7 +1258,8 @@ test('Dreamer native offer shows renewal terms, legal links and restore before p
 
 test('Dreamer release every destination opens in system dark mode', {
   platforms: ['ios', 'android'], tags: ['native-release-tour'], timeout: 360_000,
-  skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires the owned mock Release and its seeded test profile.' : false,
+  skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires the owned mock Release and its seeded test profile.'
+    : FLEET_PHONE ? PHONE_SETTINGS_SKIP : false,
 }, async (fixtures) => {
   const { app, screen, device, platform } = fixtures;
   // Each destination shows its own screen, never the error card a throwing screen leaves.

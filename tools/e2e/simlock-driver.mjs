@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 
 const [tool, ...input] = process.argv.slice(2);
 const binary = process.env.E2E_SIMLOCK_BIN;
@@ -58,8 +58,22 @@ if (tool === 'xcrun') {
     if (rest[i] !== '-s' || rest[i + 1] !== device || hasSerial) throw new Error('SIMLOCK_FOREIGN_DEVICE');
     hasSerial = true; i += 2;
   }
-  if (!hasSerial && !['devices', 'version'].includes(rest[i])) rest.unshift('-s', device);
-  args = ['adb', '--lease', lease, ...rest];
+  const sub = rest[i], target = rest[i + 1];
+  if (!hasSerial && !['devices', 'version'].includes(sub)) rest.unshift('-s', device);
+  if (process.env.E2E_SIMLOCK_PHYSICAL_GRANT === '1') {
+    // A local Simlock worker sends `adb --lease` to its private emulator server, which does
+    // not see USB. A leased fleet phone is driven through the default server (5037) instead,
+    // after the same lease checks, refusing what Simlock's own phone handler refuses.
+    if (['kill-server', 'start-server', 'server', 'nodaemon', 'connect', 'disconnect', 'pair', 'reconnect', 'tcpip',
+      'usb', 'detach', 'reboot-bootloader', 'emu'].includes(sub)
+      || (sub === 'reboot' && ['bootloader', 'sideload', 'sideload-auto-reboot', 'recovery', 'fastboot'].includes(target)))
+      throw new Error('SIMLOCK_PHONE_COMMAND_REFUSED');
+    const sdk = process.env.E2E_SIMLOCK_UNWRAPPED_ANDROID_HOME;
+    executable = sdk ? join(sdk, 'platform-tools', 'adb') : 'adb';
+    for (const key of ['ADB_SERVER_SOCKET', 'ANDROID_ADB_SERVER_ADDRESS', 'ANDROID_SERIAL']) delete env[key];
+    env.ANDROID_ADB_SERVER_PORT = '5037';
+    args = rest;
+  } else args = ['adb', '--lease', lease, ...rest];
 } else throw new Error('SIMLOCK_DRIVER_UNKNOWN');
 const result = spawnSync(executable, args, { env, stdio: 'inherit' });
 if (result.error) throw result.error;

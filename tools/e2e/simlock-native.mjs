@@ -27,6 +27,8 @@ export function physicalMode(platform, env) {
   if (platform !== 'android') return 'never';
   const mode = env.E2E_SIMLOCK_PHYSICAL ?? 'auto';
   if (!['auto', 'only', 'never'].includes(mode)) throw new Error('SIMLOCK_PHYSICAL_MODE_INVALID');
+  // A pinned emulator model or OS asks for an emulator.
+  if (mode === 'auto' && (env.E2E_SIMLOCK_MODEL?.trim() || env.E2E_SIMLOCK_OS?.trim())) return 'never';
   return mode;
 }
 
@@ -80,7 +82,7 @@ function closeWithin(child, closed, timeoutMs = 10_000) {
 
 // The foreground Simlock CLI renews its own lease and watches this runner's PID.
 // A separate release call gives us an explicit acknowledgement before end.json.
-export async function acquireSimlock({ platform, env, shimDirectory, onLoss = () => {}, onSignal = () => {} }) {
+export async function acquireSimlock({ platform, env, shimDirectory, bundle, onLoss = () => {}, onSignal = () => {} }) {
   // Codex and Claude supply their own session identity. A plain terminal needs
   // one stable identity across the separate catalog, lease and release CLIs.
   // Simlock takes a defined SIMLOCK_AGENT_ID even when empty; unset it so both agree.
@@ -120,11 +122,28 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
     throw new Error('SIMLOCK_NO_INSTALLED_DEVICE_RUNTIME');
   return leaseWith(false);
 
+  // A fleet phone is someone's device: it must answer over USB (Simlock's own adb server does
+  // not see USB, see simlock-driver.mjs) and must not already hold this run's app, which the
+  // run would replace and clear and which Simlock's release would then leave in place.
+  async function usablePhone(serial) {
+    const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT;
+    const adb = sdk ? join(sdk, 'platform-tools', 'adb') : 'adb';
+    const phoneEnv = { ...env, ANDROID_ADB_SERVER_PORT: '5037' };
+    for (const key of ['ADB_SERVER_SOCKET', 'ANDROID_ADB_SERVER_ADDRESS', 'ANDROID_SERIAL']) delete phoneEnv[key];
+    const run = argv => execFileAsync(adb, ['-P', '5037', '-s', serial, ...argv], { env: phoneEnv, timeout: 30_000, maxBuffer: MAX_OUTPUT })
+      .then(({ stdout }) => stdout.trim(), error => (error.code === 1 ? String(error.stdout ?? '').trim() : null));
+    if (await run(['get-state']) !== 'device') throw new Error(`SIMLOCK_LEASE_FAILED: fleet phone ${serial} does not answer over USB`);
+    if (!bundle) throw new Error('SIMLOCK_LEASE_FAILED: no app id to check on the fleet phone');
+    const installed = await run(['shell', 'pm', 'path', bundle]);
+    if (installed === null) throw new Error(`SIMLOCK_LEASE_FAILED: could not list ${bundle} on fleet phone ${serial}`);
+    if (installed !== '') throw new Error(`SIMLOCK_LEASE_FAILED: fleet phone ${serial} already has ${bundle}; a run would replace it and clear its data`);
+  }
+
   async function leaseWith(physical) {
     const args = ['lease', '--platform', platform, '--bind-pid', String(process.pid), '--ttl', '30m', '--timeout', `${timeout}s`];
     if (physical) {
       args.push('--physical');
-      if (mode === 'auto') args.push('--no-wait');
+      if (mode === 'auto' || env.E2E_SIMLOCK_NO_WAIT === '1') args.push('--no-wait');
     } else {
       if (env.E2E_SIMLOCK_MODEL?.trim()) args.push('--device', env.E2E_SIMLOCK_MODEL.trim());
       else args.push('--class', 'phone');
@@ -248,6 +267,7 @@ export async function acquireSimlock({ platform, env, shimDirectory, onLoss = ()
         env.ANDROID_ADB_SERVER_PORT = port;
         env.ADB_SERVER_SOCKET = `tcp:127.0.0.1:${port}`;
         if (physical) {
+          await usablePhone(address);
           // The runner and the config accept this phone's serial only with this marker.
           env.E2E_SIMLOCK_PHYSICAL_GRANT = '1';
           delete env.E2E_AVD_NAME;

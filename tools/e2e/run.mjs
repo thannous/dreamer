@@ -449,7 +449,7 @@ try {
     process.on('SIGINT', simlockInterrupt);
     process.on('SIGTERM', simlockTerminate);
     simlock = await acquireSimlock({
-      platform, env, shimDirectory: join(cwd, 'simlock-bin'),
+      platform, env, bundle, shimDirectory: join(cwd, 'simlock-bin'),
       onSignal: signal => { requestedSignal = signal === 'SIGINT' ? 130 : 143; },
       onLoss: () => { simlockLost = true; secondary.push('SIMLOCK_LEASE_LOST'); interruptActiveChild?.(); },
     });
@@ -503,8 +503,11 @@ try {
       env.E2E_NATIVE_QA_AUDIO = String(release.profile.nativeQaAudio === true);
       if (platform === 'android') {
         const port = new URL(backend.proxy.origin).port;
-        if (read('adb', ['-s', identity, 'reverse', '--list']).split('\n').some(line => line.includes(`tcp:${port}`)))
-          throw new Error('Existing Android reverse mapping belongs to another invocation.');
+        if (read('adb', ['-s', identity, 'reverse', '--list']).split('\n').some(line => line.includes(`tcp:${port}`))) {
+          // A phone keeps a mapping left by a run that lost its lease; this exclusive lease proves it stale.
+          if (!deviceIdentity?.physical) throw new Error('Existing Android reverse mapping belongs to another invocation.');
+          read('adb', ['-s', identity, 'reverse', '--remove', `tcp:${port}`]);
+        }
         read('adb', ['-s', identity, 'reverse', `tcp:${port}`, `tcp:${port}`]);
         reversePort = port;
       }
