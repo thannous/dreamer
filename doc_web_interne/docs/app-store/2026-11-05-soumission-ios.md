@@ -4,7 +4,7 @@ Préparé le 5 novembre 2026 à partir de l'audit App Store du même jour. Rien 
 
 ## Verdict
 
-**NOT READY TO SUBMIT.** La partie code est faite (ci-dessous) ; la soumission attend tes actions, dans l'ordre de la [liste](#tes-actions-dans-lordre). Reste une bloquante : Sign in with Apple en production (B1). La version est tranchée (B2, 3.8.0) et les variables EAS de production sont vérifiées (B3, 2026-11-06).
+**NOT READY TO SUBMIT.** Code et configuration de production sont prêts : Sign in with Apple est actif en production et la fonction `api` déployée (B1, 2026-11-06), la version est tranchée (B2, 3.8.0, épinglée sur master `85ef1de4`) et les variables EAS de production sont vérifiées (B3, 2026-11-06). Restent App Store Connect (O1 à O4), les décisions produit (S4, S5, S7), puis le build, TestFlight et la courte session sur téléphone (O5), dans l'ordre de la [liste](#tes-actions-dans-lordre).
 
 ## Ce que le code règle déjà
 
@@ -31,9 +31,11 @@ Ces changements modifient l'empreinte native : une nouvelle build est nécessair
 3. **S7 « Échanges illimités ».** Le paywall vend Plus « illimité » alors que `constants/limits.ts` plafonne à 100 messages par rêve. Soit écrire « jusqu'à 100 échanges par rêve » dans les six langues, soit confirmer que le serveur n'a pas de plafond Plus et retirer la constante.
 4. **S4 Icône.** `assets/images/icon.png` fait 512 × 512 : l'icône App Store 1024 est agrandie, donc floue. Exporter un PNG 1024 × 1024 sans transparence et remplacer le fichier (nouvelle build native).
 
-### Sign in with Apple en production (B1)
+### Sign in with Apple en production (B1) : fait le 2026-11-06
 
-La production n'a aucune identité Apple et aucun secret `APPLE_*` : chaque connexion Apple échoue à garder son jeton, et la suppression d'un compte Apple renvoyait 503. Le code gère maintenant l'absence de jeton, mais il lui faut les secrets pour échanger et révoquer.
+Fait par Thanh le 2026-11-06 : fournisseur Apple activé pour `com.tanuki75.noctalia` ; clé Sign in with Apple `46XU8T42V6` créée, fichier privé hors du dépôt (permissions 0600) ; les quatre secrets `APPLE_*` posés et leurs empreintes vérifiées ; fonction `api` en version 125, déployée depuis `2664f026`, dont les 68 fichiers récupérés correspondent à cette source (révocation avant toute suppression, code Apple vérifié contre le compte). Reste l'étape 5 sur TestFlight.
+
+Pour mémoire, les étapes :
 
 1. Supabase Dashboard → Authentication → Providers → Apple : activé, avec `com.tanuki75.noctalia` parmi les Client IDs.
 2. Apple Developer → Keys : une clé « Sign in with Apple » rattachée à l'App ID principal `com.tanuki75.noctalia`.
@@ -156,7 +158,7 @@ L'audio n'est pas collecté : la dictée passe par la reconnaissance vocale d'Ap
 
 ## Risques de refus et état
 
-- **4.8 / 5.1.1(v) Sign in with Apple et suppression** : code prêt ; secrets et test TestFlight à faire (B1).
+- **4.8 / 5.1.1(v) Sign in with Apple et suppression** : code, secrets et fonction `api` en production (B1, 2026-11-06) ; reste le test TestFlight (connexion Apple puis suppression du compte).
 - **3.1.1 Restaurer les achats** : visible pour tous sur le paywall.
 - **5.1.1 Textes d'autorisation** : spécifiques, traduits, sans Face ID.
 - **2.1 Paywall sans produit** : la build s'arrête sans clé `appl_` (B3) ; clé présente dans EAS `production`, vérifiée le 2026-11-06.
