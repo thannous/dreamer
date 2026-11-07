@@ -57,6 +57,7 @@ const COPY = {
     methods: 'Method comparison',
     attemptsShort: 'attempts',
     noData: 'No attempts yet',
+    moreAttempts: 'Too few attempts to compare methods',
     early: 'Early signal',
     usable: 'Personal signal',
     history: 'Recent experiences',
@@ -74,6 +75,7 @@ const COPY = {
     pre_lucid: 'Almost lucid',
     resultLucid: 'Lucid',
     coach: 'Offline adaptation',
+    protectSleep: 'Prioritize rest tonight and skip techniques that interrupt sleep.',
     improving: 'Trend improving',
     steady: 'Trend steady',
     declining: 'Trend declining',
@@ -112,6 +114,7 @@ const COPY = {
     methods: 'Comparaison des méthodes',
     attemptsShort: 'essais',
     noData: 'Aucun essai',
+    moreAttempts: 'Trop peu d’essais pour comparer les méthodes',
     early: 'Signal précoce',
     usable: 'Signal personnel',
     history: 'Expériences récentes',
@@ -129,6 +132,7 @@ const COPY = {
     pre_lucid: 'Presque lucide',
     resultLucid: 'Lucide',
     coach: 'Adaptation hors ligne',
+    protectSleep: 'Privilégiez le repos cette nuit et évitez les techniques qui interrompent le sommeil.',
     improving: 'Tendance en progrès',
     steady: 'Tendance stable',
     declining: 'Tendance en baisse',
@@ -167,6 +171,7 @@ const COPY = {
     methods: 'Comparación de métodos',
     attemptsShort: 'intentos',
     noData: 'Sin intentos',
+    moreAttempts: 'Se necesitan más intentos para comparar los métodos',
     early: 'Señal temprana',
     usable: 'Señal personal',
     history: 'Experiencias recientes',
@@ -184,6 +189,7 @@ const COPY = {
     pre_lucid: 'Casi lúcido',
     resultLucid: 'Lúcido',
     coach: 'Adaptación sin conexión',
+    protectSleep: 'Prioriza el descanso esta noche y evita las técnicas que interrumpan el sueño.',
     improving: 'Tendencia al alza',
     steady: 'Tendencia estable',
     declining: 'Tendencia a la baja',
@@ -222,6 +228,7 @@ const COPY = {
     methods: 'Methodenvergleich',
     attemptsShort: 'Versuche',
     noData: 'Keine Versuche',
+    moreAttempts: 'Zu wenige Versuche für einen Methodenvergleich',
     early: 'Frühes Signal',
     usable: 'Persönliches Signal',
     history: 'Letzte Erfahrungen',
@@ -239,6 +246,7 @@ const COPY = {
     pre_lucid: 'Fast klar',
     resultLucid: 'Klar',
     coach: 'Offline-Anpassung',
+    protectSleep: 'Gib der Erholung heute Nacht Vorrang und lass Techniken aus, die den Schlaf unterbrechen.',
     improving: 'Trend verbessert sich',
     steady: 'Trend stabil',
     declining: 'Trend sinkt',
@@ -277,6 +285,7 @@ const COPY = {
     methods: 'Confronto metodi',
     attemptsShort: 'tentativi',
     noData: 'Nessun tentativo',
+    moreAttempts: 'Servono più tentativi per confrontare i metodi',
     early: 'Segnale iniziale',
     usable: 'Segnale personale',
     history: 'Esperienze recenti',
@@ -294,6 +303,7 @@ const COPY = {
     pre_lucid: 'Quasi lucido',
     resultLucid: 'Lucido',
     coach: 'Adattamento offline',
+    protectSleep: 'Dai priorità al riposo stanotte ed evita le tecniche che interrompono il sonno.',
     improving: 'Tendenza in crescita',
     steady: 'Tendenza stabile',
     declining: 'Tendenza in calo',
@@ -390,15 +400,14 @@ export default function LucidProgressScreen() {
   const sleepValue = avgSleep == null ? '—' : avgSleep.toFixed(1);
   const recallValue = formatPercent(review.current.recallRate);
   const trendLabel = copy[review.trend.direction];
+  const methodEvidenceLabel = review.comparison.evidence === 'none'
+    ? copy.moreAttempts
+    : copy[review.comparison.evidence];
   const [methodsOpen, setMethodsOpen] = React.useState(false);
-  const coachingCopy =
-    content.weeklyReview.adaptationRules[
-      review.coaching.action === 'protect_sleep'
-        ? 0
-        : review.coaching.action === 'strengthen_recall'
-          ? 1
-          : 2
-    ] ?? content.weeklyReview.coachingNote;
+  const coachingCopy = review.coaching.action === 'protect_sleep'
+    ? copy.protectSleep
+    : content.weeklyReview.adaptationRules[review.coaching.action === 'strengthen_recall' ? 1 : 2]
+      ?? content.weeklyReview.coachingNote;
 
   return (
     <LucidScreen
@@ -594,7 +603,7 @@ export default function LucidProgressScreen() {
           <View style={styles.disclosureCopy}>
             <Text style={[styles.sectionTitle, { color: palette.text }]}>{copy.methodDetail}</Text>
             <Text style={[styles.small, { color: palette.textSecondary }]}>
-              {review.comparison.evidence === 'usable' ? copy.usable : copy.early}
+              {methodEvidenceLabel}
             </Text>
           </View>
         </Pressable>
@@ -628,7 +637,7 @@ export default function LucidProgressScreen() {
               );
             })}
             <Text style={[styles.small, { color: palette.textMuted }]}>
-              {review.comparison.evidence === 'usable' ? copy.usable : copy.early}
+              {methodEvidenceLabel}
             </Text>
           </View>
         ) : null}
