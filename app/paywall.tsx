@@ -1147,7 +1147,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   comparisonFreeCell: {
-    flex: 0.8,
+    flex: 0.9,
     minWidth: 0,
     paddingHorizontal: 4,
     paddingVertical: 10,
