@@ -241,13 +241,19 @@ describe('injected durable Journal sync engine', () => {
   });
 
   it('keeps an old account acknowledgement out of the newly active queue and dream cache', async () => {
-    const { commands, engine, options, dependencies, persistRemoteDreams } = setup([mutation()]);
+    const sent = mutation();
+    const started = deferred();
     const network = deferred();
-    dependencies.createDreamInSupabase.mockImplementationOnce(async (value) => {
-      await network.promise; return { ...value, remoteId: 10 };
+    const { commands, engine, options, persistRemoteDreams } = setup([sent], async () => {
+      started.resolve();
+      await network.promise;
+      return [{
+        mutationId: sent.id, clientRequestId: sent.clientRequestId, operation: 'create',
+        status: 'ack', remoteId: 10, dream: { ...dream(), remoteId: 10 },
+      }];
     });
     const replay = commands.syncPendingMutations();
-    await flush();
+    await started.promise;
     engine.activate('user:b', true);
     const next = engine.bind({ ...options, userScope: 'user:b' }, { id: 'b' });
     next.setPendingMutations([mutation('b', 'user:b')]);

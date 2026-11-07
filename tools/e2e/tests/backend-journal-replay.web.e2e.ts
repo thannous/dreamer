@@ -118,9 +118,13 @@ for (const fault of ['lost response', 'account switch'] as const) {
         await expect(cards).toHaveCount(1);
         await expect(cards).toContainText(witness);
         const received = page.waitForResponse(response => response.request() === first.route.request());
+        // A's held RPC is the only in-flight replay here. Wait for the journal
+        // engine to finish processing it before reading B's persisted state.
+        const settled = page.waitForEvent('console', message =>
+          message.type() === 'log' && message.text() === '[JournalSync] Replay settled after scope change');
         await first.route.fulfill({ response: first.response });
         state.released = true;
-        const late = await received;
+        const [late] = await Promise.all([received, settled]);
         expect(late.ok()).toBe(true);
         expect(await late.json()).toEqual([ack]);
         await cards.click();
