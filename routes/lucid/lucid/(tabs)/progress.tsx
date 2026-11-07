@@ -57,6 +57,7 @@ const COPY = {
     methods: 'Method comparison',
     attemptsShort: 'attempts',
     noData: 'No attempts yet',
+    moreAttempts: 'Too few attempts to compare methods',
     early: 'Early signal',
     usable: 'Personal signal',
     history: 'Recent experiences',
@@ -112,6 +113,7 @@ const COPY = {
     methods: 'Comparaison des méthodes',
     attemptsShort: 'essais',
     noData: 'Aucun essai',
+    moreAttempts: 'Trop peu d’essais pour comparer les méthodes',
     early: 'Signal précoce',
     usable: 'Signal personnel',
     history: 'Expériences récentes',
@@ -167,6 +169,7 @@ const COPY = {
     methods: 'Comparación de métodos',
     attemptsShort: 'intentos',
     noData: 'Sin intentos',
+    moreAttempts: 'Se necesitan más intentos para comparar los métodos',
     early: 'Señal temprana',
     usable: 'Señal personal',
     history: 'Experiencias recientes',
@@ -222,6 +225,7 @@ const COPY = {
     methods: 'Methodenvergleich',
     attemptsShort: 'Versuche',
     noData: 'Keine Versuche',
+    moreAttempts: 'Zu wenige Versuche für einen Methodenvergleich',
     early: 'Frühes Signal',
     usable: 'Persönliches Signal',
     history: 'Letzte Erfahrungen',
@@ -277,6 +281,7 @@ const COPY = {
     methods: 'Confronto metodi',
     attemptsShort: 'tentativi',
     noData: 'Nessun tentativo',
+    moreAttempts: 'Servono più tentativi per confrontare i metodi',
     early: 'Segnale iniziale',
     usable: 'Segnale personale',
     history: 'Esperienze recenti',
@@ -390,6 +395,9 @@ export default function LucidProgressScreen() {
   const sleepValue = avgSleep == null ? '—' : avgSleep.toFixed(1);
   const recallValue = formatPercent(review.current.recallRate);
   const trendLabel = copy[review.trend.direction];
+  const methodEvidenceLabel = review.comparison.evidence === 'none'
+    ? copy.moreAttempts
+    : copy[review.comparison.evidence];
   const [methodsOpen, setMethodsOpen] = React.useState(false);
   const coachingCopy =
     content.weeklyReview.adaptationRules[
@@ -594,7 +602,7 @@ export default function LucidProgressScreen() {
           <View style={styles.disclosureCopy}>
             <Text style={[styles.sectionTitle, { color: palette.text }]}>{copy.methodDetail}</Text>
             <Text style={[styles.small, { color: palette.textSecondary }]}>
-              {review.comparison.evidence === 'usable' ? copy.usable : copy.early}
+              {methodEvidenceLabel}
             </Text>
           </View>
         </Pressable>
@@ -628,7 +636,7 @@ export default function LucidProgressScreen() {
               );
             })}
             <Text style={[styles.small, { color: palette.textMuted }]}>
-              {review.comparison.evidence === 'usable' ? copy.usable : copy.early}
+              {methodEvidenceLabel}
             </Text>
           </View>
         ) : null}

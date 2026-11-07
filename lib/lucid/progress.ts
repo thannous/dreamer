@@ -4,6 +4,7 @@ import {
   type LucidPersonalFactor,
   type LucidTechnique,
 } from './model';
+import { isLucidRecentSleepDegraded } from './personalization';
 
 export { LUCID_TECHNIQUES } from './model';
 export type { LucidTechnique } from './model';
@@ -419,16 +420,18 @@ export function getDeterministicLucidCoaching(
     preparationRate: current.preparationRate,
   };
 
-  if (current.attempts === 0) {
-    return { action: 'start_first_session', technique: 'mild', evidence };
-  }
+  // A morning observation can call for rest even if no technique was attempted.
   if (
+    isLucidRecentSleepDegraded(experiments) ||
     hasFrequentSleepRisk(
       adaptLucidExperimentsForProgress(experiments.filter(isLucidTrainingAttempt)),
       current.attempts
     )
   ) {
     return { action: 'protect_sleep', technique: null, evidence };
+  }
+  if (current.attempts === 0) {
+    return { action: 'start_first_session', technique: 'mild', evidence };
   }
   if ((current.preparationRate ?? 0) < 0.6) {
     return { action: 'complete_preparation', technique: null, evidence };
