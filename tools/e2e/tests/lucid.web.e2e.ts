@@ -390,6 +390,13 @@ for (const debt of [false, true]) {
     expect(await browser.evaluate(() => location.pathname)).toBe('/lucid/weekly');
     expect((await guestState(browser)).progress).toEqual([]);
     expect(advice).toContain(debt ? 'protéger le sommeil en priorité' : 'MILD');
+
+    await app.open('/lucid/progress');
+    const progress = screen.getByTestId('lucid-progress', { visible: true });
+    await expect(progress.getByText('Adaptation hors ligne', { exact: true })).toBeVisible();
+    const restAdvice = progress.getByText(/Privilégiez le repos cette nuit/, { visible: true });
+    if (debt) await expect(restAdvice).toBeVisible({ timeout: 3000 });
+    else await expect(restAdvice).toHaveCount(0);
   });
 }
 
