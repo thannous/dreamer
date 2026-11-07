@@ -32,6 +32,9 @@ Deno.test('a first person or ambiguous wish to die keeps support next to threats
     'Queria me matar.', 'No sonho eu queria me matar.', 'Ele queria se matar.',
     'Wollte mich umbringen.', 'Im Traum wollte ich mich umbringen.', 'Er sagt, ich soll mich umbringen.',
     'Er will sich umbringen.', 'Volevo uccidermi.', 'Voglio farmi del male.', 'Lui voleva uccidersi.',
+    // Imperatives share the third person form: quoted or not, they keep the support.
+    'Je lui ai dit : va te tuer.', 'Va te pendre.', 'Va me tuer.', 'Prova a farti del male.', 'Cerca di farti del male.',
+    'Tenta te matar.', 'Vai te matar.', 'Intenta hacerte daño.', 'Trata de hacerte daño.',
   ]) assertEquals(mentionsSelfHarm(message), true, message);
 });
 
@@ -44,6 +47,7 @@ Deno.test('another person threatening the dreamer is a nightmare, not self-harm'
     'Ele queria me matar no sonho.', 'Alguém tentou me machucar.', 'Um homem queria me matar.',
     'Er wollte mich umbringen.', 'Im Traum wollte er mich töten.', 'Jemand will mich verletzen.',
     'Qualcuno voleva uccidermi.', 'Voleva farmi del male.', 'Un uomo cercava di uccidermi.',
+    'Il va me tuer.', 'Qualcuno cerca di uccidermi.', 'Alguien intenta matarme.', 'Ele vai me matar.',
   ]) assertEquals(mentionsSelfHarm(message), false, message);
 });
 
