@@ -105,7 +105,10 @@ class EvidenceTests(unittest.TestCase):
                 calls.append(args)
                 if args[:3] == ('shell', 'dumpsys', 'package'):
                     self.assertEqual(args[3], qa)
-                    return b'versionCode=83 installerPackageName=null'
+                    return b'versionCode=83'
+                if args[:5] == ('shell', 'pm', 'list', 'packages', '-i'):
+                    self.assertEqual(args[5], qa)
+                    return b'package:com.tanuki75.noctalia.qa.other installer=other\npackage:com.tanuki75.noctalia.qa  installer=null'
                 if args[:2] == ('shell', 'pidof'):
                     self.assertEqual(args[2], qa)
                     return b'123'
@@ -130,6 +133,7 @@ class EvidenceTests(unittest.TestCase):
                 b'<profileable android:shell="true"/>' if args[0] == 'apkanalyzer' else b'certificate SHA-256 digest: abc', b'')
             runner.preflight()
             self.assertEqual(runner.state['conditions']['package'], qa)
+            self.assertEqual(runner.state['provenance']['installer'], 'null')
             self.assertEqual(runner.state['provenance']['profilerProbe'], 'passed')
             self.assertFalse(any(reading.PACKAGE == item for args in calls for item in args))
             runtime['applicationId'] = reading.PACKAGE
@@ -145,6 +149,15 @@ class EvidenceTests(unittest.TestCase):
                 self.scenario_runner(directory, phase='screen-scroll,detail-open')
             # The historical default remains available, with the same phases.
             self.assertEqual(self.scenario_runner(directory, reading.PACKAGE).package, reading.PACKAGE)
+
+    def test_installer_provenance_refuses_only_a_similarly_named_package(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for package in [reading.PACKAGE, reading.PACKAGE + '.qa']:
+                with self.subTest(package=package):
+                    runner = self.scenario_runner(directory, package)
+                    runner.shell = lambda *args: f'package:{package}.other installer=com.android.vending'
+                    with self.assertRaisesRegex(ValueError, 'Installer provenance unavailable'):
+                        runner.installer_package('versionCode=83')
 
     def test_screen_scroll_refuses_changed_content_and_a_lost_screen(self):
         with tempfile.TemporaryDirectory() as directory:
