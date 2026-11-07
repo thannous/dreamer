@@ -330,8 +330,7 @@ function AiConsentDetails() {
       </Pressable>
 
       {detailsOpen ? (
-        <ScrollView
-          nestedScrollEnabled
+        <View
           style={styles.details}
           testID={TID.Component.AiConsentDetails}
         >
@@ -351,7 +350,7 @@ function AiConsentDetails() {
               {t('ai_consent.details_when_body')}
             </Text>
           </View>
-        </ScrollView>
+        </View>
       ) : null}
     </>
   );
@@ -446,43 +445,44 @@ export function AiConsentModal({ visible, onAccept, onDecline }: AiConsentModalP
           ]}
           testID={TID.Component.AiConsentCard}
         >
-          <NoctaliaDreamEmblem
-            isDark={isDark}
-            accent={decorativeAccent}
-            reducedMotion={prefersReducedMotion}
-          />
-
-          <Text
-            ref={titleRef}
-            {...(Platform.OS === 'web' ? { tabIndex: -1 as const } : {})}
-            accessibilityRole="header"
-            style={[
-              styles.title,
-              { color: noctalia.text.primary },
-              webTitleFocusResetStyle,
-            ]}
+          <ScrollView
+            style={styles.disclosure}
+            contentContainerStyle={styles.disclosureContent}
+            keyboardShouldPersistTaps="handled"
           >
-            {t('ai_consent.title')}
-          </Text>
+            <NoctaliaDreamEmblem
+              isDark={isDark}
+              accent={decorativeAccent}
+              reducedMotion={prefersReducedMotion}
+            />
 
-          <Text style={[styles.message, { color: noctalia.text.secondary }]}>
-            {t('ai_consent.message')}
-          </Text>
-
-          <AiConsentDetails />
-
-          <Pressable
-            accessibilityRole="link"
-            hitSlop={8}
-            onPress={handleOpenPrivacyPolicy}
-            style={({ pressed }) => [styles.privacyLinkButton, pressed && styles.pressed]}
-            testID={TID.Button.AiConsentPrivacyPolicy}
-          >
-            <IconSymbol name="lock.shield" size={15} color={noctalia.accent.text} />
-            <Text style={[styles.privacyLinkText, { color: noctalia.accent.text }]}>
-              {t('settings.legal.privacyPolicy')}
+            <Text
+              ref={titleRef}
+              {...(Platform.OS === 'web' ? { tabIndex: -1 as const } : {})}
+              accessibilityRole="header"
+              style={[styles.title, { color: noctalia.text.primary }, webTitleFocusResetStyle]}
+            >
+              {t('ai_consent.title')}
             </Text>
-          </Pressable>
+
+            <Text style={[styles.message, { color: noctalia.text.secondary }]}>
+              {t('ai_consent.message')}
+            </Text>
+
+            <AiConsentDetails />
+            <Pressable
+              accessibilityRole="link"
+              hitSlop={8}
+              onPress={handleOpenPrivacyPolicy}
+              style={({ pressed }) => [styles.privacyLinkButton, pressed && styles.pressed]}
+              testID={TID.Button.AiConsentPrivacyPolicy}
+            >
+              <IconSymbol name="lock.shield" size={15} color={noctalia.accent.text} />
+              <Text style={[styles.privacyLinkText, { color: noctalia.accent.text }]}>
+                {t('settings.legal.privacyPolicy')}
+              </Text>
+            </Pressable>
+          </ScrollView>
 
           <Pressable
             accessibilityRole="button"
@@ -594,12 +594,23 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 420,
+    maxHeight: '100%',
+    flexShrink: 1,
     borderRadius: 28,
     borderCurve: 'continuous',
     borderWidth: 1,
     paddingHorizontal: 24,
     paddingTop: 20,
     paddingBottom: 20,
+    alignItems: 'center',
+  },
+  disclosure: {
+    alignSelf: 'stretch',
+    flexGrow: 0,
+    flexShrink: 1,
+    minHeight: 0,
+  },
+  disclosureContent: {
     alignItems: 'center',
   },
   emblemContainer: {
@@ -632,6 +643,8 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   privacyLinkText: {
+    flexShrink: 1,
+    textAlign: 'center',
     fontFamily: Fonts.outfit.medium,
     fontSize: TypeScale.bodySm.fontSize,
     lineHeight: TypeScale.bodySm.lineHeight,
@@ -642,7 +655,6 @@ const styles = StyleSheet.create({
   },
   details: {
     width: '100%',
-    maxHeight: 220,
     marginTop: 4,
   },
   detailsItem: {
@@ -671,6 +683,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   primaryButtonText: {
+    flexShrink: 1,
     fontFamily: Fonts.outfit.bold,
     fontSize: TypeScale.body.fontSize,
     lineHeight: 21,
