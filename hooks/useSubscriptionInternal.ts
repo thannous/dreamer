@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import type { User } from '@supabase/supabase-js';
 import { useAuth } from '@/context/AuthContext';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import { isEntitlementExpired } from '@/lib/revenuecat';
 import { isUserCancelledError as isSharedUserCancelledError, type RevenueCatLikeError } from '@/lib/subscriptionErrors';
-import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
+import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
 import {
   initializeSubscription,
@@ -16,7 +16,7 @@ import {
   refreshSubscriptionStatus,
   restoreSubscriptionPurchases,
 } from '@/services/subscriptionService';
-import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
+import { syncSubscriptionFromServer, type SubscriptionSyncResponse } from '@/services/subscriptionSyncService';
 import { simulateMockSubscriptionSync } from '@/services/mocks/subscriptionServiceMock';
 import { useSubscriptionCustomerInfoListener } from './useSubscriptionCustomerInfoListener';
 import { useSubscriptionExpiryTimer } from './useSubscriptionExpiryTimer';
@@ -95,613 +95,378 @@ export type UseSubscriptionOptions = {
   loadPackages?: boolean;
 };
 
+type SubscriptionOperationResult = SubscriptionStatus & { serverConfirmed: boolean; storeActive: boolean };
+
+function isConfirmed(result: SubscriptionSyncResponse | null): result is SubscriptionSyncResponse {
+  return result?.ok === true && result.outcome !== 'unknown_entitlement' && result.outcome !== 'stale'
+    && ((result.tier === 'plus' && result.isActive === true) || (result.tier === 'free' && result.isActive === false));
+}
+
+function getSubscriptionVersion(user: User | null): number | null {
+  const raw = user?.app_metadata?.subscription_version;
+  if (typeof raw !== 'number' && (typeof raw !== 'string' || !raw.trim())) return null;
+  const version = Number(raw);
+  return Number.isFinite(version) ? version : null;
+}
+
 export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
-  const { user, refreshUser, setUserTierLocally } = useAuth();
+  const { user, sessionGeneration, isCurrentSession, refreshUser, setUserTierLocally } = useAuth();
+  const userId = user?.id ?? null;
+  const sessionKey = `${sessionGeneration}:${userId ?? ''}`;
+  const [stateSession, setStateSession] = useState(sessionKey);
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
   const [packages, setPackages] = useState<PurchasePackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  // Provider-owned and account-scoped: dismissing a screen must not erase a
-  // store-successful operation whose server activation still needs a retry.
-  const [activationPendingFor, setActivationPendingFor] = useState<string | null>(null);
+  const [activationPending, setActivationPending] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const clearError = useCallback(() => setError(null), []);
-  const isMockMode = isMockSubscriptionService;
-  const requiresAuth = !user?.id;
-  // Track which expiry we've already refreshed to avoid infinite loops on expired plans
-  const expiredExpiryKeyRef = useRef<string | null>(null);
-  const lastSyncAttemptRef = useRef<{ userId: string | null; at: number } | null>(null);
-  const lastUserIdRef = useRef<string | null>(null);
-  const lastSyncedStatusKeyRef = useRef<string | null>(null);
-  // ✅ FIX: Guard against stale RevenueCat listener updates during user transition
-  const isUserTransitioningRef = useRef(false);
-
   const shouldLoadPackages = options?.loadPackages === true;
+  const isMockMode = isMockSubscriptionService;
+  const appMetadataTier = normalizeSubscriptionTier(user?.app_metadata?.tier, 'free');
 
-  // Extract stable user ID to break circular dependency in tier sync
-  const userId = user?.id;
-  // Extract user tier independently from user object reference
-  // to avoid re-triggering effects when user object changes
-  const userTier: SubscriptionTier = normalizeSubscriptionTier(
-    user?.app_metadata?.tier ?? user?.user_metadata?.tier,
-    'free'
-  );
-  const appMetadataTier: SubscriptionTier = normalizeSubscriptionTier(user?.app_metadata?.tier, 'free');
-
-  useEffect(() => {
-    if (lastUserIdRef.current === userId) return;
-
-    // ✅ FIX: Mark transition start to ignore stale RevenueCat listener updates
-    isUserTransitioningRef.current = true;
-
-    lastUserIdRef.current = userId ?? null;
-    expiredExpiryKeyRef.current = null;
-    lastSyncAttemptRef.current = null;
-    lastSyncedStatusKeyRef.current = null;
-
+  // Discard the old view before a consumer renders under the next account.
+  if (stateSession !== sessionKey) {
+    setStateSession(sessionKey);
     setStatus(null);
     setPackages([]);
+    setLoading(true);
+    setProcessing(false);
+    setRefreshing(false);
+    setActivationPending(false);
     setError(null);
-    setActivationPendingFor(null);
-  }, [userId]);
+  }
 
-  useEffect(() => {
-    if (!userId) return;
-    if (appMetadataTier !== 'plus') return;
+  const mounted = useRef(false);
+  const initializing = useRef(true);
+  const lastSyncAttempt = useRef<{ at: number } | null>(null);
+  const expiredExpiryKey = useRef<string | null>(null);
+  const storeOperation = useRef({ running: false, pending: false, refreshes: 0, observationVersion: 0 });
+  const customerInfoRead = useRef<Promise<SubscriptionStatus | null> | null>(null);
 
-    // Optimistically treat Supabase-paid users as active while RevenueCat is loading.
-    // RevenueCat remains the source of truth and will overwrite this once resolved.
-    setStatus((current) => {
-      if (current?.isActive && current.tier === 'plus') {
-        return current;
-      }
-      return { tier: appMetadataTier, isActive: true };
-    });
-  }, [appMetadataTier, userId]);
+  useLayoutEffect(() => {
+    mounted.current = true;
+    initializing.current = true;
+    lastSyncAttempt.current = null;
+    expiredExpiryKey.current = null;
+    storeOperation.current = { running: false, pending: false, refreshes: 0, observationVersion: 0 };
+    customerInfoRead.current = null;
+    return () => { mounted.current = false; };
+  }, [sessionKey]);
 
-  const getTierFromUser = useCallback((input?: User | null): SubscriptionTier => {
-    return normalizeSubscriptionTier(input?.app_metadata?.tier ?? input?.user_metadata?.tier, 'free');
+  const isSessionCurrent = useCallback(() => mounted.current && isCurrentSession(userId, sessionGeneration),
+    [isCurrentSession, sessionGeneration, userId]);
+  const canObserveStore = useCallback(() => {
+    const { running, pending, refreshes } = storeOperation.current;
+    return isSessionCurrent() && !running && !pending && refreshes === 0;
+  }, [isSessionCurrent]);
+  const captureStoreRead = useCallback(() => {
+    const { observationVersion } = storeOperation.current;
+    return () => canObserveStore() && storeOperation.current.observationVersion === observationVersion;
+  }, [canObserveStore]);
+  const invalidateStoreReads = useCallback(() => {
+    storeOperation.current.observationVersion++;
+    customerInfoRead.current = null;
   }, []);
+  const assertSession = useCallback(() => {
+    if (!isSessionCurrent()) throw new Error('subscription_session_changed');
+  }, [isSessionCurrent]);
+  const clearError = useCallback(() => { if (isSessionCurrent()) setError(null); }, [isSessionCurrent]);
 
-  const getSubscriptionVersionFromUser = useCallback((input?: User | null): number | null => {
-    const rawVersion = input?.app_metadata?.subscription_version;
-    if (typeof rawVersion === 'number' && Number.isFinite(rawVersion)) {
-      return rawVersion;
-    }
-    if (typeof rawVersion === 'string') {
-      const parsed = Number(rawVersion);
-      if (Number.isFinite(parsed)) {
-        return parsed;
-      }
-    }
-    return null;
-  }, []);
+  const setPending = useCallback((pending: boolean) => {
+    if (!isSessionCurrent()) return;
+    storeOperation.current.pending = pending;
+    setActivationPending(pending);
+  }, [isSessionCurrent]);
 
-  const waitForSubscriptionVersion = useCallback(async (targetVersion: number) => {
-    if (!userId) return null;
-    const currentVersion = getSubscriptionVersionFromUser(user);
-    if (currentVersion !== null && currentVersion >= targetVersion) {
-      return user;
-    }
-
-    const startedAt = Date.now();
-    const timeoutMs = 10000;
-    const intervalMs = 1000;
-
-    while (Date.now() - startedAt < timeoutMs) {
-      try {
-        const refreshedUser = await refreshUser({
-          bypassCircuitBreaker: true,
-          skipJwtRefresh: false,
-        });
-
-        if (lastUserIdRef.current !== userId) {
-          return refreshedUser;
-        }
-
-        const refreshedVersion = getSubscriptionVersionFromUser(refreshedUser);
-        if (refreshedVersion !== null && refreshedVersion >= targetVersion) {
-          return refreshedUser;
-        }
-      } catch (err) {
-        if (__DEV__) {
-          console.warn('[useSubscription] Waiting for subscription version failed', err);
-        }
-      }
-
-      await sleep(intervalMs);
-    }
-
-    return null;
-  }, [getSubscriptionVersionFromUser, refreshUser, user, userId]);
-
-  const applyLocalSubscriptionCache = useCallback((nextStatus: SubscriptionStatus, version?: number | null) => {
+  const applyCache = useCallback((next: SubscriptionStatus, version?: number | null) => {
+    if (!isSessionCurrent()) return;
     setUserTierLocally({
-      tier: nextStatus.tier,
+      tier: next.tier,
       version,
-      isActive: nextStatus.isActive,
-      productId: nextStatus.productId ?? null,
+      isActive: next.isActive,
+      productId: next.productId ?? null,
       source: 'subscription_refresh',
-    });
-  }, [setUserTierLocally]);
+    }, { userId, generation: sessionGeneration });
+  }, [isSessionCurrent, sessionGeneration, setUserTierLocally, userId]);
 
-  const syncSubscription = useCallback(async (
-    source: string,
-    options?: {
-      cooldownMs?: number;
-      force?: boolean;
-      awaitVersion?: boolean;
-      localStatus?: SubscriptionStatus | null;
+  const waitForVersion = useCallback(async (targetVersion: number) => {
+    const currentVersion = getSubscriptionVersion(user);
+    if (currentVersion !== null && currentVersion >= targetVersion) return user;
+
+    const until = Date.now() + 10000;
+    while (isSessionCurrent() && Date.now() < until) {
+      const refreshed = await refreshUser({ bypassCircuitBreaker: true, skipJwtRefresh: false });
+      if (!isSessionCurrent()) return null;
+      const version = getSubscriptionVersion(refreshed);
+      if (version !== null && version >= targetVersion) return refreshed;
+      await sleep(1000);
     }
-  ) => {
-    if (isMockMode) {
-      simulateMockSubscriptionSync(source, userId);
-      return null;
-    }
-    if (!userId) {
-      lastSyncAttemptRef.current = null;
-      return null;
-    }
+    return null;
+  }, [isSessionCurrent, refreshUser, user]);
+
+  const syncInBackground = useCallback((source: string, storeStatus?: SubscriptionStatus) => {
+    const isCurrentRead = captureStoreRead();
+    if (!userId || isMockMode || !isCurrentRead()) return;
     const now = Date.now();
-    const cooldownMs = options?.cooldownMs ?? 60 * 1000;
-    if (
-      !options?.force &&
-      lastSyncAttemptRef.current &&
-      lastSyncAttemptRef.current.userId === userId &&
-      now - lastSyncAttemptRef.current.at < cooldownMs
-    ) {
-      return null;
-    }
-    lastSyncAttemptRef.current = { userId, at: now };
+    if (lastSyncAttempt.current && now - lastSyncAttempt.current.at < 60000) return;
+    const request = { at: now };
+    lastSyncAttempt.current = request;
 
-    const result = await syncSubscriptionFromServer(source);
-    if (result.ok && result.isActive && result.tier === 'plus' && lastUserIdRef.current === userId) {
-      setActivationPendingFor(null);
-    }
+    void syncSubscriptionFromServer(source).then(result => {
+      if (!isCurrentRead() || lastSyncAttempt.current !== request || !isConfirmed(result)) return;
 
-    if (options?.localStatus) {
-      const mergedStatus: SubscriptionStatus = {
-        ...options.localStatus,
-        tier: result.tier,
-        isActive: result.isActive,
-      };
-      setStatus(mergedStatus);
-      applyLocalSubscriptionCache(mergedStatus, result.version);
-    } else {
-      applyLocalSubscriptionCache(
-        {
-          tier: result.tier,
-          isActive: result.isActive,
-          productId: undefined,
-        },
-        result.version
-      );
-    }
-
-    if (options?.awaitVersion && typeof result.version === 'number') {
-      const refreshedUser = await waitForSubscriptionVersion(result.version);
-      quotaService.invalidate(refreshedUser ?? user);
-    }
-
-    return result;
-  }, [applyLocalSubscriptionCache, isMockMode, user, userId, waitForSubscriptionVersion]);
-
-  const syncInBackground = useCallback((source: string) => {
-    void syncSubscription(source).catch((err: unknown) => {
-      // Background refresh must never become an unhandled rejection. Do not
-      // log the HttpError itself: it contains the response body and URL.
-      if (__DEV__) {
+      const confirmed = { ...storeStatus, tier: result.tier, isActive: result.isActive };
+      if (storeStatus || source.startsWith('customer_info')) {
+        setStatus(previous => ({ ...previous, ...confirmed }));
+      }
+      applyCache(confirmed, result.version);
+    }).catch((err: unknown) => {
+      if (__DEV__ && isSessionCurrent()) {
         const status = (err as { status?: unknown } | null)?.status;
-        console.warn('[useSubscription] Background sync failed', {
-          source,
-          status: typeof status === 'number' ? status : undefined,
-        });
+        console.warn('[useSubscription] Background sync failed', { source, status: typeof status === 'number' ? status : undefined });
       }
     });
-  }, [syncSubscription]);
+  }, [applyCache, captureStoreRead, isMockMode, isSessionCurrent, userId]);
 
-  const syncOnStatusChange = useCallback((source: string, nextStatus: SubscriptionStatus | null) => {
-    if (!userId || !nextStatus || requiresAuth) return;
-    const statusKey = `${nextStatus.tier}-${nextStatus.isActive}-${nextStatus.expiryDate ?? 'no-expiry'}`;
-    if (lastSyncedStatusKeyRef.current === statusKey) return;
-    lastSyncedStatusKeyRef.current = statusKey;
-    syncInBackground(source);
-  }, [requiresAuth, syncInBackground, userId]);
+  const applyStoreObservation = useCallback((source: string, next: SubscriptionStatus) => {
+    if (!canObserveStore()) return;
+    // A new paid grant needs confirmation. A known paid account keeps its
+    // RevenueCat expiry metadata and the existing local expiration policy.
+    if (next.tier === 'plus' && next.isActive && !isMockMode && appMetadataTier !== 'plus') {
+      syncInBackground(source, next);
+      return;
+    }
+    setStatus(next);
+  }, [appMetadataTier, canObserveStore, isMockMode, syncInBackground]);
 
-  const convergeServerSubscription = useCallback(async (
-    source: string,
-    nextStatus: SubscriptionStatus,
-    options?: { throwOnError?: boolean }
-  ) => {
-    console.log('[useSubscription] Subscription convergence started', {
-      timestamp: new Date().toISOString(),
-      userId,
-      source,
-      targetTier: nextStatus.tier,
-      currentTier: userTier,
-      expiryDate: nextStatus.expiryDate || null,
-    });
-
-    applyLocalSubscriptionCache(nextStatus, getSubscriptionVersionFromUser(user));
-
+  const converge = useCallback(async (source: 'purchase' | 'restore' | 'manual_refresh', observed: SubscriptionStatus) => {
+    assertSession();
+    const unresolved: SubscriptionOperationResult = {
+      tier: status?.tier ?? appMetadataTier,
+      isActive: status?.isActive ?? (appMetadataTier === 'plus'),
+      serverConfirmed: false,
+      storeActive: observed.isActive,
+    };
     try {
-      const result = await syncSubscription(source, {
-        force: true,
-        cooldownMs: 0,
-        awaitVersion: true,
-        localStatus: nextStatus,
-      });
+      const request = { at: Date.now() };
+      lastSyncAttempt.current = request;
+      let result: SubscriptionSyncResponse | null = null;
+      if (isMockMode) simulateMockSubscriptionSync(source, userId ?? undefined);
+      else result = await syncSubscriptionFromServer(source);
+      assertSession();
+      if (lastSyncAttempt.current !== request) return unresolved;
 
       if (result) {
         console.log('[useSubscription] Subscription convergence completed', {
-          timestamp: new Date().toISOString(),
-          userId,
-          source,
-          syncedTier: result.tier,
-          isActive: result.isActive,
-          version: result.version,
-          changed: result.changed,
-          updated: result.updated ?? null,
-          skipped: result.skipped ?? null,
-          outcome: result.outcome ?? null,
+          userId, source, syncedTier: result.tier, isActive: result.isActive,
+          version: result.version, changed: result.changed, outcome: result.outcome ?? null,
         });
       }
-
-      const confirmedStatus = result
-        ? { ...nextStatus, tier: result.tier, isActive: result.isActive, serverConfirmed: result.ok === true, storeActive: nextStatus.isActive }
-        : { ...nextStatus, serverConfirmed: isMockMode, storeActive: nextStatus.isActive };
-      if (confirmedStatus.serverConfirmed && confirmedStatus.isActive && confirmedStatus.tier === 'plus'
-        && lastUserIdRef.current === userId) setActivationPendingFor(null);
-      return confirmedStatus;
-    } catch (err) {
-      console.warn('[useSubscription] Subscription convergence failed', {
-        timestamp: new Date().toISOString(),
-        userId,
-        source,
-        message: (err as Error)?.message,
-      });
-
-      quotaService.invalidate(user);
-
-      if (options?.throwOnError) {
-        throw err;
+      if (!isMockMode && !isConfirmed(result)) return unresolved;
+      const confirmed: SubscriptionOperationResult = {
+        ...observed,
+        tier: result?.tier ?? observed.tier,
+        isActive: result?.isActive ?? observed.isActive,
+        serverConfirmed: true,
+        storeActive: observed.isActive,
+      };
+      // A recognized receipt can precede the backend grant. Keep the last
+      // confirmed access until the grant arrives or both sources report Free.
+      if (storeOperation.current.pending && !confirmed.isActive && observed.isActive) return confirmed;
+      setStatus(confirmed);
+      applyCache(confirmed, result?.version);
+      setPending(false);
+      if (typeof result?.version === 'number') {
+        const refreshed = await waitForVersion(result.version);
+        assertSession();
+        quotaService.invalidate(refreshed ?? user);
       }
-
-      return { ...nextStatus, serverConfirmed: false, storeActive: nextStatus.isActive };
+      return confirmed;
+    } catch (err) {
+      assertSession();
+      if (source === 'manual_refresh') throw err;
+      return unresolved;
     }
-  }, [applyLocalSubscriptionCache, getSubscriptionVersionFromUser, isMockMode, syncSubscription, user, userId, userTier]);
+  }, [appMetadataTier, applyCache, assertSession, isMockMode, setPending, status, user, userId, waitForVersion]);
+
+  const applyStoreObservationRef = useRef(applyStoreObservation);
+  useLayoutEffect(() => { applyStoreObservationRef.current = applyStoreObservation; }, [applyStoreObservation]);
 
   useEffect(() => {
-    let mounted = true;
-
+    let active = true;
+    const current = () => active && isSessionCurrent();
     const run = async () => {
+      if (!current()) return;
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
-        setError(null);
-        if (requiresAuth) {
-          const nextPackages = shouldLoadPackages
-            ? await initializeSubscription(null).then(() => loadSubscriptionPackages())
-            : [];
-          if (mounted) {
-            setStatus(null);
-            setPackages(nextPackages);
-            // ✅ FIX: Clear transition flag even when logged out
-            isUserTransitioningRef.current = false;
-          }
-          return;
+        if (!userId && !shouldLoadPackages) return;
+        const observed = await initializeSubscription(userId);
+        if (!current()) return;
+        if (userId) applyStoreObservationRef.current('status_change', observed);
+        if (shouldLoadPackages) {
+          const offerings = await loadSubscriptionPackages();
+          if (current()) setPackages(offerings);
         }
-        // Always ensure RevenueCat is configured and logged in for the current user.
-        // This avoids purchases/status being attributed to a stale anonymous/appUserId.
-        const initializedStatus = await initializeSubscription(user?.id ?? null);
-        const [nextStatus, nextPackages] = await Promise.all([
-          Promise.resolve(initializedStatus),
-          shouldLoadPackages ? loadSubscriptionPackages() : Promise.resolve<PurchasePackage[]>([]),
-        ]);
-        if (mounted) {
-          setStatus(nextStatus);
-          setPackages(nextPackages);
-          // ✅ FIX: Clear transition flag - fresh status is now set for current user
-          isUserTransitioningRef.current = false;
-        }
-
-        // Never call syncPurchases automatically after an account change. RevenueCat treats
-        // it as a restore and may transfer the Play receipt to the newly identified user.
-        // Store reconciliation must remain an explicit action through restore().
-      } catch (e) {
-        if (mounted) {
-          setError(formatError(e));
-          // Clear transition guard to avoid getting stuck after init failures.
-          isUserTransitioningRef.current = false;
-        }
+      } catch (err) {
+        if (current()) setError(formatError(err));
       } finally {
-        if (mounted) {
+        if (current()) {
+          initializing.current = false;
           setLoading(false);
         }
       }
     };
-
-    run();
-
-    return () => {
-      mounted = false;
-    };
-  }, [requiresAuth, shouldLoadPackages, user?.id]);
+    void run();
+    return () => { active = false; };
+  }, [isSessionCurrent, shouldLoadPackages, userId]);
 
   useEffect(() => {
-    syncOnStatusChange('status_change', status);
-  }, [status, syncOnStatusChange]);
+    if (userId && status) syncInBackground('status_change');
+  }, [status, syncInBackground, userId]);
 
   useEffect(() => {
-    if (!status || requiresAuth) return;
-    if (status.tier === userTier && status.isActive === (userTier === 'plus')) return;
+    if (!userId || !status || !isSessionCurrent() || storeOperation.current.pending) return;
+    if (status.tier !== appMetadataTier) applyCache(status, getSubscriptionVersion(user));
+  }, [appMetadataTier, applyCache, isSessionCurrent, status, user, userId]);
 
-    applyLocalSubscriptionCache(status, getSubscriptionVersionFromUser(user));
-  }, [applyLocalSubscriptionCache, getSubscriptionVersionFromUser, requiresAuth, status, user, userTier]);
-
-  // ✅ PHASE 3: Check for subscription expiration on app startup
   useEffect(() => {
-    if (!status || requiresAuth) return;
-
-    // Reset the guard when the status is not expired anymore (new purchase/restore)
-    if (!status.expiryDate || !isEntitlementExpired(status.expiryDate)) {
-      expiredExpiryKeyRef.current = null;
+    if (!status?.expiryDate || !isEntitlementExpired(status.expiryDate)) {
+      expiredExpiryKey.current = null;
       return;
     }
+    if (!userId || expiredExpiryKey.current === status.expiryDate) return;
+    expiredExpiryKey.current = status.expiryDate;
+    let active = true;
+    void initializeSubscription(userId).then(next => {
+      if (active && isSessionCurrent() && !initializing.current) applyStoreObservationRef.current('expiry', next);
+    }).catch(() => {});
+    return () => { active = false; };
+  }, [isSessionCurrent, status, userId]);
 
-    // Avoid infinite refresh loops for the same expired entitlement
-    const expiryKey = status.expiryDate ?? 'no-expiry';
-    if (expiredExpiryKeyRef.current === expiryKey) return;
-    expiredExpiryKeyRef.current = expiryKey;
-
-    if (__DEV__) {
-      console.log('[useSubscription] Subscription expired, forcing refresh');
-    }
-
-    // ✅ FIX: Track mounted state and current userId to prevent stale updates after user switch
-    let mounted = true;
-    const currentUserId = user?.id;
-
-    // Force refresh from RevenueCat to get latest status
-    initializeSubscription(currentUserId ?? null)
-      .then((nextStatus) => {
-        // ✅ FIX: Only apply if still mounted and user hasn't changed
-        if (mounted && !isUserTransitioningRef.current && lastUserIdRef.current === currentUserId) {
-          setStatus(nextStatus);
-        } else if (__DEV__) {
-          console.log('[useSubscription] Ignoring expired status refresh - user changed or transitioning');
-        }
-      })
-      .catch((err) => {
-        if (__DEV__) {
-          console.warn('[useSubscription] Failed to refresh expired status', err);
-        }
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, [status, requiresAuth, user?.id]);
-
-  const purchase = useCallback(async (id: string) => {
-    if (requiresAuth) {
-      return Promise.reject(new Error('auth_required'));
-    }
+  const runStoreOperation = useCallback(async (source: 'purchase' | 'restore', operation: () => Promise<SubscriptionStatus>) => {
+    if (!userId) throw new Error('auth_required');
+    assertSession();
+    const state = storeOperation.current;
+    if (state.running || state.pending) throw new Error('subscription_operation_pending');
+    state.running = true;
+    invalidateStoreReads();
     setProcessing(true);
     setError(null);
     try {
-      // Ensure Purchases is configured + logged into the current user right before purchasing.
-      // This prevents purchases from being attached to an anonymous/stale RevenueCat user.
-      await initializeSubscription(user?.id ?? null);
-      console.log('[useSubscription] Purchase started', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        packageId: id,
-        currentTier: getTierFromUser(user),
-      });
-
-      const nextStatus = await purchaseSubscriptionPackage(id);
-      if (user?.id && lastUserIdRef.current === user.id) setActivationPendingFor(user.id);
-      console.log('[useSubscription] Purchase completed', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        packageId: id,
-        newTier: nextStatus.tier,
-        isActive: nextStatus.isActive,
-      });
-
-      setStatus(nextStatus);
-      return await convergeServerSubscription('purchase', nextStatus);
-    } catch (e) {
-      const isCancelled = isUserCancelledError(e);
-      // A cancelled store sheet is an expected outcome, not an error.
-      const log = isCancelled ? console.info : console.error;
-      log(isCancelled ? '[useSubscription] Purchase cancelled' : '[useSubscription] Purchase failed', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        packageId: id,
-        isCancelled,
-        error: (e as Error).message,
-      });
-      if (__DEV__) {
-        console.log('[useSubscription] purchase error caught:', {
-          isCancelled,
-          error: e,
-        });
-      }
-      // Don't show error if user simply cancelled the purchase
-      if (!isCancelled) {
-        const formattedError = formatError(e);
-        if (__DEV__) {
-          console.log('[useSubscription] setting error state:', formattedError.message);
-        }
-        setError(formattedError);
-      }
-      throw e;
+      await initializeSubscription(userId);
+      assertSession();
+      const observed = await operation();
+      assertSession();
+      // Even a store result without an active receipt needs reconciliation
+      // before replacing the last confirmed entitlement or ending the retry.
+      setPending(true);
+      return await converge(source, observed);
+    } catch (err) {
+      if (isSessionCurrent() && !isUserCancelledError(err)) setError(formatError(err));
+      throw err;
     } finally {
-      setProcessing(false);
-    }
-  }, [convergeServerSubscription, requiresAuth, user, getTierFromUser]);
-
-  const restore = useCallback(async () => {
-    if (requiresAuth) {
-      return Promise.reject(new Error('auth_required'));
-    }
-    setProcessing(true);
-    setError(null);
-    try {
-      // Ensure Purchases is configured + logged into the current user right before restoring.
-      await initializeSubscription(user?.id ?? null);
-      console.log('[useSubscription] Purchase restore started', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        currentTier: getTierFromUser(user),
-      });
-
-      const nextStatus = await restoreSubscriptionPurchases();
-      if (nextStatus.isActive && user?.id && lastUserIdRef.current === user.id) setActivationPendingFor(user.id);
-      console.log('[useSubscription] Purchase restore completed', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        restoredTier: nextStatus.tier,
-        isActive: nextStatus.isActive,
-      });
-
-      setStatus(nextStatus);
-      return await convergeServerSubscription('restore', nextStatus);
-    } catch (e) {
-      console.error('[useSubscription] Purchase restore failed', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        error: (e as Error).message,
-        isCancelled: isUserCancelledError(e),
-      });
-      // Don't show error if user simply cancelled the restore
-      if (!isUserCancelledError(e)) {
-        setError(formatError(e));
+      if (isSessionCurrent()) {
+        state.running = false;
+        setProcessing(false);
       }
-      throw e;
-    } finally {
-      setProcessing(false);
     }
-  }, [convergeServerSubscription, requiresAuth, user, getTierFromUser]);
+  }, [assertSession, converge, invalidateStoreReads, isSessionCurrent, setPending, userId]);
 
+  const purchase = useCallback((id: string) => runStoreOperation('purchase', () => purchaseSubscriptionPackage(id)), [runStoreOperation]);
+  const restore = useCallback(() => runStoreOperation('restore', restoreSubscriptionPurchases), [runStoreOperation]);
   const refreshSubscription = useCallback(async () => {
-    if (requiresAuth) {
-      return Promise.reject(new Error('auth_required'));
-    }
-
+    if (!userId) throw new Error('auth_required');
+    assertSession();
+    const state = storeOperation.current;
+    state.refreshes++;
+    invalidateStoreReads();
     setRefreshing(true);
     setError(null);
-
     try {
-      console.log('[useSubscription] Refresh started', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-      });
-
-      const nextStatus = await refreshSubscriptionStatus();
-      if (!nextStatus) {
-        throw new Error('Purchases not initialized');
+      if (initializing.current) {
+        await initializeSubscription(userId);
+        assertSession();
       }
-
-      console.log('[useSubscription] Refresh completed', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        tier: nextStatus.tier,
-        isActive: nextStatus.isActive,
-      });
-
-      setStatus(nextStatus);
-      return await convergeServerSubscription('manual_refresh', nextStatus, { throwOnError: true });
-    } catch (e) {
-      console.error('[useSubscription] Refresh failed', {
-        timestamp: new Date().toISOString(),
-        userId: user?.id,
-        error: (e as Error).message,
-      });
-
-      setError(formatError(e));
-      throw e;
+      const observed = await refreshSubscriptionStatus();
+      assertSession();
+      if (!observed) throw new Error('Purchases not initialized');
+      return await converge('manual_refresh', observed);
+    } catch (err) {
+      if (isSessionCurrent()) setError(formatError(err));
+      throw err;
     } finally {
-      setRefreshing(false);
+      state.refreshes--;
+      if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
     }
-  }, [convergeServerSubscription, requiresAuth, user]);
+  }, [assertSession, converge, invalidateStoreReads, isSessionCurrent, userId]);
 
-  // Écouter les changements de status au resume de l'app
-  // Ceci permet de mettre à jour l'UI quand l'abonnement expire pendant que l'app est en arrière-plan
-  const applyStatusUpdate = useCallback((source: string, newStatus: SubscriptionStatus) => {
-    if (__DEV__) {
-      console.log(`[useSubscription] Status updated from ${source}:`, {
-        tier: newStatus.tier,
-        isActive: newStatus.isActive,
-        expiryDate: newStatus.expiryDate,
-      });
-    }
-    setStatus(newStatus);
-  }, []);
-
-  const handleStatusFromMonitor = useCallback((newStatus: SubscriptionStatus) => {
-    // ✅ FIX: Ignore stale updates during user transition
-    if (isUserTransitioningRef.current) {
-      if (__DEV__) {
-        console.log('[useSubscription] Ignoring monitor update during user transition');
-      }
-      return;
-    }
-    applyStatusUpdate('resume', newStatus);
+  const onResume = useCallback((next: SubscriptionStatus) => {
+    if (!isSessionCurrent() || initializing.current) return;
+    applyStoreObservationRef.current('resume', next);
     syncInBackground('resume');
-  }, [applyStatusUpdate, syncInBackground]);
+  }, [isSessionCurrent, syncInBackground]);
 
-  const handleStatusFromCustomerInfo = useCallback((newStatus: SubscriptionStatus) => {
-    // ✅ FIX: Ignore stale RevenueCat updates during user transition
-    // This prevents showing previous user's subscription after account switch
-    if (isUserTransitioningRef.current) {
-      if (__DEV__) {
-        console.log('[useSubscription] Ignoring customer_info update during user transition');
-      }
+  const onCustomerInfo = useCallback((next: SubscriptionStatus) => {
+    const isCurrentRead = captureStoreRead();
+    if (!isCurrentRead() || initializing.current) return;
+    if (isMockMode) {
+      applyStoreObservation('customer_info', next);
       return;
     }
-    applyStatusUpdate('customer_info', newStatus);
-    if (newStatus.tier === 'free' || newStatus.isActive === false) {
-      syncInBackground('customer_info_free');
-    }
-  }, [applyStatusUpdate, syncInBackground]);
+    if (customerInfoRead.current) return;
 
-  const handleStatusFromExpiryTimer = useCallback((newStatus: SubscriptionStatus) => {
-    // ✅ FIX: Ignore stale updates during user transition
-    if (isUserTransitioningRef.current) {
-      if (__DEV__) {
-        console.log('[useSubscription] Ignoring expiry_timer update during user transition');
+    // Native broadcasts lack a session generation. Read the current SDK
+    // account's details once, including when server reconciliation is throttled.
+    const read = refreshSubscriptionStatus();
+    customerInfoRead.current = read;
+    void read.then(observed => {
+      if (!isCurrentRead() || customerInfoRead.current !== read) return;
+      const source = observed?.isActive ? 'customer_info' : 'customer_info_free';
+      if (observed?.tier === 'plus' && observed.isActive && appMetadataTier === 'plus') {
+        setStatus(observed);
+        syncInBackground(source);
+      } else {
+        syncInBackground(source, observed?.isActive ? observed : undefined);
       }
-      return;
-    }
-    applyStatusUpdate('expiry_timer', newStatus);
-  }, [applyStatusUpdate]);
+    }).catch(() => {
+      if (isCurrentRead() && customerInfoRead.current === read) syncInBackground('customer_info');
+    }).finally(() => {
+      if (customerInfoRead.current === read) customerInfoRead.current = null;
+    });
+  }, [appMetadataTier, applyStoreObservation, captureStoreRead, isMockMode, syncInBackground]);
 
-  useSubscriptionMonitor(handleStatusFromMonitor);
-  useSubscriptionCustomerInfoListener(
-    handleStatusFromCustomerInfo,
-    !requiresAuth && isSubscriptionInitialized()
-  );
+  const onExpiry = useCallback((next: SubscriptionStatus) => {
+    if (isSessionCurrent() && !initializing.current) applyStoreObservation('expiry_timer', next);
+  }, [applyStoreObservation, isSessionCurrent]);
+
+  const effectiveStatus = status ?? (userId && appMetadataTier === 'plus'
+    ? { tier: 'plus' as const, isActive: true }
+    : null);
+
+  useSubscriptionMonitor(onResume, !!userId && !loading, captureStoreRead);
+  useSubscriptionCustomerInfoListener(onCustomerInfo, !!userId && isSubscriptionInitialized());
   useSubscriptionExpiryTimer({
-    status,
+    status: effectiveStatus,
     userId,
-    enabled: !requiresAuth,
-    onStatusChange: handleStatusFromExpiryTimer,
+    sessionKey,
+    isCurrentSession: isSessionCurrent,
+    enabled: !!userId && !loading,
+    onStatusChange: onExpiry,
   });
 
   return {
-    status,
-    isActive: status?.isActive ?? false,
+    status: effectiveStatus,
+    isActive: effectiveStatus?.isActive ?? false,
     loading,
     processing,
     refreshing,
-    activationPending: Boolean(userId && activationPendingFor === userId),
+    activationPending,
     error,
     clearError,
     packages,
-    requiresAuth,
+    requiresAuth: !userId,
     purchase,
     restore,
     refreshSubscription,

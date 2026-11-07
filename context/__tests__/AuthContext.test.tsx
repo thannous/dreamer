@@ -243,6 +243,34 @@ describe('AuthContext', () => {
     expect(result.current.user?.user_metadata?.tier).toBe('plus');
   });
 
+  it('ignores an old getUser result and cache update after replacing the session for the same user', async () => {
+    const free = { id: 'user-1', app_metadata: { tier: 'free' }, user_metadata: {} };
+    const token = (sessionId: string, iat: number) =>
+      ({ access_token: `header.${btoa(JSON.stringify({ session_id: sessionId, iat }))}.signature` });
+    mockSetCurrentUser(free);
+    const wrapper = ({ children }: React.PropsWithChildren) => <AuthProvider>{children}</AuthProvider>;
+    const { result } = renderHook(() => useAuth(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    const handler = mockGetAuthChangeHandler();
+    await act(async () => { await handler?.(free, token('original', 1)); });
+    const generation = result.current.sessionGeneration;
+    await act(async () => { await handler?.(free, token('original', 2)); });
+    expect(result.current.sessionGeneration).toBe(generation);
+
+    let finish!: (user: typeof free) => void;
+    mockGetCurrentUser.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    let oldRequest!: Promise<unknown>;
+    await act(async () => { oldRequest = result.current.refreshUser(); });
+    await act(async () => { await handler?.(free, token('replacement', 3)); });
+    expect(result.current.sessionGeneration).not.toBe(generation);
+    await act(async () => {
+      finish({ ...free, app_metadata: { tier: 'plus' } });
+      expect(await oldRequest).toBeNull();
+      result.current.setUserTierLocally('plus', { userId: free.id, generation });
+    });
+    expect(result.current.user?.app_metadata?.tier).toBe('free');
+  });
+
   it('given auth change to new user__when onAuthChange fires__then clears remote storage and updates state', async () => {
     mockSetCurrentUser({ id: 'user-1', email: 'test@example.com', app_metadata: {}, user_metadata: {} });
 
