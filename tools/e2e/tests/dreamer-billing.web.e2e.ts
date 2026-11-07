@@ -143,6 +143,7 @@ for (const action of ['purchase', 'restore'] as const) {
     await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
     await app.screenshot(`${action}-activation-pending`);
     await screen.getByTestId('btn.paywall.close').tap();
+    await expect(screen.getByTestId('quota.analysisValue')).toHaveText('3 / 3');
     await openHome(screen);
     await screen.getByTestId('btn.header.home.settings').tap();
     await screen.getByTestId('quick-settings.plus').tap();

@@ -15,7 +15,7 @@ type UseSubscriptionInitializeOptions = {
 export function useSubscriptionInitialize(
   { enabled = true }: UseSubscriptionInitializeOptions = {}
 ) {
-  const { user, refreshUser } = useAuth();
+  const { user, sessionGeneration, isCurrentSession, refreshUser } = useAuth();
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const isMockMode = isMockModeEnabled();
@@ -29,27 +29,25 @@ export function useSubscriptionInitialize(
 
   // ✅ FIX: Track if initialization has completed for this user
   // Prevents redundant initialization calls
-  const initializedUserIdRef = useRef<string | null>(null);
-  const syncedUserIdRef = useRef<string | null>(null);
+  const initializedSessionRef = useRef<number | null>(null);
+  const syncedSessionRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
 
     let mounted = true;
+    const nextUserId = user?.id ?? null;
+    const current = () => mounted && isCurrentSession(nextUserId, sessionGeneration);
 
     const run = async () => {
       try {
-        const nextUserId = user?.id ?? null;
-
-        if (!nextUserId) {
-          syncedUserIdRef.current = null;
-        }
+        if (!current()) return;
 
         // ✅ Avoid re-initialization for the same user
         // We still call initializeSubscription when user changes to ensure Purchases.logIn/logOut
         // keeps RevenueCat aligned with the current Supabase user.
-        if (initializedUserIdRef.current === nextUserId && isSubscriptionInitialized()) {
-          if (mounted) {
+        if (initializedSessionRef.current === sessionGeneration && isSubscriptionInitialized()) {
+          if (current()) {
             setInitialized(true);
             setError(null);
           }
@@ -61,19 +59,21 @@ export function useSubscriptionInitialize(
 
         // Always call initializeSubscription to ensure correct Purchases user linking on auth changes.
         await initializeSubscription(nextUserId);
+        if (!current()) return;
         log.debug('Subscription SDK initialized', { userId: nextUserId });
 
-        if (!isMockMode && nextUserId && syncedUserIdRef.current !== nextUserId) {
+        if (!isMockMode && nextUserId && syncedSessionRef.current !== sessionGeneration) {
           try {
             await syncSubscriptionFromServer('app_launch');
             log.debug('Subscription sync requested', { userId: nextUserId });
           } catch (syncError) {
             log.warn('Subscription sync failed', { userId: nextUserId }, syncError);
           } finally {
-            syncedUserIdRef.current = nextUserId;
+            if (current()) syncedSessionRef.current = sessionGeneration;
           }
         }
 
+        if (!current()) return;
         if (nextUserId) {
           // Refresh user to ensure app_metadata.tier is synced from server after RevenueCat init.
           // This fixes the race condition where subscription tier from RevenueCat differs from
@@ -82,16 +82,17 @@ export function useSubscriptionInitialize(
           await refreshUserRef.current();
           log.debug('User refreshed after subscription init', { userId: nextUserId });
         }
-        initializedUserIdRef.current = nextUserId;
+        if (!current()) return;
+        initializedSessionRef.current = sessionGeneration;
 
-        if (mounted) {
+        if (current()) {
           setInitialized(true);
           setError(null);
         }
         log.debug('Subscription initialization completed', { userId: nextUserId });
       } catch (e) {
         log.error('Subscription initialization failed', { userId: user?.id ?? null }, e);
-        if (mounted) {
+        if (current()) {
           setError(e as Error);
           setInitialized(false);
         }
@@ -103,7 +104,7 @@ export function useSubscriptionInitialize(
     return () => {
       mounted = false;
     };
-  }, [enabled, user?.id, isMockMode]); // ✅ CRITICAL: Remove refreshUser from dependencies
+  }, [enabled, user?.id, sessionGeneration, isCurrentSession, isMockMode]);
 
   return { initialized, error };
 }

@@ -41,19 +41,19 @@ async function refreshStatus(): Promise<SubscriptionStatus | null> {
  * @param onStatusChange - Callback appelé quand le status est rafraîchi
  * @returns void
  */
-export function useSubscriptionMonitor(onStatusChange?: OnStatusChange) {
-  const onStatusChangeRef = useRef(onStatusChange);
+export function useSubscriptionMonitor(onStatusChange?: OnStatusChange, enabled = true, captureReadGuard?: () => () => boolean) {
+  const subscription = useRef({ onStatusChange, enabled, captureReadGuard });
 
   useEffect(() => {
-    onStatusChangeRef.current = onStatusChange;
-  }, [onStatusChange]);
+    subscription.current = { onStatusChange, enabled, captureReadGuard };
+  }, [onStatusChange, enabled, captureReadGuard]);
 
   const handleForeground = useCallback(async () => {
-    if (!onStatusChangeRef.current) return;
+    const { onStatusChange: publish, enabled: ready, captureReadGuard: capture } = subscription.current;
+    const current = capture?.();
+    if (!ready || !publish || current?.() === false) return;
     const status = await refreshStatus();
-    if (status) {
-      onStatusChangeRef.current(status);
-    }
+    if (status && current?.() !== false) publish(status);
   }, []);
 
   useAppState(handleForeground);

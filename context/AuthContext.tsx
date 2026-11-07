@@ -19,12 +19,29 @@ import { setDreamMediaScope } from '@/services/dreamMediaService';
 
 export type AuthContextValue = {
   user: User | null;
+  sessionGeneration: number;
+  isCurrentSession: (userId: string | null, generation: number) => boolean;
   loading: boolean;
   sessionReady: boolean;
   returningGuestBlocked: boolean;
   refreshUser: (options?: RefreshUserOptions) => Promise<User | null>;
-  setUserTierLocally: (input: LocalSubscriptionCacheInput) => void;
+  setUserTierLocally: (input: LocalSubscriptionCacheInput, scope?: AuthScope) => void;
 };
+
+type AuthScope = { userId: string | null; generation: number };
+
+function getSessionId(token?: string): string | undefined {
+  // This claim distinguishes two logins for the same account across token refreshes.
+  // It scopes client work only and is never used to authorize a request.
+  try {
+    const payload = token?.split('.')[1];
+    if (!payload) return undefined;
+    const { session_id: id } = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    return typeof id === 'string' ? id : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -71,6 +88,7 @@ async function waitForSessionReady(): Promise<boolean> {
 
 export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [sessionGeneration, setSessionGeneration] = useState(0);
   const [loading, setLoading] = useState(true);
   const [sessionReady, setSessionReady] = useState(false);
   // A device is only one signal in server-side abuse scoring. Logging out must
@@ -78,7 +96,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   const returningGuestBlocked = false;
   const userRef = useRef<User | null>(null);
   const sessionReadyRef = useRef(false);
-  const previousUserIdRef = useRef<string | null>(null);
+  const authScope = useRef<AuthScope & { sessionId?: string }>({ userId: null, generation: 0 });
+  const isCurrentSession = useCallback((userId: string | null, generation: number) =>
+    authScope.current.userId === userId && authScope.current.generation === generation, []);
 
   // Circuit breaker for refresh cascades
   const refreshCircuitBreakerRef = useRef(createCircuitBreaker({ maxAttempts: 3, windowMs: 10000 }));
@@ -126,12 +146,30 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
   useEffect(() => {
     let mounted = true;
+    let authEvent = 0;
+    const advanceSession = (nextUser: User | null, accessToken?: string) => {
+      const current = authScope.current;
+      const userId = nextUser?.id ?? null;
+      const sessionId = getSessionId(accessToken);
+      if (current.userId !== userId || (sessionId && current.sessionId && current.sessionId !== sessionId)) {
+        authScope.current = { userId, sessionId, generation: current.generation + 1 };
+        refreshCircuitBreakerRef.current = createCircuitBreaker({ maxAttempts: 3, windowMs: 10000 });
+      } else if (sessionId) {
+        authScope.current = { ...current, sessionId };
+      }
+      return authScope.current;
+    };
+    const publishUser = (nextUser: User | null, scope: AuthScope) => {
+      userRef.current = nextUser;
+      setUser(nextUser);
+      setSessionGeneration(scope.generation);
+    };
 
     const bootstrap = async () => {
       try {
         if (isMockMode) {
           const mockUser = await getCurrentUser();
-          if (mounted) {
+          if (mounted && authEvent === 0) {
             if (__DEV__) {
               console.log('[AuthContext] bootstrap (mock mode)', {
                 hasUser: !!mockUser,
@@ -140,9 +178,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
               });
             }
             setDreamMediaScope(mockUser?.id ?? null);
-            setUser(mockUser);
+            publishUser(mockUser, advanceSession(mockUser));
             setSessionReady(Boolean(mockUser));
-            previousUserIdRef.current = mockUser?.id ?? null;
 
             setLoading(false);
             ensureSettingsTab(mockUser);
@@ -153,7 +190,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         // Keep startup responsive: restore local session first, then let onAuthChange/getCurrentUser
         // reconcile server-side app_metadata in the background.
         const { data } = await supabase.auth.getSession();
+        if (!mounted || authEvent !== 0) return;
         const sessionUser = data.session?.user ?? null;
+        const scope = advanceSession(sessionUser, data.session?.access_token);
         if (mounted) {
           if (__DEV__) {
             console.log('[AuthContext] bootstrap user', {
@@ -163,9 +202,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
             });
           }
           setDreamMediaScope(sessionUser?.id ?? null);
-          setUser(sessionUser);
+          publishUser(sessionUser, scope);
           setSessionReady(Boolean(data.session?.access_token));
-          previousUserIdRef.current = sessionUser?.id ?? null;
 
           setLoading(false);
           ensureSettingsTab(sessionUser);
@@ -176,9 +214,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         if (sessionUser) {
           getCurrentUser()
             .then((current) => {
-              if (!mounted) return;
-              if (current?.id && current.id !== sessionUser.id) return;
-              if (current) setUser(current);
+              if (mounted && current?.id === scope.userId) {
+                setUser((previous) => isCurrentSession(scope.userId, scope.generation) ? current : previous);
+              }
             })
             .catch(() => {
               // ignore
@@ -197,6 +235,9 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     bootstrap();
 
     const unsubscribe = onAuthChange(async (nextUser, session) => {
+      const event = ++authEvent;
+      const previousUserId = authScope.current.userId;
+      const scope = advanceSession(nextUser, session?.access_token);
       if (__DEV__) {
         console.log('[AuthContext] onAuthChange', {
           hasUser: !!nextUser,
@@ -205,7 +246,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         });
       }
       setDreamMediaScope(nextUser?.id ?? null);
-      const previousUserId = previousUserIdRef.current;
       const nextUserId = nextUser?.id ?? null;
       if (previousUserId !== nextUserId) {
         // Text typed in a dream conversation stays with the account that typed it.
@@ -218,8 +258,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           // Best-effort cache clearing on account switch/logout.
         }
       }
-      previousUserIdRef.current = nextUserId;
-      setUser(nextUser);
+      if (!mounted || event !== authEvent) return;
+      publishUser(nextUser, scope);
       if (isMockMode) {
         setSessionReady(Boolean(nextUser));
       } else if (!nextUser) {
@@ -228,23 +268,27 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         setSessionReady(true);
       } else {
         const ready = await waitForSessionReady();
-        if (mounted) {
+        if (mounted && event === authEvent) {
           setSessionReady(ready);
         }
       }
 
+      if (!mounted || event !== authEvent) return;
       setLoading(false);
       ensureSettingsTab(nextUser);
     });
 
     return () => {
       mounted = false;
+      authScope.current = { userId: null, generation: authScope.current.generation + 1 };
       setDreamMediaScope(null);
       unsubscribe();
     };
-  }, []);
+  }, [isCurrentSession]);
 
   const refreshUser = useCallback(async (options?: RefreshUserOptions) => {
+    const scope = authScope.current;
+    const isCurrent = () => isCurrentSession(scope.userId, scope.generation);
     try {
       const bypassCircuitBreaker = options?.bypassCircuitBreaker === true;
       const skipJwtRefresh = options?.skipJwtRefresh === true;
@@ -259,7 +303,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           }
           return await new Promise<User | null>((resolve) => {
             setUser((currentUser) => {
-              resolve(currentUser);
+              resolve(isCurrent() ? currentUser : null);
               return currentUser;
             });
           });
@@ -278,14 +322,17 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         });
       }
 
+      if (!isCurrent()) return null;
       if (existingUser && !sessionReadyRef.current) {
         const ready = await waitForSessionReady();
+        if (!isCurrent()) return null;
         if (ready) {
           setSessionReady(true);
         }
       }
 
-      let current = await getCurrentUser();
+      const current = await getCurrentUser();
+      if (!isCurrent() || (current && current.id !== scope.userId)) return null;
       if (!current && existingUser) {
         if (__DEV__) {
           console.warn('[AuthContext] refreshUser returned null, keeping existing user');
@@ -294,7 +341,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         return existingUser;
       }
 
-      setUser(current);
+      setUser(previous => isCurrent() ? current : previous);
       setSessionReady(Boolean(current));
       setLoading(false);
       return current;
@@ -304,14 +351,14 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       }
       return null;
     }
-  }, []); // ✅ CRITICAL: Remove 'user' from dependencies to break circular dependency
+  }, [isCurrentSession]);
 
-  const setUserTierLocally = useCallback((input: LocalSubscriptionCacheInput) => {
+  const setUserTierLocally = useCallback((input: LocalSubscriptionCacheInput, scope = authScope.current) => {
     const cache = typeof input === 'string' ? { tier: input } : input;
     const tier = normalizeSubscriptionTier(cache.tier, 'free');
 
     setUser((prev) => {
-      if (!prev) return prev;
+      if (!prev || prev.id !== scope.userId || !isCurrentSession(scope.userId, scope.generation)) return prev;
       // Mirror tier into app_metadata (source of truth for quota) and keep user_metadata for backward UI paths.
       return {
         ...prev,
@@ -331,11 +378,11 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         },
       } as User;
     });
-  }, []);
+  }, [isCurrentSession]);
 
   const value = useMemo(
-    () => ({ user, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally }),
-    [user, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally]
+    () => ({ user, sessionGeneration, isCurrentSession, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally }),
+    [user, sessionGeneration, isCurrentSession, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
