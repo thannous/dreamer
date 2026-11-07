@@ -35,6 +35,9 @@ Deno.test('a first person or ambiguous wish to die keeps support next to threats
     // Imperatives share the third person form: quoted or not, they keep the support.
     'Je lui ai dit : va te tuer.', 'Va te pendre.', 'Va me tuer.', 'Prova a farti del male.', 'Cerca di farti del male.',
     'Tenta te matar.', 'Vai te matar.', 'Intenta hacerte daño.', 'Trata de hacerte daño.',
+    // A second person object can be reflexive: "você" with "te", or a quoted imperative.
+    'Você quer te matar?', 'Você tentou te machucar?', 'Ele disse: você vai te matar.', 'Il voulait te tuer.',
+    'Er will dich umbringen.', 'Lui vuole farti del male.', 'Quiere hacerte daño.',
     // A verb in between can make the harm the speaker's own.
     'Quiere verme hacerme daño.', 'Lui vuole vedermi farmi del male.', 'Il veut me voir me faire du mal.',
   ]) assertEquals(mentionsSelfHarm(message), true, message);
