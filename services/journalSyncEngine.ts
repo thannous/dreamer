@@ -27,7 +27,10 @@ export type JournalSyncDependencies = {
   syncDreamMutationsInSupabase?: (mutations: DreamMutation[], userId: string) => Promise<SyncMutationResult[]>;
   reportSyncQueueMetrics: typeof reportMetrics;
   recordSyncReplayMetrics: typeof recordMetrics;
-  logger: { warn: (message: string, error?: unknown) => void };
+  logger: {
+    warn: (message: string, error?: unknown) => void;
+    debug?: (message: string) => void;
+  };
 };
 
 export function matchesInitialJournalScope({ initialMutations = [], initialMutationsLoaded = true,
@@ -635,6 +638,9 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
           if (syncTokenRef.current === currentToken) {
             eligibleMutations.forEach(mutation => preparingCreatesRef.current.delete(mutation.id));
             flights.delete(flight);
+          }
+          if (networkStarted && (!mountedRef.current || syncTokenRef.current !== currentToken)) {
+            logger.debug?.('[JournalSync] Replay settled after scope change');
           }
         }
       })();
