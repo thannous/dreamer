@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { test, expect, login, journal, client, restrictNetwork } from '../backend-fixtures';
+import { test, expect, login, journal, localJournal, client, restrictNetwork } from '../backend-fixtures';
 
 test('a saved dream survives a completely fresh browser and synchronizes edits and deletion', async ({ page, browserSurface, accounts }) => {
   const story = `E2E durable dream ${randomUUID()}: a lighthouse above the ocean.`;
@@ -127,6 +127,7 @@ test('an offline save synchronizes once after reconnection and survives restart'
   const story = `E2E offline dream ${randomUUID()}: a blue train crosses the moon.`;
   const owner = client();
   expect((await owner.auth.signInWithPassword(accounts.free)).error).toBeNull();
+  let requestId: string;
   await context.setOffline(true);
   try {
     await page.getByTestId('input.dreamTranscript').fill(story);
@@ -138,7 +139,11 @@ test('an offline save synchronizes once after reconnection and survives restart'
     await expect(later.or(savedStory).first()).toBeVisible();
     if (await later.isVisible()) await later.click();
     await expect(savedStory).toContainText(story);
-    const before = await owner.from('dreams').select('id').eq('transcript', story);
+    const local = await localJournal(page, accounts.free.id);
+    expect(local.dreams).toEqual([expect.objectContaining({ transcript: story, clientRequestId: expect.any(String) })]);
+    requestId = local.dreams[0].clientRequestId;
+    expect(local.pending).toEqual([expect.objectContaining({ clientRequestId: requestId, userScope: `user:${accounts.free.id}` })]);
+    const before = await owner.from('dreams').select('id');
     expect(before.error).toBeNull();
     expect(before.data).toEqual([]);
   } finally {
@@ -154,6 +159,11 @@ test('an offline save synchronizes once after reconnection and survives restart'
   await journal(page);
   await page.getByTestId(/^dream\.item\./).filter({ hasText: story }).click();
   await expect(page.getByTestId('component.transcriptCard')).toContainText(story);
-  expect((await owner.from('dreams').select('id').eq('transcript', story)).data).toHaveLength(1);
+  const remote = await owner.from('dreams').select('id,revision_id,client_request_id,transcript').single();
+  expect(remote.error).toBeNull();
+  expect(remote.data).toMatchObject({ client_request_id: requestId, transcript: story, revision_id: expect.any(String) });
+  await expect.poll(() => localJournal(page, accounts.free.id)).toMatchObject({ pending: [], dreams: [
+    { clientRequestId: requestId, remoteId: remote.data!.id, revisionId: remote.data!.revision_id, transcript: story },
+  ] });
   await owner.auth.signOut();
 });
