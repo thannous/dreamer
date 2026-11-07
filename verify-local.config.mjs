@@ -65,8 +65,10 @@ const not = (globs) => globs.map((glob) => `!${glob}`);
 const TYPESCRIPT = [
   '**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts', '**/*.json', 'tests/', 'app/', 'routes/',
   'scripts/generate-shared-route-types.cjs', 'scripts/lib/replace-file.cjs', 'scripts/verify-cache.mjs',
-  // tsconfig.json leaves these out; tests import one file of supabase/functions.
-  '!apps/', '!tools/e2e/', '!outputs/', '!supabase/functions/', 'supabase/functions/api/lib/fullMoon.ts',
+  // tsconfig.json excludes the Edge tree, but app and test imports reach these files.
+  '!apps/', '!tools/e2e/', '!outputs/', '!supabase/functions/',
+  'supabase/functions/api/lib/fullMoon.ts', 'supabase/functions/api/lib/aiLanguage.ts',
+  'supabase/functions/api/lib/selfHarmSupport.ts', 'supabase/functions/api/lib/revenuecatSubscriber.ts',
   // Site and repository data no source imports.
   '!docs-src/**/*.json', 'docs-src/static/data/curation-pages.json', '!data/**/*.json', 'data/app/',
   ...not(DOCS),
