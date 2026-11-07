@@ -12,7 +12,24 @@ test('native journal preserves reading and list position across repeated returns
   await expect(screen.getByTestId('screen.journal')).toBeVisible();
   const reference = screen.getByRole('button', /^Noctalia performance 013,/);
   await screen.scrollUntilVisible(reference, { timeout: 90_000 });
-  await expect(screen.getByRole('button', /^Noctalia performance 013,/)).toBeVisible();
+  await expect(reference).toBeVisible();
+  if (process.env.E2E_PERF_PLATFORM === 'android') {
+    // A clipped Android card is visible to accessibility even when its centre opens Capture.
+    // Position its tap before recording the bounds for the three returns.
+    const capture = await screen.getByTestId('tab.addDream', { visible: true }).boundingBox();
+    if (!capture) throw new Error('Capture tab bounds unavailable');
+    const overhang = screen.getByTestId('tab.addDream.overhang', { visible: true });
+    const raised = await overhang.count() ? await overhang.boundingBox() : null;
+    const navigationTop = Math.min(capture.y, raised?.y ?? capture.y);
+    const cardCenter = async () => {
+      const bounds = await reference.boundingBox();
+      return bounds ? bounds.y + bounds.height / 2 : Infinity;
+    };
+    if (await cardCenter() >= navigationTop) {
+      await screen.swipe({ direction: 'down', momentum: 'slow' });
+      await expect.poll(cardCenter).toBeLessThan(navigationTop);
+    }
+  }
   for (let cycle = 1; cycle <= 3; cycle += 1) {
     const before = await reference.boundingBox();
     await reference.tap();

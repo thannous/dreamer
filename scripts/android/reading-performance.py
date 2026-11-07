@@ -123,6 +123,16 @@ class Runner:
     def find(self, tree, identifier):
         return next((n for n in tree.iter('node') if n.get('resource-id') == identifier and n.get('package') == self.package), None)
 
+    def installer_package(self, dump):
+        field = re.search(r'\binstallerPackageName=(\S+)', dump)
+        if field is None:
+            # Some Android versions omit this field for an APK installed through adb.
+            packages = self.shell('pm', 'list', 'packages', '-i', self.package)
+            field = re.search(rf'^package:{re.escape(self.package)}[ \t]+installer=(\S+)', packages, re.MULTILINE)
+        if field is None:
+            raise ValueError(f'Installer provenance unavailable for {self.package}')
+        return field[1]
+
     def tap(self, node):
         if node is None:
             raise ValueError('Required UI target absent')
@@ -184,7 +194,7 @@ class Runner:
             raise ValueError('Installed code changed since the interrupted measurement')
         self.state['conditions'] = conditions
         self.state['provenance'] = dict(**observed, pid=pid, runtime=runtime, profileableByShell=profileable(manifest),
-                                       installer=re.search(r'installerPackageName=([^\s]+)', dump)[1],
+                                       installer=self.installer_package(dump),
                                        installedApkSha256=hashlib.sha256(apk.read_bytes()).hexdigest())
         if self.o.get('pilot'):
             if not profileable(manifest):
