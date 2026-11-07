@@ -216,10 +216,14 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     void syncSubscriptionFromServer(source).then(result => {
       if (!isCurrentRead() || lastSyncAttempt.current !== request || !isConfirmed(result)) return;
 
-      const confirmed = { ...storeStatus, tier: result.tier, isActive: result.isActive };
-      if (storeStatus || source.startsWith('customer_info')) {
-        setStatus(previous => ({ ...previous, ...confirmed }));
-      }
+      const observed = storeStatus?.tier === result.tier && storeStatus.isActive === result.isActive
+        ? storeStatus
+        : undefined;
+      const confirmed = { ...observed, tier: result.tier, isActive: result.isActive };
+      setStatus(previous => {
+        if (previous?.tier !== confirmed.tier || previous.isActive !== confirmed.isActive) return confirmed;
+        return observed ? { ...previous, ...confirmed } : previous;
+      });
       applyCache(confirmed, result.version);
     }).catch((err: unknown) => {
       if (__DEV__ && isSessionCurrent()) {
