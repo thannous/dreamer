@@ -520,6 +520,37 @@ describe('useSubscription', () => {
   });
 
   describe('restore functionality', () => {
+    it.each(['empty', 'paid'] as const)('uses the receipt to decide whether to block purchases after %s restore if the server is unavailable', async (receipt: 'empty' | 'paid') => {
+      const free: SubscriptionStatus = { tier: 'free', isActive: false };
+      const plus: SubscriptionStatus = { tier: 'plus', isActive: true };
+      const receiptActive = receipt === 'paid';
+      const { restoreSubscriptionPurchases, purchaseSubscriptionPackage } = require('../services/subscriptionService');
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      syncSubscriptionFromServer.mockResolvedValueOnce({ ok: true, ...free, version: 1, changed: false });
+      const { result } = renderSubscriptionHook();
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      mockSetUserTierLocally.mockClear();
+      restoreSubscriptionPurchases.mockResolvedValueOnce(receiptActive ? plus : free);
+      syncSubscriptionFromServer.mockRejectedValueOnce(new Error('Backend unavailable'));
+
+      await act(async () => {
+        await expect(result.current.restore()).resolves.toMatchObject({ ...free, storeActive: receiptActive, serverConfirmed: false });
+      });
+      expect(result.current.status).toMatchObject(free);
+      expect(result.current.activationPending).toBe(receiptActive);
+      expect(mockSetUserTierLocally).not.toHaveBeenCalled();
+
+      await act(async () => {
+        if (receiptActive) {
+          await expect(result.current.purchase('mock_monthly')).rejects.toThrow('subscription_operation_pending');
+        } else {
+          syncSubscriptionFromServer.mockResolvedValueOnce({ ok: true, ...plus, version: 1, changed: true });
+          await expect(result.current.purchase('mock_monthly')).resolves.toMatchObject({ ...plus, serverConfirmed: true });
+        }
+      });
+      expect(purchaseSubscriptionPackage).toHaveBeenCalledTimes(receiptActive ? 0 : 1);
+    });
+
     it('given authenticated user when restoring successfully then updates subscription', async () => {
       // Given
       const { restoreSubscriptionPurchases } = require('../services/subscriptionService');

@@ -359,9 +359,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       assertSession();
       const observed = await operation();
       assertSession();
-      // Even a store result without an active receipt needs reconciliation
-      // before replacing the last confirmed entitlement or ending the retry.
-      setPending(true);
+      // A purchase or an active restored receipt can still need activation.
+      // An empty restore reconciles without blocking a new purchase.
+      if (source === 'purchase' || observed.isActive) setPending(true);
       return await converge(source, observed);
     } catch (err) {
       if (isSessionCurrent() && !isUserCancelledError(err)) setError(formatError(err));
