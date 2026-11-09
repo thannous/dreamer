@@ -51,7 +51,7 @@ artifacts may be tracked under `doc_web_interne/docs/qa/` or an existing work-pa
 location. Review them for private content first. Record date, source/build,
 environment, command, result and limits; a historical pass is not current proof.
 
-Existing `outputs/`, `screenshots/` and `tmp-stage/` records include useful historical
+Existing `outputs/` and `screenshots/` records include useful historical
 evidence. Their exact retained paths are listed in
 [data/repository-hygiene-baseline.json](../../data/repository-hygiene-baseline.json).
 This is a path-specific exception, not permission to add neighboring files. Do not

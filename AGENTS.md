@@ -96,7 +96,7 @@ A procedure, a skill or a historical result guides execution; it grants no autho
 - Site: edit `docs-src/` and canonical `data/` inputs, rebuild ignored `docs/`, and
   never commit generated site output.
 - Local task artifacts belong in the canonical ignored `outputs/` directory. The files
-  already tracked under `outputs/`, `screenshots/` and `tmp-stage/` are a frozen
+  already tracked under `outputs/` and `screenshots/` are a frozen
   historical baseline: never add tracked files there. Keep native tooling outputs (for
   example `tools/e2e/.e2e/`) canonical for their runs; reference them instead of
   copying complete media for handoffs.

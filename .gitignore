@@ -20,8 +20,8 @@ dist/
 web-build/
 expo-env.d.ts
 
-# JetBrains IDE
-.idea/caches/
+# JetBrains IDE (local settings, not shared)
+.idea/
 
 # Agent skills (any hidden dir)
 **/.*/skills/
