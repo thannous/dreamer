@@ -146,7 +146,8 @@ export const EmailAuthCard: React.FC<Props> = ({
     titleKey: string;
     messageKey: string | null;
   }>({ visible: false, titleKey: '', messageKey: null });
-  const [accountSheetVisible, setAccountSheetVisible] = useState(initialAccountSheetOpen);
+  const [accountSheetVisible, setAccountSheetVisible] = useState(initialAccountSheetOpen && !user);
+  const [formUserId, setFormUserId] = useState(user?.id ?? null);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [forgotPasswordStatus, setForgotPasswordStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
@@ -199,6 +200,17 @@ export const EmailAuthCard: React.FC<Props> = ({
     setLastVerificationEmailSentAt(null);
     setVerificationSuccess(false);
   }, []);
+
+  // An authenticated owner starts a fresh form before any old dialogs render.
+  if (formUserId !== (user?.id ?? null)) {
+    setFormUserId(user?.id ?? null);
+    if (user) {
+      clearPendingVerification();
+      setAccountSheetVisible(false);
+      setForgotPasswordOpen(false);
+      setForgotPasswordStatus('idle');
+    }
+  }
 
   const startVerificationFlow = useCallback(
     (
@@ -485,16 +497,6 @@ export const EmailAuthCard: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (unverifiedEmail && trimmedEmail !== unverifiedEmail) {
-      setUnverifiedEmail(null);
-      setResendStatus('idle');
-    }
-    if (pendingVerification && trimmedEmail !== pendingVerification.email) {
-      clearPendingVerification();
-    }
-  }, [clearPendingVerification, pendingVerification, trimmedEmail, unverifiedEmail]);
-
-  useEffect(() => {
     if (!pendingVerification && !lastVerificationEmailSentAt && !lastPasswordResetSentAt) {
       return;
     }
@@ -513,15 +515,6 @@ export const EmailAuthCard: React.FC<Props> = ({
     }, VERIFICATION_POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [pendingVerification, pollForVerification, user]);
-
-  useEffect(() => {
-    if (user) {
-      clearPendingVerification();
-      setAccountSheetVisible(false);
-      setForgotPasswordOpen(false);
-      setForgotPasswordStatus('idle');
-    }
-  }, [clearPendingVerification, user]);
 
   const resendStatusColor = resendStatus === 'error' ? noctalia.status.danger.text : noctalia.text.secondary;
   const verificationEmail = pendingVerification?.email ?? unverifiedEmail ?? trimmedEmail;
@@ -550,6 +543,13 @@ export const EmailAuthCard: React.FC<Props> = ({
         value={email}
         onChangeText={(value) => {
           setEmail(value);
+          if (unverifiedEmail && value.trim() !== unverifiedEmail) {
+            setUnverifiedEmail(null);
+            setResendStatus('idle');
+          }
+          if (pendingVerification && value.trim() !== pendingVerification.email) {
+            clearPendingVerification();
+          }
           if (!touched.email) {
             setTouched((prev) => ({ ...prev, email: true }));
           }

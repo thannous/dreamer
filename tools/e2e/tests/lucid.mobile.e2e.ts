@@ -1,5 +1,72 @@
-import { test, type Device } from '@e2e-dev/mobile';
-import { expect, type TestFixtures } from 'e2e';
+import { openNativeLink } from '../native-links';
+import { test } from '@e2e-dev/mobile';
+import { expect } from 'e2e';
+import { activateLucid, captureWrittenDream } from '../lucid-native-fixtures';
+
+for (const lab of ['stabilization', 'ssild']) {
+  test(`Lucid release resumes a paused ${lab} practice after process restart`, { tags: ['recovery', 'practice'] }, async fixtures => {
+    const { app, screen } = fixtures;
+    await activateLucid(fixtures);
+    const link = `noctalia-lucid:///lucid/${lab}-lab`;
+    await openNativeLink(fixtures, link);
+    const start = screen.getByTestId(`lucid-${lab}-lab-primary`, { visible: true });
+    const pause = screen.getByTestId(`lucid-${lab}-lab-pause`, { visible: true });
+    await start.tap();
+    await expect(pause).toBeEnabled();
+    await pause.tap();
+    await expect(screen.getByText(/^(En pause\.|Paused\.)/, { visible: true }).first()).toBeVisible();
+    await app.restart();
+    await expect(screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
+    await openNativeLink(fixtures, link);
+    await expect(screen.getByText(/^(En pause\.|Paused\.)/, { visible: true }).first()).toBeVisible();
+    await start.tap();
+    await expect(pause).toBeEnabled();
+    await expect(screen.getByText(/^(En pause\.|Paused\.)/, { visible: true })).toHaveCount(0);
+    await app.screenshot(`${lab}-native-recovery`);
+  });
+}
+
+test('Lucid release counts a completed practice once across two restarts', { tags: ['practice', 'persistence'] }, async fixtures => {
+  const { app, screen } = fixtures;
+  await activateLucid(fixtures);
+  await openNativeLink(fixtures, 'noctalia-lucid:///lucid/stabilization-lab');
+  const primary = screen.getByTestId('lucid-stabilization-lab-primary', { visible: true });
+  await primary.tap();
+  await screen.getByTestId('lucid-stabilization-lab-repeat', { visible: true }).tap();
+  for (let step = 1; step <= 5; step++) {
+    // UIKit exposes the progressbar as "other"; assert its visible step text.
+    await expect(screen.getByText(new RegExp(`^(Étape|Step) ${step} (sur|of) 5$`), { visible: true }).first()).toBeVisible();
+    await primary.tap();
+  }
+  await expect(primary).toContainText(/Terminer le laboratoire|Finish the lab/);
+  await primary.tap();
+  await expect(screen.getByTestId('lucid-stabilization-lab-live', { visible: true })).toContainText(/Pratique terminée|Practice complete/i);
+  for (let restart = 0; restart < 2; restart++) {
+    await app.restart();
+    await expect(screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
+    await openNativeLink(fixtures, 'noctalia-lucid:///lucid/progress');
+    const metricLabels = {
+      practices: /^(Pratiques|Practices): 1$/,
+      completions: /^(Complétions|Completions): 1$/,
+      repeats: /^(Répétitions|Repeats): 1$/,
+    };
+    for (const [metric, label] of Object.entries(metricLabels)) {
+      const count = screen.getByTestId(`lucid-progress-stabilization-${metric}`, { visible: true });
+      await screen.scrollUntilVisible(count);
+      await expect(count).toHaveAccessibleName(label);
+    }
+  }
+  await app.screenshot('lucid-native-completion-once');
+});
+
+test('Lucid release refuses a beginner wake-back-to-bed session even through a deep link', { tags: ['safeguards'] }, async fixtures => {
+  await activateLucid(fixtures);
+  await openNativeLink(fixtures, 'noctalia-lucid:///lucid/session/wbtb/1');
+  await expect(fixtures.screen.getByText(/^(Séance indisponible|Session unavailable)$/, { visible: true }).first()).toBeVisible();
+  await fixtures.app.restart();
+  await expect(fixtures.screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
+  await fixtures.app.screenshot('lucid-native-sleep-safeguard');
+});
 
 test('Lucid release requires both intention and experience', async ({ app, screen }) => {
   await app.open();
@@ -14,56 +81,6 @@ test('Lucid release requires both intention and experience', async ({ app, scree
   await expect(screen.getByTestId('lucid-sleep-wake-time', { visible: true })).toBeVisible();
   await app.screenshot('release-onboarding-gate');
 });
-
-type Fixtures = TestFixtures & { device: Device };
-
-async function activateLucid({ app, screen, platform }: Fixtures) {
-  await app.open();
-  await app.clearState();
-  const next = screen.getByTestId('lucid-onboarding-continue', { visible: true });
-  await expect(next).toBeDisabled();
-  await screen.getByTestId('lucid-goal-improve_recall', { visible: true }).tap();
-  await screen.scrollUntilVisible(screen.getByTestId('lucid-experience-beginner', { visible: true }));
-  await screen.getByTestId('lucid-experience-beginner', { visible: true }).tap();
-  await next.tap();
-  await expect(next).toBeDisabled();
-  for (const field of ['lucid-sleep-bedtime', 'lucid-sleep-wake-time']) {
-    await screen.getByTestId(field, { visible: true }).tap();
-    // Android's system time dialog exposes Done and Cancel as two unnamed buttons.
-    const done = /^(Done|Terminé|Listo|Fertig|Fatto)$/;
-    if (platform === 'android') {
-      await expect(screen.getByText(done, { visible: true })).toBeVisible();
-      await expect(screen.getByRole('button', { visible: true })).toHaveCount(2);
-      await screen.getByRole('button', { visible: true }).first().tap();
-    }
-    else await screen.getByRole('button', done, { visible: true }).tap();
-  }
-  await screen.scrollUntilVisible(screen.getByTestId('lucid-wake-sensitivity-not_sensitive', { visible: true }));
-  await screen.getByTestId('lucid-wake-sensitivity-not_sensitive', { visible: true }).tap();
-  await expect(next).toBeEnabled();
-  await next.tap();
-  await expect(screen.getByTestId('lucid-onboarding-plan', { visible: true })).toBeVisible();
-  await next.tap();
-  await expect(screen.getByTestId('lucid-onboarding-local-first', { visible: true })).toBeVisible();
-  await next.tap();
-  await expect(screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
-}
-
-// The capture is confirmed by a native alert, which the web build cannot show.
-async function captureWrittenDream({ screen, device, platform }: Fixtures, note: string) {
-  await screen.getByTestId('lucid-tab-journal', { visible: true }).tap();
-  await screen.getByTestId('lucid-journal-capture', { visible: true }).tap();
-  await screen.getByTestId('lucid-morning-write', { visible: true }).tap();
-  await screen.getByTestId('lucid-morning-recall-text', { visible: true }).fill(note);
-  if (platform === 'android') await device.dismissKeyboard();
-  await screen.getByTestId('lucid-morning-next', { visible: true }).tap();
-  await screen.getByTestId('lucid-morning-cue-not_heard', { visible: true }).tap();
-  await screen.getByTestId('lucid-morning-next', { visible: true }).tap();
-  await screen.getByTestId('lucid-morning-save', { visible: true }).tap();
-  // Android's alert shows its buttons in capitals (« DONE »).
-  await screen.getByRole('button', /^(Terminé|Done)$/i, { visible: true }).tap();
-  await expect(screen.getByTestId('lucid-morning', { visible: true })).toHaveCount(0);
-}
 
 test('Lucid release completes its local plan, persists activation and opens the main tabs', async fixtures => {
   const { app, screen } = fixtures;

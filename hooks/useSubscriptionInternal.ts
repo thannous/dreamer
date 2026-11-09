@@ -128,6 +128,23 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     'free'
   );
   const appMetadataTier: SubscriptionTier = normalizeSubscriptionTier(user?.app_metadata?.tier, 'free');
+  const [statusInputs, setStatusInputs] = useState<{ userId: string | undefined; tier: SubscriptionTier } | null>(null);
+
+  // Adjust the account snapshot before children render. Later SDK responses
+  // remain authoritative until the account or its server metadata changes.
+  if (statusInputs?.userId !== userId || statusInputs?.tier !== appMetadataTier) {
+    setStatusInputs({ userId, tier: appMetadataTier });
+    if (statusInputs?.userId !== userId) {
+      setStatus(null);
+      setPackages([]);
+      setError(null);
+      setActivationPendingFor(null);
+    }
+    if (userId && appMetadataTier === 'plus') {
+      setStatus(current => current?.isActive && current.tier === 'plus'
+        ? current : { tier: appMetadataTier, isActive: true });
+    }
+  }
 
   useEffect(() => {
     if (lastUserIdRef.current === userId) return;
@@ -140,25 +157,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     lastSyncAttemptRef.current = null;
     lastSyncedStatusKeyRef.current = null;
 
-    setStatus(null);
-    setPackages([]);
-    setError(null);
-    setActivationPendingFor(null);
   }, [userId]);
-
-  useEffect(() => {
-    if (!userId) return;
-    if (appMetadataTier !== 'plus') return;
-
-    // Optimistically treat Supabase-paid users as active while RevenueCat is loading.
-    // RevenueCat remains the source of truth and will overwrite this once resolved.
-    setStatus((current) => {
-      if (current?.isActive && current.tier === 'plus') {
-        return current;
-      }
-      return { tier: appMetadataTier, isActive: true };
-    });
-  }, [appMetadataTier, userId]);
 
   const getTierFromUser = useCallback((input?: User | null): SubscriptionTier => {
     return normalizeSubscriptionTier(input?.app_metadata?.tier ?? input?.user_metadata?.tier, 'free');

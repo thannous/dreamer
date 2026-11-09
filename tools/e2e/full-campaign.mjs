@@ -83,13 +83,21 @@ export async function runFullCampaign() {
       E2E_CAMPAIGN_ID: `${id}-pro`, E2E_PERSONAS: '1', E2E_WORKERS: '1', E2E_WEB_LOCALE: 'fr-FR',
       E2E_PERSONA_MODEL: env.E2E_PERSONA_MODEL?.trim() || env.E2E_PERSONA_ACT_MODEL?.trim() || PERSONA_ACT_MODEL, EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED: 'false',
     });
+    for (const product of ['lucid', 'meditation']) {
+      if (interrupted) break;
+      await execute(`${product}-chatgpt-pro`, ['tools/e2e/run.mjs', product, 'web', 'run', '--tag', 'personas', '--max-failures', '2'], {
+        E2E_CAMPAIGN_ID: `${id}-${product}-pro`, E2E_PERSONAS: '1', E2E_WORKERS: '1',
+        E2E_WEB_LOCALE: product === 'lucid' ? 'fr-FR' : 'en-US',
+        E2E_PERSONA_MODEL: env.E2E_PERSONA_MODEL?.trim() || env.E2E_PERSONA_ACT_MODEL?.trim() || PERSONA_ACT_MODEL,
+      });
+    }
     if (!interrupted) await execute('backend', ['scripts/run-backend-e2e.cjs']);
   } catch (error) { steps.push({ name: 'campaign-error', exitCode: 1, error: error.message }); }
   let after;
   try { after = sourceSnapshot(root, 'dreamer'); }
   catch (error) { steps.push({ name: 'source-error', exitCode: 1, error: error.message }); }
   const stable = before && after && compareSnapshots(before, after).sourceStable;
-  const passed = !interrupted && stable && steps.length === dreamerCampaignContexts.length + 8 && steps.every(row => row.exitCode === 0);
+  const passed = !interrupted && stable && steps.length === dreamerCampaignContexts.length + 10 && steps.every(row => row.exitCode === 0);
   const report = { schemaVersion: 1, id, revision: after?.revision ?? before?.revision ?? null, source: after ?? null, passed: Boolean(passed),
     sourceStable: Boolean(stable), interrupted: interrupted ?? null, steps,
     rerun: 'mise exec -- npm run test:testerarmy:all',

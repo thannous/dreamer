@@ -634,7 +634,6 @@ export default function LucidProgressScreen() {
         ) : null}
 
         <LucidCard
-          accessibilityLabel={`${copy.labTitle}. ${copy.labHint}`}
           style={styles.labCard}
           testID="lucid-progress-stabilization"
         >
@@ -651,15 +650,30 @@ export default function LucidProgressScreen() {
             <Text style={[styles.small, { color: palette.textSecondary }]}>{copy.labError}</Text>
           ) : null}
           <View style={styles.labMetrics}>
-            <View style={styles.metric} testID="lucid-progress-stabilization-practices">
+            <View
+              accessible
+              accessibilityLabel={`${copy.labPractices}: ${lab.insights.practiceCount}`}
+              style={styles.metric}
+              testID="lucid-progress-stabilization-practices"
+            >
               <Text style={[styles.metricValue, { color: palette.text }]}>{String(lab.insights.practiceCount)}</Text>
               <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>{copy.labPractices}</Text>
             </View>
-            <View style={styles.metric} testID="lucid-progress-stabilization-completions">
+            <View
+              accessible
+              accessibilityLabel={`${copy.labCompletions}: ${lab.insights.completionCount}`}
+              style={styles.metric}
+              testID="lucid-progress-stabilization-completions"
+            >
               <Text style={[styles.metricValue, { color: palette.text }]}>{String(lab.insights.completionCount)}</Text>
               <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>{copy.labCompletions}</Text>
             </View>
-            <View style={styles.metric} testID="lucid-progress-stabilization-repeats">
+            <View
+              accessible
+              accessibilityLabel={`${copy.labRepeats}: ${lab.insights.repeatCount}`}
+              style={styles.metric}
+              testID="lucid-progress-stabilization-repeats"
+            >
               <Text style={[styles.metricValue, { color: palette.text }]}>{String(lab.insights.repeatCount)}</Text>
               <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>{copy.labRepeats}</Text>
             </View>

@@ -8,7 +8,7 @@ import { APP_FONTS } from '@/constants/appFonts';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Linking, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import StartupSplashScreen, {
@@ -43,6 +43,31 @@ const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
     ? require('react-native-keyboard-controller/src/animated').KeyboardProvider
     : ({ children }) => <>{children}</>;
 
+// Expo notifications are an external source. Subscribe before restoring the
+// last response, so a tap arriving during mount cannot fall between the two.
+function createNotificationSource() {
+  let snapshot: { id: string; url: Href } | null = null;
+  return {
+    getSnapshot: () => snapshot,
+    subscribe: (onChange: () => void) => {
+      if (Platform.OS === 'web') return () => undefined;
+      const receive = (response: Notifications.NotificationResponse | null) => {
+        const request = response?.notification.request;
+        const url = request?.content.data?.url;
+        if (!request || !isSafeLucidNotificationRoute(url) || snapshot?.id === request.identifier) return;
+        snapshot = { id: request.identifier, url };
+        onChange();
+      };
+      const subscription = Notifications.addNotificationResponseReceivedListener(receive);
+      try { receive(Notifications.getLastNotificationResponse()); }
+      catch (error) {
+        if (__DEV__) console.warn('[LucidRootLayout] Notification restoration failed', error);
+      }
+      return () => subscription.remove();
+    },
+  };
+}
+
 function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: {
   nonCriticalStartupEnabled: boolean; onStartupCommitted: () => void;
 }) {
@@ -55,10 +80,9 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
   const [launchUrl, setLaunchUrl] = useState<string | null | undefined>(() =>
     Platform.OS === 'web' ? (typeof window === 'undefined' ? null : window.location.href) : undefined
   );
-  const [notificationsReady, setNotificationsReady] = useState(false);
-  const [pending, setPending] = useState<Href | null>(null);
-  const [destination, setDestination] = useState<Href | null>(null);
-  const [engaged, setEngaged] = useState<Href | null>(null);
+  const [notificationSource] = useState(createNotificationSource);
+  const pending = useSyncExternalStore(notificationSource.subscribe, notificationSource.getSnapshot, () => null);
+  const navigationIntent = useRef<{ destination: Href; notificationId: string | null; engaged: boolean } | null>(null);
   useSubscriptionInitialize({ enabled: nonCriticalStartupEnabled });
 
   useEffect(() => {
@@ -72,53 +96,39 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
   }, []);
 
   useEffect(() => {
-    if (Platform.OS === 'web') { setNotificationsReady(true); return; }
-    const enqueue = (notification: Notifications.Notification) => {
-      const url = notification.request.content.data?.url;
-      if (!isSafeLucidNotificationRoute(url)) return;
-      if (tracker.current.claim(notification.request.identifier)) setPending(url);
-      else markPerformance('startup.notification_response_coalesced');
-    };
-    const subscription = Notifications.addNotificationResponseReceivedListener((response) => enqueue(response.notification));
-    try {
-      const response = Notifications.getLastNotificationResponse();
-      if (response) enqueue(response.notification);
-    } catch (error) {
-      if (__DEV__) console.warn('[LucidRootLayout] Notification restoration failed', error);
-    } finally { setNotificationsReady(true); }
-    return () => subscription.remove();
-  }, []);
-
-  useEffect(() => {
-    if (!navigation?.key || loading || launchUrl === undefined || !notificationsReady) return;
-    if (!started.current) {
-      started.current = true;
-      setDestination(pending ?? lucidStartupDestination(launchUrl, pathname, Platform.OS === 'web'));
-    } else if (pending && pending !== engaged) setDestination(pending);
-  }, [launchUrl, loading, navigation?.key, notificationsReady, pathname, pending, engaged]);
-
-  useEffect(() => {
-    if (!destination || (pending && pending !== destination)) return;
-    if (engaged !== destination) {
-      setEngaged(destination);
+    if (!navigation?.key || loading || launchUrl === undefined) return;
+    // The notification subscription runs before this effect, including its
+    // synchronous restoration; read that external snapshot for the first route.
+    const notification = notificationSource.getSnapshot();
+    if (notification && tracker.current.claim(notification.id)) {
+      navigationIntent.current = { destination: notification.url, notificationId: notification.id, engaged: false };
+    } else if (!started.current) {
+      navigationIntent.current = {
+        destination: lucidStartupDestination(launchUrl, pathname, Platform.OS === 'web'),
+        notificationId: null, engaged: false,
+      };
+    }
+    started.current = true;
+    const intent = navigationIntent.current;
+    if (!intent) return;
+    const { destination } = intent;
+    if (!intent.engaged) {
+      intent.engaged = true;
       if (String(destination).includes('?') || String(destination).includes('#') ||
           normalizedLucidDestination(destination) !== normalizedLucidDestination(pathname)) {
         router.replace(destination);
-        return;
       }
     }
     if (normalizedLucidDestination(destination) === normalizedLucidDestination(pathname) ||
         (String(destination).startsWith('/lucid') && pathname === '/lucid/onboarding') ||
         (String(destination).startsWith('/auth/callback') && pathname.startsWith('/lucid'))) {
-      if (pending === destination && Platform.OS !== 'web') {
-        try { Notifications.clearLastNotificationResponse(); } catch { /* Retry remains harmless through the response tracker. */ }
+      if (intent.notificationId && Platform.OS !== 'web') {
+        try { Notifications.clearLastNotificationResponse(); } catch { /* The response tracker prevents replay. */ }
       }
+      navigationIntent.current = null;
       onStartupCommitted();
-      setDestination(null);
-      setPending(null);
-      setEngaged(null);
     }
-  }, [destination, engaged, onStartupCommitted, pathname, pending]);
+  }, [launchUrl, loading, navigation?.key, notificationSource, onStartupCommitted, pathname, pending]);
 
   return <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
     <KeyboardProviderComponent>

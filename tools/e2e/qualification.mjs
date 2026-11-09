@@ -3,6 +3,7 @@ import { execFileSync, spawn } from 'node:child_process';
 import { readFileSync, readdirSync, lstatSync, realpathSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, relative, sep, resolve, basename } from 'node:path';
 import { PERSONA_PROVIDER } from './persona-models.mjs';
+import { personaContracts, personaIdentity } from './persona-contract.mjs';
 import { sameServedOrigin } from './web-ports.mjs';
 
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
@@ -147,7 +148,7 @@ function verifyProvenance(document, options, requirePass = true) {
     && Number.isSafeInteger(run.exitCode) && run.exitCode > 0
     && usage?.modelTokens === 0 && usage?.maxModelCallsInStep === 0;
   const validUsage = personas
-    ? ['web', 'ios', 'android'].includes(options.platform) && options.target === `dreamer-${options.platform}`
+    ? ['web', 'ios', 'android'].includes(options.platform) && !!personaIdentity(options.target, options.platform)
       && typeof options.personaModel === 'string' && !!options.personaModel.trim()
       && (failedBeforeModel || (Number.isSafeInteger(usage?.modelTokens) && usage.modelTokens > 0
         && Number.isSafeInteger(usage?.maxModelCallsInStep) && usage.maxModelCallsInStep >= 1 && usage.maxModelCallsInStep <= 12))
@@ -211,7 +212,7 @@ export function verifyReport(document, options) {
       || result.platform !== options.platform || !Number.isSafeInteger(result.repeat) || result.repeat < 0
       || typeof result.selected !== 'boolean' || !Array.isArray(result.attempts)
       || typeof result.agent !== 'string' || (options.personaModel !== undefined
-        ? result.file !== `tests/dreamer-personas.${options.platform === 'web' ? 'web' : 'mobile'}.e2e.ts` || !['morning', 'archivist', 'explorer', 'guest', 'free'].includes(result.agent)
+        ? result.file !== `tests/${personaIdentity(options.target, options.platform)}-personas.${options.platform === 'web' ? 'web' : 'mobile'}.e2e.ts` || !personaContracts[personaIdentity(options.target, options.platform)]?.agents.includes(result.agent)
           || !result.tags?.includes(`persona-${result.agent}`)
         : result.agent !== (options.agent ?? 'default'))) fail('RESULT_IDENTITY');
     const row = { targetId: result.targetId, testId: result.testId, repeat: result.repeat, agent: result.agent };

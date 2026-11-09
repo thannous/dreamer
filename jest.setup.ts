@@ -1,4 +1,16 @@
 import { jest } from '@jest/globals';
+import { TextDecoderStream, TextEncoderStream } from 'node:stream/web';
+
+// Expo 58 installs lazy native stream getters. jsdom enumerates globals during
+// teardown, after Jest has closed module loading. Use Node's standard Web
+// Streams implementations here, rather than requiring a native module then.
+for (const [name, value] of Object.entries({ TextDecoderStream, TextEncoderStream })) {
+  Object.defineProperty(globalThis, name, { configurable: true, writable: true, value });
+}
+// Resolve the remaining Expo-only lazy polyfills while module loading is open.
+for (const name of ['structuredClone', '__ExpoImportMetaRegistry']) {
+  Reflect.get(globalThis, name);
+}
 
 jest.mock('react-native-enriched-markdown', () => require('react-native-enriched-markdown/jest'));
 // A required `.txt` asset is its path in Jest (tests/jest/text-asset-transformer.js).

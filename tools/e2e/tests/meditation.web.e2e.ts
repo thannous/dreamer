@@ -3,6 +3,28 @@ import { expect, type Screen } from 'e2e';
 import { isolateWeb } from '../web-fixtures';
 import { meditationJourney } from '../journeys';
 
+test('Meditation compact navigation keeps every destination reachable with reduced motion', { tags: ['accessibility'] }, async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await browser.setViewport({ width: 320, height: 740 });
+  await browser.emulateMedia({ reducedMotion: 'reduce' });
+  await app.open();
+  await meditationJourney(app, screen);
+  for (const width of [320, 390, 768]) {
+    await browser.setViewport({ width, height: 844 });
+    for (const tab of ['search', 'breathe', 'profile', 'home']) {
+      const control = screen.getByTestId(`tab.${tab}`, { visible: true });
+      const bounds = await control.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.x).toBeGreaterThanOrEqual(0);
+      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+      expect(bounds!.height).toBeGreaterThanOrEqual(44);
+      await control.tap();
+      await expect(screen.getByTestId(`screen.${tab}`, { visible: true })).toBeVisible();
+    }
+  }
+  await app.screenshot('meditation-compact-navigation');
+});
+
 // SDK taps round to whole CSS pixels: stay 2 px inside the bar's right edge, or the
 // tap can land just past it and miss the seek.
 async function seekNearEnd(screen: Screen) {

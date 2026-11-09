@@ -5,32 +5,39 @@ import { fetchDreamListPage } from '@/services/supabaseDreamService';
 export function useRemoteJournalList(userId: string) {
   const [state, setState] = useState({ userId, items: [] as DreamListItem[], loading: true, error: false, complete: false });
   const scope = useRef({ userId, active: true, loading: false, cursor: null as JournalCursor | null, complete: false });
-  const loadMore = useCallback(async () => {
-    const current = scope.current;
+  const fetchNextPage = useCallback((current: typeof scope.current) => {
     if (!current.active || current.userId !== userId || current.loading || current.complete) return;
     current.loading = true;
-    setState(previous => ({ ...previous, loading: true, error: false }));
-    try {
-      const page = await fetchDreamListPage(userId, { cursor: current.cursor, pageSize: 40 });
+    const firstPage = current.cursor === null;
+    return fetchDreamListPage(userId, { cursor: current.cursor, pageSize: 40 }).then(page => {
       if (!current.active || scope.current !== current) return;
       current.cursor = page.nextCursor;
       current.complete = page.complete;
       setState(previous => {
-        const known = new Set(previous.items.map(item => item.remoteId));
-        return { userId, items: [...previous.items, ...page.items.filter(item => !known.has(item.remoteId))], loading: false, error: false, complete: page.complete };
+        const items = firstPage || previous.userId !== userId ? [] : previous.items;
+        const known = new Set(items.map(item => item.remoteId));
+        return { userId, items: [...items, ...page.items.filter(item => !known.has(item.remoteId))], loading: false, error: false, complete: page.complete };
       });
-    } catch {
-      if (current.active && scope.current === current) setState(previous => ({ ...previous, loading: false, error: true }));
-    } finally { current.loading = false; }
+    }).catch(() => {
+      if (current.active && scope.current === current) setState(previous => ({
+        userId, items: firstPage || previous.userId !== userId ? [] : previous.items,
+        loading: false, error: true, complete: false,
+      }));
+    }).finally(() => { current.loading = false; });
   }, [userId]);
-  // A new account starts a separate external traversal. Reset before requesting
-  // its first page so rows from the previous owner cannot enter the append state.
+  const loadMore = useCallback(async () => {
+    const current = scope.current;
+    if (!current.active || current.userId !== userId || current.loading || current.complete) return;
+    setState(previous => ({ ...previous, loading: true, error: false }));
+    await fetchNextPage(current);
+  }, [fetchNextPage, userId]);
+  // Account changes hide the old snapshot immediately. The first response
+  // replaces it; only subsequent pages in the same traversal append rows.
   useEffect(() => {
     const current = { userId, active: true, loading: false, cursor: null, complete: false };
     scope.current = current;
-    setState({ userId, items: [], loading: true, error: false, complete: false });
-    void loadMore();
+    void fetchNextPage(current);
     return () => { current.active = false; };
-  }, [userId, loadMore]);
+  }, [userId, fetchNextPage]);
   return { ...(state.userId === userId ? state : { userId, items: [], loading: true, error: false, complete: false }), loadMore };
 }

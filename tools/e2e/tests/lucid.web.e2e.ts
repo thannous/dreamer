@@ -1,5 +1,6 @@
-import { test, type Browser } from '@e2e-dev/web';
-import { expect, type App, type Screen } from 'e2e';
+import { test } from '@e2e-dev/web';
+import { expect } from 'e2e';
+import { completeOnboarding } from '../lucid-web-fixtures';
 import { isolateWeb } from '../web-fixtures';
 
 test('Lucid requires intention and experience before opening sleep settings', async ({ app, screen, browser }) => {
@@ -15,56 +16,6 @@ test('Lucid requires intention and experience before opening sleep settings', as
   await expect(screen.getByTestId('lucid-sleep-wake-time', { visible: true })).toBeVisible();
   await app.screenshot('sleep-settings');
 });
-
-type Fixtures = { app: App; screen: Screen; browser: Browser };
-
-async function frenchGuest({ app, browser }: Fixtures) {
-  await isolateWeb(browser, app);
-  await app.open('/lucid/onboarding?ambience=light');
-}
-
-async function completeOnboarding(fixtures: Fixtures, checkContrast = false) {
-  const { app, screen, browser } = fixtures;
-  await frenchGuest(fixtures);
-  await screen.getByTestId('lucid-goal-improve_recall', { visible: true }).tap();
-  await screen.getByTestId('lucid-experience-beginner', { visible: true }).tap();
-  const next = screen.getByTestId('lucid-onboarding-continue', { visible: true });
-  await next.tap();
-  await app.open('/lucid/onboarding?ambience=dark');
-  await expect(screen.getByTestId('lucid-sleep-bedtime', { visible: true })).toBeVisible();
-  for (const [id, value] of [['lucid-sleep-bedtime', '21:45'], ['lucid-sleep-wake-time', '06:15']]) {
-    const control = screen.getByTestId(id, { visible: true });
-    await control.tap();
-    const input = browser.locator('input[type="time"]');
-    await expect(input).toBeVisible();
-    if (checkContrast) {
-      const result = await browser.evaluate(() => {
-        const input = document.querySelector<HTMLInputElement>('input[type="time"]')!;
-        const style = getComputedStyle(input);
-        let parent = input.parentElement;
-        while (parent && getComputedStyle(parent).backgroundColor === 'rgba(0, 0, 0, 0)') parent = parent.parentElement;
-        const luminance = (color: string) => color.match(/[\d.]+/g)!.slice(0, 3)
-          .map(v => Number(v) / 255).map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
-          .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
-        const a = luminance(style.color), b = luminance(getComputedStyle(parent!).backgroundColor);
-        return { scheme: style.colorScheme, contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) };
-      });
-      expect(result.scheme).toBe('dark');
-      expect(result.contrast).toBeGreaterThanOrEqual(4.5);
-      await app.screenshot(`${id}-readable-dark`);
-    }
-    await input.fill(value);
-    await screen.getByRole('button', 'Terminé', { visible: true }).tap();
-    await expect(control).toContainText(value);
-  }
-  await screen.getByTestId('lucid-wake-sensitivity-not_sensitive', { visible: true }).tap();
-  await next.tap();
-  await expect(screen.getByTestId('lucid-onboarding-plan', { visible: true })).toBeVisible();
-  await next.tap();
-  await expect(screen.getByTestId('lucid-onboarding-local-first', { visible: true })).toBeVisible();
-  await next.tap();
-  await expect(screen.getByRole('tab', 'Journal', { visible: true })).toBeVisible();
-}
 
 // Night and Settings are tabs without a button. Expo Router 58 sent every visit
 // to them back to Today, so the profile button, the Night shortcut and the
@@ -306,6 +257,8 @@ test('Lucid completes a stabilization practice once and preserves its progress a
   await expect(screen.getByTestId('lucid-stabilization-lab-live')).toContainText('Pratique terminée');
   await app.restart();
   await app.open('/lucid/progress?ambience=dark');
+  await expect(screen.getByTestId('lucid-progress-stabilization-practices')).toHaveAccessibleName('Pratiques: 1');
+  await expect(screen.getByTestId('lucid-progress-stabilization-completions')).toHaveAccessibleName('Complétions: 1');
   await expect(screen.getByTestId('lucid-progress-stabilization-practices').getByText('1', { exact: true })).toHaveCount(1);
   await expect(screen.getByTestId('lucid-progress-stabilization-completions').getByText('1', { exact: true })).toHaveCount(1);
   // A second restart must not record another completion.

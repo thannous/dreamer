@@ -30,7 +30,7 @@ export type DreamMediaResult = {
   expiresAt?: number;
 };
 type SignedResponse = {
-  data: { path?: string | null; signedUrl?: string; error?: unknown }[] | null;
+  data: { path?: string | null; signedUrl?: string | null; error?: unknown }[] | null;
   error: unknown;
 };
 type Options = {

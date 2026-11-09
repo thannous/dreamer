@@ -6,6 +6,11 @@ import type { LucidJournalImportRuntimeState } from '@/services/lucidJournalImpo
 let mockUser: { id: string } | null = null;
 let mockScope = 'guest';
 const mockFactory = jest.fn();
+let mockAuthListener: ((user: { id: string } | null) => void) | undefined;
+jest.mock('@/lib/auth', () => ({ onAuthChange: (listener: typeof mockAuthListener) => {
+  mockAuthListener = listener;
+  return () => { if (mockAuthListener === listener) mockAuthListener = undefined; };
+} }));
 jest.mock('@/context/AuthContext', () => ({ useAuth: () => ({ user: mockUser }) }));
 jest.mock('@/context/LucidTrainerContext', () => ({ useLucidTrainer: () => ({ userScope: mockScope }) }));
 jest.mock('@/lib/supabase', () => ({ getSupabasePublicConfiguration: () => null }));
@@ -89,7 +94,7 @@ it('also waits for credential teardown across route remounts', async () => {
 });
 
 // A browser journey cannot pause an owner render before its effects commit.
-it('revokes the previous runtime when a new owner render suspends before commit', async () => {
+it('revokes the previous runtime on auth change before a new owner render suspends', async () => {
   mockUser = { id: '11111111-1111-4111-8111-111111111111' };
   mockScope = `user:${mockUser.id}`;
   const engine = runtime(); mockFactory.mockResolvedValue(engine);
@@ -109,9 +114,11 @@ it('revokes the previous runtime when a new owner render suspends before commit'
   mockUser = { id: '22222222-2222-4222-8222-222222222222' };
   mockScope = `user:${mockUser.id}`;
   suspend = true;
-  view.rerender({});
+  // Authentication is external: revocation must not wait for a render at all.
+  mockAuthListener?.(mockUser);
   expect(deps.getOwner()).toBe(mockUser.id);
   expect(deps.getOwnerGeneration()).not.toBe(generation);
+  view.rerender({});
   expect(mockFactory).toHaveBeenCalledTimes(1);
   await act(() => oldPrepare('all'));
   expect(engine.prepare).not.toHaveBeenCalled();

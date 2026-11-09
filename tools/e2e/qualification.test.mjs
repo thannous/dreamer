@@ -146,22 +146,23 @@ test('critical array/boolean and unexpected agent identities are refused', () =>
     r => { r.run.results[0].selected = 1; }, r => { r.run.summary.passed = [1]; },
     r => { r.run.usage.modelTokens = false; }]) { const r = report(); mutate(r); assert.throws(() => verifyReport(r, options())); }
 });
-for (const platform of ['web', 'ios', 'android']) {
-  test(`persona reports on ${platform} require opt-in, the declared agent/model and bounded calls`, () => {
+for (const product of ['dreamer', 'lucid', 'meditation']) for (const platform of ['web', 'ios', 'android']) {
+  test(`persona reports for ${product} on ${platform} require opt-in, the declared agent/model and bounded calls`, () => {
     // A UI journey cannot reproduce forged provenance, a wrong test file or a
     // model accidentally enabled in ordinary regressions. Exercise that gap here.
-    const r = report(), target = `dreamer-${platform}`;
+    const r = report(), target = `${product}-${platform}`;
+    const persona = product === 'dreamer' ? 'morning' : product === 'lucid' ? 'beginner' : 'listener';
     r.run.targets = [{ id: target, platform,
       ...(platform === 'web' ? { baseOrigin: 'http://127.0.0.1:8096' } : {}),
       engine: { name: platform === 'web' ? 'web' : 'mobile', version: SDK_PINS[platform === 'web' ? '@e2e-dev/web' : '@e2e-dev/mobile'] } }];
     r.run.usage = { modelTokens: 100, maxModelCallsInStep: 1, maxActionStepsInStep: 2 };
     for (const row of r.run.results) Object.assign(row, {
-      targetId: target, platform, file: `tests/dreamer-personas.${platform === 'web' ? 'web' : 'mobile'}.e2e.ts`,
-      agent: 'morning', tags: ['persona-morning'],
+      targetId: target, platform, file: `tests/${product}-personas.${platform === 'web' ? 'web' : 'mobile'}.e2e.ts`,
+      agent: persona, tags: [`persona-${persona}`],
     });
     r.run.results[0].attempts[0].steps.push({ api: 'agent.act', status: 'passed', model: { provider: 'chatgpt.responses', model: 'gpt-6.1-sol', calls: 1 } });
     const opts = options({ target, platform, origin: 'http://127.0.0.1:8096', personaModel: 'gpt-6.1-sol', personaJudgeModel: 'declared-judge' });
-    assert.equal(verifyReport(r, opts).passed[0].agent, 'morning');
+    assert.equal(verifyReport(r, opts).passed[0].agent, persona);
     if (platform !== 'web') assert.equal(verifyNativeCleanup(r, opts), true);
     assert.throws(() => verifyReport(r, { ...opts, personaModel: undefined }), /REPORT_PROVENANCE/);
     assert.throws(() => verifyReport(r, { ...opts, personaModel: 'another-model' }), /PERSONA_MODEL_UNPROVEN/);
@@ -180,7 +181,7 @@ for (const platform of ['web', 'ios', 'android']) {
       data => { data.run.usage.maxActionStepsInStep = 17; },
       data => { data.run.results[0].agent = 'unexpected'; },
       data => { data.run.results[0].tags = []; },
-      data => { data.run.results[0].file = `tests/dreamer-personas.${platform === 'web' ? 'mobile' : 'web'}.e2e.ts`; },
+      data => { data.run.results[0].file = `tests/${product}-personas.${platform === 'web' ? 'mobile' : 'web'}.e2e.ts`; },
       data => { data.run.results[0].attempts[0].steps.pop(); },
       data => { data.run.results[0].attempts[0].steps[1].model.calls = 0; },
       data => { delete data.run.results[0].attempts[0].steps[1].model.provider; },
@@ -190,9 +191,10 @@ for (const platform of ['web', 'ios', 'android']) {
       data => { data.run.results[0].attempts[0].cleanup = 'failed'; },
     ]) { const changed = structuredClone(r); mutate(changed); assert.throws(() => verifyReport(changed, opts)); }
     const foreign = structuredClone(r);
-    foreign.run.targets[0].id = `lucid-${platform}`;
-    for (const row of foreign.run.results) row.targetId = `lucid-${platform}`;
-    assert.throws(() => verifyReport(foreign, { ...opts, target: `lucid-${platform}` }), /REPORT_PROVENANCE/);
+    const other = product === 'lucid' ? 'meditation' : 'lucid';
+    foreign.run.targets[0].id = `${other}-${platform}`;
+    for (const row of foreign.run.results) row.targetId = `${other}-${platform}`;
+    assert.throws(() => verifyReport(foreign, { ...opts, target: `${other}-${platform}` }), /RESULT_IDENTITY/);
     if (platform !== 'web') {
       const broken = structuredClone(r);
       broken.run.results[0].attempts[0].secondaryErrors = [{ code: 'ENGINE_FAILURE', phase: 'cleanup' }];
