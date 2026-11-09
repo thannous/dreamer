@@ -4,9 +4,22 @@ import { isolateWeb } from './web-fixtures';
 
 type Fixtures = { app: App; screen: Screen; browser: Browser };
 
+/** The screen must be mounted and its visual startup cover gone before a journey acts. */
+export async function waitForLucidReady(browser: Browser) {
+  await expect(browser.locator('[data-testid^="lucid-"]:visible, [role="heading"]:visible').first()).toBeVisible();
+  // This existing SVG definition belongs only to StartupSplashScreen.web.
+  // The cover ignores pointer events, so DOM visibility alone cannot prove readiness.
+  await expect(browser.locator('#splashCyanGlow')).toHaveCount(0);
+}
+
+export async function openLucid(app: App, browser: Browser, path?: string) {
+  await app.open(path);
+  await waitForLucidReady(browser);
+}
+
 async function frenchGuest({ app, browser }: Fixtures) {
   await isolateWeb(browser, app);
-  await app.open('/lucid/onboarding?ambience=light');
+  await openLucid(app, browser, '/lucid/onboarding?ambience=light');
 }
 
 export async function completeOnboarding(fixtures: Fixtures, checkContrast = false) {
@@ -16,7 +29,7 @@ export async function completeOnboarding(fixtures: Fixtures, checkContrast = fal
   await screen.getByTestId('lucid-experience-beginner', { visible: true }).tap();
   const next = screen.getByTestId('lucid-onboarding-continue', { visible: true });
   await next.tap();
-  await app.open('/lucid/onboarding?ambience=dark');
+  await openLucid(app, browser, '/lucid/onboarding?ambience=dark');
   await expect(screen.getByTestId('lucid-sleep-bedtime', { visible: true })).toBeVisible();
   for (const [id, value] of [['lucid-sleep-bedtime', '21:45'], ['lucid-sleep-wake-time', '06:15']]) {
     const control = screen.getByTestId(id, { visible: true });
