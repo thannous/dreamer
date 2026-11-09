@@ -1,11 +1,14 @@
 import { test, type Browser } from '@e2e-dev/web';
-import { expect, type App, type Screen } from 'e2e';
+import { expect } from 'e2e';
+import { completeOnboarding, openLucid, waitForLucidReady } from '../lucid-web-fixtures';
 import { isolateWeb } from '../web-fixtures';
 import type { LucidTrainerState } from '@/lib/lucid/model';
 
+type Fixtures = Parameters<typeof completeOnboarding>[0];
+
 test('Lucid requires intention and experience before opening sleep settings', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
-  await app.open();
+  await openLucid(app, browser);
   const next = screen.getByRole('button', 'Continuer', { exact: true });
   await expect(next).toBeDisabled();
   await screen.getByTestId('lucid-goal-improve_recall', { visible: true }).tap();
@@ -17,63 +20,13 @@ test('Lucid requires intention and experience before opening sleep settings', as
   await app.screenshot('sleep-settings');
 });
 
-type Fixtures = { app: App; screen: Screen; browser: Browser };
-
-async function frenchGuest({ app, browser }: Fixtures) {
-  await isolateWeb(browser, app);
-  await app.open('/lucid/onboarding?ambience=light');
-}
-
-async function completeOnboarding(fixtures: Fixtures, checkContrast = false) {
-  const { app, screen, browser } = fixtures;
-  await frenchGuest(fixtures);
-  await screen.getByTestId('lucid-goal-improve_recall', { visible: true }).tap();
-  await screen.getByTestId('lucid-experience-beginner', { visible: true }).tap();
-  const next = screen.getByTestId('lucid-onboarding-continue', { visible: true });
-  await next.tap();
-  await app.open('/lucid/onboarding?ambience=dark');
-  await expect(screen.getByTestId('lucid-sleep-bedtime', { visible: true })).toBeVisible();
-  for (const [id, value] of [['lucid-sleep-bedtime', '21:45'], ['lucid-sleep-wake-time', '06:15']]) {
-    const control = screen.getByTestId(id, { visible: true });
-    await control.tap();
-    const input = browser.locator('input[type="time"]');
-    await expect(input).toBeVisible();
-    if (checkContrast) {
-      const result = await browser.evaluate(() => {
-        const input = document.querySelector<HTMLInputElement>('input[type="time"]')!;
-        const style = getComputedStyle(input);
-        let parent = input.parentElement;
-        while (parent && getComputedStyle(parent).backgroundColor === 'rgba(0, 0, 0, 0)') parent = parent.parentElement;
-        const luminance = (color: string) => color.match(/[\d.]+/g)!.slice(0, 3)
-          .map(v => Number(v) / 255).map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
-          .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
-        const a = luminance(style.color), b = luminance(getComputedStyle(parent!).backgroundColor);
-        return { scheme: style.colorScheme, contrast: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) };
-      });
-      expect(result.scheme).toBe('dark');
-      expect(result.contrast).toBeGreaterThanOrEqual(4.5);
-      await app.screenshot(`${id}-readable-dark`);
-    }
-    await input.fill(value);
-    await screen.getByRole('button', 'Terminé', { visible: true }).tap();
-    await expect(control).toContainText(value);
-  }
-  await screen.getByTestId('lucid-wake-sensitivity-not_sensitive', { visible: true }).tap();
-  await next.tap();
-  await expect(screen.getByTestId('lucid-onboarding-plan', { visible: true })).toBeVisible();
-  await next.tap();
-  await expect(screen.getByTestId('lucid-onboarding-local-first', { visible: true })).toBeVisible();
-  await next.tap();
-  await expect(screen.getByRole('tab', 'Journal', { visible: true })).toBeVisible();
-}
-
 // Night and Settings are tabs without a button. Expo Router 58 sent every visit
 // to them back to Today, so the profile button, the Night shortcut and the
 // Night link did nothing.
 test('Lucid opens Night and Settings from Today and from a link', async fixtures => {
   await completeOnboarding(fixtures);
   const { app, screen, browser } = fixtures;
-  await app.open('/lucid?ambience=dark');
+  await openLucid(app, browser, '/lucid?ambience=dark');
   // Night and Settings take no slot either: the four visible tabs share the bar.
   await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
   const share = await browser.evaluate(() => {
@@ -86,10 +39,10 @@ test('Lucid opens Night and Settings from Today and from a link', async fixtures
   await screen.getByTestId('lucid-tab-settings', { visible: true }).tap();
   await expect(screen.getByTestId('lucid-settings', { visible: true })).toBeVisible();
   await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
-  await app.open('/lucid?ambience=dark');
+  await openLucid(app, browser, '/lucid?ambience=dark');
   await screen.getByTestId('lucid-tab-night', { visible: true }).tap();
   await expect(screen.getByTestId('lucid-night', { visible: true })).toBeVisible();
-  await app.open('/lucid/night?ambience=dark');
+  await openLucid(app, browser, '/lucid/night?ambience=dark');
   await expect(screen.getByTestId('lucid-night', { visible: true })).toBeVisible();
   expect(await browser.evaluate(() => location.pathname)).toBe('/lucid/night');
   await app.screenshot('lucid-night-from-link');
@@ -127,7 +80,7 @@ test('Lucid recovers a blocked ambience with a playable retry and no unhandled r
     });
   });
   try {
-    await app.open('/lucid/night?ambience=dark');
+    await openLucid(app, browser, '/lucid/night?ambience=dark');
     await screen.getByTestId('lucid-night-signals-toggle', { visible: true }).tap();
     const play = screen.getByTestId('lucid-night-ambience-play', { visible: true });
     const failure = screen.getByTestId('lucid-night-ambience-error', { visible: true });
@@ -163,8 +116,9 @@ test('Lucid recovers a blocked ambience with a playable retry and no unhandled r
 test('PR237 Lucid dark time fields stay readable and the schedule survives reload', async fixtures => {
   await completeOnboarding(fixtures, true);
   const { app, screen, browser } = fixtures;
-  await app.open('/lucid/settings?ambience=dark');
+  await openLucid(app, browser, '/lucid/settings?ambience=dark');
   await browser.reload();
+  await waitForLucidReady(browser);
   await expect(screen.getByTestId('lucid-bedtime-input', { visible: true })).toHaveValue('21:45');
   await expect(screen.getByTestId('lucid-wake-input', { visible: true })).toHaveValue('06:15');
   await app.screenshot('persisted-sleep-schedule');
@@ -175,7 +129,7 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
   const { app, screen, browser } = fixtures;
   for (const width of [320, 360, 390]) {
     await browser.setViewport({ width, height: 844 });
-    await app.open('/lucid?ambience=dark');
+    await openLucid(app, browser, '/lucid?ambience=dark');
     await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
     const geometry = await browser.evaluate(() => {
       const tabs = Array.from(document.querySelectorAll('[role="tab"]')).map(tab => {
@@ -202,13 +156,13 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
   }
   await browser.setViewport({ width: 390, height: 844 });
   for (const program of ['mild', 'ssild', 'wbtb']) for (const theme of ['dark', 'light']) {
-    await app.open(`/lucid/program/${program}?ambience=${theme}`);
+    await openLucid(app, browser, `/lucid/program/${program}?ambience=${theme}`);
     await expect(screen.getByText('Méthode et sécurité', { visible: true })).toBeVisible();
     await app.screenshot(`${program}-${theme}`);
   }
-  await app.open('/lucid/session/wbtb/1');
+  await openLucid(app, browser, '/lucid/session/wbtb/1');
   await expect(screen.getByText('Séance indisponible', { visible: true })).toBeVisible();
-  await app.open('/lucid/account?ambience=light');
+  await openLucid(app, browser, '/lucid/account?ambience=light');
   await screen.getByTestId('settings-account-open-signin', { visible: true }).tap();
   await expect(screen.getByTestId('settings-account-sheet', { visible: true })).toBeVisible();
   const surface = await browser.evaluate(() => {
@@ -230,7 +184,7 @@ test('PR237 Lucid morning captures persist in Journal and confirmed signs reach 
   const { app, screen, browser } = fixtures;
   const notes = ['Fixture Lucid : un jardin calme et une porte lumineuse.', 'Fixture Lucid : je traverse le jardin et je remarque la porte lumineuse.'];
   for (const note of notes) {
-    await app.open('/lucid/morning?ambience=light');
+    await openLucid(app, browser, '/lucid/morning?ambience=light');
     await screen.getByRole('radio', /Écrire Notez/, { visible: true }).tap();
     await screen.getByRole('textbox', 'Écrivez ce qui reste', { visible: true }).fill(note);
     await screen.getByRole('button', 'Continuer', { visible: true }).tap();
@@ -239,13 +193,13 @@ test('PR237 Lucid morning captures persist in Journal and confirmed signs reach 
     await screen.getByRole('button', 'Enregistrer la capture', { visible: true }).tap();
     await expect.poll(() => browser.evaluate(value => Object.values(localStorage).some(item => item.includes(value)), note)).toBe(true);
   }
-  await app.open('/lucid/journal?ambience=light');
+  await openLucid(app, browser, '/lucid/journal?ambience=light');
   for (const note of notes) await expect(screen.getByRole('button', `Ouvrir le rêve : ${note}`, { visible: true })).toBeVisible();
   await app.screenshot('journal-saved-captures');
-  await app.open('/lucid/dream-signs?ambience=light');
+  await openLucid(app, browser, '/lucid/dream-signs?ambience=light');
   await screen.getByTestId('lucid-dream-sign-sign:lucid:jardin', { visible: true })
     .getByRole('button', 'Confirmer le signe').tap();
-  await app.open('/lucid/dream-atlas?ambience=light');
+  await openLucid(app, browser, '/lucid/dream-atlas?ambience=light');
   const node = screen.getByTestId('lucid-dream-atlas-node-sign:lucid:jardin', { visible: true });
   await expect(node).toContainText('Vu dans 2 rêves');
   await node.tap();
@@ -260,7 +214,7 @@ test('PR237 Lucid exercises retain their pause after reload and resume; unsold P
   await completeOnboarding(fixtures);
   const { app, screen, browser } = fixtures;
   for (const lab of ['stabilization', 'ssild']) {
-    await app.open(`/lucid/${lab}-lab?ambience=dark`);
+    await openLucid(app, browser, `/lucid/${lab}-lab?ambience=dark`);
     const primary = screen.getByTestId(`lucid-${lab}-lab-primary`, { visible: true });
     const pause = screen.getByTestId(`lucid-${lab}-lab-pause`, { visible: true });
     await primary.tap();
@@ -268,6 +222,7 @@ test('PR237 Lucid exercises retain their pause after reload and resume; unsold P
     await pause.tap();
     await expect(screen.getByText(/^En pause\./, { visible: true })).toBeVisible();
     await browser.reload();
+    await waitForLucidReady(browser);
     await expect(screen.getByText(/^En pause\./, { visible: true })).toBeVisible();
     await primary.tap();
     await expect(pause).toBeEnabled();
@@ -275,14 +230,14 @@ test('PR237 Lucid exercises retain their pause after reload and resume; unsold P
     await app.screenshot(`${lab}-resumed-after-reload`);
   }
   for (const route of ['morning-voice', 'permissions']) {
-    await app.open(`/lucid/${route}?ambience=dark`);
+    await openLucid(app, browser, `/lucid/${route}?ambience=dark`);
     for (const text of ['Ne jamais inventer', 'avant release', 'Échantillons utilisables'])
       await expect(screen.getByText(text, { exact: false, visible: true })).toBeHidden();
     await app.screenshot(route);
   }
   // v1 sells no Plan and ships no Apple Health import: direct links land on Lucid home.
   for (const [route, testId] of [['subscription', 'lucid-subscription-screen'], ['sleep-integration', 'lucid-sleep-connect']]) {
-    await app.open(`/lucid/${route}?ambience=dark`);
+    await openLucid(app, browser, `/lucid/${route}?ambience=dark`);
     await expect(screen.getByRole('tab', 'Journal', { visible: true })).toBeVisible();
     await expect.poll(() => browser.evaluate(() => location.pathname)).not.toContain(route);
     await expect(screen.getByTestId(testId, { visible: true })).toBeHidden();
@@ -292,8 +247,21 @@ test('PR237 Lucid exercises retain their pause after reload and resume; unsold P
 
 test('Lucid completes a stabilization practice once and preserves its progress after restart', { tags: ['practice', 'persistence'] }, async fixtures => {
   await completeOnboarding(fixtures);
-  const { app, screen } = fixtures;
-  await app.open('/lucid/stabilization-lab?ambience=dark');
+  const { app, screen, browser } = fixtures;
+  const revealMetrics = async () => {
+    await browser.evaluate(() => {
+      const card = document.querySelector('[data-testid="lucid-progress-stabilization"]');
+      if (!card) throw new Error('The stabilization progress card is missing');
+      card.scrollIntoView({ block: 'center' });
+      return null;
+    });
+    await expect.poll(() => browser.evaluate(() => {
+      const card = document.querySelector('[data-testid="lucid-progress-stabilization"]');
+      const box = card?.getBoundingClientRect();
+      return !!box && box.top >= 0 && box.bottom <= innerHeight;
+    })).toBe(true);
+  };
+  await openLucid(app, browser, '/lucid/stabilization-lab?ambience=dark');
   const primary = screen.getByTestId('lucid-stabilization-lab-primary', { visible: true });
   await primary.tap();
   await screen.getByTestId('lucid-stabilization-lab-repeat', { visible: true }).tap();
@@ -306,12 +274,18 @@ test('Lucid completes a stabilization practice once and preserves its progress a
   await primary.tap();
   await expect(screen.getByTestId('lucid-stabilization-lab-live')).toContainText('Pratique terminée');
   await app.restart();
-  await app.open('/lucid/progress?ambience=dark');
+  await openLucid(app, browser, '/lucid/progress?ambience=dark');
+  await revealMetrics();
+  await expect(screen.getByTestId('lucid-progress-stabilization-practices', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('lucid-progress-stabilization-practices')).toHaveAccessibleName('Pratiques: 1');
+  await expect(screen.getByTestId('lucid-progress-stabilization-completions')).toHaveAccessibleName('Complétions: 1');
   await expect(screen.getByTestId('lucid-progress-stabilization-practices').getByText('1', { exact: true })).toHaveCount(1);
   await expect(screen.getByTestId('lucid-progress-stabilization-completions').getByText('1', { exact: true })).toHaveCount(1);
   // A second restart must not record another completion.
   await app.restart();
-  await app.open('/lucid/progress?ambience=dark');
+  await openLucid(app, browser, '/lucid/progress?ambience=dark');
+  await revealMetrics();
+  await expect(screen.getByTestId('lucid-progress-stabilization-practices', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('lucid-progress-stabilization-practices').getByText('1', { exact: true })).toHaveCount(1);
   await expect(screen.getByTestId('lucid-progress-stabilization-completions').getByText('1', { exact: true })).toHaveCount(1);
   await app.screenshot('completed-practice-survives-two-restarts');
@@ -357,7 +331,7 @@ for (const debt of [false, true]) {
   test(`Lucid sleep first: ${debt ? 'sleep debt' : 'control'} with zero attempts from morning to weekly review`, sleepTest, async f => {
     const { app, screen, browser } = f;
     await openSleepFixture(f);
-    await app.open('/lucid/morning');
+    await openLucid(app, browser, '/lucid/morning');
     await screen.getByTestId('lucid-morning-nothing').tap();
     await screen.getByRole('radio', /Non entendue/, { visible: true }).tap();
     await screen.getByTestId('lucid-morning-next').tap();
@@ -371,14 +345,14 @@ for (const debt of [false, true]) {
     expect((await guestState(browser)).experiments[0]).toMatchObject({
       notes: note, factors: debt ? ['sleep_debt'] : [], technique: null, result: null,
     });
-    await app.open('/lucid');
+    await openLucid(app, browser, '/lucid');
     const primary = screen.getByTestId('lucid-today-primary', { visible: true });
     await expect(primary).toContainText(debt ? 'Revoir la nuit passée' : 'Préparer cette nuit');
     await primary.tap();
     await expect(screen.getByTestId(debt ? 'lucid-morning' : 'lucid-night', { visible: true })).toBeVisible();
     await expect.poll(() => browser.evaluate(() => location.pathname)).toBe(debt ? '/lucid/morning' : '/lucid/night');
 
-    await app.open('/lucid/weekly');
+    await openLucid(app, browser, '/lucid/weekly');
     expect((await guestState(browser)).experiments[0].occurredAt)
       .toBeLessThanOrEqual(await browser.evaluate(() => Date.now()));
     const weekly = screen.getByTestId('lucid-weekly', { visible: true });
@@ -391,7 +365,7 @@ for (const debt of [false, true]) {
     expect((await guestState(browser)).progress).toEqual([]);
     expect(advice).toContain(debt ? 'protéger le sommeil en priorité' : 'MILD');
 
-    await app.open('/lucid/progress');
+    await openLucid(app, browser, '/lucid/progress');
     const progress = screen.getByTestId('lucid-progress', { visible: true });
     await expect(progress.getByText('Adaptation hors ligne', { exact: true })).toBeVisible();
     const restAdvice = progress.getByText(/Privilégiez le repos cette nuit/, { visible: true });
@@ -410,7 +384,7 @@ test('Lucid sleep first: missed practice dates preserve the next session and its
     startedAt, completedAt: null, updatedAt: startedAt,
   }];
   await writeGuestState(browser, state);
-  await app.open('/lucid/program/mild');
+  await openLucid(app, browser, '/lucid/program/mild');
   const next = screen.getByTestId('lucid-journey-session-2');
   const following = screen.getByTestId('lucid-journey-session-3');
   const resume = screen.getByTestId('lucid-journey-continue', { visible: true });
@@ -423,6 +397,7 @@ test('Lucid sleep first: missed practice dates preserve the next session and its
     return null;
   }, Date.parse(testNight));
   await browser.reload();
+  await waitForLucidReady(browser);
   await expect(resume).toBeEnabled();
   expect([await next.getAttribute('aria-label'), await following.getAttribute('aria-label')]).toEqual(dates);
   await expect(screen.getByTestId('lucid-journey-safety')).toContainText('Les jours manqués restent disponibles');
@@ -447,7 +422,7 @@ test('Lucid sleep first: method evidence and weekly trend distinguish zero, two 
         preparationMinutes: 5, result: 'lucid', lucidityLevel: 3, recallLevel: 3, sleepQuality: 4, factors: [] };
     });
     await writeGuestState(browser, state);
-    await app.open('/lucid/progress');
+    await openLucid(app, browser, '/lucid/progress');
     const toggle = screen.getByTestId('lucid-progress-methods-toggle');
     await expect(toggle).toBeVisible();
     await expect(screen.getByTestId('lucid-progress-method-mild')).toContainText(count ? `${count} essais` : 'Aucun essai');

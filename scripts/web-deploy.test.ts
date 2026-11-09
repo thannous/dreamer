@@ -818,10 +818,21 @@ describe.each(['linux', 'darwin', 'win32'])('web-deploy (%s): guarded, clean cop
 
   it('lockEntries follows the CLI dependency closure through hoisted and nested entries', () => {
     const lock = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package-lock.json'), 'utf8'));
-    const closure = Object.keys(lockEntries(lock));
-    expect(closure).toEqual(expect.arrayContaining(['node_modules/vercel', 'node_modules/@vercel/cli-auth', 'node_modules/@vercel/cli-config', 'node_modules/jose']));
+    const entries = lockEntries(lock);
+    const closure = Object.keys(entries);
+    // The refreshed graph nests Vercel's jose 5 beside the app's hoisted jose 6.
+    // The guard must cover the CLI's resolved instance, not the unrelated app one.
+    const cliJose = 'node_modules/vercel/node_modules/jose';
+    expect(closure).toEqual(expect.arrayContaining(['node_modules/vercel', 'node_modules/@vercel/cli-auth', 'node_modules/@vercel/cli-config', cliJose]));
     expect(closure.length).toBeGreaterThan(100);
     expect(closure).not.toContain('node_modules/react');
+    expect(closure).not.toContain('node_modules/jose');
+    const appChanged = JSON.parse(JSON.stringify(lock));
+    appChanged.packages['node_modules/jose'].integrity = 'sha512-unrelated-app-copy';
+    expect(lockEntries(appChanged)).toEqual(entries);
+    const cliChanged = JSON.parse(JSON.stringify(lock));
+    cliChanged.packages[cliJose].integrity = 'sha512-stale-cli-copy';
+    expect(lockEntries(cliChanged)).not.toEqual(entries);
   });
 
   it('checkPinnedCli refuses an entry hash mismatch: one changed byte in dist/vc.js, or an added file', () => {

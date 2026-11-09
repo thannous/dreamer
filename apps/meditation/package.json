@@ -70,7 +70,7 @@
     "react-native-svg": "15.16.0",
     "react-native-web": "~0.21.3",
     "react-native-worklets": "0.13.0",
-    "uniwind": "^1.12.2"
+    "uniwind": "^1.13.2"
   },
   "devDependencies": {
     "@react-native/jest-preset": "0.88.1",
@@ -80,6 +80,7 @@
     "@types/node": "^26.2.0",
     "@types/react": "~19.3.0",
     "braces": "file:../../tools/braces",
+    "deepmerge": "file:../../tools/deepmerge",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.4",
     "image-size": "file:../../tools/image-size-compat",
@@ -89,7 +90,8 @@
     "patch-package": "8.0.1",
     "react-test-renderer": "19.3.0",
     "tailwindcss": "^4.1.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "zod": "file:../../tools/zod-v3"
   },
   "overrides": {
     "react-native": "$react-native",
@@ -103,24 +105,27 @@
     "brace-expansion@>=2 <3": "2.1.7",
     "brace-expansion@>=4 <6": "5.0.12",
     "browserslist": "4.28.8",
-    "fast-uri@>=3 <4": "3.1.8",
+    "fast-uri@>=3 <4": "3.1.9",
     "hono": "4.13.13",
-    "ip-address": "10.7.1",
+    "ip-address": "10.7.6",
     "js-yaml@>=3 <4": "3.15.2",
     "js-yaml@>=4 <5": "4.3.2",
-    "minimatch@>=10 <11": "10.2.6",
     "path-to-regexp@>=6 <7": "6.3.0",
     "path-to-regexp@>=8 <9": "8.4.2",
     "proxy-addr@>=2 <3": "2.0.8",
-    "qs@>=6 <7": "6.16.0",
+    "qs@>=6 <7": "6.17.1",
     "smol-toml@>=1 <2": "1.9.0",
     "source-map-js@>=1 <2": "1.2.2",
     "tar@>=7 <8": "7.5.22",
-    "undici@>=5 <7": "6.29.0",
-    "undici@>=7 <8": "7.30.0",
+    "undici@>=5 <7": "6.29.1",
+    "undici@>=7 <8": "7.30.2",
     "uuid@<11.1.1": "11.1.1",
     "braces": "$braces",
-    "image-size": "$image-size"
+    "image-size": "$image-size",
+    "deepmerge": "$deepmerge",
+    "glob@>=9 <14.0.2": "14.0.4",
+    "minimatch@>=7 <11.0.1": "11.0.5",
+    "zod": "$zod"
   },
   "expo": {
     "install": {

@@ -4,7 +4,7 @@ Default framework for new journeys since the owner's 2026-10-05 instruction.
 All active E2E entry points use this runner since 2026-10-21; the duplicated
 Playwright test runners are retired. The complete web campaign is
 `mise exec -- npm run test:testerarmy:all`: four Dreamer locale/feature contexts
-and their coverage union, Lucid, Meditation, the built site, five personas through
+and their coverage union, Lucid, Meditation, the built site, all three apps' personas through
 the saved ChatGPT Pro login and the owned local backend. It requires that login
 and fails without actual model calls; no API-key fallback is configured. Use
 `npm run test:testerarmy:login` only if a saved login is missing. Native runs retain
@@ -271,6 +271,9 @@ mise exec -- npm run test:testerarmy:typecheck
 keeps the full browser for local `--headed` runs. For headless-only hosts, use
 `npm run test:testerarmy:browsers -- --only-shell`; a fresh Linux host adds `--with-deps`.
 The headless shell is the same executable the unchanged engine already launches.
+The PR readiness probe launches that shell, checks its reported browser version
+against the engine's manifest, and closes it. A missing or mismatched engine,
+browser, or failed cleanup keeps the gate unavailable.
 The portable Node installer resolves Playwright from `@e2e-dev/web`, verifies
 matcher version parity and preserves other projects' installed browsers.
 It does not reuse the root application's different Playwright installation.
@@ -380,7 +383,7 @@ quota and the saved reading position. Each distinct goal has its own `agent.act`
 It is not a human usability study or a performance/framerate measurement.
 
 Without `E2E_PERSONAS=1`, no persona test is registered and ordinary regressions
-retain their zero-model-call contract. Personas refuse other products and multiple
+retain their zero-model-call contract. Personas accept only Dreamer, Lucid and Meditation, and refuse multiple
 workers. Web isolates each browser context and blocks traffic
 outside the local origin. Native setup selects French through visible settings;
 `run.mjs` requires an identified `mock-persistent` Release on an owned virtual
@@ -404,7 +407,31 @@ or pinned here: using it would add a dependency and an exact pin, and a new mode
 route that needs owner authorization, since its provider would see private
 project content.
 
-### Native personas with Sol
+### Lucid and Meditation personas
+
+[companion-personas.ts](companion-personas.ts) defines two needs per app: Lucid's
+beginner and journal reader, Meditation's listener and breather. The same goals
+run on web, iOS and Android with exact assertions after each agent action. The
+closed [product contract](persona-contract.mjs) binds agent names and native
+profiles; a different product's report or Release cannot qualify a run.
+
+```sh
+E2E_PERSONAS=1 E2E_WORKERS=1 mise exec -- node tools/e2e/run.mjs lucid web run --tag personas
+E2E_PERSONAS=1 E2E_WORKERS=1 mise exec -- node tools/e2e/run.mjs meditation web run --tag personas
+# Native: one worker is enforced. Use the product's identified Release receipt.
+E2E_PERSONAS=1 E2E_SIMLOCK_PHYSICAL=never E2E_RELEASE_RECEIPT=path/to/release.json \
+  mise exec -- node tools/e2e/run.mjs lucid ios run --tag personas
+```
+
+Use `lucid-mock` for Lucid and `meditation-local` for Meditation; replace the app
+and platform for the other native combinations. Meditation's native profile uses
+real bundled audio. Model/provider/version, budgets, source, installed Release,
+cleanup and artifacts use the same qualification checks as Dreamer. These journeys
+prove local behavior; they do not qualify production services or Store purchases.
+If running web apps concurrently, give Meditation its own temporary `TMPDIR`:
+its cold Metro cache purge must not race another active Metro cache.
+
+### Dreamer native personas with Sol
 
 The [2026-10-20 native campaign](../../doc_web_interne/docs/qa/dreamer-native-personas-20261020.md)
 records four passing personas on each platform, the exact builds and rerun commands.

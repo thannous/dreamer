@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, qualifyingSdkEnvironment, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, failureDigest, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary, agentSession, simulatorIdentity } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { personaContracts } from './persona-contract.mjs';
 import { seedDurations, keepDurations } from './duration-history.mjs';
 import { readNativeBackendState } from './native-backend-state.ts';
 import { acquireNativeBackendRunLock, releaseNativeBackendRunLock } from './native-backend-lock.mjs';
@@ -165,7 +166,7 @@ function changedFilesSince(ref) {
   return [...new Set(listed.split('\0').filter(file => file !== '' && !file.endsWith('/')))];
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'decision-verdict.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'companion-personas.ts', 'persona-contract.mjs', 'lucid-web-fixtures.ts', 'lucid-native-fixtures.ts', 'native-links.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'decision-verdict.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     'traced-parity-test.ts', 'web-journeys.ts', 'web-ports.mjs', 'app-media-fixtures.ts', 'backend-recovery-fixtures.ts', 'managed-app.ts', 'qualification.mjs',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();
@@ -517,8 +518,8 @@ try {
       nativeInputDigest: nativeInputs(root, product, platform).digest, binaryDigest: artifact.sha256 });
     if (nativeJourneys) verifyLocalBackendBinaryConfig({ binaryPath: release.binary.path, platform, profile: release.profile, read,
       record: proof => writeOnce(join(output, 'embedded-public-config.json'), { binarySha256: artifact.sha256, ...proof }) });
-    if (env.E2E_PERSONAS === '1' && (product !== 'dreamer' || release.profile.name !== 'mock-persistent'))
-      throw new Error('Native personas require the owned Dreamer mock-persistent Release.');
+    if (env.E2E_PERSONAS === '1' && release.profile.name !== personaContracts[product]?.profile)
+      throw new Error('Native personas require the identified product-specific QA Release.');
     binary = release.binary;
     writeOnce(join(output, 'release-used.json'), release);
     if (Object.hasOwn(env, 'EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED')

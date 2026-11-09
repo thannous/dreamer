@@ -168,8 +168,9 @@ async function billingFree(fixtures: NativeBackgroundFixtures) {
   await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
   const lab = screen.getByTestId('screen.subscription.qaLab.toggle', { visible: true });
   await screen.scrollUntilVisible(lab);
-  // The lab's rows exist only while it is open; Android can swallow the first taps.
-  await tapUntilShown(lab, screen.getByTestId('text.subscription.qa.mode'));
+  // Android omits off-screen rows from its tree. Open once, then scroll to the
+  // mode; waiting for attachment here would toggle an already-open panel shut.
+  await tapWhenStill(lab);
   const mode = screen.getByTestId('text.subscription.qa.mode', { visible: true });
   await screen.scrollUntilVisible(mode);
   await expect(mode).toHaveText('Mock services');
@@ -1235,9 +1236,9 @@ test('Dreamer release guest reads its first dream and asks one question that sur
   await expect(reading).toBeVisible();
   // The reading moves the page as it arrives.
   await waitUntilStill(reading);
-  // Android lists only nodes on screen, and the reading pushed the story up.
+  // The full transcript follows the analysis and symbols in the journal detail.
   const transcript = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
-  if (platform === 'android') await screen.scrollUntilVisible(transcript, { direction: 'up' });
+  await screen.scrollUntilVisible(transcript, { direction: 'down' });
   // iOS exposes a separate drop cap and an object-replacement marker in the transcript.
   await expect(transcript).toContainText(story.slice(1));
   await app.screenshot('release-core-loop-reading');

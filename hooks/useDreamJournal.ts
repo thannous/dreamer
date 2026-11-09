@@ -312,8 +312,7 @@ export const useDreamJournal = () => {
     return detail;
   }, [dreamsRef, livePendingMutationsRef, persistDreamClientState, user?.id]);
 
-  const hydratePendingImageJobs = useCallback(async () => {
-    const jobs = await getPendingImageJobs();
+  const hydratePendingImageJobs = useCallback(async (jobs: PendingImageJob[]) => {
     pendingImageJobsRef.current = jobs;
     setPendingImageJobsVersion((version) => version + 1);
 
@@ -1162,7 +1161,11 @@ export const useDreamJournal = () => {
       return;
     }
 
-    void hydratePendingImageJobs();
+    let active = true;
+    void getPendingImageJobs().then(jobs => {
+      if (active) return hydratePendingImageJobs(jobs);
+    }).catch(error => logger.warn('Failed to restore pending image jobs', error));
+    return () => { active = false; };
   }, [hydratePendingImageJobs, loaded]);
 
   useEffect(() => {

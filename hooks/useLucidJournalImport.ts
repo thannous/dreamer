@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { onAuthChange } from '@/lib/auth';
+import { toAccountScope } from '@/lib/accountScope';
 import { getSupabasePublicConfiguration } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
@@ -23,11 +25,23 @@ export function useLucidJournalImport() {
   const { userScope } = useLucidTrainer();
   const ownerKey = JSON.stringify([userScope, user?.id ?? null]);
   const owner = useRef({ key: ownerKey, scope: userScope, userId: user?.id ?? null, generation: 0 });
-  // Intentionally invalidate in render, even if this owner transition suspends.
-  // Waiting for an effect would leave the previous runtime authorized before commit.
-  if (owner.current.key !== ownerKey) {
-    owner.current = { key: ownerKey, scope: userScope, userId: user?.id ?? null, generation: owner.current.generation + 1 };
-  }
+  const userId = user?.id ?? null;
+  useLayoutEffect(() => {
+    if (owner.current.key !== ownerKey) {
+      owner.current = { key: ownerKey, scope: userScope, userId, generation: owner.current.generation + 1 };
+    }
+  }, [ownerKey, userId, userScope]);
+  useEffect(() => onAuthChange(nextUser => {
+    const nextUserId = nextUser?.id ?? null;
+    if (owner.current.userId === nextUserId) return;
+    const scope = toAccountScope(nextUserId);
+    // Revoke at the authentication boundary, before React renders the next
+    // account (including suspended renders). Rendering itself stays pure.
+    owner.current = {
+      key: JSON.stringify([scope, nextUserId]), scope, userId: nextUserId,
+      generation: owner.current.generation + 1,
+    };
+  }), []);
   const runtime = useRef<{ key: string; value: LucidJournalImportRuntime } | null>(null);
   const [view, setView] = useState({ key: ownerKey, state: INITIAL, available: false, remoteAvailable: false });
   useEffect(() => {

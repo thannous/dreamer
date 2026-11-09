@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { GATE_MAX_FAILURES, decideParcours, decideSmoke, runGate } from './pr-gate.mjs';
+import { GATE_MAX_FAILURES, decideParcours, decideSmoke, runGate, probeWebBrowser } from './pr-gate.mjs';
+import { SDK_PINS } from './qualification.mjs';
 import { SMOKE_STACK, UNZONED, parcoursExclude, selectionOwesNothing } from './zones.mjs';
 
 test('docs-only and non-app diffs skip both gates', () => {
@@ -266,4 +267,52 @@ test('model selection retains Dreamer language passes and the Lucid campaign', (
     assert.equal(call.environment.E2E_BUGBASH, '0');
     assert.ok(call.args.includes('--changed-since'));
   }
+});
+
+function browserRuntime(overrides = {}) {
+  const closed = [];
+  const browser = { version: () => '156.0.8078.4', close: async () => { closed.push(true); } };
+  const runtime = {
+    e2eVersion: SDK_PINS.e2e, webVersion: SDK_PINS['@e2e-dev/web'],
+    coreVersion: '1.64.1', matcherVersion: '1.64.1', expectedBrowserVersion: '156.0.8078.4',
+    chromium: { launch: async options => {
+      assert.deepEqual(options, { headless: true, timeout: 10_000 });
+      return browser;
+    } }, ...overrides,
+  };
+  return { runtime, browser, closed };
+}
+
+test('browser readiness accepts the installed headless engine and closes it', async () => {
+  const { runtime, closed } = browserRuntime();
+  assert.deepEqual(await probeWebBrowser('/unused', () => runtime), {
+    ok: true, version: '156.0.8078.4', webVersion: SDK_PINS['@e2e-dev/web'], playwrightVersion: '1.64.1',
+  });
+  assert.equal(closed.length, 1);
+});
+
+test('browser readiness rejects a missing shell instead of passing its metadata', async () => {
+  const { runtime } = browserRuntime({ chromium: { launch: async () => { throw new Error('ENOENT'); } } });
+  assert.deepEqual(await probeWebBrowser('/unused', () => runtime), { ok: false, code: 'BROWSER_UNAVAILABLE' });
+});
+
+test('browser readiness rejects a foreign SDK or mismatched engine and matcher before launching', async () => {
+  for (const mismatch of [{ e2eVersion: '0.0.0' }, { webVersion: '0.0.0' }, { matcherVersion: '1.0.0' }]) {
+    let launched = false;
+    const { runtime } = browserRuntime({ ...mismatch, chromium: { launch: async () => { launched = true; } } });
+    assert.deepEqual(await probeWebBrowser('/unused', () => runtime), { ok: false, code: 'ENGINE_VERSION' });
+    assert.equal(launched, false);
+  }
+});
+
+test('browser readiness rejects a browser version from another build and still closes it', async () => {
+  const { runtime, closed } = browserRuntime({ expectedBrowserVersion: '155.0.0.0' });
+  assert.deepEqual(await probeWebBrowser('/unused', () => runtime), { ok: false, code: 'BROWSER_VERSION' });
+  assert.equal(closed.length, 1);
+});
+
+test('browser readiness refuses a failed browser cleanup', async () => {
+  const { runtime, browser } = browserRuntime();
+  browser.close = async () => { throw new Error('cleanup failed'); };
+  assert.deepEqual(await probeWebBrowser('/unused', () => runtime), { ok: false, code: 'BROWSER_CLEANUP' });
 });

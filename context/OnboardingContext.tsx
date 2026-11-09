@@ -72,6 +72,14 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
   const [loading, setLoading] = useState(true);
   const [persisting, setPersisting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [loadInputs, setLoadInputs] = useState({ scope, authLoading });
+  if (loadInputs.scope !== scope || loadInputs.authLoading !== authLoading) {
+    setLoadInputs({ scope, authLoading });
+    // Even A -> B (still loading) -> A starts a new read. A previous A snapshot
+    // must not mark the new traversal ready before that read completes.
+    setLoadedScope(null);
+    setLoading(true);
+  }
   const activeLoadRef = useRef(0);
   const stateRef = useRef(state);
   const persistedStateRef = useRef(state);
@@ -84,18 +92,16 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
     transitionVersionRef.current += 1;
   }, [scope]);
 
-  const loadScope = useCallback(async (): Promise<OnboardingState> => {
+  const loadScope = useCallback((): Promise<OnboardingState> => {
     const loadId = activeLoadRef.current + 1;
     activeLoadRef.current = loadId;
-    setLoading(true);
-    setPersisting(false);
-    setError(null);
-
-    try {
+    const read = async () => {
       if (userId) {
         await claimGuestOnboardingState(userId);
       }
-      const next = await getOnboardingState(scope);
+      return getOnboardingState(scope);
+    };
+    return read().then(next => {
       if (activeLoadRef.current === loadId) {
         stateRef.current = next;
         persistedStateRef.current = next;
@@ -103,9 +109,11 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
         setState(next);
         setLoadedScope(scope);
         setLoading(false);
+        setPersisting(false);
+        setError(null);
       }
       return next;
-    } catch (cause) {
+    }).catch(cause => {
       const nextError = toError(cause);
       if (activeLoadRef.current === loadId) {
         const safeState = getDefaultOnboardingState();
@@ -116,10 +124,18 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
         setLoadedScope(scope);
         setError(nextError);
         setLoading(false);
+        setPersisting(false);
       }
       throw nextError;
-    }
+    });
   }, [scope, userId]);
+
+  const reload = useCallback(() => {
+    setLoading(true);
+    setPersisting(false);
+    setError(null);
+    return loadScope();
+  }, [loadScope]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -210,18 +226,18 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
     () => ({
       state: scopeReady ? state : unloadedScopeState,
       loading: authLoading || loading || !scopeReady,
-      persisting,
-      error,
+      persisting: scopeReady && persisting,
+      error: scopeReady ? error : null,
       scope,
       transition,
       continueForSession,
-      reload: loadScope,
+      reload,
     }),
     [
       authLoading,
       continueForSession,
       error,
-      loadScope,
+      reload,
       loading,
       persisting,
       scope,

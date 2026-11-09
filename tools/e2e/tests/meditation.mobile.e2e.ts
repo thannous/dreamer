@@ -1,6 +1,77 @@
+import { openNativeLink } from '../native-links';
 import { test } from '@e2e-dev/mobile';
 import { expect } from 'e2e';
 import { meditationJourney } from '../journeys';
+import { setTimeout as elapse } from 'node:timers/promises';
+
+test('Meditation release persists saving and removing a favourite across restarts', { tags: ['library', 'persistence'] }, async ({ app, screen, platform, device }) => {
+  await app.open();
+  await app.clearState();
+  await meditationJourney(app, screen, platform === 'ios');
+  await openNativeLink({ device, screen, platform }, 'noctaliameditation:///session/sleep-descent');
+  const favorite = screen.getByTestId('btn.session.favorite', { visible: true });
+  await favorite.tap();
+  await expect(screen.getByRole('button', /^(Saved|Enregistrée)$/, { visible: true })).toBeVisible();
+  await app.restart();
+  await openNativeLink({ device, screen, platform }, 'noctaliameditation:///favorites');
+  const saved = screen.getByTestId('favorites.session.sleep-descent', { visible: true });
+  await expect(saved).toHaveCount(1);
+  await saved.tap();
+  await expect(screen.getByRole('button', /^(Saved|Enregistrée)$/, { visible: true })).toBeVisible();
+  await favorite.tap();
+  await expect(screen.getByRole('button', /^(Save|Enregistrer)$/, { visible: true })).toBeVisible();
+  await app.restart();
+  await openNativeLink({ device, screen, platform }, 'noctaliameditation:///favorites');
+  await expect(screen.getByText(/^(Nothing saved yet|Rien d’enregistré)$/, { visible: true }).first()).toBeVisible();
+  await expect(saved).toHaveCount(0);
+  await app.screenshot('meditation-native-favourite-removal');
+});
+
+test('Meditation release keeps playback across background and records one completed session', { tags: ['audio', 'recovery', 'persistence'], timeout: 240_000 }, async ({ app, screen, platform, device }) => {
+  await app.open();
+  await app.clearState();
+  await meditationJourney(app, screen, platform === 'ios');
+  await screen.getByTestId('home.journey.cta', { visible: true }).tap();
+  await screen.getByTestId('btn.session.play', { visible: true }).tap();
+  const position = screen.getByTestId('text.player.position', { visible: true });
+  await expect(position).not.toHaveText('0:00');
+  const seconds = (text: string | null) => {
+    const [minutes, remainder] = (text ?? '').split(':').map(Number);
+    return minutes * 60 + remainder;
+  };
+  const before = seconds(await position.textContent());
+  const started = performance.now();
+  await device.home();
+  // This interval is the behavior under test, not a readiness sleep: a player
+  // that pauses in background and resumes in foreground must fail this check.
+  await elapse(8_000);
+  await device.openApp('com.noctalia.meditation');
+  await expect(screen.getByTestId('screen.player', { visible: true })).toBeVisible();
+  await expect(screen.getByRole('button', 'Pause', { visible: true })).toBeVisible();
+  const after = seconds(await position.textContent());
+  const elapsedSeconds = Math.floor((performance.now() - started) / 1_000);
+  expect(after - before).toBeGreaterThanOrEqual(elapsedSeconds - 2);
+  // UIKit reports this adjustable Pressable as "other"; its label is shared.
+  const slider = screen.getByLabel(/^(Playback position|Position de lecture)$/, { visible: true });
+  const bounds = await slider.boundingBox();
+  if (!bounds) throw new Error('Playback position control is unavailable.');
+  await slider.tap({ position: { x: bounds.width - 1, y: bounds.height / 2 } });
+  await expect(screen.getByTestId('screen.sessionComplete', { visible: true })).toBeVisible();
+  await screen.getByTestId('btn.complete.home', { visible: true }).tap();
+  for (let restart = 0; restart < 2; restart++) {
+    await app.restart();
+    await screen.getByTestId('tab.profile', { visible: true }).tap();
+    const streak = screen.getByTestId('text.profile.streak', { visible: true });
+    await screen.scrollUntilVisible(streak);
+    await expect(streak.getByText('1', { exact: true }).first()).toBeVisible();
+    const history = screen.getByTestId('btn.history.open', { visible: true });
+    // History is above the statistics; reading the streak can scroll it away.
+    await screen.scrollUntilVisible(history, { direction: 'up' });
+    await history.tap();
+    await expect(screen.getByTestId(/^history\.entry\./, { visible: true })).toHaveCount(1);
+  }
+  await app.screenshot('meditation-native-completion-once');
+});
 
 test('Meditation release persists onboarding and opens every main tab', async ({ app, screen, platform }) => {
   await app.open();

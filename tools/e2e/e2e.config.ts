@@ -4,6 +4,7 @@ import { webEngine, webLocale } from './web-engine';
 import { fileURLToPath } from 'node:url';
 import { managedAppCommand } from './managed-app';
 import { createDreamerPersonaAgents } from './dreamer-personas';
+import { createCompanionPersonaAgents } from './companion-personas';
 import { parcoursTouches } from './zone-filter';
 import { readFileSync } from 'node:fs';
 import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
@@ -33,7 +34,7 @@ if (backend) {
 const personas = process.env.E2E_PERSONAS === '1';
 if (process.env.E2E_PERSONAS !== undefined && !['0', '1'].includes(process.env.E2E_PERSONAS))
   throw new Error('E2E_PERSONAS takes 0 or 1.');
-if (personas && product !== 'dreamer') throw new Error('Personas require Dreamer.');
+if (personas && !['dreamer', 'lucid', 'meditation'].includes(product)) throw new Error('Personas require an app-specific QA product.');
 const output = process.env.E2E_OUTPUT ?? `.e2e/${product}-${platform}`;
 const appLog = `${fileURLToPath(new URL('.', import.meta.url))}${output}/app.log`;
 // 0 asks e2e for a free port, which it hands the command as {port} (web-ports.mjs).
@@ -68,16 +69,19 @@ const managedCommand = !native && product !== 'site'
 export default {
   projectId: `noctalia-${product}`,
   tests: nativeJourneys ? ['tests/dreamer-essential-capture.mobile.e2e.ts', 'tests/dreamer-voice.mobile.e2e.ts', 'tests/dreamer-sync-account.mobile.e2e.ts', 'tests/dreamer-recovery.mobile.e2e.ts']
-    : branch ? 'tests/branch.web.e2e.ts' : backend ? 'tests/backend-*.web.e2e.ts' : personas ? `tests/dreamer-personas.${native ? 'mobile' : 'web'}.e2e.ts`
+    : branch ? 'tests/branch.web.e2e.ts' : backend ? 'tests/backend-*.web.e2e.ts' : personas ? `tests/${product}-personas.${native ? 'mobile' : 'web'}.e2e.ts`
     : process.env.E2E_BUGBASH === '1' && product === 'dreamer' && !native
       ? ['tests/dreamer*.web.e2e.ts', 'tests/bugbash/**/*.e2e.ts']
       : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts'
       // Each file runs on one worker: the site's journeys are split into files that run side by side.
       : product === 'site' ? 'tests/site*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
-  ...(personas ? { agents: createDreamerPersonaAgents(
+  ...(personas ? { agents: product === 'dreamer' ? createDreamerPersonaAgents(
     process.env.E2E_PERSONA_MODEL?.trim() || process.env.E2E_PERSONA_ACT_MODEL?.trim() || undefined,
     process.env.E2E_PERSONA_JUDGE_MODEL?.trim() || undefined,
     native ? 'fr-FR' : webLocale,
+  ) : createCompanionPersonaAgents(product as 'lucid' | 'meditation',
+    process.env.E2E_PERSONA_MODEL?.trim() || process.env.E2E_PERSONA_ACT_MODEL?.trim() || undefined,
+    process.env.E2E_PERSONA_JUDGE_MODEL?.trim() || undefined,
   ) } : {}),
   filters: [parcoursTouches],
   ...(nativeJourneys ? { credentials: nativeBackendCredentials() } : {}),

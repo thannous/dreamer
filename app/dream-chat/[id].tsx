@@ -129,6 +129,61 @@ const CHAT_HISTORY_MIGRATION_VERSION = 1;
 const chatHistoryMigrationInFlightByDreamId = new Map<string, Promise<void>>();
 const chatHistoryMigrationCompletedByDreamId = new Map<string, number>();
 
+function normalizeChatHistory(dream: DreamAnalysis, dreamIdentity: string, t: ReturnType<typeof useTranslation>['t']) {
+  type LegacyChatMessage = Partial<Omit<ChatMessage, 'id'>> & {
+    id?: unknown;
+    createdAt?: unknown;
+  };
+
+  if (dream.chatHistory && dream.chatHistory.length > 0) {
+    const localizedPrefix = t('dream_chat.draft_prefix');
+    let didChange = false;
+    const normalized = dream.chatHistory.map((msg, index) => {
+      const legacyMsg: LegacyChatMessage = msg;
+
+      const rawId = legacyMsg.id;
+      const fallbackId = `legacy-${dreamIdentity}-${index}`;
+      const nextId = typeof rawId === 'string' && rawId.length > 0 ? rawId : fallbackId;
+      if (nextId !== rawId) {
+        didChange = true;
+      }
+
+      const rawCreatedAt = legacyMsg.createdAt;
+      const createdAt =
+        typeof rawCreatedAt === 'number' && Number.isFinite(rawCreatedAt) ? rawCreatedAt : undefined;
+      if (createdAt !== rawCreatedAt && rawCreatedAt !== undefined) {
+        didChange = true;
+      }
+
+      const next: ChatMessage = { ...msg, id: nextId, createdAt };
+
+      if (index !== 0 || next.role !== 'user') return next;
+
+      const text = next.text ?? '';
+      for (const legacyPrefix of LEGACY_DRAFT_PREFIXES) {
+        if (text.startsWith(legacyPrefix)) {
+          const rest = text.slice(legacyPrefix.length).trimStart();
+          const updatedText = rest ? `${localizedPrefix} ${rest}` : localizedPrefix;
+          if (updatedText !== text) {
+            didChange = true;
+          }
+          return { ...next, text: updatedText };
+        }
+      }
+      return next;
+    });
+
+    return { messages: normalized, didChange };
+  }
+  return { messages: [] as ChatMessage[], didChange: false };
+}
+
+function initialChatMessages(dream: DreamAnalysis | undefined, dreamIdentity: string, t: ReturnType<typeof useTranslation>['t']): ChatMessage[] {
+  if (!dream) return [];
+  const restored = normalizeChatHistory(dream, dreamIdentity, t).messages;
+  return restored.length ? restored : [createChatMessage('model', t('dream_chat.initial_greeting', { title: dream.title }))];
+}
+
 export default function DreamChatScreen() {
   const route = useLocalSearchParams<{ id: string; remoteId?: string; clientRequestId?: string }>();
   const { user } = useAuth();
@@ -173,7 +228,12 @@ function DreamChatContent() {
     return true;
   }, [networkState.isConnected, networkState.isInternetReachable]);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => initialChatMessages(dream, dreamIdentity, t));
+  const [messageScope, setMessageScope] = useState({ dreamIdentity, t });
+  if (messageScope.dreamIdentity !== dreamIdentity || messageScope.t !== t) {
+    setMessageScope({ dreamIdentity, t });
+    setMessages(() => initialChatMessages(dream, dreamIdentity, t));
+  }
   const composerRef = useRef<ChatComposerHandle>(null);
   const { isSending: isLoading, send: sendChat } = useDreamChatSend();
   const {
@@ -194,8 +254,15 @@ function DreamChatContent() {
   // Read only by the composer: a drag in the conversation does not render this screen again.
   const [scrollActivity] = useState(createScrollActivity);
   const [explorationBlocked, setExplorationBlocked] = useState(false);
-  const [quotaCheckComplete, setQuotaCheckComplete] = useState(false);
+  const [quotaCheckComplete, setQuotaCheckComplete] = useState(!dream);
   const [quotaCheckError, setQuotaCheckError] = useState<string | null>(null);
+  const [quotaInputs, setQuotaInputs] = useState({ dream, canExplore, t });
+  if (quotaInputs.dream !== dream || quotaInputs.canExplore !== canExplore || quotaInputs.t !== t) {
+    setQuotaInputs({ dream, canExplore, t });
+    setQuotaCheckComplete(!dream);
+    setQuotaCheckError(null);
+  }
+  const quotaRequestRef = useRef(0);
   const quotaCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
   const lastSynthesisSentKeyRef = useRef<string | null>(null);
@@ -305,127 +372,71 @@ function DreamChatContent() {
     );
   }, [freeLimitCopy, openMessageLimitUpgrade, t, tier]);
 
-  const runQuotaCheck = useCallback(async () => {
-    if (!isMountedRef.current) return;
-
-    setQuotaCheckComplete(false);
-    setQuotaCheckError(null);
-
-    if (!dream) {
-      setQuotaCheckComplete(true);
-      return;
-    }
-
-    if (quotaCheckTimeoutRef.current) {
-      clearTimeout(quotaCheckTimeoutRef.current);
-    }
-
+  const checkQuota = useCallback(() => {
+    if (!isMountedRef.current || !dream) return;
+    const request = ++quotaRequestRef.current;
+    const isCurrent = () => isMountedRef.current && quotaRequestRef.current === request;
+    if (quotaCheckTimeoutRef.current) clearTimeout(quotaCheckTimeoutRef.current);
     let didTimeout = false;
+    let timeout: ReturnType<typeof setTimeout>;
     const timeoutPromise = new Promise<boolean>((_, reject) => {
-      quotaCheckTimeoutRef.current = setTimeout(() => {
+      timeout = setTimeout(() => {
         didTimeout = true;
         reject(new Error('QUOTA_CHECK_TIMEOUT'));
       }, QUOTA_CHECK_TIMEOUT_MS);
+      quotaCheckTimeoutRef.current = timeout;
     });
-
-    try {
-      const canExploreDream = await Promise.race([canExplore(), timeoutPromise]);
-      setExplorationBlocked(!canExploreDream);
-    } catch (error) {
-      if (__DEV__ && !didTimeout) {
-        console.error('[DreamChat] Quota check failed:', error);
-      }
+    return Promise.race([canExplore(), timeoutPromise]).then(canExploreDream => {
+      if (isCurrent()) setExplorationBlocked(!canExploreDream);
+    }).catch(error => {
+      if (!isCurrent()) return;
+      if (__DEV__ && !didTimeout) console.error('[DreamChat] Quota check failed:', error);
       setQuotaCheckError(t('dream_chat.quota_check_error'));
-    } finally {
-      if (quotaCheckTimeoutRef.current) {
-        clearTimeout(quotaCheckTimeoutRef.current);
-        quotaCheckTimeoutRef.current = null;
-      }
-      if (isMountedRef.current) {
-        setQuotaCheckComplete(true);
-      }
-    }
+    }).finally(() => {
+      clearTimeout(timeout);
+      if (quotaCheckTimeoutRef.current === timeout) quotaCheckTimeoutRef.current = null;
+      if (isCurrent()) setQuotaCheckComplete(true);
+    });
   }, [dream, canExplore, t]);
 
-  // Synchronize the external quota service; keep its loading/error state observable.
-  useEffect(() => {
-    runQuotaCheck();
-  }, [runQuotaCheck]);
+  const runQuotaCheck = useCallback(() => {
+    setQuotaCheckComplete(!dream);
+    setQuotaCheckError(null);
+    return checkQuota();
+  }, [checkQuota, dream]);
 
-  // Restore this external conversation once per entry/language. Continuously deriving
-  // it from dream updates would overwrite a pending local or streaming message.
+  useEffect(() => {
+    void checkQuota();
+    return () => {
+      quotaRequestRef.current += 1;
+      if (quotaCheckTimeoutRef.current) clearTimeout(quotaCheckTimeoutRef.current);
+    };
+  }, [checkQuota]);
+
+  // Persist a legacy history migration once per entry/language. Local messages
+  // reset only with their identity, so storage updates cannot overwrite a stream.
   useEffect(() => {
     if (!dream) return;
 
-    type LegacyChatMessage = Partial<Omit<ChatMessage, 'id'>> & {
-      id?: unknown;
-      createdAt?: unknown;
-    };
-
-    // Initialize with existing chat history or start new conversation
-    if (dream.chatHistory && dream.chatHistory.length > 0) {
-      const localizedPrefix = t('dream_chat.draft_prefix');
-      let didChange = false;
-      const normalized = dream.chatHistory.map((msg, index) => {
-        const legacyMsg: LegacyChatMessage = msg;
-
-        const rawId = legacyMsg.id;
-        const fallbackId = `legacy-${dreamIdentity}-${index}`;
-        const nextId = typeof rawId === 'string' && rawId.length > 0 ? rawId : fallbackId;
-        if (nextId !== rawId) {
-          didChange = true;
-        }
-
-        const rawCreatedAt = legacyMsg.createdAt;
-        const createdAt =
-          typeof rawCreatedAt === 'number' && Number.isFinite(rawCreatedAt) ? rawCreatedAt : undefined;
-        if (createdAt !== rawCreatedAt && rawCreatedAt !== undefined) {
-          didChange = true;
-        }
-
-        const next: ChatMessage = { ...msg, id: nextId, createdAt };
-
-        if (index !== 0 || next.role !== 'user') return next;
-
-        const text = next.text ?? '';
-        for (const legacyPrefix of LEGACY_DRAFT_PREFIXES) {
-          if (text.startsWith(legacyPrefix)) {
-            const rest = text.slice(legacyPrefix.length).trimStart();
-            const updatedText = rest ? `${localizedPrefix} ${rest}` : localizedPrefix;
-            if (updatedText !== text) {
-              didChange = true;
-            }
-            return { ...next, text: updatedText };
+    const { messages: normalized, didChange } = normalizeChatHistory(dream, dreamIdentity, t);
+    if (
+      didChange &&
+      chatHistoryMigrationCompletedByDreamId.get(dreamIdentity) !== CHAT_HISTORY_MIGRATION_VERSION &&
+      !chatHistoryMigrationInFlightByDreamId.has(dreamIdentity)
+    ) {
+      const migration = (async () => {
+        try {
+          await updateDream({ ...dream, chatHistory: normalized } as DreamAnalysis);
+          chatHistoryMigrationCompletedByDreamId.set(dreamIdentity, CHAT_HISTORY_MIGRATION_VERSION);
+        } catch (error) {
+          if (__DEV__) {
+            console.warn('[DreamChat] Failed to persist chat history migration', error);
           }
+        } finally {
+          chatHistoryMigrationInFlightByDreamId.delete(dreamIdentity);
         }
-        return next;
-      });
-
-      setMessages(normalized);
-
-      if (
-        didChange &&
-        chatHistoryMigrationCompletedByDreamId.get(dreamIdentity) !== CHAT_HISTORY_MIGRATION_VERSION &&
-        !chatHistoryMigrationInFlightByDreamId.has(dreamIdentity)
-      ) {
-        const migration = (async () => {
-          try {
-            await updateDream({ ...dream, chatHistory: normalized } as DreamAnalysis);
-            chatHistoryMigrationCompletedByDreamId.set(dreamIdentity, CHAT_HISTORY_MIGRATION_VERSION);
-          } catch (error) {
-            if (__DEV__) {
-              console.warn('[DreamChat] Failed to persist chat history migration', error);
-            }
-          } finally {
-            chatHistoryMigrationInFlightByDreamId.delete(dreamIdentity);
-          }
-        })();
-        chatHistoryMigrationInFlightByDreamId.set(dreamIdentity, migration);
-      }
-    } else {
-      // Start with initial AI greeting
-      const initialMessage = createChatMessage('model', t('dream_chat.initial_greeting', { title: dream.title }));
-      setMessages([initialMessage]);
+      })();
+      chatHistoryMigrationInFlightByDreamId.set(dreamIdentity, migration);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dreamIdentity, t]);

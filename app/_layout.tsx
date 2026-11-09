@@ -10,7 +10,7 @@ import { useLocales } from 'expo-localization';
 import * as Notifications from 'expo-notifications';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { Linking, LogBox, NativeModules, Platform } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 
@@ -202,29 +202,14 @@ export const unstable_settings = {
 function useNavigationIsReady(): boolean {
   const navigationRef = useNavigationContainerRef();
   const rootNavigationState = useRootNavigationState();
-  const [navigationReady, setNavigationReady] = useState(() => navigationRef.isReady());
-
-  useEffect(() => {
-    if (!rootNavigationState?.key) {
-      return;
-    }
-
-    if (navigationRef.isReady()) {
-      setNavigationReady(true);
-      return;
-    }
-
-    const unsubscribe = navigationRef.addListener?.('state', () => {
-      if (navigationRef.isReady()) {
-        setNavigationReady(true);
-      }
-    });
-
+  const subscribe = useCallback((onChange: () => void) => {
+    const unsubscribeState = navigationRef.addListener('state', onChange);
     return () => {
-      unsubscribe?.();
+      unsubscribeState();
     };
-  }, [navigationRef, rootNavigationState?.key]);
-
+  }, [navigationRef]);
+  const getSnapshot = useCallback(() => navigationRef.isReady(), [navigationRef]);
+  const navigationReady = useSyncExternalStore(subscribe, getSnapshot, () => false);
   return navigationReady && !!rootNavigationState?.key;
 }
 
@@ -259,6 +244,7 @@ function RootLayoutNav({
   const authReturnOnboardingOwned = useRef<AuthReturnIntent | null>(null);
   const [authReturnEngaged, setAuthReturnEngaged] = useState<AuthReturnIntent | null>(null);
   const [paywallReturnEngaged, setPaywallReturnEngaged] = useState<Href | null>(null);
+  const paywallReturnAcknowledged = useRef<Href | null>(null);
   const initialLaunchConsumed = useRef(false);
   const pathnameRef = useRef(pathname);
   const initialWebHrefRef = useRef<string | null>(
@@ -429,11 +415,10 @@ function RootLayoutNav({
     };
   }, [enqueueNotification]);
 
-  const consumeWinningNotification = useCallback(async () => {
+  const consumeWinningNotification = useCallback(() => {
     const mutationVersion = notificationMutationVersion.current + 1;
     notificationMutationVersion.current = mutationVersion;
-    try {
-      await clearPendingRecordingNotification();
+    return clearPendingRecordingNotification().then(() => {
       if (notificationMutationVersion.current === mutationVersion) {
         notificationNavigationClaimed.current = false;
         setPendingNotificationUrl(null);
@@ -441,11 +426,11 @@ function RootLayoutNav({
         setNotificationWinningDestination(null);
         setNotificationWinningEngaged(false);
       }
-    } catch (error) {
+    }).catch(error => {
       if (__DEV__) {
         console.warn('[RootLayoutNav] Unable to consume notification intent', error);
       }
-    }
+    });
   }, []);
 
   const engageDecision = useCallback(
@@ -462,16 +447,11 @@ function RootLayoutNav({
         }
         notificationNavigationClaimed.current = true;
       }
-      if (isStartup) {
-        setStartupDestination(decision.destination);
-        setStartupDestinationEngaged(false);
-      }
-      if (decision.reason === 'notification') {
-        setNotificationWinningDestination(decision.destination);
-        setNotificationWinningEngaged(false);
-      }
-
       runAfterNavigationMount(() => {
+        // Publish the destination with the navigation operation, once the
+        // container can accept it; there is no intermediate UI state to render.
+        if (isStartup) setStartupDestination(decision.destination);
+        if (decision.reason === 'notification') setNotificationWinningDestination(decision.destination);
         const reuseObservedRoute = canReuseObservedStartupDestination(
           decision.destination,
           pathnameRef.current
@@ -487,6 +467,7 @@ function RootLayoutNav({
         if (decision.reason === 'auth_return') setAuthReturnEngaged(authReturnIntent);
         if (!isLucidTrainer && peekReturnToPaywallTrigger()
           && decision.reason !== 'onboarding' && decision.reason !== 'returning_guest_blocked') {
+          paywallReturnAcknowledged.current = null;
           setPaywallReturnEngaged(decision.destination);
         }
       });
@@ -496,12 +477,13 @@ function RootLayoutNav({
 
   useEffect(() => {
     if (!startupReady || !user || !paywallReturnEngaged
+      || paywallReturnAcknowledged.current === paywallReturnEngaged
       || !isStartupDestinationObserved(paywallReturnEngaged, pathname)) return;
     // Acknowledge only after the account's gates and destination are observed.
     // Native Back/swipes need no close handler to prevent replay; a higher-priority
     // dream return also satisfies this generic authentication continuation.
     clearReturnToPaywallIntent();
-    setPaywallReturnEngaged(null);
+    paywallReturnAcknowledged.current = paywallReturnEngaged;
   }, [pathname, paywallReturnEngaged, startupReady, user]);
 
   useEffect(() => {
@@ -534,13 +516,12 @@ function RootLayoutNav({
   useEffect(() => {
     if (
       !startupDestinationEngaged ||
+      hasTrackedColdStart.current ||
       !isStartupDestinationObserved(startupDestination, pathname)
     ) {
       return;
     }
 
-    setStartupDestination(null);
-    setStartupDestinationEngaged(false);
     onStartupCommitted();
     if (!hasTrackedColdStart.current) {
       hasTrackedColdStart.current = true;

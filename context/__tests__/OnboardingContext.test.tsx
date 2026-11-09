@@ -127,6 +127,28 @@ describe('OnboardingContext scope isolation', () => {
     mockHarness.persist.mockImplementation(async (_scope: string, state: unknown) => state);
   });
 
+  it('waits for a fresh read when returning to A while the B read is still pending', async () => {
+    const { result, rerender } = renderHook(() => useOnboarding(), { wrapper });
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    let resolveB!: (state: unknown) => void;
+    let resolveA!: (state: unknown) => void;
+    mockHarness.getState.mockImplementationOnce(() => new Promise(resolve => { resolveB = resolve; }));
+    mockHarness.auth = { user: { id: 'two' }, loading: false };
+    rerender();
+    await waitFor(() => expect(resolveB).toBeDefined());
+
+    mockHarness.getState.mockImplementationOnce(() => new Promise(resolve => { resolveA = resolve; }));
+    mockHarness.auth = { user: { id: 'one' }, loading: false };
+    rerender();
+    await waitFor(() => expect(resolveA).toBeDefined());
+    expect(result.current.loading).toBe(true);
+    await act(async () => { resolveB({ ...mockHarness.defaultState(), status: 'completed' }); });
+    expect(result.current.loading).toBe(true);
+    await act(async () => { resolveA(mockHarness.defaultState()); });
+    expect(result.current.loading).toBe(false);
+    expect(result.current.state.status).toBe('not_started');
+  });
+
   it('exposes loading and not_started while a new account scope is unresolved', async () => {
     const firstState = {
       ...mockHarness.defaultState(),

@@ -260,6 +260,12 @@ export function useDreamPersistence({
   const [publishedScopeKey, setPublishedScopeKey] = useState(activeScopeKey);
   const [completeness, setCompleteness] = useState<JournalCompletenessState>({ status: 'loading' });
   const [remotePreviewAllowed, setRemotePreviewAllowed] = useState(false);
+  const [loadInputs, setLoadInputs] = useState({ activeScopeKey, authSessionReady });
+  if (loadInputs.activeScopeKey !== activeScopeKey || loadInputs.authSessionReady !== authSessionReady) {
+    setLoadInputs({ activeScopeKey, authSessionReady });
+    setRemotePreviewAllowed(false);
+    setCompleteness({ status: 'loading' });
+  }
   const traversalRef = useRef<{ scopeKey: string; sequence: number; cursor: JournalCursor | null; items: DreamAnalysis[] } | null>(null);
   const [refreshState, setRefreshState] = useState<DreamRefreshState>({ status: 'idle' });
   const [remoteSnapshot, setRemoteSnapshot] = useState<{ userScope: string | null; dreams: DreamAnalysis[] } | null>(null);
@@ -283,8 +289,6 @@ export function useDreamPersistence({
     if (activeScopeKeyRef.current !== activeScopeKey) {
       traversalRef.current = null;
       serverSnapshotRef.current = null;
-      setRemotePreviewAllowed(false);
-      setCompleteness({ status: 'loading' });
     }
     activeScopeKeyRef.current = activeScopeKey;
   }, [activeScopeKey]);
@@ -972,7 +976,7 @@ export function useDreamPersistence({
   /**
    * Load dreams from storage/server
    */
-  const loadDreams = useCallback(async (mounted: { current: boolean }) => {
+  const loadDreams = useCallback((mounted: { current: boolean }) => {
     const scopeKey = canUseRemoteSync ? `remote:${userScope ?? 'anonymous'}` : 'local';
     const target = canUseRemoteSync ? 'remote-cache' : 'device';
     const scope = getWriteScope(scopeKey);
@@ -994,115 +998,260 @@ export function useDreamPersistence({
         currentScope.failed !== null
       );
     };
-    if (isCurrent()) {
-      setPublishedScopeKey(scopeKey);
-      setRemotePreviewAllowed(false);
-      setCompleteness({ status: 'loading' });
-      if (!scope.hydrated) setLoaded(false);
-      if (!scope.hydrated) setStateForScope(scopeKey, { status: 'loading', target });
-      if (scope.failed) setDreamsForScope(scopeKey, scope.failed.dreams);
-    }
     let pendingMutations: DreamMutation[] = [];
-
-    try {
-      if (!canUseRemoteSync) {
-        const localResult = await getSavedDreams();
-        if (!isCurrent()) return { pendingMutations: [] };
-        const preserveWriteAuthority = mustPreserveWriteAuthority();
-        const localDreams = hydrateWriteScope(scopeKey, localResult, {
-          preserveWriteAuthority,
-        });
-        if (localDreams && isCurrent()) {
-          const currentScope = getWriteScope(scopeKey);
-          if (!preserveWriteAuthority) {
-            setDreamsForScope(scopeKey, localDreams);
-            // A fresh authoritative read lets later edits recover from an
-            // earlier ambiguous write without trusting a stale snapshot.
-            if (pendingGuestAdditionRef.current?.outcome === 'unknown') {
-              pendingGuestAdditionRef.current = null;
+    // Publish from the storage response. Scope/load tokens were captured before
+    // these reads so intervening edits and account changes keep their authority.
+    const initialRead = canUseRemoteSync
+      ? Promise.allSettled([getPendingDreamMutations(userScope), getCachedRemoteDreams(userScope)])
+        .then(results => ({ kind: 'remote', results } as const))
+      : Promise.allSettled([getSavedDreams()])
+        .then(([result]) => ({ kind: 'local', result } as const));
+    return initialRead.then(async read => {
+      try {
+        if (!isCurrent()) return { pendingMutations };
+        // A failed write belongs to its account even after visiting another
+        // account. Restore that payload before considering the durable read.
+        if (scope.failed) setDreamsForScope(scopeKey, scope.failed.dreams);
+        if (read.kind === 'local') {
+          if (read.result.status === 'rejected') throw read.result.reason;
+          const localResult = read.result.value;
+          if (!isCurrent()) return { pendingMutations: [] };
+          const preserveWriteAuthority = mustPreserveWriteAuthority();
+          const localDreams = hydrateWriteScope(scopeKey, localResult, {
+            preserveWriteAuthority,
+          });
+          if (localDreams && isCurrent()) {
+            const currentScope = getWriteScope(scopeKey);
+            if (!preserveWriteAuthority) {
+              setDreamsForScope(scopeKey, localDreams);
+              // A fresh authoritative read lets later edits recover from an
+              // earlier ambiguous write without trusting a stale snapshot.
+              if (pendingGuestAdditionRef.current?.outcome === 'unknown') {
+                pendingGuestAdditionRef.current = null;
+              }
             }
+            setPendingMutations([]);
+            setPendingMutationsLoaded(true);
+            setPendingMutationsScope(null);
+            setStateForScope(
+              scopeKey,
+              currentScope.failed
+                ? { status: 'error', operation: 'write', target }
+                : currentScope.pendingCount > 0
+                  ? { status: 'saving', target }
+                : { status: 'ready', target }
+            );
+          } else if (isCurrent()) {
+            setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
           }
-          setPendingMutations([]);
-          setPendingMutationsLoaded(true);
-          setPendingMutationsScope(null);
-          setStateForScope(
-            scopeKey,
-            currentScope.failed
-              ? { status: 'error', operation: 'write', target }
-              : currentScope.pendingCount > 0
-                ? { status: 'saving', target }
-              : { status: 'ready', target }
-          );
-        } else if (isCurrent()) {
+          setCompleteness({ status: localResult.status !== 'error' ? 'local' : 'incomplete' });
+          return { pendingMutations: [] };
+        }
+
+        // Parallelize initial reads - fetch pending mutations and cached dreams simultaneously
+        const [pendingResult, cachedResult] = read.results;
+
+        if (!isCurrent()) return { pendingMutations: [] };
+
+        const pendingReadSucceeded = pendingResult.status === 'fulfilled';
+        pendingMutations = pendingReadSucceeded ? pendingResult.value : [];
+        const preserveWriteAuthorityAfterRead = mustPreserveWriteAuthority();
+        const cacheWasLoaded =
+          cachedResult.status === 'fulfilled' && cachedResult.value.status === 'loaded';
+        const cacheRead = cachedResult.status === 'fulfilled'
+          ? hydrateWriteScope(scopeKey, cachedResult.value, {
+              preserveWriteAuthority: preserveWriteAuthorityAfterRead,
+            })
+          : null;
+        const storageReadSucceeded = pendingReadSucceeded && cacheRead !== null;
+        reportSyncQueueMetrics({
+          mutations: pendingMutations,
+          reason: 'reload_pending_queue',
+          userScope,
+        });
+        // A replay or user action can consume this queue while the cache read waits.
+        // Keep the already hydrated queue instead of reintroducing its old snapshot.
+        const queueSnapshotIsObsolete = scope.sequence !== writeSequenceAtStart ||
+          (preserveWriteAuthorityAfterRead && pendingHydrationRef.current.loaded &&
+            pendingHydrationRef.current.scope === userScope);
+        if (isCurrent() && !queueSnapshotIsObsolete) {
+          setPendingMutations(pendingMutations);
+          setPendingMutationsLoaded(pendingReadSucceeded);
+          setPendingMutationsScope(userScope);
+        }
+
+        // Publish the durable local snapshot before authentication or network work.
+        if (storageReadSucceeded) {
+          if (!preserveWriteAuthorityAfterRead) {
+            setDreamsForScope(scopeKey, normalizeDreamList(applyPendingMutations(cacheRead!, pendingMutations)));
+          }
+          setLoaded(true);
+          setStateForScope(scopeKey, scope.failed
+            ? { status: 'error', operation: 'write', target }
+            : scope.pendingCount > 0 ? { status: 'saving', target } : { status: 'ready', target });
+        } else {
           setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
         }
-        setCompleteness({ status: localResult.status !== 'error' ? 'local' : 'incomplete' });
-        return { pendingMutations: [] };
-      }
+        baseline ??= normalizeDreamList(applyPendingMutations(cacheRead ?? [], pendingMutations));
+        setRefreshState({ status: 'refreshing' });
+        setRemotePreviewAllowed(storageReadSucceeded && pendingReadSucceeded &&
+          cacheRead?.length === 0 && pendingMutations.length === 0 && scope.sequence === 0);
+        try {
+          const hasSession = authSessionReady || await ensureAccessToken({
+            isCurrent,
+            retries: 5,
+            delayMs: 250,
+            logLabel: '[useDreamPersistence] Skipping remote dream load: auth session not ready',
+          });
 
-      // Parallelize initial reads - fetch pending mutations and cached dreams simultaneously
-      const [pendingResult, cachedResult] = await Promise.allSettled([
-        getPendingDreamMutations(userScope),
-        getCachedRemoteDreams(userScope),
-      ]);
+          if (!isCurrent()) return { pendingMutations };
+          if (!hasSession) {
+            setRefreshState({ status: 'error' });
+            setCompleteness({ status: 'incomplete' });
+            const preserveWriteAuthority = mustPreserveWriteAuthority();
+            if (cacheWasLoaded && cacheRead && isCurrent() && !preserveWriteAuthority) {
+              setDreamsForScope(
+                scopeKey,
+                normalizeDreamList(applyPendingMutations(cacheRead, pendingMutations))
+              );
+            }
+            if (isCurrent()) {
+              const currentScope = getWriteScope(scopeKey);
+              setStateForScope(
+                scopeKey,
+                currentScope.failed
+                  ? { status: 'error', operation: 'write', target }
+                  : currentScope.pendingCount > 0
+                    ? { status: 'saving', target }
+                  : pendingReadSucceeded && cacheWasLoaded
+                  ? { status: 'ready', target }
+                  : { status: 'error', operation: 'read', target }
+              );
+            }
+            return { pendingMutations };
+          }
 
-      if (!isCurrent()) return { pendingMutations: [] };
+          try {
+            await migrateGuestDreamsToSupabase({ isCurrent });
+          } catch (migrationError) {
+            logger.warn('Failed to migrate guest dreams', migrationError);
+            if (
+              migrationError instanceof DreamPersistenceError &&
+              migrationError.target === 'device'
+            ) {
+              if (isCurrent()) {
+                setCompleteness({ status: 'incomplete' });
+                setStateForScope(scopeKey, {
+                  status: 'error',
+                  operation: migrationError.operation,
+                  target: 'device',
+                });
+              }
+              return { pendingMutations };
+            }
+          }
 
-      const pendingReadSucceeded = pendingResult.status === 'fulfilled';
-      pendingMutations = pendingReadSucceeded ? pendingResult.value : [];
-      const preserveWriteAuthorityAfterRead = mustPreserveWriteAuthority();
-      const cacheWasLoaded =
-        cachedResult.status === 'fulfilled' && cachedResult.value.status === 'loaded';
-      const cacheRead = cachedResult.status === 'fulfilled'
-        ? hydrateWriteScope(scopeKey, cachedResult.value, {
-            preserveWriteAuthority: preserveWriteAuthorityAfterRead,
-          })
-        : null;
-      const storageReadSucceeded = pendingReadSucceeded && cacheRead !== null;
-      reportSyncQueueMetrics({
-        mutations: pendingMutations,
-        reason: 'reload_pending_queue',
-        userScope,
-      });
-      // A replay or user action can consume this queue while the cache read waits.
-      // Keep the already hydrated queue instead of reintroducing its old snapshot.
-      const queueSnapshotIsObsolete = scope.sequence !== writeSequenceAtStart ||
-        (preserveWriteAuthorityAfterRead && pendingHydrationRef.current.loaded &&
-          pendingHydrationRef.current.scope === userScope);
-      if (isCurrent() && !queueSnapshotIsObsolete) {
-        setPendingMutations(pendingMutations);
-        setPendingMutationsLoaded(pendingReadSucceeded);
-        setPendingMutationsScope(userScope);
-      }
-
-      // Publish the durable local snapshot before authentication or network work.
-      if (storageReadSucceeded) {
-        if (!preserveWriteAuthorityAfterRead) {
-          setDreamsForScope(scopeKey, normalizeDreamList(applyPendingMutations(cacheRead!, pendingMutations)));
-        }
-        setLoaded(true);
-        setStateForScope(scopeKey, scope.failed
-          ? { status: 'error', operation: 'write', target }
-          : scope.pendingCount > 0 ? { status: 'saving', target } : { status: 'ready', target });
-      } else {
-        setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
-      }
-      baseline ??= normalizeDreamList(applyPendingMutations(cacheRead ?? [], pendingMutations));
-      setRefreshState({ status: 'refreshing' });
-      setRemotePreviewAllowed(storageReadSucceeded && pendingReadSucceeded &&
-        cacheRead?.length === 0 && pendingMutations.length === 0 && scope.sequence === 0);
-      try {
-        const hasSession = authSessionReady || await ensureAccessToken({
-          isCurrent,
-          retries: 5,
-          delayMs: 250,
-          logLabel: '[useDreamPersistence] Skipping remote dream load: auth session not ready',
-        });
-
-        if (!isCurrent()) return { pendingMutations };
-        if (!hasSession) {
+          if (!isCurrent()) return { pendingMutations };
+          // Resume partial traversal in memory; partial pages never replace the
+          // durable cache or become an authoritative deletion/sync snapshot.
+          const traversal = traversalRef.current?.scopeKey === scopeKey && traversalRef.current.sequence === scope.sequence
+            ? traversalRef.current
+            : { scopeKey, sequence: scope.sequence, cursor: null, items: [] };
+          traversalRef.current = traversal;
+          const previousServerDreams = serverSnapshotRef.current?.scopeKey === scopeKey
+            ? serverSnapshotRef.current.dreams : await getServerDreamCheckpoint(userScope!);
+          if (!isCurrent()) return { pendingMutations };
+          const cachedDreams = new Map(previousServerDreams.flatMap((dream) =>
+            dream.remoteId && dream.revisionId ? [[dream.remoteId, dream] as const] : []));
+          while (true) {
+            const page = await fetchDreamFullPage(userId!, { cursor: traversal.cursor, cachedDreams });
+            if (!isCurrent()) return { pendingMutations };
+            if (!page.complete && !page.nextCursor) throw new Error('Incomplete journal page has no continuation');
+            traversal.items.push(...page.items);
+            traversal.cursor = page.nextCursor;
+            if (page.complete) break;
+          }
+          const remoteDreams = traversal.items;
+          traversalRef.current = null;
+          if (!isCurrent()) return { pendingMutations };
+          serverSnapshotRef.current = { scopeKey, dreams: remoteDreams };
+          markPerformance('journal.sync_complete', { count: remoteDreams.length });
+          // Never serialize local overlays as server authority. Only a completed
+          // traversal can replace this checkpoint; cache failure leaves sync usable.
+          void saveServerDreamCheckpoint(remoteDreams, userScope!).catch(() => {
+            logger.warn('Server journal checkpoint could not be persisted');
+          });
+          setRefreshState({ status: 'idle' });
+          setRemoteSnapshot({ userScope, dreams: remoteDreams });
+          const normalizedRemote = normalizeDreamList(retainCaptureSources(remoteDreams, dreamsRef.current));
+          // A failed migration has a separate local receipt, not a synced remoteId.
+          // Keep its writing visible while auth reload reads the legacy server row.
+          const withMigrationRecoveries = dreamsRef.current.filter(dream => dream.migrationRecovery)
+            .reduce((rows, dream) => upsertDream(rows.filter(row => row.remoteId !== dream.migrationRecovery!.remoteId), dream), normalizedRemote);
+          const sortedRemote = sortDreams(withMigrationRecoveries);
+          const nextDreams = pendingMutations.length
+            ? normalizeDreamList(applyPendingMutations(sortedRemote, pendingMutations))
+            : sortedRemote;
+          if (!isCurrent()) return { pendingMutations };
+          const preserveWriteAuthority = mustPreserveWriteAuthority();
+          setCompleteness({ status: storageReadSucceeded && !preserveWriteAuthority ? 'complete' : 'incomplete' });
+          if (storageReadSucceeded && preserveWriteAuthority && !scope.failed) {
+            const mergeAfterWrites = async () => {
+              await scope.tail;
+              if (!isCurrent() || scope.failed) return;
+              const latestPending = await getPendingDreamMutations(userScope);
+              if (!isCurrent() || scope.failed) return;
+              const merged = normalizeDreamList(applyPendingMutations(
+                mergeDreamSnapshot(baseline ?? [], dreamsRef.current, sortedRemote), latestPending
+              ));
+              // Reserve after existing writes; newer edits reserve after this merge.
+              await enqueueWrite(scopeKey, target, merged,
+                async (value) => {
+                  if (scope.failed) throw new DreamPersistenceError('write', target);
+                  await saveCachedRemoteDreams(value, userScope);
+                }, true);
+              if (isCurrent() && !scope.failed) setCompleteness({ status: 'complete' });
+            };
+            // Reload must not wait for an unrelated user write to finish.
+            void mergeAfterWrites().catch(() => {
+              if (isCurrent() && !scope.failed) setRefreshState({ status: 'error' });
+            });
+          } else if (storageReadSucceeded && !preserveWriteAuthority) {
+            if (isCurrent()) setDreamsForScope(scopeKey, nextDreams);
+            try {
+              const sequenceBeforeRefreshWrite = scope.sequence;
+              const refreshWrite = enqueueWrite(
+                scopeKey,
+                target,
+                nextDreams,
+                (value) => saveCachedRemoteDreams(value, userScope),
+                false
+              );
+              // enqueueWrite reserves its sequence synchronously. Discount only
+              // this refresh's own write; subsequent user writes still invalidate it.
+              refreshWriteCount += scope.sequence - sequenceBeforeRefreshWrite;
+              await refreshWrite;
+            } catch {
+              // enqueueWrite exposes the recoverable cache write state.
+            }
+          } else if (isCurrent()) {
+            const currentScope = getWriteScope(scopeKey);
+            setStateForScope(
+              scopeKey,
+              currentScope.failed
+                ? { status: 'error', operation: 'write', target }
+                : currentScope.pendingCount > 0
+                  ? { status: 'saving', target }
+                  : storageReadSucceeded
+                    ? { status: 'ready', target }
+                    : { status: 'error', operation: 'read', target }
+            );
+          }
+        } catch (error) {
+          if (!isCurrent()) return { pendingMutations };
           setRefreshState({ status: 'error' });
           setCompleteness({ status: 'incomplete' });
+          logger.error('Failed to load dreams from remote', error);
           const preserveWriteAuthority = mustPreserveWriteAuthority();
           if (cacheWasLoaded && cacheRead && isCurrent() && !preserveWriteAuthority) {
             setDreamsForScope(
@@ -1123,170 +1272,27 @@ export function useDreamPersistence({
                 : { status: 'error', operation: 'read', target }
             );
           }
-          return { pendingMutations };
         }
 
-        try {
-          await migrateGuestDreamsToSupabase({ isCurrent });
-        } catch (migrationError) {
-          logger.warn('Failed to migrate guest dreams', migrationError);
-          if (
-            migrationError instanceof DreamPersistenceError &&
-            migrationError.target === 'device'
-          ) {
-            if (isCurrent()) {
-              setCompleteness({ status: 'incomplete' });
-              setStateForScope(scopeKey, {
-                status: 'error',
-                operation: migrationError.operation,
-                target: 'device',
-              });
-            }
-            return { pendingMutations };
-          }
-        }
-
-        if (!isCurrent()) return { pendingMutations };
-        // Resume partial traversal in memory; partial pages never replace the
-        // durable cache or become an authoritative deletion/sync snapshot.
-        const traversal = traversalRef.current?.scopeKey === scopeKey && traversalRef.current.sequence === scope.sequence
-          ? traversalRef.current
-          : { scopeKey, sequence: scope.sequence, cursor: null, items: [] };
-        traversalRef.current = traversal;
-        const previousServerDreams = serverSnapshotRef.current?.scopeKey === scopeKey
-          ? serverSnapshotRef.current.dreams : await getServerDreamCheckpoint(userScope!);
-        if (!isCurrent()) return { pendingMutations };
-        const cachedDreams = new Map(previousServerDreams.flatMap((dream) =>
-          dream.remoteId && dream.revisionId ? [[dream.remoteId, dream] as const] : []));
-        while (true) {
-          const page = await fetchDreamFullPage(userId!, { cursor: traversal.cursor, cachedDreams });
-          if (!isCurrent()) return { pendingMutations };
-          if (!page.complete && !page.nextCursor) throw new Error('Incomplete journal page has no continuation');
-          traversal.items.push(...page.items);
-          traversal.cursor = page.nextCursor;
-          if (page.complete) break;
-        }
-        const remoteDreams = traversal.items;
-        traversalRef.current = null;
-        if (!isCurrent()) return { pendingMutations };
-        serverSnapshotRef.current = { scopeKey, dreams: remoteDreams };
-        markPerformance('journal.sync_complete', { count: remoteDreams.length });
-        // Never serialize local overlays as server authority. Only a completed
-        // traversal can replace this checkpoint; cache failure leaves sync usable.
-        void saveServerDreamCheckpoint(remoteDreams, userScope!).catch(() => {
-          logger.warn('Server journal checkpoint could not be persisted');
+        // Run unsynced dreams migration in background (one-shot, non-blocking)
+        if (isCurrent() && !mustPreserveWriteAuthority()) migrateUnsyncedDreams({ isCurrent }).catch((err) => {
+          logger.warn('Background migration of unsynced dreams failed', err);
         });
-        setRefreshState({ status: 'idle' });
-        setRemoteSnapshot({ userScope, dreams: remoteDreams });
-        const normalizedRemote = normalizeDreamList(retainCaptureSources(remoteDreams, dreamsRef.current));
-        // A failed migration has a separate local receipt, not a synced remoteId.
-        // Keep its writing visible while auth reload reads the legacy server row.
-        const withMigrationRecoveries = dreamsRef.current.filter(dream => dream.migrationRecovery)
-          .reduce((rows, dream) => upsertDream(rows.filter(row => row.remoteId !== dream.migrationRecovery!.remoteId), dream), normalizedRemote);
-        const sortedRemote = sortDreams(withMigrationRecoveries);
-        const nextDreams = pendingMutations.length
-          ? normalizeDreamList(applyPendingMutations(sortedRemote, pendingMutations))
-          : sortedRemote;
-        if (!isCurrent()) return { pendingMutations };
-        const preserveWriteAuthority = mustPreserveWriteAuthority();
-        setCompleteness({ status: storageReadSucceeded && !preserveWriteAuthority ? 'complete' : 'incomplete' });
-        if (storageReadSucceeded && preserveWriteAuthority && !scope.failed) {
-          const mergeAfterWrites = async () => {
-            await scope.tail;
-            if (!isCurrent() || scope.failed) return;
-            const latestPending = await getPendingDreamMutations(userScope);
-            if (!isCurrent() || scope.failed) return;
-            const merged = normalizeDreamList(applyPendingMutations(
-              mergeDreamSnapshot(baseline ?? [], dreamsRef.current, sortedRemote), latestPending
-            ));
-            // Reserve after existing writes; newer edits reserve after this merge.
-            await enqueueWrite(scopeKey, target, merged,
-              async (value) => {
-                if (scope.failed) throw new DreamPersistenceError('write', target);
-                await saveCachedRemoteDreams(value, userScope);
-              }, true);
-            if (isCurrent() && !scope.failed) setCompleteness({ status: 'complete' });
-          };
-          // Reload must not wait for an unrelated user write to finish.
-          void mergeAfterWrites().catch(() => {
-            if (isCurrent() && !scope.failed) setRefreshState({ status: 'error' });
-          });
-        } else if (storageReadSucceeded && !preserveWriteAuthority) {
-          if (isCurrent()) setDreamsForScope(scopeKey, nextDreams);
-          try {
-            const sequenceBeforeRefreshWrite = scope.sequence;
-            const refreshWrite = enqueueWrite(
-              scopeKey,
-              target,
-              nextDreams,
-              (value) => saveCachedRemoteDreams(value, userScope),
-              false
-            );
-            // enqueueWrite reserves its sequence synchronously. Discount only
-            // this refresh's own write; subsequent user writes still invalidate it.
-            refreshWriteCount += scope.sequence - sequenceBeforeRefreshWrite;
-            await refreshWrite;
-          } catch {
-            // enqueueWrite exposes the recoverable cache write state.
-          }
-        } else if (isCurrent()) {
-          const currentScope = getWriteScope(scopeKey);
-          setStateForScope(
-            scopeKey,
-            currentScope.failed
-              ? { status: 'error', operation: 'write', target }
-              : currentScope.pendingCount > 0
-                ? { status: 'saving', target }
-                : storageReadSucceeded
-                  ? { status: 'ready', target }
-                  : { status: 'error', operation: 'read', target }
-          );
-        }
+
+        return { pendingMutations };
       } catch (error) {
-        if (!isCurrent()) return { pendingMutations };
-        setRefreshState({ status: 'error' });
-        setCompleteness({ status: 'incomplete' });
-        logger.error('Failed to load dreams from remote', error);
-        const preserveWriteAuthority = mustPreserveWriteAuthority();
-        if (cacheWasLoaded && cacheRead && isCurrent() && !preserveWriteAuthority) {
-          setDreamsForScope(
-            scopeKey,
-            normalizeDreamList(applyPendingMutations(cacheRead, pendingMutations))
-          );
-        }
+        logger.error('Failed to load dreams', error);
         if (isCurrent()) {
-          const currentScope = getWriteScope(scopeKey);
-          setStateForScope(
-            scopeKey,
-            currentScope.failed
-              ? { status: 'error', operation: 'write', target }
-              : currentScope.pendingCount > 0
-                ? { status: 'saving', target }
-              : pendingReadSucceeded && cacheWasLoaded
-              ? { status: 'ready', target }
-              : { status: 'error', operation: 'read', target }
-          );
+          setCompleteness({ status: 'incomplete' });
+          setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
+        }
+        return { pendingMutations };
+      } finally {
+        if (isCurrent()) {
+          setLoaded(true);
         }
       }
-
-      // Run unsynced dreams migration in background (one-shot, non-blocking)
-      if (isCurrent() && !mustPreserveWriteAuthority()) migrateUnsyncedDreams({ isCurrent }).catch((err) => {
-        logger.warn('Background migration of unsynced dreams failed', err);
-      });
-
-      return { pendingMutations };
-    } catch (error) {
-      logger.error('Failed to load dreams', error);
-      if (isCurrent()) {
-        setCompleteness({ status: 'incomplete' });
-        setStateForScope(scopeKey, { status: 'error', operation: 'read', target });
-      }
-      return { pendingMutations };
-    } finally {
-      if (isCurrent()) {
-        setLoaded(true);
-      }
-    }
+    });
   }, [
     authSessionReady,
     canUseRemoteSync,
@@ -1307,8 +1313,18 @@ export function useDreamPersistence({
    */
   const reloadDreams = useCallback(async () => {
     const mounted = { current: true };
+    if (mountedRef.current && activeScopeKeyRef.current === activeScopeKey) {
+      setRemotePreviewAllowed(false);
+      setCompleteness({ status: 'loading' });
+      const scope = getWriteScope(activeScopeKey);
+      if (!scope.hydrated) {
+        setLoaded(false);
+        setStateForScope(activeScopeKey, { status: 'loading', target: canUseRemoteSync ? 'remote-cache' : 'device' });
+      }
+      if (scope.failed) setDreamsForScope(activeScopeKey, scope.failed.dreams);
+    }
     await loadDreams(mounted);
-  }, [loadDreams]);
+  }, [activeScopeKey, canUseRemoteSync, getWriteScope, loadDreams, setDreamsForScope, setStateForScope]);
 
   const retryPersistence = useCallback(async () => {
     try {

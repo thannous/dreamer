@@ -294,7 +294,10 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   const [bottomNavHeight, setBottomNavHeight] = useState(0);
   const [scrollViewportHeight, setScrollViewportHeight] = useState(0);
   const [draftProgressHeight, setDraftProgressHeight] = useState(0);
-  const appliedRouteEntriesRef = useRef<Set<string>>(new Set());
+  const [appliedRouteEntries, setAppliedRouteEntries] = useState<ReadonlySet<string>>(() => new Set());
+  const [appliedEntry, setAppliedEntry] = useState<{
+    intent: NonNullable<typeof resolvedRecordingEntryIntent>; clearParams: boolean;
+  } | null>(null);
   const activePostSaveRef = useRef<'confirm_analysis' | 'journal_first' | null>(null);
   const captureStartedTrackedRef = useRef(false);
   const restoredPendingIntentRef = useRef<string | null>(null);
@@ -307,7 +310,8 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     if (!isExplicitOnboardingDestination && !isSkipDestination) return;
     if (
       resolvedRecordingEntryIntent
-      && appliedRouteEntriesRef.current.has(resolvedRecordingEntryIntent.entryId)
+      && appliedRouteEntries.has(resolvedRecordingEntryIntent.entryId)
+      && appliedEntry?.intent.entryId !== resolvedRecordingEntryIntent.entryId
     ) return;
 
     const path = isExplicitOnboardingDestination
@@ -324,6 +328,8 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       path,
     });
   }, [
+    appliedEntry,
+    appliedRouteEntries,
     onboardingState.completedAt,
     onboardingState.completionReason,
     resolvedRecordingEntryIntent,
@@ -1486,13 +1492,13 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     setTimeout(focus, 240);
   }, []);
 
-  useEffect(() => {
-    if (!resolvedRecordingEntryIntent) return;
+  // A new entry adjusts this blank composer before it renders. Existing text
+  // and hydrated dreams keep ownership; clearing URL params cannot apply twice.
+  if (resolvedRecordingEntryIntent && !appliedRouteEntries.has(resolvedRecordingEntryIntent.entryId)
+    && !trimmedTranscript && !draftDream) {
     const routeEntryKey = resolvedRecordingEntryIntent.entryId;
-    if (appliedRouteEntriesRef.current.has(routeEntryKey) || trimmedTranscript || draftDream) return;
-
-    appliedRouteEntriesRef.current.add(routeEntryKey);
-    activePostSaveRef.current = resolvedRecordingEntryIntent.postSave;
+    const nextApplied = new Set(appliedRouteEntries);
+    nextApplied.add(routeEntryKey);
     if (resolvedRecordingEntryIntent.source === 'lucid_trainer') {
       setCaptureIntent('remembered');
     } else if (resolvedRecordingEntryIntent.intent) {
@@ -1510,7 +1516,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     setRememberedStrongestFragment(undefined);
     setVoiceFallbackReason(null);
     if (resolvedRecordingEntryIntent.mode) {
-      initialRouteModeRef.current = resolvedRecordingEntryIntent.mode;
       setInputMode(resolvedRecordingEntryIntent.mode);
     }
 
@@ -1520,15 +1525,23 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
         // Do not let clearing the explicit URL immediately apply a different
         // persisted entry in the same mounted composer. It remains resumable
         // after a remount because this set is intentionally session-local.
-        appliedRouteEntriesRef.current.add(pendingEntry.entryId);
+        nextApplied.add(pendingEntry.entryId);
       }
     }
 
-    if (
-      resolvedRecordingEntryIntent.origin === 'route'
-      || parsedRecordingParams.entryId
-      || parsedRecordingParams.mode
-    ) {
+    setAppliedRouteEntries(nextApplied);
+    setAppliedEntry({
+      intent: resolvedRecordingEntryIntent,
+      clearParams: resolvedRecordingEntryIntent.origin === 'route'
+        || !!parsedRecordingParams.entryId || !!parsedRecordingParams.mode,
+    });
+  }
+
+  useEffect(() => {
+    if (!appliedEntry) return;
+    activePostSaveRef.current = appliedEntry.intent.postSave;
+    if (appliedEntry.intent.mode) initialRouteModeRef.current = appliedEntry.intent.mode;
+    if (appliedEntry.clearParams) {
       router.setParams({
         entryId: undefined,
         intent: undefined,
@@ -1543,15 +1556,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
         mode: undefined,
       });
     }
-  }, [
-    draftDream,
-    onboardingState.pendingRecordingIntent,
-    onboardingScope,
-    parsedRecordingParams.entryId,
-    parsedRecordingParams.mode,
-    resolvedRecordingEntryIntent,
-    trimmedTranscript,
-  ]);
+  }, [appliedEntry]);
 
   const isVoiceListening = isSpeechListening;
   const recordingDurationLabel = isVoiceListening

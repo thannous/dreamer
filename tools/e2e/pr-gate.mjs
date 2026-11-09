@@ -10,11 +10,12 @@
  */
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DECISION_PRODUCTS, decisionEnabled, isDreamerAppPath, isNativeJourney, isSmokeStackPath, isUnzonedJourney, journeysOfChange, zonesForFiles } from './zones.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
+import { SDK_PINS } from './qualification.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const PINNED_NODE = 'v24.22.1';
@@ -86,6 +87,53 @@ function repoRoot() {
   return result.stdout.trim();
 }
 
+function loadBrowserRuntime(root) {
+  const tools = join(root, 'tools/e2e');
+  const read = path => JSON.parse(readFileSync(path, 'utf8'));
+  const require = createRequire(join(tools, 'package.json'));
+  const engineRequire = createRequire(require.resolve('@e2e-dev/web'));
+  const core = engineRequire.resolve('playwright-core/package.json');
+  return {
+    e2eVersion: read(join(tools, 'node_modules/e2e/package.json')).version,
+    webVersion: read(join(tools, 'node_modules/@e2e-dev/web/package.json')).version,
+    coreVersion: read(core).version,
+    matcherVersion: read(require.resolve('playwright/package.json')).version,
+    expectedBrowserVersion: read(join(dirname(core), 'browsers.json')).browsers
+      .find(browser => browser.name === 'chromium-headless-shell')?.browserVersion,
+    chromium: engineRequire('playwright-core').chromium,
+  };
+}
+
+// Playwright's public executablePath names full Chrome, even when its default
+// headless launch uses the independently installed headless shell. Probe the
+// actual launch and version, so --only-shell stays supported without accepting
+// another browser or weakening a missing-runner failure.
+export async function probeWebBrowser(root, load = loadBrowserRuntime) {
+  let browser;
+  let result = { ok: false, code: 'BROWSER_UNAVAILABLE' };
+  try {
+    const runtime = load(root);
+    if (runtime.e2eVersion !== SDK_PINS.e2e || runtime.webVersion !== SDK_PINS['@e2e-dev/web']
+      || !runtime.coreVersion || runtime.coreVersion !== runtime.matcherVersion) {
+      return { ok: false, code: 'ENGINE_VERSION' };
+    }
+    if (!runtime.expectedBrowserVersion) return { ok: false, code: 'BROWSER_VERSION' };
+    browser = await runtime.chromium.launch({ headless: true, timeout: 10_000 });
+    const version = browser.version();
+    result = version === runtime.expectedBrowserVersion
+      ? { ok: true, version, webVersion: runtime.webVersion, playwrightVersion: runtime.coreVersion }
+      : { ok: false, code: 'BROWSER_VERSION' };
+  } catch {
+    // Do not emit a browser's environment or diagnostic payload in a readiness probe.
+  } finally {
+    if (browser) {
+      try { await browser.close(); }
+      catch { result = { ok: false, code: 'BROWSER_CLEANUP' }; }
+    }
+  }
+  return result;
+}
+
 export function runnerReady(root) {
   if (process.version !== PINNED_NODE) {
     return { ok: false, reason: `PARCOURS NON JOUE: Node ${PINNED_NODE} est requis (mise exec), celui-ci est ${process.version}.` };
@@ -95,12 +143,13 @@ export function runnerReady(root) {
     return { ok: false, reason: 'PARCOURS NON JOUE: tools/e2e/node_modules est absent. npm run test:testerarmy:setup && npm run test:testerarmy:browsers.' };
   }
   try {
-    const require = createRequire(join(root, 'tools/e2e/package.json'));
-    const web = require.resolve('@e2e-dev/web');
-    const engineRequire = createRequire(web);
-    const { chromium } = engineRequire('playwright-core');
-    if (!existsSync(chromium.executablePath())) {
-      return { ok: false, reason: 'PARCOURS NON JOUE: Chromium du moteur web est absent. npm run test:testerarmy:browsers.' };
+    const probe = spawnSync(process.execPath, ['--input-type=module', '-e',
+      `import { probeWebBrowser } from ${JSON.stringify(import.meta.url)};
+       const result = await probeWebBrowser(process.argv[1]);
+       console.log(JSON.stringify(result)); process.exitCode = result.ok ? 0 : 1;`, root],
+    { encoding: 'utf8', timeout: 15_000, maxBuffer: 64 * 1024 });
+    if (probe.status !== 0 || JSON.parse(probe.stdout).ok !== true) {
+      return { ok: false, reason: 'PARCOURS NON JOUE: le Chromium headless du moteur epingle ne demarre pas ou sa version differe. npm run test:testerarmy:browsers.' };
     }
   } catch {
     return { ok: false, reason: 'PARCOURS NON JOUE: le moteur web n\'est pas installe. npm run test:testerarmy:setup && npm run test:testerarmy:browsers.' };

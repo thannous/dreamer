@@ -1,0 +1,52 @@
+{
+  "name": "@noctalia/zod-v3",
+  "version": "3.25.76-local.1",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Zod v3 compatibility source from zod 4.6.7 with bounded collection prevalidation backported",
+  "main": "./v3/index.cjs",
+  "module": "./v3/index.js",
+  "types": "./v3/index.d.cts",
+  "exports": {
+    ".": {
+      "types": "./v3/index.d.cts",
+      "import": "./v3/index.js",
+      "require": "./v3/index.cjs"
+    },
+    "./v3": {
+      "types": "./v3/index.d.cts",
+      "import": "./v3/index.js",
+      "require": "./v3/index.cjs"
+    },
+    "./package.json": "./package.json",
+    "./v4": {
+      "types": "./v4.d.ts",
+      "import": "./v4.js",
+      "require": "./v4.cjs"
+    },
+    "./v4/core": {
+      "types": "./v4-core.d.ts",
+      "import": "./v4-core.js",
+      "require": "./v4-core.cjs"
+    },
+    "./v4/mini": {
+      "types": "./v4-mini.d.ts",
+      "import": "./v4-mini.js",
+      "require": "./v4-mini.cjs"
+    },
+    "./v4/locales": {
+      "types": "./v4-locales.d.ts",
+      "import": "./v4-locales.js",
+      "require": "./v4-locales.cjs"
+    },
+    "./v4-mini": {
+      "types": "./v4-mini.d.ts",
+      "import": "./v4-mini.js",
+      "require": "./v4-mini.cjs"
+    }
+  },
+  "dependencies": {
+    "zod-patched": "npm:zod@4.6.7"
+  }
+}
