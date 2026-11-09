@@ -69,7 +69,7 @@ iOS manquantes et historique de migrations divergent ont occasionné des reprise
 avant une opération coûteuse. Pour chaque échec, conserver l'étape, l'erreur exacte,
 la cause confirmée ou l'hypothèse, et la condition modifiée avant la nouvelle tentative.
 Si l'échec est transitoire, vérifier que le service a récupéré et que l'opération
-précédente n'a pas déjà abouti. Voir le [garde de soumission EAS](qa/EAS-SUBMISSION-GUARD-2026-09-26.md).
+précédente n'a pas déjà abouti. Voir le garde de soumission EAS (Git history).
 
 Pour Supabase, inventorier les écarts entre SQL suivi, historique appliqué et schéma
 réel. Proposer une réparation avec vérification et stratégie de récupération ;

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { test } = require('node:test');
-const { ruleFor, legacyPathsFrom, inspectPaths, indexPaths, checkRepositoryHygiene } = require('./check-repository-hygiene.cjs');
+const { ruleFor, inspectPaths, indexPaths, checkRepositoryHygiene } = require('./check-repository-hygiene.cjs');
 
 // These path/index failures occur before any application/browser journey starts.
 test('new local configuration, raw run output and temporary paths are refused', () => {
@@ -31,15 +31,9 @@ test('product assets, source profiles, fixtures and redacted durable QA remain p
   ]) assert.equal(ruleFor(file), null, file);
 });
 
-test('historical exceptions preserve exact paths without admitting adjacent new artifacts', () => {
-  const legacy = legacyPathsFrom({ schemaVersion: 1, legacyPaths: ['outputs/old/report.json', 'screenshots/old.png', 'tmp-stage/old.png'] });
-  assert.deepEqual(inspectPaths([...legacy], legacy), []);
-  assert.deepEqual(inspectPaths(['outputs/new/report.json', 'screenshots/new.png', 'tmp-stage/new.png'], legacy).map(row => row.path),
-    ['outputs/new/report.json', 'screenshots/new.png', 'tmp-stage/new.png']);
-  for (const legacyPaths of [['.claude/settings.local.json'], ['outputs/../settings.local.json'], ['outputs/old.json', 'outputs/old.json']]) {
-    assert.throws(() => legacyPathsFrom({ schemaVersion: 1, legacyPaths }), /Invalid historical artifact exception/);
-  }
-  assert.throws(() => legacyPathsFrom({ schemaVersion: 2, legacyPaths: [] }), /Invalid repository hygiene baseline/);
+test('no tracked path is exempt: the former historical output folders are refused like any other', () => {
+  assert.deepEqual(inspectPaths(['outputs/old/report.json', 'screenshots/old.png', 'tmp-stage/old.png']).map(row => row.path),
+    ['outputs/old/report.json', 'screenshots/old.png', 'tmp-stage/old.png']);
 });
 
 test('the real Git index controls publication while private local files stay on disk', () => {
@@ -50,11 +44,9 @@ test('the real Git index controls publication while private local files stay on 
   };
   try {
     git('init', '-q');
-    write('data/repository-hygiene-baseline.json', JSON.stringify({ schemaVersion: 1, legacyPaths: ['outputs/old/report.json'] }));
-    write('assets/icon.png'); write('doc_web_interne/docs/qa/audit.md'); write('outputs/old/report.json');
+    write('assets/icon.png'); write('doc_web_interne/docs/qa/audit.md');
     write('.claude/settings.local.json');
-    git('add', '-f', '--', 'data/repository-hygiene-baseline.json', 'assets/icon.png', 'doc_web_interne/docs/qa/audit.md',
-      'outputs/old/report.json', '.claude/settings.local.json');
+    git('add', '-f', '--', 'assets/icon.png', 'doc_web_interne/docs/qa/audit.md', '.claude/settings.local.json');
     assert.deepEqual(checkRepositoryHygiene(root), [{ path: '.claude/settings.local.json', rule: 'private-local-configuration' }]);
     git('rm', '--cached', '--', '.claude/settings.local.json');
     assert.ok(fs.existsSync(path.join(root, '.claude/settings.local.json')));
@@ -69,7 +61,7 @@ test('the real Git index controls publication while private local files stay on 
 });
 
 
-test('the CLI refuses private basenames at every depth without broadening historical exceptions', () => {
+test('the CLI refuses private basenames and tracked local output at every depth', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-hygiene-cli-'));
   const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
   const write = (file, text = 'synthetic fixture\n') => {
@@ -80,15 +72,13 @@ test('the CLI refuses private basenames at every depth without broadening histor
   const privateNames = ['.env.real', '.env.supabase', 'credentials.json'];
   const privateFiles = prefixes.flatMap(prefix => privateNames.map(name => prefix + name));
   const publicFiles = prefixes.flatMap(prefix => ['.env.example', '.env.test.example', '.env.mock', '.env.lucid'].map(name => prefix + name));
-  const baseline = { schemaVersion: 1, legacyPaths: ['outputs/old/report.json'] };
   try {
     git('init', '-q');
     write('scripts/check-repository-hygiene.cjs', fs.readFileSync(path.join(__dirname, 'check-repository-hygiene.cjs')));
-    write('data/repository-hygiene-baseline.json', JSON.stringify(baseline));
     write('.gitignore', privateNames.join('\n') + '\n');
-    for (const file of [...publicFiles, ...baseline.legacyPaths]) write(file);
-    git('add', '-f', '--', 'scripts', 'data', '.gitignore', ...publicFiles, ...baseline.legacyPaths);
-    assert.equal(cli().status, 0, 'public examples/profiles and the exact historical path remain allowed');
+    for (const file of publicFiles) write(file);
+    git('add', '-f', '--', 'scripts', '.gitignore', ...publicFiles);
+    assert.equal(cli().status, 0, 'public examples and profiles remain allowed');
 
     for (const file of privateFiles) write(file);
     git('add', '-f', '--', ...privateFiles);
@@ -101,22 +91,12 @@ test('the CLI refuses private basenames at every depth without broadening histor
     for (const file of privateFiles) assert.equal(fs.readFileSync(path.join(root, file), 'utf8'), 'synthetic fixture\n');
     assert.equal(cli().status, 0, 'removing only the index entries preserves local data and restores a clean result');
 
-    const adjacent = 'outputs/old/new-report.json';
-    write(adjacent); git('add', '-f', '--', adjacent);
+    const output = 'outputs/old/report.json';
+    write(output); git('add', '-f', '--', output);
     const newArtifact = cli();
     assert.equal(newArtifact.status, 1, newArtifact.stderr);
-    assert.ok(newArtifact.stderr.includes(`${adjacent} [local-or-generated-output]`));
-    assert.ok(!newArtifact.stderr.includes('outputs/old/report.json ['));
-    git('rm', '--cached', '--', adjacent);
-
-    // Historical output exceptions must never admit a private basename either.
-    for (const name of privateNames) {
-      write('data/repository-hygiene-baseline.json', JSON.stringify({ ...baseline, legacyPaths: [`outputs/old/${name}`] }));
-      const invalidException = cli();
-      assert.equal(invalidException.status, 1, `private historical exception was accepted: ${name}`);
-      assert.match(invalidException.stderr, /could not inspect the Git index or validate its historical baseline/);
-    }
-    write('data/repository-hygiene-baseline.json', JSON.stringify(baseline));
+    assert.ok(newArtifact.stderr.includes(`${output} [local-or-generated-output]`));
+    git('rm', '--cached', '--', output);
     assert.equal(cli().status, 0);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });

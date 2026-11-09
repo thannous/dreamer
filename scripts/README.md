@@ -134,7 +134,7 @@ context uses Gradle's build cache and daemon without `:app:clean`. The JS/assets
 bundle task always reruns, so an asset-only edit cannot leave an old bundle
 (React Native's declared file inputs cover JS/TS only). Native compilation can
 still be reused. RN Gradle retains its native `--reset-cache` bundle option;
-the [measured Metro transform reuse](../doc_web_interne/docs/qa/mobile-ci-android-metro-2026-10-18.md)
+the measured Metro transform reuse (Git history)
 belongs to the web validation harness.
 A failed/interrupted build,
 changed context or corrupt state forces a clean build. The checkout lock refuses

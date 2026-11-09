@@ -1,8 +1,8 @@
 # Native qualification matrix
 
-Billing's local verdicts are in the [iOS billing report](../../doc_web_interne/docs/qa/revenuecat-native-qa-20261016.md) and the [Android billing report](../../doc_web_interne/docs/qa/revenuecat-android-native-qa-20261016.md).
+Billing's local verdicts are in the iOS billing report (Git history) and the Android billing report (Git history).
 Earlier campaigns retain the immutable run manifest identified in the
-[retrospective delivery report](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). This matrix describes source selection and invariants, not a pass count.
+retrospective delivery report (Git history). This matrix describes source selection and invariants, not a pass count.
 Each selected test starts with `app.open()`, uses one worker on one disposable
 owned target, and performs exact assertions on an identified installed Release.
 

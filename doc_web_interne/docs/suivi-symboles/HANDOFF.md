@@ -5,10 +5,10 @@
 Responsable intégration : Codex. Publication : **Thanh**, conformément à sa dernière consigne. Branche de suivi : `codex/symbols-publish-240-20261022`. Candidat qualifié : `674f752f62b3179c8a21300c7796024f5935efc1`.
 
 - 240 packs, trois scènes chacun, deux éléments animés par surface et six langues. Aucun pack restant dans ce périmètre.
-- Release site : 267 parcours réussis, aucune exclusion, aucun ignoré, échec, flaky ou interruption. Réduction du mouvement, peintures stables, deux effets distincts, scènes, portrait mobile, géométrie et langues contrôlés par la campagne. Révision et limites : [preuve actuelle](../qa/symbols-240-site-readiness-20261022.json).
+- Release site : 267 parcours réussis, aucune exclusion, aucun ignoré, échec, flaky ou interruption. Réduction du mouvement, peintures stables, deux effets distincts, scènes, portrait mobile, géométrie et langues contrôlés par la campagne. Révision et limites : preuve actuelle (Git history).
 - Les 1 440 URL de production répondent, mais le HTML et le script d’animation ne correspondent pas encore au build qualifié. **Ne pas marquer cette version publiée.** Aucune publication n’a été lancée par Codex.
 - Archive native complète des six packs hérités retrouvée et sauvegardée sur [Drive privé](https://drive.google.com/file/d/1iZdMcaJxAugVTvqIEnTerhhHhOFSvui8/view?usp=drivesdk). Le manque historique de six sources est résolu ; ne pas régénérer ces images.
-- Tous les anciens enregistrements sont conservés dans [l’archive exacte](../qa/symbol-rollout-history-through-20261022.json). Le registre actif garde les derniers états et les nouvelles QA ; la limite de taille existante reste inchangée.
+- Tous les anciens enregistrements sont conservés dans l’archive exacte (Git history). Le registre actif garde les derniers états et les nouvelles QA ; la limite de taille existante reste inchangée.
 - Le suivi Excel et CSV est recalculé depuis le rapport canonique. Les accords personnels restent à zéro. Ne pas confondre accord visuel et autorisation de publier.
 
 Prochaine action : Thanh publie depuis un master propre avec une preuve Release passée pour ce SHA via les commandes canoniques. La validation complète est acquise pour le candidat ci-dessus ; le suivi ultérieur ne modifie pas les entrées du rendu. La garde du dépôt décide si sa preuve reste applicable au commit final. Après publication, vérifier les pages publiques et consigner le résultat réel. Aucun contournement de garde ni commande Wrangler directe de déploiement.
@@ -25,7 +25,7 @@ Responsable : **Codex**. Branche : `codex/symbol-images-final-100`. Master du ca
 
 **10 couvertures conservées, 70 nouveaux PNG, 10 packs et 380 dérivés.** Les 10 parcours passent dans les six langues à 2560×1440 et 390×844. Les 50 captures et les 10 familles de sources sont inspectées. Les interprétations longues et les traductions concurrentes de master sont préservées ; seules les cartes PT manquantes pour les variantes choisies sont ajoutées.
 
-[Rapport](../qa/symbol-packs-lot-14-10-20261020.md) · [Reçu](../qa/symbol-packs-lot-14-10-20261020.json) · [Suivi Excel/CSV](README.md). Les sources, prompts et provenance sont dans [10 ZIP privés Drive](https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI) et dans `output/symbol-packs-final-100-20261020/lot-14` du checkout principal. `RECUPERATION.json` et `plan.json` permettent la reprise ; ne pas régénérer les fichiers déjà enregistrés.
+Rapport (Git history) · Reçu (Git history) · [Suivi Excel/CSV](README.md). Les sources, prompts et provenance sont dans [10 ZIP privés Drive](https://drive.google.com/drive/folders/1Ye1CGz0N6mZfyeyaIziRv6jiPd8u4DwI) et dans `output/symbol-packs-final-100-20261020/lot-14` du checkout principal. `RECUPERATION.json` et `plan.json` permettent la reprise ; ne pas régénérer les fichiers déjà enregistrés.
 
 État courant : **240 packs, 0 à compléter, 240 QA actuelles**. Les preuves historiques, dont la publication master du lot 09, restent conservées. Aucun accord personnel de Thanh, fusion de cette branche ou nouvelle publication n’est déclaré pour le lot.
 
@@ -69,7 +69,7 @@ Piloter un symbole représentatif, puis contrôler le lot affecté sur les pages
 
 La preuve du lot 14 qualifie le navigateur local : 10 réussites, zéro échec ou ignoré, 256 parcours hors sélection. Elle ne qualifie pas une application native, un appareil physique, les FPS ou une nouvelle publication.
 
-Reconciliation finale des 100 packs : [livraison et limite de sauvegarde](../qa/symbol-packs-final-100-20261022.md). Les trois parcours complémentaires passent également, sans nouvelle publication.
+Reconciliation finale des 100 packs : livraison et limite de sauvegarde (Git history). Les trois parcours complémentaires passent également, sans nouvelle publication.
 
 Le registre conserve ses 15 834 preuves en format compact pour rester sous la limite de taille existante. Ne pas réindenter tous les enregistrements lors d’un ajout. Le CSV reste identique ; l’empreinte du rapport affichée dans l’Excel et sa copie Drive sont actualisées.
 

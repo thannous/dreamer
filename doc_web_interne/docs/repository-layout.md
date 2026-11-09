@@ -51,14 +51,12 @@ artifacts may be tracked under `doc_web_interne/docs/qa/` or an existing work-pa
 location. Review them for private content first. Record date, source/build,
 environment, command, result and limits; a historical pass is not current proof.
 
-Existing `outputs/` and `screenshots/` records include useful historical
-evidence. Their exact retained paths are listed in
-[data/repository-hygiene-baseline.json](../../data/repository-hygiene-baseline.json).
-This is a path-specific exception, not permission to add neighboring files. Do not
-put new local captures, exports or scratch output in those trees. New durable
-redacted evidence uses the documentation locations above; an additional legacy
-exception needs explicit review. Preserve old factual outcomes and useful history;
-age alone does not justify deletion, and this change does not mass-move them.
+`outputs/`, `screenshots/` and `tmp-stage/` hold local output only and nothing
+under them is tracked: the historical records they carried, the dated reports of
+`doc_web_interne/docs/qa/` and several superseded root documents were removed on
+2026-11-09 at the owner's request and remain in Git history (last present in
+commit `50df895`). New durable redacted evidence uses the documentation locations
+above. Elsewhere, age alone does not justify deletion.
 
 ## Local configuration and secrets
 
@@ -85,9 +83,8 @@ node scripts/check-repository-hygiene.cjs
 node --test scripts/check-repository-hygiene.test.cjs
 ```
 
-The check inspects Git-index paths and the exact historical baseline. It refuses
-new local settings, generated/temp/raw QA output in tracked locations while
+The check inspects Git-index paths, with no exception list. It refuses local
+settings and generated, temporary or raw QA output in tracked locations while
 allowing product sources and durable redacted documentation evidence. It does
-not inspect file contents or replace secret scanning and a privacy review. The
-baseline preserves existing records; it is not a general allowlist for their
-directories. Keep existing publication allowlists and runner guards in force.
+not inspect file contents or replace secret scanning and a privacy review. Keep
+existing publication allowlists and runner guards in force.
