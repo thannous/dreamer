@@ -28,9 +28,12 @@ const makeRows = (count: number) => Array.from({ length: count }, (_, i) => ({
 beforeEach(() => { mockTransport.mockReset(); });
 
 describe('Journal PostgREST transport contract', () => {
-  it('streams an export beyond a lower server cap and resumes the failed request without duplicate rows', async () => {
+  it.each([
+    { failedResponses: 1, manualResume: false },
+    { failedResponses: 4, manualResume: true },
+  ])('exports beyond the server cap after $failedResponses transient failures (manual resume: $manualResume)', async ({ failedResponses, manualResume }) => {
     const rows = makeRows(2501);
-    let failOnce = true;
+    let remainingFailures = failedResponses;
     mockTransport.mockImplementation(async (input: RequestInfo | URL) => {
       const url = new URL(String(input));
       expect(url.searchParams.get('user_id')).toBe('eq.owner-a');
@@ -39,9 +42,13 @@ describe('Journal PostgREST transport contract', () => {
       const predicates = url.searchParams.getAll('id');
       const before = Number(predicates.find((p) => p.startsWith('lt.'))?.slice(3) ?? Infinity);
       const ceiling = Number(predicates.find((p) => p.startsWith('lte.'))?.slice(4) ?? Infinity);
-      if (before === 1802 && failOnce) {
-        failOnce = false;
-        return new Response(JSON.stringify({ message: 'temporary failure', code: 'XX000' }), { status: 503 });
+      if (before === 1802 && remainingFailures > 0) {
+        remainingFailures--;
+        // The current SDK retries three times. Keep transient recovery enabled;
+        // four failures exhaust it so the iterator must expose a resumable cursor.
+        return new Response(JSON.stringify({ message: 'temporary failure', code: 'XX000' }), {
+          status: 503, headers: { 'Retry-After': '0' },
+        });
       }
       const page = rows.filter((r) => r.id < before && r.id <= ceiling).slice(0, 700);
       return new Response(JSON.stringify(page), { status: 200, headers: { 'Content-Type': 'application/json' } });
@@ -54,14 +61,19 @@ describe('Journal PostgREST transport contract', () => {
         exportedIds.push(...page.items.map((dream) => dream.remoteId!));
       }
     } catch (error) { failure = error as JournalTraversalError; }
-    expect(failure).toBeInstanceOf(JournalTraversalError);
-    expect(exportedIds).toHaveLength(700);
-    for await (const page of iterateDreamPages('owner-a', { pageSize: 1000, cursor: failure!.cursor })) {
-      exportedIds.push(...page.items.map((dream) => dream.remoteId!));
+    if (manualResume) {
+      expect(failure).toBeInstanceOf(JournalTraversalError);
+      expect(exportedIds).toHaveLength(700);
+      for await (const page of iterateDreamPages('owner-a', { pageSize: 1000, cursor: failure!.cursor })) {
+        exportedIds.push(...page.items.map((dream) => dream.remoteId!));
+      }
+    } else {
+      expect(failure).toBeUndefined();
     }
     expect(exportedIds).toEqual(rows.map((row) => row.id));
     expect(new Set(exportedIds).size).toBe(2501);
-    expect(mockTransport).toHaveBeenCalledTimes(6); // four data pages, failure, empty sentinel
+    expect(remainingFailures).toBe(0);
+    expect(mockTransport).toHaveBeenCalledTimes(5 + failedResponses); // four data pages, failures, empty sentinel
   });
 
   it('requests only list columns and preserves the original long transcript', async () => {
