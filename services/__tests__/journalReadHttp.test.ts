@@ -31,7 +31,7 @@ describe('Journal PostgREST transport contract', () => {
   it.each([
     { failedResponses: 1, manualResume: false },
     { failedResponses: 4, manualResume: true },
-  ])('exports beyond the server cap after $failedResponses transient failures (manual resume: $manualResume)', async ({ failedResponses, manualResume }) => {
+  ])('exports beyond the server cap after $failedResponses transient failures (manual resume: $manualResume)', async ({ failedResponses, manualResume }: { failedResponses: number; manualResume: boolean }) => {
     const rows = makeRows(2501);
     let remainingFailures = failedResponses;
     mockTransport.mockImplementation(async (input: RequestInfo | URL) => {
