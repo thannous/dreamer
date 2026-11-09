@@ -5,10 +5,13 @@ import { getSubscriptionStatus, refreshSubscriptionStatus } from '@/services/sub
 import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
 import { useQuota } from '../useQuota';
 import { useSubscriptionExpiryTimer } from '../useSubscriptionExpiryTimer';
+import { useSubscriptionMonitor } from '../useSubscriptionMonitor';
 
 jest.mock('@/services/subscriptionService', () => ({ getSubscriptionStatus: jest.fn(), refreshSubscriptionStatus: jest.fn() }));
 jest.mock('@/services/subscriptionSyncService', () => ({ syncSubscriptionFromServer: jest.fn() }));
 jest.mock('@/lib/env', () => ({ isMockModeEnabled: () => false }));
+let mockForeground: (() => Promise<void>) | undefined;
+jest.mock('@/hooks/useAppState', () => ({ useAppState: (callback: () => Promise<void>) => { mockForeground = callback; } }));
 jest.mock('@/context/AuthContext', () => ({ useAuth: () => ({ user: mockUser }) }));
 jest.mock('../useSubscription', () => ({ useSubscription: () => ({ status: mockStatus, loading: false }) }));
 jest.mock('@/services/quotaService', () => ({ quotaService: {
@@ -100,4 +103,37 @@ it('replaces the pending expiry timer when an entitlement renews before its dead
   await act(async () => { jest.advanceTimersByTime(hour - 60000); });
   expect(refresh).toHaveBeenCalledTimes(1);
   unmount();
+});
+
+it('does not publish a delayed expiry check to a different session of the same account', async () => {
+  const updates = jest.fn();
+  let finish!: (status: SubscriptionStatus) => void;
+  refresh.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+  const { rerender } = renderHook(({ sessionKey, status }) =>
+    useSubscriptionExpiryTimer({ sessionKey, status, userId: mockUser.id, onStatusChange: updates }),
+  { initialProps: { sessionKey: 'old', status: mockStatus } });
+  await act(async () => { jest.advanceTimersByTime(120000); });
+  expect(refresh).toHaveBeenCalledTimes(1);
+  rerender({ sessionKey: 'new', status: { tier: 'free', isActive: false } });
+  await act(async () => { finish(mockStatus); });
+  expect(updates).not.toHaveBeenCalled();
+  expect(sync).not.toHaveBeenCalled();
+});
+
+it('does not redirect an in-flight foreground response to the new subscriber', async () => {
+  const first = jest.fn(), second = jest.fn();
+  let finish!: (status: SubscriptionStatus) => void;
+  const hold = () => new Promise<SubscriptionStatus>(resolve => { finish = resolve; });
+  cached.mockImplementationOnce(hold);
+  refresh.mockImplementationOnce(hold);
+  let active = true;
+  const { rerender } = renderHook(({ callback, current }) => useSubscriptionMonitor(callback, true, () => current),
+    { initialProps: { callback: first, current: () => active } });
+  let oldRequest: Promise<void> | undefined;
+  await act(async () => { oldRequest = mockForeground?.(); });
+  active = false;
+  rerender({ callback: second, current: () => true });
+  await act(async () => { finish(mockStatus); await oldRequest; });
+  expect(first).not.toHaveBeenCalled();
+  expect(second).not.toHaveBeenCalled();
 });

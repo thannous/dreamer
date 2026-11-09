@@ -10,12 +10,7 @@ import { ScopedTheme } from 'uniwind';
 import { Button, Card, Text } from '@/components/ui';
 import { PracticeProgress } from '@/components/journey/PracticeProgress';
 import { PaperTheme } from '@/constants/theme';
-import {
-  canAccessWorld,
-  DEFAULT_WORLD_ID,
-  isWorldId,
-  WORLD_BY_ID,
-} from '@/constants/worlds';
+import { resolveAccessibleWorld } from '@/constants/worlds';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useLibrary } from '@/context/LibraryContext';
 import { useTranslation } from '@/context/LanguageContext';
@@ -50,13 +45,7 @@ export default function SessionCompleteScreen() {
   const { height } = useWindowDimensions();
   const { world: selectedWorld } = useWorld();
   const { isWorldOwned } = useWorldPurchases();
-  const fallbackWorld = canAccessWorld(selectedWorld.id, isWorldOwned)
-    ? selectedWorld
-    : WORLD_BY_ID[DEFAULT_WORLD_ID];
-  const world =
-    worldParam && isWorldId(worldParam) && canAccessWorld(worldParam, isWorldOwned)
-      ? WORLD_BY_ID[worldParam]
-      : fallbackWorld;
+  const world = resolveAccessibleWorld([worldParam, selectedWorld.id], isWorldOwned);
 
   const session = id ? SESSION_BY_ID[id] : undefined;
 

@@ -351,6 +351,24 @@ for (const stream of [false, true]) {
   });
 }
 
+Deno.test('a nightmare about being attacked reaches Claude instead of the fixed support', () => withChatKeys(async () => {
+  const hosts: string[] = [];
+  globalThis.fetch = async (input, init) => {
+    hosts.push(new URL(new Request(input, init).url).hostname);
+    return claudeStream('Ce rêve parle d’une menace extérieure.');
+  };
+  const { context, committed, createAdminClient } = streamingTurn();
+  context.req = new Request(context.req.url, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dreamId: '42', message: 'Dans mon rêve, quelqu’un voulait me tuer.', lang: 'fr', stream: true }),
+  });
+  const response = await handleChat(context, { admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }), createAdminClient });
+  const events = (await response.text()).split('\n\n').filter(Boolean).map((line) => JSON.parse(line.replace(/^data: /, '')));
+  assertEquals(hosts, ['api.anthropic.com']);
+  assertEquals(events[0], { delta: 'Ce rêve parle d’une menace extérieure.' });
+  assertEquals((committed[0] as { text: string }).text === SELF_HARM_SUPPORT.fr, false);
+}));
+
 Deno.test('guest self-harm reply keeps session and quota guards without calling AI', async () => {
   const previousSecret = Deno.env.get('GUEST_SESSION_SECRET');
   const previousFetch = globalThis.fetch;

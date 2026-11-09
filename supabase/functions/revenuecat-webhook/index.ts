@@ -6,12 +6,19 @@ import {
   mapEntitlementKeys,
   type RevenueCatEntitlementLookupById,
   type RevenueCatV2CustomerResponse,
-} from '../../lib/revenuecatSubscriber.ts';
+} from '../api/lib/revenuecatSubscriber.ts';
 import {
   applySubscriptionStateUpdate,
   buildSubscriptionSnapshotFromCustomer,
   buildSubscriptionSnapshotFromTier,
-} from '../../lib/subscriptionState.ts';
+} from '../api/lib/subscriptionState.ts';
+import {
+  fetchRevenueCatCustomer,
+  fetchRevenueCatCustomerAliases,
+  getRevenueCatApiKey,
+  getRevenueCatEntitlementLookup,
+  getRevenueCatProjectId,
+} from '../api/services/revenuecat.ts';
 import { verifyRevenueCatWebhookAuthorization } from './auth.ts';
 import { readLimitedBody } from './body.ts';
 
@@ -23,26 +30,6 @@ const corsHeaders: Record<string, string> = {
 
 type Tier = 'free' | 'plus';
 type InferredTier = Tier | null;
-
-type RevenueCatV2Entitlement = {
-  id?: string | null;
-  lookup_key?: string | null;
-  display_name?: string | null;
-};
-
-type RevenueCatV2EntitlementsResponse = {
-  items?: RevenueCatV2Entitlement[] | null;
-  next_page?: string | null;
-};
-
-type RevenueCatEntitlementCache = {
-  map: RevenueCatEntitlementLookupById;
-  fetchedAt: number;
-};
-
-const ENTITLEMENT_CACHE_TTL_MS = 5 * 60 * 1000;
-let entitlementCache: RevenueCatEntitlementCache | null = null;
-let entitlementCachePromise: Promise<RevenueCatEntitlementLookupById> | null = null;
 
 function isRevenueCatAnonymousId(id: string): boolean {
   return id.startsWith('$RCAnonymousID:');
@@ -181,144 +168,6 @@ function getWebhookEventTimestampIso(payload: any, fallbackMs: number): string {
   return new Date(fallbackMs).toISOString();
 }
 
-async function rcFetchJson<T>(url: string, apiKey: string, timeoutMs = 8000): Promise<T> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-
-    if (!res.ok) {
-      const bodyText = await res.text().catch(() => '');
-      throw new Error(`RevenueCat API failed: HTTP ${res.status} ${res.statusText}: ${bodyText}`);
-    }
-
-    return (await res.json()) as T;
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-function getRevenueCatApiKey(): string {
-  const apiKey =
-    getOptionalEnv('REVENUECAT_SECRET_API_KEY') ??
-    getOptionalEnv('REVENUECAT_API_KEY') ??
-    getOptionalEnv('REVENUECAT_SECRET_KEY');
-  if (!apiKey) {
-    throw new Error(
-      'Missing REVENUECAT_SECRET_API_KEY (or REVENUECAT_API_KEY / REVENUECAT_SECRET_KEY)'
-    );
-  }
-  return apiKey;
-}
-
-function getRevenueCatProjectId(): string {
-  const projectId = getOptionalEnv('REVENUECAT_PROJECT_ID');
-  if (!projectId) {
-    throw new Error('Missing REVENUECAT_PROJECT_ID');
-  }
-  return projectId;
-}
-
-type RevenueCatV2AliasesResponse = {
-  items?: { id?: string | null }[] | null;
-};
-
-async function fetchCustomerV2(
-  appUserId: string,
-  apiKey: string,
-  projectId: string
-): Promise<RevenueCatV2CustomerResponse> {
-  const url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(
-    projectId
-  )}/customers/${encodeURIComponent(appUserId)}`;
-  return rcFetchJson<RevenueCatV2CustomerResponse>(url, apiKey, 8000);
-}
-
-async function fetchCustomerAliasesV2(
-  appUserId: string,
-  apiKey: string,
-  projectId: string
-): Promise<string[]> {
-  const url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(
-    projectId
-  )}/customers/${encodeURIComponent(appUserId)}/aliases`;
-  const data = await rcFetchJson<RevenueCatV2AliasesResponse>(url, apiKey, 8000);
-  const items = Array.isArray(data.items) ? data.items : [];
-  return items
-    .map((item) => (typeof item.id === 'string' ? item.id.trim() : ''))
-    .filter(Boolean);
-}
-
-function normalizeEntitlementField(value: unknown): string | null {
-  if (typeof value !== 'string') return null;
-  const trimmed = value.trim();
-  return trimmed ? trimmed : null;
-}
-
-async function fetchEntitlementLookupMap(
-  apiKey: string,
-  projectId: string
-): Promise<RevenueCatEntitlementLookupById> {
-  const map: RevenueCatEntitlementLookupById = {};
-  let url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/entitlements`;
-  let pageCount = 0;
-
-  while (url && pageCount < 10) {
-    const data = await rcFetchJson<RevenueCatV2EntitlementsResponse>(url, apiKey, 8000);
-    const items = Array.isArray(data.items) ? data.items : [];
-
-    for (const item of items) {
-      const id = normalizeEntitlementField(item.id);
-      const lookup =
-        normalizeEntitlementField(item.lookup_key) ?? normalizeEntitlementField(item.display_name);
-      if (id && lookup) {
-        map[id] = lookup;
-      }
-    }
-
-    pageCount += 1;
-    const nextPage = normalizeEntitlementField(data.next_page);
-    if (!nextPage) break;
-    url = nextPage.startsWith('http') ? nextPage : `https://api.revenuecat.com${nextPage}`;
-  }
-
-  return map;
-}
-
-async function getEntitlementLookupMap(): Promise<RevenueCatEntitlementLookupById> {
-  const now = Date.now();
-  if (entitlementCache && now - entitlementCache.fetchedAt < ENTITLEMENT_CACHE_TTL_MS) {
-    return entitlementCache.map;
-  }
-
-  if (entitlementCachePromise) {
-    return entitlementCachePromise;
-  }
-
-  const apiKey = getRevenueCatApiKey();
-  const projectId = getRevenueCatProjectId();
-  entitlementCachePromise = fetchEntitlementLookupMap(apiKey, projectId)
-    .then((map) => {
-      entitlementCache = { map, fetchedAt: Date.now() };
-      entitlementCachePromise = null;
-      return map;
-    })
-    .catch((error) => {
-      entitlementCachePromise = null;
-      throw error;
-    });
-
-  return entitlementCachePromise;
-}
-
 function inferTierFromWebhookPayload(
   payload: any,
   entitlementLookupById?: RevenueCatEntitlementLookupById
@@ -375,10 +224,10 @@ async function fetchCustomerFromAnyCandidate(
 
   for (const id of appUserIdCandidates) {
     try {
-      const customer = await fetchCustomerV2(id, apiKey, projectId);
+      const customer = await fetchRevenueCatCustomer(id, apiKey, projectId);
       let aliasIds: string[] = [];
       try {
-        aliasIds = await fetchCustomerAliasesV2(id, apiKey, projectId);
+        aliasIds = await fetchRevenueCatCustomerAliases(id, apiKey, projectId);
       } catch {
         aliasIds = [];
       }
@@ -516,7 +365,7 @@ serve(async (req: Request) => {
     // does not include the UUID.
     let entitlementLookupById: RevenueCatEntitlementLookupById | null = null;
     try {
-      entitlementLookupById = await getEntitlementLookupMap();
+      entitlementLookupById = await getRevenueCatEntitlementLookup(getRevenueCatApiKey(), getRevenueCatProjectId());
       console.log('[revenuecat-webhook] Entitlement lookup loaded', {
         timestamp: new Date().toISOString(),
         count: Object.keys(entitlementLookupById).length,

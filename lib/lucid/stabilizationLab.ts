@@ -4,6 +4,7 @@ export const LUCID_STABILIZATION_LAB_MAX_SESSION_ID_LENGTH = 64 as const;
 export const LUCID_STABILIZATION_LAB_MAX_COMPLETED_STEPS = 5 as const;
 export const LUCID_STABILIZATION_LAB_MAX_REPEAT_COUNT = 99 as const;
 export const LUCID_STABILIZATION_LAB_MAX_INSIGHT_SESSIONS = 200 as const;
+export const LUCID_STABILIZATION_LAB_MAX_SESSIONS = 500 as const;
 
 export const LUCID_STABILIZATION_LAB_STEP_IDS = [
   'hands',
@@ -486,6 +487,38 @@ export function parseLucidStabilizationLabSession(
     completedAt: value.completedAt,
     updatedAt: value.updatedAt,
   };
+}
+
+export function compareLucidStabilizationLabSessions(
+  left: LucidStabilizationLabSession,
+  right: LucidStabilizationLabSession
+): number {
+  if (left.updatedAt !== right.updatedAt) return right.updatedAt - left.updatedAt;
+  if (left.sessionId === right.sessionId) return 0;
+  return left.sessionId < right.sessionId ? -1 : 1;
+}
+
+/** Retain the newest copy of each session, then bound the local history. */
+export function normalizeLucidStabilizationLabSessions(
+  sessions: readonly unknown[]
+): LucidStabilizationLabSession[] | null {
+  if (!Array.isArray(sessions)) return null;
+  const byId = new Map<string, LucidStabilizationLabSession>();
+  for (const value of sessions) {
+    const parsed = parseLucidStabilizationLabSession(value);
+    if (!parsed) return null;
+    const existing = byId.get(parsed.sessionId);
+    if (
+      !existing ||
+      parsed.updatedAt > existing.updatedAt ||
+      (parsed.updatedAt === existing.updatedAt && JSON.stringify(parsed) > JSON.stringify(existing))
+    ) {
+      byId.set(parsed.sessionId, parsed);
+    }
+  }
+  return [...byId.values()]
+    .sort(compareLucidStabilizationLabSessions)
+    .slice(0, LUCID_STABILIZATION_LAB_MAX_SESSIONS);
 }
 
 export function projectLucidStabilizationLabInsights(

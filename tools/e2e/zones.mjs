@@ -75,6 +75,7 @@ export const ZONES = [
     tests: [
       'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts',
       'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts',
+      'tools/e2e/tests/dreamer-first-text-capture.web.e2e.ts',
       'tools/e2e/tests/dreamer-system-speech.web.e2e.ts',
       'tools/e2e/tests/dreamer-readiness.web.e2e.ts',
       'tools/e2e/tests/dreamer-review-accessibility.web.e2e.ts',
@@ -218,6 +219,7 @@ export const ZONES = [
     tests: [
       'tools/e2e/tests/dreamer-ai-consent.web.e2e.ts',
       'tools/e2e/tests/dreamer-ai-consent-settings.web.e2e.ts',
+      'tools/e2e/tests/dreamer-first-text-capture.web.e2e.ts',
       'tools/e2e/tests/dreamer-guest-limits.web.e2e.ts',
       'tools/e2e/tests/dreamer-billing.web.e2e.ts',
       'tools/e2e/tests/dreamer-analysis-preview.web.e2e.ts',
@@ -362,7 +364,7 @@ export function isUnzonedJourney(file) {
  */
 export const SHARED_JOURNEY_STEPS = Object.freeze({
   'tools/e2e/web-journeys.ts': ['tools/e2e/tests/dreamer-billing.web.e2e.ts', 'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts', 'tools/e2e/tests/dreamer-journeys.web.e2e.ts', 'tools/e2e/tests/dreamer-locale-de.web.e2e.ts'],
-  'tools/e2e/traced-parity-test.ts': ['tools/e2e/tests/dreamer-billing.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-save.web.e2e.ts', 'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-type-filter.web.e2e.ts', 'tools/e2e/tests/dreamer-journeys.web.e2e.ts', 'tools/e2e/tests/dreamer-locale-de.web.e2e.ts', 'tools/e2e/tests/dreamer-reflection-context.web.e2e.ts', 'tools/e2e/tests/dreamer-system-speech.web.e2e.ts'],
+  'tools/e2e/traced-parity-test.ts': ['tools/e2e/tests/dreamer-billing.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-chat.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-editor.web.e2e.ts', 'tools/e2e/tests/dreamer-capture-save.web.e2e.ts', 'tools/e2e/tests/dreamer-first-text-capture.web.e2e.ts', 'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-filters.web.e2e.ts', 'tools/e2e/tests/dreamer-journal-type-filter.web.e2e.ts', 'tools/e2e/tests/dreamer-journeys.web.e2e.ts', 'tools/e2e/tests/dreamer-locale-de.web.e2e.ts', 'tools/e2e/tests/dreamer-reflection-context.web.e2e.ts', 'tools/e2e/tests/dreamer-system-speech.web.e2e.ts'],
   'tools/e2e/onboarding-fixtures.ts': ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-explorer.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-stories.web.e2e.ts'],
 });
 

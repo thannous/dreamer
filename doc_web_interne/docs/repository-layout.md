@@ -12,7 +12,7 @@ to delete personal data, generated work or old reports.
 | Dreamer | `app/` Expo Router screens; `components/`, `hooks/`, `context/`, `lib/`, `services/` and `constants/` hold shared implementation. |
 | Lucid | Root package and its own `routes/lucid/` Router root (`routes/lucid/lucid/`); [scope and wellbeing safeguards](../../specs/noctalia-lucid-trainer.md). Dreamer's ritual opens this app. |
 | Meditation | Separate `apps/meditation/` package and lockfile; read its [local AGENTS.md](../../apps/meditation/AGENTS.md). |
-| Backend | `supabase/functions/`, `supabase/lib/`, tracked migrations and database contract; [architecture index](architecture/README.md). |
+| Backend | `supabase/functions/` (including shared subscription rules under `api/lib/`), tracked migrations and database contract; [architecture index](architecture/README.md). |
 | Site | Editable `docs-src/`, canonical `data/` catalogs and generator code in `scripts/`; [source guide](../../docs-src/README.md). |
 | Tests/tooling | `tests/`, colocated `__tests__/`, `tools/e2e/`, root scripts and app-local tests; use their existing package commands. |
 

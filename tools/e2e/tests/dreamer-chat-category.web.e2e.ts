@@ -109,8 +109,8 @@ test('self-harm mentions receive fixed support with working resource links and s
   const phone = screen.getByRole('link', '3114', { exact: true, visible: true });
   const website = screen.getByRole('link', 'https://3114.fr/', { exact: true, visible: true });
   await expect(phone).toBeVisible();
-  await expect(phone).toHaveAttribute('href', 'tel:3114?oai_link_source=model_response_hotline');
-  await expect(website).toHaveAttribute('href', 'https://3114.fr/?oai_link_source=model_response_hotline');
+  await expect(phone).toHaveAttribute('href', 'tel:3114');
+  await expect(website).toHaveAttribute('href', 'https://3114.fr/');
   await expect(screen.getByText('This message mentions self-harm or suicide.', { exact: false, visible: true })).toBeVisible();
   await expect(screen.getByText(mockReply, { visible: true })).toHaveCount(0);
   await expect(input).not.toHaveAttribute('readonly');

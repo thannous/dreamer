@@ -2,10 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   advanceLucidStabilizationLabSession,
+  compareLucidStabilizationLabSessions,
   completeLucidStabilizationLabSession,
   createLucidStabilizationLabSession,
   createLucidStabilizationLabSessionId,
   interruptLucidStabilizationLabSession,
+  normalizeLucidStabilizationLabSessions,
   parseLucidStabilizationLabSession,
   pauseLucidStabilizationLabSession,
   projectLucidStabilizationLabInsights,
@@ -30,8 +32,6 @@ const EMPTY_INSIGHTS: LucidStabilizationLabInsights = {
   lastPracticedAt: null,
   recentCompletedAt: null,
 };
-
-const MAX_VISIBLE_SESSIONS = 500;
 
 export type UseLucidStabilizationLabOptions = {
   userScope: string;
@@ -74,32 +74,6 @@ function cloneSessions(sessions: readonly LucidStabilizationLabSession[]): Lucid
   return sessions.map(cloneSession);
 }
 
-function compareSessions(
-  left: LucidStabilizationLabSession,
-  right: LucidStabilizationLabSession
-): number {
-  if (left.updatedAt !== right.updatedAt) return right.updatedAt - left.updatedAt;
-  return left.sessionId < right.sessionId ? -1 : 1;
-}
-
-function rankSessions(
-  sessions: readonly LucidStabilizationLabSession[]
-): LucidStabilizationLabSession[] {
-  const byId = new Map<string, LucidStabilizationLabSession>();
-  for (const session of sessions) {
-    const parsed = cloneSession(session);
-    const existing = byId.get(parsed.sessionId);
-    if (!existing || parsed.updatedAt > existing.updatedAt) {
-      byId.set(parsed.sessionId, parsed);
-    } else if (parsed.updatedAt === existing.updatedAt) {
-      const leftJson = JSON.stringify(existing);
-      const rightJson = JSON.stringify(parsed);
-      byId.set(parsed.sessionId, leftJson >= rightJson ? existing : parsed);
-    }
-  }
-  return [...byId.values()].sort(compareSessions).slice(0, MAX_VISIBLE_SESSIONS);
-}
-
 /**
  * Current practice is the newest non-idle session by updatedAt, then sessionId.
  * Leading idle rows are skipped so they cannot hide a newer resumable practice.
@@ -109,7 +83,7 @@ function rankSessions(
 function selectCurrentSession(
   sessions: readonly LucidStabilizationLabSession[]
 ): LucidStabilizationLabSession | null {
-  const ranked = [...sessions].sort(compareSessions);
+  const ranked = [...sessions].sort(compareLucidStabilizationLabSessions);
   const newestRelevant = ranked.find((session) => session.status !== 'idle');
   if (!newestRelevant) return null;
   if (newestRelevant.status === 'completed') return null;
@@ -126,7 +100,7 @@ function selectCurrentSession(
 function selectIdleSession(
   sessions: readonly LucidStabilizationLabSession[]
 ): LucidStabilizationLabSession | null {
-  return sessions.filter((session) => session.status === 'idle').sort(compareSessions)[0] ?? null;
+  return sessions.filter((session) => session.status === 'idle').sort(compareLucidStabilizationLabSessions)[0] ?? null;
 }
 
 function readClock(value: number | (() => number) | undefined): number {
@@ -310,7 +284,11 @@ export function useLucidStabilizationLab({
         const next = await updateLucidStabilizationLabSessions(scope, (current) => {
           const cloned = cloneSessions(current);
           if (skipWriteIf?.(cloned)) return cloned;
-          return rankSessions(apply(cloned));
+          const ranked = normalizeLucidStabilizationLabSessions(apply(cloned));
+          if (!ranked) {
+            throw new LucidStabilizationLabStorageError('invalid_metadata', 'Invalid stabilization lab session');
+          }
+          return ranked;
         });
         if (canApplyToScope(scope, generation)) {
           applySessions(scope, generation, next);

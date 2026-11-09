@@ -314,3 +314,16 @@ export function canAccessWorld(
 ): boolean {
   return WORLD_BY_ID[worldId].access === 'free' || isWorldOwned(worldId);
 }
+
+/** Candidates are ordered by the surface's route and playback priorities. */
+export function resolveAccessibleWorld(
+  candidates: readonly unknown[],
+  isWorldOwned: (id: WorldId) => boolean
+): MeditationWorld {
+  for (const candidate of candidates) {
+    if (isWorldId(candidate) && canAccessWorld(candidate, isWorldOwned)) {
+      return WORLD_BY_ID[candidate];
+    }
+  }
+  return WORLD_BY_ID[DEFAULT_WORLD_ID];
+}

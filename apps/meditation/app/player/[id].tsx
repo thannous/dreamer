@@ -10,12 +10,7 @@ import { BackLink, Chip, Rule, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { Atmosphere, Themes } from '@/constants/theme';
-import {
-  canAccessWorld,
-  DEFAULT_WORLD_ID,
-  isWorldId,
-  WORLD_BY_ID,
-} from '@/constants/worlds';
+import { resolveAccessibleWorld } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
 import { useLibrary } from '@/context/LibraryContext';
@@ -41,17 +36,8 @@ export default function PlayerScreen() {
   const player = { ...state, ...commands };
   const { world: selectedWorld } = useWorld();
   const { loaded: worldPurchasesLoaded, isWorldOwned } = useWorldPurchases();
-  const fallbackWorld = canAccessWorld(selectedWorld.id, isWorldOwned)
-    ? selectedWorld
-    : WORLD_BY_ID[DEFAULT_WORLD_ID];
-  const requestedWorld =
-    worldParam && isWorldId(worldParam) && canAccessWorld(worldParam, isWorldOwned)
-      ? WORLD_BY_ID[worldParam]
-      : fallbackWorld;
-  const world =
-    player.worldId && canAccessWorld(player.worldId, isWorldOwned)
-      ? WORLD_BY_ID[player.worldId]
-      : requestedWorld;
+  const requestedWorld = resolveAccessibleWorld([worldParam, selectedWorld.id], isWorldOwned);
+  const world = resolveAccessibleWorld([player.worldId, requestedWorld.id], isWorldOwned);
   const worldColors = Themes[world.appearance];
   const worldAtmosphere = Atmosphere[world.appearance];
 

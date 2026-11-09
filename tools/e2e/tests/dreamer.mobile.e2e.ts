@@ -1,6 +1,7 @@
 import { afterEach, test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
-import { tapWhenStill, waitUntilStill } from '../native-settle';
+import { tapUntilShown, tapWhenStill, waitUntilStill } from '../native-settle';
+import { firstTextAndroid } from '../test-support/first-text-android';
 // The persistent mock profile seeds this entry. Explicit expectations keep
 // Node collection independent of the app's React Native/media imports.
 const SEEDED_OTHER_DREAM = {
@@ -1146,6 +1147,76 @@ async function releaseJournalFromDream(screen: TestFixtures['screen']) {
   else await back.tap();
   await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
 }
+
+firstTextAndroid('Dreamer first French guest saves two paragraphs on one tap with the Android keyboard open', {
+  platforms: ['android'], tags: ['native-first-text-capture'], timeout: 240_000,
+  skip: process.env.E2E_FIRST_TEXT_ANDROID !== '1' || process.env.E2E_NATIVE_MOCK_MODE !== 'true' || FLEET_PHONE
+    ? 'Requires a fresh owned French Android emulator with the persistent mock profile and software keyboard.' : false,
+}, async ({ app, screen, keyboardShown }) => {
+  await app.open();
+  const first = 'Une porte bleue donnait sur le lac.';
+  const second = 'J’avais la clé dans ma poche.';
+  const story = [first, second].join('\n\n');
+  const pass = screen.getByTestId('btn.onboarding.skip', { visible: true });
+  await expect(screen.getByText('Passer', { visible: true, exact: true })).toBeVisible();
+  await pass.tap();
+  const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
+  await expect(editor).toHaveValue('');
+  await expect.poll(keyboardShown).toBe(false);
+  await editor.tap();
+  await expect.poll(keyboardShown).toBe(true);
+  await editor.fill(story);
+  await expect(editor).toHaveValue(story);
+  await expect.poll(keyboardShown).toBe(true);
+  const save = screen.getByTestId('btn.saveDream', { visible: true });
+  await expect(save).toBeEnabled();
+  await app.screenshot('french-first-text-ime-open');
+  await save.tap();
+  const detail = screen.getByTestId('screen.dreamDetail', { visible: true });
+  await expect(detail).toBeVisible();
+  const prose = screen.getByTestId('text.dreamDetail.transcript', { visible: true });
+  // On a tall-text phone the saved page starts at the seal, above the story.
+  await screen.scrollUntilVisible(prose, { direction: 'down' });
+  // The raised initial can be a separate inline object in Android's accessible text.
+  await expect(prose).toContainText(first.slice(1));
+  await expect(prose).toContainText(second);
+  await app.screenshot('french-first-text-readable');
+  await app.restart();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await screen.getByTestId('tab.journal', { visible: true }).tap();
+  const entries = screen.getByTestId(/^dream\.item\./, { visible: true });
+  await expect(entries).toHaveCount(1);
+  await entries.tap();
+  await expect(detail).toBeVisible();
+  const edit = screen.getByTestId('btn.editDream', { visible: true });
+  await tapClearOfActionDock(screen, edit);
+  const restored = screen.getByTestId('input.dreamTranscript', { visible: true });
+  await screen.scrollUntilVisible(restored);
+  await expect(restored).toHaveValue(story);
+  await app.screenshot('french-first-text-exact-after-restart');
+
+  // Android only presents this disclosure after an explicit withdrawal.
+  await app.restart();
+  await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
+  await billingSettings(screen);
+  const toggle = screen.getByTestId('btn.settings.aiConsent', { visible: true });
+  await screen.scrollUntilVisible(toggle);
+  if (!(await toggle.isChecked())) await toggle.tap();
+  await expect(toggle).toBeChecked();
+  await toggle.tap();
+  await expect(toggle).not.toBeChecked();
+  await toggle.tap();
+  const consent = screen.getByTestId('modal.aiConsent', { visible: true });
+  await expect(consent).toBeVisible();
+  const accept = screen.getByTestId('btn.aiConsent.accept', { visible: true });
+  const decline = screen.getByTestId('btn.aiConsent.decline', { visible: true });
+  await expect(accept).toBeVisible();
+  await expect(decline).toBeVisible();
+  await app.screenshot('french-android-consent-choices');
+  await decline.tap();
+  await expect(consent).toHaveCount(0);
+  await expect(toggle).not.toBeChecked();
+});
 
 test('Dreamer release guest reads its first dream and asks one question that survives a restart', {
   platforms: ['ios', 'android'], tags: ['native-core-loop'], timeout: 300_000,

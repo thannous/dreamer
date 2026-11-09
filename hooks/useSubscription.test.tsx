@@ -9,6 +9,8 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { SubscriptionProvider } from '../context/SubscriptionContext';
 import type { UseSubscriptionOptions } from './useSubscription';
+import type { SubscriptionStatus } from '@/lib/types';
+import type { SubscriptionSyncResponse } from '@/services/subscriptionSyncService';
 
 // Mock __DEV__ global
 (globalThis as any).__DEV__ = true;
@@ -32,13 +34,7 @@ jest.mock('../services/subscriptionService', () => {
 });
 
 jest.mock('../services/subscriptionSyncService', () => ({
-  syncSubscriptionFromServer: jest.fn(async () => ({
-    ok: true,
-    tier: 'plus',
-    isActive: true,
-    version: 1,
-    changed: true,
-  })),
+  syncSubscriptionFromServer: jest.fn(),
 }));
 
 const mockMapStatusFromInfo = jest.fn((..._args: unknown[]) => ({ tier: 'free', isActive: false }));
@@ -50,13 +46,24 @@ jest.mock('../lib/revenuecat', () => ({
 }));
 
 let mockCurrentUser: any = { id: 'user-1', app_metadata: { subscription_version: 1 }, user_metadata: {} };
+let mockGeneration = 1;
+const mockIsCurrentSession = (id: string | null, generation: number) =>
+  (mockCurrentUser?.id ?? null) === id && mockGeneration === generation;
 const mockRefreshUser = jest.fn(async () => mockCurrentUser);
 const mockSetUserTierLocally = jest.fn();
 
 const mockSubscriptionMonitor = jest.fn();
+const mockForegroundListener = jest.fn();
 const mockCustomerInfoListener = jest.fn();
+jest.mock('@/hooks/useAppState', () => ({
+  useAppState: (onForeground: () => Promise<void>) => mockForegroundListener(onForeground),
+}));
 jest.mock('./useSubscriptionMonitor', () => ({
-  useSubscriptionMonitor: (...args: unknown[]) => mockSubscriptionMonitor(...args),
+  useSubscriptionMonitor: (...args: Parameters<typeof import('./useSubscriptionMonitor').useSubscriptionMonitor>) => {
+    mockSubscriptionMonitor(...args);
+    const actual = jest.requireActual('./useSubscriptionMonitor') as typeof import('./useSubscriptionMonitor');
+    actual.useSubscriptionMonitor(...args);
+  },
 }));
 jest.mock('./useSubscriptionCustomerInfoListener', () => ({
   useSubscriptionCustomerInfoListener: (...args: unknown[]) => mockCustomerInfoListener(...args),
@@ -65,6 +72,8 @@ jest.mock('./useSubscriptionCustomerInfoListener', () => ({
 jest.mock('../context/AuthContext', () => ({
   useAuth: () => ({
     user: mockCurrentUser,
+    sessionGeneration: mockGeneration,
+    isCurrentSession: mockIsCurrentSession,
     loading: false,
     refreshUser: mockRefreshUser,
     setUserTierLocally: mockSetUserTierLocally,
@@ -127,9 +136,16 @@ describe('useSubscription', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockSelectedSubscriptionMock = false;
+    mockGeneration = 1;
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
     mockCurrentUser = { id: 'user-1', app_metadata: { subscription_version: 1 }, user_metadata: {} };
+    const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+    syncSubscriptionFromServer.mockReset().mockImplementation(async (source: string) => {
+      const explicit = source === 'purchase' || source === 'restore' || source === 'manual_refresh';
+      const isActive = explicit || mockCurrentUser?.app_metadata?.tier === 'plus';
+      return { ok: true, tier: isActive ? 'plus' : 'free', isActive, version: 1, changed: explicit };
+    });
     mockIsEntitlementExpired.mockReturnValue(false);
     mockMapStatusFromInfo.mockReturnValue({ tier: 'free', isActive: false });
 
@@ -173,6 +189,139 @@ describe('useSubscription', () => {
       now.mockRestore();
       warn.mockRestore();
     }
+  });
+
+  it.each([['status_change', 'plus'], ['resume', 'plus'], ['resume', 'free']] as const)(
+    'publishes the confirmed %s result (%s) when the SDK reports Free',
+    async (source: 'status_change' | 'resume', expectedTier: 'plus' | 'free') => {
+      const free = { tier: 'free', isActive: false } as const;
+      const plus = { tier: 'plus', isActive: true } as const;
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      let confirm!: (value: SubscriptionSyncResponse) => void;
+      const hold = () => new Promise<SubscriptionSyncResponse>(resolve => { confirm = resolve; });
+      if (source === 'resume') {
+        syncSubscriptionFromServer.mockResolvedValueOnce({ ok: true, ...free, version: 1, changed: false });
+      } else {
+        syncSubscriptionFromServer.mockImplementationOnce(hold);
+      }
+
+      const { result } = renderSubscriptionHook();
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      expect(result.current.status).toMatchObject(free);
+
+      if (source === 'resume') {
+        const clock = jest.spyOn(Date, 'now').mockReturnValue(Date.now() + 61_000);
+        syncSubscriptionFromServer.mockImplementationOnce(hold);
+        try {
+          const resume = mockForegroundListener.mock.calls.at(-1)?.[0] as () => Promise<void>;
+          await act(async () => { await resume(); });
+        } finally {
+          clock.mockRestore();
+        }
+      }
+      expect(syncSubscriptionFromServer).toHaveBeenCalledWith(source);
+
+      const confirmed = expectedTier === 'plus' ? plus : free;
+      await act(async () => {
+        confirm({ ok: true, ...confirmed, version: 1, changed: true });
+      });
+      expect(result.current.status).toMatchObject(confirmed);
+      expect(result.current.isActive).toBe(confirmed.isActive);
+      expect(mockSetUserTierLocally).toHaveBeenLastCalledWith(
+        expect.objectContaining(confirmed), { userId: 'user-1', generation: mockGeneration },
+      );
+    },
+  );
+
+  it('rereads renewal details for the current account after a native customer-info signal', async () => {
+    const prior: SubscriptionStatus = {
+      tier: 'plus', isActive: true, willRenew: false,
+      expiryDate: new Date(Date.now() + 86_400_000).toISOString(),
+    };
+    const renewed = { ...prior, willRenew: true, expiryDate: new Date(Date.now() + 30 * 86_400_000).toISOString() };
+    const { initializeSubscription, refreshSubscriptionStatus } = require('../services/subscriptionService');
+    mockCurrentUser = { ...mockCurrentUser, app_metadata: { tier: 'plus', subscription_version: 1 } };
+    initializeSubscription.mockResolvedValue(prior);
+    refreshSubscriptionStatus.mockResolvedValue(renewed);
+    const { result } = renderSubscriptionHook();
+    await waitFor(() => expect(result.current.status).toMatchObject(prior));
+
+    const callback = mockCustomerInfoListener.mock.calls.at(-1)?.[0] as (status: SubscriptionStatus) => void;
+    await act(async () => { callback(prior); });
+
+    expect(result.current.status).toMatchObject(renewed);
+    expect(refreshSubscriptionStatus).toHaveBeenCalledTimes(1);
+  });
+
+  it('discards a native customer-info reread when its session changes', async () => {
+    const paid: SubscriptionStatus = { tier: 'plus', isActive: true, willRenew: true };
+    const free: SubscriptionStatus = { tier: 'free', isActive: false };
+    const { initializeSubscription, refreshSubscriptionStatus } = require('../services/subscriptionService');
+    mockCurrentUser = { ...mockCurrentUser, app_metadata: { tier: 'plus', subscription_version: 1 } };
+    initializeSubscription.mockResolvedValueOnce(paid).mockResolvedValue(free);
+    let finish!: (status: SubscriptionStatus) => void;
+    refreshSubscriptionStatus.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    const { result, rerender } = renderSubscriptionHook();
+    await waitFor(() => expect(result.current.status).toMatchObject(paid));
+    const callback = mockCustomerInfoListener.mock.calls.at(-1)?.[0] as (status: SubscriptionStatus) => void;
+    await act(async () => { callback(paid); });
+
+    mockCurrentUser = { ...mockCurrentUser, id: 'user-2', app_metadata: { tier: 'free', subscription_version: 1 } };
+    mockGeneration++;
+    rerender();
+    await waitFor(() => expect(result.current.status).toMatchObject(free));
+    mockSetUserTierLocally.mockClear();
+    await act(async () => { finish(paid); });
+
+    expect(result.current.status).toMatchObject(free);
+    expect(mockSetUserTierLocally).not.toHaveBeenCalled();
+  });
+
+  it.each(['customer info', 'resume'] as const)('keeps confirmed Free when a %s read returns old Plus', async (source: 'customer info' | 'resume') => {
+    const paid: SubscriptionStatus = { tier: 'plus', isActive: true, willRenew: true };
+    const free: SubscriptionStatus = { tier: 'free', isActive: false };
+    const { initializeSubscription, refreshSubscriptionStatus } = require('../services/subscriptionService');
+    const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+    mockCurrentUser = { ...mockCurrentUser, app_metadata: { tier: 'plus', subscription_version: 1 } };
+    initializeSubscription.mockResolvedValue(paid);
+    const { result } = renderSubscriptionHook();
+    await waitFor(() => expect(result.current.status).toMatchObject(paid));
+
+    let finish!: (status: SubscriptionStatus) => void;
+    refreshSubscriptionStatus.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    const resume = mockForegroundListener.mock.calls.at(-1)?.[0] as () => Promise<void>;
+    const customerInfo = mockCustomerInfoListener.mock.calls.at(-1)?.[0] as (status: SubscriptionStatus) => void;
+    let foregroundRead: Promise<void> | undefined;
+    await act(async () => {
+      if (source === 'resume') foregroundRead = resume();
+      else customerInfo(paid);
+    });
+    expect(refreshSubscriptionStatus).toHaveBeenCalledTimes(1);
+
+    let finishManual!: (status: SubscriptionStatus) => void;
+    refreshSubscriptionStatus.mockImplementationOnce(() => new Promise(resolve => { finishManual = resolve; }));
+    syncSubscriptionFromServer.mockResolvedValueOnce({ ok: true, ...free, version: 1, changed: true });
+    let manualRefresh: Promise<unknown> | undefined;
+    await act(async () => { manualRefresh = result.current.refreshSubscription(); });
+    await act(async () => {
+      customerInfo(paid);
+      void resume();
+    });
+    expect(refreshSubscriptionStatus).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      finishManual(free);
+      await manualRefresh;
+    });
+    expect(result.current.status).toMatchObject(free);
+    mockSetUserTierLocally.mockClear();
+
+    await act(async () => {
+      finish(paid);
+      await foregroundRead;
+    });
+    expect(result.current.status).toMatchObject(free);
+    expect(mockSetUserTierLocally).not.toHaveBeenCalled();
   });
 
   describe('authentication handling', () => {
@@ -339,7 +488,7 @@ describe('useSubscription', () => {
       // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
-      expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }));
+      expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }), { userId: 'user-1', generation: mockGeneration });
     });
 
     it.each(['purchase', 'restore'])('does not claim server confirmation when %s succeeds locally but synchronization fails', async (action: string) => {
@@ -351,7 +500,9 @@ describe('useSubscription', () => {
       await act(async () => {
         outcome = action === 'purchase' ? await result.current.purchase('mock_monthly') : await result.current.restore();
       });
-      expect(outcome).toEqual(expect.objectContaining({ isActive: true, storeActive: true, serverConfirmed: false }));
+      expect(outcome).toEqual(expect.objectContaining({ isActive: false, storeActive: true, serverConfirmed: false }));
+      expect(result.current.isActive).toBe(false);
+      expect(result.current.activationPending).toBe(true);
       expect(result.current.processing).toBe(false);
     });
 
@@ -411,6 +562,37 @@ describe('useSubscription', () => {
   });
 
   describe('restore functionality', () => {
+    it.each(['empty', 'paid'] as const)('uses the receipt to decide whether to block purchases after %s restore if the server is unavailable', async (receipt: 'empty' | 'paid') => {
+      const free: SubscriptionStatus = { tier: 'free', isActive: false };
+      const plus: SubscriptionStatus = { tier: 'plus', isActive: true };
+      const receiptActive = receipt === 'paid';
+      const { restoreSubscriptionPurchases, purchaseSubscriptionPackage } = require('../services/subscriptionService');
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      syncSubscriptionFromServer.mockResolvedValueOnce({ ok: true, ...free, version: 1, changed: false });
+      const { result } = renderSubscriptionHook();
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      mockSetUserTierLocally.mockClear();
+      restoreSubscriptionPurchases.mockResolvedValueOnce(receiptActive ? plus : free);
+      syncSubscriptionFromServer.mockRejectedValueOnce(new Error('Backend unavailable'));
+
+      await act(async () => {
+        await expect(result.current.restore()).resolves.toMatchObject({ ...free, storeActive: receiptActive, serverConfirmed: false });
+      });
+      expect(result.current.status).toMatchObject(free);
+      expect(result.current.activationPending).toBe(receiptActive);
+      expect(mockSetUserTierLocally).not.toHaveBeenCalled();
+
+      await act(async () => {
+        if (receiptActive) {
+          await expect(result.current.purchase('mock_monthly')).rejects.toThrow('subscription_operation_pending');
+        } else {
+          syncSubscriptionFromServer.mockResolvedValueOnce({ ok: true, ...plus, version: 1, changed: true });
+          await expect(result.current.purchase('mock_monthly')).resolves.toMatchObject({ ...plus, serverConfirmed: true });
+        }
+      });
+      expect(purchaseSubscriptionPackage).toHaveBeenCalledTimes(receiptActive ? 0 : 1);
+    });
+
     it('given authenticated user when restoring successfully then updates subscription', async () => {
       // Given
       const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
@@ -426,7 +608,7 @@ describe('useSubscription', () => {
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
       expect(restoreSubscriptionPurchases).toHaveBeenCalledTimes(1);
-      expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }));
+      expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }), { userId: 'user-1', generation: mockGeneration });
     });
 
     it('given backend sync succeeds when restoring then logs convergence completion', async () => {
@@ -504,7 +686,7 @@ describe('useSubscription', () => {
         expect(restoreSubscriptionPurchases).toHaveBeenCalledTimes(1);
         expect(syncSubscriptionFromServer).not.toHaveBeenCalled();
         expect(mockSetUserTierLocally).not.toHaveBeenCalledWith(
-          expect.objectContaining({ tier: 'plus' })
+          expect.objectContaining({ tier: 'plus' }), expect.anything()
         );
       } finally {
         consoleErrorSpy.mockRestore();
@@ -529,6 +711,63 @@ describe('useSubscription', () => {
   });
 
   describe('refresh and cancellation flows', () => {
+    it.each([false, true])('discards a refresh from an older session (same account returns: %s)', async (returnToSame: boolean) => {
+      const { result, rerender } = renderSubscriptionHook();
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      const sync = jest.mocked(require('../services/subscriptionSyncService').syncSubscriptionFromServer);
+      let finish!: (value: SubscriptionSyncResponse) => void;
+      sync.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+      let obsolete!: Promise<unknown>;
+      await act(async () => { obsolete = result.current.refreshSubscription().catch((error: unknown) => error); });
+      const firstUser = mockCurrentUser;
+      mockCurrentUser = { ...firstUser, id: 'user-2' };
+      mockGeneration++;
+      rerender();
+      if (returnToSame) {
+        mockCurrentUser = firstUser;
+        mockGeneration++;
+        rerender();
+      }
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      mockSetUserTierLocally.mockClear();
+      await act(async () => {
+        finish({ ok: true, tier: 'plus', isActive: true, version: 1, changed: true });
+        expect(await obsolete).toMatchObject({ message: 'subscription_session_changed' });
+      });
+      expect(result.current.status?.tier).toBe('free');
+      expect(result.current.error).toBeNull();
+      expect(result.current.refreshing).toBe(false);
+      expect(mockSetUserTierLocally).not.toHaveBeenCalled();
+    });
+
+    it.each(['plus', 'free'] as const)('keeps the last confirmed right through unknown and settles confirmed %s on retry', async (tier: 'plus' | 'free') => {
+      const plus = { tier: 'plus', isActive: true } as const;
+      const free = { tier: 'free', isActive: false } as const;
+      const prior = tier === 'free' ? plus : free;
+      mockCurrentUser = { ...mockCurrentUser, app_metadata: { tier: prior.tier, subscription_version: 1 } };
+      const service = require('../services/subscriptionService');
+      service.initializeSubscription.mockResolvedValue(prior);
+      const sync = jest.mocked(require('../services/subscriptionSyncService').syncSubscriptionFromServer);
+      const { result } = renderSubscriptionHook();
+      await waitFor(() => expect(result.current.status).toMatchObject(prior));
+      const unknown = { ok: true, ...free, version: 1, changed: false, outcome: 'unknown_entitlement' };
+      sync.mockResolvedValueOnce(unknown);
+      await act(async () => {
+        await expect(result.current.restore()).resolves.toMatchObject({ storeActive: true, serverConfirmed: false });
+      });
+      expect(result.current.status).toMatchObject(prior);
+      expect(result.current.activationPending).toBe(true);
+      service.refreshSubscriptionStatus.mockResolvedValue(tier === 'plus' ? plus : free);
+      sync.mockResolvedValueOnce({ ok: true, ...(tier === 'plus' ? plus : free), version: 1, changed: true });
+      await act(async () => {
+        await expect(result.current.refreshSubscription()).resolves.toMatchObject({ tier, serverConfirmed: true });
+      });
+      expect(result.current.status?.tier).toBe(tier);
+      expect(result.current.activationPending).toBe(false);
+      expect(service.restoreSubscriptionPurchases).toHaveBeenCalledTimes(1);
+      expect(service.purchaseSubscriptionPackage).not.toHaveBeenCalled();
+    });
+
     it('refreshes subscription status from RevenueCat', async () => {
       const { refreshSubscriptionStatus } = require('../services/subscriptionService');
       jest.mocked(refreshSubscriptionStatus).mockResolvedValueOnce({ tier: 'plus', isActive: true } as any);

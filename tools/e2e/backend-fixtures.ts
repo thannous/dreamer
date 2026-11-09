@@ -41,6 +41,16 @@ export async function login(page: Page, account: Account) {
   await page.getByTestId('btn.onboarding.intro.next').click();
   await page.getByTestId('btn.onboarding.skip').click();
   await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromCapture(page, account);
+  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
+  await page.getByTestId('btn.header.home.settings').click();
+  await page.getByTestId('quick-settings.all').click();
+  await expect(page.getByTestId('text.auth.email')).toContainText(account.email);
+  await expect(page.getByTestId('screen.subscription.qaLab')).toHaveCount(0);
+}
+
+export async function signInFromCapture(page: Page, account: Account) {
   // Continue from the completed onboarding. Reloading here races its async
   // release-notes acknowledgement and can create a modal absent on first launch.
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
@@ -50,12 +60,6 @@ export async function login(page: Page, account: Account) {
   await page.getByTestId('input.auth.email').fill(account.email);
   await page.getByTestId('input.auth.password').fill(account.password);
   await page.getByTestId('btn.auth.signIn').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
-  await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await expect(page.getByTestId('text.auth.email')).toContainText(account.email);
-  await expect(page.getByTestId('screen.subscription.qaLab')).toHaveCount(0);
 }
 
 export async function journal(page: Page) {
@@ -69,6 +73,30 @@ export async function journal(page: Page) {
     await page.getByRole('button', { name: 'Journal', exact: true }).click();
   }
   await expect(page.getByTestId('screen.journal').filter({ visible: true })).toHaveCount(1);
+}
+
+// Read only the two IndexedDB records for the fixture account, independently of the UI.
+export async function localJournal(page: Page, accountId: string) {
+  return page.evaluate(async id => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('gemini_dream_journal');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    try {
+      const store = db.transaction('storage').objectStore('storage');
+      const read = <T>(key: string) => new Promise<T[]>((resolve, reject) => {
+        const request = store.get('gemini_dream_journal_' + key + ':user:' + id);
+        request.onsuccess = () => resolve(JSON.parse(request.result ?? '[]'));
+        request.onerror = () => reject(request.error);
+      });
+      const [pending, dreams] = await Promise.all([
+        read<{ id: string; clientRequestId: string }>('pending_mutations'),
+        read<{ clientRequestId: string; remoteId?: number; revisionId?: string; transcript: string }>('remote_dreams_cache'),
+      ]);
+      return { pending, dreams };
+    } finally { db.close(); }
+  }, accountId);
 }
 
 const contextTest = base.extend<{ context: BrowserContext }>({

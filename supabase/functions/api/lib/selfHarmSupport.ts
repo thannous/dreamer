@@ -24,17 +24,45 @@ const SELF_HARM_MENTIONS = [
   /\b(?:farmi male|farti male|farsi male|mi taglio|mi ferisco)\b/,
 ] as const;
 
+// "Someone wanted to kill me" is a threat from another person, a common
+// nightmare, not self-harm. Outside English the same object pronoun is also the
+// reflexive one ("me tuer", "matarme", "mich umbringen"), so a phrase is only
+// set aside when all of these hold:
+// - the victim is the speaker (me, nous, mich, mi). A second person object is
+//   also the reflexive of an imperative or of "você ... te", so "va te tuer",
+//   "você quer te matar" and "il veut te tuer" keep the support;
+// - its verb or its subject is unambiguously somebody else. Ambiguous forms
+//   keep the support ("quería matarme", "wollte mich umbringen"), including a
+//   verb that is also an imperative ("va me tuer");
+// - only an adverb or a modal sits in between ("quiere verme hacerme daño"
+//   keeps the support: the harm is the speaker's own).
+// A third person harming themselves ("il veut se tuer") always keeps it.
+const OTHER_PERSON_THREATS = [
+  // fr: il voulait me tuer, quelqu'un essaie de me tuer, ils vont nous faire du mal
+  /\b(?:(?:il|elle|on|ils|elles|quelqu un|quelqu une|(?:un|une|le|la|l|mon|ma)\s+(?:homme|femme|type|inconnu|inconnue|monstre|tueur|tueuse|voleur|pere|mere|frere|soeur|ex|patron|loup|chien|demon))\s+(?:essaie|essaye|essaient|essayent|tente|tentent|cherche|cherchent|va)|voulait|voulaient|veut|veulent|vont|allait|allaient|venait|venaient|essayait|essayaient|tentait|tentaient|cherchait|cherchaient|menacait|menacaient|(?:a|ont|avait|avaient) (?:voulu|essaye|tente|cherche|failli|menace))\s+(?:(?:vraiment|encore|toujours|juste|seulement|deja|absolument)\s+)?(?:de\s+|d\s+|a\s+)?(?:me|nous)\s+(?:faire du mal|blesser|tuer|pendre|mutiler)\b/g,
+  // es: quiere matarme, alguien quería matarme, un hombre intentaba hacerme daño
+  /\b(?:(?:alguien|el|ella|ellos|ellas|(?:un|una|el|la|mi|su)\s+(?:hombre|mujer|tipo|chico|chica|senor|senora|desconocido|desconocida|extrano|extrana|asesino|asesina|monstruo|ladron|padre|madre|hermano|hermana|novio|novia|ex|jefe|jefa|lobo|perro|demonio))\s+(?:queria|querian|intentaba|intentaban|iba a|iban a|trataba de|trataban de|intento|trato de|intenta|trata de)|quiere|quieren|quiso|quisieron|intentan|intentaron|tratan de|va a|van a)\s+(?:(?:realmente|de verdad|otra vez|todavia|ya|solo|tambien)\s+)?(?:matarme|hacerme dano|lastimarme|cortarme)\b/g,
+  // pt: quer me matar, ele queria me matar, alguém tentou me machucar
+  /\b(?:(?:alguem|ele|ela|eles|elas|voce|(?:um|uma|o|a|meu|minha|seu|sua)\s+(?:homem|mulher|cara|rapaz|moca|senhor|senhora|desconhecido|desconhecida|estranho|estranha|assassino|assassina|monstro|ladrao|pai|mae|irmao|irma|namorado|namorada|ex|chefe|lobo|cachorro|demonio))\s+(?:queria|queriam|tentava|tentavam|ia|iam|quis|quiseram|tenta|vai)|quer|querem|tentam|tentou|tentaram|vao)\s+(?:(?:mesmo|realmente|de novo|ainda|ja|so|tambem)\s+)?me\s+(?:matar|machucar|ferir|cortar|mutilar|queimar)\b/g,
+  // de: er wollte mich umbringen, im Traum wollte er mich töten, jemand will mich verletzen
+  /\b(?:er|sie|es|jemand|man|einer|der mann|die frau|ein mann|eine frau|ein fremder|eine fremde|der morder|ein morder|ein monster|mein vater|meine mutter|mein bruder|meine schwester|mein ex|meine ex)\s+(?:(?:wollte|wollten|will|wollen|versuchte|versuchten|wird|werden|wurde|wurden|kann|konnte|konnten|muss|musste|soll|sollte|darf|mochte|mag|hat|hatte|ging|kam)\s+)?mich\s+(?:verletzen|umbringen|toten)\b/g,
+  // it: voleva uccidermi, qualcuno cercava di farmi del male
+  /\b(?:(?:qualcuno|lui|lei|loro|(?:un|una|il|lo|la|l|mio|mia|suo|sua)\s+(?:uomo|donna|tipo|ragazzo|ragazza|sconosciuto|sconosciuta|assassino|assassina|mostro|ladro|padre|madre|fratello|sorella|ex|capo|lupo|cane|demone))\s+(?:cerca|prova|tenta)|voleva|volevano|vuole|vogliono|cercava|cercavano|cercano|provava|provavano|provano|tentava|tentavano|tentano|stava per|stavano per|sta per|stanno per|(?:ha|hanno|aveva|avevano) (?:cercato|provato|tentato|voluto))\s+(?:(?:davvero|ancora|gia|solo|proprio|anche|di nuovo)\s+)?(?:di\s+|a\s+)?(?:uccidermi|farmi (?:del )?male|tagliarmi)\b/g,
+] as const;
+
 export function mentionsSelfHarm(message: string): boolean {
   const normalized = message.normalize('NFKD').replace(/\p{M}/gu, '')
     .replace(/[\u200B-\u200D\uFEFF]/g, '').toLowerCase()
     .replace(/[’'`]/g, ' ').replace(/\s+/g, ' ');
-  return SELF_HARM_MENTIONS.some(pattern => pattern.test(normalized));
+  const withoutThreats = OTHER_PERSON_THREATS.reduce((text, pattern) => text.replace(pattern, ' # '), normalized);
+  return SELF_HARM_MENTIONS.some(pattern => pattern.test(withoutThreats));
 }
 
 // Verified with the local-hotline directory on 2026-11-06. Locale is not
 // location: France is always named explicitly, including in the French copy.
-const FRANCE_PHONE = '[3114](tel:3114?oai_link_source=model_response_hotline)';
-const FRANCE_WEBSITE = '[https://3114.fr/](https://3114.fr/?oai_link_source=model_response_hotline)';
+// Plain links: the tracking suffix the directory added could break the tel: link.
+const FRANCE_PHONE = '[3114](tel:3114)';
+const FRANCE_WEBSITE = '[https://3114.fr/](https://3114.fr/)';
 
 export const SELF_HARM_SUPPORT: Readonly<Record<AiLanguage, string>> = {
   fr: `Ce message évoque l’automutilation ou le suicide. Même si cela concerne un rêve ou une autre personne, je préfère faire une pause dans l’interprétation pour partager des ressources d’aide. Noctalia ne remplace pas une aide humaine ou un service d’urgence.

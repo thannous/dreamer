@@ -1,3 +1,4 @@
+import { createKeyedSerialLock } from '@/lib/serialLock';
 import {
   getLucidKeyValueStorage,
   isLucidNativeKeyValueStorage,
@@ -5,8 +6,10 @@ import {
 } from '@/services/lucidKeyValueStorage';
 
 import {
+  LUCID_STABILIZATION_LAB_MAX_SESSIONS,
   LUCID_STABILIZATION_LAB_VERSION,
   isLucidStabilizationLabSession,
+  normalizeLucidStabilizationLabSessions,
   parseLucidStabilizationLabSession,
   type LucidStabilizationLabSession,
 } from '@/lib/lucid/stabilizationLab';
@@ -20,7 +23,7 @@ import {
 const STORAGE_NAMESPACE = 'noctalia_lucid_stabilization_lab';
 const SESSIONS_KEY_VERSION = 'sessions_v1';
 export const LUCID_STABILIZATION_LAB_STORE_VERSION = 1 as const;
-export const LUCID_STABILIZATION_LAB_MAX_STORED_SESSIONS = 500 as const;
+export const LUCID_STABILIZATION_LAB_MAX_STORED_SESSIONS = LUCID_STABILIZATION_LAB_MAX_SESSIONS;
 const ENVELOPE_KEYS = ['version', 'userScope', 'sessions'] as const;
 const EXPORT_KEYS = ['version', 'userScope', 'sessions'] as const;
 const MAX_SCOPE_LENGTH = 256;
@@ -59,7 +62,7 @@ export class LucidStabilizationLabStorageError extends Error {
   }
 }
 
-const scopeLocks = new Map<string, Promise<void>>();
+const { run: withScopeLock, countKeys: countScopeLocks } = createKeyedSerialLock();
 
 function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
   return isLucidNativeKeyValueStorage(storage);
@@ -128,58 +131,11 @@ function cloneSession(session: LucidStabilizationLabSession): LucidStabilization
   return parsed;
 }
 
-function compareSessionIds(left: string, right: string): number {
-  if (left === right) return 0;
-  return left < right ? -1 : 1;
-}
-
-function compareStoredSessions(
-  left: LucidStabilizationLabSession,
-  right: LucidStabilizationLabSession
-): number {
-  if (left.updatedAt !== right.updatedAt) return right.updatedAt - left.updatedAt;
-  return compareSessionIds(left.sessionId, right.sessionId);
-}
-
-function chooseNewestSession(
-  left: LucidStabilizationLabSession,
-  right: LucidStabilizationLabSession
-): LucidStabilizationLabSession {
-  if (left.updatedAt !== right.updatedAt) {
-    return left.updatedAt > right.updatedAt ? left : right;
-  }
-  const leftJson = JSON.stringify(left);
-  const rightJson = JSON.stringify(right);
-  return leftJson >= rightJson ? left : right;
-}
-
-function collectUniqueSessions(
-  sessions: readonly unknown[]
-): LucidStabilizationLabSession[] | null {
-  if (!Array.isArray(sessions)) return null;
-  const byId = new Map<string, LucidStabilizationLabSession>();
-  for (const value of sessions) {
-    const parsed = parseLucidStabilizationLabSession(value);
-    if (!parsed) return null;
-    const existing = byId.get(parsed.sessionId);
-    byId.set(parsed.sessionId, existing ? chooseNewestSession(existing, parsed) : parsed);
-  }
-  return [...byId.values()].sort(compareStoredSessions).map(cloneSession);
-}
-
-function rankStoredSessions(
-  sessions: readonly LucidStabilizationLabSession[]
-): LucidStabilizationLabSession[] {
-  return [...sessions].sort(compareStoredSessions).slice(0, LUCID_STABILIZATION_LAB_MAX_STORED_SESSIONS).map(cloneSession);
-}
-
 function normalizeSessions(sessions: readonly unknown[]): LucidStabilizationLabSession[] | null {
   if (!Array.isArray(sessions) || sessions.length > LUCID_STABILIZATION_LAB_MAX_STORED_SESSIONS) {
     return null;
   }
-  const unique = collectUniqueSessions(sessions);
-  if (!unique) return null;
-  return unique.slice(0, LUCID_STABILIZATION_LAB_MAX_STORED_SESSIONS);
+  return normalizeLucidStabilizationLabSessions(sessions);
 }
 
 function parseEnvelope(value: unknown, userScope: string): LucidStabilizationLabStoredEnvelope | null {
@@ -240,25 +196,8 @@ async function writePlaintext(
   }
 }
 
-async function withScopeLock<T>(userScope: string, work: () => Promise<T>): Promise<T> {
-  const previous = scopeLocks.get(userScope) ?? Promise.resolve();
-  let release: () => void = () => undefined;
-  const gate = new Promise<void>((resolve) => {
-    release = resolve;
-  });
-  const tail = previous.then(() => gate);
-  scopeLocks.set(userScope, tail);
-  await previous;
-  try {
-    return await work();
-  } finally {
-    release();
-    if (scopeLocks.get(userScope) === tail) scopeLocks.delete(userScope);
-  }
-}
-
 export function countLucidStabilizationLabScopeLocksForTests(): number {
-  return scopeLocks.size;
+  return countScopeLocks();
 }
 
 async function loadEnvelope(
@@ -300,20 +239,6 @@ async function saveEnvelope(
   );
 }
 
-function upsertIntoSessions(
-  sessions: readonly LucidStabilizationLabSession[],
-  incoming: LucidStabilizationLabSession
-): LucidStabilizationLabSession[] {
-  const next = cloneSession(incoming);
-  const existing = sessions.find((session) => session.sessionId === next.sessionId);
-  if (existing && existing.updatedAt > next.updatedAt) {
-    return rankStoredSessions(sessions);
-  }
-  const merged = existing ? chooseNewestSession(existing, next) : next;
-  const without = sessions.filter((session) => session.sessionId !== merged.sessionId);
-  return rankStoredSessions([merged, ...without]);
-}
-
 export async function loadLucidStabilizationLabSessions(
   userScope: string,
   storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
@@ -337,7 +262,10 @@ export async function upsertLucidStabilizationLabSession(
       );
     }
     const current = await loadEnvelope(userScope, storage);
-    const sessions = upsertIntoSessions(current.sessions, session);
+    const sessions = normalizeLucidStabilizationLabSessions([...current.sessions, session]);
+    if (!sessions) {
+      throw new LucidStabilizationLabStorageError('invalid_metadata', 'Invalid stabilization lab sessions');
+    }
     await saveEnvelope(
       { version: LUCID_STABILIZATION_LAB_STORE_VERSION, userScope, sessions },
       storage

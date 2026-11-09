@@ -7,12 +7,7 @@ import { PracticeProgress } from '@/components/journey/PracticeProgress';
 import { BenefitList } from '@/components/session/BenefitList';
 import { BackLink, Button, Card, IconSymbol, Rule, Text } from '@/components/ui';
 import { Themes } from '@/constants/theme';
-import {
-  canAccessWorld,
-  DEFAULT_WORLD_ID,
-  isWorldId,
-  WORLD_BY_ID,
-} from '@/constants/worlds';
+import { resolveAccessibleWorld } from '@/constants/worlds';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { TID } from '@/lib/testIDs';
@@ -44,13 +39,7 @@ export default function SessionDetail() {
   } = useSubscription();
   const { world: selectedWorld } = useWorld();
   const { loaded: worldPurchasesLoaded, isWorldOwned } = useWorldPurchases();
-  const fallbackWorld = canAccessWorld(selectedWorld.id, isWorldOwned)
-    ? selectedWorld
-    : WORLD_BY_ID[DEFAULT_WORLD_ID];
-  const world =
-    worldParam && isWorldId(worldParam) && canAccessWorld(worldParam, isWorldOwned)
-      ? WORLD_BY_ID[worldParam]
-      : fallbackWorld;
+  const world = resolveAccessibleWorld([worldParam, selectedWorld.id], isWorldOwned);
   const worldColors = Themes[world.appearance];
 
   const session = id ? SESSION_BY_ID[id] : undefined;

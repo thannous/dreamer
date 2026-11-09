@@ -8,7 +8,7 @@ import { withUniwind } from 'uniwind';
 import { ARTWORK_TEXT_HALO } from '@/components/journey/WorldJourneyPicker';
 import { BackLink, Button, IconSymbol, Text } from '@/components/ui';
 import { withAlpha, WorldScene } from '@/components/worlds/WorldScene';
-import { canAccessWorld, DEFAULT_WORLD_ID, isWorldId, WORLD_BY_ID, type MeditationWorld } from '@/constants/worlds';
+import { isWorldId, resolveAccessibleWorld, type MeditationWorld } from '@/constants/worlds';
 import { SESSION_BY_ID } from '@/content/sessions';
 import { useTranslation } from '@/context/LanguageContext';
 import { useLibrary } from '@/context/LibraryContext';
@@ -140,8 +140,8 @@ export default function JourneyScreen() {
   const { worldId } = useLocalSearchParams<{ worldId?: string }>();
   const { world: selectedWorld } = useWorld();
   const { isWorldOwned } = useWorldPurchases();
-  const requested = worldId && isWorldId(worldId) ? WORLD_BY_ID[worldId] : selectedWorld;
-  const world = canAccessWorld(requested.id, isWorldOwned) ? requested : WORLD_BY_ID[DEFAULT_WORLD_ID];
+  const requestedWorldId = isWorldId(worldId) ? worldId : selectedWorld.id;
+  const world = resolveAccessibleWorld([requestedWorldId], isWorldOwned);
 
   return (
     <WorldScene world={world} artwork="journey">

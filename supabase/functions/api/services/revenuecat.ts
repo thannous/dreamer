@@ -1,10 +1,11 @@
 import type {
+  RevenueCatEntitlementLookupById,
   RevenueCatV2CustomerResponse,
-  Tier as RevenueCatTier,
 } from '../lib/revenuecatSubscriber.ts';
 
 const SUBSCRIPTION_SYNC_TIMEOUT_MS = 8000;
 const ENTITLEMENT_CACHE_TTL_MS = 5 * 60 * 1000;
+const MAX_ENTITLEMENT_PAGES = 10;
 
 type RevenueCatEntitlement = {
   id?: string | null;
@@ -17,13 +18,14 @@ type RevenueCatEntitlementsResponse = {
   next_page?: string | null;
 };
 
-type RevenueCatEntitlementCache = {
-  map: Record<string, string>;
-  fetchedAt: number;
+type RevenueCatAliasesResponse = {
+  items?: { id?: string | null }[] | null;
 };
 
-let entitlementCache: RevenueCatEntitlementCache | null = null;
-let entitlementCachePromise: Promise<Record<string, string>> | null = null;
+type RevenueCatEntitlementCache = {
+  map: RevenueCatEntitlementLookupById;
+  fetchedAt: number;
+};
 
 function getOptionalEnv(name: string): string | null {
   const value = Deno.env.get(name);
@@ -53,39 +55,116 @@ function normalizeEntitlementField(value: unknown): string | null {
   return trimmed ? trimmed : null;
 }
 
-async function fetchRevenueCatEntitlementsPage(
-  url: string,
-  apiKey: string,
-  timeoutMs: number
-): Promise<RevenueCatEntitlementsResponse> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-
-    if (!res.ok) {
-      const bodyText = await res.text().catch(() => '');
-      throw new RevenueCatHttpError({
-        status: res.status,
-        statusText: res.statusText,
-        url,
-        bodyText,
-      });
-    }
-
-    return (await res.json()) as RevenueCatEntitlementsResponse;
-  } finally {
-    clearTimeout(timeout);
-  }
+function customerUrl(appUserId: string, projectId: string): string {
+  return `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/customers/${encodeURIComponent(appUserId)}`;
 }
+
+/** Each function runtime owns its cache; callers retain their subscription decisions. */
+export function createRevenueCatClient(dependencies: {
+  fetch?: typeof fetch;
+  now?: () => number;
+} = {}) {
+  const fetchRequest: typeof fetch = dependencies.fetch ?? ((input, init) => globalThis.fetch(input, init));
+  const now = dependencies.now ?? (() => Date.now());
+  let entitlementCache: RevenueCatEntitlementCache | null = null;
+  let entitlementCachePromise: Promise<RevenueCatEntitlementLookupById> | null = null;
+
+  async function requestJson<T>(url: string, apiKey: string, timeoutMs: number): Promise<T> {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetchRequest(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json' },
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        const bodyText = await response.text().catch(() => '');
+        throw new RevenueCatHttpError({
+          status: response.status,
+          statusText: response.statusText,
+          url,
+          bodyText,
+        });
+      }
+      return await response.json() as T;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  async function fetchRevenueCatCustomer(
+    appUserId: string,
+    apiKey: string,
+    projectId: string,
+    timeoutMs = SUBSCRIPTION_SYNC_TIMEOUT_MS,
+  ): Promise<RevenueCatV2CustomerResponse> {
+    return await requestJson<RevenueCatV2CustomerResponse>(customerUrl(appUserId, projectId), apiKey, timeoutMs);
+  }
+
+  async function fetchRevenueCatCustomerAliases(
+    appUserId: string,
+    apiKey: string,
+    projectId: string,
+    timeoutMs = SUBSCRIPTION_SYNC_TIMEOUT_MS,
+  ): Promise<string[]> {
+    const data = await requestJson<RevenueCatAliasesResponse>(
+      `${customerUrl(appUserId, projectId)}/aliases`, apiKey, timeoutMs,
+    );
+    const items = Array.isArray(data.items) ? data.items : [];
+    return items.map((item) => typeof item.id === 'string' ? item.id.trim() : '').filter(Boolean);
+  }
+
+  async function fetchEntitlementLookup(
+    apiKey: string,
+    projectId: string,
+    timeoutMs: number,
+  ): Promise<RevenueCatEntitlementLookupById> {
+    const map: RevenueCatEntitlementLookupById = {};
+    let url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/entitlements`;
+    let pageCount = 0;
+    while (url && pageCount < MAX_ENTITLEMENT_PAGES) {
+      const data = await requestJson<RevenueCatEntitlementsResponse>(url, apiKey, timeoutMs);
+      const items = Array.isArray(data.items) ? data.items : [];
+      for (const item of items) {
+        const id = normalizeEntitlementField(item.id);
+        const lookup = normalizeEntitlementField(item.lookup_key) ?? normalizeEntitlementField(item.display_name);
+        if (id && lookup) map[id] = lookup;
+      }
+      pageCount += 1;
+      const nextPage = normalizeEntitlementField(data.next_page);
+      if (!nextPage) break;
+      url = nextPage.startsWith('http') ? nextPage : `https://api.revenuecat.com${nextPage}`;
+    }
+    return map;
+  }
+
+  async function getRevenueCatEntitlementLookup(
+    apiKey: string,
+    projectId: string,
+    timeoutMs = SUBSCRIPTION_SYNC_TIMEOUT_MS,
+  ): Promise<RevenueCatEntitlementLookupById> {
+    if (entitlementCache && now() - entitlementCache.fetchedAt < ENTITLEMENT_CACHE_TTL_MS) {
+      return entitlementCache.map;
+    }
+    if (entitlementCachePromise) return entitlementCachePromise;
+    entitlementCachePromise = fetchEntitlementLookup(apiKey, projectId, timeoutMs)
+      .then((map) => {
+        entitlementCache = { map, fetchedAt: now() };
+        return map;
+      })
+      .finally(() => { entitlementCachePromise = null; });
+    return entitlementCachePromise;
+  }
+
+  return { fetchRevenueCatCustomer, fetchRevenueCatCustomerAliases, getRevenueCatEntitlementLookup };
+}
+
+export const {
+  fetchRevenueCatCustomer,
+  fetchRevenueCatCustomerAliases,
+  getRevenueCatEntitlementLookup,
+} = createRevenueCatClient();
 
 export function getRevenueCatApiKey(): string {
   const apiKey =
@@ -102,9 +181,7 @@ export function getRevenueCatApiKey(): string {
 
 export function getRevenueCatProjectId(): string {
   const projectId = getOptionalEnv('REVENUECAT_PROJECT_ID');
-  if (!projectId) {
-    throw new Error('Missing REVENUECAT_PROJECT_ID');
-  }
+  if (!projectId) throw new Error('Missing REVENUECAT_PROJECT_ID');
   return projectId;
 }
 
@@ -114,135 +191,4 @@ export function getReconcileSecret(): string | null {
     getOptionalEnv('REVENUECAT_RECONCILE_AUTH') ??
     getOptionalEnv('REVENUECAT_RECONCILE_AUTHORIZATION')
   );
-}
-
-export function normalizeTier(value: unknown): RevenueCatTier {
-  if (value === 'plus' || value === 'premium') return 'plus';
-  return 'free';
-}
-
-export function getTierUpdatedAt(meta: Record<string, unknown> | null | undefined): string | null {
-  const raw = meta?.tier_updated_at;
-  if (typeof raw === 'string' && raw.trim()) return raw;
-  return null;
-}
-
-export function buildUpdatedMetadata(
-  meta: Record<string, unknown>,
-  tier: RevenueCatTier,
-  source: string
-): Record<string, unknown> {
-  const nowMs = Date.now();
-  const lastEventTimestampMs =
-    typeof meta.last_tier_event_timestamp_ms === 'number'
-      ? meta.last_tier_event_timestamp_ms
-      : null;
-  const nextEventTimestampMs =
-    lastEventTimestampMs && lastEventTimestampMs > nowMs
-      ? lastEventTimestampMs
-      : nowMs;
-
-  return {
-    ...meta,
-    tier,
-    tier_updated_at: new Date().toISOString(),
-    tier_source: source,
-    last_tier_event_timestamp_ms: nextEventTimestampMs,
-  };
-}
-
-export async function fetchRevenueCatCustomer(
-  appUserId: string,
-  apiKey: string,
-  projectId: string,
-  timeoutMs: number = SUBSCRIPTION_SYNC_TIMEOUT_MS
-): Promise<RevenueCatV2CustomerResponse> {
-  const url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(
-    projectId
-  )}/customers/${encodeURIComponent(appUserId)}`;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-
-    if (!res.ok) {
-      const bodyText = await res.text().catch(() => '');
-      throw new RevenueCatHttpError({
-        status: res.status,
-        statusText: res.statusText,
-        url,
-        bodyText,
-      });
-    }
-
-    return (await res.json()) as RevenueCatV2CustomerResponse;
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-async function fetchRevenueCatEntitlementLookup(
-  apiKey: string,
-  projectId: string,
-  timeoutMs: number = SUBSCRIPTION_SYNC_TIMEOUT_MS
-): Promise<Record<string, string>> {
-  const map: Record<string, string> = {};
-  let url = `https://api.revenuecat.com/v2/projects/${encodeURIComponent(projectId)}/entitlements`;
-  let pageCount = 0;
-
-  while (url && pageCount < 10) {
-    const data = await fetchRevenueCatEntitlementsPage(url, apiKey, timeoutMs);
-    const items = Array.isArray(data.items) ? data.items : [];
-    for (const item of items) {
-      const id = normalizeEntitlementField(item.id);
-      const lookup =
-        normalizeEntitlementField(item.lookup_key) ?? normalizeEntitlementField(item.display_name);
-      if (id && lookup) {
-        map[id] = lookup;
-      }
-    }
-
-    pageCount += 1;
-    const nextPage = normalizeEntitlementField(data.next_page);
-    if (!nextPage) break;
-    url = nextPage.startsWith('http') ? nextPage : `https://api.revenuecat.com${nextPage}`;
-  }
-
-  return map;
-}
-
-export async function getRevenueCatEntitlementLookup(
-  apiKey: string,
-  projectId: string,
-  timeoutMs: number = SUBSCRIPTION_SYNC_TIMEOUT_MS
-): Promise<Record<string, string>> {
-  const now = Date.now();
-  if (entitlementCache && now - entitlementCache.fetchedAt < ENTITLEMENT_CACHE_TTL_MS) {
-    return entitlementCache.map;
-  }
-
-  if (entitlementCachePromise) {
-    return entitlementCachePromise;
-  }
-
-  entitlementCachePromise = fetchRevenueCatEntitlementLookup(apiKey, projectId, timeoutMs)
-    .then((map) => {
-      entitlementCache = { map, fetchedAt: Date.now() };
-      entitlementCachePromise = null;
-      return map;
-    })
-    .catch((error) => {
-      entitlementCachePromise = null;
-      throw error;
-    });
-
-  return entitlementCachePromise;
 }
