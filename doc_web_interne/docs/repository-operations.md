@@ -13,6 +13,17 @@ A procedure or historical result grants no additional authorization.
 Install root dependencies from the repository root. Meditation uses a separate
 lockfile and additionally requires `mise exec -- npm ci` in `apps/meditation`.
 
+A fresh clone or a hosted agent container gets everything `verify:pr` needs for a
+docs or web diff from one command: `script/setup_agent_session.sh` runs
+`mise install` when mise is present (otherwise it looks for an installed Node of
+the pinned version), then the root install, the e2e tooling and its browsers, and
+skips an install whose lockfile did not change. `--link` links that Node into
+`~/.local/bin` when another version is the default, `--meditation` adds
+Meditation. It downloads no toolchain: without Deno a diff under
+`supabase/functions` still leaves the proof incomplete there. A hosted
+environment whose setup script starts one directory above the clone runs
+`cd dreamer && script/setup_agent_session.sh --link`.
+
 - Install: `npm ci` (reproducible), `npm install` (update), `npx expo install <package>` (Expo-compatible package).
 - Run: `npm run start`, `npm run web`, `npm run android`, `npm run ios`.
 - Runtime modes: `npm run start:mock`, `npm run start:real`, `npm run start:teststore`, `npm run start:playstore`, `npm run start:supabase`.
@@ -193,8 +204,7 @@ mock or unit-test repetition.
 CircleCI runs only an optional E2E/Chromium installation benchmark, requiring both
 `run_e2e_benchmark=true` and a manual/API trigger (`pipeline.event.name=api` or
 legacy `pipeline.trigger.type=api`). Webhook pushes run nothing. It runs no app
-validation; merges and publication do not wait for it. Former validation jobs are
-frozen local test fixtures, not a remotely executed pipeline.
+validation; merges and publication do not wait for it.
 
 EAS workflows in `.eas/workflows/` run only through `workflow_dispatch`, never PRs
 or tags automatically. The `android-release-smoke` and

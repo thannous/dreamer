@@ -95,11 +95,10 @@ A procedure, a skill or a historical result guides execution; it grants no autho
   resolution lives in `lib/config.ts`.
 - Site: edit `docs-src/` and canonical `data/` inputs, rebuild ignored `docs/`, and
   never commit generated site output.
-- Local task artifacts belong in the canonical ignored `outputs/` directory. The files
-  already tracked under `outputs/` and `screenshots/` are a frozen
-  historical baseline: never add tracked files there. Keep native tooling outputs (for
-  example `tools/e2e/.e2e/`) canonical for their runs; reference them instead of
-  copying complete media for handoffs.
+- Local task artifacts belong in the canonical ignored `outputs/` directory; nothing
+  under `outputs/`, `screenshots/` or another local-output folder is tracked. Keep
+  native tooling outputs (for example `tools/e2e/.e2e/`) canonical for their runs;
+  reference them instead of copying complete media for handoffs.
 - Keep reusable procedures in current guides and dated results in their existing
   evidence locations; age alone is not removal proof.
 
@@ -109,6 +108,9 @@ Install the Node and Deno versions pinned in `mise.toml` with `mise install`, th
 `mise exec --` unless they are already active. Run `npm ci` at the root (it also
 installs the pre-push hook) and separately in `apps/meditation`; `tools/e2e`
 (`npm run test:testerarmy:setup`) and `tools/expo-agent` keep their own lockfiles.
+In a fresh clone or cloud container, `script/setup_agent_session.sh` does the root
+and e2e installs and the browsers in one step (`--link` where the pinned Node is
+installed but is not the default, `--meditation` for that app).
 Use existing package scripts and the
 [runtime prerequisites](doc_web_interne/docs/repository-operations.md#runtime-and-prerequisites),
 which also cover the local development backend and the Expo Go
@@ -251,7 +253,9 @@ détaille fetch, merge-base, worktree isolé, preuve, nouvelle tête et intégra
 [Local validation and CI](doc_web_interne/docs/repository-operations.md#local-validation-and-ci)
 explains conditional checks and the release targets. The pre-push hook only checks
 forbidden files, secrets and file size and prints the proof; it does not replace
-`verify:pr`. CircleCI is only an optional manual/API installation benchmark
+`verify:pr`. After a push from a machine where `gh` is authenticated,
+`npm run verify:pr:status` posts the proof as the commit status `verify-local/pr`,
+so the PR shows it without trusting its description. CircleCI is only an optional manual/API installation benchmark
 (`run_e2e_benchmark=true`), with no application validation; webhooks run nothing. EAS
 workflows use `workflow_dispatch` only. Local coverage remains mandatory; missing
 specialized prerequisites need a valid owner-machine proof, never a skip or CI link.

@@ -25,15 +25,8 @@ test('pure primitives cannot depend on application providers', () => {
 test('own observations and neutral contracts remain permitted; comments are not imports', () => {
   expect(inspect('lib/lucid/example.ts', "import type { LucidObservation } from './observations'; import type { Language } from '../types'; // import x from '@/context/DreamsContext'" )).toEqual([]);
 });
-test('shared map names existing inputs and actual shared execution consumers', () => {
+test('the device lock stays a root runner dependency, not a Meditation script', () => {
   const root = path.resolve(__dirname, '..');
-  const rows = fs.readFileSync(path.join(root, '.circleci/dependency-consumers.tsv'), 'utf8').trim().split('\n').filter(line => !line.startsWith('#')).map(line => line.split('\t'));
-  expect(new Set(rows.map(row => row[0])).size).toBe(rows.length);
-  for (const [input, graph, consumers] of rows) {
-    expect(fs.existsSync(path.join(root, input))).toBe(true);
-    expect(['build', 'execution', 'content', 'contract', 'runtime']).toContain(graph);
-    for (const consumer of consumers.split(' ')) expect(['noctalia', 'meditation', 'site', 'edge_functions', 'edge_contracts']).toContain(consumer);
-  }
   // Meditation's only use was its Maestro scripts, retired on 2026-10-14.
   expect(fs.readFileSync(path.join(root, 'apps/meditation/package.json'), 'utf8')).not.toContain('scripts/android-device-lock.js');
   expect(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).toContain('scripts/expo-safe-runner.js');

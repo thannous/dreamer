@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { parse } from 'yaml';
 
@@ -47,15 +46,4 @@ test('the active pipeline has one setup benchmark and uploads only reports, with
   assert.equal(scripts['test:testerarmy:benchmark'], 'node tools/e2e/benchmark-setup.mjs');
   assert.equal(job.steps[2].store_artifacts.path, '.tmp/e2e-benchmark/results');
   assert.equal(existsSync(new URL('../continue.yml', import.meta.url)), false);
-});
-
-test('the former CI coverage fixtures stay unchanged while local commands retain their contracts', () => {
-  // These bytes are the merged PR #418 portfolio, not an active pipeline.
-  for (const [file, expected] of [
-    ['validation-portfolio.yml', 'e738e5889dc4899ea7bdfcd41b5b862606da7ee6bb8d7775815a0cb10a92f8af'],
-    ['legacy-setup.yml', '5d266fe42f60c9deac0e0dd2b7d973985558209ca8e88ed96a248673e267febe'],
-  ]) {
-    const bytes = readFileSync(new URL(`./fixtures/${file}`, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
-    assert.equal(createHash('sha256').update(bytes).digest('hex'), expected, file);
-  }
 });
