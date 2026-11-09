@@ -271,6 +271,9 @@ mise exec -- npm run test:testerarmy:typecheck
 keeps the full browser for local `--headed` runs. For headless-only hosts, use
 `npm run test:testerarmy:browsers -- --only-shell`; a fresh Linux host adds `--with-deps`.
 The headless shell is the same executable the unchanged engine already launches.
+The PR readiness probe launches that shell, checks its reported browser version
+against the engine's manifest, and closes it. A missing or mismatched engine,
+browser, or failed cleanup keeps the gate unavailable.
 The portable Node installer resolves Playwright from `@e2e-dev/web`, verifies
 matcher version parity and preserves other projects' installed browsers.
 It does not reuse the root application's different Playwright installation.
