@@ -2,14 +2,13 @@
 
 // verify-local.config.mjs: the checks verify:pr and verify:release announce
 // must exist and retain the former CircleCI validation portfolio. The frozen
-// fixture prevents removing a remote job from silently dropping local coverage.
+// list below prevents an edit from silently dropping that local coverage.
 
 const { execFileSync, spawnSync } = require('node:child_process');
 const { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } = require('node:fs');
 const { tmpdir } = require('node:os');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
-const YAML = require('yaml');
 
 const ROOT = path.resolve(__dirname, '..');
 const ENGINE = pathToFileURL(path.join(ROOT, 'scripts/verify-local.mjs')).href;
@@ -72,20 +71,23 @@ syncBuiltinESMExports();
 process.on('exit', () => fs.writeFileSync(path.join(process.env.SCOPE_READS_DIR, process.pid + '.reads'), [...reads].join('\\n')));
 `;
 
-function circleciCommands() {
-  const continuation = YAML.parse(readFileSync(path.join(ROOT, '.circleci/tests/fixtures/validation-portfolio.yml'), 'utf8'));
-  const commands = [];
-  const walk = (value) => {
-    if (Array.isArray(value)) value.forEach(walk);
-    else if (value && typeof value === 'object') {
-      if (value.run !== undefined) commands.push(typeof value.run === 'string' ? value.run : value.run.command);
-      Object.values(value).forEach(walk);
-    }
-  };
-  walk(continuation.jobs);
-  walk(continuation.commands);
-  return commands.join('\n');
-}
+// Every command the CircleCI portfolio ran before validation moved here (PR
+// #418, master 3e93154). Frozen: a release must keep running each of them.
+// Left out: the dependency installs, the CircleCI-only Jest timing history and
+// the tests of the pipeline's own change classifier, removed with it.
+const FORMER_CI_STEPS = [
+  'deno check', 'deno test',
+  'npm run boundaries:check', 'npm run dependencies:check', 'npm run docs:build', 'npm run docs:check',
+  'npm run lint', 'npm run lint:scripts', 'npm run test:analysis-authorization:db', 'npm run test:changed',
+  'npm run test:e2e:backend', 'npm run test:fast', 'npm run test:file', 'npm run test:testerarmy:guards',
+  'npm run test:testerarmy:site', 'npm run test:testerarmy:typecheck', 'npm run typecheck',
+  'npm run typecheck:app', 'npm run typecheck:tests',
+  'scripts/check-db-contract.test.js', 'scripts/check-monorepo-boundaries.js',
+  'scripts/dream-images-auth-user-policy-migration.test.js', 'scripts/guest-chat-route-contract.test.js',
+  'scripts/guest-qa-passport-migration.test.js', 'scripts/interpretation-entitlement-migration.test.js',
+  'scripts/mobile-release.js', 'scripts/product-analytics-migration.test.js',
+  'scripts/product-analytics-schema-parity.test.js',
+];
 
 describe('verify-local.config.mjs', () => {
   // The pin lives here, in verify-config, which runs on any edit of the
@@ -114,6 +116,53 @@ describe('verify-local.config.mjs', () => {
       expect({ name, inputs: checkNamed(name).inputs.filter((input) => ['verify-local.config.mjs', '.gitattributes'].includes(input)) }).toEqual({ name, inputs: [] });
     }
   });
+
+  it('brings a tooling self-test into a PR for every file it loads and for a new Node, package set or command', () => {
+    // These checks left every PR for the PRs that change them: a module their
+    // tests import but their list misses would let that PR skip the check.
+    const { existsSync, statSync } = require('node:fs');
+    const MODULE = /\.(?:[cm]?js|tsx?)$/;
+    const SPECIFIER = /(?:\bfrom\s*|\bimport\s*\(\s*|\brequire\s*\(\s*|\bimport\s+)['"](\.{1,2}\/[^'"]+)['"]/g;
+    const resolve = (from, specifier) => {
+      const base = path.posix.normalize(path.posix.join(path.posix.dirname(from), specifier));
+      const candidates = [base, ...['.js', '.mjs', '.cjs', '.ts', '.tsx', '.json'].map((extension) => base + extension), `${base}/index.js`, `${base}/index.ts`];
+      return candidates.find((candidate) => existsSync(path.join(ROOT, candidate)) && statSync(path.join(ROOT, candidate)).isFile()) ?? null;
+    };
+    const files = tracked();
+    const scopedChecks = ['verify-local-engine', 'site-publish-guard', 'test-supabase-guard', 'backend-runner-guards', 'release-simulators'];
+    for (const name of scopedChecks) {
+      const check = checkNamed(name);
+      // The files it names one by one (a whole-folder glob is read as text, not imported).
+      const named = check.inputs.filter((glob) => !glob.includes('**') && !glob.endsWith('/'));
+      const modules = files.filter((file) => MODULE.test(file));
+      const unnamed = new Set(outside(named, modules));
+      const roots = modules.filter((file) => !unnamed.has(file));
+      expect({ name, roots: roots.length > 0 }).toEqual({ name, roots: true });
+      const seen = new Set(roots);
+      const queue = [...roots];
+      while (queue.length) {
+        const file = queue.pop();
+        for (const [, specifier] of readFileSync(path.join(ROOT, file), 'utf8').matchAll(SPECIFIER)) {
+          const target = resolve(file, specifier);
+          if (target && !seen.has(target)) {
+            seen.add(target);
+            if (MODULE.test(target)) queue.push(target);
+          }
+        }
+      }
+      expect({ name, missing: outside(check.when, [...seen]) }).toEqual({ name, missing: [] });
+      // What the fingerprint covers besides the files: Node, the packages and the command.
+      expect({ name, missing: outside(check.when, ['.nvmrc', 'mise.toml', 'package.json', 'package-lock.json', 'verify-local.config.mjs']) }).toEqual({ name, missing: [] });
+      const notInputs = new Set(outside(check.inputs, files));
+      expect({ name, missing: outside(check.when, files.filter((file) => !notInputs.has(file))) }).toEqual({ name, missing: [] });
+    }
+    for (const name of ['site-publish-guard', 'test-supabase-guard']) {
+      expect({ name, missing: outside(checkNamed(name).when, ['jest.config.js', 'jest.setup.ts', 'babel.config.js']) }).toEqual({ name, missing: [] });
+    }
+    // Every PR still runs these two, whatever it changes.
+    const always = config.checks.filter((check) => (check.kinds ?? ['pr', 'release']).includes('pr') && !check.when).map((check) => check.name);
+    expect(always).toEqual(['repository-hygiene', 'migration-grants']);
+  }, 120000);
 
   it('flags any EAS workflow, eas.json or release guard edit as a delivery check change', () => {
     const files = [
@@ -148,7 +197,7 @@ describe('verify-local.config.mjs', () => {
     expect(scripts['lint:warnings']).toBe('node scripts/check-lint-warnings.js');
     expect(scripts['repository:hygiene']).toBe('node scripts/check-repository-hygiene.cjs');
     expect(scripts['test:repository-hygiene']).toBe('node --test scripts/check-repository-hygiene.test.cjs');
-    for (const file of ['scripts/lint-warnings-baseline.json', 'data/repository-hygiene-baseline.json',
+    for (const file of ['scripts/lint-warnings-baseline.json',
       'scripts/check-lint-warnings.js', 'scripts/check-repository-hygiene.cjs']) {
       expect(config.deliveryFiles).toContain(file);
     }
@@ -183,28 +232,16 @@ describe('verify-local.config.mjs', () => {
     expect(missing).toEqual([]);
   });
 
-  it('runs every step of the CircleCI portfolio on a published master commit', () => {
+  it('runs every step of the former CircleCI portfolio on a published master commit', () => {
     // A release runs every release check of its target, `when` ones included;
     // verify:release and verify:release:site together run them all.
     const release = config.checks
       .filter((check) => (check.kinds ?? ['pr', 'release']).includes('release'))
       .map((check) => check.command)
       .join('\n');
-    const ci = circleciCommands();
-    const expected = new Set([
-      ...[...ci.matchAll(/npm run ([\w:-]+)/g)].map(([, script]) => `npm run ${script}`),
-      ...[...ci.matchAll(/node \.?\/?(scripts\/[\w./-]+\.(?:js|mjs|cjs))/g)].map(([, file]) => file),
-      ...[...ci.matchAll(/(?:bash|python3) (\.circleci\/tests\/[\w.-]+)/g)].map(([, file]) => file),
-      ...[...ci.matchAll(/scripts\/[\w-]+\.test\.js/g)].map(([file]) => file),
-      ...[...ci.matchAll(/deno (?:check|test)/g)].map(([command]) => command),
-    ]);
-    // Dependency installation, and the CircleCI-only Jest timing baseline history.
-    for (const setup of ['npm run test:testerarmy:setup', 'npm run browsers:install', 'scripts/check-jest-duration-regression.js']) {
-      expect(expected.delete(setup)).toBe(true);
-    }
-    expect([...expected].filter((step) => !release.includes(step))).toEqual([]);
+    expect(FORMER_CI_STEPS.filter((step) => !release.includes(step))).toEqual([]);
     // Each runs once per release: release-contracts no longer repeats the pins and CI contracts.
-    for (const step of ['node scripts/mobile-release.js verify --app all', 'bash .circleci/tests/classify-changes.test.sh']) {
+    for (const step of ['node scripts/mobile-release.js verify --app all', 'node --test .circleci/tests/benchmark.test.mjs']) {
       expect({ step, runs: release.split(step).length - 1 }).toEqual({ step, runs: 1 });
     }
   });

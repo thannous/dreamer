@@ -140,10 +140,14 @@ npm run verify:pr
 
 Le contrôle porte sur une copie isolée du commit (`git worktree`, avec les
 `node_modules` du checkout principal liés) : le travail non committé n'est ni
-vérifié ni déplacé, et aucun arbre propre n'est exigé. Il lance `typecheck:app`,
+vérifié ni déplacé, et aucun arbre propre n'est exigé. Chaque contrôle ne tourne
+que si le commit change un fichier qu'il lit depuis `origin/master` : `typecheck:app`,
 `typecheck:tests`, `lint`, `lint:scripts`, les tests Jest liés au diff depuis le
-merge-base avec `origin/master` (`test:changed`, y compris pour une PR empilée), les contrats statiques Supabase et Edge, et les
-tests du moteur. Selon les chemins changés depuis `origin/master`, il ajoute
+merge-base (`test:changed`, y compris pour une PR empilée), les contrats statiques
+Supabase et Edge, ainsi que les tests du moteur, des gardes de publication et des
+lanceurs (une PR qui ne touche ni cet outillage, ni la version de Node, ni les
+paquets, ni la configuration ne le reteste pas, même dans un clone neuf). Seuls l'hygiène du dépôt et les droits des migrations tournent à
+chaque fois (une à deux secondes). Selon les chemins changés, il ajoute
 `docs:build` et `docs:check` (site : `docs-src/`, `data/`, `scripts/`, fichiers
 de paquet), les contrats CI/benchmark (`.circleci/` et outils d’installation E2E), Meditation
 (`apps/meditation` et fichiers partagés) et les Edge Functions sous Deno

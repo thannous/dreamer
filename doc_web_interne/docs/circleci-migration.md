@@ -35,7 +35,7 @@ Python et sur Linux, avec leurs prérequis. La configuration conserve :
 | Backend | Contrats DB statiques, migrations PGlite, types/tests Deno, parcours backend local sur le runtime Supabase natif et Chromium |
 | Parcours web | Outillage et gardes TesterArmy, les quatre passes Dreamer, Lucid et Meditation, mêmes cas et assertions sur les deux OS |
 | Sorties livrées | Site reconstruit pour le SHA ; build web pour la cible app |
-| Contrats CI | Anciens cas de classification/fallback/préparation et nouveaux contrats du benchmark, tous exécutés localement |
+| Contrats CI | Contrats du benchmark et de ses outils d'installation, interrupteurs de publication (déploiements Git Vercel désactivés, étape d'ignorance des builds, aucun pipeline hébergé qui publie), exécutés localement |
 
 `npm run verify:release` utilise `release --target app`. Les contrôles `app`
 sont le build web, `e2e-backend` et les campagnes Dreamer/Lucid/Meditation.
@@ -47,10 +47,12 @@ Les builds EAS et les vérifications sur appareil restent des preuves séparées
 avec leurs autorisations et prérequis de plateforme.
 
 `scripts/verify-local-config.test.js` vérifie la conservation des commandes de
-l'ancien portfolio. Celui-ci est figé dans
-`.circleci/tests/fixtures/validation-portfolio.yml`, avec l'ancien setup dans
-`legacy-setup.yml`. Ces fixtures servent uniquement aux tests locaux existants :
-le pipeline ne les lit pas. Les tests du benchmark vérifient aussi leurs empreintes.
+l'ancien portfolio : leur liste est figée dans ce test (`FORMER_CI_STEPS`) et une
+release doit toutes les exécuter. Le classifieur de changements de l'ancien
+pipeline, ses tests et ses fixtures YAML ont été retirés le 2026-11-09 : plus
+aucun pipeline ne les exécutait. Les deux contrôles encore utiles qu'ils
+portaient (déploiements Git Vercel désactivés, étape d'ignorance des builds)
+sont dans `scripts/deploy-switches.test.mjs`.
 
 Les tests communs exécutent les mêmes cas partout, avec simulation des erreurs
 et différences de plateforme. Les suites natives propres à un OS restent une
@@ -124,5 +126,4 @@ node --test .circleci/tests/benchmark.test.mjs tools/e2e/benchmark-setup.test.mj
 ```
 
 Les cas couvrent l'opt-in et les déclencheurs, l'absence de validations distantes,
-les fixtures historiques inchangées, les paramètres invalides et la conservation
-des erreurs, signaux et reçus partiels. Aucun cas commun ne dépend de l'OS hôte.
+les paramètres invalides et la conservation des erreurs, signaux et reçus partiels. Aucun cas commun ne dépend de l'OS hôte.

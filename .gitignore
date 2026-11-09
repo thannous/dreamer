@@ -8,7 +8,7 @@ node_modules/
 .java-home/
 .gradle-user-home/
 
-# Generated marketing site (rebuilt locally and by Cloudflare Pages)
+# Generated marketing site (rebuilt locally; published only by npm run docs:deploy:prod)
 /docs/
 /docs-src/static/version.txt
 
@@ -20,8 +20,8 @@ dist/
 web-build/
 expo-env.d.ts
 
-# JetBrains IDE
-.idea/caches/
+# JetBrains IDE (local settings, not shared)
+.idea/
 
 # Agent skills (any hidden dir)
 **/.*/skills/
@@ -145,8 +145,7 @@ doc_web_interne/SEO_NOCTALIA_AHREF
 /tmp-stage/
 /tmp-stage-index/
 
-# Private raw QA and comparison output (tracked historical exceptions stay in Git)
-/outputs/
+# Private raw QA and comparison output (nothing under these is tracked)
 /screenshots/
 /.tmp-*
 /playwright-report/

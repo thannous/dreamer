@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { test } = require('node:test');
-const { ruleFor, legacyPathsFrom, inspectPaths, indexPaths, checkRepositoryHygiene } = require('./check-repository-hygiene.cjs');
+const { ruleFor, inspectPaths, indexPaths, registryEvidencePaths, missingEvidence, checkRepositoryHygiene } = require('./check-repository-hygiene.cjs');
 
 // These path/index failures occur before any application/browser journey starts.
 test('new local configuration, raw run output and temporary paths are refused', () => {
@@ -31,15 +31,9 @@ test('product assets, source profiles, fixtures and redacted durable QA remain p
   ]) assert.equal(ruleFor(file), null, file);
 });
 
-test('historical exceptions preserve exact paths without admitting adjacent new artifacts', () => {
-  const legacy = legacyPathsFrom({ schemaVersion: 1, legacyPaths: ['outputs/old/report.json', 'screenshots/old.png', 'tmp-stage/old.png'] });
-  assert.deepEqual(inspectPaths([...legacy], legacy), []);
-  assert.deepEqual(inspectPaths(['outputs/new/report.json', 'screenshots/new.png', 'tmp-stage/new.png'], legacy).map(row => row.path),
-    ['outputs/new/report.json', 'screenshots/new.png', 'tmp-stage/new.png']);
-  for (const legacyPaths of [['.claude/settings.local.json'], ['outputs/../settings.local.json'], ['outputs/old.json', 'outputs/old.json']]) {
-    assert.throws(() => legacyPathsFrom({ schemaVersion: 1, legacyPaths }), /Invalid historical artifact exception/);
-  }
-  assert.throws(() => legacyPathsFrom({ schemaVersion: 2, legacyPaths: [] }), /Invalid repository hygiene baseline/);
+test('no tracked path is exempt: the former historical output folders are refused like any other', () => {
+  assert.deepEqual(inspectPaths(['outputs/old/report.json', 'screenshots/old.png', 'tmp-stage/old.png']).map(row => row.path),
+    ['outputs/old/report.json', 'screenshots/old.png', 'tmp-stage/old.png']);
 });
 
 test('the real Git index controls publication while private local files stay on disk', () => {
@@ -50,11 +44,9 @@ test('the real Git index controls publication while private local files stay on 
   };
   try {
     git('init', '-q');
-    write('data/repository-hygiene-baseline.json', JSON.stringify({ schemaVersion: 1, legacyPaths: ['outputs/old/report.json'] }));
-    write('assets/icon.png'); write('doc_web_interne/docs/qa/audit.md'); write('outputs/old/report.json');
+    write('assets/icon.png'); write('doc_web_interne/docs/qa/audit.md');
     write('.claude/settings.local.json');
-    git('add', '-f', '--', 'data/repository-hygiene-baseline.json', 'assets/icon.png', 'doc_web_interne/docs/qa/audit.md',
-      'outputs/old/report.json', '.claude/settings.local.json');
+    git('add', '-f', '--', 'assets/icon.png', 'doc_web_interne/docs/qa/audit.md', '.claude/settings.local.json');
     assert.deepEqual(checkRepositoryHygiene(root), [{ path: '.claude/settings.local.json', rule: 'private-local-configuration' }]);
     git('rm', '--cached', '--', '.claude/settings.local.json');
     assert.ok(fs.existsSync(path.join(root, '.claude/settings.local.json')));
@@ -69,7 +61,7 @@ test('the real Git index controls publication while private local files stay on 
 });
 
 
-test('the CLI refuses private basenames at every depth without broadening historical exceptions', () => {
+test('the CLI refuses private basenames and tracked local output at every depth', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-hygiene-cli-'));
   const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
   const write = (file, text = 'synthetic fixture\n') => {
@@ -80,15 +72,13 @@ test('the CLI refuses private basenames at every depth without broadening histor
   const privateNames = ['.env.real', '.env.supabase', 'credentials.json'];
   const privateFiles = prefixes.flatMap(prefix => privateNames.map(name => prefix + name));
   const publicFiles = prefixes.flatMap(prefix => ['.env.example', '.env.test.example', '.env.mock', '.env.lucid'].map(name => prefix + name));
-  const baseline = { schemaVersion: 1, legacyPaths: ['outputs/old/report.json'] };
   try {
     git('init', '-q');
     write('scripts/check-repository-hygiene.cjs', fs.readFileSync(path.join(__dirname, 'check-repository-hygiene.cjs')));
-    write('data/repository-hygiene-baseline.json', JSON.stringify(baseline));
     write('.gitignore', privateNames.join('\n') + '\n');
-    for (const file of [...publicFiles, ...baseline.legacyPaths]) write(file);
-    git('add', '-f', '--', 'scripts', 'data', '.gitignore', ...publicFiles, ...baseline.legacyPaths);
-    assert.equal(cli().status, 0, 'public examples/profiles and the exact historical path remain allowed');
+    for (const file of publicFiles) write(file);
+    git('add', '-f', '--', 'scripts', '.gitignore', ...publicFiles);
+    assert.equal(cli().status, 0, 'public examples and profiles remain allowed');
 
     for (const file of privateFiles) write(file);
     git('add', '-f', '--', ...privateFiles);
@@ -101,22 +91,64 @@ test('the CLI refuses private basenames at every depth without broadening histor
     for (const file of privateFiles) assert.equal(fs.readFileSync(path.join(root, file), 'utf8'), 'synthetic fixture\n');
     assert.equal(cli().status, 0, 'removing only the index entries preserves local data and restores a clean result');
 
-    const adjacent = 'outputs/old/new-report.json';
-    write(adjacent); git('add', '-f', '--', adjacent);
+    const output = 'outputs/old/report.json';
+    write(output); git('add', '-f', '--', output);
     const newArtifact = cli();
     assert.equal(newArtifact.status, 1, newArtifact.stderr);
-    assert.ok(newArtifact.stderr.includes(`${adjacent} [local-or-generated-output]`));
-    assert.ok(!newArtifact.stderr.includes('outputs/old/report.json ['));
-    git('rm', '--cached', '--', adjacent);
-
-    // Historical output exceptions must never admit a private basename either.
-    for (const name of privateNames) {
-      write('data/repository-hygiene-baseline.json', JSON.stringify({ ...baseline, legacyPaths: [`outputs/old/${name}`] }));
-      const invalidException = cli();
-      assert.equal(invalidException.status, 1, `private historical exception was accepted: ${name}`);
-      assert.match(invalidException.stderr, /could not inspect the Git index or validate its historical baseline/);
-    }
-    write('data/repository-hygiene-baseline.json', JSON.stringify(baseline));
+    assert.ok(newArtifact.stderr.includes(`${output} [local-or-generated-output]`));
+    git('rm', '--cached', '--', output);
     assert.equal(cli().status, 0);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+// The rollout report reads a stage as evidence-missing once its file is gone;
+// only the index can show that before the ledger is emptied.
+test('every evidence file and archive the symbol rollout registry names stays tracked', () => {
+  const registry = 'docs-src/config/symbol-rollout.json';
+  const document = {
+    records: [
+      { id: 'moon', evidence: { path: 'doc_web_interne/docs/qa/moon.json', sha256: 'a'.repeat(64) } },
+      { id: 'deer', evidence: { path: 'doc_web_interne/docs/qa/moon.json', sha256: 'a'.repeat(64) } },
+      { id: 'owl', evidence: { path: 'doc_web_interne/docs/qa/owl.json', sha256: 'b'.repeat(64) } },
+      { id: 'no-evidence' },
+    ],
+    recordArchives: [{ path: 'doc_web_interne/docs/qa/history.json', sha256: 'c'.repeat(64) }],
+  };
+  assert.deepEqual(registryEvidencePaths(document),
+    ['doc_web_interne/docs/qa/moon.json', 'doc_web_interne/docs/qa/moon.json', 'doc_web_interne/docs/qa/owl.json', 'doc_web_interne/docs/qa/history.json']);
+  assert.deepEqual(registryEvidencePaths({}), []);
+
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-hygiene-evidence-'));
+  const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+  const write = (file, text = 'synthetic fixture\n') => {
+    const full = path.join(root, file); fs.mkdirSync(path.dirname(full), { recursive: true }); fs.writeFileSync(full, text);
+  };
+  const cli = () => spawnSync(process.execPath, ['scripts/check-repository-hygiene.cjs'], { cwd: root, encoding: 'utf8' });
+  try {
+    git('init', '-q');
+    write('scripts/check-repository-hygiene.cjs', fs.readFileSync(path.join(__dirname, 'check-repository-hygiene.cjs')));
+    write('doc_web_interne/docs/qa/moon.json'); write('doc_web_interne/docs/qa/owl.json'); write('doc_web_interne/docs/qa/history.json');
+    git('add', '-f', '--', 'scripts', 'doc_web_interne');
+    // No registry tracked: nothing to require.
+    assert.deepEqual(missingEvidence(root, indexPaths(root)), []);
+    write(registry, JSON.stringify(document)); git('add', '-f', '--', registry);
+    assert.deepEqual(checkRepositoryHygiene(root), []);
+    assert.equal(cli().status, 0);
+
+    // A file left on disk but removed from the index is missing for every other clone.
+    git('rm', '-q', '--cached', '--', 'doc_web_interne/docs/qa/owl.json', 'doc_web_interne/docs/qa/history.json');
+    assert.deepEqual(checkRepositoryHygiene(root), [
+      { path: 'doc_web_interne/docs/qa/history.json', rule: 'registry-evidence-missing' },
+      { path: 'doc_web_interne/docs/qa/owl.json', rule: 'registry-evidence-missing' },
+    ]);
+    const refused = cli();
+    assert.equal(refused.status, 1, refused.stderr);
+    assert.ok(refused.stderr.includes('doc_web_interne/docs/qa/owl.json [registry-evidence-missing]'));
+    assert.ok(!refused.stderr.includes('moon.json'));
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('the registry of this repository names only tracked evidence', () => {
+  const root = path.resolve(__dirname, '..');
+  assert.deepEqual(missingEvidence(root, indexPaths(root)), []);
 });

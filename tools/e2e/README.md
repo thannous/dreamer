@@ -10,7 +10,7 @@ and fails without actual model calls; no API-key fallback is configured. Use
 `npm run test:testerarmy:login` only if a saved login is missing. Native runs retain
 their separate identified Release/device requirements. See the
 [journey guide](../../e2e/README.md) and
-[migration record](../../doc_web_interne/docs/qa/full-testerarmy-20261021.md).
+migration record (Git history).
 
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
@@ -433,7 +433,7 @@ its cold Metro cache purge must not race another active Metro cache.
 
 ### Dreamer native personas with Sol
 
-The [2026-10-20 native campaign](../../doc_web_interne/docs/qa/dreamer-native-personas-20261020.md)
+The 2026-10-20 native campaign (Git history)
 records four passing personas on each platform, the exact builds and rerun commands.
 
 First prepare an isolated native project and create its `mock-persistent`
@@ -588,7 +588,7 @@ offline sync, account isolation, analysis/chat recovery and system recognition
 from a QA audio file. It gives identified iOS/Android build and run commands,
 shared-backend locking, owned-app termination between platforms, and the explicit
 limit: file recognition does not qualify physical microphone capture. The
-[campaign evidence](../../doc_web_interne/docs/qa/dreamer-native-missing-journeys-20261022.md)
+campaign evidence (Git history)
 identifies fresh runs and justified reuse separately: composite coverage is not a
 fresh 6/6 campaign, and excluded iOS speech remains unqualified. The runbook's
 section « Écrire une étape native » applies to every native journey: a control that
@@ -621,7 +621,7 @@ checklists (the voice one is an optional manual test that does not block
 
 ## Native Release provenance and diagnostic handoff
 
-Current delivered native evidence and retained limits: [retrospective qualification](../../doc_web_interne/docs/qa/native-retro-qualification-20261006.md). Historical reports retain their original source/build identities.
+Current delivered native evidence and retained limits: retrospective qualification (Git history). Historical reports retain their original source/build identities.
 
 Requested native implementation/QA includes necessary local generation in its
 isolated worktree after SDK/profile checks; reuse compatible existing native
@@ -805,7 +805,7 @@ for this suite. These mock-service browser journeys do not qualify native Lucid.
 The manual Lucid visual script [`tests/e2e/lucid-visual-journey.mjs`](../../tests/e2e/lucid-visual-journey.mjs)
 (repository root) remains: it
 runs from a browser REPL, with no runner (see the
-[Lucid visual corrections](../../doc_web_interne/docs/qa/lucid-visual-corrections-2026-10-02.md)).
+Lucid visual corrections (Git history)).
 Native Lucid runs here (`lucid.mobile.e2e.ts`).
 
 ## Complete verdict and immutable evidence
@@ -1007,7 +1007,7 @@ purchase with the continuation test; do not tap Buy again to check it. Original 
 human steps and continuation passes stay distinct evidence.
 
 See the [reusable iOS runbook](../../doc_web_interne/docs/revenuecat-qa-workflow.md#ios-physique--réutiliser-la-préparation-sandbox)
-and the [dated qualification](../../doc_web_interne/docs/qa/revenuecat-ios-sandbox-20261016.md).
+and the dated qualification (Git history).
 This developer-client proof does not qualify Release/TestFlight or production delivery.
 
 Receipt qualification also binds Metro to the clean checked-out source, resolves the device

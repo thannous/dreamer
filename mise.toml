@@ -1,4 +1,4 @@
-# Match .nvmrc and the runtime versions in .circleci/continue.yml.
+# Match .nvmrc and the Node image in .circleci/config.yml.
 [tools]
 deno = "2.9.8"
 node = "24.22.1"

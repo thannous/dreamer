@@ -55,7 +55,7 @@ Les 46 empreintes ont été revérifiées après déplacement du worktree, sans 
 
 ## Preuves qui restent distinctes
 
-Le [préflight natif du lot A](../qa/NOCTALIA-LOT-A-NATIVE-QUALIFICATION.md) a
+Le préflight natif du lot A (Git history) a
 identifié le binaire Play installé, sans établir son lien avec le SHA cible.
 Aucune qualification native du lot A ou B, achat réel, validation Store, mesure
 de démarrage sur appareil ou vérification réseau réelle n'est déclarée passée.

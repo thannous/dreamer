@@ -10,9 +10,10 @@
 //                           into checks, plus the surfaces the PR changed.
 //                           App diffs also run the local web smoke journeys and
 //                           the named parcours (`--changed-since origin/master`).
-//                           No model call and no GitHub Actions minutes. A
-//                           docs-only diff skips both. A missing browser or
-//                           emulator prints a skip line and does not fail.
+//                           No GitHub Actions minutes, and no model call unless
+//                           OPENAI_API_KEY is set. A docs-only diff skips both.
+//                           A touched zone without the pinned Node, the e2e
+//                           install or Chromium leaves the proof incomplete.
 //   npm run verify:release  before an app publish: the PR checks, run again,
 //                           plus the full local validation of
 //                           doc_web_interne/docs/circleci-migration.md
@@ -26,8 +27,9 @@
 //                           TesterArmy app campaigns). Both on one commit
 //                           cover both targets.
 //
-// A check without `when` is reused by a later PR run whose inputs are identical;
-// a release reuses nothing. A `when` check runs only
+// A check without `when` runs on every PR unless a run with identical inputs
+// already passed in this clone; only repository-hygiene and migration-grants
+// are in that case. A release reuses nothing. A `when` check runs only
 // when the commit changes those paths since origin/master; on the published
 // master commit nothing changed, so a
 // surface a release always needs carries releaseAlways, and the release-only
@@ -51,8 +53,26 @@ const SITE_ONLY = [
   'tools/e2e/tests/**',
 ];
 
+// Agent, editor and repository-host settings: no compiler, linter or test reads
+// them, so an edit to the MCP servers or a skill does not start the typechecks
+// or the lint. scripts/verify-local-config.test.js keeps them out of both
+// import graphs.
+const AGENT_META = ['.mcp.json', 'skills-lock.json', '.vscode/', '.agents/', '.github/', 'tools/expo-agent/'];
+
 // A scope that takes everything but these globs (see `when` in the engine).
 const not = (globs) => globs.map((glob) => `!${glob}`);
+
+// A check of the delivery tooling itself (engine, publish guards, runners).
+// Its inputs are its files and every local module they import: the config test
+// walks those imports and refuses a list that misses one. They bring the check
+// into a PR, together with what its fingerprint also covers (the pinned Node,
+// the packages, this file for its command) and, for a Jest run, the Jest
+// settings. A PR that changes none of them skips it, as a clone that already
+// passed it would reuse it, so a fresh clone does not re-test unchanged
+// tooling. A release runs every check.
+const TOOLING_ENVIRONMENT = ['.nvmrc', 'mise.toml', 'package.json', 'package-lock.json', 'verify-local.config.mjs'];
+const JEST_SETTINGS = ['jest.config*.js', 'jest.setup.ts', 'babel.config.js'];
+const scoped = (inputs, alsoWhen = []) => ({ inputs, when: [...new Set([...inputs, ...TOOLING_ENVIRONMENT, ...alsoWhen])] });
 
 // What the two tsc programs (tsconfig.json, tsconfig.test.json) can read: the
 // TypeScript sources their include patterns take, everything under tests/
@@ -71,6 +91,7 @@ const TYPESCRIPT = [
   'supabase/functions/api/lib/selfHarmSupport.ts', 'supabase/functions/api/lib/revenuecatSubscriber.ts',
   // Site and repository data no source imports.
   '!docs-src/**/*.json', 'docs-src/static/data/curation-pages.json', '!data/**/*.json', 'data/app/',
+  ...not(AGENT_META),
   ...not(DOCS),
 ];
 
@@ -80,7 +101,7 @@ const TYPESCRIPT = [
 // No linted file imports a document, a site-only source, a migration or a CI
 // or EAS workflow: scripts/verify-local-config.test.js checks it on the
 // import graph scripts/check-lint-warnings.js reads.
-const LINT = ['**', ...not(DOCS), ...not(SITE_ONLY), '!supabase/migrations/', '!.circleci/', '!.eas/'];
+const LINT = ['**', ...not(DOCS), ...not(SITE_ONLY), ...not(AGENT_META), '!supabase/migrations/', '!.circleci/', '!.eas/'];
 
 // What `lint-scripts` (expo lint scripts) can read: scripts/, the files
 // outside it that scripts import (and those they re-export), and the ESLint
@@ -154,7 +175,7 @@ const SITE = [
 const SITE_SCOPE_TEST = 'scopes the site check to every script the site build and check load';
 const SITE_SCOPE_TEST_READS = ['scripts/verify-local-config.test.js', 'verify-local.config.mjs', 'scripts/verify-local.mjs', 'jest.config.js'];
 
-// apps/meditation and the shared files .circleci/dependency-consumers.tsv routes to it.
+// apps/meditation and the shared files it builds and runs with.
 const MEDITATION = [
   'apps/meditation/',
   '.nvmrc',
@@ -214,23 +235,18 @@ const EAS_WORKFLOW_READS = [
   'app.json',
 ];
 
-// What ci-contracts reads: the CI files and tests, the root package.json
-// (the benchmark's canonical command) and the e2e install manifests and tools.
+// What ci-contracts reads: the one CircleCI job (the opt-in install benchmark)
+// and its test, the root package.json (the benchmark's canonical command), the
+// e2e install manifests and tools, and the switches that keep a push from
+// publishing (Vercel Git deployments off, its ignored-build step, .github/).
 const CI_CONTRACT_READS = [
   '.circleci/', 'package.json',
-  // shared-build-impact.test.py also checks the Vercel deployment switches and .github/.
-  'vercel.json', 'scripts/vercel-ignore-build.mjs', '.github/',
+  'vercel.json', 'scripts/vercel-ignore-build.mjs', 'scripts/deploy-switches.test.mjs', '.github/',
   'tools/e2e/package.json', 'tools/e2e/package-lock.json',
   'tools/e2e/benchmark-setup.mjs', 'tools/e2e/benchmark-setup.test.mjs',
   'tools/e2e/install-browsers.mjs', 'tools/e2e/install-browsers.test.mjs',
 ];
-const CI_CONTRACTS = [
-  'bash .circleci/tests/classify-changes.test.sh',
-  'python3 .circleci/tests/shared-build-impact.test.py',
-  'bash .circleci/tests/fallback-jest.test.sh',
-  'node --test .circleci/tests/e2e-preparation.test.mjs tools/e2e/install-browsers.test.mjs',
-  'node --test .circleci/tests/benchmark.test.mjs tools/e2e/benchmark-setup.test.mjs',
-].join(' && ');
+const CI_CONTRACTS = 'node --test .circleci/tests/benchmark.test.mjs tools/e2e/benchmark-setup.test.mjs tools/e2e/install-browsers.test.mjs scripts/deploy-switches.test.mjs';
 
 // Former CI edge-contracts and edge-functions (PGlite), now local only.
 // These tests read migrations and routes as files, so Jest's related-test
@@ -395,7 +411,6 @@ export default {
     // Owner-requested maintenance guards: changes to their policy require review.
     'scripts/check-repository-hygiene.cjs',
     'scripts/check-repository-hygiene.test.cjs',
-    'data/repository-hygiene-baseline.json',
     'scripts/check-lint-warnings.js',
     'scripts/check-lint-warnings.test.js',
     // Which new public tables may skip explicit grants: only the closed historical list.
@@ -470,9 +485,8 @@ export default {
     'tools/e2e/persona-models.mjs',
     'tools/e2e/bugbash-prerelease.mjs',
     // The suites ci-contracts runs.
-    '.circleci/tests/classify-changes.test.sh',
-    '.circleci/tests/shared-build-impact.test.py',
-    '.circleci/tests/fallback-jest.test.sh',
+    '.circleci/tests/benchmark.test.mjs',
+    'scripts/deploy-switches.test.mjs',
   ],
   checks: [
     // ---- verify:pr, reused by verify:release when the inputs are identical.
@@ -489,7 +503,10 @@ export default {
       name: 'verify-local-engine',
       command: 'npm run test:verify-local',
       parallel: true,
-      inputs: ['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'tools/e2e/campaign-contexts.mjs'],
+      ...scoped(['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'tools/e2e/campaign-contexts.mjs',
+        // Reached through the imports of the files above.
+        'scripts/test-supabase-guard.mjs', 'scripts/test-seed-users.mjs', 'scripts/test-supabase-targets.json',
+      ]),
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories (scratch configs).
@@ -500,7 +517,7 @@ export default {
       name: 'site-publish-guard',
       command: 'node --test scripts/test-check-site-publish-proof.mjs && npm run test:file -- scripts/docs-deploy.test.ts scripts/web-deploy.test.ts',
       parallel: true,
-      inputs: [
+      ...scoped([
         'scripts/check-site-publish-proof.mjs',
         'scripts/test-check-site-publish-proof.mjs',
         'scripts/verify-local.mjs',
@@ -515,7 +532,9 @@ export default {
         'scripts/vercel-ignore-build.mjs',
         // docs-deploy.test.ts reads the real Cloudflare Pages config.
         'docs-src/config/cloudflare-pages.json',
-      ],
+        // Reached through the imports of the files above.
+        'scripts/lib/docs-deploy-staging.js', 'scripts/lib/docs-site-config.js', 'scripts/lib/docs-source-utils.js', 'scripts/lib/site-media.js',
+      ], JEST_SETTINGS),
     },
     // The test-login guard: refuses the production Supabase project and any
     // project missing from the allowlist, before any network call.
@@ -523,7 +542,7 @@ export default {
       name: 'test-supabase-guard',
       command: 'node --test scripts/test-test-supabase-guard.mjs scripts/test-test-seed-auth.mjs && npm run test:file -- scripts/expo-safe-runner.test.js',
       parallel: true,
-      inputs: [
+      ...scoped([
         'scripts/test-supabase-guard.mjs',
         'scripts/test-test-supabase-guard.mjs',
         'scripts/test-supabase-targets.json',
@@ -545,16 +564,18 @@ export default {
         '.gitignore',
         // The production ref is pinned against app.json.
         'app.json',
-      ],
+        // Reached through the imports of the files above.
+        'supabase/functions/api/lib/constants.ts', 'supabase/functions/api/lib/guestQa.ts', 'supabase/functions/api/lib/sha256.ts', 'supabase/functions/api/types.ts', 'tools/e2e/app-media-fixtures.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-engine.ts', 'tools/e2e/web-fixtures.ts',
+      ], JEST_SETTINGS),
     },
     // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
     {
       name: 'backend-runner-guards',
       command: 'node --test scripts/lib/backend-e2e-local.test.cjs scripts/lib/backend-e2e-process.test.cjs scripts/check-native-supabase-runtime.test.cjs',
       parallel: true,
-      inputs: ['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs',
+      ...scoped(['scripts/lib/backend-e2e-local.cjs', 'scripts/lib/backend-e2e-local.test.cjs', 'scripts/run-backend-e2e.cjs',
         'scripts/lib/backend-e2e-process.cjs', 'scripts/lib/backend-e2e-process.test.cjs',
-        'scripts/check-native-supabase-runtime.cjs', 'scripts/check-native-supabase-runtime.test.cjs', 'supabase/config.toml'],
+        'scripts/check-native-supabase-runtime.cjs', 'scripts/check-native-supabase-runtime.test.cjs', 'supabase/config.toml']),
     },
     // CLI/index failures happen before UI journeys; keep both refusal cases local.
     // Default whole-tree inputs are intentional: every newly tracked path matters.
@@ -610,7 +631,10 @@ export default {
     {
       name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
       parallel: true,
-      inputs: ['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs'],
+      ...scoped(['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs',
+        // Reached through the imports of the files above.
+        'scripts/test-auth-setup.mjs', 'scripts/test-supabase-guard.mjs', 'scripts/test-seed-users.mjs', 'tools/e2e/persona-contract.mjs', 'scripts/ios-native-preflight.js', 'scripts/lib/local-workspace.js',
+      ]),
     },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', parallel: true, inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
