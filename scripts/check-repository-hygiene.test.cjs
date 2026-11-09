@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { test } = require('node:test');
-const { ruleFor, inspectPaths, indexPaths, checkRepositoryHygiene } = require('./check-repository-hygiene.cjs');
+const { ruleFor, inspectPaths, indexPaths, registryEvidencePaths, missingEvidence, checkRepositoryHygiene } = require('./check-repository-hygiene.cjs');
 
 // These path/index failures occur before any application/browser journey starts.
 test('new local configuration, raw run output and temporary paths are refused', () => {
@@ -99,4 +99,56 @@ test('the CLI refuses private basenames and tracked local output at every depth'
     git('rm', '--cached', '--', output);
     assert.equal(cli().status, 0);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+// The rollout report reads a stage as evidence-missing once its file is gone;
+// only the index can show that before the ledger is emptied.
+test('every evidence file and archive the symbol rollout registry names stays tracked', () => {
+  const registry = 'docs-src/config/symbol-rollout.json';
+  const document = {
+    records: [
+      { id: 'moon', evidence: { path: 'doc_web_interne/docs/qa/moon.json', sha256: 'a'.repeat(64) } },
+      { id: 'deer', evidence: { path: 'doc_web_interne/docs/qa/moon.json', sha256: 'a'.repeat(64) } },
+      { id: 'owl', evidence: { path: 'doc_web_interne/docs/qa/owl.json', sha256: 'b'.repeat(64) } },
+      { id: 'no-evidence' },
+    ],
+    recordArchives: [{ path: 'doc_web_interne/docs/qa/history.json', sha256: 'c'.repeat(64) }],
+  };
+  assert.deepEqual(registryEvidencePaths(document),
+    ['doc_web_interne/docs/qa/moon.json', 'doc_web_interne/docs/qa/moon.json', 'doc_web_interne/docs/qa/owl.json', 'doc_web_interne/docs/qa/history.json']);
+  assert.deepEqual(registryEvidencePaths({}), []);
+
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-hygiene-evidence-'));
+  const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+  const write = (file, text = 'synthetic fixture\n') => {
+    const full = path.join(root, file); fs.mkdirSync(path.dirname(full), { recursive: true }); fs.writeFileSync(full, text);
+  };
+  const cli = () => spawnSync(process.execPath, ['scripts/check-repository-hygiene.cjs'], { cwd: root, encoding: 'utf8' });
+  try {
+    git('init', '-q');
+    write('scripts/check-repository-hygiene.cjs', fs.readFileSync(path.join(__dirname, 'check-repository-hygiene.cjs')));
+    write('doc_web_interne/docs/qa/moon.json'); write('doc_web_interne/docs/qa/owl.json'); write('doc_web_interne/docs/qa/history.json');
+    git('add', '-f', '--', 'scripts', 'doc_web_interne');
+    // No registry tracked: nothing to require.
+    assert.deepEqual(missingEvidence(root, indexPaths(root)), []);
+    write(registry, JSON.stringify(document)); git('add', '-f', '--', registry);
+    assert.deepEqual(checkRepositoryHygiene(root), []);
+    assert.equal(cli().status, 0);
+
+    // A file left on disk but removed from the index is missing for every other clone.
+    git('rm', '-q', '--cached', '--', 'doc_web_interne/docs/qa/owl.json', 'doc_web_interne/docs/qa/history.json');
+    assert.deepEqual(checkRepositoryHygiene(root), [
+      { path: 'doc_web_interne/docs/qa/history.json', rule: 'registry-evidence-missing' },
+      { path: 'doc_web_interne/docs/qa/owl.json', rule: 'registry-evidence-missing' },
+    ]);
+    const refused = cli();
+    assert.equal(refused.status, 1, refused.stderr);
+    assert.ok(refused.stderr.includes('doc_web_interne/docs/qa/owl.json [registry-evidence-missing]'));
+    assert.ok(!refused.stderr.includes('moon.json'));
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test('the registry of this repository names only tracked evidence', () => {
+  const root = path.resolve(__dirname, '..');
+  assert.deepEqual(missingEvidence(root, indexPaths(root)), []);
 });

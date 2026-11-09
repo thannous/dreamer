@@ -77,7 +77,9 @@ rg -l -i '\bOTA\b|EAS Update|tailscale' scripts doc_web_interne/docs --glob '*.m
 The last example looks for operational guidance. The dated QA reports that lived
 under `qa/` were removed from the tree on 2026-11-09; read them with
 `git show 50df895:doc_web_interne/docs/qa/<file>` when investigating a previous
-qualification. Reusable instructions belong in the guides above; new durable redacted
+qualification. What code still reads stays there: the evidence receipts and the
+archive named by `docs-src/config/symbol-rollout.json` (the repository hygiene check
+refuses their removal) and the results file of the reflection evaluation. Reusable instructions belong in the guides above; new durable redacted
 evidence belongs under `qa/` or its existing work-package location. Archive scripts remain under `scripts/archive/`. A historical pass,
 version, account or store snapshot must be refreshed before a current-state claim.
 

@@ -1,0 +1,231 @@
+{
+  "schema": "noctalia.symbol-atlas-production/1",
+  "date": "2026-10-19",
+  "publishedRevision": "7fdb4421c413390e0c8cf8c7904f80115606e5a0",
+  "pr": "https://github.com/thannous/dreamer/pull/447",
+  "symbols": [
+    "cat",
+    "mountain",
+    "key",
+    "rain",
+    "stairs",
+    "mirror"
+  ],
+  "languages": [
+    "en",
+    "fr",
+    "es",
+    "de",
+    "it",
+    "pt-br"
+  ],
+  "deployment": {
+    "name": "noctalia",
+    "productionDeploymentsEnabled": false,
+    "id": "d81d72a2-0d6a-4edf-b851-02ac62c0e35b",
+    "url": "https://d81d72a2.noctalia.pages.dev",
+    "environment": "production",
+    "status": "success",
+    "commit": "7fdb4421c413390e0c8cf8c7904f80115606e5a0",
+    "branch": "master",
+    "aliases": [
+      "https://noctalia.app"
+    ],
+    "createdOn": "2026-10-19T19:57:06.601746Z"
+  },
+  "authorization": {
+    "source": "Direct user messages in the Codex conversation",
+    "request": "ok lance le prochain lot de 6 symboles, Claude pour le code et toi pour les images, garde bien la direction artistique et les deux éléments animés par image, dans les 6 langues",
+    "standingPublicationGo": "oublie pas de publier sur le site web à chaque lot",
+    "meaning": "Release approval for each requested complete batch, not a claim that Thanh individually inspected every asset or translation."
+  },
+  "release": {
+    "command": "npm run verify:release:site",
+    "result": "passed",
+    "checks": [
+      {
+        "name": "verify-local-engine",
+        "result": "passed"
+      },
+      {
+        "name": "site-publish-guard",
+        "result": "passed"
+      },
+      {
+        "name": "test-supabase-guard",
+        "result": "passed"
+      },
+      {
+        "name": "backend-runner-guards",
+        "result": "passed"
+      },
+      {
+        "name": "repository-hygiene",
+        "result": "passed"
+      },
+      {
+        "name": "typecheck-app",
+        "result": "passed"
+      },
+      {
+        "name": "typecheck-tests",
+        "result": "passed"
+      },
+      {
+        "name": "lint",
+        "result": "passed"
+      },
+      {
+        "name": "lint-scripts",
+        "result": "passed"
+      },
+      {
+        "name": "jest-changed",
+        "result": "passed"
+      },
+      {
+        "name": "db-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "site",
+        "result": "passed"
+      },
+      {
+        "name": "ci-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "eas-workflow-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "mobile-versions",
+        "result": "passed"
+      },
+      {
+        "name": "meditation",
+        "result": "passed"
+      },
+      {
+        "name": "edge-functions",
+        "result": "passed"
+      },
+      {
+        "name": "release-contracts",
+        "result": "passed"
+      },
+      {
+        "name": "jest-full",
+        "result": "passed"
+      },
+      {
+        "name": "site-build",
+        "result": "passed"
+      },
+      {
+        "name": "testerarmy-tooling",
+        "result": "passed"
+      },
+      {
+        "name": "testerarmy-site",
+        "result": "passed"
+      }
+    ],
+    "proofSha256": "c79cfda4b56da5d47ce2076d6903f7b623d4179476fe6d97411971502f6d39df",
+    "browserCampaign": {
+      "discovered": 15,
+      "selected": 15,
+      "executed": 15,
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "revision": "7fdb4421c413390e0c8cf8c7904f80115606e5a0",
+      "runId": "01a155b4-2e3d-7bdd-898f-3db0022c5416",
+      "runner": {
+        "name": "e2e",
+        "version": "0.21.2"
+      },
+      "sourceClean": false,
+      "workingTree": "M docs-src/static/js/experience/experience.js\n D docs-src/static/js/experience/lenis-WVYVID6X.js\n D docs-src/static/js/experience/mini-YRBJM6WA.js\n?? docs-src/static/js/experience/lenis-TR5AWQ3M.js\n?? docs-src/static/js/experience/mini-NO4UJYRP.js",
+      "retainedReport": "campaigns/7fdb4421c413/report.json",
+      "mediaBoundary": "Complete SDK report, qualification, source/served-output fingerprints and end record retained. Raw final-run media from the temporary release copy is unavailable after process exit; the copy helper rejected the expected generated experience-bundle changes. It does not invalidate the passed canonical release. Unchanged animation media has its separate canonical 1-selected/14-excluded receipt; new live production screenshots are retained separately."
+    }
+  },
+  "publicHttp": {
+    "pages": 150,
+    "pagesPassed": 150,
+    "images": 192,
+    "imagesPassed": 192
+  },
+  "publicBrowser": {
+    "cases": 12,
+    "distinctSymbols": 6,
+    "viewports": [
+      "2560x1440",
+      "390x844"
+    ],
+    "localesObserved": [
+      "fr",
+      "en",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ],
+    "checks": [
+      "Hero from top behind the navigation",
+      "Mobile hero is 633px of 844px",
+      "No horizontal overflow",
+      "Each loaded ambient texture changes transform or opacity over time"
+    ],
+    "coverage": "Twelve live production views. The full canonical campaign covers all 25 symbols across six languages and the motion of all five painted surfaces in the standard packs; HTTP byte identity binds it to production."
+  },
+  "sources": {
+    "receipt": "doc_web_interne/docs/qa/symbol-atlas-batch04-sources-2026-10-19.json",
+    "archiveSha256": "218c84db85b3f45ec92e3f64f16a16aa7bf3615ee4afcffbdfbcf166ce700d76",
+    "newImageGen": 41,
+    "reusedTextures": 7
+  },
+  "regression": {
+    "initialCampaign": "14 passed, 1 failed: Key plate effect B outside painted pixels.",
+    "correction": "Claude moved only the Key plate effect B placement; the same assertion passed afterward. No test assertion or guard weakened.",
+    "publicationAttempts": [
+      {
+        "stage": "docs:release-check external links",
+        "result": "Stopped before upload: Time HTTP406",
+        "resolution": "Claude replaced five reference lines with the official Congress.gov actions page; PR448."
+      },
+      {
+        "stage": "docs:release-check external links",
+        "result": "Stopped before upload: four transient PubMed HTTP502 responses",
+        "resolution": "Each subsequently returned HTTP203; a canonical retry was justified."
+      },
+      {
+        "stage": "docs:release-check external links",
+        "result": "Stopped before upload: nine other PubMed HTTP502 responses and an obsolete Microsoft privacy URL404",
+        "resolution": "PR450: bounded gateway retries with identical accepted statuses; a known HTTP failure remains failure on later network errors. Six failure/recovery HTTP tests, including persistent502 and404. Microsoft hrefs replaced with six verified200 official locale URLs. Real610-URL pilot passed, zero broken, one pre-existing-policy transient network skip. All publication guards, hook, verify engine/config and CI unchanged."
+      }
+    ]
+  },
+  "motionMedia": {
+    "revision": "3972d8ca2db4c944844dec2525f6c3b134ce0917",
+    "sameMotionAndPaintingInputsOnPublishedRevision": true,
+    "verification": "git diff --exit-code between the two revisions for the generator, motion engine, pilot profiles, localized Atlas words, asset manifest and extended catalogue returned no diff.",
+    "selection": "1 passed, 0 skipped, 14 excluded; this filtered motion journey is not presented as a complete campaign.",
+    "receiptSha256": "fe798c4eb0cf860f95313d64ae7182abf441dd18a98f41b6139e9754675b1af4"
+  },
+  "artifacts": {
+    "public-http-check.json": "6292b35c013bb44a0a510be82a874dafa06f18fef3a561f391c88a10aa44eda3",
+    "public-browser-check.json": "40aa518e5bf04a3af5b61519b329133415142426705629f53b9f7f5a5fc902ff",
+    "site-release-campaign.json": "4a632a73ccfcd6cddee06183cdbaf7cecd862b65e7155b0f3c33dc8896b377d3",
+    "release-proof.json": "c79cfda4b56da5d47ce2076d6903f7b623d4179476fe6d97411971502f6d39df"
+  },
+  "boundaries": [
+    "Marketing website deployment only; no app, backend or native build published.",
+    "Mobile checks use browser viewport emulation, not physical-device FPS qualification.",
+    "Existing absent FAQs remain explicitly absent.",
+    "Source selection is delegated to Codex; release approval is distinct from individual visual approval."
+  ]
+}

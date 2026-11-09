@@ -1,0 +1,1395 @@
+{
+  "schema": "noctalia.symbol-uniformization-delivery/1",
+  "date": "2026-10-20",
+  "revision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
+  "sourcePullRequest": 485,
+  "publication": {
+    "origin": "https://noctalia.app",
+    "deploymentUrl": "https://59e528d0.noctalia.pages.dev",
+    "command": "npm run docs:deploy:prod",
+    "releaseCommand": "npm run verify:release:site -- --keep",
+    "releasePassed": true
+  },
+  "scope": {
+    "symbols": 240,
+    "languages": [
+      "en",
+      "fr",
+      "es",
+      "de",
+      "it",
+      "pt-br"
+    ],
+    "localePages": 1440,
+    "commonLayoutSymbols": 240,
+    "imagePacks": 75,
+    "commonAnimatedPacks": 75,
+    "packsRemaining": 165,
+    "historicalTigerMotionPending": false,
+    "inventedScenes": 0
+  },
+  "browserQa": {
+    "revision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
+    "sourceClean": false,
+    "generatedBundleStatus": "M docs-src/static/js/experience/experience.js\n D docs-src/static/js/experience/lenis-WVYVID6X.js\n D docs-src/static/js/experience/mini-YRBJM6WA.js\n?? docs-src/static/js/experience/lenis-L3CQBKDK.js\n?? docs-src/static/js/experience/mini-MVA7LJYF.js",
+    "command": [
+      "node",
+      "tools/e2e/run.mjs",
+      "site",
+      "web",
+      "run"
+    ],
+    "startedAt": "2026-10-20T11:52:04.162Z",
+    "finishedAt": "2026-10-20T12:00:46.885Z",
+    "runner": "0.21.2",
+    "engine": "0.15.2",
+    "summary": {
+      "discovered": 55,
+      "selected": 55,
+      "executed": 55,
+      "passed": 55,
+      "failed": 0,
+      "interrupted": 0,
+      "flaky": 0,
+      "skipped": 0
+    },
+    "passed": [
+      "the generated English homepage opens a real internal destination",
+      "symbol artwork fills the page from behind the navbar up to 2560px",
+      "at a phone viewport a page without a pack takes the 75svh hero by cropping its own painting, without a motion script or file",
+      "the French tiger atlas reads like a dictionary entry and shows each published scene from mouse or keyboard",
+      "the French atlas pages keep every published block and show each chosen variation whole",
+      "the French atlas paintings each move two distinct raster effects, only on screen, and stop by themselves off screen or with reduced motion, without a pause control",
+      "the tiger paintings each move two effects of the packs' engine in the six languages, only on screen, and stop by themselves off screen or with reduced motion, without a pause control",
+      "on a phone the tiger hero takes 75svh with its portrait painting in the six languages, its effects on the lantern of the painting shown as the phone turns",
+      "a broken texture or reduced motion from the first load keeps the tiger paintings still",
+      "a scene thumbnail that failed before its effects start keeps its choice, and the other paintings keep running",
+      "on a phone the French atlas heroes take 75svh from the top, behind a navbar that gains a ground past them",
+      "the thirty-seven atlas pages read in each of the six languages, with the French layout at 2560 and on a phone",
+      "the language menu leads from the French moon atlas to the pt-br and the English one, where a scene and the phone anchors work in pt-br",
+      "a page without an atlas, a missing FAQ or a thumbnail that fails stays in the page's language",
+      "the pt-br dictionary links every pt-br symbol, searches and filters in Portuguese, and its translations link to each other",
+      "new symbol packs: light renders every surface and its two effects",
+      "new symbol packs: lighthouse renders every surface and its two effects",
+      "new symbol packs: window renders every surface and its two effects",
+      "new symbol packs: train-station renders every surface and its two effects",
+      "new symbol packs: wall renders every surface and its two effects",
+      "new symbol packs: library renders every surface and its two effects",
+      "new symbol packs: neighbor renders every surface and its two effects",
+      "new symbol packs: hallway renders every surface and its two effects",
+      "new symbol packs: city renders every surface and its two effects",
+      "new symbol packs: street renders every surface and its two effects",
+      "new symbol packs: tunnel renders every surface and its two effects",
+      "new symbol packs: maze renders every surface and its two effects",
+      "new symbol packs: tower renders every surface and its two effects",
+      "new symbol packs: wind renders every surface and its two effects",
+      "new symbol packs: fog renders every surface and its two effects",
+      "new symbol packs: ice renders every surface and its two effects",
+      "new symbol packs: clouds renders every surface and its two effects",
+      "new symbol packs: waves renders every surface and its two effects",
+      "new symbol packs: outer-space renders every surface and its two effects",
+      "new symbol packs: burglar renders every surface and its two effects",
+      "new symbol packs: royalty renders every surface and its two effects",
+      "new symbol packs: crowd renders every surface and its two effects",
+      "new symbol packs: twins renders every surface and its two effects",
+      "new symbol packs: dragon renders every surface and its two effects",
+      "new symbol packs: unicorn renders every surface and its two effects",
+      "new symbol packs: fox renders every surface and its two effects",
+      "new symbol packs: fly renders every surface and its two effects",
+      "new symbol packs: jellyfish renders every surface and its two effects",
+      "new symbol packs: octopus renders every surface and its two effects",
+      "new symbol packs: broken-glass renders every surface and its two effects",
+      "new symbol packs: gift renders every surface and its two effects",
+      "new symbol packs: bag renders every surface and its two effects",
+      "new symbol packs: explosion renders every surface and its two effects",
+      "new symbol packs: searching renders every surface and its two effects",
+      "new symbol packs: driving renders every surface and its two effects",
+      "new symbol packs: climbing renders every surface and its two effects",
+      "new symbol packs: breakup renders every surface and its two effects",
+      "new symbol packs: stage renders every surface and its two effects",
+      "new symbol packs: clock renders every surface and its two effects",
+      "new symbol packs: candle renders every surface and its two effects"
+    ],
+    "skipped": [],
+    "excluded": [],
+    "receiptSha256": "16967ae47c9d43b7aca6ad8d61f4fbd5ea6694192db5e9eb33e3c6131c702b6b",
+    "viewportSizes": [
+      [
+        2560,
+        1440
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "qualifiedPackSymbols": [
+      "water",
+      "teeth",
+      "falling",
+      "flying",
+      "snake",
+      "house",
+      "ocean",
+      "baby",
+      "dog",
+      "cat",
+      "fire",
+      "car",
+      "door",
+      "bird",
+      "bridge",
+      "stairs",
+      "moon",
+      "rain",
+      "forest",
+      "mountain",
+      "mirror",
+      "train",
+      "key",
+      "elevator",
+      "wolf",
+      "horse",
+      "storm",
+      "book",
+      "snow",
+      "butterfly",
+      "desert",
+      "flowers",
+      "tiger",
+      "castle",
+      "stars",
+      "light",
+      "lighthouse",
+      "window",
+      "clock",
+      "train-station",
+      "wall",
+      "library",
+      "neighbor",
+      "hallway",
+      "city",
+      "street",
+      "tunnel",
+      "maze",
+      "tower",
+      "wind",
+      "fog",
+      "ice",
+      "clouds",
+      "waves",
+      "outer-space",
+      "burglar",
+      "royalty",
+      "crowd",
+      "twins",
+      "dragon",
+      "unicorn",
+      "fox",
+      "fly",
+      "jellyfish",
+      "octopus",
+      "candle",
+      "broken-glass",
+      "gift",
+      "bag",
+      "explosion",
+      "searching",
+      "driving",
+      "climbing",
+      "breakup",
+      "stage"
+    ],
+    "tigerMotionGap": null
+  },
+  "publicCheck": {
+    "total": 1440,
+    "passed": 1440,
+    "failed": 0,
+    "startedAt": "2026-10-20T12:03:17.647Z",
+    "finishedAt": "2026-10-20T12:03:46.584Z",
+    "reportSha256": "7db0ece71901036e601fa139380f54b88390e32ba2222bc07a4f9c3dd06bfec6",
+    "checks": [
+      "HTTP 200",
+      "main matches generated page",
+      "shared layout",
+      "canonical matches",
+      "hreflang matches"
+    ]
+  },
+  "publicBrowser": {
+    "schema": "noctalia.symbol-public-browser/1",
+    "revision": "76d7e577dfb7eb5251b0898e994e3a5210bfd56c",
+    "checkedAt": "2026-10-20T12:07:54.391Z",
+    "passed": true,
+    "motionChecks": {
+      "desktopHero": true,
+      "desktopPlate": true,
+      "desktopScenes": [
+        true,
+        true,
+        true
+      ],
+      "mobileHero": true,
+      "mobileScenes": [
+        true,
+        true,
+        true
+      ]
+    },
+    "desktop": {
+      "heroFirst": {
+        "article": 2304,
+        "hero": {
+          "height": 1435.5,
+          "top": 0
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.913227",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.643579",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 84.0053, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1435.5,
+              "top": 0
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.75",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.6",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 0, 0)"
+              }
+            ],
+            "name": "plate",
+            "ready": "ready",
+            "rect": {
+              "bottom": 2149.328125,
+              "top": 1483.5
+            },
+            "state": "paused"
+          },
+          {
+            "layers": [],
+            "name": "scene-poursuite",
+            "rect": {
+              "bottom": 2675.828125,
+              "top": 2585.5
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-calme",
+            "rect": {
+              "bottom": 2766.328125,
+              "top": 2689.828125
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-cage",
+            "rect": {
+              "bottom": 2870.65625,
+              "top": 2780.328125
+            }
+          }
+        ],
+        "time": 1792497848458,
+        "viewport": [
+          2560,
+          1440
+        ]
+      },
+      "heroSecond": {
+        "article": 2304,
+        "hero": {
+          "height": 1435.5,
+          "top": 0
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.902785",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.52263",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -64.1502, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1435.5,
+              "top": 0
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.75",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.6",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 0, 0)"
+              }
+            ],
+            "name": "plate",
+            "ready": "ready",
+            "rect": {
+              "bottom": 2149.328125,
+              "top": 1483.5
+            },
+            "state": "paused"
+          },
+          {
+            "layers": [],
+            "name": "scene-poursuite",
+            "rect": {
+              "bottom": 2675.828125,
+              "top": 2585.5
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-calme",
+            "rect": {
+              "bottom": 2766.328125,
+              "top": 2689.828125
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-cage",
+            "rect": {
+              "bottom": 2870.65625,
+              "top": 2780.328125
+            }
+          }
+        ],
+        "time": 1792497858095,
+        "viewport": [
+          2560,
+          1440
+        ]
+      },
+      "secondaryFirst": {
+        "article": 2304,
+        "hero": {
+          "height": 1435.5,
+          "top": -1625
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.742816",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.500034",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -91.8297, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": -189.5,
+              "top": -1625
+            },
+            "state": "paused"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.599059",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.670669",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 21.1664, 0)"
+              }
+            ],
+            "name": "plate",
+            "ready": "ready",
+            "rect": {
+              "bottom": 524.328125,
+              "top": -141.5
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.249574",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.746925",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 7.9156, 0)"
+              }
+            ],
+            "name": "scene-poursuite",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1050.828125,
+              "top": 960.5
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.812928",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.64763",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 2.17312, 0)"
+              }
+            ],
+            "name": "scene-calme",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1141.328125,
+              "top": 1064.828125
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.994466",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.492271",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -4.64244, 0)"
+              }
+            ],
+            "name": "scene-cage",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1245.65625,
+              "top": 1155.328125
+            },
+            "state": "running"
+          }
+        ],
+        "time": 1792497866537,
+        "viewport": [
+          2560,
+          1440
+        ]
+      },
+      "secondarySecond": {
+        "article": 2304,
+        "hero": {
+          "height": 1435.5,
+          "top": -1625
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.742816",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.500034",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -91.8297, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": -189.5,
+              "top": -1625
+            },
+            "state": "paused"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.563788",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.657393",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 17.1899, 0)"
+              }
+            ],
+            "name": "plate",
+            "ready": "ready",
+            "rect": {
+              "bottom": 524.328125,
+              "top": -141.5
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.218098",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.531251",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -3.70385, 0)"
+              }
+            ],
+            "name": "scene-poursuite",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1050.828125,
+              "top": 960.5
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.718826",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.450422",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -6.8245, 0)"
+              }
+            ],
+            "name": "scene-calme",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1141.328125,
+              "top": 1064.828125
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.966588",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.508602",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -3.93869, 0)"
+              }
+            ],
+            "name": "scene-cage",
+            "ready": "ready",
+            "rect": {
+              "bottom": 1245.65625,
+              "top": 1155.328125
+            },
+            "state": "running"
+          }
+        ],
+        "time": 1792497887067,
+        "viewport": [
+          2560,
+          1440
+        ]
+      }
+    },
+    "mobile": {
+      "heroFirst": {
+        "article": 350,
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.530851",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.611024",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -2.60954, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": 633,
+              "top": 0
+            },
+            "state": "running"
+          },
+          {
+            "layers": [],
+            "name": "plate",
+            "rect": {
+              "bottom": 0,
+              "top": 0
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-poursuite",
+            "rect": {
+              "bottom": 2058.921875,
+              "top": 1968.59375
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-calme",
+            "rect": {
+              "bottom": 2163.25,
+              "top": 2072.921875
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-cage",
+            "rect": {
+              "bottom": 2267.578125,
+              "top": 2177.25
+            }
+          }
+        ],
+        "time": 1792497900936,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      "heroSecond": {
+        "article": 350,
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.87998",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.550481",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -13.9136, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": 633,
+              "top": 0
+            },
+            "state": "running"
+          },
+          {
+            "layers": [],
+            "name": "plate",
+            "rect": {
+              "bottom": 0,
+              "top": 0
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-poursuite",
+            "rect": {
+              "bottom": 2058.921875,
+              "top": 1968.59375
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-calme",
+            "rect": {
+              "bottom": 2163.25,
+              "top": 2072.921875
+            }
+          },
+          {
+            "layers": [],
+            "name": "scene-cage",
+            "rect": {
+              "bottom": 2267.578125,
+              "top": 2177.25
+            }
+          }
+        ],
+        "time": 1792497926100,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      "scenesFirst": {
+        "article": 350,
+        "hero": {
+          "height": 633,
+          "top": -1836
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.565103",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.617713",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -1.36059, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": -1203,
+              "top": -1836
+            },
+            "state": "paused"
+          },
+          {
+            "layers": [],
+            "name": "plate",
+            "rect": {
+              "bottom": 0,
+              "top": 0
+            }
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.525303",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.663065",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, 3.40418, 0)"
+              }
+            ],
+            "name": "scene-poursuite",
+            "ready": "ready",
+            "rect": {
+              "bottom": 208.9375,
+              "top": 118.609375
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.706397",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.503817",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -5.19188, 0)"
+              }
+            ],
+            "name": "scene-calme",
+            "ready": "ready",
+            "rect": {
+              "bottom": 313.265625,
+              "top": 222.9375
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.473875",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.45091",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -6.43884, 0)"
+              }
+            ],
+            "name": "scene-cage",
+            "ready": "ready",
+            "rect": {
+              "bottom": 417.59375,
+              "top": 327.265625
+            },
+            "state": "running"
+          }
+        ],
+        "time": 1792497949108,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      "scenesSecond": {
+        "article": 350,
+        "hero": {
+          "height": 633,
+          "top": -1836
+        },
+        "overflow": false,
+        "scripts": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "surfaces": [
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.565103",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.617713",
+                "play": "paused",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -1.36059, 0)"
+              }
+            ],
+            "name": "hero",
+            "ready": "ready",
+            "rect": {
+              "bottom": -1203,
+              "top": -1836
+            },
+            "state": "paused"
+          },
+          {
+            "layers": [],
+            "name": "plate",
+            "rect": {
+              "bottom": 0,
+              "top": 0
+            }
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.443789",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.51072",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -4.81925, 0)"
+              }
+            ],
+            "name": "scene-poursuite",
+            "ready": "ready",
+            "rect": {
+              "bottom": 208.9375,
+              "top": 118.609375
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.997492",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.45027",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -8.08232, 0)"
+              }
+            ],
+            "name": "scene-calme",
+            "ready": "ready",
+            "rect": {
+              "bottom": 313.265625,
+              "top": 222.9375
+            },
+            "state": "running"
+          },
+          {
+            "layers": [
+              {
+                "channel": "a",
+                "loaded": true,
+                "opacity": "0.90733",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/lantern-glow.webp",
+                "transform": "none"
+              },
+              {
+                "channel": "b",
+                "loaded": true,
+                "opacity": "0.528849",
+                "play": "running",
+                "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/mist-mobile.webp",
+                "transform": "matrix(1, 0, 0, 1, -3.07284, 0)"
+              }
+            ],
+            "name": "scene-cage",
+            "ready": "ready",
+            "rect": {
+              "bottom": 417.59375,
+              "top": 327.265625
+            },
+            "state": "running"
+          }
+        ],
+        "time": 1792497999639,
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      "dpr2": {
+        "dpr": 2,
+        "height": 633,
+        "loaded": true,
+        "overflow": false,
+        "src": "https://noctalia.app/js/tiger-living/22c79c696a2f/assets/tiger-mobile-v4-984w.avif",
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      "sceneSelectionChanged": true
+    },
+    "languages": [
+      {
+        "tag": "fr",
+        "title": "Tigre",
+        "viewport": [
+          390,
+          844
+        ],
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "script": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "heroState": "running",
+        "channels": [
+          {
+            "channel": "a",
+            "loaded": true,
+            "play": "running"
+          },
+          {
+            "channel": "b",
+            "loaded": true,
+            "play": "running"
+          }
+        ]
+      },
+      {
+        "tag": "en",
+        "title": "Tiger",
+        "viewport": [
+          390,
+          844
+        ],
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "script": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "heroState": "running",
+        "channels": [
+          {
+            "channel": "a",
+            "loaded": true,
+            "play": "running"
+          },
+          {
+            "channel": "b",
+            "loaded": true,
+            "play": "running"
+          }
+        ]
+      },
+      {
+        "tag": "es",
+        "title": "Tigre",
+        "viewport": [
+          390,
+          844
+        ],
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "script": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "heroState": "running",
+        "channels": [
+          {
+            "channel": "a",
+            "loaded": true,
+            "play": "running"
+          },
+          {
+            "channel": "b",
+            "loaded": true,
+            "play": "running"
+          }
+        ]
+      },
+      {
+        "tag": "de",
+        "title": "Tiger",
+        "viewport": [
+          390,
+          844
+        ],
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "script": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "heroState": "running",
+        "channels": [
+          {
+            "channel": "a",
+            "loaded": true,
+            "play": "running"
+          },
+          {
+            "channel": "b",
+            "loaded": true,
+            "play": "running"
+          }
+        ]
+      },
+      {
+        "tag": "it",
+        "title": "Tigre",
+        "viewport": [
+          390,
+          844
+        ],
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "script": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "heroState": "running",
+        "channels": [
+          {
+            "channel": "a",
+            "loaded": true,
+            "play": "running"
+          },
+          {
+            "channel": "b",
+            "loaded": true,
+            "play": "running"
+          }
+        ]
+      },
+      {
+        "tag": "pt-br",
+        "title": "Tigre",
+        "viewport": [
+          390,
+          844
+        ],
+        "hero": {
+          "height": 633,
+          "top": 0
+        },
+        "overflow": false,
+        "script": [
+          "/js/symbol-living/c97b1746cf68/symbol-living.js"
+        ],
+        "heroState": "running",
+        "channels": [
+          {
+            "channel": "a",
+            "loaded": true,
+            "play": "running"
+          },
+          {
+            "channel": "b",
+            "loaded": true,
+            "play": "running"
+          }
+        ]
+      }
+    ],
+    "screenshots": [
+      "tiger-public-hero-wide.png",
+      "tiger-public-plate-wide.png",
+      "tiger-public-hero-mobile.png",
+      "tiger-public-scenes-mobile.png"
+    ],
+    "minorObservation": "A direct mobile #scenes jump can place its heading partly under the sticky bar; the section and all images remain present, and ordinary scrolling reveals the heading. No further visual adjustment was introduced.",
+    "boundary": "Actual published-page DOM, computed motion at two times and screenshots; this does not qualify a physical mobile device."
+  },
+  "qualificationCoverage": {
+    "commonPacks": {
+      "count": 74,
+      "temporalMotionLanguages": [
+        "fr"
+      ],
+      "layoutPresenceAndConfigurationLanguages": [
+        "en",
+        "fr",
+        "es",
+        "de",
+        "it",
+        "pt-br"
+      ],
+      "reason": "The same language-independent engine and per-painting configuration are exercised temporally in French, with localized page, source and scene configuration checked in each language."
+    },
+    "tiger": {
+      "temporalMotionLanguages": [
+        "en",
+        "fr",
+        "es",
+        "de",
+        "it",
+        "pt-br"
+      ],
+      "secondarySurfacesQualified": true
+    }
+  },
+  "boundaries": [
+    "The 165 pages without packs use their existing static illustration; side paintings, three illustrated scenes and two motion channels remain to prepare.",
+    "Browser evidence is not physical-device or native-app qualification.",
+    "Publication authorization does not add a new subjective approval record.",
+    "The follow-up changes the precision of tracking identities, not the published generator or images."
+  ]
+}

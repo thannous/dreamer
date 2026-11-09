@@ -55,7 +55,10 @@ environment, command, result and limits; a historical pass is not current proof.
 under them is tracked: the historical records they carried, the dated reports of
 `doc_web_interne/docs/qa/` and several superseded root documents were removed on
 2026-11-09 at the owner's request and remain in Git history (last present in
-commit `50df895`). New durable redacted evidence uses the documentation locations
+commit `50df895`). The files under `qa/` that code reads were kept: the evidence
+receipts and archive named by `docs-src/config/symbol-rollout.json`, without which
+`symbols:rollout` reads every recorded stage as `evidence-missing`, and the results
+file of the reflection evaluation. New durable redacted evidence uses the documentation locations
 above. Elsewhere, age alone does not justify deletion.
 
 ## Local configuration and secrets
@@ -85,6 +88,8 @@ node --test scripts/check-repository-hygiene.test.cjs
 
 The check inspects Git-index paths, with no exception list. It refuses local
 settings and generated, temporary or raw QA output in tracked locations while
-allowing product sources and durable redacted documentation evidence. It does
+allowing product sources and durable redacted documentation evidence. It also
+refuses an evidence file or archive that `docs-src/config/symbol-rollout.json`
+names and Git no longer tracks. It does
 not inspect file contents or replace secret scanning and a privacy review. Keep
 existing publication allowlists and runner guards in force.
