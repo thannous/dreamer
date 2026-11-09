@@ -117,6 +117,53 @@ describe('verify-local.config.mjs', () => {
     }
   });
 
+  it('brings a tooling self-test into a PR for every file it loads and for a new Node, package set or command', () => {
+    // These checks left every PR for the PRs that change them: a module their
+    // tests import but their list misses would let that PR skip the check.
+    const { existsSync, statSync } = require('node:fs');
+    const MODULE = /\.(?:[cm]?js|tsx?)$/;
+    const SPECIFIER = /(?:\bfrom\s*|\bimport\s*\(\s*|\brequire\s*\(\s*|\bimport\s+)['"](\.{1,2}\/[^'"]+)['"]/g;
+    const resolve = (from, specifier) => {
+      const base = path.posix.normalize(path.posix.join(path.posix.dirname(from), specifier));
+      const candidates = [base, ...['.js', '.mjs', '.cjs', '.ts', '.tsx', '.json'].map((extension) => base + extension), `${base}/index.js`, `${base}/index.ts`];
+      return candidates.find((candidate) => existsSync(path.join(ROOT, candidate)) && statSync(path.join(ROOT, candidate)).isFile()) ?? null;
+    };
+    const files = tracked();
+    const scopedChecks = ['verify-local-engine', 'site-publish-guard', 'test-supabase-guard', 'backend-runner-guards', 'release-simulators'];
+    for (const name of scopedChecks) {
+      const check = checkNamed(name);
+      // The files it names one by one (a whole-folder glob is read as text, not imported).
+      const named = check.inputs.filter((glob) => !glob.includes('**') && !glob.endsWith('/'));
+      const modules = files.filter((file) => MODULE.test(file));
+      const unnamed = new Set(outside(named, modules));
+      const roots = modules.filter((file) => !unnamed.has(file));
+      expect({ name, roots: roots.length > 0 }).toEqual({ name, roots: true });
+      const seen = new Set(roots);
+      const queue = [...roots];
+      while (queue.length) {
+        const file = queue.pop();
+        for (const [, specifier] of readFileSync(path.join(ROOT, file), 'utf8').matchAll(SPECIFIER)) {
+          const target = resolve(file, specifier);
+          if (target && !seen.has(target)) {
+            seen.add(target);
+            if (MODULE.test(target)) queue.push(target);
+          }
+        }
+      }
+      expect({ name, missing: outside(check.when, [...seen]) }).toEqual({ name, missing: [] });
+      // What the fingerprint covers besides the files: Node, the packages and the command.
+      expect({ name, missing: outside(check.when, ['.nvmrc', 'mise.toml', 'package.json', 'package-lock.json', 'verify-local.config.mjs']) }).toEqual({ name, missing: [] });
+      const notInputs = new Set(outside(check.inputs, files));
+      expect({ name, missing: outside(check.when, files.filter((file) => !notInputs.has(file))) }).toEqual({ name, missing: [] });
+    }
+    for (const name of ['site-publish-guard', 'test-supabase-guard']) {
+      expect({ name, missing: outside(checkNamed(name).when, ['jest.config.js', 'jest.setup.ts', 'babel.config.js']) }).toEqual({ name, missing: [] });
+    }
+    // Every PR still runs these two, whatever it changes.
+    const always = config.checks.filter((check) => (check.kinds ?? ['pr', 'release']).includes('pr') && !check.when).map((check) => check.name);
+    expect(always).toEqual(['repository-hygiene', 'migration-grants']);
+  }, 120000);
+
   it('flags any EAS workflow, eas.json or release guard edit as a delivery check change', () => {
     const files = [
       '.eas/workflows/android-release-qualification.yml',

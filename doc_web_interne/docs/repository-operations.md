@@ -17,10 +17,10 @@ A fresh clone or a hosted agent container gets everything `verify:pr` needs for 
 docs or web diff from one command: `script/setup_agent_session.sh` runs
 `mise install` when mise is present (otherwise it looks for an installed Node of
 the pinned version), then the root install, the e2e tooling and its browsers, and
-skips an install whose lockfile did not change. `--link` links that Node into
-`~/.local/bin` when another version is the default, `--meditation` adds
-Meditation. It downloads no toolchain: without Deno a diff under
-`supabase/functions` still leaves the proof incomplete there. A hosted
+skips an install that already succeeded for the same lockfile and patches. `--link`
+links that Node into `~/.local/bin` when another version is the default,
+`--meditation` adds Meditation. It installs no tool manager: without mise or Deno
+a diff under `supabase/functions` still leaves the proof incomplete there. A hosted
 environment whose setup script starts one directory above the clone runs
 `cd dreamer && script/setup_agent_session.sh --link`.
 

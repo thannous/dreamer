@@ -145,8 +145,8 @@ que si le commit change un fichier qu'il lit depuis `origin/master` : `typecheck
 `typecheck:tests`, `lint`, `lint:scripts`, les tests Jest liés au diff depuis le
 merge-base (`test:changed`, y compris pour une PR empilée), les contrats statiques
 Supabase et Edge, ainsi que les tests du moteur, des gardes de publication et des
-lanceurs (une PR qui ne touche pas cet outillage ne le reteste pas, même dans un
-clone neuf). Seuls l'hygiène du dépôt et les droits des migrations tournent à
+lanceurs (une PR qui ne touche ni cet outillage, ni la version de Node, ni les
+paquets, ni la configuration ne le reteste pas, même dans un clone neuf). Seuls l'hygiène du dépôt et les droits des migrations tournent à
 chaque fois (une à deux secondes). Selon les chemins changés, il ajoute
 `docs:build` et `docs:check` (site : `docs-src/`, `data/`, `scripts/`, fichiers
 de paquet), les contrats CI/benchmark (`.circleci/` et outils d’installation E2E), Meditation

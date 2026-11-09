@@ -62,12 +62,17 @@ const AGENT_META = ['.mcp.json', 'skills-lock.json', '.vscode/', '.agents/', '.g
 // A scope that takes everything but these globs (see `when` in the engine).
 const not = (globs) => globs.map((glob) => `!${glob}`);
 
-// A check of the delivery tooling itself (engine, publish guards, runners): its
-// files are both what its fingerprint covers and what brings it into a PR. A PR
-// that leaves them alone skips it, as a clone that already passed it would
-// reuse it, so a fresh clone does not re-test unchanged tooling. A release
-// runs every check.
-const scoped = (inputs) => ({ inputs, when: inputs });
+// A check of the delivery tooling itself (engine, publish guards, runners).
+// Its inputs are its files and every local module they import: the config test
+// walks those imports and refuses a list that misses one. They bring the check
+// into a PR, together with what its fingerprint also covers (the pinned Node,
+// the packages, this file for its command) and, for a Jest run, the Jest
+// settings. A PR that changes none of them skips it, as a clone that already
+// passed it would reuse it, so a fresh clone does not re-test unchanged
+// tooling. A release runs every check.
+const TOOLING_ENVIRONMENT = ['.nvmrc', 'mise.toml', 'package.json', 'package-lock.json', 'verify-local.config.mjs'];
+const JEST_SETTINGS = ['jest.config*.js', 'jest.setup.ts', 'babel.config.js'];
+const scoped = (inputs, alsoWhen = []) => ({ inputs, when: [...new Set([...inputs, ...TOOLING_ENVIRONMENT, ...alsoWhen])] });
 
 // What the two tsc programs (tsconfig.json, tsconfig.test.json) can read: the
 // TypeScript sources their include patterns take, everything under tests/
@@ -498,7 +503,10 @@ export default {
       name: 'verify-local-engine',
       command: 'npm run test:verify-local',
       parallel: true,
-      ...scoped(['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'tools/e2e/campaign-contexts.mjs']),
+      ...scoped(['scripts/verify-local.mjs', 'scripts/test-verify-local*.mjs', 'scripts/test-platform-contracts.mjs', 'scripts/test-test-auth-permissions-native.mjs', 'scripts/test-auth-setup.mjs', 'scripts/test-support/**', 'scripts/run-verify-tests.mjs', 'tools/e2e/campaign-contexts.mjs',
+        // Reached through the imports of the files above.
+        'scripts/test-supabase-guard.mjs', 'scripts/test-seed-users.mjs', 'scripts/test-supabase-targets.json',
+      ]),
     },
     // The production publish guard of noctalia.app (docs:deploy:prod) against
     // proofs written by this engine in scratch repositories (scratch configs).
@@ -524,7 +532,9 @@ export default {
         'scripts/vercel-ignore-build.mjs',
         // docs-deploy.test.ts reads the real Cloudflare Pages config.
         'docs-src/config/cloudflare-pages.json',
-      ]),
+        // Reached through the imports of the files above.
+        'scripts/lib/docs-deploy-staging.js', 'scripts/lib/docs-site-config.js', 'scripts/lib/docs-source-utils.js', 'scripts/lib/site-media.js',
+      ], JEST_SETTINGS),
     },
     // The test-login guard: refuses the production Supabase project and any
     // project missing from the allowlist, before any network call.
@@ -554,7 +564,9 @@ export default {
         '.gitignore',
         // The production ref is pinned against app.json.
         'app.json',
-      ]),
+        // Reached through the imports of the files above.
+        'supabase/functions/api/lib/constants.ts', 'supabase/functions/api/lib/guestQa.ts', 'supabase/functions/api/lib/sha256.ts', 'supabase/functions/api/types.ts', 'tools/e2e/app-media-fixtures.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-engine.ts', 'tools/e2e/web-fixtures.ts',
+      ], JEST_SETTINGS),
     },
     // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
     {
@@ -619,7 +631,10 @@ export default {
     {
       name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
       parallel: true,
-      ...scoped(['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs']),
+      ...scoped(['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs',
+        // Reached through the imports of the files above.
+        'scripts/test-auth-setup.mjs', 'scripts/test-supabase-guard.mjs', 'scripts/test-seed-users.mjs', 'tools/e2e/persona-contract.mjs', 'scripts/ios-native-preflight.js', 'scripts/lib/local-workspace.js',
+      ]),
     },
     // A bad version pin fails before push rather than at publication (offline, 0.1 s).
     { name: 'mobile-versions', command: 'node scripts/mobile-release.js verify --app all', parallel: true, inputs: MOBILE_VERSIONS, when: MOBILE_VERSIONS },
