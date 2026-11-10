@@ -9,11 +9,16 @@ let webRecoveryTokenHash: string | null = null;
 let webRecoveryLinkState: WebRecoveryLinkState = 'none';
 let webAuthCode: string | null = null;
 let webAuthCodeIsRecovery = false;
+// The marker auth-js appends to the verifier that resetPasswordForEmail stores,
+// and returns as redirectType: `recovery` since 2.119, `PASSWORD_RECOVERY`
+// before. A reset requested before an app update still holds the older one.
+const PKCE_RECOVERY_MARKERS = ['recovery', 'PASSWORD_RECOVERY'];
 function createIsolatedPkceRecoveryClient(projectUrl: string, publicKey: string, verifier: string) {
   // A distinct key also prevents auth-js BroadcastChannel notifications from
   // reaching another recovery tab or the app's primary auth client.
   const storageKey = `noctalia-recovery-pkce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  const values = new Map<string, string>([[`${storageKey}-code-verifier`, verifier]]);
+  // auth-js reads its storage as JSON and treats any other value as absent.
+  const values = new Map<string, string>([[`${storageKey}-code-verifier`, JSON.stringify(verifier)]]);
   const client = createClient(projectUrl, publicKey, {
     auth: {
       storageKey,
@@ -311,9 +316,9 @@ export const supabase = createClient(
 export const webAuthCallbackPromise: Promise<void> = webAuthCode
   ? (async () => {
     if (webAuthCodeIsRecovery) {
-      // In auth-js 2.89.0, resetPasswordForEmail stores the PKCE verifier with
-      // this marker; exchangeCodeForSession installs a session before returning.
-      // Reject an OAuth/sign-in verifier before that side effect can occur.
+      // resetPasswordForEmail stores the PKCE verifier with a recovery marker;
+      // exchangeCodeForSession installs a session before returning. Reject an
+      // OAuth/sign-in verifier before that side effect can occur.
       let verifier: string | null = null;
       const configuration = getSupabasePublicConfiguration();
       try {
@@ -328,7 +333,9 @@ export const webAuthCallbackPromise: Promise<void> = webAuthCode
       } catch {
         // A missing/unreadable verifier cannot prove the browser requested reset.
       }
-      if (!configuration || !verifier?.endsWith('/PASSWORD_RECOVERY')) {
+      const [codeVerifier, marker, ...rest] = (verifier ?? '').split('/');
+      if (!configuration || !verifier || !codeVerifier || rest.length > 0 ||
+        !PKCE_RECOVERY_MARKERS.includes(marker)) {
         webRecoveryLinkState = 'invalid';
         return;
       }
@@ -342,7 +349,7 @@ export const webAuthCallbackPromise: Promise<void> = webAuthCode
           configuration.projectUrl, configuration.publicKey, verifier
         );
         const { data, error } = await isolated.client.auth.exchangeCodeForSession(webAuthCode!);
-        if (error || !('redirectType' in data) || data.redirectType !== 'PASSWORD_RECOVERY' ||
+        if (error || !('redirectType' in data) || data.redirectType !== marker ||
           !data.user?.email || !data.session || data.session.user.id !== data.user.id) {
           isolated.clear();
           webRecoveryLinkState = 'invalid';
