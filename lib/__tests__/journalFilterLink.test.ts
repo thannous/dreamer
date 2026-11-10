@@ -30,4 +30,10 @@ describe('journal filter links', () => {
       symbol: 'water',
     })).toEqual({ key: 'k2', theme: null, dreamType: null, start: null, end: null, analysis: null, symbol: null });
   });
+
+  it('drops a month that does not exist instead of rolling into another year', () => {
+    const selection = parseJournalFilterParams({ filter: 'k4', from: '2026-13-05', to: '2026-00-10' });
+    expect(selection?.start).toBeNull();
+    expect(selection?.end).toBeNull();
+  });
 });

@@ -52,6 +52,8 @@ export const calculateStreaks = <T extends TimestampedItem>(
 
   // Perf: callers that already receive newest-first data can skip a copy + sort here.
   const sortedByTime = options.sortedDescending ? items : [...items].sort((a, b) => b.id - a.id);
+  // Local midnights are 23 or 25 hours apart across a clock change, so day
+  // counts round to the nearest whole day instead of flooring.
   const dayInMs = 24 * 60 * 60 * 1000;
 
   // A streak counts days, not entries: several dreams recorded on the same day
@@ -76,7 +78,7 @@ export const calculateStreaks = <T extends TimestampedItem>(
 
   const mostRecentItemDay = startOfDayTime(sortedItems[0].id);
 
-  const daysSinceLastItem = Math.floor((todayTimestamp - mostRecentItemDay) / dayInMs);
+  const daysSinceLastItem = Math.round((todayTimestamp - mostRecentItemDay) / dayInMs);
 
   if (daysSinceLastItem <= 1) {
     currentStreak = 1;
@@ -84,7 +86,7 @@ export const calculateStreaks = <T extends TimestampedItem>(
 
     for (let i = 1; i < sortedItems.length; i++) {
       const currentDay = startOfDayTime(sortedItems[i].id);
-      const daysDiff = Math.floor((previousDay - currentDay) / dayInMs);
+      const daysDiff = Math.round((previousDay - currentDay) / dayInMs);
 
       if (daysDiff <= 1) {
         currentStreak++;
@@ -102,7 +104,7 @@ export const calculateStreaks = <T extends TimestampedItem>(
   let previousDay = mostRecentItemDay;
   for (let i = 1; i < sortedItems.length; i++) {
     const currentDay = startOfDayTime(sortedItems[i].id);
-    const daysDiff = Math.floor((previousDay - currentDay) / dayInMs);
+    const daysDiff = Math.round((previousDay - currentDay) / dayInMs);
 
     if (daysDiff <= 1) {
       tempStreak++;

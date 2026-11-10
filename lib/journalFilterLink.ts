@@ -68,7 +68,8 @@ function localDate(key: string | undefined): Date | null {
   const match = key ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(key) : null;
   if (!match) return null;
   const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  return Number.isFinite(date.getTime()) && date.getDate() === Number(match[3]) ? date : null;
+  const isSameDay = date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[3]);
+  return Number.isFinite(date.getTime()) && isSameDay ? date : null;
 }
 
 /** An unknown value is dropped rather than guessed: a stale link never filters on nonsense. */

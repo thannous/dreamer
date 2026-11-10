@@ -7,12 +7,13 @@ import { LucidCard, LucidIconAction, LucidIconTile, LucidScreen } from '@/compon
 import { getLucidPalette, LucidRadius, LucidSpace, LucidType } from '@/constants/lucidTheme';
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
+import { closeLucidRoute } from '@/lib/lucid/routes';
 
 export type LucidInfoSection = { title: string; body?: string; bullets?: readonly string[]; link?: { label: string; url: string } };
 
 export function LucidInfoPage({ eyebrow, title, subtitle, icon, sections }: { eyebrow?: string; title: string; subtitle?: string; icon: keyof typeof Ionicons.glyphMap; sections: readonly LucidInfoSection[] }) {
   const { colors, mode } = useTheme(); const palette = getLucidPalette(colors, mode); const { content } = useLucidTrainer();
-  return <LucidScreen eyebrow={eyebrow} title={title} subtitle={subtitle} trailing={<LucidIconAction label={content.chrome.common.back} icon="close" onPress={() => router.back()} />}>
+  return <LucidScreen eyebrow={eyebrow} title={title} subtitle={subtitle} trailing={<LucidIconAction label={content.chrome.common.back} icon="close" onPress={() => closeLucidRoute(router, '/lucid/(tabs)/settings')} />}>
     <LucidCard accent="accent"><View style={styles.hero}><LucidIconTile icon={icon} tone="accent" size="lg" /></View></LucidCard>
     {sections.map((section) => <LucidCard key={section.title}><Text accessibilityRole="header" style={[styles.title, { color: palette.text }]}>{section.title}</Text>{section.body ? <Text style={[styles.body, { color: palette.textSecondary }]}>{section.body}</Text> : null}{section.bullets?.map((bullet) => <View key={bullet} style={styles.bullet}><View style={[styles.dot, { backgroundColor: palette.accent }]} /><Text style={[styles.bulletText, { color: palette.textSecondary }]}>{bullet}</Text></View>)}{section.link ? <Text accessibilityRole="link" onPress={() => void Linking.openURL(section.link!.url)} style={[styles.link, { color: palette.accent }]}>{section.link.label} ↗</Text> : null}</LucidCard>)}
   </LucidScreen>;

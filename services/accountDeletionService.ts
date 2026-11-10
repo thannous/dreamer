@@ -55,7 +55,9 @@ export async function requestAccountDeletion(): Promise<AccountDeletionResponse>
  */
 export async function finalizeAccountDeletion(deletedUserId: string): Promise<void> {
   try {
-    await clearRemoteDreamStorage();
+    // The cache, its checkpoint and the unsent queue are keyed per account:
+    // without the scope only the legacy unscoped keys would be cleared.
+    await clearRemoteDreamStorage(toAccountScope(deletedUserId));
   } catch {
     // Best-effort: the remote cache is keyed per user and becomes unreachable
     // once the session is gone.

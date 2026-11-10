@@ -166,6 +166,13 @@ export function createJournalMediaUploadService({
   async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise<DreamAnalysis> {
     if (!isConfigured()) return dream;
 
+    // Nothing to upload: skip the owner lookup, which is a network request
+    // whenever the caller did not pass the user id.
+    const hasLocalImage = [dream.imageUrl, dream.thumbnailUrl].some(
+      (value) => isDataUriImage(value) || isFileUri(value)
+    );
+    if (!hasLocalImage) return dream;
+
     const ownerId = userId ?? (await getClient().auth.getUser()).data.user?.id;
     if (!ownerId) return dream;
 
@@ -196,8 +203,11 @@ export function createJournalMediaUploadService({
         }
 
         if (base64) {
+          // Captured before imageUrl becomes the uploaded reference: the
+          // thumbnail below is cut from the same local file.
+          const localImageUri = isFileUri(imageUrl) ? imageUrl : undefined;
           const webp = await convertToWebpBase64(
-            { base64, uri: isFileUri(imageUrl) ? imageUrl : undefined, contentType },
+            { base64, uri: localImageUri, contentType },
             { maxDimension: MAX_UPLOAD_DIMENSION }
           );
           const remoteUrl = await uploadImageToBucket(
@@ -209,7 +219,7 @@ export function createJournalMediaUploadService({
           );
           imageUrl = remoteUrl;
           const thumb = await convertToWebpBase64(
-            { base64, uri: isFileUri(imageUrl) ? imageUrl : undefined, contentType },
+            { base64, uri: localImageUri, contentType },
             { squareSize: THUMBNAIL_SQUARE_SIZE, compress: THUMBNAIL_COMPRESS }
           );
           const remoteThumbUrl = await uploadImageToBucket(

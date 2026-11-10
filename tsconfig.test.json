@@ -21,6 +21,10 @@
   "exclude": [
     "apps/**",
     "supabase/functions/**",
+    "coverage/**",
+    "outputs/**",
+    "dist/**",
+    "dist-dev-nossg/**",
     "tools/dev-local/**",
     ".expo/types/router.d.ts"
   ]

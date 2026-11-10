@@ -1186,7 +1186,9 @@ export default function LucidSettingsScreen() {
                   checked: state.preferences.locale === locale,
                   selected: state.preferences.locale === locale,
                 }}
-                onPress={() => void updatePreferences({ locale })}
+                disabled={savingSetting}
+                onPress={() => void runSettingChange(async () => { await updatePreferences({ locale }); })}
+                testID={`lucid-language-${locale}`}
                 style={[
                   styles.language,
                   {

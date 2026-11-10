@@ -64,6 +64,19 @@ describe('buildWeeklyRecap', () => {
     expect(recap.currentStreak).toBe(4);
   });
 
+  it('keeps the week on local midnights when the clocks change', () => {
+    // 29 March 2026 is 23 hours long and 25 October 2026 is 25 hours long
+    // where clocks change; fixed 24-hour steps drift off midnight there.
+    const afterSpringForward = new Date(2026, 3, 1, 9).getTime(); // Wednesday 1 April
+    const spring = buildWeeklyRecap([], afterSpringForward);
+    expect(spring.weekStart).toBe(new Date(2026, 2, 26).getTime());
+    expect(spring.weekEnd).toBe(new Date(2026, 3, 1).getTime());
+
+    const lateOnTheLongDay = new Date(2026, 9, 25, 23, 30).getTime();
+    const lastDream = new Date(2026, 9, 25, 23, 10).getTime();
+    expect(buildWeeklyRecap([dream({ id: lastDream })], lateOnTheLongDay).dreamCount).toBe(1);
+  });
+
   it('never surfaces a symbol or emotion seen in a single dream only', () => {
     const recap = buildWeeklyRecap([
       analyzed({ id: now - DAY, symbols: [{ name: 'Key', meaning: '' }], emotions: [{ name: 'fear', insight: '' }] }),

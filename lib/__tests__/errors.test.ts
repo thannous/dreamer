@@ -19,6 +19,18 @@ import {
 } from '../errors';
 
 describe('classifyError', () => {
+  it('translates guest session failures with keys the catalogs define', () => {
+    const catalog = readFileSync(join(__dirname, '../i18n/fr.ts'), 'utf8');
+    const translate = (key: string) => (catalog.includes(`'${key}':`) ? `fr:${key}` : key);
+    const message = (code: GuestSessionErrorCode) =>
+      classifyError(new GuestSessionError(code), translate).userMessage;
+
+    expect(message(GuestSessionErrorCode.PLATFORM_UNSUPPORTED)).toBe('fr:settings.quota.reason.guest_platform_unsupported');
+    expect(message(GuestSessionErrorCode.EXPIRED)).toBe('fr:error.guest_session');
+    expect(message(GuestSessionErrorCode.QUOTA_UNAVAILABLE)).toBe('fr:settings.quota.reason.guest_quota_unavailable');
+    expect(message(GuestSessionErrorCode.UNAVAILABLE)).toBe('fr:settings.quota.reason.guest_quota_unavailable');
+  });
+
   it('explains the Plus requirement without offering to retry a refused reanalysis', () => {
     const error = Object.assign(new Error('Analysis state conflict'), { status: 409,
       body: { code: 'ANALYSIS_ALREADY_COMPLETE' } });

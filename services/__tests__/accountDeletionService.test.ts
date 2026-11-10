@@ -118,8 +118,9 @@ describe('finalizeAccountDeletion', () => {
 
   it('clears the local dream cache and the waiting dictated dreams, then signs out', async () => {
     const calls: string[] = [];
-    mockClearRemoteDreamStorage.mockImplementation(async () => {
-      calls.push('clear');
+    // The cache is keyed per account: an unscoped clear leaves the journal on the device.
+    mockClearRemoteDreamStorage.mockImplementation(async (scope?: string | null) => {
+      calls.push(`clear ${scope}`);
     });
     mockForgetNotificationDreams.mockImplementation(async (scope: string) => {
       calls.push(`forget ${scope}`);
@@ -134,7 +135,7 @@ describe('finalizeAccountDeletion', () => {
 
     await finalizeAccountDeletion('user-1');
 
-    expect(calls).toEqual(['clear', 'forget user:user-1', 'badges user-1', 'guides user-1', 'draft user:user-1', 'question user:user-1', 'signOut']);
+    expect(calls).toEqual(['clear user:user-1', 'forget user:user-1', 'badges user-1', 'guides user-1', 'draft user:user-1', 'question user:user-1', 'signOut']);
   });
 
   it('still signs out when cache clearing fails', async () => {

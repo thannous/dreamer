@@ -397,6 +397,7 @@ export default function LucidDataScreen() {
               variant="secondary"
               icon="code-slash"
               loading={busy === 'json'}
+              disabled={busy !== null}
               onPress={() => void exportData('json')}
             />
           </View>
@@ -406,6 +407,7 @@ export default function LucidDataScreen() {
               variant="secondary"
               icon="grid"
               loading={busy === 'csv'}
+              disabled={busy !== null}
               onPress={() => void exportData('csv')}
             />
           </View>
@@ -451,6 +453,7 @@ export default function LucidDataScreen() {
           variant="danger"
           icon="trash"
           loading={busy === 'delete'}
+          disabled={busy !== null}
           onPress={deleteTrainer}
         />
       </LucidCard>
@@ -465,6 +468,7 @@ export default function LucidDataScreen() {
               variant="danger"
               icon="person-remove"
               loading={busy === 'account'}
+              disabled={busy !== null}
               onPress={deleteAccount}
             />
           </LucidCard>

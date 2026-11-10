@@ -415,7 +415,7 @@ function PaywallScreen() {
         hour: '2-digit',
         minute: '2-digit',
       });
-      return `${dateStr} à ${timeStr}`;
+      return `${dateStr} · ${timeStr}`;
     } catch {
       return null;
     }

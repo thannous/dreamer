@@ -22,7 +22,7 @@ Noctalia helps people record dreams by voice or text, then turns those entries i
 - Dream symbol dictionary
 - Lucid dreaming rituals and recall habits
 
-The app is available in English, French, Spanish, German, and Italian.
+The app is available in English, French, Spanish, German, Italian, and Portuguese.
 
 ## Positioning
 

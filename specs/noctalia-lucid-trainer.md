@@ -47,7 +47,7 @@ Quatre conséquences, toutes appliquées dans le code :
    réduisez jamais votre sommeil pour rattraper ».
 3. **Aucun contenu généré par IA.** Aucun appel à Gemini, aucun service d'analyse : le catalogue est
    statique et typé, le coaching est une fonction pure sur les observations locales.
-4. **Une porte de sortie nommée.** L'aide (`app/lucid/help.tsx`) et l'écran science
+4. **Une porte de sortie nommée.** L'aide (`routes/lucid/lucid/help.tsx`) et l'écran science
    (`content.science.supportAdvice`) invitent à arrêter et à consulter un professionnel adapté si la
    perturbation du sommeil, la détresse, la confusion ou la somnolence diurne persistent.
 
@@ -63,7 +63,7 @@ Contrairement à `Noctalia Meditation` (monorepo, `apps/meditation/`, cf.
 [`noctalia-meditation.md`](noctalia-meditation.md) §3), **Lucid Trainer n'a pas de projet Expo séparé**.
 Le module vit dans l'arbre de l'app journal :
 
-- ses routes sont sous `app/lucid/**`, enregistrées dans le `Stack` racine
+- ses routes sont sous `routes/lucid/lucid/**`, enregistrées dans le `Stack` racine
   (`app/_layout.tsx`, `<Stack.Screen name="lucid" />`) ;
 - son domaine est sous `lib/lucid/**`, ses services sous `services/lucidTrainer*.ts`, son état sous
   `context/LucidTrainerContext.tsx`, son kit d'interface sous `components/lucid/**` ;
@@ -119,7 +119,7 @@ E2E_DEVICE=<émulateur> npm run test:testerarmy:mobile -- lucid android  # build
 
 ### 2.3 Microphone local et services retirés
 
-`createLucidExpoConfig` conserve l'enregistrement local avec `expo-audio` et une description de permission dédiée. `RECORD_AUDIO` n'est plus bloqué. Le plugin `expo-speech-recognition` et la permission de reconnaissance vocale iOS restent retirés : une note audio locale ne déclenche pas de transcription distante. La demande de microphone intervient à l'action d'enregistrement ; son refus laisse la saisie texte disponible. Voir `scripts/lucid-microphone-contract.js`, `app/lucid/morning-voice.tsx` et `services/lucidMorningVoiceNoteStorage.ts`. La configuration source ne remplace pas la vérification du manifeste du binaire installé.
+`createLucidExpoConfig` conserve l'enregistrement local avec `expo-audio` et une description de permission dédiée. `RECORD_AUDIO` n'est plus bloqué. Le plugin `expo-speech-recognition` et la permission de reconnaissance vocale iOS restent retirés : une note audio locale ne déclenche pas de transcription distante. La demande de microphone intervient à l'action d'enregistrement ; son refus laisse la saisie texte disponible. Voir `scripts/lucid-microphone-contract.js`, `routes/lucid/lucid/morning-voice.tsx` et `services/lucidMorningVoiceNoteStorage.ts`. La configuration source ne remplace pas la vérification du manifeste du binaire installé.
 
 Il ajoute en revanche neuf sons de signal groupés (`expo-audio` + `expo-notifications` avec
 `sounds:`), le plugin `./plugins/withLucidNoctaliaQueries` (déclaration `<queries>` étroite du schéma
@@ -129,14 +129,14 @@ restauration des notifications après redémarrage.
 
 ### 2.4 Intégration sommeil facultative
 
-`app/lucid/sleep-integration.tsx` propose un import explicite de l’historique `sleepAnalysis` Apple Health, en lecture seule. Aucun appel d’autorisation au démarrage : le bouton de connexion/import déclenche la demande. Android reste utilisable sans HealthKit. Une réponse vide après demande ne permet pas de distinguer un refus, une révocation ou une absence de données ; l’interface ne doit pas prétendre les distinguer. Aucune détection REM en temps réel, écriture HealthKit ou commande des signaux nocturnes ne découle de cet import.
+`routes/lucid/lucid/sleep-integration.tsx` propose un import explicite de l’historique `sleepAnalysis` Apple Health, en lecture seule. Aucun appel d’autorisation au démarrage : le bouton de connexion/import déclenche la demande. Android reste utilisable sans HealthKit. Une réponse vide après demande ne permet pas de distinguer un refus, une révocation ou une absence de données ; l’interface ne doit pas prétendre les distinguer. Aucune détection REM en temps réel, écriture HealthKit ou commande des signaux nocturnes ne découle de cet import.
 
 Le snapshot a son stockage local séparé et protégé sur natif. Désactiver conserve les échantillons ; supprimer dans cet écran les efface. La suppression générale Lucid efface aussi ce snapshot. Il ne fait pas partie de l’export JSON/CSV structuré ni du transport de synchronisation Lucid. Les fichiers audio sont partagés individuellement, jamais inclus automatiquement dans cet export. Voir la [matrice des capacités et données](../doc_web_interne/docs/architecture/NOCTALIA-CAPABILITIES-2026-09-08.md) pour les distinctions code, configuration et preuve native.
 
 ### 2.5 Arborescence du module
 
 ```
-app/lucid/
+routes/lucid/lucid/
 ├── _layout.tsx                     # LucidTrainerProvider + porte d'onboarding + Stack
 ├── (tabs)/
 │   ├── _layout.tsx                 # barre d'onglets flottante en verre
@@ -369,7 +369,7 @@ où `/lucid` et `/lucid/(tabs)` désignent la même chose.
 
 ### 5.2 Parcours d'entrée — quatre écrans
 
-TI-402 regroupe l'entrée en quatre écrans (`STEP_COUNT` dans `app/lucid/onboarding.tsx`) : réponses personnelles, rythme de sommeil, premier plan et préférences de démarrage. Les réponses alimentent un plan local réel ; les consentements ne sont pas déduits d'une connexion. Consulter le code et ses tests de parcours pour l'ordre exact des champs ; ne pas réintroduire l'ancien tunnel à sept étapes.
+TI-402 regroupe l'entrée en quatre écrans (`STEP_COUNT` dans `routes/lucid/lucid/onboarding.tsx`) : réponses personnelles, rythme de sommeil, premier plan et préférences de démarrage. Les réponses alimentent un plan local réel ; les consentements ne sont pas déduits d'une connexion. Consulter le code et ses tests de parcours pour l'ordre exact des champs ; ne pas réintroduire l'ancien tunnel à sept étapes.
 Le bouton d'action est **épinglé hors du `ScrollView`** : dans le flux, quatre interrupteurs de 70 px
 poussaient « Configurer mon entraînement » hors de l'écran.
 
@@ -500,7 +500,7 @@ ni contenu de rêve. Le fournisseur produit refuse l'envoi sans consentement ; l
 Lucid respectent aussi `analyticsConsent`. Les contrôles de consentement, de valeurs
 fermées et de rejet des propriétés privées sont vérifiés sur ce fournisseur actif.
 
-**Export et suppression** (`app/lucid/data.tsx`) :
+**Export et suppression** (`routes/lucid/lucid/data.tsx`) :
 
 - export **JSON** (enveloppe versionnée `exportVersion: 1` + horodatage) ou **CSV** via
   `expo-file-system` puis `expo-sharing`. Le CSV échappe les cellules et **préfixe d'une apostrophe
@@ -524,7 +524,7 @@ Limite à garder en tête, énoncée dans l'ADR : dans un projet Supabase partag
 applications est **logique, pas cryptographique**. Un JWT appartient au projet entier ; les politiques
 RLS protègent les autres utilisateurs, pas les autres domaines produit du même utilisateur.
 
-Monétisation : abonnement **Plus** via RevenueCat (`app/lucid/subscription.tsx`, `useSubscription`),
+Monétisation : abonnement **Plus** via RevenueCat (`routes/lucid/lucid/subscription.tsx`, `useSubscription`),
 avec bénéfices, comparaison mensuel/annuel, remise annuelle calculée, achat et restauration.
 Les clés RevenueCat du compagnon sont **volontairement absentes** de `app.config.ts` : hériter la clé
 de Noctalia rattacherait les achats à la mauvaise application. La porte de release le vérifie.
@@ -644,7 +644,7 @@ tait ment par omission.
 ### 14.1 Les échelles typographiques et de rayons ne sont pas dans `lucidTheme.ts`
 
 `constants/lucidTheme.ts` ne contient **que des couleurs**. Tailles, interlignes, rayons et espacements
-sont écrits en dur, feuille de style par feuille de style. Relevé sur `app/lucid/**` et
+sont écrits en dur, feuille de style par feuille de style. Relevé sur `routes/lucid/lucid/**` et
 `components/lucid/**` (valeurs distinctes de `fontSize` et `borderRadius` littérales) :
 
 - **13 tailles de texte** : 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 22, 34 — réparties sur
@@ -668,8 +668,8 @@ seulement une occurrence.
 
 Les deux champs sont malgré tout validés, persistés, chiffrés, synchronisés vers Supabase et exportés.
 Les libellés `largerText`, `screenReader` et `access` subsistent dans l'objet `COPY` de
-`app/lucid/onboarding.tsx` **dans les cinq langues** sans être rendus une seule fois
-(`grep -c 'copy.largerText' app/lucid/onboarding.tsx` → 0, idem pour les deux autres) :
+`routes/lucid/lucid/onboarding.tsx` **dans les cinq langues** sans être rendus une seule fois
+(`grep -c 'copy.largerText' routes/lucid/lucid/onboarding.tsx` → 0, idem pour les deux autres) :
 trois clés, quinze chaînes mortes.
 
 L'écran de réglages affirmait le contraire de ce que ces champs suggèrent : sa section Accessibilité
@@ -685,7 +685,7 @@ choix à écarter.
 
 ### 14.3 `weeklyReviews` est écrit et jamais relu
 
-`app/lucid/weekly.tsx` enregistre un `LucidWeeklyReview` complet — semaine, jours de pratique, jours de
+`routes/lucid/lucid/weekly.tsx` enregistre un `LucidWeeklyReview` complet — semaine, jours de pratique, jours de
 rappel, rêves lucides, technique recommandée, notes libres. Il est validé, chiffré, synchronisé et
 présent dans l'export CSV.
 

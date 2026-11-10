@@ -212,6 +212,19 @@ describe('streakUtils', () => {
       expect(result.longest).toBe(2);
     });
 
+    it('does not bridge a skipped day when the clocks change', () => {
+      // Sunday 29 March 2026 is 23 hours long where clocks spring forward, so
+      // Saturday and Monday midnights are 47 hours apart: still two days.
+      const friday = new Date(2026, 2, 27, 8).getTime();
+      const saturday = new Date(2026, 2, 28, 8).getTime();
+      const monday = new Date(2026, 2, 30, 8).getTime();
+      const mondayEvening = new Date(2026, 2, 30, 21).getTime();
+
+      const result = calculateStreaks([{ id: friday }, { id: saturday }, { id: monday }], mondayEvening);
+
+      expect(result).toEqual({ current: 1, longest: 2 });
+    });
+
     it('given items with additional properties works correctly', () => {
       const now = Date.now();
       const items = [

@@ -222,7 +222,7 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
       type: ErrorType.CLIENT,
       message: error.message,
       originalError: error,
-      userMessage: translate('error.guest_platform_unsupported'),
+      userMessage: translate('settings.quota.reason.guest_platform_unsupported', 'error.guest_platform_unsupported'),
       canRetry: false,
     };
   }
@@ -232,7 +232,7 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
       type: ErrorType.CLIENT,
       message: error.message,
       originalError: error,
-      userMessage: translate('error.guest_session_expired'),
+      userMessage: translate('error.guest_session', 'error.guest_session_expired'),
       canRetry: true,
     };
   }
@@ -245,7 +245,7 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
       type: ErrorType.CLIENT,
       message: error.message,
       originalError: error,
-      userMessage: translate('error.guest_quota_unavailable'),
+      userMessage: translate('settings.quota.reason.guest_quota_unavailable', 'error.guest_quota_unavailable'),
       canRetry: true,
     };
   }

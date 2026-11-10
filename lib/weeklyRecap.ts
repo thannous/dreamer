@@ -3,7 +3,6 @@ import { isDreamAnalyzed, isDreamExplored } from '@/lib/dreamUsage';
 import { calculateStreaks, startOfDay } from '@/lib/streakUtils';
 import type { DreamAnalysis, DreamTheme } from '@/lib/types';
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 export const WEEKLY_RECAP_ROUTE = '/weekly-recap' as const;
 
 export type WeeklyRecapSymbol = { name: string; count: number };
@@ -36,9 +35,16 @@ const normalizeSymbol = (name: string): string => name.trim().toLowerCase();
  * and unit-tested deterministically.
  */
 export function buildWeeklyRecap(dreams: DreamAnalysis[], now: number = Date.now()): WeeklyRecap {
-  const weekEnd = startOfDay(now).getTime() + DAY_MS; // exclusive upper bound: end of today
-  const weekStart = weekEnd - 7 * DAY_MS;
-  const previousWeekStart = weekStart - 7 * DAY_MS;
+  // Calendar arithmetic, not fixed 24-hour steps: a day is 23 or 25 hours long
+  // when the clocks change, and the bounds must stay on local midnights.
+  const localMidnight = (daysFromToday: number): number => {
+    const day = startOfDay(now);
+    day.setDate(day.getDate() + daysFromToday);
+    return day.getTime();
+  };
+  const weekEnd = localMidnight(1); // exclusive upper bound: end of today
+  const weekStart = localMidnight(-6);
+  const previousWeekStart = localMidnight(-13);
 
   const week: DreamAnalysis[] = [];
   let previousWeekCount = 0;
@@ -104,7 +110,7 @@ export function buildWeeklyRecap(dreams: DreamAnalysis[], now: number = Date.now
 
   return {
     weekStart,
-    weekEnd: weekEnd - DAY_MS,
+    weekEnd: localMidnight(0),
     dreamCount: week.length,
     previousWeekCount,
     analyzedCount,
