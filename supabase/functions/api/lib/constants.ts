@@ -1,5 +1,8 @@
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
+  // DELETE is not a CORS-safelisted method: without this line browsers refuse
+  // `DELETE /account` and `DELETE /analytics/events` at the preflight.
+  'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
   'Access-Control-Allow-Headers':
     'authorization, x-client-info, apikey, content-type, x-guest-token, x-guest-fingerprint, x-guest-platform, x-analytics-guest-token',
 };
