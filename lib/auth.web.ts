@@ -561,6 +561,23 @@ export async function signInWithApple(): Promise<User> {
  * Complete sign out from both Google (mock) and Supabase
  */
 /** Clear mock dogfood persistence and sign out only for the explicit test reset. */
+/**
+ * Native-only in lib/auth.ts. The web bundle resolves this file instead, so the
+ * same names must exist here: a caller then gets an error it can show rather
+ * than "is not a function".
+ */
+export async function requestAppleAuthorizationCode(): Promise<string | undefined> {
+  throw new Error('Sign in with Apple is only available in the iOS app.');
+}
+
+export async function updatePasswordFromNativeRecovery(
+  _tokenHash: string,
+  _email: string,
+  _newPassword: string
+): Promise<User | null> {
+  throw new Error('Password recovery link is unavailable.');
+}
+
 export async function resetMockTestState(): Promise<void> {
   if (!isMockMode) {
     throw new Error('Mock test state reset requires mock mode');

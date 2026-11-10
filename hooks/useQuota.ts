@@ -80,6 +80,9 @@ function normalizeTarget(input?: QuotaTargetInput): NormalizedQuotaTarget | unde
   return { dreamId: resolvedId };
 }
 
+/** The account the shared quota cache was last emptied for; `undefined` before the first consumer mounts. */
+let lastInvalidatedUserId: string | null | undefined;
+
 export function useQuota(targetInput?: QuotaTargetInput) {
   const isMockMode = isMockModeEnabled();
   const { user } = useAuth();
@@ -266,6 +269,11 @@ export function useQuota(targetInput?: QuotaTargetInput) {
 
   // Invalidate cache when user changes (sign in/out)
   useEffect(() => {
+    const userId = user?.id ?? null;
+    // Once per account, not once per mounted consumer: every screen that reads
+    // the quota would otherwise empty the cache the others just filled.
+    if (lastInvalidatedUserId === userId) return;
+    lastInvalidatedUserId = userId;
     quotaService.invalidateAll();
   }, [user?.id]); // Only on user ID change, not user object reference
 
