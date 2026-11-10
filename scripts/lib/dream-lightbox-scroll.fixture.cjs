@@ -13,6 +13,11 @@ test('an open dream preserves native touch and wheel scrolling while the backgro
     <p class="oh-dream-excerpt">A house.</p><p class="oh-dream-rest">An unknown staircase.</p>
     <ul class="oh-dream-symbols"><li>House</li></ul><button class="oh-dream-open">Open</button>
   </article></section>`, { url: 'https://example.org', pretendToBeVisual: true });
+  // JSDOM has no matchMedia; Lenis 1.3.27 reads prefers-reduced-motion when it
+  // is constructed. A browser without that preference answers like this.
+  dom.window.matchMedia = query => ({
+    matches: false, media: query, addEventListener() {}, removeEventListener() {},
+  });
   const saved = {};
   for (const key of ['window', 'document', 'HTMLElement', 'Window', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
     saved[key] = Object.getOwnPropertyDescriptor(globalThis, key);
