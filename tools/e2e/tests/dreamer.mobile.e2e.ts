@@ -1401,7 +1401,9 @@ test('Dreamer release every destination opens in system dark mode', {
   await guide.tap();
   await shown('screen.dreamGuideDetail', 'guide-detail-dark');
   // The guide's Back button sits under its artwork, not in a top bar where device.back looks on iOS.
-  await screen.getByTestId('screen.dreamGuideDetail', { visible: true }).getByRole('button', 'Back', { visible: true }).tap();
+  // Android does not nest that button under the screen's testID; its system Back is the reader's way out.
+  if (platform === 'android') await device.back();
+  else await screen.getByTestId('screen.dreamGuideDetail', { visible: true }).getByRole('button', 'Back', { visible: true }).tap();
   await expect(screen.getByTestId('screen.dreamGuides', { visible: true })).toBeVisible();
   for (const [route, id] of [['weekly-recap', 'screen.weeklyRecap'], ['moon-letter', 'screen.moonLetter']]) {
     await openBackgroundRoute(fixtures, route);
