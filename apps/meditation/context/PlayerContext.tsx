@@ -200,8 +200,11 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       const generation = ++openGenerationRef.current;
       seekRequestRef.current += 1;
       teardown();
-      completedRef.current = false;
-      practisedLoggedRef.current = false;
+      // A position past the practice threshold was counted when playback first
+      // crossed it; resuming there must not log a second completion.
+      const alreadyPractised = isPractised(startAt, next.durationSec);
+      completedRef.current = alreadyPractised;
+      practisedLoggedRef.current = alreadyPractised;
       pendingSeekRef.current = null;
       lastPersistedRef.current = startAt;
       setSession(next);
@@ -422,11 +425,20 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     }
   }, []);
 
+  /** Back to the listener's own levels, after a fade lowered them. */
+  const restoreVolumes = useCallback(() => {
+    const enabled = soundEnabledRef.current;
+    if (playerRef.current) audio.setVolume(playerRef.current, enabled ? primaryVolumeRef.current : 0);
+    if (textureRef.current) audio.setVolume(textureRef.current, enabled ? textureVolumeRef.current : 0);
+  }, []);
+
   const setFadeTimer = useCallback((minutes: FadeTimerMinutes | null) => {
     setFadeMinutes(minutes);
     fadeRemainingRef.current = minutes === null ? null : minutes * 60;
     setFadeRemaining(fadeRemainingRef.current);
-  }, []);
+    // A timer changed during its last minute leaves the ramp where it stood.
+    restoreVolumes();
+  }, [restoreVolumes]);
 
   /**
    * The fade timer.
@@ -451,6 +463,10 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       if (next <= 0) {
         if (player) audio.pause(player);
         if (textureRef.current) audio.pause(textureRef.current);
+        // The timer is spent: the next play starts at full volume, with no
+        // timer shown as still selected.
+        restoreVolumes();
+        setFadeMinutes(null);
         statusRef.current = 'paused';
         setStatus('paused');
         if (sessionRef.current) persistRef.current(sessionRef.current.id, positionSecRef.current);

@@ -13,6 +13,12 @@ import { cancelAll } from '@/services/notificationService';
 import { StorageKey } from '@/services/storageService';
 
 const mockReplace = jest.fn();
+const mockClosePlayer = jest.fn();
+
+// The screen only needs the player's stop command; the real provider would load the audio module.
+jest.mock('@/context/PlayerContext', () => ({
+  usePlayerCommands: () => ({ close: mockClosePlayer }),
+}));
 
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: jest.fn(), replace: mockReplace, back: jest.fn(), canGoBack: () => true }),
@@ -110,6 +116,7 @@ async function eraseFromAccount() {
 
 beforeEach(() => {
   mockReplace.mockClear();
+  mockClosePlayer.mockClear();
   jest.mocked(cancelAll).mockClear();
 });
 
@@ -132,6 +139,8 @@ test('erasing data clears what the app holds in memory and the scheduled reminde
 
   expect(mockReplace).toHaveBeenCalledWith('/welcome');
   expect(cancelAll).toHaveBeenCalled();
+  // A session left playing would write its progress back after the erase.
+  expect(mockClosePlayer).toHaveBeenCalledTimes(1);
   // Same as a fresh install: the test device speaks English.
   await waitFor(() =>
     expect(screen.getByTestId('probe')).toHaveTextContent('0|0||false|constellation|en')
@@ -145,4 +154,13 @@ test('erasing data clears what the app holds in memory and the scheduled reminde
   expect(stored[0][1]).not.toContain('sleep-descent');
   expect(stored[0][1]).toContain('dream-threshold');
   expect(stored[1][1]).toBeNull();
+});
+
+test('erasing still completes when the reminder schedule cannot be cleared', async () => {
+  jest.mocked(cancelAll).mockRejectedValueOnce(new Error('notifications unavailable'));
+  await renderAccount();
+
+  await eraseFromAccount();
+
+  expect(mockReplace).toHaveBeenCalledWith('/welcome');
 });

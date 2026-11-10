@@ -22,7 +22,7 @@ import { toMinutes } from '@/lib/library';
 import { isSessionInWorldJourney, journeyStateForWorld } from '@/lib/worldJourneys';
 
 /** The Noctalia journal app, if it is installed; its store page otherwise. */
-const NOCTALIA_DEEP_LINK = 'noctalia://record';
+const NOCTALIA_DEEP_LINK = 'noctalia://recording';
 const NOCTALIA_STORE = 'https://noctalia.app';
 
 /** Paper ground with its transparent twin, for the night-to-paper fade. */
@@ -55,11 +55,11 @@ export default function SessionCompleteScreen() {
     ? isSessionInWorldJourney(world.id, session.id)
     : false;
 
-  const openNoctalia = async () => {
-    // The sibling app may not be installed — fall back to the site rather than
-    // failing silently on a dead scheme.
-    const supported = await Linking.canOpenURL(NOCTALIA_DEEP_LINK).catch(() => false);
-    Linking.openURL(supported ? NOCTALIA_DEEP_LINK : NOCTALIA_STORE).catch(() => {});
+  const openNoctalia = () => {
+    // The sibling app may not be installed: opening its scheme then fails and
+    // the site opens instead. Probing with canOpenURL would need the scheme
+    // declared in the app manifest, and always answers no without it.
+    Linking.openURL(NOCTALIA_DEEP_LINK).catch(() => Linking.openURL(NOCTALIA_STORE).catch(() => {}));
   };
 
   const record: { key: string; label: string; value: string }[] = session

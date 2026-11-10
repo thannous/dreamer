@@ -2,7 +2,7 @@ import { useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CompactTabBar, MiniPlayerHeight, TabBar } from '@/constants/layout';
-import { usePlayer } from '@/context/PlayerContext';
+import { usePlayerState } from '@/context/PlayerContext';
 import { useCompactLayout } from '@/hooks/useCompactLayout';
 
 /** Extra space so the last row sits above the pill rather than behind it. */
@@ -56,7 +56,7 @@ export function accessibleMiniPlayerHeight(baseHeight: number, fontScale: number
 export function useTabBarInset(): number {
   const insets = useSafeAreaInsets();
   const { fontScale } = useWindowDimensions();
-  const { session } = usePlayer();
+  const { session } = usePlayerState();
   const compact = useCompactLayout();
   const tabBar = compact ? CompactTabBar : TabBar;
   const tabBarHeight = accessibleTabBarHeight(tabBar.height, fontScale);

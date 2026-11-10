@@ -566,7 +566,7 @@ Variables `EXPO_PUBLIC_*` : `EXPO_PUBLIC_MOCK_MODE`, `EXPO_PUBLIC_MOCK_AUDIO`, `
 
 Profils : `.env.mock`, `.env.real`, `.env.teststore` + `scripts/expo-safe-runner.js` repris de Noctalia.
 
-Deep links croisés : `noctalia://record` depuis `/session-complete` (« Noter mon rêve »), avec repli sur le store si l'app Noctalia n'est pas installée.
+Deep links croisés : `noctalia://recording` depuis `/session-complete` (« Noter mon rêve »), avec repli sur le store si l'app Noctalia n'est pas installée.
 
 ---
 

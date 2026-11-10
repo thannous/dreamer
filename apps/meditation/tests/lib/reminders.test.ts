@@ -6,6 +6,7 @@ import {
   parseTimeEntry,
   scheduleTriggers,
   toggleDay,
+  toNotificationWeekday,
   WEEKDAYS,
   type ReminderSchedule,
 } from '@/lib/reminders';
@@ -101,5 +102,15 @@ describe('toggleDay', () => {
   it('adds and removes, keeping the list sorted', () => {
     expect(toggleDay([1, 3], 2)).toEqual([1, 2, 3]);
     expect(toggleDay([1, 2, 3], 2)).toEqual([1, 3]);
+  });
+
+  it('removes a day from the every-day default, which is stored as an empty list', () => {
+    expect(toggleDay([], 3)).toEqual([1, 2, 4, 5, 6, 7]);
+  });
+});
+
+describe('toNotificationWeekday', () => {
+  it('maps Monday-first days onto the Sunday-first numbering notifications use', () => {
+    expect(WEEKDAYS.map(toNotificationWeekday)).toEqual([2, 3, 4, 5, 6, 7, 1]);
   });
 });

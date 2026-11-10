@@ -8,6 +8,7 @@ import { WorldPage } from '@/components/worlds/WorldPage';
 import { BackLink, Button, Card, Chip, Rule, Text, TextField } from '@/components/ui';
 import { useTranslation } from '@/context/LanguageContext';
 import { useOnboarding } from '@/context/OnboardingContext';
+import { usePlayerCommands } from '@/context/PlayerContext';
 import { useSettings } from '@/context/SettingsContext';
 import type { TranslationKey } from '@/lib/i18n';
 import {
@@ -23,6 +24,7 @@ export default function AccountScreen() {
   const { t } = useTranslation();
   const { profile, setProfile } = useSettings();
   const { state, update, reset } = useOnboarding();
+  const { close: closePlayer } = usePlayerCommands();
   const [name, setName] = useState(profile.displayName);
 
   const pickPhoto = async () => {
@@ -47,8 +49,10 @@ export default function AccountScreen() {
         text: t('account.reset.confirmed'),
         style: 'destructive',
         onPress: async () => {
+          // A session still playing would write its progress back after the erase.
+          closePlayer();
           // The daily reminder lives in the OS schedule, not in storage.
-          await cancelAll();
+          await cancelAll().catch(() => {});
           await clearAll();
           await reset();
           router.replace('/welcome');

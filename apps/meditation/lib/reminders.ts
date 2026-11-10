@@ -6,7 +6,7 @@ import type { ReminderPreference } from '@/lib/types';
  * whether a reminder lands on the right day at the right hour.
  */
 
-/** Monday = 1 … Sunday = 7, matching `expo-notifications` weekday numbering. */
+/** Monday = 1 … Sunday = 7, the order the settings screen shows. */
 export type Weekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export const WEEKDAYS: Weekday[] = [1, 2, 3, 4, 5, 6, 7];
 
@@ -94,6 +94,16 @@ export function scheduleTriggers(
     .map((weekday) => ({ hour: schedule.hour, minute: schedule.minute, weekday }));
 }
 
+/**
+ * `expo-notifications` counts weekdays from Sunday = 1, as the platform
+ * calendars do; this module counts from Monday.
+ */
+export const toNotificationWeekday = (weekday: Weekday): number => (weekday % 7) + 1;
+
+/** An empty selection means every day, so removing a day starts from all seven. */
 export function toggleDay(days: Weekday[], day: Weekday): Weekday[] {
-  return days.includes(day) ? days.filter((item) => item !== day) : [...days, day].sort();
+  const selected = days.length === 0 ? WEEKDAYS : days;
+  return selected.includes(day)
+    ? selected.filter((item) => item !== day)
+    : [...selected, day].sort();
 }
