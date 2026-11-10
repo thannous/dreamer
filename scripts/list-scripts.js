@@ -6,8 +6,8 @@ const packageJson = require('../package.json');
 const FAMILY_DESCRIPTIONS = {
   Development: 'Expo development servers and native project runs',
   Quality: 'lint, type checks, unit tests, and performance tests',
-  'Web E2E': 'Playwright journeys with simulated services',
-  'Backend E2E': 'Playwright journeys with disposable local Supabase',
+  'Web E2E': 'TesterArmy journeys with simulated services',
+  'Backend E2E': 'TesterArmy journeys with disposable local Supabase',
   'Test branch E2E': 'shared test accounts and sessions on the persistent Supabase test branch',
   'TesterArmy E2E': 'TesterArmy journeys on web, emulators and simulators, and guarded device inspection',
   'Mobile release': 'release planning, preparation, builds and version mirrors',

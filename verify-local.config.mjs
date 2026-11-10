@@ -202,10 +202,10 @@ const MOBILE_VERSIONS = [
 ];
 
 // Deno runtime sources; the Edge tests also read supabase/migrations.
-const EDGE = ['supabase/functions/', 'supabase/lib/', 'supabase/migrations/', 'deno.lock', 'tools/dev-local/'];
+const EDGE = ['supabase/functions/', 'supabase/migrations/', 'deno.lock', 'mise.toml', 'tools/dev-local/'];
 // What edge-functions reads beyond EDGE: the target guard tools/dev-local
 // imports, and the pinned Deno version.
-const EDGE_READS = [...EDGE, 'scripts/lib/backend-e2e-local.cjs', 'mise.toml'];
+const EDGE_READS = [...EDGE, 'scripts/lib/backend-e2e-local.cjs'];
 
 // The EAS workflow contracts. These suites read .eas/workflows and eas.json as
 // files, so Jest's related-test selection (jest-changed) never picks them when
@@ -301,7 +301,7 @@ const MEDITATION_DEPS = {
 // alone does not execute its privacy, ownership and retry protections.
 const EDGE_CHECKS = [
   'cd supabase/functions',
-  'deno check --frozen api/index.ts analysis-job-worker/index.ts image-job-worker/index.ts revenuecat-webhook/index.ts',
+  'deno check --frozen api/index.ts analysis-job-worker/index.ts image-job-worker/index.ts revenuecat-webhook/index.ts capture-recall/index.ts illustration-hd/index.ts',
   'deno test --frozen --allow-env --allow-net=deno.land --allow-read=../migrations api revenuecat-webhook image-job-worker analysis-job-worker',
   // The local development backend imports these routes; its guards and fixed answers are tested with them.
   'cd ../..',

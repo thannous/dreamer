@@ -133,8 +133,8 @@ async function guardProductionPublish() {
 }
 
 // A clean copy of exactly `commitHash`: the files of its tree, no .git, no
-// untracked or ignored file. The repo has no .gitattributes, so no
-// export-ignore or export-subst changes the archive.
+// untracked or ignored file. The repo's .gitattributes only sets line endings,
+// so no export-ignore or export-subst changes the archive.
 function createCleanCopy(commitHash, { rootDir = ROOT_DIR, parentDir } = {}) {
   if (!/^[0-9a-f]{40}$/i.test(String(commitHash || ''))) {
     throw new Error(`Vercel publish requires the guarded 40-character commit SHA (got "${commitHash}").`);
