@@ -1,7 +1,6 @@
 import type { Href } from 'expo-router';
 
 export const LUCID_HOME_HREF = '/lucid' as const;
-export const LUCID_TABS_HREF = '/lucid/(tabs)' as const;
 export const LUCID_ONBOARDING_HREF = '/lucid/onboarding' as const;
 
 let completionNavigationClaimed = false;

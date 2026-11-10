@@ -35,8 +35,6 @@ export const LUCID_PLUS_CURRENT_BENEFIT_IDS = [
   'shared_account_entitlement',
 ] as const;
 
-export type LucidPlusBenefitId = (typeof LUCID_PLUS_CURRENT_BENEFIT_IDS)[number];
-
 export const LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS = [
   'journal_text',
   'programs_mild_ssild_wbtb',
@@ -53,9 +51,6 @@ export const LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS = [
   'dream_atlas',
   'first_immersive_rehearsal',
 ] as const;
-
-export type LucidPlusPaywallFreeFeatureId =
-  (typeof LUCID_PLUS_PAYWALL_FREE_FEATURE_IDS)[number];
 
 export const LUCID_PLUS_FEATURE_MATRIX: Record<
   LucidPlusFeatureId,

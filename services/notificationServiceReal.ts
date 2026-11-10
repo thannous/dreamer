@@ -11,7 +11,6 @@ import type {
 import {
   DREAMER_REMINDER_TYPE_KEY,
   RECORDING_NOTIFICATION_URL,
-  WEEKLY_RECAP_NOTIFICATION_URL,
   WEEKLY_RECAP_TIME,
   WEEKLY_RECAP_WEEKDAY,
   buildDreamerNotificationContentData,
@@ -59,7 +58,6 @@ const NOTIFICATION_CHANNEL_ID = 'dream-reminders';
 const DREAM_CAPTURE_SAVED_CHANNEL_ID = 'dream-capture-saved';
 
 /** Sunday, 10:00 local: late enough for a lie-in, early enough to plan the week. */
-export const WEEKLY_RECAP_URL = WEEKLY_RECAP_NOTIFICATION_URL;
 export { WEEKLY_RECAP_TIME, WEEKLY_RECAP_WEEKDAY };
 
 type NotificationTranslator = ReturnType<typeof getTranslator>;

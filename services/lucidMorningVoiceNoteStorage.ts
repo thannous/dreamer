@@ -757,8 +757,6 @@ export async function clearLucidMorningVoiceNotes(
 }
 
 
-export const LUCID_MORNING_VOICE_GUEST_SCOPE = 'guest' as const;
-
 export type LucidMorningVoiceGuestClaimResult = {
   claimed: boolean;
   transferred: number;

@@ -37,16 +37,6 @@ export type LucidDreamAtlasListItem = {
   hidden: boolean;
 };
 
-export type LucidDreamAtlasRename = {
-  nodeId: LucidDreamAtlasNodeId;
-  label: string;
-};
-
-export type LucidDreamAtlasMerge = {
-  fromId: LucidDreamAtlasNodeId;
-  intoId: LucidDreamAtlasNodeId;
-};
-
 export type LucidDreamAtlasPreferences = {
   version: typeof LUCID_DREAM_ATLAS_VERSION;
   renamed: Record<string, string>;

@@ -58,11 +58,6 @@ export function consumeStayOnSettingsDestination(): AuthReturnDestination | null
   return destination;
 }
 
-/** Backward-compatible boolean API used by older tests and consumers. */
-export function consumeStayOnSettingsIntent(): boolean {
-  return consumeStayOnSettingsDestination() !== null;
-}
-
 const RETURN_TO_PAYWALL_KEY = 'dreamer:return_to_paywall';
 /** A sign-in that takes longer than this is no longer "coming from the paywall". */
 export const RETURN_TO_PAYWALL_TTL_MS = 10 * 60 * 1000;

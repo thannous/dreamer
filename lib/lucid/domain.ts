@@ -7,7 +7,6 @@ import {
   DEFAULT_LUCID_MINDFUL_PAUSE_REMINDER_ANCHORS,
   LUCID_TRAINER_SCHEMA_VERSION,
   LUCID_TECHNIQUES,
-  type LucidOnboardingState,
   type LucidGuidedRitualProgress,
   type LucidProgramProgress,
   type LucidSyncEntity,
@@ -548,26 +547,4 @@ export function mergeLucidTrainerStates(
 
 export function hasLucidDreamAtlasSyncData(state: LucidTrainerState): boolean {
   return state.dreamAtlas != null && hasLucidDreamAtlasOverlayData(state.dreamAtlas);
-}
-
-export function updateLucidOnboarding(
-  state: LucidTrainerState,
-  onboarding: LucidOnboardingState
-): LucidTrainerState {
-  return applyLucidSyncEntity(state, {
-    entityType: 'onboarding',
-    entityKey: 'onboarding',
-    value: onboarding,
-  });
-}
-
-export function updateLucidPreferences(
-  state: LucidTrainerState,
-  preferences: LucidTrainerPreferences
-): LucidTrainerState {
-  return applyLucidSyncEntity(state, {
-    entityType: 'preferences',
-    entityKey: 'preferences',
-    value: preferences,
-  });
 }

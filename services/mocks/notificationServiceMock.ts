@@ -217,12 +217,3 @@ export async function hasNotificationPermissions(): Promise<boolean> {
   console.log(`[MOCK NOTIFICATIONS] Permissions granted: ${mockPermissionsGranted}`);
   return mockPermissionsGranted;
 }
-
-/**
- * Utility function to reset mock notification state (useful for testing)
- */
-export function resetMockNotifications(): void {
-  console.log('[MOCK NOTIFICATIONS] Resetting mock notification state');
-  mockPermissionsGranted = true;
-  mockScheduledNotifications = [];
-}

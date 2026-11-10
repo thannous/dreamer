@@ -445,5 +445,3 @@ export const TID = {
     AnalyzedDreamsValue: 'stats.analyzedDreams',
   },
 } as const;
-
-export type TestIDs = typeof TID;

@@ -9,7 +9,6 @@ export type SleepSoundConfig = {
   remoteUrl: string;
 };
 
-export const SLEEP_SOUND_LOOP_SECONDS = 5 * 60;
 export const SLEEP_SOUND_TIMER_OPTIONS: SleepTimerMinutes[] = [15, 30, 45];
 export const DEFAULT_SLEEP_SOUND_ID: SleepSoundId = 'rain';
 export const DEFAULT_SLEEP_TIMER_MINUTES: SleepTimerMinutes = 30;

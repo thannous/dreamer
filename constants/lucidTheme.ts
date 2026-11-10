@@ -2,8 +2,6 @@ import { createNoctaliaTheme, getNoctaliaPalette } from './noctaliaPalette';
 import type { ThemeColors } from '@/constants/journalTheme';
 import { TypeScale, type TypeScaleStep } from '@/constants/typeScale';
 
-export type LucidPalette = ReturnType<typeof getLucidPalette>;
-
 // Les quatre échelles non chromatiques. Sans elles, chaque écran a dû inventer
 // ses valeurs : le module comptait 13 tailles de texte, 15 rayons, 17 tailles
 // d'icône et 13 gaps — aucune sur une grille commune. Ce ne sont pas 58 fautes

@@ -141,8 +141,3 @@ export async function getTurnstileToken(action = 'guest_session'): Promise<strin
     }
   });
 }
-
-/** Test hook: forget the cached script promise. */
-export function resetTurnstileForTesting(): void {
-  scriptPromise = null;
-}

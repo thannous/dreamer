@@ -20,8 +20,6 @@ export type TodayAction =
   | { kind: 'open_dream'; dreamId: number }
   | { kind: 'open_journal' };
 
-export type TodayActionKind = TodayAction['kind'];
-
 export type TodayReason =
   | 'saved_draft'
   | 'first_use'

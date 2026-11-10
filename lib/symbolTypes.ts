@@ -56,11 +56,6 @@ export interface SymbolCategoryInfo {
   pt: string;
 }
 
-export interface ExtendedSymbolsDataFile {
-  meta: { description: string; lastUpdated: string };
-  symbols: Record<string, ExtendedSymbolData>;
-}
-
 /**
  * Languages the in-app dictionary ships content for. Wider than the site's
  * `symbols` collection (en/fr/es/de/it): pt-BR is bundled in the app but not

@@ -572,10 +572,6 @@ export async function getProductAnalyticsPreference(): Promise<ProductAnalyticsP
   return preferenceCache;
 }
 
-export async function getProductAnalyticsJourneyId(): Promise<string | null> {
-  return (await getJourneyRecord())?.id ?? null;
-}
-
 async function enqueueProductAnalyticsEvent<TName extends AnalyticsEventName>(
   eventName: TName,
   properties: AnalyticsEventMap[TName]

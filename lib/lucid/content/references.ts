@@ -62,7 +62,3 @@ export const LUCID_EVIDENCE_REFERENCES = [
     note: 'Consensus for healthy adults: preserve a regular opportunity for at least seven hours of sleep; individual needs and clinical situations vary.',
   },
 ] as const satisfies readonly LucidEvidenceReference[];
-
-export const LUCID_EVIDENCE_REFERENCE_IDS = LUCID_EVIDENCE_REFERENCES.map(
-  (reference) => reference.id,
-);

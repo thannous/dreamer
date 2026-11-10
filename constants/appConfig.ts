@@ -20,14 +20,3 @@ export const JOURNAL_LIST = {
   /** Minimum view time in ms before considering item visible */
   MINIMUM_VIEW_TIME: 100,
 } as const;
-
-export const AUDIO_CONFIG = {
-  /** Sample rate for recording */
-  SAMPLE_RATE: 16000,
-  /** Bit rate for recording */
-  BIT_RATE: 64000,
-  /** Minimum allowed web bitrate to avoid browser clamping (e.g., Chrome floor is 75 kbps) */
-  WEB_MIN_BIT_RATE: 75000,
-  /** Number of audio channels */
-  CHANNELS: 1,
-} as const;

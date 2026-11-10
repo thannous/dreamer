@@ -359,28 +359,6 @@ export interface QuotaStatus {
     | 'guest_quota_unavailable';
 }
 
-/**
- * Offline action queue item types
- */
-export type OfflineAction =
-  | {
-      id: string;
-      type: 'ANALYZE';
-      dreamId: number;
-      requestId: string;
-      transcript: string;
-      timestamp: number;
-      retries?: number;
-    }
-  | {
-      id: string;
-      type: 'CHAT_MESSAGE';
-      dreamId: number;
-      message: string;
-      timestamp: number;
-      retries?: number;
-    };
-
 export type GuestDreamMigrationOwner = {
   userId: string;
   dreamIds: number[];
