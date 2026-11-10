@@ -268,6 +268,8 @@ for (const action of ['purchase', 'restore'] as const) {
     await billingHome(screen);
     await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
     await billingTap(screen, 'quick-settings.plus');
+    // The offer reopens at its top; on an iPhone the notice sits below the price cards.
+    await screen.scrollUntilVisible(pending);
     await expect(pending).toBeVisible();
     await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
     await billingTap(screen, 'btn.paywall.purchase');
@@ -1340,6 +1342,8 @@ test('Dreamer release every destination opens in system dark mode', {
     await expect(screen.getByTestId('screen.errorBoundary')).toHaveCount(0);
     await app.screenshot(`release-tour-${label}`);
   };
+  // A native proof starts by opening the app (qualification.mjs); the reset below reopens it in dark.
+  await app.open();
   restore.appearance = true;
   await device.setAppearance('dark');
   await billingGuest(fixtures);
@@ -1396,7 +1400,8 @@ test('Dreamer release every destination opens in system dark mode', {
   await screen.scrollUntilVisible(guide);
   await guide.tap();
   await shown('screen.dreamGuideDetail', 'guide-detail-dark');
-  await device.back();
+  // The guide's Back button sits under its artwork, not in a top bar where device.back looks on iOS.
+  await screen.getByTestId('screen.dreamGuideDetail', { visible: true }).getByRole('button', 'Back', { visible: true }).tap();
   await expect(screen.getByTestId('screen.dreamGuides', { visible: true })).toBeVisible();
   for (const [route, id] of [['weekly-recap', 'screen.weeklyRecap'], ['moon-letter', 'screen.moonLetter']]) {
     await openBackgroundRoute(fixtures, route);
