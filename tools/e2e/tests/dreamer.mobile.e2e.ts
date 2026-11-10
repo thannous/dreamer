@@ -1149,8 +1149,10 @@ async function releaseJournalFromDream(screen: TestFixtures['screen'], platform:
     // of the conversation. Its plate mounts above the reading and carries the header off the
     // screen: on 7b6237516 a tap sent 69 ms after the scroll opened the picture instead of going
     // back. The journey waits for the plate, then reaches Back again. Android never showed it.
-    await expect.poll(() => screen.getByTestId('component.journal.illustration', { visible: true }).count(),
-      { timeout: 45_000, message: 'the first dream never received its illustration' }).toBeGreaterThan(0);
+    // Only the plate's picture carries this id; the page's illustration id is shared with the
+    // painting wait and the failure card lower in the reading.
+    await expect.poll(() => screen.getByTestId('btn.journal.illustration.expand', { visible: true }).count(),
+      { timeout: 45_000, message: 'the first dream never received its illustration plate' }).toBeGreaterThan(0);
     await screen.scrollUntilVisible(back, { direction: 'up' });
   }
   const returnTab = screen.getByTestId('journal.detail.returnTab', { visible: true });
