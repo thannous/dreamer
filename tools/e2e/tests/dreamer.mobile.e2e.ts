@@ -1141,12 +1141,21 @@ for (const offline of [false, true]) {
 const MOCK_CHAT_REPLY = /^(That's an interesting question|Based on your dream,|Dreams like yours often|The elements you mentioned|I sense that this dream)/;
 
 /** The dream page's header scrolls with it; its return tab stays inside the usable screen. */
-async function releaseJournalFromDream(screen: TestFixtures['screen']) {
+async function releaseJournalFromDream(screen: TestFixtures['screen'], platform: TestFixtures['platform']) {
   const back = screen.getByTestId('btn.navigateJournal', { visible: true });
   await screen.scrollUntilVisible(back, { direction: 'up' });
+  if (platform === 'ios') {
+    // The first dream's illustration lands about half a minute after its reading, around the end
+    // of the conversation. Its plate mounts above the reading and carries the header off the
+    // screen: on 7b6237516 a tap sent 69 ms after the scroll opened the picture instead of going
+    // back. The journey waits for the plate, then reaches Back again. Android never showed it.
+    await expect.poll(() => screen.getByTestId('component.journal.illustration', { visible: true }).count(),
+      { timeout: 45_000, message: 'the first dream never received its illustration' }).toBeGreaterThan(0);
+    await screen.scrollUntilVisible(back, { direction: 'up' });
+  }
   const returnTab = screen.getByTestId('journal.detail.returnTab', { visible: true });
   if (await returnTab.count()) await returnTab.tap();
-  else await back.tap();
+  else await tapWhenStill(back);
   await expect(screen.getByTestId('screen.journal', { visible: true })).toBeVisible();
 }
 
@@ -1267,7 +1276,7 @@ test('Dreamer release guest reads its first dream and asks one question that sur
   await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
   await back.tap();
   await expect(screen.getByTestId('screen.dreamDetail', { visible: true })).toBeVisible();
-  await releaseJournalFromDream(screen);
+  await releaseJournalFromDream(screen, platform);
   await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(1);
   await app.restart();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
