@@ -1,6 +1,6 @@
 import { afterEach, test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
-import { tapUntilShown, tapWhenStill, waitUntilStill } from '../native-settle';
+import { tapWhenStill, waitUntilStill } from '../native-settle';
 import { firstTextAndroid } from '../test-support/first-text-android';
 // The persistent mock profile seeds this entry. Explicit expectations keep
 // Node collection independent of the app's React Native/media imports.
@@ -253,28 +253,23 @@ test('Dreamer native billing empty restore keeps Free and reports no subscriptio
 });
 
 for (const action of ['purchase', 'restore'] as const) {
-  test(`Dreamer native billing delayed ${action} recovers after reentry without a second Store operation`, nativeBillingOptions, async (fixtures) => {
+  test(`Dreamer native billing delayed ${action} is confirmed without a retry or a second Store operation`, nativeBillingOptions, async (fixtures) => {
     const { app, screen } = fixtures;
     await billingFree(fixtures);
     if (action === 'restore') await billingTap(screen, 'btn.subscription.qa.scenario.restore_available');
     await billingTap(screen, 'btn.subscription.qa.delayActivation');
     await billingOffer(screen);
     await billingTap(screen, `btn.paywall.${action}`);
-    const pending = screen.getByText('Your subscription is recognized. Access activation is still pending. You can retry without purchasing again.', { visible: true });
-    await expect(pending).toBeVisible();
-    await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
-    await app.screenshot(`native-${action}-activation-pending`);
-    await billingClose(screen);
-    await billingHome(screen);
-    await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
-    await billingTap(screen, 'quick-settings.plus');
-    // The offer reopens at its top; on an iPhone the notice sits below the price cards.
-    await screen.scrollUntilVisible(pending);
-    await expect(pending).toBeVisible();
-    await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
-    await billingTap(screen, 'btn.paywall.purchase');
-    await expect(screen.getByTestId('toast.paywall.success', { visible: true })).toBeVisible();
-    await app.screenshot(`native-${action}-retry-confirmed`);
+    // The app confirms a paid receipt by itself, 5 s then 15 s after the Store answered and on each
+    // return to the foreground. On a device the pending notice is gone before a reader could leave
+    // and come back, so the proof here is the outcome; the web journey holds the notice and the retry.
+    const active = screen.getByText('Noctalia Plus is active', { visible: true });
+    await expect.poll(async () => {
+      // The offer's title sits above the button just tapped, and an iPhone lists only what is on screen.
+      await screen.scrollUntilVisible(active, { direction: 'up' }).catch(() => {});
+      return active.count();
+    }, { timeout: 120_000, message: 'the paid receipt was never confirmed without the reader retrying' }).toBeGreaterThan(0);
+    await app.screenshot(`native-${action}-confirmed-unattended`);
     await billingClose(screen);
     await billingSettings(screen);
     const quota = await billingQuota(fixtures);
