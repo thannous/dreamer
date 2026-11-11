@@ -9,8 +9,8 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { Linking, NativeModules, Platform } from 'react-native';
-import { SystemBars } from 'react-native-edge-to-edge';
+import { Linking, NativeModules, Platform, StatusBar } from 'react-native';
+import { NavigationBar } from '@zoontek/react-native-navigation-bar';
 import StartupSplashScreen, {
   STARTUP_SPLASH_MINIMUM_VISIBLE_MS,
 } from '@/components/StartupSplashScreen';
@@ -138,7 +138,8 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
         <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
         <Stack.Screen name="auth/callback/success" options={{ headerShown: false }} />
       </Stack>
-      <SystemBars style={{ statusBar: mode === 'dark' ? 'light' : 'dark', navigationBar: mode === 'dark' ? 'light' : 'dark' }} />
+      <StatusBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} animated />
+      {Platform.OS === 'android' ? <NavigationBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} /> : null}
     </KeyboardProviderComponent>
   </NavigationThemeProvider>;
 }

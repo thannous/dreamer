@@ -147,3 +147,25 @@ test('Lucid release deletes all its local data and starts again at onboarding', 
   await expect(screen.getByTestId('lucid-today')).toHaveCount(0);
   await app.screenshot('release-lucid-data-deleted');
 });
+
+// Native bar pixels cannot be qualified by the browser. Capture the art overlay,
+// scrolled page and a different tab after the overlay's focus entry is released.
+test('Lucid release keeps system bars legible over art and restores them after navigation', { tags: ['system-bars'] }, async fixtures => {
+  const { app, screen } = fixtures;
+  await activateLucid(fixtures);
+  await app.screenshot('lucid-system-bars-art');
+  await screen.getByTestId('lucid-tab-settings', { visible: true }).tap();
+  await expect(screen.getByTestId('lucid-settings', { visible: true })).toBeVisible();
+  for (const mode of ['light', 'dark'] as const) {
+    const option = screen.getByTestId(`lucid-theme-${mode}`, { visible: true });
+    await screen.scrollUntilVisible(option);
+    await option.tap();
+    await expect(option).toBeChecked();
+    await app.screenshot(`lucid-system-bars-settings-${mode}`);
+    await screen.getByTestId('lucid-tab-today', { visible: true }).tap();
+    await expect(screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
+    await app.screenshot(`lucid-system-bars-today-${mode}`);
+    await screen.getByTestId('lucid-tab-settings', { visible: true }).tap();
+    await expect(screen.getByTestId('lucid-settings', { visible: true })).toBeVisible();
+  }
+});

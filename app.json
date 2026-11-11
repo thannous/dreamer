@@ -223,7 +223,14 @@
           "enableFTS": false
         }
       ],
-      "react-native-edge-to-edge",
+      [
+        "@zoontek/react-native-navigation-bar",
+        {
+          "android": {
+            "enforceNavigationBarContrast": true
+          }
+        }
+      ],
       "expo-image",
       "expo-sharing",
       "expo-apple-authentication",

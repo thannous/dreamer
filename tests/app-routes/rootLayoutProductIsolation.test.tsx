@@ -36,13 +36,14 @@ jest.mock('@/global.css', () => ({}));
 jest.mock('@/lib/runtimeIdentity', () => ({ reportRuntimeIdentity: mockReportRuntimeIdentity }));
 jest.mock('react-native', () => ({
   ...jest.requireActual('../react-native-stub'),
+  StatusBar: () => null,
   Platform: { get OS() { return mockPlatform; } },
   LogBox: { ignoreLogs: jest.fn() },
   InteractionManager: { runAfterInteractions: (fn: () => void) => { fn(); return { cancel: jest.fn() }; } },
   Linking: { getInitialURL: jest.fn().mockResolvedValue(null), addEventListener: () => ({ remove: jest.fn() }) },
 }));
 jest.mock('react-native-gesture-handler', () => ({ GestureHandlerRootView: ({ children }: React.PropsWithChildren) => <>{children}</> }));
-jest.mock('react-native-edge-to-edge', () => ({ SystemBars: () => null }));
+jest.mock('@zoontek/react-native-navigation-bar', () => ({ NavigationBar: () => null }));
 jest.mock('expo-font', () => ({ useFonts: () => [true, null] }));
 jest.mock('expo-localization', () => ({ useLocales: () => [{ languageCode: 'en' }] }));
 jest.mock('expo-splash-screen', () => ({ preventAutoHideAsync: jest.fn().mockResolvedValue(undefined), hideAsync: jest.fn().mockResolvedValue(undefined) }));

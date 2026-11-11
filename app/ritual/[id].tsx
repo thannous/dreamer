@@ -1,7 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useReducedMotion,
@@ -175,7 +175,7 @@ function RitualDetailScreen() {
     () => getLucidTrainerBridgeCopy(currentLang),
     [currentLang],
   );
-  const sleepSoundsAvailable = isSleepSoundsAvailable();
+  const sleepSoundsAvailable = isSleepSoundsAvailable(Platform.OS);
   const insets = useSafeAreaInsets();
   const scrollPerf = useScrollIdle();
 

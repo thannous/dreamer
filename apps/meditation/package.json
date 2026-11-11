@@ -83,6 +83,7 @@
     "deepmerge": "file:../../tools/deepmerge",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.4",
+    "expo-mcp": "~0.2.4",
     "image-size": "file:../../tools/image-size-compat",
     "jest": "^30.2.0",
     "jest-expo": "~58.0.14",

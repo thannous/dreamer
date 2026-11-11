@@ -7,9 +7,14 @@ jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: ()
 
 const mockPush = jest.fn();
 const mockBack = jest.fn();
-let mockFeatureAvailable = false;
+let mockPlatform = 'android';
+const originalFlag = process.env.EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED;
+const originalExpoOs = process.env.EXPO_OS;
 
-jest.mock('react-native', () => jest.requireActual('../react-native-stub'));
+jest.mock('react-native', () => ({
+  ...jest.requireActual('../react-native-stub'),
+  Platform: { get OS() { return mockPlatform; }, select: (options: Record<string, unknown>) => options[mockPlatform] ?? options.default },
+}));
 
 jest.mock('expo-router', () => ({
   router: { back: mockBack, push: mockPush },
@@ -81,10 +86,6 @@ jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon-${name}`} />,
 }));
 
-jest.mock('@/lib/sleepSoundsFeature', () => ({
-  isSleepSoundsAvailable: () => mockFeatureAvailable,
-}));
-
 jest.mock('@/services/storageService', () => ({
   getRitualStepProgress: jest.fn().mockResolvedValue(null),
   saveRitualPreference: jest.fn().mockResolvedValue(undefined),
@@ -94,10 +95,19 @@ jest.mock('@/services/storageService', () => ({
 const { default: RitualDetailScreen } = require('@/app/ritual/[id]');
 
 describe('ritual sleep sounds entry', () => {
+  beforeEach(() => {
+    mockPlatform = 'android';
+    process.env.EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED = 'false';
+    process.env.EXPO_OS = 'unknown';
+  });
+
   afterEach(() => {
     cleanup();
     jest.clearAllMocks();
-    mockFeatureAvailable = false;
+    if (originalFlag === undefined) delete process.env.EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED;
+    else process.env.EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED = originalFlag;
+    if (originalExpoOs === undefined) delete process.env.EXPO_OS;
+    else process.env.EXPO_OS = originalExpoOs;
   });
 
   it('does not expose the entry when the feature is unavailable', async () => {
@@ -108,8 +118,9 @@ describe('ritual sleep sounds entry', () => {
     });
   });
 
-  it('opens the native sleep sounds route when enabled', async () => {
-    mockFeatureAvailable = true;
+  it.each(['android', 'ios'])('opens the sleep sounds route on %s with an unknown build-time platform', async (platform) => {
+    mockPlatform = platform;
+    process.env.EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED = 'true';
     render(<RitualDetailScreen />);
 
     const entry = await screen.findByTestId('ritual-sleep-sounds');
@@ -119,4 +130,12 @@ describe('ritual sleep sounds entry', () => {
 
     expect(mockPush).toHaveBeenCalledWith('/sleep-sounds');
   });
+  it.each(['web', 'unknown'])('hides the sleep entry on %s even when the flag is enabled', async (platform) => {
+    mockPlatform = platform;
+    process.env.EXPO_PUBLIC_SLEEP_SOUNDS_ENABLED = 'true';
+    render(<RitualDetailScreen />);
+    await waitFor(() => expect(screen.queryByTestId('ritual-sleep-sounds')).toBeNull());
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
 });
