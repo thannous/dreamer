@@ -114,6 +114,41 @@ describe('subscriptionService', () => {
     expect(mockRealService.getStatus).not.toHaveBeenCalled();
   });
 
+  it('given a release web build without key__when loading service__then sells nothing', async () => {
+    mockSetMockMode(false);
+    mockSetPlatformOS('web');
+    const globals = globalThis as { __DEV__?: boolean };
+    const previousDev = globals.__DEV__;
+    globals.__DEV__ = false;
+    try {
+      const service = require('../subscriptionService');
+      // The tier the server holds can still be read through the fallback...
+      expect(service.isMockSubscriptionService).toBe(true);
+      expect(service.isSubscriptionStoreUnavailable).toBe(true);
+      // ...but the simulated store, whose purchases need no payment, is never reached.
+      await expect(service.loadSubscriptionPackages()).resolves.toEqual([]);
+      await expect(service.purchaseSubscriptionPackage('mock_annual')).rejects.toThrow('ITEM_UNAVAILABLE');
+      await expect(service.restoreSubscriptionPurchases()).rejects.toThrow('ITEM_UNAVAILABLE');
+      expect(mockService.loadOfferings).not.toHaveBeenCalled();
+      expect(mockService.purchasePackage).not.toHaveBeenCalled();
+      expect(mockService.restorePurchases).not.toHaveBeenCalled();
+    } finally {
+      globals.__DEV__ = previousDev;
+    }
+  });
+
+  it('given the mock profile or a development build__when loading service__then keeps the simulated store', () => {
+    const { isSubscriptionStoreUnavailableFor } = require('../subscriptionService');
+    const webRelease = {
+      isMockMode: false, isDev: false, isLucidTrainer: false, platform: 'web',
+      hasWebKey: false, hasAndroidKey: false, hasIosKey: false,
+    };
+    expect(isSubscriptionStoreUnavailableFor(webRelease)).toBe(true);
+    expect(isSubscriptionStoreUnavailableFor({ ...webRelease, isMockMode: true })).toBe(false);
+    expect(isSubscriptionStoreUnavailableFor({ ...webRelease, isDev: true })).toBe(false);
+    expect(isSubscriptionStoreUnavailableFor({ ...webRelease, hasWebKey: true })).toBe(false);
+  });
+
   it('given web with key__when loading service__then uses real implementation', async () => {
     mockSetMockMode(false);
     mockSetPlatformOS('web');

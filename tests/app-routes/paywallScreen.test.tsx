@@ -677,6 +677,17 @@ describe('Paywall screen', () => {
     expect(mockPurchase).not.toHaveBeenCalled();
   });
 
+  // The keyless web build falls back to the simulated store, which completes a purchase without payment.
+  it('offers nothing to buy or restore where no store is reachable, and says so', () => {
+    mockUseSubscription.mockReturnValue({ ...mockUseSubscription(), packages: [], storeUnavailable: true });
+    render(<PaywallScreen />);
+
+    expect(screen.getByText('subscription.error.item_unavailable')).toBeTruthy();
+    expect(screen.queryByText('subscription.paywall.empty')).toBeNull();
+    expect(screen.queryByTestId(TID.Button.PaywallPurchase)).toBeNull();
+    expect(screen.queryByTestId(TID.Button.PaywallRestore)).toBeNull();
+  });
+
   // App Review (3.1.1): a reviewer testing as a guest must find Restore on the paywall.
   it('shows Restore to a guest, who signs in first and is brought back to restore', () => {
     mockUseSubscription.mockReturnValue({ ...mockUseSubscription(), requiresAuth: true });

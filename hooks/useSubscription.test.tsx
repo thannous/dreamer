@@ -506,6 +506,44 @@ describe('useSubscription', () => {
       expect(result.current.processing).toBe(false);
     });
 
+    it('confirms a paid purchase by itself once the server answers, without the user retrying', async () => {
+      const { ACTIVATION_RETRY_DELAYS_MS } = require('./useSubscriptionInternal');
+      const { result } = renderSubscriptionHook();
+      await act(async () => {});
+      const service = require('../services/subscriptionService');
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+
+      // The retry timer starts when the purchase is left pending, so the clock is faked first.
+      jest.useFakeTimers();
+      try {
+        syncSubscriptionFromServer.mockRejectedValueOnce(new Error('temporary sync failure'));
+        await act(async () => {
+          await result.current.purchase('mock_monthly');
+        });
+        expect(result.current.activationPending).toBe(true);
+        expect(result.current.isActive).toBe(false);
+
+        service.refreshSubscriptionStatus.mockResolvedValue({ tier: 'plus', isActive: true });
+        // The first automatic attempt fails as well, silently; the second one reaches the server.
+        syncSubscriptionFromServer.mockRejectedValueOnce(new Error('still offline'));
+        await act(async () => {
+          await jest.advanceTimersByTimeAsync(ACTIVATION_RETRY_DELAYS_MS[0]);
+        });
+        expect(service.refreshSubscriptionStatus).toHaveBeenCalledTimes(1);
+        expect(result.current.activationPending).toBe(true);
+        expect(result.current.error).toBeNull();
+
+        syncSubscriptionFromServer.mockResolvedValueOnce({ ok: true, tier: 'plus', isActive: true, changed: true });
+        await act(async () => {
+          await jest.advanceTimersByTimeAsync(ACTIVATION_RETRY_DELAYS_MS[1]);
+        });
+        expect(result.current.activationPending).toBe(false);
+        expect(result.current.isActive).toBe(true);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
     it.each(['purchase', 'restore'])('marks %s as confirmed only after the server responds', async (action: string) => {
       const { result } = renderSubscriptionHook();
       await act(async () => {});

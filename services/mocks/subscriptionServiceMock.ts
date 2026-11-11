@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 
 import { getCurrentUser } from '@/lib/auth';
+import { isMockModeEnabled } from '@/lib/env';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import type { PurchasePackage, SubscriptionStatus, SubscriptionTier } from '@/lib/types';
 
@@ -52,7 +53,10 @@ function getDefaultStatus(): SubscriptionStatus {
 }
 
 function mapTierFromUser(user: User | null): SubscriptionTier {
-  const tier = normalizeSubscriptionTier(user?.app_metadata?.tier ?? user?.user_metadata?.tier, 'free');
+  // user_metadata is writable by the signed-in client. Only the mock profile's own users carry
+  // their tier there; a real account reaching this fallback is read from app_metadata alone.
+  const clientWritableTier = isMockModeEnabled() ? user?.user_metadata?.tier : undefined;
+  const tier = normalizeSubscriptionTier(user?.app_metadata?.tier ?? clientWritableTier, 'free');
   if (tier === 'plus' || tier === 'guest') return tier;
   return 'free';
 }

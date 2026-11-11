@@ -99,6 +99,7 @@ function PaywallScreen() {
     restore,
     refreshSubscription,
     requiresAuth,
+    storeUnavailable,
   } = useSubscription({ loadPackages: true });
   const operationInFlightRef = useRef(false);
   const [operationPending, setOperationPending] = useState(false);
@@ -815,9 +816,9 @@ function PaywallScreen() {
             </Reveal>
           ) : null}
 
-          {!loading && !requiresAuth && !isActive && sortedPackages.length === 0 ? (
+          {!loading && !isActive && sortedPackages.length === 0 && (storeUnavailable || !requiresAuth) ? (
             <Text style={[styles.emptyText, { color: noctalia.text.secondary }]}>
-              {t('subscription.paywall.empty')}
+              {t(storeUnavailable ? 'subscription.error.item_unavailable' : 'subscription.paywall.empty')}
             </Text>
           ) : null}
 
@@ -827,7 +828,7 @@ function PaywallScreen() {
                 {t('subscription.paywall.activation_pending')}
               </Text>
             ) : null}
-            {!isActive || awaitingServerAccess ? (
+            {(!isActive && !storeUnavailable) || awaitingServerAccess ? (
               <PressableScale
                 style={[
                   styles.primaryButton,
@@ -933,6 +934,8 @@ function PaywallScreen() {
           ) : null}
           {/* A utility, not an offer: it sits with the fine print, still a full 44pt target.
               Everyone sees it (App Review 3.1.1); a guest signs in on the way. */}
+          {/* Nothing to restore from where no store is reachable (the keyless web build). */}
+          {storeUnavailable ? null : (
           <Pressable
             style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
             onPress={requiresAuth ? handleRestoreAfterSignIn : handleRestore}
@@ -944,6 +947,7 @@ function PaywallScreen() {
               {t('subscription.paywall.button.restore')}
             </Text>
           </Pressable>
+          )}
 
           {/* Reviewers and readers tap these on a phone: each keeps a full 44pt target. */}
           <View style={styles.legalLinks}>

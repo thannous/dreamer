@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 
 import type { User } from '@supabase/supabase-js';
 import { useAuth } from '@/context/AuthContext';
+import { useAppState } from '@/hooks/useAppState';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import { isEntitlementExpired } from '@/lib/revenuecat';
 import { isUserCancelledError as isSharedUserCancelledError, type RevenueCatLikeError } from '@/lib/subscriptionErrors';
@@ -11,6 +12,7 @@ import {
   initializeSubscription,
   isMockSubscriptionService,
   isSubscriptionInitialized,
+  isSubscriptionStoreUnavailable,
   loadSubscriptionPackages,
   purchaseSubscriptionPackage,
   refreshSubscriptionStatus,
@@ -23,6 +25,13 @@ import { useSubscriptionExpiryTimer } from './useSubscriptionExpiryTimer';
 import { useSubscriptionMonitor } from './useSubscriptionMonitor';
 
 type RevenueCatError = RevenueCatLikeError;
+
+/**
+ * How long to wait before each automatic attempt to confirm a paid receipt the
+ * server has not acknowledged yet. About nine minutes in all; after that the
+ * next foreground, the paywall's retry button or a restart takes over.
+ */
+export const ACTIVATION_RETRY_DELAYS_MS = [5_000, 15_000, 30_000, 60_000, 120_000, 300_000] as const;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -406,6 +415,50 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     }
   }, [assertSession, converge, invalidateStoreReads, isSessionCurrent, userId]);
 
+  // A store-confirmed purchase whose server confirmation failed keeps every
+  // store observation paused (see canObserveStore), so nothing else would ever
+  // reconcile it: the payer stayed on Free until they found the retry button.
+  // These attempts are silent; the paywall keeps its own visible retry.
+  const retryPendingActivation = useCallback(async () => {
+    const state = storeOperation.current;
+    if (!userId || !state.pending || state.running || state.refreshes > 0 || !isSessionCurrent()) return;
+    state.refreshes++;
+    invalidateStoreReads();
+    try {
+      const observed = await refreshSubscriptionStatus();
+      assertSession();
+      if (observed) await converge('manual_refresh', observed);
+    } catch {
+      // Still pending: the next attempt, or the user's own retry, tries again.
+    } finally {
+      state.refreshes--;
+      if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
+    }
+  }, [assertSession, converge, invalidateStoreReads, isSessionCurrent, userId]);
+  const retryPendingActivationRef = useRef(retryPendingActivation);
+  useLayoutEffect(() => { retryPendingActivationRef.current = retryPendingActivation; }, [retryPendingActivation]);
+
+  useEffect(() => {
+    if (!activationPending || !userId) return;
+    let active = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = (attempt: number) => {
+      if (attempt >= ACTIVATION_RETRY_DELAYS_MS.length) return;
+      timer = setTimeout(() => {
+        void retryPendingActivationRef.current().then(() => {
+          if (active && storeOperation.current.pending) schedule(attempt + 1);
+        });
+      }, ACTIVATION_RETRY_DELAYS_MS[attempt]);
+    };
+    schedule(0);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [activationPending, sessionKey, userId]);
+
+  useAppState(() => { void retryPendingActivationRef.current(); });
+
   const onResume = useCallback((next: SubscriptionStatus) => {
     if (!isSessionCurrent() || initializing.current) return;
     applyStoreObservationRef.current('resume', next);
@@ -471,6 +524,8 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     clearError,
     packages,
     requiresAuth: !userId,
+    /** No store is reachable from this build: status is shown, nothing is sold. */
+    storeUnavailable: isSubscriptionStoreUnavailable === true,
     purchase,
     restore,
     refreshSubscription,
