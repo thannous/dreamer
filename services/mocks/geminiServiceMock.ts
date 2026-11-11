@@ -4,7 +4,6 @@ import { selfHarmSupportReply } from '@/supabase/functions/api/lib/selfHarmSuppo
  * Simulates API calls with realistic delays and data
  */
 
-import { DREAM_THEMES } from '@/lib/dreamThemes';
 import { getRandomImageForTheme } from '@/mock-data/assets';
 import { getMockCategorizationDelayMs } from '@/lib/env';
 import { generateAnalysisResult, generateChatResponse } from '@/mock-data/generators';
@@ -107,84 +106,6 @@ export async function categorizeDream(
     hasPerson,
     hasAnimal,
   };
-}
-
-/**
- * Mock combined analysis + image generation (3-5 seconds)
- */
-export async function analyzeDreamWithImage(
-  transcript: string,
-  lang = 'en',
-  _fingerprint?: string,
-  _context?: AnalysisRequestContext
-): Promise<AnalysisResult & { imageUrl: string }> {
-  console.log('[MOCK] analyzeDreamWithImage called with lang:', lang);
-  await delay(MOCK_ANALYSIS_DURATION_MS);
-
-  const result = generateAnalysisResult(transcript, lang);
-  const imageUrl = getRandomImageForTheme(result.theme);
-
-  console.log('[MOCK] analyzeDreamWithImage returning with image');
-  return { ...result, imageUrl };
-}
-
-/**
- * Mock resilient analysis with image
- * Always succeeds in mock mode (no failures to simulate)
- */
-export async function analyzeDreamWithImageResilient(
-  transcript: string,
-  lang = 'en',
-  _fingerprint?: string,
-  _context?: AnalysisRequestContext
-): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
-  console.log('[MOCK] analyzeDreamWithImageResilient called with lang:', lang);
-
-  // Simulate progressive delay (analysis phase)
-  await delay(MOCK_ANALYSIS_DURATION_MS / 2);
-  const result = generateAnalysisResult(transcript, lang);
-
-  // Simulate image generation phase
-  await delay(MOCK_ANALYSIS_DURATION_MS / 2);
-  const imageUrl = getRandomImageForTheme(result.theme);
-
-  console.log('[MOCK] analyzeDreamWithImageResilient returning with image:', imageUrl);
-  return {
-    ...result,
-    imageUrl,
-    imageGenerationFailed: false
-  };
-}
-
-/**
- * Mock image generation for dream (2-4 seconds)
- */
-export async function generateImageForDream(prompt: string, _previousImageUrl?: string): Promise<string> {
-  console.log('[MOCK] generateImageForDream called with prompt:', prompt.slice(0, 50) + '...');
-  await delay(2000 + Math.random() * 2000); // 2-4 seconds
-
-  // Extract theme from prompt if possible, otherwise use random
-  const themes: readonly DreamTheme[] = DREAM_THEMES;
-  let theme: DreamTheme = 'surreal';
-
-  for (const t of themes) {
-    if (prompt.toLowerCase().includes(t)) {
-      theme = t;
-      break;
-    }
-  }
-
-  const imageUrl = getRandomImageForTheme(theme);
-  console.log('[MOCK] generateImageForDream returning:', imageUrl);
-  return imageUrl;
-}
-
-export async function generateImageFromTranscript(transcript: string, _previousImageUrl?: string): Promise<string> {
-  console.log('[MOCK] generateImageFromTranscript called with transcript:', transcript.slice(0, 50) + '...');
-  await delay(2000 + Math.random() * 2000); // 2-4 seconds
-  const imageUrl = getRandomImageForTheme('surreal');
-  console.log('[MOCK] generateImageFromTranscript returning:', imageUrl);
-  return imageUrl;
 }
 
 export async function submitImageGenerationJob(

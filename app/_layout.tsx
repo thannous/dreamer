@@ -44,15 +44,10 @@ import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
 import { clearReturnToPaywallIntent, peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
 import { buildPaywallHref } from '@/lib/paywallRoute';
-import { isLucidTrainer } from '@/lib/appVariant';
 import { installBrowserAlert } from '@/lib/browserAlert';
 import { isPasswordResetPath } from '@/lib/authRoutes';
 import { authReturnHref, completeAuthReturn, isAuthReturnObserved, type AuthReturnIntent } from '@/lib/authReturnIntent';
 import { loadTranslations } from '@/lib/i18n';
-import {
-  isSafeLucidNotificationRoute,
-  resolveObservedLucidWebStartupDestination,
-} from '@/lib/lucid/routes';
 import { isSafeAppNotificationRoute } from '@/lib/notificationRoutes';
 import { normalizeAppLanguage, resolveEffectiveLanguage } from '@/lib/language';
 import { isDreamCaptureResponse } from '@/lib/notificationDreamCapture';
@@ -138,21 +133,13 @@ const ROOT_VIEW_STYLE = { flex: 1 } as const;
 function resolveAppStartupDecision(
   input: Parameters<typeof resolveStartupDecision>[0]
 ): StartupDestinationDecision {
-  if (!isLucidTrainer) {
-    // Account scope changes restart navigation after onboarding has loaded.
-    // Honour the same offer intent as AuthContext instead of opening Capture.
-    const paywallTrigger = input.hasUser ? peekReturnToPaywallTrigger() : null;
-    return resolveStartupDecision({
-      ...input,
-      pendingPaywallDestination: paywallTrigger ? buildPaywallHref(getPaywallTrigger(paywallTrigger)) : null,
-    });
-  }
-  const explicit = input.defaultDestination;
-  const explicitPath = typeof explicit === 'string' ? explicit : String(explicit?.pathname ?? '');
-  return {
-    destination: explicit && explicitPath.startsWith('/lucid') ? explicit : '/lucid',
-    reason: 'default',
-  };
+  // Account scope changes restart navigation after onboarding has loaded.
+  // Honour the same offer intent as AuthContext instead of opening Capture.
+  const paywallTrigger = input.hasUser ? peekReturnToPaywallTrigger() : null;
+  return resolveStartupDecision({
+    ...input,
+    pendingPaywallDestination: paywallTrigger ? buildPaywallHref(getPaywallTrigger(paywallTrigger)) : null,
+  });
 }
 
 function runAfterNavigationMount(callback: () => void) {
@@ -191,7 +178,7 @@ const KeyboardProviderComponent: React.ComponentType<React.PropsWithChildren> =
  * See: https://docs.expo.dev/router/reference/unstable-settings/
  */
 export const unstable_settings = {
-  anchor: isLucidTrainer ? 'lucid' : '(tabs)',
+  anchor: '(tabs)',
 };
 
 /**
@@ -247,11 +234,6 @@ function RootLayoutNav({
   const paywallReturnAcknowledged = useRef<Href | null>(null);
   const initialLaunchConsumed = useRef(false);
   const pathnameRef = useRef(pathname);
-  const initialWebHrefRef = useRef<string | null>(
-    Platform.OS === 'web' && typeof window !== 'undefined'
-      ? `${window.location.pathname}${window.location.search}${window.location.hash}`
-      : null
-  );
   const hasInitialNavigated = useRef(false);
   const hasTrackedColdStart = useRef(false);
   const previousOnboardingScope = useRef(onboardingScope);
@@ -262,7 +244,7 @@ function RootLayoutNav({
     []
   );
   const [pendingNotificationUrl, setPendingNotificationUrl] = useState<'/recording' | null>(null);
-  const [pendingLucidNotificationUrl, setPendingLucidNotificationUrl] = useState<Href | null>(null);
+  const [pendingRouteNotificationUrl, setPendingRouteNotificationUrl] = useState<Href | null>(null);
   const [notificationQueueLoaded, setNotificationQueueLoaded] = useState(false);
   const [initialLaunchUrl, setInitialLaunchUrl] = useState<string | null | undefined>(
     Platform.OS === 'web' ? null : undefined
@@ -319,16 +301,9 @@ function RootLayoutNav({
 
   const enqueueNotification = useCallback(async (notification: Notifications.Notification) => {
     const notificationUrl = notification.request.content.data?.url;
-    // Reject legacy Journal payloads before claiming a response or recording intent.
-    if (isLucidTrainer && !isSafeLucidNotificationRoute(notificationUrl)) return;
     // Lucid screens live in the Lucid app only; a reminder scheduled by the
     // former in-app trainer must not open a route Dreamer no longer has.
-    const lucidRoute = isLucidTrainer && isSafeLucidNotificationRoute(notificationUrl);
-    if (
-      notificationUrl !== '/recording' &&
-      !lucidRoute &&
-      !isSafeAppNotificationRoute(notificationUrl)
-    ) {
+    if (notificationUrl !== '/recording' && !isSafeAppNotificationRoute(notificationUrl)) {
       return;
     }
 
@@ -345,14 +320,14 @@ function RootLayoutNav({
       return;
     }
 
-    if (lucidRoute || isSafeAppNotificationRoute(notificationUrl)) {
-      // In-memory pending route (Lucid screens and the weekly recap): no
-      // persisted intent, the destination is consumed once navigation is ready.
-      setPendingLucidNotificationUrl(notificationUrl as Href);
+    if (isSafeAppNotificationRoute(notificationUrl)) {
+      // In-memory pending route (the weekly recap): no persisted intent, the
+      // destination is consumed once navigation is ready.
+      setPendingRouteNotificationUrl(notificationUrl as Href);
       try {
         Notifications.clearLastNotificationResponse();
       } catch (error) {
-        if (__DEV__) console.warn('[RootLayoutNav] Unable to clear Lucid notification response', error);
+        if (__DEV__) console.warn('[RootLayoutNav] Unable to clear the route notification response', error);
       }
       return;
     }
@@ -391,7 +366,7 @@ function RootLayoutNav({
 
         if (Platform.OS !== 'web') {
           const response = Notifications.getLastNotificationResponse();
-          if (!isLucidTrainer && isDreamCaptureResponse(response)) {
+          if (isDreamCaptureResponse(response)) {
             // A dream dictated from a reminder reply is saved, not opened.
             // Clear the replayable response only once the words are kept.
             await captureDreamFromNotificationResponse(response);
@@ -422,7 +397,7 @@ function RootLayoutNav({
       if (notificationMutationVersion.current === mutationVersion) {
         notificationNavigationClaimed.current = false;
         setPendingNotificationUrl(null);
-        setPendingLucidNotificationUrl(null);
+        setPendingRouteNotificationUrl(null);
         setNotificationWinningDestination(null);
         setNotificationWinningEngaged(false);
       }
@@ -465,7 +440,7 @@ function RootLayoutNav({
         if (isStartup) setStartupDestinationEngaged(true);
         if (decision.reason === 'notification') setNotificationWinningEngaged(true);
         if (decision.reason === 'auth_return') setAuthReturnEngaged(authReturnIntent);
-        if (!isLucidTrainer && peekReturnToPaywallTrigger()
+        if (peekReturnToPaywallTrigger()
           && decision.reason !== 'onboarding') {
           paywallReturnAcknowledged.current = null;
           setPaywallReturnEngaged(decision.destination);
@@ -525,11 +500,9 @@ function RootLayoutNav({
     onStartupCommitted();
     if (!hasTrackedColdStart.current) {
       hasTrackedColdStart.current = true;
-      if (!isLucidTrainer) {
-        scheduleIdleTask(() => {
-          void trackProductEvent('app_session_started', { source: 'cold_start' });
-        });
-      }
+      scheduleIdleTask(() => {
+        void trackProductEvent('app_session_started', { source: 'cold_start' });
+      });
     }
   }, [onStartupCommitted, pathname, startupDestination, startupDestinationEngaged]);
 
@@ -554,8 +527,8 @@ function RootLayoutNav({
         return;
       }
 
-      const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
-        ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
+      const decision = pendingRouteNotificationUrl && !(user && pendingAuthDestination)
+        ? { destination: pendingRouteNotificationUrl, reason: 'notification' as const }
         : resolveAppStartupDecision({
         hasUser: Boolean(user),
         onboardingState,
@@ -595,7 +568,6 @@ function RootLayoutNav({
         currentPath === '/explore' ||
         currentPath === '/(tabs)/explore';
       const isInOnboarding = currentPath === '/onboarding';
-      const isInLucid = currentPath?.startsWith('/lucid');
       const isInJournalDetail =
         currentPath?.startsWith('/journal/') ||
         currentPath?.startsWith('/dream-chat/') ||
@@ -660,8 +632,6 @@ function RootLayoutNav({
         return;
       }
 
-      if (isInLucid) return;
-
       if (isInJournalDetail) {
         if (__DEV__) {
           console.log('[RootLayoutNav] stay on journal detail, skip redirect');
@@ -680,7 +650,7 @@ function RootLayoutNav({
       pathname,
       pendingNotificationUrl,
       pendingAuthDestination,
-      pendingLucidNotificationUrl,
+      pendingRouteNotificationUrl,
       searchParams.dreamId,
       startupReady,
       user,
@@ -692,9 +662,7 @@ function RootLayoutNav({
       return;
     }
 
-    if (!isLucidTrainer) {
-      void trackProductEvent('app_session_started', { source: 'foreground' });
-    }
+    void trackProductEvent('app_session_started', { source: 'foreground' });
 
     if (__DEV__) {
       console.log('[RootLayoutNav] App returned to foreground, checking recording redirect', {
@@ -722,16 +690,10 @@ function RootLayoutNav({
     const explicitDestination = resolveExplicitStartupDestination(
       initialLaunchConsumed.current ? null : initialLaunchUrl,
       pathnameRef.current
-    ) ??
-      (Platform.OS === 'web'
-        ? resolveObservedLucidWebStartupDestination(
-            initialWebHrefRef.current ?? pathnameRef.current ?? pathname
-          )
-        : undefined);
-    initialWebHrefRef.current = null;
+    );
     initialLaunchConsumed.current = true;
-    const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
-      ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
+    const decision = pendingRouteNotificationUrl && !(user && pendingAuthDestination)
+      ? { destination: pendingRouteNotificationUrl, reason: 'notification' as const }
       : resolveAppStartupDecision({
       hasUser: Boolean(user),
       onboardingState,
@@ -749,7 +711,7 @@ function RootLayoutNav({
     pathname,
     pendingNotificationUrl,
     pendingAuthDestination,
-    pendingLucidNotificationUrl,
+    pendingRouteNotificationUrl,
     startupReady,
     user,
   ]);
@@ -786,7 +748,7 @@ function RootLayoutNav({
   useEffect(() => {
     if (Platform.OS !== 'web') {
       const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-        if (!isLucidTrainer && isDreamCaptureResponse(response)) {
+        if (isDreamCaptureResponse(response)) {
           // Clear the replayable response only once the words are kept, so a
           // failed write is retried from the last response at next launch.
           void captureDreamFromNotificationResponse(response)
@@ -807,7 +769,7 @@ function RootLayoutNav({
 
   useEffect(() => {
     if (
-      (!pendingNotificationUrl && !pendingLucidNotificationUrl) ||
+      (!pendingNotificationUrl && !pendingRouteNotificationUrl) ||
       !isNavigationReady ||
       !startupReady ||
       !hasInitialNavigated.current ||
@@ -816,8 +778,8 @@ function RootLayoutNav({
       return;
     }
 
-    const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
-      ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
+    const decision = pendingRouteNotificationUrl && !(user && pendingAuthDestination)
+      ? { destination: pendingRouteNotificationUrl, reason: 'notification' as const }
       : resolveAppStartupDecision({
       hasUser: Boolean(user),
       onboardingState,
@@ -834,7 +796,7 @@ function RootLayoutNav({
     onboardingState,
     pendingNotificationUrl,
     pendingAuthDestination,
-    pendingLucidNotificationUrl,
+    pendingRouteNotificationUrl,
     startupReady,
     user,
   ]);
@@ -863,15 +825,14 @@ const RootNavigator = memo(function RootNavigator({
               one native transition avoids scheduling transition work for a
               surface that is immediately detached; later navigation keeps the
               normal platform animation. */}
-          <QuickSettingsProvider disabled={isLucidTrainer}>
+          <QuickSettingsProvider>
           <DesktopShell>
           <Stack
             screenOptions={{
               animation: nonCriticalStartupEnabled ? 'default' : 'none',
             }}
-            unstable_screenErrorBoundary={isLucidTrainer ? undefined : RouteScreenErrorFallback}
+            unstable_screenErrorBoundary={RouteScreenErrorFallback}
           >
-            <Stack.Protected guard={!isLucidTrainer}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="settings" options={{ headerShown: false }} />
             <Stack.Screen name="onboarding" options={{ headerShown: false }} />
@@ -903,16 +864,14 @@ const RootNavigator = memo(function RootNavigator({
             <Stack.Screen name="weekly-recap" options={{ headerShown: false }} />
             <Stack.Screen name="moon-letter" options={{ headerShown: false }} />
             <Stack.Screen name="collection" options={{ headerShown: false }} />
-            </Stack.Protected>
             {/* Lucid screens live under routes/lucid only (Lucid's own router root). */}
-            {isLucidTrainer ? <Stack.Screen name="lucid" options={{ headerShown: false }} /> : null}
             <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          {!isLucidTrainer ? <><AiConsentModalHost /><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator /></> : null}
-          {!isLucidTrainer ? <VercelAnalytics /> : null}
-          {!isLucidTrainer ? <VercelSpeedInsights /> : null}
+          <AiConsentModalHost /><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator />
+          <VercelAnalytics />
+          <VercelSpeedInsights />
         </JournalRuntime>
         <SystemBars
           style={{
@@ -926,7 +885,7 @@ const RootNavigator = memo(function RootNavigator({
 });
 
 function JournalRuntime({ children }: React.PropsWithChildren) {
-  return isLucidTrainer ? <>{children}</> : <DreamsProvider>{children}</DreamsProvider>;
+  return <DreamsProvider>{children}</DreamsProvider>;
 }
 
 /**
@@ -974,7 +933,7 @@ function RootLayout() {
   }, [fontsLoaded, fontError, fontsStartedAt]);
 
   useEffect(() => {
-    if (Platform.OS !== 'android' || isLucidTrainer) return;
+    if (Platform.OS !== 'android') return;
     // Lazy and best-effort: release diagnostics must not hold up navigation.
     void import('@/lib/runtimeIdentity')
       .then(({ reportRuntimeIdentity }) => reportRuntimeIdentity())
@@ -982,7 +941,7 @@ function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (Platform.OS === 'web' || isLucidTrainer || !startupDestinationCommitted) return;
+    if (Platform.OS === 'web' || !startupDestinationCommitted) return;
     // Lucid moved to its own app: clear notifications the former in-app trainer
     // scheduled, so they stop firing into a route Dreamer no longer has.
     // Owner marker of services/lucidTrainerNotifications (reminders and night cues);
@@ -1090,14 +1049,14 @@ function RootLayout() {
 
   useEffect(() => {
     configureNotificationHandler();
-    if (!isLucidTrainer) void registerDreamCaptureBackgroundTask();
+    void registerDreamCaptureBackgroundTask();
   }, []);
 
   useEffect(() => {
     if (!startupDestinationCommitted) return;
 
     return scheduleProductBootstrap(
-      isLucidTrainer ? 'lucid' : 'journal',
+      'journal',
       (callback) => scheduleIdleTask(callback),
       (action, error) => {
         if (__DEV__) console.warn(`[RootLayout] ${action} failed:`, error);

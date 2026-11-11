@@ -4,7 +4,6 @@ import { URL as NodeURL } from 'node:url';
 import { act, cleanup, render, screen } from '@testing-library/react';
 import { clearReturnToPaywallIntent, requestReturnToPaywallIntent } from '@/lib/navigationIntents';
 
-let mockLucid = true;
 let mockPlatform = 'ios';
 const mockReportRuntimeIdentity = jest.fn();
 let mockUser: { id: string } | null = null;
@@ -56,12 +55,12 @@ jest.mock('expo-router', () => {
     Screen: ({ name }: { name: string }) => <div data-testid={`route:${name}`} />,
     Protected: ({ guard, children }: React.PropsWithChildren<{ guard: boolean }>) => guard ? <>{children}</> : null,
   });
-  return { Stack, router: { replace: mockReplace, push: jest.fn() }, usePathname: () => mockLucid ? '/lucid' : mockPathname, useGlobalSearchParams: () => mockSearchParams, useNavigationContainerRef: () => mockNavigation, useRootNavigationState: () => ({ key: 'root' }) };
+  return { Stack, router: { replace: mockReplace, push: jest.fn() }, usePathname: () => mockPathname, useGlobalSearchParams: () => mockSearchParams, useNavigationContainerRef: () => mockNavigation, useRootNavigationState: () => ({ key: 'root' }) };
 });
-jest.mock('@/hooks/useAuthReturnIntent', () => ({ useAuthReturnIntent: () => ({ intent: mockLucid ? null : mockAuthReturn, ready: true }) }));
+jest.mock('@/hooks/useAuthReturnIntent', () => ({ useAuthReturnIntent: () => ({ intent: mockAuthReturn, ready: true }) }));
 jest.mock('@/lib/authReturnIntent', () => ({ ...jest.requireActual('@/lib/authReturnIntent'), completeAuthReturn: (...args: unknown[]) => mockCompleteAuthReturn(...args) }));
-jest.mock('@/lib/appVariant', () => ({ get isLucidTrainer() { return mockLucid; } }));
-jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: false, returningGuestBlocked: false }) }));
+jest.mock('@/lib/appVariant', () => ({ isLucidTrainer: false }));
+jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: false }) }));
 jest.mock('@/context/OnboardingContext', () => ({ OnboardingProvider: (props: React.PropsWithChildren) => mockChildren(props), useOnboarding: () => ({ loading: false, persisting: mockOnboardingPersisting, scope: mockUser ? `user:${mockUser.id}` : 'guest', state: { status: mockOnboardingStatus, selectedPath: mockOnboardingPath, pendingRecordingIntent: mockPendingRecordingIntent } }) }));
 jest.mock('@/context/LanguageContext', () => ({ LanguageProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/context/ThemeContext', () => ({ ThemeProvider: (props: React.PropsWithChildren) => mockChildren(props), useTheme: () => ({ mode: 'dark' }) }));
@@ -147,7 +146,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
   // A visual E2E cannot inspect the native Observe call or hold the splash after
   // route readiness. Keep that counterexample here using the real root lifecycle.
   it('marks interactive once, after the startup cover is removed and a frame has painted', async () => {
-    mockLucid = false; mockUser = null;
+    mockUser = null;
     const view = await mountStartup();
     expect(mockSplashDone).toBe(true);
     expect(screen.getByTestId('startup-splash')).toBeTruthy();
@@ -170,7 +169,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
   // Browser E2E cannot deliver native Back/swipe events. Bypass handleClose and
   // exercise the real root's native foreground callback after the return is observed.
   it.each(['android', 'ios'])('does not replay a completed paywall return after a system exit on %s', async (platform) => {
-    mockPlatform = platform; mockLucid = false; mockUser = { id: 'user-1' };
+    mockPlatform = platform; mockUser = { id: 'user-1' };
     mockPathname = '/paywall'; mockSearchParams = { trigger: 'settings' };
     requestReturnToPaywallIntent('settings', { persist: true });
     const view = await mountStartup();
@@ -182,13 +181,11 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it.each([
-    ['android', false, 1],
-    ['android', true, 0],
-    ['ios', false, 0],
-    ['web', false, 0],
-  ] as const)('scopes runtime diagnostics to Android Journal (%s, lucid=%s)', async (platform, lucid, calls) => {
+    ['android', 1],
+    ['ios', 0],
+    ['web', 0],
+  ] as const)('scopes runtime diagnostics to Android (%s)', async (platform, calls) => {
     mockPlatform = platform;
-    mockLucid = lucid;
     mockUser = null;
     await mountStartup();
     expect(mockReportRuntimeIdentity).toHaveBeenCalledTimes(calls);
@@ -198,13 +195,11 @@ describe('root product composition (real root and DreamsProvider)', () => {
   // Lucid moved to its own app; reminders the in-app trainer scheduled would
   // otherwise keep firing into a route Dreamer no longer has.
   it.each([
-    ['android', false, ['lucid-reminder', 'lucid-cue']],
-    ['ios', false, ['lucid-reminder', 'lucid-cue']],
-    ['android', true, []],
-    ['web', false, []],
-  ] as const)('clears notifications left by the former in-app Lucid trainer (%s, lucid=%s)', async (platform, lucid, cancelled) => {
+    ['android', ['lucid-reminder', 'lucid-cue']],
+    ['ios', ['lucid-reminder', 'lucid-cue']],
+    ['web', []],
+  ] as const)('clears notifications left by the former in-app Lucid trainer (%s)', async (platform, cancelled) => {
     mockPlatform = platform;
-    mockLucid = lucid;
     mockUser = null;
     mockGetScheduled.mockResolvedValue([
       { identifier: 'lucid-reminder', content: { data: { noctaliaNotificationOwner: 'lucid-trainer', lucidNotificationKind: 'reminder' } } },
@@ -217,7 +212,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
 
   it('continues Android navigation when the optional diagnostic fails', async () => {
     mockPlatform = 'android';
-    mockLucid = false;
     mockUser = null;
     mockReportRuntimeIdentity.mockImplementation(() => { throw new Error('native diagnostic unavailable'); });
     await mountStartup();
@@ -226,7 +220,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it.each(['/paywall', '/journal/42', '/settings'])('keeps the saved dream journey on %s after returning from the store', async (path) => {
-    mockLucid = false;
     mockUser = { id: 'user-1' };
     const view = await mountStartup();
     mockPathname = path;
@@ -243,7 +236,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
     ['/journal/41', '', 'analysis_confirmation', 42],
     ['/paywall', '42', 'capture', 42],
   ] as const)('resumes an unrelated pending intent from %s', async (path, dreamId, phase, savedDreamId) => {
-    mockLucid = false;
     mockUser = { id: 'user-1' };
     const view = await mountStartup();
     mockPathname = path;
@@ -265,7 +257,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
 
   it('keeps the first dream capture mounted when microphone permission returns to the foreground', async () => {
     mockPlatform = 'android';
-    mockLucid = false;
     mockUser = null;
     mockPendingRecordingIntent = {
       entryId: 'first-dream', intent: 'record_dream', source: 'onboarding',
@@ -283,7 +274,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it('keeps guest account settings mounted while a capture is pending across foreground returns', async () => {
-    mockLucid = false;
     mockUser = null;
     const view = await mountStartup();
     mockPathname = '/settings';
@@ -301,7 +291,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it('still resumes the pending first dream when returning from another screen', async () => {
-    mockLucid = false;
     mockUser = null;
     const view = await mountStartup();
     mockPathname = '/explore';
@@ -320,46 +309,7 @@ describe('root product composition (real root and DreamsProvider)', () => {
     });
   });
 
-  it.each([null, { id: 'account-with-journal' }])('keeps Lucid startup outside Journal runtime for user %j', async (user) => {
-    mockLucid = true;
-    mockUser = user;
-    await mountStartup();
-    expect(screen.getByTestId('route:lucid')).toBeTruthy();
-    expect(screen.queryByTestId('route:recording')).toBeNull();
-    expect(screen.queryByTestId('route:journal/[id]')).toBeNull();
-    expect(screen.queryByTestId('route:(tabs)')).toBeNull();
-    expect(screen.queryByTestId('analysis-host')).toBeNull();
-    expect(screen.queryByTestId('reminders-host')).toBeNull();
-    expect(screen.queryByTestId('widgets-host')).toBeNull();
-    expect(screen.queryByTestId('speech-host')).toBeNull();
-    expect(mockJournal).not.toHaveBeenCalled();
-    expect(mockGuestSession).not.toHaveBeenCalled();
-    expect(mockMigration).not.toHaveBeenCalled();
-    expect(mockDreamMigration).not.toHaveBeenCalled();
-    expect(mockMark).toHaveBeenCalledWith('startup.route_committed');
-  });
-
-  it.each(['/weekly-recap', '/journal/42', '/recording'])('ignores legacy %s before accepting a Lucid notification', async (url) => {
-    mockLucid = true;
-    mockUser = null;
-    await mountStartup();
-    mockReplace.mockClear();
-    const notify = async (route: string) => {
-      await act(async () => {
-        mockNotificationListener?.({ notification: { request: { identifier: 'same-response', content: { data: { url: route } } } } });
-        await Promise.resolve();
-      });
-      await act(async () => { jest.advanceTimersByTime(100); await Promise.resolve(); });
-    };
-    await notify(url);
-    expect(mockReplace).not.toHaveBeenCalled();
-    expect(require('@/services/storageService').savePendingRecordingNotification).not.toHaveBeenCalled();
-    await notify('/lucid/morning');
-    expect(mockReplace).toHaveBeenCalledWith('/lucid/morning');
-  });
-
   it.each(['/weekly-recap', '/journal/42'])('retains Journal notification routing for %s', async (url) => {
-    mockLucid = false;
     mockUser = null;
     await mountStartup();
     mockReplace.mockClear();
@@ -374,7 +324,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   // The reply was dictated on a watch or a lock screen: opening capture on the
   // phone would be a surprise, and the words must reach the journal inbox.
   it('saves a dream dictated in a reminder reply without opening capture', async () => {
-    mockLucid = false;
     mockUser = null;
     await mountStartup();
     mockReplace.mockClear();
@@ -394,7 +343,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it.each([null, { id: 'journal-account' }])('retains Journal provider, routes and hosts for user %j', async (user) => {
-    mockLucid = false;
     mockUser = user;
     await mountStartup();
     expect(screen.getByTestId('route:recording')).toBeTruthy();
@@ -411,7 +359,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it('resumes a requested dream once after login and acknowledges its full identity', async () => {
-    mockLucid = false;
     mockUser = null;
     const view = await mountStartup();
     mockAuthReturn = { destination: '/journal/1700000000000?remoteId=42', createdAt: Date.now() };
@@ -438,7 +385,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it('lets an explicit exit from sign-in cancel the pending destination', async () => {
-    mockLucid = false;
     mockUser = null;
     const view = await mountStartup();
     mockAuthReturn = { destination: '/dream-chat/42?mode=free', createdAt: Date.now() };
@@ -451,7 +397,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it('does not replay an already consumed cold-start link on a later login', async () => {
-    mockLucid = false;
     mockUser = null;
     require('react-native').Linking.getInitialURL.mockResolvedValue('noctalia://journal/42');
     const view = await mountStartup();
@@ -465,7 +410,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it('waits for confirmed onboarding before resuming, including after a failed write', async () => {
-    mockLucid = false;
     mockUser = { id: 'new-owner' };
     mockAuthReturn = { destination: '/journal/42', createdAt: Date.now() };
     mockOnboardingStatus = 'in_progress';
@@ -489,7 +433,6 @@ describe('root product composition (real root and DreamsProvider)', () => {
   });
 
   it.each(['completed', 'skipped'])('finishes %s onboarding normally if its delegated auth return expires during persistence', async (status: string) => {
-    mockLucid = false;
     mockUser = { id: 'new-owner' };
     mockAuthReturn = { destination: '/journal/42', createdAt: Date.now() };
     mockOnboardingStatus = 'in_progress';

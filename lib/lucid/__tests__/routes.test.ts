@@ -9,7 +9,6 @@ import {
   LUCID_ONBOARDING_HREF,
   resetLucidOnboardingCompletionNavigationClaim,
   resolveLucidOnboardingGate,
-  resolveObservedLucidWebStartupDestination,
 } from '@/lib/lucid/routes';
 
 afterEach(() => resetLucidOnboardingCompletionNavigationClaim());
@@ -134,22 +133,12 @@ describe('resolveLucidOnboardingGate', () => {
   });
 });
 
-describe('resolveObservedLucidWebStartupDestination', () => {
-  it('preserves exact /lucid and nested /lucid/ prefixes as same-origin hrefs', () => {
+describe('isLucidAppPath', () => {
+  it('matches exact /lucid and nested /lucid/ prefixes only', () => {
     expect(isLucidAppPath('/lucid')).toBe(true);
     expect(isLucidAppPath('/lucid/subscription')).toBe(true);
     expect(isLucidAppPath('/lucid/subscription?source=dream_rehearsal')).toBe(true);
     expect(isLucidAppPath('/lucidity')).toBe(false);
     expect(isLucidAppPath('/recording')).toBe(false);
-
-    expect(resolveObservedLucidWebStartupDestination('/lucid')).toBe('/lucid');
-    expect(resolveObservedLucidWebStartupDestination('/lucid/subscription')).toBe('/lucid/subscription');
-    expect(
-      resolveObservedLucidWebStartupDestination('/lucid/subscription?source=dream_rehearsal#pay')
-    ).toBe('/lucid/subscription?source=dream_rehearsal#pay');
-    expect(resolveObservedLucidWebStartupDestination('/lucid/subscription/')).toBe('/lucid/subscription');
-    expect(resolveObservedLucidWebStartupDestination('/lucidity')).toBeUndefined();
-    expect(resolveObservedLucidWebStartupDestination('/recording')).toBeUndefined();
-    expect(resolveObservedLucidWebStartupDestination(undefined)).toBeUndefined();
   });
 });

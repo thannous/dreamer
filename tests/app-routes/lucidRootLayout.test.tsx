@@ -44,7 +44,7 @@ jest.mock('expo-router', () => {
   return { Stack, router: { replace: mockReplace, push: jest.fn() }, usePathname: () => mockPathname, useNavigationContainerRef: () => mockNavigation, useRootNavigationState: () => ({ key: 'root' }) };
 });
 jest.mock('@/lib/appVariant', () => ({ get isLucidTrainer() { return mockLucid; } }));
-jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: mockAuthLoading, returningGuestBlocked: false }) }));
+jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: mockAuthLoading }) }));
 jest.mock('@/context/OnboardingContext', () => ({ OnboardingProvider: (props: React.PropsWithChildren) => mockChildren(props), useOnboarding: () => ({ loading: false, scope: mockUser ? `user:${mockUser.id}` : 'guest', state: { status: 'completed', pendingRecordingIntent: null } }) }));
 jest.mock('@/context/LanguageContext', () => ({ LanguageProvider: (props: React.PropsWithChildren) => mockChildren(props), useLanguage: () => ({ language: 'en', loaded: mockPreferenceLoaded }) }));
 jest.mock('@/context/ThemeContext', () => ({ ThemeProvider: (props: React.PropsWithChildren) => mockChildren(props), useTheme: () => ({ mode: 'dark' }) }));

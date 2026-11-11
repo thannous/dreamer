@@ -4,8 +4,7 @@ import { createStreamingTextPublisher } from '@/lib/chat/streamingTextPublisher'
 // Backend proxy integration for RN app. Configure base URL via EXPO_PUBLIC_API_URL
 // or app.json extra.apiUrl. Endpoints expected:
 // - POST /analyzeDream { transcript } -> AnalysisResult
-// - POST /generateImage { prompt } -> { imageUrl?: string, imageBytes?: string }
-// - POST /analyzeDreamFull { transcript } -> AnalysisResult & { imageBytes?: string, imageUrl?: string }
+// - POST /image-jobs, /analysis-jobs -> queued work, read back with their /status routes
 // - POST /chat { dreamId, message, lang } -> { text: string }  [✅ UPDATED: now requires dreamId, enforces quotas]
 // - POST /tts { text } -> { audioBase64: string }
 
@@ -15,11 +14,7 @@ import Constants from 'expo-constants';
 import { getApiBaseUrl } from '@/lib/config';
 import { fetchJSONWithSession, getSessionAuthHeaders } from '@/lib/apiSession';
 import { HttpError, type HttpOptions } from '@/lib/http';
-import {
-  AiConsentWithdrawnError,
-  classifyImageError,
-  type ImageGenerationErrorResponse,
-} from '@/lib/errors';
+import { AiConsentWithdrawnError } from '@/lib/errors';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import type {
   ChatMessage,
@@ -191,110 +186,6 @@ export async function categorizeDream(transcript: string, lang: string = 'en'): 
   });
 }
 
-export async function analyzeDreamWithImage(
-  transcript: string,
-  lang: string = 'en',
-  fingerprint?: string,
-  context?: AnalysisRequestContext
-): Promise<AnalysisResult & { imageUrl: string }> {
-  const res = await fetchWithSessionHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
-    '/analyzeDreamFull',
-    {
-      method: 'POST',
-      body: buildAnalysisRequestBody(transcript, lang, fingerprint, context),
-      ...NETWORK_REQUEST_POLICIES.analyzeDreamFull,
-    }
-  );
-  const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
-  if (!imageUrl) throw new Error('Invalid combined response from backend');
-  // Return merged object with a guaranteed imageUrl
-  return { ...res, imageUrl };
-}
-
-/**
- * Resilient version that attempts combined analysis+image,
- * but falls back to analysis-only if image generation fails.
- * Returns analysis result with imageUrl or null if image failed.
- */
-export async function analyzeDreamWithImageResilient(
-  transcript: string,
-  lang: string = 'en',
-  fingerprint?: string,
-  context?: AnalysisRequestContext
-): Promise<AnalysisResult & { imageUrl: string | null; imageGenerationFailed: boolean }> {
-  try {
-    // Try combined analysis + image generation first
-    const res = await fetchWithSessionHeaders<AnalysisResult & { imageUrl?: string; imageBytes?: string }>(
-      '/analyzeDreamFull',
-      {
-        method: 'POST',
-        body: buildAnalysisRequestBody(transcript, lang, fingerprint, context),
-        ...NETWORK_REQUEST_POLICIES.analyzeDreamFull,
-      }
-    );
-    const imageUrl = res.imageUrl ?? (res.imageBytes ? `data:image/webp;base64,${res.imageBytes}` : undefined);
-
-    if (imageUrl) {
-      return { ...res, imageUrl, imageGenerationFailed: false };
-    }
-    // The combined route already spent one image attempt server-side. Do not
-    // fire a second automatic generation here: the journal detail screen offers
-    // an explicit retry, and background image jobs cover the async path. This
-    // caps the worst case at one analysis + one image per capture on this path.
-    return { ...res, imageUrl: null, imageGenerationFailed: true };
-  } catch {
-    // Combined call failed entirely, try analysis only as fallback
-    try {
-      // Note: fingerprint already consumed on combined call if it was provided,
-      // so we don't pass it again for fallback analysis-only call
-      const analysisOnly = await analyzeDream(transcript, lang, undefined, context);
-
-      // Analysis-only never produces an image: allow exactly one image attempt.
-      try {
-        const imageUrl = await generateImageForDream(analysisOnly.imagePrompt);
-        return { ...analysisOnly, imageUrl, imageGenerationFailed: false };
-      } catch {
-        // Image failed, return analysis without image
-        return { ...analysisOnly, imageUrl: null, imageGenerationFailed: true };
-      }
-    } catch (analysisError) {
-      // Both combined and separate analysis failed, re-throw the analysis error
-      throw analysisError;
-    }
-  }
-}
-
-export async function generateImageForDream(prompt: string, previousImageUrl?: string): Promise<string> {
-  try {
-    const res = await fetchWithSessionHeaders<{ imageUrl?: string; imageBytes?: string }>('/generateImage', {
-      method: 'POST',
-      body: { prompt, previousImageUrl: cleanupImageUrl(previousImageUrl) },
-      ...NETWORK_REQUEST_POLICIES.generateImage,
-    });
-    if (res.imageUrl) return res.imageUrl;
-    if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
-    throw new Error('Invalid image response from backend');
-  } catch (error) {
-    if (error instanceof HttpError && error.body && typeof error.body === 'object' && error.body !== null) {
-      const body = error.body as Partial<ImageGenerationErrorResponse>;
-      if (typeof body.error === 'string') {
-        if (__DEV__) {
-          console.warn('[geminiService] generateImageForDream failed', {
-            status: error.status,
-            blockReason: body.blockReason ?? null,
-            finishReason: body.finishReason ?? null,
-            retryAttempts: body.retryAttempts ?? null,
-            isTransient: body.isTransient ?? null,
-          });
-        }
-        const classified = classifyImageError(body as ImageGenerationErrorResponse);
-        throw new Error(classified.userMessage);
-      }
-    }
-    throw error;
-  }
-}
-
 export async function submitImageGenerationJob(
   request: ImageJobCommandRequest
 ): Promise<ImageJobCommandResponse> {
@@ -333,41 +224,6 @@ export async function getDreamAnalysisJobStatus(
     ...NETWORK_REQUEST_POLICIES.analysisJobStatus,
     readOnly: true,
   });
-}
-
-export async function generateImageFromTranscript(transcript: string, previousImageUrl?: string): Promise<string> {
-  try {
-    const res = await fetchWithSessionHeaders<{ imageUrl?: string; imageBytes?: string; prompt?: string }>(
-      '/generateImage',
-      {
-        method: 'POST',
-        // Let the backend generate a short image prompt from the transcript.
-        body: { transcript, previousImageUrl: cleanupImageUrl(previousImageUrl) },
-        ...NETWORK_REQUEST_POLICIES.generateImage,
-      }
-    );
-    if (res.imageUrl) return res.imageUrl;
-    if (res.imageBytes) return `data:image/webp;base64,${res.imageBytes}`;
-    throw new Error('Invalid image response from backend');
-  } catch (error) {
-    if (error instanceof HttpError && error.body && typeof error.body === 'object' && error.body !== null) {
-      const body = error.body as Partial<ImageGenerationErrorResponse>;
-      if (typeof body.error === 'string') {
-        if (__DEV__) {
-          console.warn('[geminiService] generateImageFromTranscript failed', {
-            status: error.status,
-            blockReason: body.blockReason ?? null,
-            finishReason: body.finishReason ?? null,
-            retryAttempts: body.retryAttempts ?? null,
-            isTransient: body.isTransient ?? null,
-          });
-        }
-        const classified = classifyImageError(body as ImageGenerationErrorResponse);
-        throw new Error(classified.userMessage);
-      }
-    }
-    throw error;
-  }
 }
 
 /**

@@ -36,10 +36,6 @@ if (__DEV__) {
 // Re-export all functions from the selected service
 export const analyzeDream = service.analyzeDream;
 export const categorizeDream = service.categorizeDream;
-export const analyzeDreamWithImage = service.analyzeDreamWithImage;
-export const analyzeDreamWithImageResilient = service.analyzeDreamWithImageResilient;
-export const generateImageForDream = service.generateImageForDream;
-export const generateImageFromTranscript = service.generateImageFromTranscript;
 export const submitImageGenerationJob = service.submitImageGenerationJob;
 export const getImageGenerationJobStatus = service.getImageGenerationJobStatus;
 export const submitDreamAnalysisJob = service.submitDreamAnalysisJob;

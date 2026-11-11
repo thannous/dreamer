@@ -192,7 +192,7 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
 }
 
 /** An overlay, not a second navigator: tab/search state stays mounted beneath it. */
-export function QuickSettingsProvider({ children, disabled = false }: React.PropsWithChildren<{ disabled?: boolean }>) {
+export function QuickSettingsProvider({ children }: React.PropsWithChildren) {
   const [open, setOpen] = useState(false);
   // Each opening mounts a new drawer: the native drawer keeps its content while closed, and
   // reopened where it was scrolled it hid its close button under the iOS status bar.
@@ -200,7 +200,7 @@ export function QuickSettingsProvider({ children, disabled = false }: React.Prop
   const [origin, setOrigin] = useState('');
   const pathname = usePathname();
   // The welcome owns its controls; a closed web drawer can overflow its viewport.
-  const drawerDisabled = disabled || pathname === '/onboarding';
+  const drawerDisabled = pathname === '/onboarding';
   const { user } = useAuth();
   const reducedMotion = useReducedMotion();
   const { width } = useWindowDimensions();
