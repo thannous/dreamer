@@ -5,6 +5,7 @@ import { createJournalSyncEngine, matchesInitialJournalScope, type JournalSyncOp
 import { getNetworkStateAsync } from 'expo-network';
 import { AppState } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { nextJournalRetryDelayMs } from '../lib/journalQueueTransitions';
 import { logger } from '../lib/logger';
 import { recordSyncReplayMetrics, reportSyncQueueMetrics } from '../lib/syncObservability';
 import type { DreamMutation } from '../lib/types';
@@ -97,6 +98,21 @@ export function useOfflineSyncQueue(options: UseOfflineSyncQueueOptions): UseOff
     });
     // Hydration can complete without changing commands (stable account/network).
   }, [commands, initialMutations, initialSnapshotMatchesScope]);
+  // A change that failed while the device is online would otherwise wait for an
+  // unrelated trigger (foreground, connectivity change, another save) and sit
+  // marked as failed in the meantime. Replay it after a growing, bounded wait.
+  useEffect(() => {
+    if (!initialSnapshotMatchesScope || !canUseRemoteSync || !hasNetwork) return;
+    const delay = nextJournalRetryDelayMs(initialMutations);
+    if (delay === null) return;
+    const timer = setTimeout(() => {
+      void syncPendingMutations({ refreshNetworkState: true }).catch(() => {
+        logger.warn('Automatic dream sync retry could not complete');
+      });
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [canUseRemoteSync, hasNetwork, initialMutations, initialSnapshotMatchesScope, syncPendingMutations]);
+
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (state) => {
       if (state !== 'active' || !initialSnapshotMatchesScope || !persistence.pendingMutationsRef.current.length) return;

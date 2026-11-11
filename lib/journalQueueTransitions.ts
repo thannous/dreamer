@@ -124,6 +124,33 @@ export const recoverIncompleteAck = (
 export const isRetryableMutation = (mutation: DreamMutation): boolean =>
   mutation.status === 'pending' || mutation.status === 'sending' || mutation.status === 'failed';
 
+/** First wait before a failed change is replayed on its own; it doubles after each further failure. */
+export const JOURNAL_RETRY_BASE_MS = 15_000;
+export const JOURNAL_RETRY_MAX_MS = 15 * 60_000;
+/**
+ * Failures after which a change stops asking for a timer. It is still replayed
+ * by the ordinary triggers (foreground, connectivity, another save, the user's
+ * retry), so a change the server keeps refusing cannot keep the device busy.
+ */
+export const JOURNAL_AUTOMATIC_RETRIES = 8;
+
+/**
+ * How long until the queue should be replayed without waiting for an unrelated
+ * trigger, or null when no failed change is still due an automatic attempt.
+ */
+export function nextJournalRetryDelayMs(mutations: readonly DreamMutation[], now: number = Date.now()): number | null {
+  let earliest: number | null = null;
+  for (const mutation of mutations) {
+    if (mutation.status !== 'failed' || mutation.retryCount < 1 || mutation.retryCount > JOURNAL_AUTOMATIC_RETRIES) continue;
+    const wait = Math.min(JOURNAL_RETRY_BASE_MS * 2 ** (mutation.retryCount - 1), JOURNAL_RETRY_MAX_MS);
+    // A clock moved back must not postpone the attempt beyond one full wait.
+    const lastAttemptAt = Math.min(mutation.lastAttemptAt ?? now, now);
+    const dueAt = lastAttemptAt + wait;
+    earliest = earliest === null ? dueAt : Math.min(earliest, dueAt);
+  }
+  return earliest === null ? null : Math.max(0, earliest - now);
+}
+
 export const applyAckedMutation = (
   list: DreamAnalysis[],
   mutation: DreamMutation,

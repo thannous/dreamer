@@ -1,6 +1,10 @@
 import {
+  JOURNAL_AUTOMATIC_RETRIES,
+  JOURNAL_RETRY_BASE_MS,
+  JOURNAL_RETRY_MAX_MS,
   applyAckedMutation,
   applyFailedMutation,
+  nextJournalRetryDelayMs,
   normalizeMutation,
 } from '../../lib/journalQueueTransitions';
 import type { DreamAnalysis, DreamMutation } from '@/lib/types';
@@ -212,5 +216,39 @@ describe('journal queue transitions', () => {
     );
 
     expect(result).toBe(list);
+  });
+});
+
+describe('automatic retry of failed journal changes', () => {
+  const NOW = CREATED_AT + 60 * 60_000;
+  const failed = (retryCount: number, lastAttemptAt: number | undefined, id = `failed-${retryCount}`): DreamMutation =>
+    mutation({ id, operation: 'update', payload: { dream: dream({ remoteId: 17 }) }, status: 'failed', retryCount, lastAttemptAt });
+
+  it('asks for no timer when nothing failed', () => {
+    expect(nextJournalRetryDelayMs([], NOW)).toBeNull();
+    expect(nextJournalRetryDelayMs([mutation({ operation: 'update', payload: { dream: dream({ remoteId: 17 }) } })], NOW)).toBeNull();
+    expect(nextJournalRetryDelayMs([mutation({ operation: 'update', payload: {}, status: 'blocked', retryCount: 2 })], NOW)).toBeNull();
+  });
+
+  it('waits fifteen seconds after a first failure, twice as long after each next one, a quarter of an hour at most', () => {
+    expect(nextJournalRetryDelayMs([failed(1, NOW)], NOW)).toBe(JOURNAL_RETRY_BASE_MS);
+    expect(nextJournalRetryDelayMs([failed(2, NOW)], NOW)).toBe(2 * JOURNAL_RETRY_BASE_MS);
+    expect(nextJournalRetryDelayMs([failed(4, NOW)], NOW)).toBe(8 * JOURNAL_RETRY_BASE_MS);
+    expect(nextJournalRetryDelayMs([failed(JOURNAL_AUTOMATIC_RETRIES, NOW)], NOW)).toBe(JOURNAL_RETRY_MAX_MS);
+  });
+
+  it('counts the wait from the last attempt and follows the change that is due first', () => {
+    expect(nextJournalRetryDelayMs([failed(1, NOW - 10_000)], NOW)).toBe(JOURNAL_RETRY_BASE_MS - 10_000);
+    expect(nextJournalRetryDelayMs([failed(1, NOW - 60_000)], NOW)).toBe(0);
+    expect(nextJournalRetryDelayMs([failed(5, NOW), failed(1, NOW - 5_000)], NOW)).toBe(JOURNAL_RETRY_BASE_MS - 5_000);
+  });
+
+  it('stops asking for a timer for a change the server keeps refusing', () => {
+    expect(nextJournalRetryDelayMs([failed(JOURNAL_AUTOMATIC_RETRIES + 1, NOW)], NOW)).toBeNull();
+  });
+
+  it('is not postponed by a device clock that was moved back', () => {
+    expect(nextJournalRetryDelayMs([failed(1, NOW + 24 * 60 * 60_000)], NOW)).toBe(JOURNAL_RETRY_BASE_MS);
+    expect(nextJournalRetryDelayMs([failed(1, undefined)], NOW)).toBe(JOURNAL_RETRY_BASE_MS);
   });
 });

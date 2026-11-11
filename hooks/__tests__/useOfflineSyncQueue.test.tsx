@@ -133,6 +133,32 @@ describe('useOfflineSyncQueue', () => {
     await waitFor(() => expect(result.current.pendingMutationsRef.current).toEqual([]));
   });
 
+  it('replays a failed change by itself after a short wait, with no foreground or connectivity event', async () => {
+    jest.useFakeTimers();
+    try {
+      const dream = buildDream({ id: 94 });
+      const scope = 'user:user-123';
+      // The attempt on load fails as well; nothing else would ever send it again.
+      mockCreateDream.mockRejectedValueOnce(new Error('temporary outage'));
+      mockCreateDream.mockResolvedValue({ ...dream, remoteId: 1094 });
+      const failed = {
+        ...legacyMutation({ id: 'failed-earlier', type: 'create', dream, createdAt: 94 }),
+        status: 'failed', retryCount: 1, lastAttemptAt: Date.now(),
+      } as DreamMutation;
+      const hook = renderHook(() => useOfflineSyncQueue({
+        ...defaultOptions, userScope: scope, initialMutationsLoaded: true,
+        initialMutationsScope: scope, initialMutations: [failed],
+      }));
+      await act(async () => { await jest.advanceTimersByTimeAsync(0); });
+      expect(mockCreateDream).toHaveBeenCalledTimes(1);
+
+      await act(async () => { await jest.advanceTimersByTimeAsync(15_000); });
+
+      expect(mockCreateDream).toHaveBeenCalledTimes(2);
+      expect(hook.result.current.pendingMutationsRef.current).toEqual([]);
+    } finally { jest.useRealTimers(); }
+  });
+
   it.each(['manual', 'foreground'] as const)('refreshes stale offline state on %s replay without remounting', async (trigger: 'manual' | 'foreground') => {
     const dream = buildDream({ id: 93 });
     mockCreateDream.mockResolvedValue({ ...dream, remoteId: 1093 });
