@@ -1,3 +1,5 @@
+import { OUTBOUND_REQUEST_TIMEOUT_MS } from './constants.ts';
+
 const APPLE_REVOKE_URL = 'https://appleid.apple.com/auth/revoke';
 const APPLE_TOKEN_URL = 'https://appleid.apple.com/auth/token';
 const APPLE_AUD = 'https://appleid.apple.com';
@@ -116,6 +118,7 @@ export async function exchangeAppleAuthorization(
       code: authorizationCode,
       grant_type: 'authorization_code',
     }).toString(),
+    signal: AbortSignal.timeout(OUTBOUND_REQUEST_TIMEOUT_MS),
   });
   if (!response.ok) {
     throw new AppleTokenRevokeError(`Apple token exchange failed (${response.status})`);
@@ -146,6 +149,7 @@ export async function revokeAppleTokens(input: AppleRevokeInput): Promise<void> 
       token: input.refreshToken,
       token_type_hint: 'refresh_token',
     }).toString(),
+    signal: AbortSignal.timeout(OUTBOUND_REQUEST_TIMEOUT_MS),
   });
   if (!response.ok) {
     throw new AppleTokenRevokeError(`Apple token revoke failed (${response.status})`);

@@ -15,6 +15,7 @@ import {
   validateBoundedText,
 } from '../lib/aiRequestPolicy.ts';
 import { boundTranscriptForPrompt } from '../lib/prompts.ts';
+import { hashAiActor } from '../services/aiAdmission.ts';
 import type { ApiContext } from '../types.ts';
 import {
   buildImageJobActorFilter,
@@ -177,15 +178,71 @@ const freeImageAnalysisRequiredResponse = () =>
     }
   );
 
+/** Hourly buckets written by the daily budget of the old synchronous image route. */
+const LEGACY_IMAGE_DAILY_CAPABILITY = 'generate_image_legacy_day';
+
+type ImageHistoryClient = Pick<ReturnType<typeof createAdminClient>, 'from'>;
+
 /**
  * Plus illustrates every dream, subject to abuse prevention: at most
- * PLUS_DAILY_LIMITS.image new image jobs per rolling 24 hours, those its
- * analyses bundle included and failed ones left out. A retry of an admitted
- * request is not a new image, and an analysis of the same 24 hours keeps its own
- * illustration (its request id has a receipt): the analysis ceiling bounds those.
+ * PLUS_DAILY_LIMITS.image new illustrations per rolling 24 hours. Image jobs
+ * (failed ones left out) and the old /generateImage route count together: an
+ * older app version, or a direct call, does not get a second allowance.
+ */
+export const checkPlusDailyImageCeiling = async (
+  adminClient: ImageHistoryClient,
+  userId: string,
+  now = Date.now()
+): Promise<Response | null> => {
+  const since = new Date(now - PLUS_DAILY_WINDOW_SECONDS * 1000).toISOString();
+  const { data: recent, error } = await adminClient
+    .from('ai_jobs')
+    .select('created_at')
+    .eq('job_type', 'generate_image')
+    .eq('user_id', userId)
+    .neq('status', 'failed')
+    .gt('created_at', since)
+    .order('created_at', { ascending: false })
+    .limit(PLUS_DAILY_LIMITS.image);
+  if (error) return serviceUnavailable();
+  const jobs = recent?.length ?? 0;
+
+  if (jobs >= PLUS_DAILY_LIMITS.image) {
+    // Once the oldest of these leaves the window, fewer than the limit remain in it.
+    const releasedAt = Date.parse(String(recent![PLUS_DAILY_LIMITS.image - 1].created_at))
+      + PLUS_DAILY_WINDOW_SECONDS * 1000;
+    return plusDailyLimitResponse({
+      code: 'DAILY_IMAGE_LIMIT',
+      dailyLimit: PLUS_DAILY_LIMITS.image,
+      retryAfterSeconds: Number.isFinite(releasedAt) ? (releasedAt - now) / 1000 : null,
+    });
+  }
+
+  // Same actor key and hash as the admission that fills these buckets.
+  const { data: buckets, error: bucketsError } = await adminClient
+    .from('ai_rate_limit_buckets')
+    .select('request_count')
+    .eq('actor_hash', await hashAiActor(`user:${userId}`))
+    .eq('capability', LEGACY_IMAGE_DAILY_CAPABILITY)
+    .gt('window_started_at', since)
+    .limit(25);
+  if (bucketsError) return serviceUnavailable();
+  const legacy = (buckets ?? []).reduce(
+    (total: number, bucket: { request_count?: unknown }) => total + (Number(bucket.request_count) || 0),
+    0
+  );
+  if (jobs + legacy < PLUS_DAILY_LIMITS.image) return null;
+
+  return plusDailyLimitResponse({ code: 'DAILY_IMAGE_LIMIT', dailyLimit: PLUS_DAILY_LIMITS.image });
+};
+
+/**
+ * The ceiling for a new image job. A retry of an admitted request is not a new
+ * image, and an analysis of the same 24 hours keeps its own illustration (its
+ * request id has a receipt): the analysis ceiling bounds those.
  */
 export const checkPlusDailyImageLimit = async (
-  adminClient: Pick<ReturnType<typeof createAdminClient>, 'from'>,
+  adminClient: ImageHistoryClient,
   userId: string,
   clientRequestId: string,
   now = Date.now()
@@ -212,26 +269,7 @@ export const checkPlusDailyImageLimit = async (
   if (receiptError) return serviceUnavailable();
   if (receipt?.length) return null;
 
-  const { data: recent, error } = await adminClient
-    .from('ai_jobs')
-    .select('created_at')
-    .eq('job_type', 'generate_image')
-    .eq('user_id', userId)
-    .neq('status', 'failed')
-    .gt('created_at', since)
-    .order('created_at', { ascending: false })
-    .limit(PLUS_DAILY_LIMITS.image);
-  if (error) return serviceUnavailable();
-  if (!recent || recent.length < PLUS_DAILY_LIMITS.image) return null;
-
-  // Once the oldest of these leaves the window, fewer than the limit remain in it.
-  const releasedAt = Date.parse(String(recent[PLUS_DAILY_LIMITS.image - 1].created_at))
-    + PLUS_DAILY_WINDOW_SECONDS * 1000;
-  return plusDailyLimitResponse({
-    code: 'DAILY_IMAGE_LIMIT',
-    dailyLimit: PLUS_DAILY_LIMITS.image,
-    retryAfterSeconds: Number.isFinite(releasedAt) ? (releasedAt - now) / 1000 : null,
-  });
+  return checkPlusDailyImageCeiling(adminClient, userId, now);
 };
 
 const resolveImageGenerationTier = async (

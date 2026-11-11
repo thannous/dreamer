@@ -5,11 +5,13 @@ import {
   IMAGE_RETRY_PAYLOAD_HASH_KEY,
   claimSpecificJob,
   formerIllustrationGoes,
+  imageRetryDelayMs,
   markTerminalFailure,
   persistDreamImageFailure,
   persistDreamImageResult,
   preparedPaintingMatch,
   redactedRequestPayload,
+  requeueJob,
   storedTranscriptSha256,
 } from './index.ts';
 
@@ -308,4 +310,34 @@ Deno.test('a dream whose text cannot be read makes the job try again rather than
   assertEquals(await storedTranscriptSha256(dreams({ data: null, error: null }), 'u1', 7), undefined);
   const failed = await assertRejects(() => storedTranscriptSha256(dreams({ data: null, error: { message: 'down' } }), 'u1', 7));
   assertEquals((failed as { isTransient?: unknown }).isTransient, true);
+});
+
+Deno.test('a requeued image job waits, then calls the worker again for itself', async () => {
+  const { client, updates } = createUpdateTracker();
+  const order: string[] = [];
+  const triggered: Record<string, unknown>[] = [];
+
+  await requeueJob(
+    client as any,
+    { ...imageJob, status: 'running', attempt_count: 2 },
+    'IMAGE_TRANSIENT',
+    'Try again',
+    { supabaseUrl: 'https://example.test', serviceRoleKey: 'service-role-key' },
+    {
+      random: () => 0.4,
+      sleep: async (ms) => { order.push(`sleep ${ms}`); },
+      triggerWorker: async (options) => { order.push('trigger'); triggered.push(options); return true; },
+    }
+  );
+
+  assertEquals(updates.map((update) => update.values.status), ['queued']);
+  // Second attempt: 2 s, with the middle of the 0.8–1.3 jitter.
+  assertEquals(order, ['sleep 2000', 'trigger']);
+  assertEquals(triggered, [{ supabaseUrl: 'https://example.test', serviceRoleKey: 'service-role-key', jobId: imageJob.id }]);
+});
+
+Deno.test('the image retry delay grows with the attempt and stays bounded', () => {
+  assertEquals(imageRetryDelayMs(1, 0.4), 1000);
+  assertEquals(imageRetryDelayMs(3, 0.4), 4000);
+  assertEquals(imageRetryDelayMs(12, 1), 30_000);
 });

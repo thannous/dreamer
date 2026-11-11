@@ -14,3 +14,6 @@ export const RECONCILE_DEFAULT_BATCH = 150;
 export const RECONCILE_MAX_BATCH = 300;
 export const RECONCILE_DEFAULT_MAX_TOTAL = 1000;
 export const RECONCILE_DEFAULT_MIN_AGE_HOURS = 24;
+
+/** Longest wait for an answer from another service before the call is given up. */
+export const OUTBOUND_REQUEST_TIMEOUT_MS = 10_000;

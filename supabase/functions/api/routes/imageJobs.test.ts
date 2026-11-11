@@ -5,13 +5,16 @@ import { AI_REQUEST_LIMITS } from '../lib/aiRequestPolicy.ts';
 import { DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
 import {
   canCreateImageJobForTier,
+  checkPlusDailyImageCeiling,
   checkPlusDailyImageLimit,
   handleCreateImageJob,
 } from './imageJobs.ts';
+import { handleGenerateImage } from './images.ts';
+import { hashAiActor } from '../services/aiAdmission.ts';
 
 /** Fake reads for the Plus daily image ceiling: by default no job and no analysis receipt yet. */
 const imageJobHistory = (
-  rows: { existing?: boolean; receipt?: boolean; createdAt?: string[]; failing?: boolean } = {}
+  rows: { existing?: boolean; receipt?: boolean; createdAt?: string[]; legacy?: number[]; failing?: boolean } = {}
 ) => {
   const reads: Record<string, unknown>[] = [];
   return {
@@ -31,6 +34,9 @@ const imageJobHistory = (
           reads.push({ ...filters, limit: count });
           if (rows.failing) return { data: null, error: { code: 'XX000' } };
           if (table === 'quota_usage') return { data: rows.receipt ? [{ id: 'receipt-1' }] : [], error: null };
+          if (table === 'ai_rate_limit_buckets') {
+            return { data: (rows.legacy ?? []).map((request_count) => ({ request_count })), error: null };
+          }
           assertEquals(table, 'ai_jobs');
           if (filters.select === 'id') return { data: rows.existing ? [{ id: 'job-1' }] : [], error: null };
           return {
@@ -666,6 +672,55 @@ Deno.test('Plus daily image ceiling lets through the tenth image, a retry and an
 
   const failing = await checkPlusDailyImageLimit(imageJobHistory({ failing: true }) as any, 'user-1', BUNDLED_REQUEST_ID, now);
   assertEquals(failing?.status, 503);
+});
+
+Deno.test('images made through the old route count toward the same Plus daily ceiling', async () => {
+  const now = Date.parse('2026-10-21T12:00:00.000Z');
+  const six = Array.from({ length: 6 }, () => new Date(now - 60_000).toISOString());
+
+  // Six image jobs and three old-route images: one illustration is left.
+  const room = imageJobHistory({ createdAt: six, legacy: [2, 1] });
+  assertEquals(await checkPlusDailyImageCeiling(room as any, 'user-1', now), null);
+  assertEquals(room.reads[1], {
+    table: 'ai_rate_limit_buckets',
+    select: 'request_count',
+    // The admission of /generateImage writes its daily buckets under this exact key.
+    actor_hash: await hashAiActor('user:user-1'),
+    capability: 'generate_image_legacy_day',
+    'window_started_at >': '2026-10-20T12:00:00.000Z',
+    limit: 25,
+  });
+
+  // Six image jobs and four old-route images: the day is spent on either route.
+  const spent = imageJobHistory({ createdAt: six, legacy: [3, 1] });
+  const ceiling = await checkPlusDailyImageCeiling(spent as any, 'user-1', now);
+  assertEquals(ceiling?.status, 429);
+  assertEquals((await ceiling?.json()).code, 'DAILY_IMAGE_LIMIT');
+  const newJob = await checkPlusDailyImageLimit(
+    imageJobHistory({ createdAt: six, legacy: [3, 1] }) as any, 'user-1', BUNDLED_REQUEST_ID, now
+  );
+  assertEquals(newJob?.status, 429);
+});
+
+Deno.test('the old image route refuses a Plus account past its daily images before any paid work', async () => {
+  const recent = Array.from({ length: 10 }, () => new Date(Date.now() - 60_000).toISOString());
+  let admissions = 0;
+  const ctx = createAuthenticatedImageContext({ prompt: 'A lighthouse over a quiet sea' });
+  const response = await handleGenerateImage(
+    { ...ctx, req: new Request('https://example.test/functions/v1/api/generateImage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: 'A lighthouse over a quiet sea' }),
+    }) },
+    {
+      createAdminClient: (() => ({ from: imageJobHistory({ createdAt: recent }).from })) as any,
+      admitRequest: (async () => { admissions++; return { tier: 'plus', actorClass: 'PLUS' }; }) as any,
+    }
+  );
+
+  assertEquals(response.status, 429);
+  assertEquals((await response.json()).code, 'DAILY_IMAGE_LIMIT');
+  assertEquals(admissions, 0);
 });
 
 Deno.test('a Plus account past its daily images never reaches image admission', async () => {

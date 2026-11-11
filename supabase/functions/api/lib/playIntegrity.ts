@@ -1,4 +1,5 @@
 import { sha256Hex } from './sha256.ts';
+import { OUTBOUND_REQUEST_TIMEOUT_MS } from './constants.ts';
 
 const encoder = new TextEncoder();
 
@@ -108,6 +109,7 @@ const getAccessToken = async (): Promise<string> => {
       grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
       assertion: jwt,
     }),
+    signal: AbortSignal.timeout(OUTBOUND_REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -133,6 +135,7 @@ const decodeIntegrityToken = async (packageName: string, integrityToken: string)
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ integrityToken }),
+    signal: AbortSignal.timeout(OUTBOUND_REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {

@@ -1,4 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { OUTBOUND_REQUEST_TIMEOUT_MS } from '../lib/constants.ts';
 import { classifyGeminiError } from './gemini.ts';
 
 export type ImageJobStatus = 'queued' | 'running' | 'succeeded' | 'failed';
@@ -150,6 +151,8 @@ export const triggerImageJobWorker = async (options: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ jobId: options.jobId }),
+      // The worker answers as soon as it has taken the job; it never holds the call.
+      signal: AbortSignal.timeout(OUTBOUND_REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {

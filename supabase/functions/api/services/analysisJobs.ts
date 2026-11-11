@@ -1,4 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { OUTBOUND_REQUEST_TIMEOUT_MS } from '../lib/constants.ts';
 
 export type AnalysisJobStatus = 'queued' | 'running' | 'succeeded' | 'failed';
 
@@ -63,6 +64,8 @@ export const triggerAnalysisWorker = async (options: {
       [ANALYSIS_JOB_WORKER_AUTH_HEADER]: options.serviceRoleKey,
     },
     body: JSON.stringify({ jobId: options.jobId }),
+    // The worker answers as soon as it has taken the job; it never holds the call.
+    signal: AbortSignal.timeout(OUTBOUND_REQUEST_TIMEOUT_MS),
   });
 
   if (!response.ok) {

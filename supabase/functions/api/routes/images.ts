@@ -12,6 +12,8 @@ import {
   validateBoundedText,
 } from '../lib/aiRequestPolicy.ts';
 import { admitSynchronousAiRequest } from '../services/aiAdmission.ts';
+import { createAdminClient } from '../services/imageJobs.ts';
+import { checkPlusDailyImageCeiling } from './imageJobs.ts';
 import type { ApiContext } from '../types.ts';
 
 type RpcResult<T = unknown> = {
@@ -149,7 +151,15 @@ const claimGuestImageQuota = async (
   return null;
 };
 
-export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
+type GenerateImageDependencies = {
+  createAdminClient?: typeof createAdminClient;
+  admitRequest?: typeof admitSynchronousAiRequest;
+};
+
+export async function handleGenerateImage(
+  ctx: ApiContext,
+  dependencies: GenerateImageDependencies = {}
+): Promise<Response> {
   const { req, supabase, user, supabaseUrl, supabaseServiceRoleKey, storageBucket } = ctx;
   let guestQuotaClaim: { adminClient: AdminClient; fingerprint: string } | null = null;
 
@@ -195,7 +205,17 @@ export async function handleGenerateImage(ctx: ApiContext): Promise<Response> {
       return entitlementCheck;
     }
 
-    const admission = await admitSynchronousAiRequest({
+    if (user) {
+      // Before admission, so a refused request is not counted against the day.
+      if (!supabaseServiceRoleKey) return serviceUnavailable();
+      const dailyCeiling = await checkPlusDailyImageCeiling(
+        (dependencies.createAdminClient ?? createAdminClient)(supabaseUrl, supabaseServiceRoleKey),
+        user.id
+      );
+      if (dailyCeiling) return dailyCeiling;
+    }
+
+    const admission = await (dependencies.admitRequest ?? admitSynchronousAiRequest)({
       ctx,
       capability: 'generate_image_legacy',
       guestFingerprint: fingerprint,
