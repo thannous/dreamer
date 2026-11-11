@@ -90,6 +90,22 @@ const URL_AUTH_PARAMETERS = [
   'expires_in', 'expires_at', 'token_type', 'type', 'token_hash',
 ];
 
+/**
+ * A hosted recovery template that links to `{{ .RedirectTo }}?token_hash=…`
+ * glues its own query onto a redirect that already ends with the flow id:
+ * `?sb_flow_id=<id>?token_hash=<hash>&type=recovery`. Read the token hash back
+ * out of the flow-id value so such a link keeps working.
+ */
+function repairTokenHashAfterFlowId(pathname: string, query: URLSearchParams): void {
+  if (!isPasswordResetPath(pathname) || query.has('token_hash')) return;
+  const flowIds = query.getAll(WEB_PKCE_FLOW_ID_PARAMETER);
+  if (flowIds.length !== 1) return;
+  const glued = /^([a-zA-Z0-9_-]{8,64})\?token_hash=(.+)$/.exec(flowIds[0]);
+  if (!glued) return;
+  query.set(WEB_PKCE_FLOW_ID_PARAMETER, glued[1]);
+  query.set('token_hash', glued[2]);
+}
+
 /** Keep URL credentials out of auth-js and the browser address bar. */
 function quarantineWebAuthCallback(): void {
   if (Platform.OS !== 'web' || typeof window === 'undefined') return;
@@ -97,6 +113,7 @@ function quarantineWebAuthCallback(): void {
   const url = new URL(window.location.href);
   const hash = url.hash.startsWith('#') ? new URLSearchParams(url.hash.slice(1)) : new URLSearchParams();
   const query = url.searchParams;
+  repairTokenHashAfterFlowId(url.pathname, query);
   const hasBearerToken = ['access_token', 'refresh_token', 'provider_token', 'provider_refresh_token']
     .some((key) => query.has(key) || hash.has(key));
   const hasCode = query.has('code') || hash.has('code');
@@ -358,6 +375,10 @@ export const supabase = createClient(
       // code exchange, so do not let it process URL credentials directly.
       detectSessionInUrl: false,
       flowType: Platform.OS === 'web' ? 'pkce' : 'implicit',
+      // Each web redirect names its own PKCE flow (`sb_flow_id`), so a link is
+      // exchanged with the verifier of the sign-in that requested it even when
+      // another sign-in started since. Native uses no PKCE verifier.
+      experimental: Platform.OS === 'web' ? { appendPkceFlowIdToRedirects: true } : undefined,
     },
   }
 );

@@ -297,6 +297,47 @@ describe('web auth helpers', () => {
     expect(harness.browserWindow.removeEventListener).toHaveBeenCalled();
   });
 
+  it('exchanges the Google code with the flow this sign-in started', async () => {
+    mockSignInWithOAuth.mockResolvedValueOnce({
+      data: { url: OAUTH_AUTHORIZE_URL, flowId: 'google-flow-1234' },
+      error: null,
+    });
+    const harness = createOAuthPopupHarness();
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code&sb_flow_id=google-flow-1234`,
+    });
+    await pending;
+
+    expect(mockExchangeCodeForSession).toHaveBeenCalledTimes(1);
+    expect(mockExchangeCodeForSession).toHaveBeenCalledWith('oauth-code', { flowId: 'google-flow-1234' });
+  });
+
+  it('rejects a Google callback that names another sign-in', async () => {
+    mockSignInWithOAuth.mockResolvedValueOnce({
+      data: { url: OAUTH_AUTHORIZE_URL, flowId: 'google-flow-1234' },
+      error: null,
+    });
+    const harness = createOAuthPopupHarness();
+    const auth = require('../auth.web') as typeof import('../auth.web');
+    const pending = auth.signInWithGoogleWeb();
+    await flushMicrotasks();
+
+    harness.dispatchMessage({
+      origin: PRODUCTION_ORIGIN,
+      source: harness.popup,
+      data: `${PRODUCTION_ORIGIN}/auth-callback.html?code=oauth-code&sb_flow_id=other-flow-5678`,
+    });
+
+    await expect(pending).rejects.toThrow('Google sign-in callback belongs to another sign-in.');
+    expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
+  });
+
   it('rejects an implicit callback fragment without signing in', async () => {
     const harness = createOAuthPopupHarness();
     const auth = require('../auth.web') as typeof import('../auth.web');

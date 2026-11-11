@@ -123,7 +123,12 @@ function toError(error: unknown, fallback: string): Error {
   return error instanceof Error ? error : new Error(fallback);
 }
 
-async function establishGoogleOAuthSession(params: URLSearchParams): Promise<Session> {
+// auth-js's reserved callback parameter naming the PKCE flow of a redirect.
+const PKCE_FLOW_ID_PARAMETER = 'sb_flow_id';
+
+async function establishGoogleOAuthSession(
+  params: URLSearchParams, flowId: string | null,
+): Promise<Session> {
   const oauthError = params.get('error_description') ?? params.get('error');
   if (oauthError) {
     throw new Error(oauthError);
@@ -135,9 +140,20 @@ async function establishGoogleOAuthSession(params: URLSearchParams): Promise<Ses
     throw new Error('Google sign-in callback must use a code.');
   }
 
+  // The popup returns the flow id of the sign-in it completed. A callback
+  // that names another flow must not consume this sign-in's verifier.
+  const callbackFlowId = params.get(PKCE_FLOW_ID_PARAMETER);
+  if (callbackFlowId !== null && callbackFlowId !== flowId) {
+    throw new Error('Google sign-in callback belongs to another sign-in.');
+  }
+
   const code = params.get('code');
   if (code) {
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+    // Without the flow id auth-js reads the verifier of the latest flow started
+    // in this browser, which another tab or an email sign-in may have replaced.
+    const { data, error } = flowId
+      ? await supabase.auth.exchangeCodeForSession(code, { flowId })
+      : await supabase.auth.exchangeCodeForSession(code);
     if (error) throw error;
     if (!data.session) {
       throw new Error('Google sign-in did not return a session.');
@@ -153,7 +169,7 @@ type OAuthPopupWaiter = {
   promise: Promise<Session | null>;
 };
 
-function completeGoogleOAuthPopup(popup: Window): OAuthPopupWaiter {
+function completeGoogleOAuthPopup(popup: Window, flowId: string | null): OAuthPopupWaiter {
   const browserWindow = getBrowserWindow();
   let abort: (error?: unknown) => void = () => {};
 
@@ -215,7 +231,7 @@ function completeGoogleOAuthPopup(popup: Window): OAuthPopupWaiter {
 
       void (async () => {
         try {
-          const session = await establishGoogleOAuthSession(readOAuthParams(event.data));
+          const session = await establishGoogleOAuthSession(readOAuthParams(event.data), flowId);
           settleResolve(session);
         } catch (error) {
           settleReject(error);
@@ -519,7 +535,7 @@ export async function signInWithGoogleWeb(): Promise<void> {
     if (!data?.url) {
       throw new Error('Google sign-in failed.');
     }
-    waiter = completeGoogleOAuthPopup(popup);
+    waiter = completeGoogleOAuthPopup(popup, data.flowId ?? null);
     popup.location.href = data.url;
     await waiter.promise;
   } catch (error) {
