@@ -242,7 +242,16 @@ export async function handleSubscriptionRefresh(ctx: ApiContext): Promise<Respon
 
 export const handleSubscriptionSync = handleSubscriptionRefresh;
 
-export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Response> {
+export type SubscriptionReconcileDependencies = {
+  createAdminClient?: (url: string, key: string) => ReturnType<typeof createAdminClient>;
+};
+
+const RECONCILE_CURSOR_TABLE = 'subscription_reconcile_cursor';
+
+export async function handleSubscriptionReconcile(
+  ctx: ApiContext,
+  deps: SubscriptionReconcileDependencies = {},
+): Promise<Response> {
   const { req, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
   const secret = getReconcileSecret();
@@ -291,7 +300,7 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
   );
   const minAgeMs = minAgeHours * 60 * 60 * 1000;
 
-  const adminClient = createAdminClient(supabaseUrl, supabaseServiceRoleKey);
+  const adminClient = (deps.createAdminClient ?? createAdminClient)(supabaseUrl, supabaseServiceRoleKey);
 
   let entitlementLookup: Record<string, string> | undefined;
   try {
@@ -309,27 +318,35 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
   let changed = 0;
   let skipped = 0;
   let errors = 0;
-  let lastId: string | null = null;
+  // Each run continues after the account the previous one stopped at, and
+  // starts over once the last account has been reached.
+  const { data: cursorRow, error: cursorError } = await adminClient
+    .from(RECONCILE_CURSOR_TABLE)
+    .select('last_user_id')
+    .maybeSingle();
+  if (cursorError) {
+    console.warn('[api] /subscription/reconcile cursor read failed', cursorError.message);
+  }
+  let lastId: string | null = (cursorRow?.last_user_id as string | null | undefined) ?? null;
+  let reachedEnd = false;
+  let listingFailed = false;
 
   while (processed < maxTotal && Date.now() - startedAt < RECONCILE_MAX_DURATION_MS) {
-    let query = adminClient
-      .schema('auth')
-      .from('users')
-      .select('id')
-      .order('id', { ascending: true })
-      .limit(batchSize);
-
-    if (lastId) {
-      query = query.gt('id', lastId);
-    }
-
-    const { data, error } = await query;
+    // auth.users is not reachable through the Data API; a service-role
+    // function pages it instead (20261111090000).
+    const { data: listed, error } = await adminClient.rpc('list_subscription_reconcile_users', {
+      p_after: lastId,
+      p_limit: batchSize,
+    });
     if (error) {
       console.error('[api] /subscription/reconcile user fetch failed', error.message);
+      listingFailed = true;
       break;
     }
+    const data = (Array.isArray(listed) ? listed : []) as { id: string }[];
 
-    if (!data?.length) {
+    if (!data.length) {
+      reachedEnd = true;
       break;
     }
 
@@ -391,6 +408,20 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
     }
   }
 
+  // A run that could not list accounts did nothing: say so, instead of the
+  // "ok, 0 processed" that hid this for months.
+  if (listingFailed && processed === 0) {
+    return jsonResponse({ error: 'Account listing unavailable' }, 503);
+  }
+
+  const nextCursor = reachedEnd ? null : lastId;
+  const { error: cursorWriteError } = await adminClient
+    .from(RECONCILE_CURSOR_TABLE)
+    .upsert({ id: true, last_user_id: nextCursor, updated_at: new Date().toISOString() });
+  if (cursorWriteError) {
+    console.warn('[api] /subscription/reconcile cursor write failed', cursorWriteError.message);
+  }
+
   return jsonResponse({
     ok: true,
     processed,
@@ -398,7 +429,8 @@ export async function handleSubscriptionReconcile(ctx: ApiContext): Promise<Resp
     changed,
     skipped,
     errors,
-    lastId,
+    lastId: nextCursor,
+    reachedEnd,
     durationMs: Date.now() - startedAt,
   });
 }
