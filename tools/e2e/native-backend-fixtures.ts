@@ -212,8 +212,15 @@ export async function nativeGuest({ app, screen, platform }: Pick<NativeFixtures
   await nativeTap(screen, 'btn.header.home.settings', 'up');
   await nativeTap(screen, 'quick-settings.language');
   await nativeTap(screen, 'quick-settings.language.en');
-  if (platform === 'android' && await screen.getByText('Language Pack for Voice Recording', { visible: true }).count())
-    await screen.getByRole('button', 'Cancel', { visible: true }).tap();
+  if (platform === 'android') {
+    // A freshly reset emulator offers the English voice pack over the drawer, a moment after the tap.
+    const cancel = screen.getByTestId('btn.offline-model.cancel', { visible: true });
+    for (let wait = 0; wait < 10 && await cancel.count() === 0; wait += 1) await new Promise(resolve => setTimeout(resolve, 300));
+    if (await cancel.count()) {
+      await cancel.tap();
+      await expect(cancel).toHaveCount(0);
+    }
+  }
   await expect(screen.getByRole('radio', 'English', { visible: true })).toBeChecked();
   // Continue through the drawer already open, without closing and reopening it.
   await nativeTap(screen, 'quick-settings.all');
