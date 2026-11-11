@@ -335,3 +335,41 @@ Deno.test('Lucid attested iOS token cannot access Dreamer quota or link its devi
     else Deno.env.set('GUEST_SESSION_SECRET', previous);
   }
 });
+
+Deno.test('/auth/mark-upgrade copies the guest pictures into the account folder, and never fails over them', async () => {
+  const previous = Deno.env.get('GUEST_SESSION_SECRET');
+  Deno.env.set('GUEST_SESSION_SECRET', 'test-only-secret-with-sufficient-entropy');
+  try {
+    const fingerprint = 'android-device-fingerprint';
+    const userId = '11111111-1111-4111-8111-111111111111';
+    const session = await createGuestToken(fingerprint, 'android');
+    const upgrade = (storage: unknown) => handleAuthMarkUpgrade(createContext({
+      path: '/auth/mark-upgrade',
+      body: { fingerprint },
+      user: { id: userId },
+      headers: { 'x-guest-token': session.token, 'x-guest-fingerprint': fingerprint, 'x-guest-platform': 'android' },
+    }), {
+      createAdminClient: () => ({
+        rpc: async () => ({ data: { risk_score: 0, risk_level: 'low' }, error: null }),
+        storage,
+      } as never),
+    });
+
+    // The account cannot read `guest_<fingerprint>/`: without the copy its illustrations go blank.
+    const copies: [string, string][] = [];
+    const copied = await upgrade({
+      from: () => ({
+        list: async () => ({ data: [{ name: 'dream.webp', id: 'object-1' }], error: null }),
+        copy: async (from: string, to: string) => { copies.push([from, to]); return { error: null }; },
+      }),
+    });
+    assertEquals(copied.status, 200);
+    assertEquals(copies, [[`guest_${fingerprint}/dream.webp`, `${userId}/dream.webp`]]);
+
+    const broken = await upgrade({ from: () => { throw new Error('storage down'); } });
+    assertEquals(broken.status, 200);
+  } finally {
+    if (previous == null) Deno.env.delete('GUEST_SESSION_SECRET');
+    else Deno.env.set('GUEST_SESSION_SECRET', previous);
+  }
+});

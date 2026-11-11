@@ -1,6 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
 import { requireGuestSession } from '../lib/guards.ts';
+import { adoptGuestImages, type GuestImageStorage } from '../lib/guestImageAdoption.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
 import type { ApiContext } from '../types.ts';
 
@@ -9,6 +10,7 @@ type AdminClient = {
     name: string,
     args?: Record<string, unknown>,
   ) => Promise<{ data: unknown; error: { code?: string } | null }>;
+  storage?: GuestImageStorage;
 };
 
 export type QuotaStatusDependencies = {
@@ -320,9 +322,22 @@ export async function handleAuthMarkUpgrade(
       );
     }
 
+    // The account cannot read the guest folder its pictures were made in. Both
+    // identities are verified here, so this is where they change hands. Never
+    // fails the upgrade: a missed copy only leaves a picture unreadable, as before.
+    let adoptedImages = 0;
+    try {
+      if (adminClient.storage) {
+        adoptedImages = await adoptGuestImages(adminClient.storage, ctx.storageBucket, fingerprint, user.id);
+      }
+    } catch {
+      console.warn('[api] /auth/mark-upgrade: guest pictures could not be copied');
+    }
+
     console.log('[api] /auth/mark-upgrade: device account signal registered', {
       riskLevel: (risk as any)?.risk_level ?? 'unknown',
       integrityProvider,
+      adoptedImages,
     });
     return new Response(
       JSON.stringify({

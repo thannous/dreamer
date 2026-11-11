@@ -63,6 +63,19 @@ export function getDirectDreamMediaUrl(value?: string | null): string | undefine
 const failed: Resource = { url: '', status: 'error' };
 
 /** Private URLs live only in this bounded, account-scoped memory cache. */
+/**
+ * The path an account reads a stored picture from, or null when it is not its
+ * own. A dream saved as a guest keeps the guest path of its picture after
+ * sign-up, and the account cannot read that folder; the server copies those
+ * pictures into the account's folder when the device is linked to the account
+ * (`/auth/mark-upgrade`), under the same file name.
+ */
+export function toOwnedPath(path: string, owner: string): string | null {
+  const [folder, ...rest] = path.split('/');
+  if (folder === owner) return path;
+  return folder.startsWith('guest_') && rest.length > 0 ? [owner, ...rest].join('/') : null;
+}
+
 export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, guestOwner }: Options) {
   let owner: string | null = null;
   let generation = 0;
@@ -155,8 +168,9 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
     const parsed = parse(value);
     if (!parsed) return Promise.resolve(failed);
     if ('direct' in parsed) return Promise.resolve({ url: parsed.direct, status: 'ready' });
-    const { path } = parsed;
+    const { path: storedPath } = parsed;
     if (!owner) {
+      const path = storedPath;
       // Guest objects cannot be re-signed with anonymous RLS. Preserve only this
       // device's existing server-signed capability, up to its actual expiry.
       const requestGeneration = generation;
@@ -173,7 +187,8 @@ export function createDreamMediaResolver({ sign, now = Date.now, storageOrigin, 
         return { url: value, status: 'ready', expiresAt };
       } catch { return failed; }
     }
-    if (path.split('/')[0] !== owner) return Promise.resolve(failed);
+    const path = toOwnedPath(storedPath, owner);
+    if (!path) return Promise.resolve(failed);
     const cached = cache.get(path);
     if (cached && cached.version === version && cached.expiresAt > now()) {
       counters.cacheHits++;

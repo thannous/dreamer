@@ -173,6 +173,20 @@ describe('dream media resolver', () => {
     expect(sign.mock.calls[0][1]).toEqual(['A/a']);
   });
 
+  it('reads a picture made as a guest from the account folder the server copied it into', async () => {
+    const { resolver, sign } = setup();
+    // The dream kept its guest path through sign-up; the account cannot sign that folder.
+    const guestSigned = 'https://project.test/storage/v1/object/sign/dream-images/guest_device/dream.webp?token=old';
+    for (const imageUrl of [ref('guest_device/dream.webp'), guestSigned]) {
+      const media = await resolver.resolveDreamMedia({ imageUrl }, 'A');
+      expect(media.imageUrl).toBe('https://signed.test/A/dream.webp');
+    }
+    expect(sign.mock.calls.flatMap(call => call[1])).toEqual(['A/dream.webp']);
+    // Another account's folder is never reachable this way.
+    expect((await resolver.resolveDreamMedia({ imageUrl: ref('B/dream.webp') }, 'A')).imageStatus).toBe('error');
+    expect((await resolver.resolveDreamMedia({ imageUrl: ref('guest_device') }, 'A')).imageStatus).toBe('error');
+  });
+
   it.each(['imageUpdatedAt', 'analysisRequestId', 'analyzedAt'] as const)('invalidates an in-flight same-path replacement using %s', async marker => {
     let release!: () => void;
     const gate = new Promise<void>(resolve => { release = resolve; });
