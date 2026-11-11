@@ -90,6 +90,8 @@ import {
 } from '@/services/quota/GuestDreamCounter';
 import { markMockAnalysis, markMockImage } from '@/services/quota/MockQuotaEventStore';
 import { quotaService } from '@/services/quotaService';
+import { remove as removeDreamRecallDraft } from '@/services/dreamRecallAssistantStorage';
+import { getDreamRecallStorageId } from '@/lib/dreamRecallIdentity';
 import {
   getPendingImageJobs,
   getSavedDreams,
@@ -762,9 +764,31 @@ export const useDreamJournal = () => {
           return;
         }
 
+        // An earlier change of this dream is still waiting to be sent. Writing
+        // this one directly would move the server past the revision the queued
+        // one was built on: its replay would come back as a conflict and put
+        // the older text over this edit. Keep the order and send both in turn.
+        const queuedTarget = candidate;
+        const hasUnsentChange = livePendingMutationsRef.current.some((mutation) =>
+          mutation.status !== 'acked' && mutation.status !== 'blocked' &&
+          matchesDreamTarget(getMutationDreamTarget(mutation), queuedTarget));
+        if (hasUnsentChange) {
+          const pendingVersion = setDreamSyncState({ ...candidate, remoteId }, 'pending', {
+            lastSyncError: undefined,
+            conflictRemoteDream: undefined,
+          });
+          await queueAndPersist(pendingVersion);
+          void syncPendingMutations({ target: pendingVersion }).catch((error) => {
+            logger.warn('Background dream update sync failed', error);
+          });
+          return;
+        }
+
         for (let attempt = 0; attempt < 2; attempt += 1) {
           try {
-            const saved = await updateDreamInSupabase({ ...candidate, remoteId });
+            // If Storage cannot take a newly attached picture, this throws and the
+            // edit is queued below with its local file instead of being saved without it.
+            const saved = await updateDreamInSupabase({ ...candidate, remoteId }, { keepLocalImageOnUploadFailure: true });
             const merged = mergeServerDreamWithLocalState(saved, candidate);
             await persistRemoteDreams((prev) => applyCandidate(prev, merged));
             return;
@@ -820,6 +844,7 @@ export const useDreamJournal = () => {
       canUseRemoteSync,
       dreamsRef,
       hasNetwork,
+      livePendingMutationsRef,
       markDreamConflict,
       persistLocalDreams,
       persistRemoteDreams,
@@ -894,6 +919,17 @@ export const useDreamJournal = () => {
   /**
    * Delete a dream
    */
+  // A recall draft keeps the dream's transcript and every question and answer
+  // about it: it goes when the dream goes.
+  const recallAccountId = user?.id ?? null;
+  const forgetRecallDraft = useCallback(async (dream: DreamAnalysis) => {
+    try {
+      await removeDreamRecallDraft(getDreamRecallStorageId(dream, recallAccountId));
+    } catch {
+      // Best-effort: the draft is unreachable once its dream is gone.
+    }
+  }, [recallAccountId]);
+
   const deleteDream = useCallback(
     async (target: DreamTarget) => {
       if (!canUseRemoteSync) {
@@ -909,6 +945,7 @@ export const useDreamJournal = () => {
           await commitGuestDreamRecording(existing);
           await persistLocalDreams(removeDream(currentDreams, existing));
           await clearPendingImageJobsForDream(target);
+          await forgetRecallDraft(existing);
         });
         return;
       }
@@ -927,6 +964,7 @@ export const useDreamJournal = () => {
         await persistMigrationResolution(existing, deleting);
         await reloadDreams();
         await clearPendingImageJobsForDream(target);
+        await forgetRecallDraft(existing);
         return;
       }
 
@@ -940,6 +978,7 @@ export const useDreamJournal = () => {
           (prev) => removeDream(prev, target)
         );
         await clearPendingImageJobsForDream(target);
+        await forgetRecallDraft(existing);
         return;
       }
 
@@ -953,6 +992,7 @@ export const useDreamJournal = () => {
           }),
           (prev) => removeDream(prev, target, remoteId)
         );
+        await forgetRecallDraft(existing!);
       };
 
       if (!hasNetwork) {
@@ -965,6 +1005,7 @@ export const useDreamJournal = () => {
         await deleteDreamFromSupabase(remoteId, existing?.revisionId);
         await persistRemoteDreams((prev) => removeDream(prev, target, remoteId));
         await clearPendingImageJobsForDream(target);
+        await forgetRecallDraft(existing);
       } catch (error) {
         if (isConflictError(error) && existing) {
           await markDreamConflict(existing, error.remoteDream, error.message);
@@ -974,7 +1015,7 @@ export const useDreamJournal = () => {
         await queueAndPersist();
       }
     },
-    [buildQueuedMutation, canUseRemoteSync, clearPendingImageJobsForDream, clearQueuedMutationsForDream, dreamsRef, hasNetwork, markDreamConflict, persistLocalDreams, persistRemoteDreams, persistMigrationResolution, reloadDreams, queueOfflineOperation, resolveRemoteId]
+    [buildQueuedMutation, canUseRemoteSync, clearPendingImageJobsForDream, clearQueuedMutationsForDream, dreamsRef, forgetRecallDraft, hasNetwork, markDreamConflict, persistLocalDreams, persistRemoteDreams, persistMigrationResolution, reloadDreams, queueOfflineOperation, resolveRemoteId]
   );
 
   /**

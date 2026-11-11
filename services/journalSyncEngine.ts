@@ -24,7 +24,7 @@ export type JournalSyncDependencies = {
   createDreamInSupabase: (dream: DreamAnalysis, userId: string) => Promise<DreamAnalysis>;
   updateDreamInSupabase: (dream: DreamAnalysis) => Promise<DreamAnalysis>;
   deleteDreamFromSupabase: (remoteId: number) => Promise<void>;
-  syncDreamMutationsInSupabase?: (mutations: DreamMutation[], userId: string) => Promise<SyncMutationResult[]>;
+  syncDreamMutationsInSupabase?: (mutations: DreamMutation[], userId: string, options?: { keepLocalImageOnUploadFailure?: boolean }) => Promise<SyncMutationResult[]>;
   reportSyncQueueMetrics: typeof reportMetrics;
   recordSyncReplayMetrics: typeof recordMetrics;
   logger: {
@@ -356,7 +356,9 @@ export function createJournalSyncEngine(dependencies: JournalSyncDependencies, i
           networkStarted = true;
           const canUseBatchSync = userScope && typeof syncDreamMutationsInSupabase === 'function';
           const results = canUseBatchSync
-            ? await syncDreamMutationsInSupabase(eligibleMutations, user.id)
+            // A thrown upload keeps these mutations queued with their retry count,
+            // so a picture Storage could not take is tried again, then let go.
+            ? await syncDreamMutationsInSupabase(eligibleMutations, user.id, { keepLocalImageOnUploadFailure: true })
             : await (async (): Promise<SyncMutationResult[]> => {
               const legacyResults: SyncMutationResult[] = [];
               const workingMutations = eligibleMutations.map((mutation) => normalizeMutation(mutation, userScope));

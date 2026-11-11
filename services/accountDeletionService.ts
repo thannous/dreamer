@@ -8,6 +8,7 @@ import { fetchJSON } from '@/lib/http';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 import { notificationDreamScope } from '@/lib/notificationDreamCapture';
 import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
+import { removeAllForAccount as forgetDreamRecallDrafts } from '@/services/dreamRecallAssistantStorage';
 import { clearRemoteDreamStorage, clearSavedTranscript } from '@/services/storageService';
 
 export type AccountDeletionResponse = {
@@ -89,6 +90,12 @@ export async function finalizeAccountDeletion(deletedUserId: string): Promise<vo
   try {
     // The last capture question can quote the dream it was asked about.
     await forgetCaptureQuestion(toAccountScope(deletedUserId));
+  } catch {
+    // Like the other caches, this remains scoped to the deleted account.
+  }
+  try {
+    // Each recall draft keeps a dream's transcript with its questions and answers.
+    await forgetDreamRecallDrafts(deletedUserId);
   } catch {
     // Like the other caches, this remains scoped to the deleted account.
   }

@@ -77,6 +77,22 @@ const decodeBase64ToUint8Array = (base64: string): Uint8Array => {
   return bytes;
 };
 
+/** Storage could not take the image; the local copy is intact and the upload can be tried again. */
+export class DreamImageUploadError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'DreamImageUploadError';
+  }
+}
+
+/** How many sync attempts keep a dream waiting for its image before it is sent without it. */
+export const DREAM_IMAGE_UPLOAD_ATTEMPTS = 3;
+
+export type EnsureRemoteImageOptions = {
+  /** Rethrow an upload failure instead of returning the dream stripped of its image. */
+  failOnUploadError?: boolean;
+};
+
 export function createJournalMediaUploadService({
   getClient, isConfigured, invalidateDreamMedia, readImageFileBase64, convertToWebpBase64,
 }: JournalMediaUploadDependencies) {
@@ -146,16 +162,22 @@ export function createJournalMediaUploadService({
     });
     const data = decodeBase64ToUint8Array(base64);
 
-    const { data: uploadData, error } = await getClient()
-      .storage
-      .from(DREAM_IMAGE_BUCKET)
-      .upload(path, data, {
-        contentType,
-        upsert: true,
-      });
+    let uploaded: Awaited<ReturnType<ReturnType<ReturnType<typeof getClient>['storage']['from']>['upload']>>;
+    try {
+      uploaded = await getClient()
+        .storage
+        .from(DREAM_IMAGE_BUCKET)
+        .upload(path, data, {
+          contentType,
+          upsert: true,
+        });
+    } catch (error) {
+      throw new DreamImageUploadError(error instanceof Error ? error.message : 'Failed to upload image');
+    }
+    const { data: uploadData, error } = uploaded;
 
     if (error || !uploadData) {
-      throw new Error(error?.message ?? 'Failed to upload image');
+      throw new DreamImageUploadError(error?.message ?? 'Failed to upload image');
     }
 
     const reference = buildStorageRef(uploadData.path);
@@ -163,7 +185,11 @@ export function createJournalMediaUploadService({
     return reference;
   };
 
-  async function ensureRemoteImage(dream: DreamAnalysis, userId?: string): Promise<DreamAnalysis> {
+  async function ensureRemoteImage(
+    dream: DreamAnalysis,
+    userId?: string,
+    options: EnsureRemoteImageOptions = {}
+  ): Promise<DreamAnalysis> {
     if (!isConfigured()) return dream;
 
     // Nothing to upload: skip the owner lookup, which is a network request
@@ -286,6 +312,10 @@ export function createJournalMediaUploadService({
         thumbnailUrl,
       };
     } catch (error) {
+      // Storage was unreachable or refused, but the picture is still on the
+      // device: let the caller keep the mutation, and its local file, for
+      // another attempt rather than acknowledge the dream without its image.
+      if (options.failOnUploadError && error instanceof DreamImageUploadError) throw error;
       if (__DEV__) {
         console.warn('Failed to upload inline image to storage, stripping image to avoid broken sync', error);
       }

@@ -24,6 +24,11 @@ const mockAsyncStorage = {
     mockStorage.delete(key);
     return Promise.resolve();
   }),
+  getAllKeys: jest.fn(() => Promise.resolve([...mockStorage.keys()])),
+  multiRemove: jest.fn((keys: string[]) => {
+    keys.forEach((key) => mockStorage.delete(key));
+    return Promise.resolve();
+  }),
 };
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -32,7 +37,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   ...mockAsyncStorage,
 }));
 
-const { getKey, load, remove, save } =
+const { getKey, load, remove, removeAllForAccount, save } =
   require('../dreamRecallAssistantStorage') as typeof import('../dreamRecallAssistantStorage');
 
 function startedState(): DreamRecallAssistantState {
@@ -117,6 +122,20 @@ describe('dreamRecallAssistantStorage', () => {
     mockStorage.set(getKey(DREAM_ID), raw);
     await expect(load(DREAM_ID)).rejects.toThrow();
     expect(mockStorage.get(getKey(DREAM_ID))).toBe(raw);
+  });
+
+  it('removes every draft of a deleted account and leaves the guest and other accounts alone', async () => {
+    const mine = getDreamRecallStorageId({ id: 1, clientRequestId: 'c-1' }, 'user-1');
+    const mineRemote = getDreamRecallStorageId({ id: 2, remoteId: 22 }, 'user-1');
+    const guest = getDreamRecallStorageId({ id: 3, clientRequestId: 'c-3' }, null);
+    // An account id that merely starts with the deleted one must not match.
+    const neighbour = getDreamRecallStorageId({ id: 4, clientRequestId: 'c-4' }, 'user-10');
+    for (const id of [mine, mineRemote, guest, neighbour]) mockStorage.set(getKey(id), 'draft');
+    mockStorage.set('another-feature:user-1:data', 'kept');
+
+    await removeAllForAccount('user-1');
+
+    expect([...mockStorage.keys()].sort()).toEqual([getKey(guest), getKey(neighbour), 'another-feature:user-1:data'].sort());
   });
 
   it('removes only the sidecar for the given dreamId', async () => {

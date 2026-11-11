@@ -200,6 +200,11 @@ jest.mock('../../services/quotaService', () => ({
   },
 }));
 
+const mockRemoveRecallDraft = jest.fn(async (_dreamId: string) => {});
+jest.mock('../../services/dreamRecallAssistantStorage', () => ({
+  remove: (dreamId: string) => mockRemoveRecallDraft(dreamId),
+}));
+
 // Mock imageUtils
 jest.mock('../../lib/imageUtils', () => ({
   getThumbnailUrl: mockGetThumbnailUrl,
@@ -313,6 +318,9 @@ const renderLoadedDreamJournal = async () => {
 
   return hook;
 };
+
+const resolveLatest = (dreams: DreamAnalysis[], id: number): DreamAnalysis =>
+  dreams.find((dream) => dream.id === id)!;
 
 describe('useDreamJournal', () => {
   describe('cold-cache remote detail', () => {
@@ -881,7 +889,9 @@ describe('useDreamJournal', () => {
       }
       await act(async () => { await result.current.addDream({ ...result.current.dreams.find((d: DreamAnalysis) => d.id === 5)!, title: 'Updated' }); });
       expect(mockGuestDreamCounterState.count).toBe(5);
+      mockRemoveRecallDraft.mockClear();
       await act(async () => { await result.current.deleteDream(5); });
+      expect(mockRemoveRecallDraft).toHaveBeenCalledTimes(1);
       await act(async () => {
         await expect(result.current.addDream(buildDream({ id: 6 }))).rejects.toBeInstanceOf(GuestDreamLimitError);
       });
@@ -1179,7 +1189,8 @@ describe('useDreamJournal', () => {
       });
 
       expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(
-        expect.objectContaining({ title: 'Updated', remoteId: 101 })
+        expect.objectContaining({ title: 'Updated', remoteId: 101 }),
+        { keepLocalImageOnUploadFailure: true }
       );
     });
 
@@ -1245,7 +1256,8 @@ describe('useDreamJournal', () => {
           title: 'Edited after sync',
           remoteId: 101,
           revisionId: 'revision-1',
-        })
+        }),
+        { keepLocalImageOnUploadFailure: true }
       );
       expect(mockSavePendingDreamMutations).not.toHaveBeenCalled();
     });
@@ -1303,6 +1315,37 @@ describe('useDreamJournal', () => {
         ]),
         'user:user-1'
       );
+    });
+
+    it('sends a second edit behind the first one still waiting, never around it', async () => {
+      setMockUser({ id: 'user-1' });
+      const existingDream = buildDream({ id: 1, remoteId: 101 });
+      mockFetchDreamsFromSupabase.mockResolvedValue([existingDream]);
+      let queue: DreamMutation[] = [];
+      mockGetPendingDreamMutations.mockImplementation(async () => queue);
+      mockSavePendingDreamMutations.mockImplementation(async (value: DreamMutation[]) => { queue = value; });
+      mockUpdateDreamInSupabase.mockRejectedValueOnce(new Error('Network error'));
+      const { result } = await renderLoadedDreamJournal();
+
+      await act(async () => {
+        await result.current.updateDream({ ...existingDream, title: 'First edit' });
+      });
+      expect(queue.length).toBeGreaterThan(0);
+
+      // The network is back. A direct write now would move the server past the
+      // revision the queued edit was built on; its replay would then conflict
+      // and put 'First edit' back over 'Second edit'.
+      mockUpdateDreamInSupabase.mockImplementation(async (value: DreamAnalysis) => value);
+      await act(async () => {
+        await result.current.updateDream({ ...resolveLatest(result.current.dreams, 1), title: 'Second edit' });
+      });
+
+      await waitFor(() => expect(queue).toHaveLength(0));
+      // Whatever reaches the server last wins there: it has to be the later edit.
+      const sentTitles = mockUpdateDreamInSupabase.mock.calls.map(([sent]: [DreamAnalysis]) => sent.title);
+      expect(sentTitles.at(-1)).toBe('Second edit');
+      expect(sentTitles.indexOf('Second edit')).toBeGreaterThan(sentTitles.lastIndexOf('First edit'));
+      expect(result.current.dreams.find((dream: DreamAnalysis) => dream.id === 1)?.title).toBe('Second edit');
     });
 
     it('keeps analysis text when the transcript is edited after analysis', async () => {
@@ -1679,7 +1722,10 @@ describe('useDreamJournal', () => {
       mockCreateDreamInSupabase.mockReturnValue(new Promise((resolve) => { finishUpload = resolve; }));
       const hook = await renderLoadedDreamJournal();
       await waitFor(() => expect(mockCreateDreamInSupabase).toHaveBeenCalledTimes(1));
+      mockRemoveRecallDraft.mockClear();
       await act(async () => { await hook.result.current.deleteDream(870); });
+      // The recall draft keeps the dream's transcript: it is removed with the dream.
+      expect(mockRemoveRecallDraft).toHaveBeenCalledWith('user-1:client:upload-870');
       expect(queue).toEqual([expect.objectContaining({ operation: 'delete', payload: expect.objectContaining({ tombstone: expect.objectContaining({ clientRequestId: 'upload-870' }) }) })]);
       mockFetchDreamsFromSupabase.mockResolvedValue([]);
       let earlyRefresh!: Promise<void>;
@@ -1908,7 +1954,7 @@ describe('useDreamJournal', () => {
     await act(async () => { await expect(result.current.deleteDream(900)).rejects.toThrow('ambiguous'); });
     expect(mockDeleteDreamFromSupabase).not.toHaveBeenCalled();
     await act(async () => { await result.current.toggleFavorite(second); });
-    expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(expect.objectContaining({ remoteId: 1901 }));
+    expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(expect.objectContaining({ remoteId: 1901 }), { keepLocalImageOnUploadFailure: true });
     expect(result.current.dreams.find((dream: DreamAnalysis) => dream.remoteId === 1900)?.isFavorite).toBe(false);
     expect(result.current.dreams).toHaveLength(2);
     await act(async () => { await result.current.deleteDream(second); });
@@ -1931,7 +1977,8 @@ describe('useDreamJournal', () => {
       });
 
       expect(mockUpdateDreamInSupabase).toHaveBeenCalledWith(
-        expect.objectContaining({ isFavorite: true, remoteId: 101 })
+        expect.objectContaining({ isFavorite: true, remoteId: 101 }),
+        { keepLocalImageOnUploadFailure: true }
       );
       expect(result.current.dreams[0].isFavorite).toBe(true);
     });

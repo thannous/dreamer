@@ -5,6 +5,7 @@ import { fetchJSON } from '@/lib/http';
 import { requestAppleAuthorizationCode, signOut } from '@/lib/auth';
 import { forgetBadgeLedger } from '@/services/badgeLedgerStore';
 import { forgetCaptureQuestion } from '@/services/captureQuestionStore';
+import { removeAllForAccount } from '@/services/dreamRecallAssistantStorage';
 import { forgetNotificationDreams } from '@/services/notificationDreamInbox';
 import { clearRemoteDreamStorage, clearSavedTranscript } from '@/services/storageService';
 import {
@@ -30,6 +31,7 @@ jest.mock('@/services/guideReadingStore', () => ({ forgetGuideReading: jest.fn()
 jest.mock('@/services/badgeLedgerStore', () => ({ forgetBadgeLedger: jest.fn() }));
 
 jest.mock('@/services/captureQuestionStore', () => ({ forgetCaptureQuestion: jest.fn() }));
+jest.mock('@/services/dreamRecallAssistantStorage', () => ({ removeAllForAccount: jest.fn() }));
 
 jest.mock('@/services/notificationDreamInbox', () => ({
   forgetNotificationDreams: jest.fn(),
@@ -49,6 +51,7 @@ const mockForgetGuideReading = jest.mocked(forgetGuideReading);
 const mockForgetBadgeLedger = jest.mocked(forgetBadgeLedger);
 const mockForgetNotificationDreams = jest.mocked(forgetNotificationDreams);
 const mockForgetCaptureQuestion = jest.mocked(forgetCaptureQuestion);
+const mockForgetRecallDrafts = jest.mocked(removeAllForAccount);
 
 describe('requestAccountDeletion', () => {
   beforeEach(() => {
@@ -129,13 +132,14 @@ describe('finalizeAccountDeletion', () => {
     mockForgetGuideReading.mockImplementation(async (id: string) => { calls.push(`guides ${id}`); });
     mockClearSavedTranscript.mockImplementation(async (scope: string) => { calls.push(`draft ${scope}`); });
     mockForgetCaptureQuestion.mockImplementation(async (scope?: string) => { calls.push(`question ${scope}`); });
+    mockForgetRecallDrafts.mockImplementation(async (id: string) => { calls.push(`recall ${id}`); });
     mockSignOut.mockImplementation(async () => {
       calls.push('signOut');
     });
 
     await finalizeAccountDeletion('user-1');
 
-    expect(calls).toEqual(['clear user:user-1', 'forget user:user-1', 'badges user-1', 'guides user-1', 'draft user:user-1', 'question user:user-1', 'signOut']);
+    expect(calls).toEqual(['clear user:user-1', 'forget user:user-1', 'badges user-1', 'guides user-1', 'draft user:user-1', 'question user:user-1', 'recall user-1', 'signOut']);
   });
 
   it('still signs out when cache clearing fails', async () => {

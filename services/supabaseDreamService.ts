@@ -1,5 +1,5 @@
 import { createJournalRepository } from './journalRepository';
-import { createJournalMutationTransport } from './journalMutationTransport';
+import { createJournalMutationTransport, type JournalMutationSyncOptions } from './journalMutationTransport';
 import { IncompleteJournalAckError, type CodedError } from '@/lib/journalErrors';
 import { createJournalMediaUploadService } from './journalMediaUploadService';
 import { readImageFileBase64, convertToWebpBase64 } from './journalNativeImageAdapter';
@@ -101,7 +101,10 @@ export async function createDreamInSupabase(dream: DreamAnalysis, userId: string
   return result.dream;
 }
 
-export async function updateDreamInSupabase(dream: DreamAnalysis): Promise<DreamAnalysis> {
+export async function updateDreamInSupabase(
+  dream: DreamAnalysis,
+  options: JournalMutationSyncOptions = {}
+): Promise<DreamAnalysis> {
   if (!dream.remoteId) {
     throw new Error('Missing remote id for Supabase dream update');
   }
@@ -120,7 +123,7 @@ export async function updateDreamInSupabase(dream: DreamAnalysis): Promise<Dream
       retryCount: 0,
       createdAt: Date.now(),
     }),
-  ]);
+  ], undefined, options);
 
   if (!result) {
     throw new Error('Failed to update dream in Supabase');

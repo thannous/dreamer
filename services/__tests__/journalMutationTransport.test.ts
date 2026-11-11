@@ -59,6 +59,32 @@ describe('journal mutation transport factory', () => {
     expect(fresh.upsert.mock.calls[0][0]).toHaveProperty('memory');
   });
 
+  it('sends nothing while a picture cannot be uploaded, then stops waiting for it after three attempts', async () => {
+    const rpc = jest.fn().mockResolvedValue({ data: [], error: null });
+    const client = { rpc };
+    const refuse = jest.fn(async (value: DreamAnalysis, _userId?: string, options?: { failOnUploadError?: boolean }) => {
+      if (options?.failOnUploadError) throw new Error('bucket unavailable');
+      return { ...value, imageUrl: '' };
+    });
+    const transport = createJournalMutationTransport({ getClient: () => client as unknown as SupabaseClient, ensureRemoteImage: refuse });
+
+    const keep = { keepLocalImageOnUploadFailure: true };
+
+    // The dream stays queued with its local picture: acknowledging it without the image would lose the photo.
+    await expect(transport.syncDreamMutationsInSupabase([mutation()], 'a', keep)).rejects.toThrow('bucket unavailable');
+    expect(rpc).not.toHaveBeenCalled();
+
+    // One picture Storage keeps refusing must not hold every later change back.
+    await transport.syncDreamMutationsInSupabase([{ ...mutation(), retryCount: 3 }], 'a', keep);
+    expect(refuse).toHaveBeenLastCalledWith(dream, 'a', { failOnUploadError: false });
+    expect(rpc).toHaveBeenCalledTimes(1);
+
+    // A caller that builds a fresh mutation each time (guest migration) never waits: it would wait forever.
+    await transport.syncDreamMutationsInSupabase([mutation()], 'a');
+    expect(refuse).toHaveBeenLastCalledWith(dream, 'a', { failOnUploadError: false });
+    expect(rpc).toHaveBeenCalledTimes(2);
+  });
+
   it('resolves the injected client after asynchronous media preparation', async () => {
     const oldRpc = jest.fn();
     const newRpc = jest.fn().mockResolvedValue({ data: [], error: null });
@@ -71,7 +97,7 @@ describe('journal mutation transport factory', () => {
       ensureRemoteImage: prepare }).syncDreamMutationsInSupabase([mutation()], 'a');
     expect(oldRpc).not.toHaveBeenCalled();
     expect(newRpc).toHaveBeenCalledWith('sync_dream_mutations', expect.objectContaining({ mutations: expect.any(Array) }));
-    expect(prepare).toHaveBeenCalledWith(dream, 'a');
+    expect(prepare).toHaveBeenCalledWith(dream, 'a', { failOnUploadError: false });
   });
 
   it('does not silently fall back on an authorization error', async () => {

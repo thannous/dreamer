@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { DreamAnalysis } from '@/lib/types';
-import { createJournalMediaUploadService } from '../journalMediaUploadService';
+import { DreamImageUploadError, createJournalMediaUploadService } from '../journalMediaUploadService';
 
 const ref = (path: string) => `supabase-storage://dream-images/${path}`;
 const dream = (overrides: Partial<DreamAnalysis> = {}): DreamAnalysis => ({
@@ -64,6 +64,27 @@ describe('journal media upload boundary', () => {
     const original = dream({ imageUrl: 'data:image/png;base64,dGVzdA==', imageGenerationFailed: false });
     expect(await f.service.ensureRemoteImage(original, 'owner')).toEqual({ ...original, imageUrl: '', thumbnailUrl: undefined, imageGenerationFailed: false });
     expect(f.remove).not.toHaveBeenCalled();
+  });
+
+  it('hands a refused or unreachable upload back to a caller that can retry, picture intact', async () => {
+    const original = dream({ imageUrl: 'file:///cache/photo.png' });
+    const refused = fixture();
+    refused.upload.mockResolvedValueOnce({ data: { path: '' }, error: { message: 'bucket unavailable' } });
+    await expect(refused.service.ensureRemoteImage(original, 'owner', { failOnUploadError: true }))
+      .rejects.toBeInstanceOf(DreamImageUploadError);
+    const offline = fixture();
+    offline.upload.mockRejectedValueOnce(new TypeError('Network request failed'));
+    await expect(offline.service.ensureRemoteImage(original, 'owner', { failOnUploadError: true }))
+      .rejects.toBeInstanceOf(DreamImageUploadError);
+  });
+
+  it('still sends the dream without a picture that can no longer be read from the device', async () => {
+    const f = fixture();
+    f.readImageFileBase64.mockRejectedValueOnce(new Error('ENOENT'));
+    const original = dream({ imageUrl: 'file:///cache/gone.png' });
+    expect(await f.service.ensureRemoteImage(original, 'owner', { failOnUploadError: true }))
+      .toEqual({ ...original, imageUrl: '', thumbnailUrl: undefined, imageGenerationFailed: true });
+    expect(f.upload).not.toHaveBeenCalled();
   });
 
   it.each(['owner', 'foreign'])('only removes an old thumbnail owned by the current account (%s)', async (oldOwner) => {

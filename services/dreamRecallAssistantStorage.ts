@@ -40,3 +40,13 @@ export async function save(state: DreamRecallAssistantState): Promise<void> {
 export async function remove(dreamId: string): Promise<void> {
   await AsyncStorage.removeItem(getKey(dreamId));
 }
+
+/**
+ * Removes every recall draft kept for one account. A draft holds the dream's
+ * transcript and each question and answer, so it must not outlive the account.
+ */
+export async function removeAllForAccount(accountId: string): Promise<void> {
+  const prefix = `${KEY_PREFIX}${accountId}:`;
+  const keys = (await AsyncStorage.getAllKeys()).filter((key) => key.startsWith(prefix));
+  if (keys.length > 0) await AsyncStorage.multiRemove(keys);
+}

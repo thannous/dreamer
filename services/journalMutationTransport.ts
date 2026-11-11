@@ -4,13 +4,32 @@ import { formatError, type CodedError } from '@/lib/journalErrors';
 import type { SyncMutationResult } from '@/lib/journalSyncContracts';
 import { buildDreamMutationEntityKey, getMutationDreamId, getMutationRemoteId, normalizeDreamMemoryMetadata } from '@/lib/dreamUtils';
 import type { DreamAnalysis, DreamMutation } from '@/lib/types';
+import { DREAM_IMAGE_UPLOAD_ATTEMPTS, type EnsureRemoteImageOptions } from './journalMediaUploadService';
 
 export interface JournalMutationTransportDependencies {
   getClient: () => SupabaseClient;
-  ensureRemoteImage: (dream: DreamAnalysis, userId?: string) => Promise<DreamAnalysis>;
+  ensureRemoteImage: (dream: DreamAnalysis, userId?: string, options?: EnsureRemoteImageOptions) => Promise<DreamAnalysis>;
 }
 
 /** Per-instance compatibility flags retain the lifetime of the historical service. */
+// A failed upload leaves the mutation queued with its local picture for the
+// first attempts. After that the dream goes without it, so one image Storage
+// keeps refusing cannot hold every later change of the journal back.
+const imageUploadOptions = (mutation: DreamMutation, sync: JournalMutationSyncOptions): EnsureRemoteImageOptions => ({
+  failOnUploadError: sync.keepLocalImageOnUploadFailure === true
+    && (mutation.retryCount ?? 0) < DREAM_IMAGE_UPLOAD_ATTEMPTS,
+});
+
+export type JournalMutationSyncOptions = {
+  /**
+   * Only for callers that keep the mutation, and count its attempts, when the
+   * sync throws: the queue replay and the direct edit that falls back to the
+   * queue. A caller that builds a fresh mutation on every call would wait for
+   * a refused picture forever.
+   */
+  keepLocalImageOnUploadFailure?: boolean;
+};
+
 export function createJournalMutationTransport({ getClient, ensureRemoteImage }: JournalMutationTransportDependencies) {
   const DREAMS_TABLE = 'dreams';
   const createNotFoundError = (message: string): CodedError => {
@@ -343,13 +362,14 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
 
   const mapMutationToSyncPayload = async (
     mutation: DreamMutation,
-    userId?: string
+    userId: string | undefined,
+    options: JournalMutationSyncOptions
   ): Promise<Record<string, unknown>> => {
     const shouldPrepareDream =
       mutation.operation === 'create' || mutation.operation === 'update';
     const preparedDream =
       shouldPrepareDream && mutation.payload.dream
-        ? await ensureRemoteImage(mutation.payload.dream, userId)
+        ? await ensureRemoteImage(mutation.payload.dream, userId, imageUploadOptions(mutation, options))
         : mutation.payload.dream;
 
     return {
@@ -371,13 +391,14 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
 
   const syncDreamMutationsDirectly = async (
     mutations: DreamMutation[],
-    userId?: string
+    userId: string | undefined,
+    options: JournalMutationSyncOptions
   ): Promise<SyncMutationResult[]> => {
     const results: SyncMutationResult[] = [];
 
     for (const mutation of mutations) {
       if (mutation.operation === 'create' && mutation.payload.dream) {
-        const preparedDream = await ensureRemoteImage(mutation.payload.dream, userId);
+        const preparedDream = await ensureRemoteImage(mutation.payload.dream, userId, imageUploadOptions(mutation, options));
         const upsert = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean; includeMemoryColumn: boolean }) =>
           getClient()
             .from(DREAMS_TABLE)
@@ -432,7 +453,7 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
           throw new Error('Missing remote id for Supabase dream update');
         }
 
-        const preparedDream = await ensureRemoteImage(dreamToUpdate, userId);
+        const preparedDream = await ensureRemoteImage(dreamToUpdate, userId, imageUploadOptions(mutation, options));
         const update = (options: { includeImageColumn: boolean; includeClientUpdatedAtColumn: boolean; includeMemoryColumn: boolean }) =>
           getClient()
             .from(DREAMS_TABLE)
@@ -619,15 +640,16 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
 
   async function syncDreamMutationsInSupabase(
     mutations: DreamMutation[],
-    userId?: string
+    userId?: string,
+    options: JournalMutationSyncOptions = {}
   ): Promise<SyncMutationResult[]> {
     return syncDreamMutationsWithResolvedRemoteIds(mutations, async (batch) => {
       if (typeof getClient().rpc !== 'function') {
-        return syncDreamMutationsDirectly(batch, userId);
+        return syncDreamMutationsDirectly(batch, userId, options);
       }
 
       const preparedMutations = await Promise.all(
-        batch.map((mutation) => mapMutationToSyncPayload(mutation, userId))
+        batch.map((mutation) => mapMutationToSyncPayload(mutation, userId, options))
       );
 
       const { data, error } = await getClient().rpc('sync_dream_mutations', {
@@ -635,17 +657,17 @@ export function createJournalMutationTransport({ getClient, ensureRemoteImage }:
       });
 
       if (isMissingSyncMutationsRpcError(error)) {
-        return syncDreamMutationsDirectly(batch, userId);
+        return syncDreamMutationsDirectly(batch, userId, options);
       }
 
       if (isMissingClientUpdatedAtColumnError(error)) {
         clientUpdatedAtColumnAvailable = false;
-        return syncDreamMutationsDirectly(batch, userId);
+        return syncDreamMutationsDirectly(batch, userId, options);
       }
 
       if (isMissingMemoryColumnError(error)) {
         memoryColumnAvailable = false;
-        return syncDreamMutationsDirectly(batch, userId);
+        return syncDreamMutationsDirectly(batch, userId, options);
       }
 
       if (error) {
