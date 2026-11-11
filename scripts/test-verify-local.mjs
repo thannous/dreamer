@@ -287,6 +287,25 @@ describe('verify:pr', () => {
     assert.ok(proof.checks.every((check) => check.result !== 'skipped'));
   });
 
+  test('--external is refused for a check whose probe only needs an install on this machine', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const probe = `requires: { command: 'test -n "$DB_AVAILABLE"'`;
+    assert.ok(CONFIG.includes(probe));
+    const sha = repo.commit('migration', {
+      'db/1.sql': 'select 1;\n',
+      'verify-local.config.mjs': CONFIG.replace(probe, `requires: { installHere: true, command: 'test -n "$DB_AVAILABLE"'`),
+    });
+
+    await assert.rejects(
+      verify('pr', ['--external', `db=owner-machine: tanuki pgTAP on ${sha}`], repo.options),
+      /can be installed on this machine, so its result never comes from elsewhere/,
+    );
+    // Without it the proof is incomplete until the install is done here.
+    assert.equal((await verify('pr', [], repo.options)).status, 2);
+    assert.equal((await verify('pr', [], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1' } })).status, 0);
+  });
+
   test('--external only stands in for a specialised check that cannot run here, with evidence for this head', async () => {
     const repo = makeRepository();
     repo.git(['checkout', '--quiet', '-b', 'feature']);
@@ -2039,6 +2058,34 @@ describe('pre-push hook', () => {
     assert.equal((await verify('release', [], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1', FAIL_BUILD: '1' } })).status, 1);
     const afterFailure = await hookRun(repo, line);
     assert.match(afterFailure.output, /pr proof passed .*; open on this commit: build \(release failed at /);
+  });
+
+  test('a push to the main branch needs a passed proof and no open check; other branches are only told', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const sha = repo.commit('feature', { 'src/b.js': '1\n' });
+    const toMain = `refs/heads/feature ${sha} refs/heads/main ${ZERO}\n`;
+
+    const unproven = await hookRun(repo, toMain);
+    assert.equal(unproven.status, 1, unproven.output);
+    assert.match(unproven.output, /goes to main without a proof; run npm run verify:pr on it first/);
+    // The same commit to any other branch is work in progress.
+    assert.equal((await hookRun(repo, `refs/heads/feature ${sha} refs/heads/feature ${ZERO}\n`)).status, 0);
+
+    assert.equal((await verify('pr', [], { ...repo.options, env: { ...repo.env, FAIL_TEST: '1' } })).status, 1);
+    const failed = await hookRun(repo, toMain);
+    assert.equal(failed.status, 1, failed.output);
+    assert.match(failed.output, /goes to main with(out a proof| a proof that is failed| a check still open)/);
+
+    assert.equal((await verify('pr', [], repo.options)).status, 0);
+    const proven = await hookRun(repo, toMain);
+    assert.equal(proven.status, 0, proven.output);
+
+    // A later run that fails on this commit reopens it.
+    assert.equal((await verify('release', [], { ...repo.options, env: { ...repo.env, DB_AVAILABLE: '1', FAIL_BUILD: '1' } })).status, 1);
+    const reopened = await hookRun(repo, toMain);
+    assert.equal(reopened.status, 1, reopened.output);
+    assert.match(reopened.output, /goes to main with/);
   });
 
   test('the secret scan fails closed when git cannot read the blobs', () => {

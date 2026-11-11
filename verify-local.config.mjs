@@ -308,14 +308,20 @@ const EDGE_CHECKS = [
   'deno check --no-config tools/dev-local/api-server.ts',
   'deno test --no-config --allow-read tools/dev-local',
 ].join(' && ');
+// installHere: what these probes look for is an install any development
+// machine can do. A failing probe means "install it", so --external is refused
+// for these checks: a line of text must not stand in for a browser campaign.
+// Only e2e-backend, bound to the operating system, can still come from elsewhere.
 const DENO = {
   command: 'deno --version',
-  hint: 'run it locally where you run verify:pr (Deno 2.9.8: `mise install`); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
+  installHere: true,
+  hint: 'install Deno 2.9.8 on this machine (`mise install`) and run the check here; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 const TESTERARMY = {
   command: 'test -d tools/e2e/node_modules/@e2e-dev/web',
-  hint: 'run it locally where you run verify:pr (after `npm run test:testerarmy:setup && npm run test:testerarmy:browsers` in the main checkout); if this machine cannot, pass --external <check>="owner-machine: <host> <note> on <SHA>" from the machine that ran it; until then the proof is incomplete: do not push, report it as a blocker',
+  installHere: true,
+  hint: 'install the browser tooling in the main checkout (`npm run test:testerarmy:setup && npm run test:testerarmy:browsers`) and run the check here; until then the proof is incomplete: do not push, report it as a blocker',
 };
 
 // Unit tests and snapshots under the app folders: no bundle loads them and
@@ -384,7 +390,7 @@ const cachedTypecheck = (name, script) => {
 // tests compare the file with it, so an engine edit is a deliberate change of
 // this pin. No other repository is read or compared.
 export const ENGINE_SHA256 =
-  'e8f02e1341fa378ec515400ac1ac6b3468e3b90ffac6c78462102c0e90b63fbc';
+  'fc0ec5dd46ffb937ef2ef100b98d80bd790bcf228c55a86c612a5d2c4da7a0a1';
 
 export default {
   mainBranch: 'master',
@@ -729,7 +735,8 @@ export default {
       specialised: true,
       requires: {
         command: 'node tools/e2e/pr-gate.mjs probe parcours',
-        hint: 'a diff that touches a web app zone needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the journeys, pass --external parcours-touches="owner-machine: <host> <note> on <SHA>". A diff with no app zone does not need the browser and the probe passes',
+        installHere: true,
+        hint: 'a diff that touches a web app zone needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`): install them on this machine and run the journeys here. If this probe fails the proof is incomplete: do not push. A diff with no app zone does not need the browser and the probe passes',
       },
     },
     {
@@ -741,7 +748,8 @@ export default {
       specialised: true,
       requires: {
         command: 'node tools/e2e/pr-gate.mjs probe smoke',
-        hint: 'a Dreamer app diff needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`). If this probe fails the proof is incomplete: do not push. From a machine that ran the smoke journeys, pass --external smoke-journeys="owner-machine: <host> <note> on <SHA>". A diff that touches neither Dreamer app paths nor the SMOKE_STACK paths of tools/e2e/zones.mjs (dependencies, build config, the mock web app, the e2e runner and its shared web helpers) does not need the browser and the probe passes',
+        installHere: true,
+        hint: 'a Dreamer app diff needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`): install them on this machine and run the smoke journeys here. If this probe fails the proof is incomplete: do not push. A diff that touches neither Dreamer app paths nor the SMOKE_STACK paths of tools/e2e/zones.mjs (dependencies, build config, the mock web app, the e2e runner and its shared web helpers) does not need the browser and the probe passes',
       },
     },
 
@@ -805,7 +813,7 @@ export default {
       kinds: ['release'],
       targets: ['app'],
       specialised: true,
-      requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
+      requires: { command: `${TESTERARMY.command} && ${MEDITATION_DEPS.command}`, installHere: true, hint: `${TESTERARMY.hint}; ${MEDITATION_DEPS.hint}` },
     },
     // Repros written by npm run test:bugbash:prerelease. Empty is a pass.
     // Not in the PR gate. Mock mode comes from e2e.config.ts; E2E_BUGBASH only

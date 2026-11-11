@@ -5,7 +5,7 @@
 // verify-local.config.mjs in a fixture repository: a deletion or a push with no
 // new commit runs nothing; a push takes a few seconds; forbidden files and
 // secrets are blocked, the tracked public profiles are not; the proof of the
-// pushed tree is reported and its absence does not block.
+// pushed tree is reported, and a push to master is refused without a passed one.
 
 const { spawnSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
@@ -104,6 +104,17 @@ describe('pre-push hook', () => {
     expect(result.output).toContain('fast checks passed');
     expect(result.elapsed).toBeLessThan(10_000);
     expect(repo.git('ls-remote', 'origin', 'refs/heads/feature')).not.toBe('');
+  });
+
+  it('refuses a push to master without a passed proof', () => {
+    const repo = fixture();
+    repo.git('checkout', '--quiet', '-b', 'feature');
+    const sha = repo.commit('feature', { 'lib/value.ts': 'export const value = 4;\n' });
+
+    const result = repo.push('--quiet', 'origin', 'feature:master');
+    expect(result.status).not.toBe(0);
+    expect(result.output).toContain(`${sha.slice(0, 12)} goes to master without a proof; run npm run verify:pr on it first`);
+    expect(repo.git('rev-parse', 'origin/master')).not.toBe(sha);
   });
 
   it('reports the proof of the pushed tree', () => {

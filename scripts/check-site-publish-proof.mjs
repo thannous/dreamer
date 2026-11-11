@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Production publish guard of noctalia.app: first step of
 // `npm run docs:deploy:prod` (scripts/docs-deploy.js prod), and runnable alone:
-// `node scripts/check-site-publish-proof.mjs`.
+// `node scripts/check-site-publish-proof.mjs`. With `--build` it is the guard
+// of a store build (`npm run release:build`): the same proof checks for the
+// `app` target on the commit that is checked out, wherever its branch is.
 //
 // A production publish uploads only the exact commit of origin/master on which
 // `npm run verify:release:site` (`release --target site`: the shared checks and
@@ -147,8 +149,8 @@ export function formatRefusal(result, label = DEFAULT_LABEL, targets = SITE_TARG
     `${PREFIX} production publish of ${label} refused: ${problems.join('; ')}. `
     + `A production publish uploads only the exact origin/master commit on which \`${command}\` passed. `
     + 'Check out master and update it (`git switch master && git pull --ff-only`), commit, stash or remove local changes, '
-    + `run \`${command}\` (it writes the release proof of HEAD in the shared git directory; a specialised check `
-    + 'that cannot run here takes --external <check>="owner-machine: <host> <note> on <SHA>"), then publish again. '
+    + `run \`${command}\` (it writes the release proof of HEAD in the shared git directory; install what a check `
+    + 'needs on this machine, only e2e-backend may take --external e2e-backend="owner-machine: <host> <note> on <SHA>"), then publish again. '
     + 'There is no override.'
   );
 }
@@ -174,6 +176,37 @@ export async function assertSitePublishProof({ label = DEFAULT_LABEL, targets = 
   return { head: result.head, tree: result.tree, message: formatAccepted(result, targets) };
 }
 
+/** The release target a store build needs: the app checks of `npm run verify:release`. */
+export const BUILD_TARGETS = Object.freeze(['app']);
+// A store build starts from the prepared release commit, which may still be on
+// its release branch, and scripts/mobile-release.js checks the checkout itself
+// (it allows the build numbers it synchronises): these two are not asked here.
+const BUILD_NOT_ASKED = new Set(['head-is-origin-main', 'clean-tree']);
+
+/**
+ * The guard of `npm run release:build` (scripts/mobile-release.js): resolves
+ * with { head, tree, message } when `npm run verify:release` passed on exactly
+ * HEAD, or throws an Error whose message is the refusal. No fetch: the build
+ * is judged on the commit that is checked out.
+ */
+export async function assertReleaseBuildProof({ root = defaultRoot, gitEnv } = {}) {
+  let result;
+  try {
+    result = await checkSitePublishProof({ root, gitEnv, fetch: false, targets: BUILD_TARGETS });
+  } catch (error) {
+    throw new Error(`${PREFIX} store build refused: the guard could not run (${String(error?.message || error).split('\n')[0]}).`);
+  }
+  const failures = result.failures.filter((failure) => !BUILD_NOT_ASKED.has(failure.check));
+  if (failures.length) {
+    throw new Error(
+      `${PREFIX} store build refused: ${failures.map((failure) => failure.message).join('; ')}. `
+      + `A store build starts only from a commit on which \`${RELEASE_COMMAND}\` passed. `
+      + `Run \`${RELEASE_COMMAND}\` on HEAD (${result.head}), then build again. There is no override.`,
+    );
+  }
+  return { head: result.head, tree: result.tree, message: `${PREFIX} OK: ${RELEASE_COMMAND} passed on HEAD ${result.head} (tree ${result.tree}).` };
+}
+
 function parseRoot(argv) {
   const index = argv.indexOf('--root');
   return index !== -1 && argv[index + 1] ? path.resolve(argv[index + 1]) : defaultRoot;
@@ -181,7 +214,9 @@ function parseRoot(argv) {
 
 async function main(argv) {
   try {
-    console.log((await assertSitePublishProof({ root: parseRoot(argv) })).message);
+    // --build: the guard of a store build (release:build) instead of the site publish.
+    const guard = argv.includes('--build') ? assertReleaseBuildProof : assertSitePublishProof;
+    console.log((await guard({ root: parseRoot(argv) })).message);
     return 0;
   } catch (error) {
     console.error(error.message);

@@ -195,9 +195,12 @@ Keep hook and local validation coverage intact. Delivery-control changes require
 a separately justified scope.
 
 Run specialized checks locally where `verify:pr` runs. Missing prerequisites leave
-the proof `incomplete`, which blocks pushing. If that machine cannot run a check,
-run it on an equipped owner machine and supply
-`--external <check>="owner-machine: <host> <note> on <SHA>"`. No HTTPS/CI evidence URL
+the proof `incomplete`, which blocks pushing: the pre-push hook refuses a push to
+`master` without a passed proof. What can be installed on the machine (Deno, the
+browser test tooling) is installed there; `--external` is refused for those checks
+(`installHere` in `verify-local.config.mjs`). Only `e2e-backend`, bound to the
+operating system, may come from an equipped owner machine with
+`--external e2e-backend="owner-machine: <host> <note> on <SHA>"`. No HTTPS/CI evidence URL
 is accepted (`externalSources: []`). Native/device evidence cannot be replaced by
 mock or unit-test repetition.
 
@@ -358,8 +361,9 @@ status` shows the proof of `HEAD`. The site needs `npm run verify:release:site` 
 shared checks plus the `site` target (the TesterArmy site campaign), without the checks of the
 `app` target (`build:web`, `e2e-backend` on the native Supabase runtime, the TesterArmy Dreamer,
 Lucid and Meditation campaigns). Shipping both from one SHA takes both runs. A check this
-machine cannot run (Deno, native Supabase runtime, TesterArmy) leaves the proof `incomplete`: run it on a machine
-that can and rerun with `--external <check>="owner-machine: <host> <note> on <SHA>"`. `npm run
+machine cannot run leaves the proof `incomplete`: install Deno or the TesterArmy tooling here and
+run it; only the native Supabase runtime check, when the operating system cannot host it, is run on a machine
+that can and passed with `--external e2e-backend="owner-machine: <host> <note> on <SHA>"`. `npm run
 docs:deploy:prod` (site) and `npm run web:deploy:prod` (Vercel web app) then refuse unless `HEAD` is
 `origin/master` after `git fetch`, the checkout is clean, and a passed `release` proof exists for
 this `master` SHA (`scripts/check-site-publish-proof.mjs`, through the engine's

@@ -251,14 +251,15 @@ détaille fetch, merge-base, worktree isolé, preuve, nouvelle tête et intégra
 ## Notes dreamer
 
 [Local validation and CI](doc_web_interne/docs/repository-operations.md#local-validation-and-ci)
-explains conditional checks and the release targets. The pre-push hook only checks
-forbidden files, secrets and file size and prints the proof; it does not replace
-`verify:pr`. After a push from a machine where `gh` is authenticated,
+explains conditional checks and the release targets. The pre-push hook checks
+forbidden files, secrets and file size, prints the proof, and refuses a push to
+`master` without a passed proof; it does not replace `verify:pr`. After a push from a machine where `gh` is authenticated,
 `npm run verify:pr:status` posts the proof as the commit status `verify-local/pr`,
 so the PR shows it without trusting its description. CircleCI is only an optional manual/API installation benchmark
 (`run_e2e_benchmark=true`), with no application validation; webhooks run nothing. EAS
 workflows use `workflow_dispatch` only. Local coverage remains mandatory; missing
-specialized prerequisites need a valid owner-machine proof, never a skip or CI link.
+specialized prerequisites are installed on the machine (only `e2e-backend` may use a
+valid owner-machine proof), never a skip or CI link.
 See [the current CI guide](doc_web_interne/docs/circleci-migration.md).
 
 ## Publishing to production

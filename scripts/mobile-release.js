@@ -435,6 +435,10 @@ function main(args = process.argv.slice(2), root = ROOT) {
     return;
   }
   if (apps.length !== 1 || !['android', 'ios'].includes(options.platform)) throw new Error('Build needs one --app and --platform android|ios');
+  // A store build ships what the full local validation proved: the release
+  // proof of exactly this commit, checked before anything is sent to EAS.
+  const proof = spawnSync(process.execPath, [path.join(root, 'scripts/check-site-publish-proof.mjs'), '--build', '--root', root], { cwd: root, stdio: 'inherit' });
+  if (proof.error || proof.status !== 0) throw new Error(`No store build started: ${proof.error?.message || 'the release proof of this commit is missing or not passed (see above)'}`);
   const app = apps[0];
   const profile = app === 'lucid' ? 'lucid-production' : 'production';
   const env = buildEnv(app, profile);

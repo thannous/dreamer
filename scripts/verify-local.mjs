@@ -12,7 +12,8 @@
 //   node scripts/verify-local.mjs release  [--rev <rev>] [--target <name>]... [--force] [--keep] [--external ...] [--plan [--json]]
 //   node scripts/verify-local.mjs status   [--rev <rev>] [--json]
 //   node scripts/verify-local.mjs proof-block [--rev <rev>]
-//   node scripts/verify-local.mjs hook <remote> [<url>]       (pre-push hook; refs on stdin)
+//   node scripts/verify-local.mjs hook <remote> [<url>]       (pre-push hook; refs on stdin;
+//                                                             a push to the main branch needs a passed proof)
 //
 // pr / release check the commit <rev> (default HEAD) in an isolated git
 // worktree, so work in progress is never checked nor disturbed. The proof is
@@ -47,7 +48,9 @@
 // stops: no isolated copy, no run log entry, no proof.
 //
 // --external <check>=<evidence> stands in only for a specialised check whose
-// probe fails here. The evidence is "owner-machine: <host> <note> on <SHA>"
+// probe fails here, and never for one whose `requires` says installHere: true
+// (what the probe looks for is an install any machine can do, so a failing
+// probe means "install it", not "run it elsewhere"). The evidence is "owner-machine: <host> <note> on <SHA>"
 // (a run on the owner's machine), or cites a run whose https:// URL starts
 // with one of the config's externalSources (the External CI table, section 13
 // of the repository's own delivery rule); any other https:// URL,
@@ -1836,6 +1839,9 @@ async function runVerify(kind, argv = [], {
     if (!check.specialised || !check.requires) {
       throw new UsageError(`--external ${name}: only a specialised check with a requires probe can come from elsewhere; run it here.`);
     }
+    if (check.requires.installHere) {
+      throw new UsageError(`--external ${name}: what its probe needs can be installed on this machine, so its result never comes from elsewhere; ${check.requires.hint ?? 'install it and run the check here'}.`);
+    }
     const issue = externalEvidenceIssue(git, evidence, sha, tree, config.externalSources);
     if (issue) throw new UsageError(`--external ${name}: evidence refused, ${issue}.`);
     if (probe(check)) throw new UsageError(`--external ${name}: this machine can run it (\`${check.requires.command}\` succeeds); run it here instead.`);
@@ -2406,13 +2412,13 @@ export async function prePush(remote, stdinText, {
   const { root, commonDir, git } = resolveRepository(cwd, env);
   const refs = stdinText.split('\n').map((line) => line.trim().split(/\s+/)).filter((parts) => parts.length === 4);
   const pushes = [];
-  for (const [localRef, localSha, , remoteSha] of refs) {
+  for (const [localRef, localSha, remoteRef, remoteSha] of refs) {
     if (NULL_ID.test(localSha) || localSha === remoteSha) continue;
     const commit = git(['rev-parse', '--verify', '--quiet', `${localSha}^{commit}`], { allowFailure: true });
     if (!commit) continue; // a tag on a non-commit object
     const fresh = git(['rev-list', '--max-count=1', commit, '--not', `--remotes=${remote}`], { allowFailure: true });
     if (fresh === '') continue;
-    pushes.push({ localRef, sha: commit });
+    pushes.push({ localRef, remoteRef, sha: commit });
   }
   if (pushes.length === 0) {
     log(`${PREFIX} pre-push: nothing new to send; no check run.`);
@@ -2514,6 +2520,15 @@ export async function prePush(remote, stdinText, {
     log(proof
       ? `${PREFIX} pre-push: ${push.localRef} ${push.sha.slice(0, 12)}: ${describeProof(proof)}${openSuffix(commonDir, push.sha)}.`
       : `${PREFIX} pre-push: ${push.localRef} ${push.sha.slice(0, 12)}: no proof yet; run ${config.commands.pr} before pushing.`);
+    // The main branch is what gets delivered: a commit reaches it only with a
+    // passed proof of its tree and no check left open on it. Other branches
+    // are work in progress and are only told.
+    if (push.remoteRef === `refs/heads/${config.mainBranch}`) {
+      const open = openChecks(readRunLog(commonDir, push.sha));
+      if (!proof) problems.push(`${push.sha.slice(0, 12)} goes to ${config.mainBranch} without a proof; run ${config.commands.pr} on it first`);
+      else if (proof.result !== 'passed') problems.push(`${push.sha.slice(0, 12)} goes to ${config.mainBranch} with a proof that is ${proof.result}; ${config.commands.pr} must pass on it first`);
+      else if (open.length) problems.push(`${push.sha.slice(0, 12)} goes to ${config.mainBranch} with a check still open (${describeOpen(open)}); a run that really reruns it must pass first`);
+    }
   }
 
   const seconds = ((now() - started) / 1000).toFixed(1);

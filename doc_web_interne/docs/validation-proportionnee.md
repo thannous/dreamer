@@ -41,7 +41,8 @@ ou des vérifications plus larges des données et des cas d'échec.
   touchés et les parcours essentiels. La sélection par zones reste le socle ;
   selon la révision et sa configuration, un filtre IA facultatif peut ajouter
   d'autres parcours. Avec une preuve échouée ou incomplète, on ne pousse pas : le
-  hook `pre-push` affiche la preuve mais ne la bloque pas. Voir les
+  hook `pre-push` refuse un push vers `master` sans preuve réussie, et se
+  contente d'afficher la preuve pour les autres branches. Voir les
   [détails de la sélection](repository-operations.md#local-validation-and-ci).
 - **Avant une release de l'application.** On lance l'exploration
   `npm run test:bugbash:prerelease` en environnement simulé. Chaque bug confirmé
@@ -126,7 +127,9 @@ contrôles (`verify-local.config.mjs`) ou du pipeline.
 Chaque push lance le hook `.githooks/pre-push`, installé par `npm ci`/`npm install`.
 Il dure quelques secondes et ne lance aucune suite : fichiers interdits (`.env`,
 clés), secrets et taille des fichiers envoyés, puis il affiche la preuve de
-l'arbre poussé (une preuve absente ne bloque pas). Une suppression de branche ou
+l'arbre poussé. Vers `master`, il refuse le push si cette preuve est absente,
+échouée, incomplète, ou si un contrôle est resté ouvert sur ce commit ; vers une
+autre branche, une preuve absente est seulement signalée. Une suppression de branche ou
 un push sans nouveau commit ne lance rien. Les agents n'utilisent jamais
 `git push --no-verify`.
 
@@ -165,10 +168,11 @@ les mêmes entrées est réutilisé : une correction documentaire ne rejoue ni l
 types ni le lint (leurs entrées ignorent le Markdown, `doc_web_interne/`,
 `marketing/` et `specs/`), et un second `verify:pr` sur le même arbre ne rejoue
 rien. Un contrôle spécialisé impossible sur la machine (Deno absent, par
-exemple) rend la preuve `incomplete` : le lancer en local là où tourne
-`verify:pr` ; si cette machine ne peut pas, relancer avec
-`--external <contrôle>="owner-machine: <hôte> <note> on <SHA>"` depuis la
-machine qui l'a lancé ; tant que la preuve est `incomplete`, ne pas pousser et
+exemple) rend la preuve `incomplete` : installer ce qui manque et le lancer en
+local là où tourne `verify:pr`. `--external` n'est plus accepté pour ce qui
+s'installe sur la machine (Deno, outils de test navigateur) : seul `e2e-backend`,
+lié au système d'exploitation, peut encore venir d'une autre machine avec
+`--external e2e-backend="owner-machine: <hôte> <note> on <SHA>"` ; tant que la preuve est `incomplete`, ne pas pousser et
 le signaler comme bloquant
 ([règle commune](regle-commune-livraison.md)).
 

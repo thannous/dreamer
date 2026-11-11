@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   SITE_PUBLISH_PROOF_CHECKS,
+  assertReleaseBuildProof,
   assertSitePublishProof,
   checkSitePublishProof,
   formatRefusal,
@@ -183,6 +184,38 @@ test('a missing proof is refused', async () => {
     const result = await check();
     assert.deepEqual(failedChecks(result), ['proof-present']);
     assert.match(result.failures[0].message, /no proof for tree [0-9a-f]{40}/);
+  });
+});
+
+test('a store build needs the app release proof of the commit that is checked out, on any branch', async () => {
+  await withRepository(async ({ engine, env, git, work }) => {
+    // The prepared release commit is still on its release branch.
+    git(['checkout', '--quiet', '-b', 'release/3.9.0']);
+    writeFileSync(path.join(work, 'tracked.txt'), 'release\n');
+    git(['commit', '--quiet', '-am', 'prepare 3.9.0']);
+    const head = git(['rev-parse', 'HEAD']);
+
+    await assert.rejects(assertReleaseBuildProof({ root: work, gitEnv: env }), /store build refused: no proof for tree [0-9a-f]{40}.*Run `npm run verify:release` on HEAD/);
+    // The site proof and a pr proof are not the app release proof.
+    assert.equal((await engine('pr')).status, 0);
+    await assert.rejects(assertReleaseBuildProof({ root: work, gitEnv: env }), /store build refused/);
+    assert.equal((await engine('release', SITE)).status, 0);
+    await assert.rejects(assertReleaseBuildProof({ root: work, gitEnv: env }), /does not cover target app/);
+
+    assert.equal((await engine('release', ['--target', 'app'], { extraEnv: { APP_E2E_AVAILABLE: '1' } })).status, 0);
+    const accepted = await assertReleaseBuildProof({ root: work, gitEnv: env });
+    assert.equal(accepted.head, head);
+    assert.match(accepted.message, /npm run verify:release passed on HEAD/);
+
+    // The command line used by scripts/mobile-release.js.
+    const cli = spawnSync(process.execPath, [guardScript, '--build', '--root', work], { env, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
+
+    // The next commit has no proof of its own.
+    writeFileSync(path.join(work, 'tracked.txt'), 'later\n');
+    git(['commit', '--quiet', '-am', 'later']);
+    await assert.rejects(assertReleaseBuildProof({ root: work, gitEnv: env }), /store build refused/);
+    assert.equal(spawnSync(process.execPath, [guardScript, '--build', '--root', work], { env, encoding: 'utf8' }).status, 1);
   });
 });
 
