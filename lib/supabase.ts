@@ -9,16 +9,57 @@ let webRecoveryTokenHash: string | null = null;
 let webRecoveryLinkState: WebRecoveryLinkState = 'none';
 let webAuthCode: string | null = null;
 let webAuthCodeIsRecovery = false;
-// The marker auth-js appends to the verifier that resetPasswordForEmail stores,
-// and returns as redirectType: `recovery` since 2.119, `PASSWORD_RECOVERY`
-// before. A reset requested before an app update still holds the older one.
-const PKCE_RECOVERY_MARKERS = ['recovery', 'PASSWORD_RECOVERY'];
-function createIsolatedPkceRecoveryClient(projectUrl: string, publicKey: string, verifier: string) {
+let webAuthFlowId: string | null = null;
+// Match auth-js's public callback parameter and installed flow-id validator.
+const WEB_PKCE_FLOW_ID_PARAMETER = 'sb_flow_id';
+const WEB_PKCE_FLOW_ID_PATTERN = /^[a-zA-Z0-9_-]{8,64}$/;
+
+function pkceVerifierKey(storageKey: string, flowId: string | null): string {
+  return flowId ? `${storageKey}-flow-${flowId}-code-verifier` : `${storageKey}-code-verifier`;
+}
+
+function readWebPkceVerifier(flowId: string | null): string | null {
+  const stored = window.localStorage.getItem(pkceVerifierKey(WEB_AUTH_STORAGE_KEY, flowId));
+  if (!stored) return null;
+  // Older browsers stored a raw verifier; current auth-js serializes strings.
+  // JSON objects, numbers and null must never become code verifiers.
+  try {
+    const decoded: unknown = JSON.parse(stored);
+    return typeof decoded === 'string' ? decoded : null;
+  } catch {
+    return stored;
+  }
+}
+
+function isRecoveryRedirectType(value: unknown): boolean {
+  return value === 'recovery' || value === 'PASSWORD_RECOVERY';
+}
+
+function consumeWebRecoveryVerifier(flowId: string | null, verifier: string): void {
+  window.localStorage.removeItem(pkceVerifierKey(WEB_AUTH_STORAGE_KEY, flowId));
+  if (!flowId) return;
+  // A newer flow may own the SDK's legacy mirror. Never consume that verifier.
+  if (readWebPkceVerifier(null) === verifier) {
+    window.localStorage.removeItem(pkceVerifierKey(WEB_AUTH_STORAGE_KEY, null));
+  }
+  const indexKey = `${WEB_AUTH_STORAGE_KEY}-flows-code-verifier`;
+  const storedIndex = window.localStorage.getItem(indexKey);
+  if (!storedIndex) return;
+  let index: unknown;
+  try { index = JSON.parse(storedIndex); } catch { return; }
+  if (!Array.isArray(index) || !index.includes(flowId)) return;
+  const remaining = index.filter(value => value !== flowId);
+  if (remaining.length) window.localStorage.setItem(indexKey, JSON.stringify(remaining));
+  else window.localStorage.removeItem(indexKey);
+}
+
+function createIsolatedPkceRecoveryClient(
+  projectUrl: string, publicKey: string, verifier: string, flowId: string | null,
+) {
   // A distinct key also prevents auth-js BroadcastChannel notifications from
   // reaching another recovery tab or the app's primary auth client.
   const storageKey = `noctalia-recovery-pkce-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-  // auth-js reads its storage as JSON and treats any other value as absent.
-  const values = new Map<string, string>([[`${storageKey}-code-verifier`, JSON.stringify(verifier)]]);
+  const values = new Map<string, string>([[pkceVerifierKey(storageKey, flowId), JSON.stringify(verifier)]]);
   const client = createClient(projectUrl, publicKey, {
     auth: {
       storageKey,
@@ -71,15 +112,21 @@ function quarantineWebAuthCallback(): void {
     // malicious or expired code fails exchange.
     const source = query.has('code') ? query : hash;
     const other = source === query ? hash : query;
-    if (source.getAll('code').length === 1 && !other.has('code')) {
+    const flowIds = source.getAll(WEB_PKCE_FLOW_ID_PARAMETER);
+    const validFlowId = !other.has(WEB_PKCE_FLOW_ID_PARAMETER) &&
+      (flowIds.length === 0 || (flowIds.length === 1 && WEB_PKCE_FLOW_ID_PATTERN.test(flowIds[0])));
+    if (source.getAll('code').length === 1 && !other.has('code') && validFlowId) {
       webAuthCode = source.get('code');
       webAuthCodeIsRecovery = isPasswordResetPath(url.pathname);
+      webAuthFlowId = flowIds[0] ?? null;
     }
     if (isPasswordResetPath(url.pathname)) {
       webRecoveryLinkState = webAuthCode ? 'checking' : 'invalid';
     }
     query.delete('code');
     hash.delete('code');
+    query.delete(WEB_PKCE_FLOW_ID_PARAMETER);
+    hash.delete(WEB_PKCE_FLOW_ID_PARAMETER);
     url.hash = hash.toString();
     try {
       window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
@@ -116,6 +163,8 @@ function quarantineWebAuthCallback(): void {
   if (isSupabaseReturn) {
     query.delete('code');
     hash.delete('code');
+    query.delete(WEB_PKCE_FLOW_ID_PARAMETER);
+    hash.delete(WEB_PKCE_FLOW_ID_PARAMETER);
   }
   url.hash = hash.toString();
   try {
@@ -316,26 +365,18 @@ export const supabase = createClient(
 export const webAuthCallbackPromise: Promise<void> = webAuthCode
   ? (async () => {
     if (webAuthCodeIsRecovery) {
-      // resetPasswordForEmail stores the PKCE verifier with a recovery marker;
-      // exchangeCodeForSession installs a session before returning. Reject an
-      // OAuth/sign-in verifier before that side effect can occur.
+      // Validate the selected flow before an exchange can install a session.
+      // Current auth-js writes /recovery; old reset requests used /PASSWORD_RECOVERY.
       let verifier: string | null = null;
       const configuration = getSupabasePublicConfiguration();
       try {
-        const stored = window.localStorage.getItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
-        if (stored) {
-          // auth-js serializes storage strings as JSON; older clients may have
-          // stored the verifier directly. Never accept a non-string JSON value.
-          let decoded: unknown = stored;
-          try { decoded = JSON.parse(stored); } catch { /* legacy raw string */ }
-          verifier = typeof decoded === 'string' ? decoded : null;
-        }
+        verifier = readWebPkceVerifier(webAuthFlowId);
       } catch {
         // A missing/unreadable verifier cannot prove the browser requested reset.
       }
-      const [codeVerifier, marker, ...rest] = (verifier ?? '').split('/');
-      if (!configuration || !verifier || !codeVerifier || rest.length > 0 ||
-        !PKCE_RECOVERY_MARKERS.includes(marker)) {
+      const verifierParts = verifier?.split('/') ?? [];
+      if (!configuration || !verifier || verifierParts.length !== 2 || !verifierParts[0] ||
+        !isRecoveryRedirectType(verifierParts[1])) {
         webRecoveryLinkState = 'invalid';
         return;
       }
@@ -344,12 +385,14 @@ export const webAuthCallbackPromise: Promise<void> = webAuthCode
       // memory-backed client. A recovery code never reaches the app client.
       let isolated: ReturnType<typeof createIsolatedPkceRecoveryClient> | null = null;
       try {
-        window.localStorage.removeItem(`${WEB_AUTH_STORAGE_KEY}-code-verifier`);
+        consumeWebRecoveryVerifier(webAuthFlowId, verifier);
         isolated = createIsolatedPkceRecoveryClient(
-          configuration.projectUrl, configuration.publicKey, verifier
+          configuration.projectUrl, configuration.publicKey, verifier, webAuthFlowId
         );
-        const { data, error } = await isolated.client.auth.exchangeCodeForSession(webAuthCode!);
-        if (error || !('redirectType' in data) || data.redirectType !== marker ||
+        const { data, error } = await isolated.client.auth.exchangeCodeForSession(
+          webAuthCode!, webAuthFlowId ? { flowId: webAuthFlowId } : undefined
+        );
+        if (error || !('redirectType' in data) || !isRecoveryRedirectType(data.redirectType) ||
           !data.user?.email || !data.session || data.session.user.id !== data.user.id) {
           isolated.clear();
           webRecoveryLinkState = 'invalid';
@@ -365,7 +408,14 @@ export const webAuthCallbackPromise: Promise<void> = webAuthCode
     }
 
     try {
-      await supabase.auth.exchangeCodeForSession(webAuthCode!);
+      const verifier = readWebPkceVerifier(webAuthFlowId);
+      // Recovery sessions belong only to the isolated reset-password client.
+      if (!verifier || isRecoveryRedirectType(verifier.split('/')[1])) return;
+      // Normalize only the selected legacy value for the SDK's JSON storage API.
+      window.localStorage.setItem(pkceVerifierKey(WEB_AUTH_STORAGE_KEY, webAuthFlowId), JSON.stringify(verifier));
+      await supabase.auth.exchangeCodeForSession(
+        webAuthCode!, webAuthFlowId ? { flowId: webAuthFlowId } : undefined
+      );
     } catch {
       // A failed sign-in code leaves any existing app session unchanged.
     }

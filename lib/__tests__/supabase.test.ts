@@ -138,12 +138,17 @@ describe('supabase secure storage adapter', () => {
     jest.resetModules();
     jest.doMock('react-native', () => ({ Platform: { OS: 'web' } }));
     const replaceState = jest.fn();
+    const stored = new Map<string, string>(verifier === null ? [] : [['sb-example-auth-token-code-verifier', verifier]]);
     Object.defineProperty(globalThis, 'window', {
       configurable: true,
       value: {
         location: { href },
         history: { state: null, replaceState },
-        localStorage: { getItem: jest.fn(() => verifier), removeItem: jest.fn() },
+        localStorage: {
+          getItem: jest.fn((key: string) => stored.get(key) ?? null),
+          setItem: jest.fn((key: string, value: string) => { stored.set(key, value); }),
+          removeItem: jest.fn((key: string) => { stored.delete(key); }),
+        },
       },
     });
     return { module: require('../supabase') as typeof import('../supabase'), replaceState };
@@ -225,7 +230,7 @@ describe('supabase secure storage adapter', () => {
 
     await module.webAuthCallbackPromise;
     expect(mockExchangeCodeForSession).not.toHaveBeenCalled();
-    expect(mockRecoveryExchangeCodeForSession).toHaveBeenCalledWith('recovery-code');
+    expect(mockRecoveryExchangeCodeForSession).toHaveBeenCalledWith('recovery-code', undefined);
     expect(module.getWebRecoveryLinkState()).toBe('pending');
     expect(module.hasPendingWebRecoveryPkce()).toBe(true);
     await module.updatePasswordFromPendingWebRecoveryPkce('user@example.com', 'new-secret');
@@ -250,11 +255,12 @@ describe('supabase secure storage adapter', () => {
 
   it('exchanges a code without SDK auto-detection or leaving it in the URL', async () => {
     const { module, replaceState } = loadWebAt(
-      'https://dream.noctalia.app/recording?code=pkce-code&lang=fr'
+      'https://dream.noctalia.app/recording?code=pkce-code&lang=fr',
+      JSON.stringify('browser-verifier')
     );
 
     await module.webAuthCallbackPromise;
-    expect(mockExchangeCodeForSession).toHaveBeenCalledWith('pkce-code');
+    expect(mockExchangeCodeForSession).toHaveBeenCalledWith('pkce-code', undefined);
     expect(replaceState).toHaveBeenCalledWith(null, '', '/recording?lang=fr');
     expect((module.supabase as any).__options.auth.detectSessionInUrl).toBe(false);
   });
