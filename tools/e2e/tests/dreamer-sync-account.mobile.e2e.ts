@@ -90,7 +90,7 @@ test('Dreamer native offline creation and edit survive process restart and synch
 
 test('Dreamer native guest dream and draft survive real sign-in, reconnect and account isolation',
   { ...options, tags: [...options.tags, 'native-real-account'] }, async (fixtures) => {
-    const { app, screen, device, platform, backend } = fixtures;
+    const { app, screen, platform, backend } = fixtures;
     const marker = randomUUID().slice(0, 8);
     const story = `Guest lighthouse ${marker} over the sea.`;
     const draft = `Draft garden ${marker} behind a blue door.`;
@@ -251,8 +251,8 @@ test('Dreamer native account deletion asks twice, then removes the new account a
       await row.tap();
       await expect(confirm).toBeVisible();
       await answerAlert(fixtures, /^Delete permanently$/i, 'accept');
-      // The second question warns that a Store subscription goes on until cancelled there.
-      await expect(screen.getByText(/^Deleting your account doesn.t cancel your store subscription/, { visible: true })).toBeVisible();
+      // The second question warns that a Store subscription goes on until cancelled there; each platform names its own store.
+      await expect(screen.getByText(/^Deleting your account doesn.t cancel your (?:App Store|Google Play|store) subscription/, { visible: true })).toBeVisible();
       await answerAlert(fixtures, /^Delete permanently$/i, 'accept');
       await expect(screen.getByText(/^Your account and your data have been deleted\.$/, { visible: true })).toBeVisible();
       await app.screenshot('native-account-deleted');
