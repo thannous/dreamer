@@ -2,7 +2,7 @@ import { buildChatHistory, buildChatSystem } from '../services/chatContext.ts';
 import { selfHarmSupportReply } from '../lib/selfHarmSupport.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders, GUEST_LIMITS } from '../lib/constants.ts';
-import { buildDreamContextPrompt, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
+import { buildDreamContextPrompt, DREAM_CONTEXT_FIELD_MAX_CHARS, DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS } from '../lib/prompts.ts';
 import { CLAUDE_MODELS } from '../lib/models.ts';
 import {
   classifyClaudeError,
@@ -86,10 +86,7 @@ const ALLOWED_CHAT_CATEGORIES = new Set(['symbols', 'emotions', 'growth', 'gener
 const GUEST_CONTEXT_LIMITS = {
   transcript: DREAM_CONTEXT_TRANSCRIPT_MAX_CHARS,
   interpretation: 4000,
-  title: 200,
-  shareableQuote: 500,
-  dreamType: 120,
-  theme: 120,
+  ...DREAM_CONTEXT_FIELD_MAX_CHARS,
   chatHistoryMessages: GUEST_LIMITS.messagesPerDream * 2,
   chatMessageText: 4000,
 } as const;

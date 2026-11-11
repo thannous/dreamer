@@ -117,6 +117,14 @@ export function resolveStoredTranscriptForAi(
   };
 }
 
+/** Longest short field of a dream that reaches the chat prompt, for guests and accounts alike. */
+export const DREAM_CONTEXT_FIELD_MAX_CHARS = {
+  title: 200,
+  shareableQuote: 500,
+  dreamType: 120,
+  theme: 120,
+} as const;
+
 /**
  * Builds a dream context prompt that is sent to Gemini on every /chat request
  * (stateless backend) but is never persisted into dreams.chat_history.
@@ -132,10 +140,12 @@ export function buildDreamContextPrompt(
   },
   lang: string
 ): { prompt: string; debug: { transcriptTruncated: boolean; interpretationTruncated: boolean } } {
-  const title = String(dream.title ?? 'Untitled Dream').trim();
-  const dreamType = String(dream.dream_type ?? 'Dream').trim();
-  const theme = dream.theme ? String(dream.theme).trim() : '';
-  const quote = String(dream.shareable_quote ?? '').trim();
+  // These columns are written by the client. An account's copy is read from
+  // the database, where nothing bounds them, so they are bounded here.
+  const title = String(dream.title ?? 'Untitled Dream').trim().slice(0, DREAM_CONTEXT_FIELD_MAX_CHARS.title);
+  const dreamType = String(dream.dream_type ?? 'Dream').trim().slice(0, DREAM_CONTEXT_FIELD_MAX_CHARS.dreamType);
+  const theme = dream.theme ? String(dream.theme).trim().slice(0, DREAM_CONTEXT_FIELD_MAX_CHARS.theme) : '';
+  const quote = String(dream.shareable_quote ?? '').trim().slice(0, DREAM_CONTEXT_FIELD_MAX_CHARS.shareableQuote);
 
   const { text: transcript, truncated: transcriptTruncated } = truncateForPrompt(
     dream.transcript,

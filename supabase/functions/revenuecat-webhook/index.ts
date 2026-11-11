@@ -21,6 +21,7 @@ import {
 } from '../api/services/revenuecat.ts';
 import { verifyRevenueCatWebhookAuthorization } from './auth.ts';
 import { readLimitedBody } from './body.ts';
+import { shouldAskRevenueCatToRetry } from './verification.ts';
 
 const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -437,7 +438,6 @@ serve(async (req: Request) => {
     console.log('[revenuecat-webhook] User resolved successfully', {
       timestamp: new Date().toISOString(),
       userId: resolvedUserId,
-      userEmail: userData.user.email,
       eventType: payload?.event?.type,
       appUserId: appUserIdUsed,
     });
@@ -485,6 +485,28 @@ serve(async (req: Request) => {
         originalInferredTier: newTier,
       });
       newTier = 'free';
+    }
+
+    if (shouldAskRevenueCatToRetry({
+      tier: newTier,
+      customerVerified: Boolean(customerV2),
+      entitlementLookupLoaded: entitlementLookupById !== null,
+    })) {
+      // Not a success: RevenueCat delivers the event again. Answering 200 here
+      // dropped a purchase, and acting on the event alone could downgrade
+      // someone who still holds another active product.
+      console.warn('[revenuecat-webhook] RevenueCat state unavailable, asking for another delivery', {
+        timestamp: new Date().toISOString(),
+        userId: resolvedUserId,
+        eventType: payload?.event?.type,
+        inferredTier: newTier,
+        customerVerified: Boolean(customerV2),
+        entitlementLookupLoaded: entitlementLookupById !== null,
+      });
+      return new Response(JSON.stringify({ error: 'RevenueCat state unavailable' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json', 'Retry-After': '60', ...corsHeaders },
+      });
     }
 
     if (newTier === null) {
@@ -590,7 +612,6 @@ serve(async (req: Request) => {
     console.log('[revenuecat-webhook] Subscription state converged', {
       timestamp: new Date().toISOString(),
       userId: resolvedUserId,
-      userEmail: userData.user.email,
       fromTier: currentTier ?? 'free',
       toTier: result.tier,
       version: result.version,
