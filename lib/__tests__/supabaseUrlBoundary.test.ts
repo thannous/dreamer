@@ -112,6 +112,7 @@ describe('real Supabase web URL boundary', () => {
     ['JSON from auth-js', JSON.stringify('browser-recovery-verifier/recovery')],
     ['JSON from auth-js 2.89', JSON.stringify('browser-recovery-verifier/PASSWORD_RECOVERY')],
     ['legacy raw string', 'browser-recovery-verifier/recovery'],
+    ['legacy raw string from auth-js 2.89', 'browser-recovery-verifier/PASSWORD_RECOVERY'],
   ])('exchanges a recovery PKCE code using the %s verifier', async (_format: string, verifier: string) => {
     storeExistingSession();
     localStorage.setItem(`${STORAGE_KEY}-code-verifier`, verifier);
@@ -195,9 +196,11 @@ describe('real Supabase web URL boundary', () => {
     expect(location.pathname + location.search).toBe('/auth/reset-password');
   });
 
-  it('exchanges a same-browser PKCE code with its stored verifier', async () => {
-    // auth-js writes the verifier as JSON, and 2.119 ignores any other value.
-    localStorage.setItem(`${STORAGE_KEY}-code-verifier`, JSON.stringify('browser-verifier'));
+  it.each([
+    ['current JSON', JSON.stringify('browser-verifier')],
+    ['legacy raw', 'browser-verifier'],
+  ])('exchanges a same-browser PKCE code with its %s verifier', async (_format: string, verifier: string) => {
+    localStorage.setItem(`${STORAGE_KEY}-code-verifier`, verifier);
     history.replaceState(null, '', '/recording?code=bound-code');
     const fetchMock = jest.fn(async () => ({
       ok: true,
@@ -220,6 +223,192 @@ describe('real Supabase web URL boundary', () => {
     expect(fetchMock.mock.calls[0][0]).toContain('/auth/v1/token?grant_type=pkce');
     expect(JSON.parse(String((fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body))).toEqual({
       auth_code: 'bound-code', code_verifier: 'browser-verifier',
+    });
+  });
+
+  it('exchanges an SDK-generated recovery flow without consuming a newer flow or the primary session', async () => {
+    const { createClient } = require('@supabase/supabase-js') as typeof import('@supabase/supabase-js');
+    const fetchMock = jest.fn(async (input: RequestInfo | URL, _init?: RequestInit) => ({
+      ok: true,
+      json: async () => String(input).includes('/recover') ? {} : {
+        access_token: 'recovery-access', refresh_token: 'recovery-refresh',
+        token_type: 'bearer', expires_in: 3600,
+        user: { id: 'recovery-user', email: 'recovery@example.com' },
+      },
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    const requestClient = createClient('https://example.supabase.co', 'anon-key', {
+      auth: {
+        storageKey: STORAGE_KEY, autoRefreshToken: false, persistSession: true,
+        detectSessionInUrl: false, flowType: 'pkce',
+        experimental: { appendPkceFlowIdToRedirects: true },
+      },
+    });
+    try {
+      for (let request = 0; request < 2; request += 1) {
+        const { error } = await requestClient.auth.resetPasswordForEmail('recovery@example.com', {
+          redirectTo: 'https://example.org/auth/reset-password?next=kept',
+        });
+        expect(error).toBeNull();
+      }
+    } finally {
+      await requestClient.auth.dispose();
+    }
+    const callbackUrls: URL[] = fetchMock.mock.calls.map(([input]: [RequestInfo | URL, RequestInit?]) =>
+      new URL(new URL(String(input)).searchParams.get('redirect_to')!)
+    );
+    const [firstFlow, newerFlow] = callbackUrls.map(url => url.searchParams.get('sb_flow_id')!);
+    expect(firstFlow).toMatch(/^[a-zA-Z0-9_-]{8,64}$/);
+    expect(newerFlow).not.toBe(firstFlow);
+    const firstKey = `${STORAGE_KEY}-flow-${firstFlow}-code-verifier`;
+    const newerKey = `${STORAGE_KEY}-flow-${newerFlow}-code-verifier`;
+    const firstVerifier = JSON.parse(localStorage.getItem(firstKey)!);
+    const newerStoredVerifier = localStorage.getItem(newerKey);
+    expect(firstVerifier).toMatch(/\/recovery$/);
+    expect(localStorage.getItem(`${STORAGE_KEY}-code-verifier`)).toBe(newerStoredVerifier);
+    storeExistingSession();
+    callbackUrls[0].searchParams.set('code', 'first-recovery-code');
+    history.replaceState(null, '', callbackUrls[0].pathname + callbackUrls[0].search);
+    fetchMock.mockClear();
+
+    const { supabase, getWebRecoveryLinkState, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+
+    expect(getWebRecoveryLinkState()).toBe('pending');
+    expect((await supabase.auth.getSession()).data.session?.user.id).toBe('existing-user');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({
+      auth_code: 'first-recovery-code', code_verifier: firstVerifier.split('/')[0],
+    });
+    expect(localStorage.getItem(firstKey)).toBeNull();
+    expect(localStorage.getItem(newerKey)).toBe(newerStoredVerifier);
+    expect(localStorage.getItem(`${STORAGE_KEY}-code-verifier`)).toBe(newerStoredVerifier);
+    expect(JSON.parse(localStorage.getItem(`${STORAGE_KEY}-flows-code-verifier`)!)).toEqual([newerFlow]);
+    expect(location.pathname + location.search + location.hash).toBe('/auth/reset-password?next=kept');
+    expect(Object.keys(localStorage).some(key => key.startsWith('noctalia-recovery-pkce-'))).toBe(false);
+  });
+
+  it.each(['query', 'fragment'])('binds a normal PKCE %s callback to its own slot rather than the newer legacy mirror', async (component: string) => {
+    const firstFlow = 'first-flow-1234';
+    const newerFlow = 'newer-flow-5678';
+    const firstKey = `${STORAGE_KEY}-flow-${firstFlow}-code-verifier`;
+    const newerKey = `${STORAGE_KEY}-flow-${newerFlow}-code-verifier`;
+    localStorage.setItem(firstKey, JSON.stringify('first-oauth-verifier'));
+    localStorage.setItem(newerKey, JSON.stringify('newer-oauth-verifier'));
+    localStorage.setItem(`${STORAGE_KEY}-code-verifier`, JSON.stringify('newer-oauth-verifier'));
+    localStorage.setItem(`${STORAGE_KEY}-flows-code-verifier`, JSON.stringify([firstFlow, newerFlow]));
+    const delimiter = component === 'query' ? '?' : '#';
+    history.replaceState(null, '', `/recording${delimiter}code=bound-code&sb_flow_id=${firstFlow}`);
+    const fetchMock = jest.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => ({
+      ok: true,
+      json: async () => ({
+        access_token: 'bound-access', refresh_token: 'bound-refresh',
+        token_type: 'bearer', expires_in: 3600,
+        user: { id: 'bound-user', email: 'bound@example.com' },
+      }),
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const { supabase, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+
+    expect((await supabase.auth.getSession()).data.session?.user.id).toBe('bound-user');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({
+      auth_code: 'bound-code', code_verifier: 'first-oauth-verifier',
+    });
+    expect(localStorage.getItem(firstKey)).toBeNull();
+    expect(localStorage.getItem(newerKey)).toBe(JSON.stringify('newer-oauth-verifier'));
+    expect(localStorage.getItem(`${STORAGE_KEY}-code-verifier`)).toBe(JSON.stringify('newer-oauth-verifier'));
+    expect(location.pathname + location.search + location.hash).toBe('/recording');
+  });
+
+  it.each(['/recording', '/auth/reset-password'])('does not borrow a legacy verifier when the requested slot is absent on %s', async (route: string) => {
+    storeExistingSession();
+    const legacy = JSON.stringify('other-flow-verifier/recovery');
+    localStorage.setItem(`${STORAGE_KEY}-code-verifier`, legacy);
+    localStorage.setItem(`${STORAGE_KEY}-flow-other-flow-1234-code-verifier`, legacy);
+    history.replaceState(null, '', `${route}?code=untrusted-code&sb_flow_id=missing-flow-1234`);
+    const fetchMock = jest.fn(async () => { throw new Error('unexpected exchange'); });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const { supabase, getWebRecoveryLinkState, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect((await supabase.auth.getSession()).data.session?.user.id).toBe('existing-user');
+    if (route === '/auth/reset-password') expect(getWebRecoveryLinkState()).toBe('invalid');
+    expect(localStorage.getItem(`${STORAGE_KEY}-code-verifier`)).toBe(legacy);
+    expect(localStorage.getItem(`${STORAGE_KEY}-flow-other-flow-1234-code-verifier`)).toBe(legacy);
+    expect(location.pathname + location.search + location.hash).toBe(route);
+  });
+
+  it('does not use a recovery mirror when the selected flow belongs to OAuth', async () => {
+    storeExistingSession();
+    localStorage.setItem(`${STORAGE_KEY}-flow-oauth-flow-1234-code-verifier`, JSON.stringify('oauth-verifier'));
+    const legacy = JSON.stringify('other-reset-verifier/recovery');
+    localStorage.setItem(`${STORAGE_KEY}-code-verifier`, legacy);
+    history.replaceState(null, '', '/auth/reset-password?code=oauth-code&sb_flow_id=oauth-flow-1234');
+    const fetchMock = jest.fn(async () => { throw new Error('unexpected exchange'); });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    const { supabase, getWebRecoveryLinkState, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+    expect(getWebRecoveryLinkState()).toBe('invalid');
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect((await supabase.auth.getSession()).data.session?.user.id).toBe('existing-user');
+    expect(localStorage.getItem(`${STORAGE_KEY}-code-verifier`)).toBe(legacy);
+  });
+
+  it.each([
+    ['legacy recovery verifier', 'browser-reset/PASSWORD_RECOVERY', null],
+    ['current recovery flow', 'browser-reset/recovery', 'recovery-flow-1234'],
+  ])('does not install a %s into the primary client on the recording route', async (
+    _case: string, verifier: string, flowId: string | null,
+  ) => {
+    storeExistingSession();
+    const key = flowId ? `${STORAGE_KEY}-flow-${flowId}-code-verifier` : `${STORAGE_KEY}-code-verifier`;
+    const stored = JSON.stringify(verifier);
+    localStorage.setItem(key, stored);
+    history.replaceState(null, '', `/recording?code=recovery-code${flowId ? `&sb_flow_id=${flowId}` : ''}`);
+    const fetchMock = jest.fn(async () => { throw new Error('unexpected exchange'); });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const { supabase, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    const { data } = await supabase.auth.getSession();
+    expect(data.session?.user.id).toBe('existing-user');
+    expect(data.session?.access_token).toBe('existing-access');
+    expect(localStorage.getItem(key)).toBe(stored);
+    expect(location.pathname + location.search + location.hash).toBe('/recording');
+  });
+
+  describe.each(['/recording', '/auth/reset-password'])('ambiguous PKCE callbacks on %s', (route: string) => {
+    it.each([
+      '?code=untrusted-code&sb_flow_id=first-flow-1234&sb_flow_id=first-flow-1234',
+      '#code=untrusted-code&sb_flow_id=first-flow-1234&sb_flow_id=other-flow-5678',
+      '?code=untrusted-code&sb_flow_id=first-flow-1234#sb_flow_id=first-flow-1234',
+      '?code=untrusted-code#sb_flow_id=first-flow-1234',
+      '?sb_flow_id=first-flow-1234#code=untrusted-code',
+      '?code=untrusted-code&sb_flow_id=bad',
+      '?code=untrusted-code&sb_flow_id=',
+    ])('rejects %s without touching an existing session or verifier', async (suffix: string) => {
+      storeExistingSession();
+      const stored = JSON.stringify('reset-verifier/recovery');
+      localStorage.setItem(`${STORAGE_KEY}-code-verifier`, stored);
+      localStorage.setItem(`${STORAGE_KEY}-flow-first-flow-1234-code-verifier`, stored);
+      history.replaceState(null, '', route + suffix);
+      const fetchMock = jest.fn(async () => { throw new Error('unexpected exchange'); });
+      globalThis.fetch = fetchMock as unknown as typeof fetch;
+      const { supabase, getWebRecoveryLinkState, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+      await webAuthCallbackPromise;
+      expect(fetchMock).not.toHaveBeenCalled();
+      expect((await supabase.auth.getSession()).data.session?.user.id).toBe('existing-user');
+      if (route === '/auth/reset-password') expect(getWebRecoveryLinkState()).toBe('invalid');
+      expect(localStorage.getItem(`${STORAGE_KEY}-code-verifier`)).toBe(stored);
+      expect(localStorage.getItem(`${STORAGE_KEY}-flow-first-flow-1234-code-verifier`)).toBe(stored);
+      expect(location.pathname + location.search + location.hash).toBe(route);
     });
   });
 

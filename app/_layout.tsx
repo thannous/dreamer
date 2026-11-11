@@ -11,8 +11,8 @@ import * as Notifications from 'expo-notifications';
 import { Stack, router, useGlobalSearchParams, useNavigationContainerRef, usePathname, useRootNavigationState, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { Linking, LogBox, NativeModules, Platform } from 'react-native';
-import { SystemBars } from 'react-native-edge-to-edge';
+import { Linking, LogBox, NativeModules, Platform, StatusBar } from 'react-native';
+import { NavigationBar } from '@zoontek/react-native-navigation-bar';
 
 import StartupSplashScreen from '@/components/StartupSplashScreen';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
@@ -873,12 +873,8 @@ const RootNavigator = memo(function RootNavigator({
           <VercelAnalytics />
           <VercelSpeedInsights />
         </JournalRuntime>
-        <SystemBars
-          style={{
-            statusBar: mode === 'dark' ? 'light' : 'dark',
-            navigationBar: mode === 'dark' ? 'light' : 'dark',
-          }}
-        />
+        <StatusBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} animated />
+        {Platform.OS === 'android' ? <NavigationBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} /> : null}
       </KeyboardProviderComponent>
     </NavigationThemeProvider>
   );

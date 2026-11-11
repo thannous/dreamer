@@ -433,6 +433,30 @@ its cold Metro cache purge must not race another active Metro cache.
 
 ### Dreamer native personas with Sol
 
+[companion-personas.ts](companion-personas.ts) defines two needs per app: Lucid's
+beginner and journal reader, Meditation's listener and breather. The same goals
+run on web, iOS and Android with exact assertions after each agent action. The
+closed [product contract](persona-contract.mjs) binds agent names and native
+profiles; a different product's report or Release cannot qualify a run.
+
+```sh
+E2E_PERSONAS=1 E2E_WORKERS=1 mise exec -- node tools/e2e/run.mjs lucid web run --tag personas
+E2E_PERSONAS=1 E2E_WORKERS=1 mise exec -- node tools/e2e/run.mjs meditation web run --tag personas
+# Native: one worker is enforced. Use the product's identified Release receipt.
+E2E_PERSONAS=1 E2E_SIMLOCK_PHYSICAL=never E2E_RELEASE_RECEIPT=path/to/release.json \
+  mise exec -- node tools/e2e/run.mjs lucid ios run --tag personas
+```
+
+Use `lucid-mock` for Lucid and `meditation-local` for Meditation; replace the app
+and platform for the other native combinations. Meditation's native profile uses
+real bundled audio. Model/provider/version, budgets, source, installed Release,
+cleanup and artifacts use the same qualification checks as Dreamer. These journeys
+prove local behavior; they do not qualify production services or Store purchases.
+If running web apps concurrently, give Meditation its own temporary `TMPDIR`:
+its cold Metro cache purge must not race another active Metro cache.
+
+### Dreamer native personas with Sol
+
 The 2026-10-20 native campaign (Git history)
 records four passing personas on each platform, the exact builds and rerun commands.
 

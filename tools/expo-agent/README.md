@@ -83,6 +83,51 @@ profiles and delivery rules. Do not create CLAUDE.md; all agents read AGENTS.md.
 `--no-docs` can defer documentation downloading when offline, but that is not a
 successful documentation sync. Setup errors must remain visible.
 
+## Official Expo plugin and MCP
+
+Install the official Codex plugin once per machine. Its skills complement the
+package-specific skills linked above; this does not replace the pinned agent CLI.
+The current official plugin name is `expo` (the older announcement used `expo2`).
+
+```sh
+codex plugin add expo@openai-curated
+codex mcp list
+```
+
+Check that `expo` points to `https://mcp.expo.dev/mcp`. Some plugin bundles
+register the server automatically; the installed `d420d130` bundle contains only
+skills. If the server is absent, register it once:
+
+```sh
+codex mcp add expo --url https://mcp.expo.dev/mcp
+```
+
+That command starts OAuth. For an existing server, use `codex mcp login expo`.
+Complete authorization in the browser with the same Expo account as Expo CLI.
+Limit access to the accounts that own the selected apps. Developer covers normal
+builds and updates; Release Manager also covers protected channels and credentials.
+Restart the Codex chat/session after installation to load its skills and tools.
+
+Both app roots declare `expo-mcp` as a development dependency. Enable local
+capabilities explicitly while retaining the existing profile-aware launchers:
+
+```sh
+# Dreamer mock, from the repository root
+EXPO_UNSTABLE_MCP_SERVER=1 mise exec -- npm run start:mock -- --localhost
+# Lucid mock, from the repository root
+EXPO_UNSTABLE_MCP_SERVER=1 mise exec -- npm run start:lucid:mock -- --localhost
+# Meditation mock, from apps/meditation
+EXPO_UNSTABLE_MCP_SERVER=1 mise exec -- npm run start:mock -- --localhost
+```
+
+Reconnect the Expo MCP connection when Metro starts or stops. For native
+inspection, keep the existing device ownership, profile and QA locks. Configure
+ports explicitly when several apps run together. The remote connection needs
+OAuth; installing the local package alone does not prove authentication or a
+running app. SDK/dependency checks and MCP setup are distinct from native Release
+qualification. See [Expo MCP](https://docs.expo.dev/mcp/) and
+[official Expo skills](https://docs.expo.dev/skills/).
+
 ## Existing workflow boundaries
 
 Use this pinned runner for equivalent standalone Expo operations (including

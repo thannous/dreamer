@@ -420,6 +420,16 @@ test('Dreamer native contextual backgrounds pilot captures both appearances', {
     await fixtures.screen.getByTestId('tab.home', { visible: true }).tap();
     await expect(fixtures.screen.getByTestId('screen.home', { visible: true })).toBeVisible();
     await fixtures.app.screenshot(`native-pilot-home-${mode}`);
+    // Enter through the visible app action: an external URL can engage the
+    // first-capture onboarding intent, which this synthetic guest has not completed.
+    const sleepEntry = fixtures.screen.getByTestId('btn.home.sleepSounds', { visible: true });
+    await fixtures.screen.scrollUntilVisible(sleepEntry);
+    await sleepEntry.tap();
+    await expect(fixtures.screen.getByTestId('screen.sleepSounds', { visible: true })).toBeVisible();
+    await fixtures.app.screenshot(`native-pilot-sleep-${mode}`);
+    await fixtures.screen.getByTestId('sleep-sounds-back', { visible: true }).tap();
+    await expect(fixtures.screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+    await fixtures.app.screenshot(`native-pilot-restored-bars-${mode}`);
   }
 });
 

@@ -23,6 +23,13 @@ test('an open dream preserves native touch and wheel scrolling while the backgro
     saved[key] = Object.getOwnPropertyDescriptor(globalThis, key);
     globalThis[key] = dom.window[key];
   }
+  // JSDOM omits matchMedia. The real Lenis constructor now observes this browser
+  // API; keep the fixture's pointer/media environment deterministic.
+  dom.window.matchMedia = query => ({
+    matches: false, media: query, onchange: null,
+    addEventListener() {}, removeEventListener() {},
+    addListener() {}, removeListener() {}, dispatchEvent: () => true,
+  });
   let lenis;
   try {
     const { default: Lenis } = await import('lenis');

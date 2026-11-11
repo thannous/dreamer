@@ -7,12 +7,13 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  StatusBar,
   Text,
   View,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { SystemBars } from 'react-native-edge-to-edge';
+import { NavigationBar } from '@zoontek/react-native-navigation-bar';
 import Animated, { useReducedMotion, type CSSStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -449,7 +450,8 @@ export function SleepSoundsScreen() {
   return (
     <ThemeModeScope mode="dark">
       {/* The root bars follow the app's theme; over this night scene they stay light. */}
-      <SystemBars style="light" />
+      <StatusBar barStyle="light-content" animated />
+      {Platform.OS === 'android' ? <NavigationBar barStyle="light-content" /> : null}
       <SleepSoundsContent />
     </ThemeModeScope>
   );
