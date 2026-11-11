@@ -2,6 +2,7 @@ import { afterEach, test, type Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
 import { tapWhenStill, waitUntilStill } from '../native-settle';
 import { firstTextAndroid } from '../test-support/first-text-android';
+import { openApp } from '../test-support/open-app';
 // The persistent mock profile seeds this entry. Explicit expectations keep
 // Node collection independent of the app's React Native/media imports.
 const SEEDED_OTHER_DREAM = {
@@ -132,7 +133,7 @@ async function billingQuota(fixtures: Pick<NativeBackgroundFixtures, 'screen' | 
 }
 
 async function billingGuest({ app, screen, platform }: NativeBackgroundFixtures) {
-  await app.open();
+  await openApp(app);
   // The profile and device are owned synthetic QA data, checked by run.mjs.
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next', { visible: true }).tap();
@@ -380,7 +381,7 @@ async function openBackgroundRoute(fixtures: NativeBackgroundFixtures, route: st
 }
 
 async function prepareBackgrounds({ app, screen, platform }: NativeBackgroundFixtures, mode: 'light' | 'dark') {
-  await app.open();
+  await openApp(app);
   await acceptDreamerLink({ screen });
   // The guarded runner owns a disposable simulator and this synthetic profile.
   await app.clearState();
@@ -548,7 +549,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
     skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' || Number(process.env.E2E_NATIVE_MOCK_CATEGORIZATION_MS) < 20000
       ? 'Requires an identified persistent mock Release with the bounded categorization QA opt-in.' : false,
   }, async ({ app, screen, device, platform }) => {
-    await app.open();
+    await openApp(app);
     await app.clearState();
     await screen.getByTestId('btn.onboarding.intro.next', { visible: true }).tap();
     // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
@@ -673,7 +674,7 @@ for (const editor of ['metadata', 'transcript'] as const) {
 }
 
 test('Dreamer release onboarding reaches capture and rejects an empty save', async ({ app, screen, device, platform }) => {
-  await app.open();
+  await openApp(app);
   await app.clearState();
   await expect(screen.getByTestId('screen.onboarding')).toBeVisible();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
@@ -702,7 +703,7 @@ test('Dreamer release onboarding reaches capture and rejects an empty save', asy
 });
 
 test('Dreamer release Quick Settings persists French and theme choices while preserving a draft', async ({ app, screen, device, platform }) => {
-  await app.open();
+  await openApp(app);
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
@@ -759,7 +760,7 @@ test('Dreamer release Quick Settings persists French and theme choices while pre
 });
 
 test('Dreamer release opens the language choices from the Quick Settings row', async ({ app, screen }) => {
-  await app.open();
+  await openApp(app);
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
@@ -775,7 +776,7 @@ test('Dreamer release opens the language choices from the Quick Settings row', a
 
 
 test('Dreamer release drawer layout, backdrop and full settings actions remain usable', async ({ app, screen }) => {
-  await app.open();
+  await openApp(app);
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
@@ -803,7 +804,7 @@ test('Dreamer release drawer layout, backdrop and full settings actions remain u
 });
 
 test('Dreamer release drawer sign-in opens its account destination', async ({ app, screen, platform }) => {
-  await app.open();
+  await openApp(app);
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
@@ -836,7 +837,7 @@ test('Dreamer release opt-in feature story bridges capture to exploration', {
   skip: process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED !== 'true'
     ? 'Requires an identified Release built with feature sheets enabled.' : false,
 }, async ({ app, screen }) => {
-  await app.open();
+  await openApp(app);
   await app.clearState();
   await screen.getByTestId('btn.onboarding.feature.capture', { visible: true }).tap();
   await storyStep(screen, 'btn.onboarding.story.next');
@@ -873,7 +874,7 @@ test('Dreamer release opt-in feature story bridges capture to exploration', {
 });
 
 test('Dreamer release drawer Plus opens its offer and closes back to Capture', async ({ app, screen, platform }) => {
-  await app.open();
+  await openApp(app);
   await app.clearState();
   await screen.getByTestId('btn.onboarding.intro.next').tap();
   // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
@@ -915,7 +916,7 @@ test('Dreamer Release scroll dogfood preserves its journal and painted resource 
     ? 'Requires the work package’s owned 200-dream Release fixture.' : FLEET_PHONE ? PHONE_SETTINGS_SKIP : false,
 }, async (fixtures) => {
   const { app, screen, device } = fixtures;
-  await app.open();
+  await openApp(app);
   await screen.getByTestId('tab.journal', { visible: true }).tap();
   const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'Noctalia performance 001' });
   await expect(card).toHaveCount(1);
@@ -959,7 +960,7 @@ test('Dreamer Release scroll dogfood preserves its journal and painted resource 
   // link must retain the existing safe return to Today, without starting audio.
   await openBackgroundRoute(fixtures, 'sleep-sounds');
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
-  await app.open();
+  await openApp(app);
   await screen.getByTestId('tab.home', { visible: true }).tap();
   await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
   restore.portrait = true;
@@ -976,7 +977,7 @@ test('Dreamer Release scroll dogfood preserves its journal and painted resource 
  * it listens for links: it then stays on Capture. A person opens the link from a started app.
  */
 async function openStartedApp({ app, screen }: Pick<NativeBackgroundFixtures, 'app' | 'screen'>) {
-  await app.open();
+  await openApp(app);
   await expect(screen.getByTestId(/^screen\.(onboarding|recording|home|settings)$/, { visible: true }).first()).toBeVisible();
 }
 
@@ -1013,7 +1014,7 @@ test('Dreamer native security recovery keeps a synthetic token-hash form inert',
 const CAPTURE_WIDGET_LINK = 'noctalia://recording';
 
 async function onboardToCapture({ app, screen }: Pick<NativeBackgroundFixtures, 'app' | 'screen'>) {
-  await app.open();
+  await openApp(app);
   await acceptDreamerLink({ screen });
   // The guarded runner owns a disposable simulator and this synthetic profile.
   await app.clearState();
@@ -1179,7 +1180,7 @@ firstTextAndroid('Dreamer first French guest saves two paragraphs on one tap wit
   skip: process.env.E2E_FIRST_TEXT_ANDROID !== '1' || process.env.E2E_NATIVE_MOCK_MODE !== 'true' || FLEET_PHONE
     ? 'Requires a fresh owned French Android emulator with the persistent mock profile and software keyboard.' : false,
 }, async ({ app, screen, keyboardShown }) => {
-  await app.open();
+  await openApp(app);
   const first = 'Une porte bleue donnait sur le lac.';
   const second = 'J’avais la clé dans ma poche.';
   const story = [first, second].join('\n\n');
@@ -1367,7 +1368,7 @@ test('Dreamer release every destination opens in system dark mode', {
     await app.screenshot(`release-tour-${label}`);
   };
   // A native proof starts by opening the app (qualification.mjs); the reset below reopens it in dark.
-  await app.open();
+  await openApp(app);
   restore.appearance = true;
   await device.setAppearance('dark');
   await billingGuest(fixtures);
