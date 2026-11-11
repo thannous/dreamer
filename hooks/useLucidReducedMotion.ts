@@ -1,4 +1,4 @@
-import { useOptionalLucidTrainer } from '@/context/LucidTrainerContext';
+import { useOptionalLucidTrainer } from '@/context/lucidTrainerContextObject';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 /**

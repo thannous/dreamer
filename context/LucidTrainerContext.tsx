@@ -2,7 +2,6 @@ import { claimLucidJournalImportGuestCopies } from '@/services/lucidJournalImpor
 import * as Crypto from 'expo-crypto';
 import { getLocales } from 'expo-localization';
 import React, {
-  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -13,6 +12,7 @@ import React, {
 } from 'react';
 import { AppState } from 'react-native';
 
+import { LucidTrainerContext } from '@/context/lucidTrainerContextObject';
 import { useLocalLucidVoiceAvailability } from '@/hooks/useLocalLucidVoiceAvailability';
 import { useAuth } from '@/context/AuthContext';
 import { toAccountScope } from '@/lib/accountScope';
@@ -242,7 +242,6 @@ export type LucidTrainerContextValue = {
   reload: () => Promise<void>;
 };
 
-const LucidTrainerContext = createContext<LucidTrainerContextValue | null>(null);
 
 function activationGoal(goal: NonNullable<LucidOnboardingState['goal']>) {
   if (goal === 'improve_recall') return 'recall' as const;
@@ -1539,10 +1538,7 @@ export function useLucidTrainer(): LucidTrainerContextValue {
   return context;
 }
 
-/** Optional access for shared presentation components that also render in isolated tests. */
-export function useOptionalLucidTrainer(): LucidTrainerContextValue | null {
-  return useContext(LucidTrainerContext);
-}
+export { useOptionalLucidTrainer } from '@/context/lucidTrainerContextObject';
 
 /** Observation access never mounts or reads the Journal provider. */
 export function useLucidObservations() {
