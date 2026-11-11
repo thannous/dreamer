@@ -11,7 +11,7 @@ import path from 'node:path';
 import { describe, test } from 'node:test';
 import { pathToFileURL } from 'node:url';
 
-import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, matchesAny, pastDurations, writeProof, verify, githubSlug, commitStatusFor, statusRefusal, STATUS_DESCRIPTION_MAX, STATUS_NOT_POSTED } from './verify-local.mjs';
+import { PROOF_FORMAT_VERSION, ENGINE_FILE_SHA256, closeUnended, attemptName, checkFingerprint, checkReleaseProof, cleanGitEnv, normaliseConfig, externalEvidenceIssue, loadExternalSources, globToRegExp, prePush, readBlobs, readBlobSizes, proofBlock, readProof, PROOF_LOCK_STALE_MS, PROOF_LOCK_WAIT_MS, readRunLog, posixShell, windowsLocalPath, absolutePathEntry, repositoryDirs, createGit, probeShell, takeOverStale, lockIsStale, RUN_MAX_MS, openChecks, RUN_LOG_UNREADABLE, withProofLock, runLogName, stepGrace, status, sweepStaleCopies, claimCopy, COPY_SLOTS, matchesAny, pastDurations, writeProof, verify, githubSlug, commitStatusFor, statusRefusal, STATUS_DESCRIPTION_MAX, STATUS_NOT_POSTED } from './verify-local.mjs';
 
 import { ENGINE, scratch, CONFIG, makeRepository } from './test-support/verify-fixture.mjs';
 
@@ -1997,6 +1997,30 @@ describe('pre-push hook', () => {
     assert.doesNotMatch(result.output, /cert\.pem/);
     assert.match(result.output, /src\/config\.js: looks like a AWS access key/);
     assert.match(result.output, /assets\/big\.bin: 2\.0 MB/);
+  });
+
+  test('blocks a secret, a forbidden file or an oversized file that a later pushed commit removes again', async () => {
+    const repo = makeRepository();
+    repo.git(['checkout', '--quiet', '-b', 'feature']);
+    const fake = ['AKIA', 'ABCDEFGHIJKLMNOP'].join('');
+    repo.commit('leak', {
+      'apps/web/.env': 'TOKEN=1\n',
+      'src/config.js': `const key = "${fake}";\n`,
+      'assets/big.bin': Buffer.alloc(2 * 1024 * 1024, 1),
+    });
+    repo.git(['rm', '--quiet', 'apps/web/.env', 'assets/big.bin']);
+    const sha = repo.commit('clean up', { 'src/config.js': 'const key = process.env.KEY;\n' });
+    // The pushed tip is clean, but the first commit travels with it.
+    const result = await hookRun(repo, `refs/heads/feature ${sha} refs/heads/feature ${ZERO}\n`);
+    assert.equal(result.status, 1, result.output);
+    assert.match(result.output, /apps\/web\/\.env: forbidden file .*\(in an earlier pushed commit/);
+    assert.match(result.output, /src\/config\.js: looks like a AWS access key \(in an earlier pushed commit/);
+    assert.match(result.output, /assets\/big\.bin: 2\.0 MB.*\(in an earlier pushed commit/);
+  });
+
+  test('the file checks fail closed when git cannot size the pushed versions', () => {
+    assert.equal(readBlobSizes(path.join(scratch, 'no-such-repository'), cleanGitEnv(), ['b'.repeat(40)]), null);
+    assert.equal(readBlobSizes('.', cleanGitEnv(), ['b'.repeat(40)], () => ({ status: 0, stdout: `${'b'.repeat(40)} missing\n` })), null);
   });
 
   test('a clean push passes in a few seconds and reports the proof', async () => {

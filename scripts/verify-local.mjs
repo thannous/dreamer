@@ -2378,6 +2378,21 @@ export function readBlobs(root, env, entries, execute = spawnSync) {
   return blobs;
 }
 
+/** Sizes of blobs by id, or null when git cannot answer for every one of them (fails closed). */
+export function readBlobSizes(root, env, objects, execute = spawnSync) {
+  if (objects.length === 0) return new Map();
+  const result = execute('git', ['cat-file', '--batch-check'], { cwd: root, env, input: `${objects.join('\n')}\n`, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  if (result.error || result.status !== 0) return null;
+  const sizes = new Map();
+  for (const line of result.stdout.split('\n').filter(Boolean)) {
+    const [object, type, sizeText, extra] = line.split(' ');
+    const size = Number(sizeText);
+    if (type !== 'blob' || extra !== undefined || !Number.isInteger(size) || size < 0) return null;
+    sizes.set(object, size);
+  }
+  return objects.every((object) => sizes.has(object)) ? sizes : null;
+}
+
 /** Fast checks of what a push sends. Never runs a heavy suite. */
 export async function prePush(remote, stdinText, {
   cwd = process.cwd(),
@@ -2415,48 +2430,68 @@ export async function prePush(remote, stdinText, {
   const head = git(['rev-parse', '--verify', '--quiet', 'HEAD^{commit}'], { allowFailure: true });
 
   for (const push of pushes) {
-    // Files the new commits add or change (a merge counts against its first
-    // parent), as they stand in the pushed commit.
-    const names = git(['log', '--no-renames', '--diff-filter=AMT', '--name-only', '--format=', '-z', '-m', '--first-parent',
+    // Every version of a file the new commits add or change (a merge counts
+    // against its first parent), not only the one left in the pushed commit:
+    // a key added and removed again within one push still travels in its history.
+    const raw = git(['log', '--no-renames', '--diff-filter=AMT', '--raw', '--no-abbrev', '--format=', '-z', '-m', '--first-parent',
       '--max-count=300', push.sha, '--not', `--remotes=${remote}`], { allowFailure: true }) ?? '';
-    const changed = new Set(names.split('\0').map((file) => file.replace(/^\n+/, '')).filter(Boolean));
-    if (changed.size === 0) continue;
-    const entries = new Map();
-    const listing = git(['ls-tree', '-r', '-l', '-z', '--full-tree', push.sha]);
+    const tokens = raw.split('\0');
+    const versions = new Map();
+    for (let index = 0; index < tokens.length - 1; index += 1) {
+      const meta = tokens[index].replace(/^\n+/, '');
+      if (!meta.startsWith(':')) continue;
+      const [, mode, , object] = meta.split(' ');
+      const file = tokens[index + 1];
+      index += 1;
+      // A submodule entry names a commit of another repository, not a blob.
+      if (!file || mode === '160000' || NULL_ID.test(object)) continue;
+      versions.set(`${object}\0${file}`, { file, object });
+    }
+    if (versions.size === 0) continue;
+    const tip = new Map();
+    const listing = git(['ls-tree', '-r', '-z', '--full-tree', push.sha]);
     for (const line of listing.split('\0').filter(Boolean)) {
       const tab = line.indexOf('\t');
-      const [, type, object, size] = line.slice(0, tab).trim().split(/\s+/);
-      if (type === 'blob') entries.set(line.slice(tab + 1), { object, size: Number(size) });
+      const [, type, object] = line.slice(0, tab).trim().split(/\s+/);
+      if (type === 'blob') tip.set(line.slice(tab + 1), object);
     }
+    const sizes = readBlobSizes(root, env, [...new Set([...versions.values()].map((version) => version.object))]);
+    if (sizes === null) {
+      problems.push(`could not size the ${versions.size} pushed file versions (git cat-file --batch-check failed), so the file checks did not run`);
+      continue;
+    }
+    const reported = new Set();
+    const report = (file, object, message) => {
+      // Removing the file in a later commit does not take it out of what is pushed.
+      const where = tip.get(file) === object ? '' : ' (in an earlier pushed commit: a later commit does not remove it from the history)';
+      const line = `${file}: ${message}${where}`;
+      if (!reported.has(line)) problems.push(line);
+      reported.add(line);
+    };
     const toScan = [];
-    for (const file of changed) {
-      const entry = entries.get(file);
-      if (!entry) continue;
+    for (const { file, object } of versions.values()) {
+      const size = sizes.get(object);
       const allowed = matchesAny(file, [...DEFAULT_ALLOWED_ENV, ...config.hook.allow]);
       if (!allowed && matchesAny(file, config.hook.forbidden)) {
-        problems.push(`${file}: forbidden file (secrets and keys stay out of git; allow it in ${CONFIG_FILE} hook.allow if it is public)`);
+        report(file, object, `forbidden file (secrets and keys stay out of git; allow it in ${CONFIG_FILE} hook.allow if it is public)`);
         continue;
       }
-      if (config.hook.maxFileBytes && entry.size > config.hook.maxFileBytes) {
-        problems.push(`${file}: ${(entry.size / 1024 / 1024).toFixed(1)} MB, over the ${(config.hook.maxFileBytes / 1024 / 1024).toFixed(0)} MB limit of ${CONFIG_FILE}`);
+      if (config.hook.maxFileBytes && size > config.hook.maxFileBytes) {
+        report(file, object, `${(size / 1024 / 1024).toFixed(1)} MB, over the ${(config.hook.maxFileBytes / 1024 / 1024).toFixed(0)} MB limit of ${CONFIG_FILE}`);
         continue;
       }
-      if (entry.size <= 2 * 1024 * 1024 && !matchesAny(file, config.hook.secretAllow)) toScan.push({ file, ...entry });
+      if (size <= 2 * 1024 * 1024 && !matchesAny(file, config.hook.secretAllow)) toScan.push({ file, object, size });
     }
     const blobs = readObjects(root, env, toScan);
     if (blobs === null || blobs.length !== toScan.length) {
       problems.push(`could not read the ${toScan.length} pushed files (git cat-file --batch failed), so the secret scan did not run`);
       continue;
     }
-    for (const { file, content } of blobs) {
-      if (content.includes('\0')) continue;
-      for (const { name, pattern } of SECRET_PATTERNS) {
-        if (pattern.test(content)) {
-          problems.push(`${file}: looks like a ${name}`);
-          break;
-        }
-      }
-    }
+    blobs.forEach(({ file, content }, position) => {
+      if (content.includes('\0')) return;
+      const found = SECRET_PATTERNS.find(({ pattern }) => pattern.test(content));
+      if (found) report(file, toScan[position].object, `looks like a ${found.name}`);
+    });
   }
 
   const hookShell = posixShell(env, process.platform, { repoDirs: process.platform === 'win32' ? repositoryDirs(git, root, commonDir) : [] });
