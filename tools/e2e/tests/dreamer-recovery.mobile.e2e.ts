@@ -55,7 +55,7 @@ async function acceptAi(screen: TestFixtures['screen'], platform: TestFixtures['
 }
 
 test('Dreamer queued real analysis survives process restart and completes once with one quota claim', recoveryOptions, async fixtures => {
-  const { app, screen, backend } = fixtures;
+  const { app, screen, platform, backend } = fixtures;
   const token = backend.state.proxy.controlToken;
   await control(token, { reset: true, analysisHold: true });
   const admin = createClient(backend.state.status.API_URL, backend.state.status.SERVICE_ROLE_KEY, {
@@ -97,7 +97,11 @@ test('Dreamer queued real analysis survives process restart and completes once w
     }, { timeout: 45_000 }).toBe('succeeded');
     await openDream(screen, journalId);
     // A classified dream keeps its stored title. Its actual reading proves recovery.
-    const reading = screen.getByText(analysisText, { visible: true });
+    // Android keeps the Journal page behind in its tree, and that page quotes the same reading
+    // (73ae0652: two matches, one under journal.page.opening). An iPhone lists the open page only.
+    const reading = platform === 'android'
+      ? screen.getByTestId('screen.dreamDetail', { visible: true }).getByText(analysisText, { visible: true })
+      : screen.getByText(analysisText, { visible: true });
     await screen.scrollUntilVisible(reading);
     await expect(reading).toHaveCount(1);
     // Reopening again must retain the completed result without buying another
