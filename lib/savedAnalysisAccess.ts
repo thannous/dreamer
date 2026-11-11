@@ -1,6 +1,6 @@
 import type { QuotaStatus, SubscriptionTier } from '@/lib/types';
 
-export type SavedAnalysisAction = 'analyze' | 'upgrade' | 'signup' | 'login' | 'checking' | 'check';
+export type SavedAnalysisAction = 'analyze' | 'upgrade' | 'signup' | 'checking' | 'check';
 
 /** Permission is authoritative; remaining counts may be stale, negative or degraded. */
 export function getSavedAnalysisAction(input: {
@@ -15,6 +15,6 @@ export function getSavedAnalysisAction(input: {
     || status.guestBootstrapStatus === 'disabled') return 'check';
   if (status.canAnalyze) return 'analyze';
   if (input.tier === 'plus') return 'check';
-  if (input.tier === 'guest') return status.isUpgraded ? 'login' : 'signup';
+  if (input.tier === 'guest') return 'signup';
   return 'upgrade';
 }

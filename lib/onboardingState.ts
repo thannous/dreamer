@@ -99,7 +99,6 @@ export type ResolvedRecordingEntryIntent = {
 };
 
 export type StartupDestinationInput = {
-  returningGuestBlocked: boolean;
   hasUser: boolean;
   onboardingState: OnboardingState;
   pendingNotificationUrl?: '/recording' | null;
@@ -109,7 +108,6 @@ export type StartupDestinationInput = {
 };
 
 export type StartupDestinationReason =
-  | 'returning_guest_blocked'
   | 'onboarding'
   | 'pending_intent'
   | 'notification'
@@ -679,9 +677,6 @@ function pendingIntentDestination(intent: PendingRecordingIntent): Href {
 export function resolveStartupDecision(
   input: StartupDestinationInput
 ): StartupDestinationDecision {
-  if (input.returningGuestBlocked && !input.hasUser) {
-    return { destination: '/settings', reason: 'returning_guest_blocked' };
-  }
   if (!isOnboardingTerminal(input.onboardingState)) {
     return { destination: '/onboarding', reason: 'onboarding' };
   }

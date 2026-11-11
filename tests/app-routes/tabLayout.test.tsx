@@ -3,7 +3,6 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-const mockUseAuth = jest.fn();
 let capturedTabBarStyle: unknown = null;
 type CapturedTabScreen = {
   name?: string;
@@ -238,10 +237,6 @@ jest.doMock('@/constants/theme', () => ({
   },
 }));
 
-jest.doMock('@/context/AuthContext', () => ({
-  useAuth: () => mockUseAuth(),
-}));
-
 jest.doMock('@/context/StartupRouteContext', () => ({
   useStartupRoute: () => ({ routeCommitted: mockRouteCommitted }),
 }));
@@ -276,7 +271,7 @@ const centerBox = (labelKey: string) => {
   return JSON.parse(raw) as { width?: number; height?: number };
 };
 
-describe('TabLayout returning guest navigation', () => {
+describe('TabLayout bottom navigation', () => {
   beforeEach(() => {
     capturedTabBarStyle = null;
     capturedScreens = [];
@@ -292,7 +287,6 @@ describe('TabLayout returning guest navigation', () => {
   });
 
   it('does not mount the animated tab navigator during the startup redirect', () => {
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     mockRouteCommitted = false;
 
     render(<TabLayout />);
@@ -301,7 +295,6 @@ describe('TabLayout returning guest navigation', () => {
   });
 
   it('keeps the transient tab route static after another root route is committed', () => {
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     mockSegments = ['onboarding'];
 
     render(<TabLayout />);
@@ -309,24 +302,7 @@ describe('TabLayout returning guest navigation', () => {
     expect(capturedTabBarStyle).toBeNull();
   });
 
-  it('hides the entire bottom navigation while authentication is required', () => {
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
-
-    render(<TabLayout />);
-
-    expect(capturedTabBarStyle).toEqual({ display: 'none' });
-    expect(capturedScreens.some((s) => s.name === 'settings')).toBe(false);
-    ['index', 'journal', 'add-dream', 'statistics', 'explore'].forEach((name) => {
-      expect(capturedScreens.find((s) => s.name === name)?.options).toEqual(
-        expect.objectContaining({
-          href: null,
-        })
-      );
-    });
-  });
-
   it('keeps the floating bottom navigation for an active session', () => {
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
     render(<TabLayout />);
 
@@ -363,7 +339,6 @@ describe('TabLayout returning guest navigation', () => {
   it('centers and bounds the tab bar on a wide Android window', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 1280;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
     render(<TabLayout />);
 
@@ -383,7 +358,6 @@ describe('TabLayout returning guest navigation', () => {
     mockWindowWidth = 320;
     mockWindowHeight = 640;
     mockFontScale = 1;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
     render(<TabLayout />);
 
@@ -422,7 +396,6 @@ describe('TabLayout returning guest navigation', () => {
     mockWindowWidth = 320;
     mockWindowHeight = 640;
     mockFontScale = 2;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
     render(<TabLayout />);
 
@@ -449,7 +422,6 @@ describe('TabLayout returning guest navigation', () => {
   it.each([320, 360, 434])('uses bounded native tab frames at %i dp for default and large text', (width: number) => {
     mockPlatformOS = 'android';
     mockWindowWidth = width;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     for (const scale of [1, 1.5, 2]) {
       mockFontScale = scale;
       capturedScreens = [];
@@ -469,7 +441,6 @@ describe('TabLayout returning guest navigation', () => {
     mockWindowWidth = 915;
     mockWindowHeight = 412;
     mockFontScale = 2;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
     render(<TabLayout />);
 
@@ -484,7 +455,6 @@ describe('TabLayout returning guest navigation', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = width;
     mockWindowHeight = height;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     for (const scale of [1, 1.5, 2]) {
       mockFontScale = scale;
       capturedScreens = [];
@@ -498,7 +468,6 @@ describe('TabLayout returning guest navigation', () => {
   });
 
   it('exposes a single TalkBack name, tab role and selected state on Expo tabs', () => {
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
     render(<TabLayout />);
 
@@ -519,7 +488,6 @@ describe('TabLayout returning guest navigation', () => {
   });
 
   it('attaches analysis busy state to the Capture tab button', () => {
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     mockActiveAnalysis = { dreamId: 42 };
 
     render(<TabLayout />);
@@ -538,7 +506,6 @@ describe('TabLayout returning guest navigation', () => {
   it('widens the tab geometry at 390 dp', () => {
     mockPlatformOS = 'android';
     mockWindowWidth = 390;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
 
     render(<TabLayout />);
 
@@ -571,7 +538,6 @@ describe('TabLayout StatefulTabs', () => {
     mockRouteCommitted = true;
     mockSegments = ['(tabs)', 'explore'];
     mockActiveAnalysis = null;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
   });
 
   it('keeps one Tabs instance and its interactive state across Explorer -> resource root -> Explorer', () => {
@@ -648,7 +614,6 @@ describe('TabLayout beside the iPhone Duo side column', () => {
     mockSideColumnBar = null;
     mockRouterPush.mockClear();
     mockRouterNavigate.mockClear();
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
   });
 
   afterEach(() => {
@@ -671,19 +636,13 @@ describe('TabLayout beside the iPhone Duo side column', () => {
     expect(mockRouterPush).toHaveBeenCalledWith('/recording');
   });
 
-  it('gives the column no navigation with the keyboard up, while authentication is required or before the tabs are shown', () => {
+  it('gives the column no navigation with the keyboard up or before the tabs are shown', () => {
     mockKeyboardVisible = true;
     const typing = render(<TabLayout />);
     expect(mockSideColumnBar).toBeNull();
     typing.unmount();
     mockKeyboardVisible = false;
 
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
-    const view = render(<TabLayout />);
-    expect(mockSideColumnBar).toBeNull();
-    view.unmount();
-
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
     mockRouteCommitted = false;
     render(<TabLayout />);
     expect(mockSideColumnBar).toBeNull();

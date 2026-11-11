@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  Text,
   type ViewStyle,
   View,
 } from 'react-native';
@@ -14,14 +13,12 @@ import {
 import { EmailAuthCard } from '@/components/auth/EmailAuthCard';
 import { GuestRecordingQaReset } from '@/components/dev/GuestRecordingQaReset';
 import { GuestProdQALab } from '@/components/guest/GuestProdQALab';
-import { StaticFlatGlassCard } from '@/components/inspiration/GlassCard';
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { QuotaStatusCard } from '@/components/quota/QuotaStatusCard';
 import { SubscriptionQALab } from '@/components/subscription/SubscriptionQALab';
 import { LegalSection } from '@/components/settings/LegalSection';
 import { SettingsSignOutAction } from '@/components/settings/SettingsSignOutAction';
 import { SettingsFieldGroup } from '@/components/settings/SettingsFieldGroup';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useContentWindow } from '@/context/ContentWindowContext';
@@ -35,16 +32,10 @@ import { buildPaywallHref } from '@/lib/paywallRoute';
 import { canOpenStoreReviewPage, openStoreReviewPage } from '@/lib/storeReview';
 
 /**
- * `Host` is an @expo/ui component and the returning-guest card is a `GlassCard`, so
- * neither takes a `className`. Both keep plain style objects.
+ * `Host` is an @expo/ui component, so it takes no `className` and keeps a plain
+ * style object.
  */
 const HOST_STYLE = { flex: 1, width: '100%' } as const;
-const RETURNING_GUEST_CARD_STYLE = {
-  borderRadius: 24,
-  marginBottom: ThemeLayout.spacing.md,
-  overflow: 'hidden',
-  padding: 0,
-} as const;
 
 /** The three slots that host React Native content inside the native settings shell. */
 const RN_SLOT_CLASS = 'w-full self-center';
@@ -83,7 +74,7 @@ export default function SettingsScreen() {
   const { auth, section } = useLocalSearchParams<{ auth?: string; section?: string }>();
   const directAccountForm = section === 'account' && (auth === 'signin' || auth === 'signup');
   const { colors, mode } = useTheme();
-  const { returningGuestBlocked, user } = useAuth();
+  const { user } = useAuth();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
@@ -133,28 +124,6 @@ export default function SettingsScreen() {
       className={Platform.OS === 'android' ? ACCOUNT_SLOT_ANDROID_CLASS : RN_SLOT_CLASS}
       testID="settings-account-rn-content"
     >
-      {returningGuestBlocked ? (
-        <StaticFlatGlassCard
-          intensity="moderate"
-          animationDelay={100}
-          style={RETURNING_GUEST_CARD_STYLE}
-        >
-          <View className="h-[3px] w-full bg-champagne opacity-[0.85]" />
-          <View className="items-center gap-2 p-6">
-            <IconSymbol
-              name="person.crop.circle.badge.exclamationmark"
-              size={48}
-              color={noctalia.accent.text}
-            />
-            <Text className="mt-2 text-center font-display-semibold text-h2 text-ivory">
-              {t('auth.returning_guest.banner_title')}
-            </Text>
-            <Text className="text-center font-sans text-body-sm text-ivory-muted">
-              {t('auth.returning_guest.message')}
-            </Text>
-          </View>
-        </StaticFlatGlassCard>
-      ) : null}
       <EmailAuthCard isCompact={isCompactLayout} presentation="embedded" showSignOut={false} initialAccountSheetOpen={auth === 'signin'} />
       <GuestRecordingQaReset />
       <GuestProdQALab />
@@ -175,7 +144,7 @@ export default function SettingsScreen() {
   );
 
   // Account links include their subscription; general preferences stay in settings.
-  if (section === 'account' && !returningGuestBlocked) {
+  if (section === 'account') {
     return (
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1 bg-ink" testID="screen.account">
@@ -209,8 +178,8 @@ export default function SettingsScreen() {
       <View className="w-full max-w-[760px] self-center">
       <NoctaliaScreenHeader
         scene="journal"
-        titleKey={returningGuestBlocked ? 'auth.returning_guest.title' : 'settings.title'}
-        actions={returningGuestBlocked ? [] : [{
+        titleKey="settings.title"
+        actions={[{
           icon: 'chevron.left',
           accessibilityLabel: t('navigation.back'),
           testID: 'settings.back',
@@ -239,10 +208,9 @@ export default function SettingsScreen() {
             legal={legal}
             footer={user ? <View testID="settings-signout-footer"><SettingsSignOutAction /></View> : undefined}
             onOpenSubscription={handleOpenPaywall}
-            onReplayOnboarding={returningGuestBlocked ? undefined : () => router.push({ pathname: '/onboarding', params: { replay: '1' } })}
-            onRateApp={returningGuestBlocked || !canOpenStoreReviewPage() ? undefined : () => void openStoreReviewPage()}
+            onReplayOnboarding={() => router.push({ pathname: '/onboarding', params: { replay: '1' } })}
+            onRateApp={!canOpenStoreReviewPage() ? undefined : () => void openStoreReviewPage()}
             quota={quota}
-            returningGuestBlocked={returningGuestBlocked}
             subscriptionSubtitle={t('settings.plus.subtitle')}
             subscriptionTitle={t('subscription.settings.title.plus')}
           />

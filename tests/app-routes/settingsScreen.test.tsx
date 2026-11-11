@@ -263,11 +263,9 @@ jest.doMock('@/components/settings/SettingsFieldGroup', () => ({
       <div data-testid="settings-field-group">
         {props.account}
         {props.quota}
-        {!props.returningGuestBlocked ? (
-          <button data-testid="settings-plus-card" onClick={props.onOpenSubscription}>
-            {props.subscriptionTitle}
-          </button>
-        ) : null}
+        <button data-testid="settings-plus-card" onClick={props.onOpenSubscription}>
+          {props.subscriptionTitle}
+        </button>
       </div>
     );
   },
@@ -329,7 +327,7 @@ describe('Settings screen', () => {
   it('offers a guest-only dev reset that reports the preserved dream count', async () => {
     restoreDevFlag?.();
     restoreDevFlag = withDevFlag(true);
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false, user: null });
+    mockUseAuth.mockReturnValue({ user: null });
     mockUseSubscription.mockReturnValue({ isActive: false, loading: false, status: null });
 
     render(<SettingsScreen />);
@@ -342,37 +340,17 @@ describe('Settings screen', () => {
   it('does not offer the guest reset to a signed-in developer', () => {
     restoreDevFlag?.();
     restoreDevFlag = withDevFlag(true);
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false, user: { id: 'user-1' } });
+    mockUseAuth.mockReturnValue({ user: { id: 'user-1' } });
     mockUseSubscription.mockReturnValue({ isActive: false, loading: false, status: null });
 
     render(<SettingsScreen />);
     expect(screen.queryByTestId('guest-recording-qa-reset')).toBeNull();
   });
 
-  it('[B] Given a returning guest is blocked When rendering Then it hides subscription features', () => {
-    // Given
-    capturedSettingsProps = null;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
-    mockUseSubscription.mockReturnValue({
-      isActive: false,
-      loading: false,
-      status: null,
-    });
-
-    // When
-    render(<SettingsScreen />);
-
-    // Then
-    expect(screen.getByText('auth.returning_guest.title')).toBeTruthy();
-    expect(screen.getByTestId('email-auth-card')).toBeTruthy();
-    expect(capturedSettingsProps?.returningGuestBlocked).toBe(true);
-    expect(screen.queryByTestId('settings-plus-card')).toBeNull();
-  });
-
   it('[B] Given a free user When rendering Then the compact Plus card opens the paywall', () => {
     // Given
     capturedSettingsProps = null;
-    mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+    mockUseAuth.mockReturnValue({ user: null });
     mockUseSubscription.mockReturnValue({
       isActive: false,
       loading: false,
@@ -395,7 +373,7 @@ describe('Settings screen', () => {
 
 it.each([true, false])('returns to the calling screen with a safe direct-link fallback (history=%s)', (hasHistory: boolean) => {
   mockCanGoBack = hasHistory;
-  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  mockUseAuth.mockReturnValue({ user: null });
   render(<SettingsScreen />);
   fireEvent.click(screen.getByTestId('settings.back'));
   if (hasHistory) expect(mockBack).toHaveBeenCalledTimes(1);
@@ -404,14 +382,14 @@ it.each([true, false])('returns to the calling screen with a safe direct-link fa
 
 it('opens the account form for the drawer sign-in entry', () => {
   mockParams = { auth: 'signin' };
-  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  mockUseAuth.mockReturnValue({ user: null });
   render(<SettingsScreen />);
   expect(mockInitialAccountSheetOpen).toBe(true);
 });
 
 it('includes subscription access in the account without general preferences', () => {
   mockParams = { section: 'account' };
-  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  mockUseAuth.mockReturnValue({ user: null });
   render(<SettingsScreen />);
   expect(screen.getByTestId('settings-account-only')).toBeTruthy();
   expect(screen.getByTestId('email-auth-card')).toBeTruthy();
@@ -426,18 +404,11 @@ it.each(['signup', 'signin'])('opens the requested %s form directly without a se
   mockCanGoBack = true;
   mockBack.mockClear();
   mockParams = { section: 'account', auth };
-  mockUseAuth.mockReturnValue({ returningGuestBlocked: false });
+  mockUseAuth.mockReturnValue({ user: null });
   render(<SettingsScreen />);
   expect(screen.getByTestId('email-auth-card').getAttribute('data-presentation')).toBe('card');
   expect(mockInitialAccountSheetOpen).toBeFalsy();
   expect(screen.queryByTestId('settings-quota-rn-content')).toBeNull();
   fireEvent.click(screen.getByTestId('settings.back'));
   expect(mockBack).toHaveBeenCalledTimes(1);
-});
-it('preserves the authentication recovery surface for a blocked returning guest', () => {
-  mockParams = { section: 'account' };
-  mockUseAuth.mockReturnValue({ returningGuestBlocked: true });
-  render(<SettingsScreen />);
-  expect(screen.queryByTestId('settings-account-only')).toBeNull();
-  expect(screen.getByTestId('settings-field-group')).toBeTruthy();
 });

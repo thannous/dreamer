@@ -61,13 +61,6 @@ const variants: Record<PaywallTrigger, PaywallVariant> = {
     headerSubtitleKey: 'subscription.paywall.variant.stats_profile.subtitle',
     primaryLabelKey: 'subscription.paywall.variant.stats_profile.cta',
   },
-  returning_device: {
-    trigger: 'returning_device',
-    chipKey: 'subscription.paywall.variant.returning_device.chip',
-    headerTitleKey: 'subscription.paywall.variant.returning_device.title',
-    headerSubtitleKey: 'subscription.paywall.variant.returning_device.subtitle',
-    primaryLabelKey: 'subscription.paywall.variant.returning_device.cta',
-  },
   settings_quota: {
     trigger: 'settings_quota',
     chipKey: 'subscription.paywall.variant.settings_quota.chip',

@@ -347,8 +347,6 @@ export interface QuotaStatus {
    */
   canGenerateImage?: boolean;
   reasons?: string[]; // Reasons why an action is blocked
-  /** @deprecated Kept only for compatibility with old quota payloads. */
-  isUpgraded?: boolean;
   riskScore?: number;
   riskLevel?: 'low' | 'elevated' | 'high';
   guestBootstrapStatus?: 'ready' | 'degraded' | 'disabled';

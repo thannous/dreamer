@@ -10,7 +10,6 @@ const mockPush = jest.fn();
 const mockNavigate = jest.fn();
 const mockDismissTo = jest.fn();
 let mockPathname = '/journal';
-let mockReturningGuestBlocked = false;
 
 jest.mock('react-native', () => {
   const React = require('react');
@@ -69,10 +68,6 @@ jest.mock('@/constants/theme', () => ({
   Fonts: { outfit: { bold: 'Outfit-Bold', medium: 'Outfit-Medium', regular: 'Outfit-Regular' } },
 }));
 
-jest.mock('@/context/AuthContext', () => ({
-  useAuth: () => ({ returningGuestBlocked: mockReturningGuestBlocked }),
-}));
-
 jest.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({ colors: {}, mode: 'light' }),
 }));
@@ -91,7 +86,6 @@ afterEach(() => {
   mockNavigate.mockClear();
   mockDismissTo.mockClear();
   mockPathname = '/journal';
-  mockReturningGuestBlocked = false;
 });
 
 describe('DesktopSidebar', () => {
@@ -138,22 +132,6 @@ describe('DesktopSidebar', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/(tabs)/explore');
 
     fireEvent.click(screen.getByTestId(TID.Tab.Settings));
-    expect(mockPush).toHaveBeenCalledWith('/settings');
-  });
-
-  it('shows only one Settings item and hides the primary tabs when a returning guest is blocked', () => {
-    mockReturningGuestBlocked = true;
-    render(<DesktopSidebar />);
-
-    expect(screen.queryByTestId(TID.Tab.Home)).toBeNull();
-    expect(screen.queryByTestId(TID.Tab.Journal)).toBeNull();
-    expect(screen.queryByTestId(TID.Tab.AddDream)).toBeNull();
-    expect(screen.queryByTestId(TID.Tab.Stats)).toBeNull();
-    expect(screen.queryByTestId(TID.Tab.Explore)).toBeNull();
-    expect(screen.getAllByTestId(TID.Tab.Settings)).toHaveLength(1);
-
-    fireEvent.click(screen.getByTestId(TID.Tab.Settings));
-    expect(mockPush).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/settings');
   });
 });

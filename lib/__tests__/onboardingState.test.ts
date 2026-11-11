@@ -520,20 +520,11 @@ describe('onboardingState', () => {
     const incomplete = getDefaultOnboardingState(1);
     expect(
       resolveStartupDestination({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: incomplete,
         pendingNotificationUrl: '/recording',
       })
     ).toBe('/onboarding');
-
-    expect(
-      resolveStartupDestination({
-        returningGuestBlocked: true,
-        hasUser: false,
-        onboardingState: incomplete,
-      })
-    ).toBe('/settings');
   });
 
   it('keeps a notification queued until it actually wins startup arbitration', () => {
@@ -544,7 +535,6 @@ describe('onboardingState', () => {
     );
     expect(
       resolveStartupDecision({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: completedWithIntent,
         pendingNotificationUrl: '/recording',
@@ -553,7 +543,6 @@ describe('onboardingState', () => {
 
     expect(
       resolveStartupDecision({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: { ...completedWithIntent, pendingRecordingIntent: null },
         pendingNotificationUrl: '/recording',
@@ -655,7 +644,6 @@ describe('onboardingState', () => {
         Date.now()
       );
       expect(resolveStartupDecision({
-        returningGuestBlocked: false,
         hasUser: true,
         onboardingState: { ...completed, pendingRecordingIntent: null },
         pendingNotificationUrl: null,
@@ -680,7 +668,6 @@ describe('onboardingState', () => {
     expect(destination).toBe('/weekly-recap');
     expect(
       resolveStartupDecision({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: completed,
         defaultDestination: destination,
@@ -688,7 +675,6 @@ describe('onboardingState', () => {
     ).toEqual({ destination: '/weekly-recap', reason: 'default' });
     expect(
       resolveStartupDestination({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: completed,
         defaultDestination: destination,
@@ -696,7 +682,6 @@ describe('onboardingState', () => {
     ).toBe('/weekly-recap');
     expect(
       resolveStartupDestination({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: completed,
       })
@@ -707,7 +692,6 @@ describe('onboardingState', () => {
     const incomplete = getDefaultOnboardingState(1);
     expect(
       resolveStartupDecision({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: incomplete,
         defaultDestination: '/settings',
@@ -724,7 +708,6 @@ describe('onboardingState', () => {
     };
     expect(
       resolveStartupDecision({
-        returningGuestBlocked: false,
         hasUser: false,
         onboardingState: completed,
         pendingNotificationUrl: '/recording',

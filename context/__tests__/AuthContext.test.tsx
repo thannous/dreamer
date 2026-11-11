@@ -153,7 +153,6 @@ describe('AuthContext', () => {
 
     expect(result.current.user?.id).toBe('user-1');
     expect(result.current.sessionReady).toBe(true);
-    expect(result.current.returningGuestBlocked).toBe(false);
     expect(mockRouterReplace).not.toHaveBeenCalled();
   });
 
@@ -174,7 +173,6 @@ describe('AuthContext', () => {
 
     expect(result.current.user).toBeNull();
     expect(result.current.sessionReady).toBe(false);
-    expect(result.current.returningGuestBlocked).toBe(false);
   });
 
   it('given stay-on-settings intent__when user loads__then navigates to settings', async () => {

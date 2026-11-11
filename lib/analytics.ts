@@ -243,7 +243,6 @@ export type PaywallTrigger =
   | 'settings'
   | 'settings_quota'
   | 'restore'
-  | 'returning_device'
   | 'direct';
 
 export type AnalyticsProvider = {
@@ -368,7 +367,6 @@ export function getPaywallTrigger(value: unknown): PaywallTrigger {
     case 'settings':
     case 'settings_quota':
     case 'restore':
-    case 'returning_device':
     case 'direct':
       return candidate;
     default:

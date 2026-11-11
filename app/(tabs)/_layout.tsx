@@ -18,7 +18,6 @@ import {
   getTabBarHorizontalLayout,
 } from '@/constants/layout';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
-import { useAuth } from '@/context/AuthContext';
 import { useAnalysisActivity } from '@/context/AnalysisActivityContext';
 import { useStartupRoute } from '@/context/StartupRouteContext';
 import { useContentWindow } from '@/context/ContentWindowContext';
@@ -224,7 +223,6 @@ function createTabButton({
 export default function TabLayout() {
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const { returningGuestBlocked } = useAuth();
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width, height, fontScale } = useContentWindow();
@@ -249,7 +247,7 @@ export default function TabLayout() {
 
   // The iPhone Duo's side column takes the navigation once the tabs are on show and have one.
   const tabsShown = hasEnteredTabs || (routeCommitted && isTabsDestination);
-  const barInSideColumn = useSideColumnTabBar('tabs', tabsShown && !returningGuestBlocked && !keyboardVisible ? {
+  const barInSideColumn = useSideColumnTabBar('tabs', tabsShown && !keyboardVisible ? {
     onSelect: (key) => {
       if (key === 'addDream') router.push('/recording');
       else router.navigate(BOTTOM_NAV_HREFS[key]);
@@ -335,10 +333,7 @@ export default function TabLayout() {
     overflow: 'visible',
   };
 
-  // The blocked returning-guest state is a standalone authentication surface.
-  // Keeping a single Settings tab visible adds no navigation value and can
-  // cover the privacy controls at the bottom of the screen.
-  const tabBarStyle: ViewStyle | { display: 'none' } = isDesktopWeb || returningGuestBlocked
+  const tabBarStyle: ViewStyle | { display: 'none' } = isDesktopWeb
     ? { display: 'none' }
     : baseTabBarStyle;
 
@@ -392,10 +387,7 @@ export default function TabLayout() {
       }}>
       <Tabs.Screen
         name="index"
-        options={returningGuestBlocked ? {
-          href: null,
-          title: t('nav.home'),
-        } : {
+        options={{
           title: t('nav.home'),
           tabBarButton: createTabButton({
             testID: TID.Tab.Home,
@@ -409,10 +401,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="journal"
-        options={returningGuestBlocked ? {
-          href: null,
-          title: t('nav.journal'),
-        } : {
+        options={{
           title: t('nav.journal'),
           tabBarButton: createTabButton({
             testID: TID.Tab.Journal,
@@ -426,10 +415,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="add-dream"
-        options={returningGuestBlocked ? {
-          href: null,
-          title: t('nav.capture_dream'),
-        } : {
+        options={{
           title: t('nav.capture_dream'),
           tabBarButton: (props) => (
             <HapticTab
@@ -450,10 +436,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="statistics"
-        options={returningGuestBlocked ? {
-          href: null,
-          title: t('nav.stats'),
-        } : {
+        options={{
           title: t('nav.stats'),
           tabBarButton: createTabButton({
             testID: TID.Tab.Stats,
@@ -467,10 +450,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="explore"
-        options={returningGuestBlocked ? {
-          href: null,
-          title: t('nav.explore'),
-        } : {
+        options={{
           title: t('nav.explore'),
           tabBarButton: createTabButton({
             testID: TID.Tab.Explore,
@@ -491,7 +471,7 @@ export default function TabLayout() {
   return (
     <View className="flex-1" style={{ flex: 1, backgroundColor: noctalia.screen.background }}>
       {tabs}
-      {!isDesktopWeb && !returningGuestBlocked && !keyboardVisible && !barInSideColumn && getCaptureAction(navigationLayout).raised ? (
+      {!isDesktopWeb && !keyboardVisible && !barInSideColumn && getCaptureAction(navigationLayout).raised ? (
         // This touch surface is inside the full-screen parent, so Android can hit
         // the artwork above the tab row. hitSlop on that row is clipped by its bounds.
         <Pressable accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"

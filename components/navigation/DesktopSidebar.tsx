@@ -6,7 +6,6 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { getNoctaliaPalette } from '@/constants/noctaliaPalette';
-import { useAuth } from '@/context/AuthContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getAppVersionString } from '@/lib/appVersion';
 import { TID } from '@/lib/testIDs';
@@ -130,7 +129,6 @@ function CaptureAction({ label, isActive, testID }: { label: string; isActive: b
 export function DesktopSidebar() {
   const { t } = useTranslation();
   const pathname = usePathname();
-  const { returningGuestBlocked } = useAuth();
   const appVersion = getAppVersionString({ prefix: 'v' });
 
   const primaryNavItems: { icon: IconName; label: string; href: Href; testID?: string }[] = [
@@ -180,16 +178,14 @@ export function DesktopSidebar() {
           </Text>
         </View>
 
-        {returningGuestBlocked ? null : (
-          <CaptureAction
-            label={t('nav.capture_dream')}
-            isActive={isActive('/recording')}
-            testID={TID.Tab.AddDream}
-          />
-        )}
+        <CaptureAction
+          label={t('nav.capture_dream')}
+          isActive={isActive('/recording')}
+          testID={TID.Tab.AddDream}
+        />
 
         <View className="flex-1 gap-1">
-          {returningGuestBlocked ? null : primaryNavItems.map((item) => (
+          {primaryNavItems.map((item) => (
             <NavItem
               key={item.testID ?? item.label}
               icon={item.icon}

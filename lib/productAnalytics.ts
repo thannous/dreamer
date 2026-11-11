@@ -113,6 +113,8 @@ const paywallTrigger = oneOf(
   'settings',
   'settings_quota',
   'restore',
+  // No screen sends it any more. It stays in the accepted values because the
+  // server keeps accepting it from older app versions, and both lists must match.
   'returning_device',
   'direct'
 );

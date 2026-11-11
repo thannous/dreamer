@@ -203,7 +203,6 @@ const baseProps = {
   bottomPadding: 72,
   onOpenSubscription: openSubscription,
   quota: <div data-testid="slot-quota" />,
-  returningGuestBlocked: false,
   subscriptionSubtitle: 'Explore without limits',
   subscriptionTitle: 'Noctalia Plus',
 };
@@ -220,19 +219,6 @@ afterEach(() => {
 });
 
 describe('SettingsFieldGroup', () => {
-
-  it('keeps the returning guest barrier to account and language', () => {
-    render(<SettingsFieldGroup {...baseProps} returningGuestBlocked />);
-
-    expect(screen.getByTestId('slot-account')).toBeTruthy();
-    expect(screen.getByTestId('settings-language-choice')).toBeTruthy();
-    expect(screen.queryByTestId('settings-theme-choice')).toBeNull();
-    expect(screen.queryByTestId('settings-journal-layout-choice')).toBeNull();
-    expect(screen.queryByTestId('settings-section-notifications')).toBeNull();
-    expect(screen.queryByTestId('settings-section-subscription')).toBeNull();
-    expect(screen.queryByTestId('settings-section-quota')).toBeNull();
-    expect(screen.getByTestId('settings-app-version')).toBeTruthy();
-  });
 
   it('opens the theme sheet and persists the selected option', () => {
     render(<SettingsFieldGroup {...baseProps} />);

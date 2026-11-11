@@ -1572,9 +1572,6 @@ export const useDreamJournal = () => {
         // dreams are still loading from the server.
         const status = await quotaService.getQuotaStatus(user, tier);
         if (!status.canAnalyze) {
-          if (!user && status.isUpgraded) {
-            throw new QuotaError(QuotaErrorCode.LOGIN_REQUIRED, 'guest');
-          }
           throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
         }
         throw new Error(`Dream with id ${dreamId} not found`);
@@ -1602,9 +1599,6 @@ export const useDreamJournal = () => {
         const status = await quotaService.getQuotaStatus(user, tier);
         if (!status.canAnalyze) {
           analysisRequestIdsRef.current.delete(getDreamIdentityKey(dream));
-          if (!user && status.isUpgraded) {
-            throw new QuotaError(QuotaErrorCode.LOGIN_REQUIRED, 'guest');
-          }
           throw new QuotaError(QuotaErrorCode.ANALYSIS_LIMIT_REACHED, tier);
         }
       }

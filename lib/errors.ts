@@ -612,7 +612,6 @@ export enum QuotaErrorCode {
   ANALYSIS_LIMIT_REACHED = 'ANALYSIS_LIMIT_REACHED',
   EXPLORATION_LIMIT_REACHED = 'EXPLORATION_LIMIT_REACHED',
   MESSAGE_LIMIT_REACHED = 'MESSAGE_LIMIT_REACHED',
-  LOGIN_REQUIRED = 'LOGIN_REQUIRED',
   GUEST_LIMIT_REACHED = 'GUEST_LIMIT_REACHED', // Backward compatibility
 }
 
@@ -654,9 +653,6 @@ export class QuotaError extends Error {
 
       case QuotaErrorCode.MESSAGE_LIMIT_REACHED:
         return 'This dream has reached its chat safety limit. Its interpretation remains available.';
-
-      case QuotaErrorCode.LOGIN_REQUIRED:
-        return 'Please sign in to continue.';
 
       case QuotaErrorCode.GUEST_LIMIT_REACHED:
         return `You have used your ${QUOTAS.guest.analysis ?? 0} included guest interpretations. Create a free account to continue.`;

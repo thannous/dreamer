@@ -28,7 +28,6 @@ type RemoteQuotaResponse = {
   canAnalyze?: boolean;
   canExplore?: boolean;
   canGenerateImage?: boolean;
-  isUpgraded?: boolean;
   riskScore?: number;
   riskLevel?: 'low' | 'elevated' | 'high';
   reasons?: string[];
@@ -128,7 +127,6 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       canAnalyze,
       canExplore,
       canGenerateImage,
-      isUpgraded: false,
       riskScore: remote.riskScore,
       riskLevel: remote.riskLevel,
       reasons: remote.reasons ?? fallback.reasons,
@@ -195,7 +193,6 @@ export class RemoteGuestQuotaProvider implements QuotaProvider {
       canAnalyze: false,
       canExplore: false,
       canGenerateImage: false,
-      isUpgraded: fallback.isUpgraded ?? false,
       reasons: [reasonsByCode[reasonCode]],
       guestBootstrapStatus: 'degraded',
       guestBootstrapReasonCode: reasonCode,

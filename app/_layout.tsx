@@ -228,7 +228,7 @@ function RootLayoutNav({
   onStartupCommitted: () => void;
 }) {
   const { mode } = useTheme();
-  const { user, returningGuestBlocked, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const {
     state: onboardingState,
     loading: onboardingLoading,
@@ -466,7 +466,7 @@ function RootLayoutNav({
         if (decision.reason === 'notification') setNotificationWinningEngaged(true);
         if (decision.reason === 'auth_return') setAuthReturnEngaged(authReturnIntent);
         if (!isLucidTrainer && peekReturnToPaywallTrigger()
-          && decision.reason !== 'onboarding' && decision.reason !== 'returning_guest_blocked') {
+          && decision.reason !== 'onboarding') {
           paywallReturnAcknowledged.current = null;
           setPaywallReturnEngaged(decision.destination);
         }
@@ -548,29 +548,6 @@ function RootLayoutNav({
     pathname,
   ]);
 
-  // Guard: Redirect returning guests (account created but logged out) to settings
-  useEffect(() => {
-    if (isLucidTrainer || !isNavigationReady || !startupReady || !returningGuestBlocked || user) {
-      return;
-    }
-
-    const currentPath = pathnameRef.current ?? pathname;
-    const allowedRoutes = ['/settings'];
-    const isOnAllowedRoute =
-      allowedRoutes.some(
-        (route) => currentPath === route || currentPath?.startsWith(`${route}/`)
-      ) || isPasswordResetPath(currentPath);
-
-    if (!isOnAllowedRoute) {
-      if (__DEV__) {
-        console.log('[RootLayoutNav] Redirecting returning guest to settings', {
-          currentPath,
-        });
-      }
-      router.replace('/settings');
-    }
-  }, [isNavigationReady, pathname, returningGuestBlocked, startupReady, user]);
-
   const navigateForForeground = useCallback(
     () => {
       if (!isNavigationReady || !startupReady) {
@@ -580,7 +557,6 @@ function RootLayoutNav({
       const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
         ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
         : resolveAppStartupDecision({
-        returningGuestBlocked,
         hasUser: Boolean(user),
         onboardingState,
         pendingNotificationUrl,
@@ -705,7 +681,6 @@ function RootLayoutNav({
       pendingNotificationUrl,
       pendingAuthDestination,
       pendingLucidNotificationUrl,
-      returningGuestBlocked,
       searchParams.dreamId,
       startupReady,
       user,
@@ -758,7 +733,6 @@ function RootLayoutNav({
     const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
       ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
       : resolveAppStartupDecision({
-      returningGuestBlocked,
       hasUser: Boolean(user),
       onboardingState,
       pendingNotificationUrl,
@@ -776,7 +750,6 @@ function RootLayoutNav({
     pendingNotificationUrl,
     pendingAuthDestination,
     pendingLucidNotificationUrl,
-    returningGuestBlocked,
     startupReady,
     user,
   ]);
@@ -789,7 +762,6 @@ function RootLayoutNav({
         // screen has delegated navigation to us; still finish the chosen path.
         authReturnOnboardingOwned.current = null;
         const fallback = resolveAppStartupDecision({
-          returningGuestBlocked,
           hasUser: Boolean(user),
           onboardingState,
           defaultDestination: onboardingState.status === 'completed' && onboardingState.selectedPath === 'dictionary'
@@ -801,7 +773,6 @@ function RootLayoutNav({
       return;
     }
     const decision = resolveAppStartupDecision({
-      returningGuestBlocked,
       hasUser: Boolean(user),
       onboardingState,
       pendingAuthDestination,
@@ -810,7 +781,7 @@ function RootLayoutNav({
     else if (decision.reason === 'default' && (pathname === '/onboarding' || pathname.startsWith('/auth/callback'))) {
       return runAfterNavigationMount(() => engageDecision(decision));
     }
-  }, [engageDecision, isNavigationReady, onboardingState, pathname, pendingAuthDestination, returningGuestBlocked, startupReady, user]);
+  }, [engageDecision, isNavigationReady, onboardingState, pathname, pendingAuthDestination, startupReady, user]);
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -848,7 +819,6 @@ function RootLayoutNav({
     const decision = pendingLucidNotificationUrl && !(user && pendingAuthDestination)
       ? { destination: pendingLucidNotificationUrl, reason: 'notification' as const }
       : resolveAppStartupDecision({
-      returningGuestBlocked,
       hasUser: Boolean(user),
       onboardingState,
       pendingNotificationUrl,
@@ -865,7 +835,6 @@ function RootLayoutNav({
     pendingNotificationUrl,
     pendingAuthDestination,
     pendingLucidNotificationUrl,
-    returningGuestBlocked,
     startupReady,
     user,
   ]);

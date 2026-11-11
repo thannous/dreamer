@@ -189,7 +189,7 @@ describe('RemoteGuestQuotaProvider', () => {
 
     expect(mockFetchJSON).toHaveBeenCalledWith(expect.stringContaining('/quota/status'),
       expect.objectContaining({ readOnly: true, retries: 1 }));
-    expect(status.isUpgraded).toBe(false);
+    expect(status).not.toHaveProperty('isUpgraded');
     expect(status.canAnalyze).toBe(true);
     expect(status.canExplore).toBe(true);
     expect(status.reasons).toBeUndefined();

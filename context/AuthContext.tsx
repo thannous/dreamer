@@ -23,7 +23,6 @@ export type AuthContextValue = {
   isCurrentSession: (userId: string | null, generation: number) => boolean;
   loading: boolean;
   sessionReady: boolean;
-  returningGuestBlocked: boolean;
   refreshUser: (options?: RefreshUserOptions) => Promise<User | null>;
   setUserTierLocally: (input: LocalSubscriptionCacheInput, scope?: AuthScope) => void;
 };
@@ -91,9 +90,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   const [sessionGeneration, setSessionGeneration] = useState(0);
   const [loading, setLoading] = useState(true);
   const [sessionReady, setSessionReady] = useState(false);
-  // A device is only one signal in server-side abuse scoring. Logging out must
-  // never hard-block guest mode on a shared or refurbished phone.
-  const returningGuestBlocked = false;
   const userRef = useRef<User | null>(null);
   const sessionReadyRef = useRef(false);
   const authScope = useRef<AuthScope & { sessionId?: string }>({ userId: null, generation: 0 });
@@ -385,8 +381,8 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   }, [isCurrentSession]);
 
   const value = useMemo(
-    () => ({ user, sessionGeneration, isCurrentSession, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally }),
-    [user, sessionGeneration, isCurrentSession, loading, sessionReady, returningGuestBlocked, refreshUser, setUserTierLocally]
+    () => ({ user, sessionGeneration, isCurrentSession, loading, sessionReady, refreshUser, setUserTierLocally }),
+    [user, sessionGeneration, isCurrentSession, loading, sessionReady, refreshUser, setUserTierLocally]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

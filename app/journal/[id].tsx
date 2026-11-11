@@ -94,7 +94,7 @@ import {
 import { getDreamAnalysisFreshness } from '@/lib/dreamAnalysisFreshness';
 import { isMockModeEnabled } from '@/lib/env';
 import { isFullMoonDream } from '@/lib/fullMoon';
-import { AiConsentWithdrawnError, classifyError, ErrorType, QuotaError, QuotaErrorCode } from '@/lib/errors';
+import { AiConsentWithdrawnError, classifyError, ErrorType, QuotaError } from '@/lib/errors';
 import { getDreamImageCacheKey, getDreamImageVersion, getImageConfig, withCacheBuster } from '@/lib/imageUtils';
 import {
   resolveJournalIllustrationAccess,
@@ -580,13 +580,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     | { kind: 'closed' }
     | { kind: 'replace_image' }
     | { kind: 'reanalyze'; imagePolicy: 'keep' | 'regenerate' }
-    | { kind: 'quota'; mode: 'quota' | 'login' }
+    | { kind: 'quota' }
   >({ kind: 'closed' });
   const showReplaceImageSheet = analysisPrompt.kind === 'replace_image';
   const showReanalyzeSheet = analysisPrompt.kind === 'reanalyze';
   const reanalyzeImagePolicy = analysisPrompt.kind === 'reanalyze' ? analysisPrompt.imagePolicy : 'keep';
   const showQuotaLimitSheet = analysisPrompt.kind === 'quota';
-  const quotaSheetMode = analysisPrompt.kind === 'quota' ? analysisPrompt.mode : 'quota';
   const [showDeleteSheet, setShowDeleteSheet] = useState(false);
   const [isIllustrationFullscreen, setIsIllustrationFullscreen] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
@@ -630,7 +629,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
   const canResumeAnalysis = Boolean(dream && isResumableAnalysisRequest(dream));
   const guestNeedsAccount = !user && !canResumeAnalysis
-    && (savedAnalysisAction === 'signup' || savedAnalysisAction === 'login');
+    && savedAnalysisAction === 'signup';
   const categorizationIdentity = dream ? getInitialDreamCategorizationKey(dream) : '';
   const getInitialCategorizationPending = useCallback(
     () => Boolean(categorizationIdentity && isInitialDreamCategorizationPending(categorizationIdentity)),
@@ -1094,13 +1093,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         return {
           icon: 'person.fill' as const,
           title: t('recording.saved_analysis.title'),
-          message: t(savedAnalysisAction === 'login'
-            ? 'journal.detail.quota_limit.message_login'
-            : 'journal.detail.quota_limit.message_guest'),
+          message: t('journal.detail.quota_limit.message_guest'),
           step: t('journal.detail.action.analyze.step'),
-          cta: t(savedAnalysisAction === 'login'
-            ? 'journal.detail.quota_limit.cta_login'
-            : 'journal.detail.quota_limit.cta_guest'),
+          cta: t('journal.detail.quota_limit.cta_guest'),
           disabled: false,
         };
       }
@@ -1661,10 +1656,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       if (tier === 'free' && user && dream) {
         router.push(buildAnalysisPaywallHref(dream, user.id));
       } else if (!user) {
-        router.push(quotaStatus?.isUpgraded
-          ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+        router.push('/settings?section=account&auth=signup');
       } else {
-        setAnalysisPrompt({ kind: 'quota', mode: 'quota' });
+        setAnalysisPrompt({ kind: 'quota' });
       }
       return false;
     }).catch((error: unknown) => {
@@ -1687,12 +1681,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const handleQuotaLimitPrimary = useCallback(() => {
     setAnalysisPrompt({ kind: 'closed' });
     if (tier === 'guest') {
-      router.push(quotaSheetMode === 'login'
-        ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+      router.push('/settings?section=account&auth=signup');
     } else {
       if (dream && user) router.push(buildAnalysisPaywallHref(dream, user.id));
     }
-  }, [dream, quotaSheetMode, tier, user]);
+  }, [dream, tier, user]);
 
   const handleFirstValueBackup = useCallback(() => {
     router.push('/settings?section=account&auth=signup');
@@ -1732,16 +1725,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       }).catch((error: unknown) => {
         if (error instanceof AiConsentWithdrawnError) return;
         if (error instanceof QuotaError) {
-          if (error.code === QuotaErrorCode.LOGIN_REQUIRED && tier === 'guest') {
-            setAnalysisPrompt({ kind: 'quota', mode: 'login' });
-            return;
-          }
           // Show quota limit sheet with upgrade CTA for non-paid users
           if (!isPlus) {
             if (tier === 'free' && user) {
               router.push(buildAnalysisPaywallHref(dream, user.id));
             } else {
-              setAnalysisPrompt({ kind: 'quota', mode: 'quota' });
+              setAnalysisPrompt({ kind: 'quota' });
             }
           } else {
             // Plus users should never hit quota errors, but show a notice if they do.
@@ -1830,8 +1819,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         return;
       }
       if (guestNeedsAccount) {
-        router.push(savedAnalysisAction === 'login'
-          ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+        router.push('/settings?section=account&auth=signup');
         return;
       }
 
@@ -3646,7 +3634,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           onPrimary={handleQuotaLimitPrimary}
           onSecondary={handleQuotaLimitDismiss}
           tier={tier}
-          mode={quotaSheetMode}
           usageLimit={usage?.analysis.limit}
           onDiscoverPlus={() => {
             setAnalysisPrompt({ kind: 'closed' });

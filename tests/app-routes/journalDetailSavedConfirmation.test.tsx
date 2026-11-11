@@ -32,7 +32,7 @@ let mockPendingRecordingIntent: Partial<PendingRecordingIntent> | null = null;
 const mockTransitionOnboarding = jest.fn(async () => undefined);
 let mockMedia: any = null;
 let mockQuotaUsage: any = { analysis: { used: 0, limit: 3, remaining: 3 } };
-let mockQuotaStatus: { isUpgraded?: boolean; canAnalyze?: boolean; guestBootstrapStatus?: string } | null = null;
+let mockQuotaStatus: { canAnalyze?: boolean; guestBootstrapStatus?: string } | null = null;
 let mockCanAnalyzeNow = true;
 let mockQuotaLoading = false;
 const mockCanAnalyze = jest.fn(async () => true);
@@ -869,19 +869,18 @@ describe('journal detail saved confirmation route', () => {
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
   });
 
-  it.each([false, true])('preserves the guest account path (returning device: %s)', async (isUpgraded: boolean) => {
+  it('sends a guest out of interpretations to create an account', async () => {
     mockTier = 'guest';
     mockUser = null;
-    mockQuotaStatus = { isUpgraded };
+    mockQuotaStatus = {};
     mockQuotaUsage = { analysis: { used: 2, limit: 2, remaining: 0 } };
     render(<JournalDetailScreen />);
     expect(screen.queryByTestId(TID.Sheet.SavedDreamAnalysis)).toBeNull();
     expect(require('expo-router').router.push).not.toHaveBeenCalled();
     const action = screen.getByTestId(TID.Button.DreamDetailPrimaryCta);
-    expect(action.textContent).toContain(isUpgraded ? 'journal.detail.quota_limit.cta_login' : 'journal.detail.quota_limit.cta_guest');
+    expect(action.textContent).toContain('journal.detail.quota_limit.cta_guest');
     await act(async () => { fireEvent.click(action); });
-    expect(require('expo-router').router.push).toHaveBeenCalledWith(isUpgraded
-      ? '/settings?section=account&auth=signin' : '/settings?section=account&auth=signup');
+    expect(require('expo-router').router.push).toHaveBeenCalledWith('/settings?section=account&auth=signup');
     expect(require('expo-router').router.push).toHaveBeenCalledTimes(1);
     expect(screen.queryByTestId('quota-limit')).toBeNull();
     expect(mockCanAnalyze).not.toHaveBeenCalled();
@@ -1131,7 +1130,7 @@ describe('journal detail saved confirmation route', () => {
       label: 'auth',
       setup: () => {
         mockUser = null;
-        mockQuotaStatus = { isUpgraded: true };
+        mockQuotaStatus = {};
         mockCanAnalyzeNow = false;
         mockCanAnalyze.mockResolvedValueOnce(false);
       },
@@ -1146,7 +1145,7 @@ describe('journal detail saved confirmation route', () => {
     setup();
     render(<JournalDetailScreen />);
     await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.DreamDetailPrimaryCta)); });
-    if (label === 'auth') expect(require('expo-router').router.push).toHaveBeenCalledWith('/settings?section=account&auth=signin');
+    if (label === 'auth') expect(require('expo-router').router.push).toHaveBeenCalledWith('/settings?section=account&auth=signup');
     else expect(require('expo-router').router.push).toHaveBeenCalledWith(expect.objectContaining({ pathname: '/paywall' }));
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect(mockTransitionOnboarding).not.toHaveBeenCalledWith({ type: 'CLEAR_PENDING_INTENT' });

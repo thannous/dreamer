@@ -48,7 +48,6 @@ type SettingsFieldGroupProps = {
   footer?: ReactElement;
   onOpenSubscription: () => void;
   quota: ReactElement;
-  returningGuestBlocked: boolean;
   subscriptionSubtitle: string;
   subscriptionTitle: string;
 };
@@ -326,7 +325,6 @@ export function SettingsFieldGroup({
   footer,
   onOpenSubscription,
   quota,
-  returningGuestBlocked,
   subscriptionSubtitle,
   subscriptionTitle,
 }: SettingsFieldGroupProps) {
@@ -412,16 +410,14 @@ export function SettingsFieldGroup({
             title={t('settings.section.experience')}
             testID="settings-section-preferences"
           >
-            {!returningGuestBlocked ? (
-              <PreferenceRow
-                icon="sun.max.fill"
-                label={theme.title}
-                noctalia={noctalia}
-                onPress={() => setThemeSheetVisible(true)}
-                testID="settings-theme-choice"
-                value={theme.currentLabel}
-              />
-            ) : null}
+            <PreferenceRow
+              icon="sun.max.fill"
+              label={theme.title}
+              noctalia={noctalia}
+              onPress={() => setThemeSheetVisible(true)}
+              testID="settings-theme-choice"
+              value={theme.currentLabel}
+            />
             {/* The web plays no signature sound, so it offers no switch for them. */}
             {Platform.OS !== 'web' ? (
               <Pressable
@@ -472,8 +468,7 @@ export function SettingsFieldGroup({
             /> : null}
           </SettingsSection>
 
-          {!returningGuestBlocked ? (
-            <>
+          <>
               <SettingsSection
                 title={t('settings.section.rituals')}
                 testID="settings-section-notifications"
@@ -687,11 +682,10 @@ export function SettingsFieldGroup({
                   <IconSymbol name="chevron.right" size={20} color={noctalia.text.tertiary} />
                 </PressableScale>
               </SettingsSection>
-            </>
-          ) : null}
+          </>
 
           {legal}
-          {!returningGuestBlocked ? footer : null}
+          {footer}
 
           {appVersionLabel ? (
             <View className="items-center px-4 py-2.5" testID="settings-app-version">

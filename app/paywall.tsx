@@ -123,14 +123,8 @@ function PaywallScreen() {
     () => [styles.root, { backgroundColor: noctalia.screen.background }],
     [noctalia.screen.background]
   );
-  const headerContainerStyle = useMemo(
-    () => [styles.headerContainer, { paddingTop: ThemeLayout.spacing.lg + insets.top }],
-    [insets.top]
-  );
 
-  const isDeviceUpgraded = requiresAuth && quotaStatus?.isUpgraded === true;
-  const routeTrigger = getPaywallTrigger(params.trigger);
-  const paywallTrigger = isDeviceUpgraded ? 'returning_device' : routeTrigger;
+  const paywallTrigger = getPaywallTrigger(params.trigger);
   const isDreamAnalysisOffer = paywallTrigger === 'analysis_cta' && Boolean(params.dreamId)
     && params.dreamOwnerId === userId;
   // From the start of a prepared analysis: the analysis is already written, not to be made.
@@ -545,66 +539,6 @@ function PaywallScreen() {
     [formatNumber, t, translationRevision]
   );
 
-  if (isDeviceUpgraded) {
-    return (
-      <View style={rootStyle} testID={TID.Screen.Paywall}>
-        <DreamerArtworkWindow scene="observatory" />
-        <ScreenContainer style={headerContainerStyle} maxWidth={PAYWALL_MAX_WIDTH}>
-          <View style={styles.headerRow}>
-            <Text style={[styles.headerTitle, { color: noctalia.text.primary }]}>
-              {translateWithFallback(paywallVariant.headerTitleKey)}
-            </Text>
-            <Pressable
-              onPress={handleClose}
-              disabled={busy}
-              style={({ pressed }) => [styles.closeButton, { backgroundColor: noctalia.surface.raised }, pressed && styles.closeButtonPressed]}
-              accessibilityRole="button"
-              testID={TID.Button.PaywallClose}
-            >
-              <Text style={[styles.closeLabel, { color: noctalia.text.secondary }]}>
-                {t('subscription.paywall.button.close')}
-              </Text>
-            </Pressable>
-          </View>
-        </ScreenContainer>
-
-        <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16}
-          style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
-          contentInsetAdjustmentBehavior="automatic"
-        >
-          <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH}>
-            <View style={styles.upgradedMessageContainer}>
-              <Text style={[styles.upgradedTitle, { color: noctalia.text.primary }]}>
-                {t('subscription.paywall.variant.returning_device.card_title')}
-              </Text>
-              <Text style={[styles.upgradedSubtitle, { color: noctalia.text.secondary }]}>
-                {t('subscription.paywall.variant.returning_device.card_subtitle')}
-              </Text>
-
-              <PressableScale
-                style={[
-                  styles.primaryButton,
-                  {
-                    backgroundColor: noctalia.action.primary,
-                    borderColor: noctalia.action.primaryBorder,
-                  },
-                ]}
-                onPress={handleOpenAuth}
-                hitSlop={0}
-                accessibilityRole="button"
-                testID={TID.Button.PaywallPurchase}
-              >
-                <Text style={[styles.primaryLabel, { color: noctalia.action.primaryText }]}>
-                  {translateWithFallback(paywallVariant.primaryLabelKey)}
-                </Text>
-              </PressableScale>
-            </View>
-          </ScreenContainer>
-        </HeaderScrollView>
-      </View>
-    );
-  }
 
   return (
     <View style={rootStyle} testID={TID.Screen.Paywall}>
@@ -1016,16 +950,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
   },
-  headerContainer: {
-    paddingTop: ThemeLayout.spacing.lg,
-    paddingHorizontal: ThemeLayout.spacing.md,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
   closeOverlay: {
     position: 'absolute',
     left: 0,
@@ -1358,25 +1282,6 @@ const styles = StyleSheet.create({
     fontSize: TypeScale.bodySm.fontSize,
     fontFamily: Fonts.outfit.regular,
     textAlign: 'center',
-  },
-  upgradedMessageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: ThemeLayout.spacing.xl,
-    paddingHorizontal: ThemeLayout.spacing.md,
-  },
-  upgradedTitle: {
-    fontSize: TypeScale.h2.fontSize,
-    fontFamily: Fonts.outfit.bold,
-    marginBottom: ThemeLayout.spacing.md,
-    textAlign: 'center',
-  },
-  upgradedSubtitle: {
-    fontSize: TypeScale.bodySm.fontSize,
-    fontFamily: Fonts.outfit.regular,
-    textAlign: 'center',
-    marginBottom: ThemeLayout.spacing.lg,
-    lineHeight: 20,
   },
 });
 

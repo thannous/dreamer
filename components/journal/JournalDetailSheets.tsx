@@ -40,8 +40,6 @@ const NOTICE_TONE_CLASS: Record<AnalysisNoticeTone, string> = {
   info: 'bg-ink-soft',
 };
 
-type QuotaMode = 'quota' | 'login';
-
 type AnalysisNoticeTone = 'success' | 'warning' | 'error' | 'info';
 
 export type AnalysisNotice = {
@@ -126,19 +124,17 @@ export function SavedDreamAnalysisSheet({
   visible: boolean;
   onClose: () => void;
   onPrimary: () => void;
-  action: 'analyze' | 'upgrade' | 'signup' | 'login' | 'checking' | 'check';
+  action: 'analyze' | 'upgrade' | 'signup' | 'checking' | 'check';
 }) {
   const { t } = useTranslation();
   const messageKey = action === 'upgrade' ? 'recording.saved_analysis.exhausted'
     : action === 'signup' ? 'recording.saved_analysis.guest_exhausted'
-      : action === 'login' ? 'journal.detail.quota_limit.message_login'
-        : 'recording.saved_analysis.message';
+      : 'recording.saved_analysis.message';
   const primaryKey = action === 'upgrade' ? 'recording.saved_analysis.upgrade'
     : action === 'signup' ? 'journal.detail.quota_limit.cta_guest'
-      : action === 'login' ? 'journal.detail.quota_limit.cta_login'
-        : action === 'checking' ? 'recording.saved_analysis.checking'
-          : action === 'check' ? 'journal.detail.check_analysis'
-            : 'recording.saved_analysis.accept';
+      : action === 'checking' ? 'recording.saved_analysis.checking'
+        : action === 'check' ? 'journal.detail.check_analysis'
+          : 'recording.saved_analysis.accept';
   return (
     <StandardBottomSheet
       visible={visible}
@@ -349,7 +345,6 @@ export function QuotaLimitSheet({
   onPrimary,
   onSecondary,
   tier,
-  mode,
   usageLimit,
   onDiscoverPlus,
 }: {
@@ -358,7 +353,6 @@ export function QuotaLimitSheet({
   onPrimary: () => void;
   onSecondary: () => void;
   tier: SubscriptionTier;
-  mode: QuotaMode;
   usageLimit?: number | null;
   /** A guest asked for an account can also look at Plus. */
   onDiscoverPlus?: () => void;
@@ -373,23 +367,17 @@ export function QuotaLimitSheet({
       ? QUOTAS.guest.analysis ?? 0
       : QUOTAS.free.analysis ?? 0;
 
-  const title = tier === 'guest' && mode === 'login'
-    ? t('journal.detail.quota_limit.title_login')
-    : tier === 'guest'
-      ? t('journal.detail.quota_limit.title_guest')
-      : t('journal.detail.quota_limit.title_free');
+  const title = tier === 'guest'
+    ? t('journal.detail.quota_limit.title_guest')
+    : t('journal.detail.quota_limit.title_free');
 
-  const subtitle = tier === 'guest' && mode === 'login'
-    ? t('journal.detail.quota_limit.message_login')
-    : tier === 'guest'
-      ? t('journal.detail.quota_limit.message_guest')
-      : t('journal.detail.quota_limit.message_free', { limit: resolvedLimit });
+  const subtitle = tier === 'guest'
+    ? t('journal.detail.quota_limit.message_guest')
+    : t('journal.detail.quota_limit.message_free', { limit: resolvedLimit });
 
-  const primaryLabel = tier === 'guest' && mode === 'login'
-    ? t('journal.detail.quota_limit.cta_login')
-    : tier === 'guest'
-      ? t('journal.detail.quota_limit.cta_guest')
-      : t('journal.detail.quota_limit.cta_free');
+  const primaryLabel = tier === 'guest'
+    ? t('journal.detail.quota_limit.cta_guest')
+    : t('journal.detail.quota_limit.cta_free');
 
   return (
     <BottomSheet
@@ -420,7 +408,7 @@ export function QuotaLimitSheet({
           onPress={onSecondary}
           testID={TID.Button.QuotaLimitJournal}
         />
-        {tier === 'guest' && mode !== 'login' && onDiscoverPlus ? (
+        {tier === 'guest' && onDiscoverPlus ? (
           <BottomSheetLinkAction
             label={t('journal.detail.quota_limit.discover_plus')}
             onPress={onDiscoverPlus}
