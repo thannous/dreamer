@@ -797,6 +797,36 @@ describe('PlayerContext fade timer', () => {
     unmount();
   });
 
+  it('ends on time from a native tick when the screen is off and JavaScript timers have stopped', async () => {
+    const { result, unmount, primaryPlayer, texturePlayer } = await openPlayingForestSession();
+
+    act(() => {
+      result.current.setFadeTimer(5);
+    });
+    expect(result.current.fadeRemainingSec).toBe(300);
+
+    // Screen off: four and a half minutes pass and no interval fires.
+    jest.setSystemTime(Date.now() + 270_000);
+    act(() => {
+      playbackListener?.({ currentTime: 282, duration: 600, playing: true, didJustFinish: false });
+    });
+    expect(result.current.fadeRemainingSec).toBe(30);
+    expect(audio.setVolume).toHaveBeenCalledWith(primaryPlayer, fadeVolume(30, 0.26));
+    expect(audio.pause).not.toHaveBeenCalledWith(primaryPlayer);
+
+    // Past the end, still without a single interval.
+    jest.setSystemTime(Date.now() + 45_000);
+    act(() => {
+      playbackListener?.({ currentTime: 327, duration: 600, playing: true, didJustFinish: false });
+    });
+    expect(result.current.fadeRemainingSec).toBeNull();
+    expect(result.current.fadeMinutes).toBeNull();
+    expect(audio.pause).toHaveBeenCalledWith(primaryPlayer);
+    expect(audio.pause).toHaveBeenCalledWith(texturePlayer);
+
+    unmount();
+  });
+
   it('replaces an existing fade instead of stacking intervals', async () => {
     const { result, unmount, primaryPlayer } = await openPlayingForestSession();
 

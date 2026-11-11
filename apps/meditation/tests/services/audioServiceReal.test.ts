@@ -174,6 +174,48 @@ describe('audioServiceReal session timeline', () => {
     expect(player.currentTime).toBe(450);
   });
 
+  it('keeps a backward seek when a status from before it arrives late', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(0);
+    try {
+      const player = createSessionPlayer(1, 600, 300);
+      const listener = jest.fn();
+      player.addListener('playbackStatusUpdate', listener);
+      player.play();
+      nativeListener?.(statusAt(200));
+      expect(player.currentTime).toBe(200);
+
+      await player.seekTo(100);
+      // Already on its way when the seek started: still the old position.
+      jest.setSystemTime(300);
+      nativeListener?.(statusAt(200.3));
+      expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ currentTime: 100.3, playing: true }));
+
+      // The native player then reports from the new position, and the clock follows it.
+      jest.setSystemTime(800);
+      nativeListener?.(statusAt(100.8));
+      expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ currentTime: 100.8 }));
+      jest.setSystemTime(10_800);
+      nativeListener?.(statusAt(110.8));
+      expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ currentTime: 110.8 }));
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('keeps a paused seek where it was asked for when an older status arrives', async () => {
+    const player = createSessionPlayer(1, 600, 300);
+    const listener = jest.fn();
+    player.addListener('playbackStatusUpdate', listener);
+    nativeListener?.(statusAt(200, { playing: false }));
+
+    await player.seekTo(40);
+    nativeListener?.(statusAt(200, { playing: false }));
+
+    expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ currentTime: 40, playing: false }));
+    expect(player.currentTime).toBe(40);
+  });
+
   it('keeps a session looping until its advertised duration without saturating the clock', () => {
     const player = createSessionPlayer(1, 600, 300);
     const listener = jest.fn();

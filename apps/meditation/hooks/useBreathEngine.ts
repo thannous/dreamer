@@ -11,7 +11,15 @@ import {
 } from 'react-native-reanimated';
 
 import type { BreathingPattern } from '@/content/breathing';
-import { breathStateAt, cycleDurationMs, RING_SCALE_MIN, ringKeyframes, type BreathState } from '@/lib/breathing';
+import {
+  breathStateAt,
+  cycleDurationMs,
+  RING_SCALE_MIN,
+  ringEaseFrom,
+  ringKeyframes,
+  ringResumeAt,
+  type BreathState,
+} from '@/lib/breathing';
 import { playBreathHaptic } from '@/lib/breathGuidance';
 
 import { useReducedMotion } from './useReducedMotion';
@@ -93,19 +101,29 @@ export function useBreathEngine({
     }
 
     const steps = ringKeyframes(pattern);
-    scale.set(RING_SCALE_MIN);
+    const timing = (step: { to: number; durationMs: number }) =>
+      withTiming(step.to, { duration: step.durationMs, easing: Easing.inOut(Easing.sin) });
+    const cycle = withRepeat(withSequence(...steps.map(timing)), -1, false);
+
+    // The ring starts where the clock is. After a pause that is the middle of
+    // a breath: starting a fresh cycle there showed an inhale while the label
+    // and the haptics were already breathing out.
+    const elapsedMs =
+      accumulatedRef.current + (startedAtRef.current === null ? 0 : Date.now() - startedAtRef.current);
+    const resume = ringResumeAt(pattern, elapsedMs);
+    scale.set(resume.scale);
+    if (resume.phaseIndex === 0 && resume.phaseProgress === 0) {
+      scale.set(cycle);
+      return;
+    }
     scale.set(
-      withRepeat(
       withSequence(
-        ...steps.map((step) =>
-          withTiming(step.to, {
-            duration: step.durationMs,
-            easing: Easing.inOut(Easing.sin),
-          })
-        )
-        ),
-        -1,
-        false
+        withTiming(resume.to, {
+          duration: resume.remainingMs,
+          easing: ringEaseFrom(resume.phaseProgress),
+        }),
+        ...steps.slice(resume.phaseIndex + 1).map(timing),
+        cycle
       )
     );
   }, [pattern, reducedMotion, scale]);

@@ -4,6 +4,9 @@ import {
   cycleDurationMs,
   RING_SCALE_MAX,
   RING_SCALE_MIN,
+  ringEase,
+  ringEaseFrom,
+  ringResumeAt,
   ringScaleFor,
 } from '@/lib/breathing';
 
@@ -97,5 +100,50 @@ describe('ringScaleFor', () => {
     expect(ringScaleFor('hold', 0)).toBe(RING_SCALE_MAX);
     expect(ringScaleFor('hold', 0.5)).toBe(RING_SCALE_MAX);
     expect(ringScaleFor('rest', 0.5)).toBe(RING_SCALE_MIN);
+  });
+});
+
+describe('ringResumeAt', () => {
+  const pattern = PATTERN_BY_ID['four-seven-eight'];
+
+  it('starts a fresh exercise contracted, with the whole inhale ahead', () => {
+    expect(ringResumeAt(pattern, 0)).toEqual({
+      scale: RING_SCALE_MIN,
+      phaseIndex: 0,
+      phaseProgress: 0,
+      to: RING_SCALE_MAX,
+      remainingMs: 4_000,
+    });
+  });
+
+  it('resumes in the middle of the exhale, where the label already is', () => {
+    // 4 s in, 7 s held, then 4 of the 8 s out.
+    const resume = ringResumeAt(pattern, 15_000);
+    expect(breathStateAt(pattern, 15_000).phase).toBe('exhale');
+    expect(resume.phaseIndex).toBe(2);
+    expect(resume.to).toBe(RING_SCALE_MIN);
+    expect(resume.remainingMs).toBe(4_000);
+    // Half-way through a symmetric ease: half-way between the two sizes.
+    expect(resume.scale).toBeCloseTo((RING_SCALE_MIN + RING_SCALE_MAX) / 2, 5);
+  });
+
+  it('stays expanded through a hold and finds the same place in a later cycle', () => {
+    expect(ringResumeAt(pattern, 6_000).scale).toBe(RING_SCALE_MAX);
+    expect(ringResumeAt(pattern, 19_000 * 3 + 15_000)).toEqual(ringResumeAt(pattern, 15_000));
+  });
+});
+
+describe('ringEaseFrom', () => {
+  it('is the rest of the same curve, from 0 to 1', () => {
+    const rest = ringEaseFrom(0.25);
+    expect(rest(0)).toBe(0);
+    expect(rest(1)).toBeCloseTo(1, 10);
+    // Entered a quarter in, half of what is left is 62.5 % of the step.
+    const expected = (ringEase(0.625) - ringEase(0.25)) / (1 - ringEase(0.25));
+    expect(rest(0.5)).toBeCloseTo(expected, 10);
+  });
+
+  it('entered at the very end has nothing left to move', () => {
+    expect(ringEaseFrom(1)(0.5)).toBe(1);
   });
 });

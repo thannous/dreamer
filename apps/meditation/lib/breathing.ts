@@ -89,3 +89,55 @@ export function ringKeyframes(pattern: BreathingPattern): { to: number; duration
     durationMs: phase.seconds * 1000,
   }));
 }
+
+/**
+ * The curve every ring step follows: Reanimated's `Easing.inOut(Easing.sin)`,
+ * written out so a step can be entered part-way through.
+ */
+export const ringEase = (progress: number): number => {
+  'worklet';
+  return (1 - Math.cos(Math.PI * progress)) / 2;
+};
+
+/**
+ * The curve of what is left of a step entered at `from` (0 → 1): the same
+ * motion the ring would have had there, not a new ease from a standstill.
+ */
+export const ringEaseFrom = (from: number) => (progress: number): number => {
+  'worklet';
+  const start = ringEase(from);
+  if (start >= 1) return 1;
+  return (ringEase(from + (1 - from) * progress) - start) / (1 - start);
+};
+
+export type RingResume = {
+  /** Scale of the ring at this moment. */
+  scale: number;
+  /** Index of the phase under way. */
+  phaseIndex: number;
+  /** How far into that phase, 0 → 1. */
+  phaseProgress: number;
+  /** Where that phase ends, and how long it still lasts. */
+  to: number;
+  remainingMs: number;
+};
+
+/**
+ * Where the ring is at a moment of the exercise. After a pause the clock goes
+ * on from where it stopped, in the middle of a breath: the ring has to go on
+ * from there too, or it shows an inhale while the label says to breathe out.
+ */
+export function ringResumeAt(pattern: BreathingPattern, elapsedMs: number): RingResume {
+  const state = breathStateAt(pattern, elapsedMs);
+  const steps = ringKeyframes(pattern);
+  const step = steps[state.phaseIndex];
+  // A phase starts where the one before it ended; the first one, where the last ended.
+  const from = steps[(state.phaseIndex + steps.length - 1) % steps.length].to;
+  return {
+    scale: from + (step.to - from) * ringEase(state.phaseProgress),
+    phaseIndex: state.phaseIndex,
+    phaseProgress: state.phaseProgress,
+    to: step.to,
+    remainingMs: step.durationMs * (1 - state.phaseProgress),
+  };
+}

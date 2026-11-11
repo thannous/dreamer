@@ -135,6 +135,30 @@ export function createSessionPlayer(
   let lockScreenActive = false;
   let lastNativePlaying = player.playing;
   const loopEdgeWindowSec = Math.max(2, (updateIntervalMs / 1_000) * 4);
+  /** The native position a seek asked for, until the native player reports from there. */
+  let settlingSeek: { nativeTarget: number; startedAt: number } | null = null;
+  const SEEK_SETTLE_TIMEOUT_MS = 5_000;
+
+  /**
+   * Whether a native time read after a seek still belongs to the position
+   * before it. A status already on its way when the seek starts reports the
+   * old position: taken as real, it moved the session clock back to where it
+   * was, the wall clock kept it there, and every later position stayed far
+   * from the one the screen asked for, so the screen ignored them all and the
+   * progress never moved again.
+   */
+  const isPreSeekTime = (nativeTime: number): boolean => {
+    if (!settlingSeek) return false;
+    const elapsedSec = (Date.now() - settlingSeek.startedAt) / 1_000;
+    const ahead = nativeTime - settlingSeek.nativeTarget;
+    if (elapsedSec * 1_000 > SEEK_SETTLE_TIMEOUT_MS || (ahead >= -1 && ahead <= elapsedSec + 1)) {
+      settlingSeek = null;
+      return false;
+    }
+    return true;
+  };
+  const trusted = (nativeTime: number | undefined): number | undefined =>
+    nativeTime == null || isPreSeekTime(nativeTime) ? undefined : nativeTime;
 
   const metadata: AudioMetadata = {
     title: lockScreen?.title ?? 'Noctalia Meditation',
@@ -186,15 +210,18 @@ export function createSessionPlayer(
     // Freeze from the native player so a later getter does not keep adding
     // wall-clock time from the other app's playback.
     if (!player.playing && playStartedAt != null) {
-      const mappedPause = mappedSessionTime(nativeTime ?? player.currentTime);
-      sessionOffset = Math.min(safeDuration, Math.max(sessionOffset, mappedPause));
+      const pausedAt = trusted(nativeTime ?? player.currentTime);
+      if (pausedAt != null) {
+        sessionOffset = Math.min(safeDuration, Math.max(sessionOffset, mappedSessionTime(pausedAt)));
+      }
       playStartedAt = null;
       return sessionOffset;
     }
+    const settledTime = trusted(nativeTime);
     const mapped =
-      nativeTime == null
+      settledTime == null
         ? Math.min(safeDuration, sessionOffset)
-        : mappedSessionTime(nativeTime);
+        : mappedSessionTime(settledTime);
     if (playStartedAt == null) return Math.min(safeDuration, mapped);
     const wall = sessionOffset + (Date.now() - playStartedAt) / 1000;
     return Math.min(safeDuration, Math.max(mapped, wall));
@@ -283,6 +310,7 @@ export function createSessionPlayer(
       lastNativeTime = nativePosition(target, safeTrackDuration);
       sessionOffset = target;
       if (playStartedAt != null) playStartedAt = Date.now();
+      settlingSeek = { nativeTarget: lastNativeTime, startedAt: Date.now() };
       player.loop = true;
       await player.seekTo(lastNativeTime);
     },

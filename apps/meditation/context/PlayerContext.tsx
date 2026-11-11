@@ -96,6 +96,9 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const positionSecRef = useRef(0);
   const soundEnabledRef = useRef(soundEnabled);
   const fadeRemainingRef = useRef<number | null>(null);
+  /** Wall-clock moment the running fade timer ends; null while it is not counting. */
+  const fadeEndsAtRef = useRef<number | null>(null);
+  const advanceFadeTimerRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     audio.configureAudioSession().catch(() => {
@@ -151,6 +154,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
     pendingSeekRef.current = null;
     setFadeMinutes(null);
     fadeRemainingRef.current = null;
+    fadeEndsAtRef.current = null;
     setFadeRemaining(null);
   }, []);
 
@@ -218,6 +222,7 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
       setLoadedDuration(0);
       setFadeMinutes(null);
       fadeRemainingRef.current = null;
+      fadeEndsAtRef.current = null;
       setFadeRemaining(null);
       statusRef.current = 'loading';
       setStatus('loading');
@@ -270,6 +275,9 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
               setStatus('unavailable');
               return;
             }
+            // With the screen off Android stops JavaScript timers, not these
+            // native ticks: they are what ends a sleep timer on time.
+            advanceFadeTimerRef.current();
             const pendingSeek = pendingSeekRef.current;
             if (
               pendingSeek !== null &&
@@ -435,6 +443,8 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
   const setFadeTimer = useCallback((minutes: FadeTimerMinutes | null) => {
     setFadeMinutes(minutes);
     fadeRemainingRef.current = minutes === null ? null : minutes * 60;
+    fadeEndsAtRef.current =
+      minutes === null || statusRef.current !== 'playing' ? null : Date.now() + minutes * 60 * 1000;
     setFadeRemaining(fadeRemainingRef.current);
     // A timer changed during its last minute leaves the ramp where it stood.
     restoreVolumes();
@@ -445,36 +455,61 @@ export const PlayerProvider: React.FC<React.PropsWithChildren> = ({ children }) 
    *
    * Its last minute ramps the volume to silence rather than cutting: someone on
    * the edge of sleep must not be pulled back by an abrupt stop.
+   *
+   * What is left is read from the wall clock, never counted tick by tick: a
+   * counter driven by a JavaScript interval stops with the screen on Android,
+   * and a "15 minutes" timer then let the session play for the whole night.
    */
+  const advanceFadeTimer = useCallback(() => {
+    const endsAt = fadeEndsAtRef.current;
+    const remaining = fadeRemainingRef.current;
+    if (endsAt === null || remaining === null || statusRef.current !== 'playing') return;
+    const next = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
+    if (next === remaining) return;
+    const player = playerRef.current;
+    if (player) audio.setVolume(player, soundEnabledRef.current ? fadeVolume(next, primaryVolumeRef.current) : 0);
+    if (textureRef.current) {
+      audio.setVolume(textureRef.current, soundEnabledRef.current ? fadeVolume(next, textureVolumeRef.current) : 0);
+    }
+    fadeRemainingRef.current = next <= 0 ? null : next;
+    setFadeRemaining(fadeRemainingRef.current);
+    if (next <= 0) {
+      fadeEndsAtRef.current = null;
+      if (player) audio.pause(player);
+      if (textureRef.current) audio.pause(textureRef.current);
+      // The timer is spent: the next play starts at full volume, with no
+      // timer shown as still selected.
+      restoreVolumes();
+      setFadeMinutes(null);
+      statusRef.current = 'paused';
+      setStatus('paused');
+      if (sessionRef.current) persistRef.current(sessionRef.current.id, positionSecRef.current);
+    }
+  }, [restoreVolumes]);
+
+  useLayoutEffect(() => {
+    advanceFadeTimerRef.current = advanceFadeTimer;
+  }, [advanceFadeTimer]);
+
   useEffect(() => {
     if (fadeRemainingSec === null || status !== 'playing') return;
 
-    const tick = setInterval(() => {
-      const remaining = fadeRemainingRef.current;
-      if (remaining === null || statusRef.current !== 'playing') return;
-      const next = remaining - 1;
-      const player = playerRef.current;
-      if (player) audio.setVolume(player, soundEnabledRef.current ? fadeVolume(next, primaryVolumeRef.current) : 0);
-      if (textureRef.current) {
-        audio.setVolume(textureRef.current, soundEnabledRef.current ? fadeVolume(next, textureVolumeRef.current) : 0);
-      }
-      fadeRemainingRef.current = next <= 0 ? null : next;
-      setFadeRemaining(fadeRemainingRef.current);
-      if (next <= 0) {
-        if (player) audio.pause(player);
-        if (textureRef.current) audio.pause(textureRef.current);
-        // The timer is spent: the next play starts at full volume, with no
-        // timer shown as still selected.
-        restoreVolumes();
-        setFadeMinutes(null);
-        statusRef.current = 'paused';
-        setStatus('paused');
-        if (sessionRef.current) persistRef.current(sessionRef.current.id, positionSecRef.current);
-      }
-    }, 1000);
+    // Counting (again): the end is what is left, from now.
+    if (fadeEndsAtRef.current === null && fadeRemainingRef.current !== null) {
+      fadeEndsAtRef.current = Date.now() + fadeRemainingRef.current * 1000;
+    }
+    const tick = setInterval(advanceFadeTimer, 1000);
 
-    return () => clearInterval(tick);
-  }, [fadeRemainingSec === null, soundEnabled, status]); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => {
+      clearInterval(tick);
+      // Paused or silenced: keep what is left, not the moment it would have ended.
+      const endsAt = fadeEndsAtRef.current;
+      if (endsAt !== null && fadeRemainingRef.current !== null) {
+        fadeRemainingRef.current = Math.max(1, Math.ceil((endsAt - Date.now()) / 1000));
+      }
+      fadeEndsAtRef.current = null;
+    };
+  }, [advanceFadeTimer, fadeRemainingSec === null, soundEnabled, status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const close = useCallback(() => {
     openGenerationRef.current += 1;
