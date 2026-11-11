@@ -897,9 +897,15 @@ test('Dreamer release drawer Plus opens its offer and closes back to Capture', a
     // same sheet covers the offer. A Store build has the key, so the sheet is closed only if shown.
     // Either the offers load (their first card shows) or the sheet comes up: wait for one of the two.
     const monthly = screen.getByTestId('btn.paywall.selectMonthly', { visible: true });
+    // iOS presents this sheet natively and drops its testID from the tree (0aae30b4, iPhone 17
+    // simulator): only its title, its text and its OK button are exposed, so find it by its title.
+    const unavailableTitle = screen.getByText(/^(Purchase not completed|Achat non finalisé)$/, { visible: true });
     // The cards may sit below the fold, so running out of time here is not a failure: the offer is checked next.
-    for (const end = Date.now() + 30_000; Date.now() < end && await unavailable.count() + await monthly.count() === 0;) await new Promise(resolve => setTimeout(resolve, 300));
-    if (await unavailable.count()) await screen.getByRole('button', 'OK', { visible: true }).tap();
+    for (const end = Date.now() + 30_000; Date.now() < end && await unavailableTitle.count() + await monthly.count() === 0;) await new Promise(resolve => setTimeout(resolve, 300));
+    if (await unavailableTitle.count()) {
+      await screen.getByRole('button', 'OK', { visible: true }).tap();
+      await expect(unavailableTitle).toHaveCount(0);
+    }
   }
   await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();
   await app.screenshot('release-drawer-plus-destination');
