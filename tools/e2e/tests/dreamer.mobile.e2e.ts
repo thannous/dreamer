@@ -894,7 +894,10 @@ test('Dreamer release drawer Plus opens its offer and closes back to Capture', a
   } else if (platform === 'ios' && process.env.E2E_NATIVE_MOCK_MODE !== 'true') {
     // A locally built iPhone Release has no store key either (e373cab6, iPhone 17 simulator): the
     // same sheet covers the offer. A Store build has the key, so the sheet is closed only if shown.
-    for (let wait = 0; wait < 10 && await unavailable.count() === 0; wait += 1) await new Promise(resolve => setTimeout(resolve, 300));
+    // Either the offers load (their first card shows) or the sheet comes up: wait for one of the two.
+    const monthly = screen.getByTestId('btn.paywall.selectMonthly', { visible: true });
+    // The cards may sit below the fold, so running out of time here is not a failure: the offer is checked next.
+    for (const end = Date.now() + 30_000; Date.now() < end && await unavailable.count() + await monthly.count() === 0;) await new Promise(resolve => setTimeout(resolve, 300));
     if (await unavailable.count()) await screen.getByRole('button', 'OK', { visible: true }).tap();
   }
   await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();
@@ -1434,8 +1437,10 @@ test('Dreamer release every destination opens in system dark mode', {
       // shows the previous letter, which is only read (lib/moonLetter.ts, moonLetterTarget).
       const consent = screen.getByTestId('modal.aiConsent', { visible: true });
       const letter = screen.getByTestId(id, { visible: true });
-      await expect.poll(async () => await consent.count() + await letter.count(),
-        { timeout: 30_000, message: 'neither the moon letter nor its AI consent appeared' }).toBeGreaterThan(0);
+      const loading = screen.getByTestId('text.moonLetter.loading', { visible: true });
+      // The screen mounts, loading, before it asks: it has settled once the consent is up or the loading line is gone.
+      await expect.poll(async () => await consent.count() > 0 || (await letter.count() > 0 && await loading.count() === 0),
+        { timeout: 30_000, message: 'the moon letter neither asked its AI consent nor finished loading' }).toBe(true);
       if (await consent.count()) await acceptAiConsent(screen, platform);
     }
     await shown(id, `${route}-dark`);
