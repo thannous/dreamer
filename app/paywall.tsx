@@ -376,6 +376,13 @@ function PaywallScreen() {
     clearError();
   }, [clearError]);
 
+  // The error lives in the shared subscription provider. One left by a failed
+  // refresh elsewhere (the quota card in Settings) must not open this screen
+  // on an error sheet about a purchase nobody attempted.
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
+
   const translateWithFallback = useCallback((key: string, fallback?: string) => {
     void translationRevision;
     const translated = t(key);

@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
-import { isMockModeEnabled } from '@/lib/env';
 import { createScopedLogger } from '@/lib/logger';
 import { initializeSubscription, isSubscriptionInitialized } from '@/services/subscriptionService';
-import { syncSubscriptionFromServer } from '@/services/subscriptionSyncService';
 
 const log = createScopedLogger('[useSubscriptionInitialize]');
 
@@ -18,7 +16,6 @@ export function useSubscriptionInitialize(
   const { user, sessionGeneration, isCurrentSession, refreshUser } = useAuth();
   const [initialized, setInitialized] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const isMockMode = isMockModeEnabled();
 
   // ✅ FIX: Store refreshUser in a ref to break the circular dependency
   // Prevents re-triggering when refreshUser callback is recreated
@@ -30,7 +27,6 @@ export function useSubscriptionInitialize(
   // ✅ FIX: Track if initialization has completed for this user
   // Prevents redundant initialization calls
   const initializedSessionRef = useRef<number | null>(null);
-  const syncedSessionRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
@@ -62,16 +58,10 @@ export function useSubscriptionInitialize(
         if (!current()) return;
         log.debug('Subscription SDK initialized', { userId: nextUserId });
 
-        if (!isMockMode && nextUserId && syncedSessionRef.current !== sessionGeneration) {
-          try {
-            await syncSubscriptionFromServer('app_launch');
-            log.debug('Subscription sync requested', { userId: nextUserId });
-          } catch (syncError) {
-            log.warn('Subscription sync failed', { userId: nextUserId }, syncError);
-          } finally {
-            if (current()) syncedSessionRef.current = sessionGeneration;
-          }
-        }
+        // The server reconciliation is the subscription provider's job: it
+        // sends one as soon as the store status is known and applies the
+        // answer. A second request from here made the server query RevenueCat
+        // twice on every launch and sign-in, and its answer was discarded.
 
         if (!current()) return;
         if (nextUserId) {
@@ -104,7 +94,7 @@ export function useSubscriptionInitialize(
     return () => {
       mounted = false;
     };
-  }, [enabled, user?.id, sessionGeneration, isCurrentSession, isMockMode]);
+  }, [enabled, user?.id, sessionGeneration, isCurrentSession]);
 
   return { initialized, error };
 }

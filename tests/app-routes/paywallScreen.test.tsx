@@ -298,6 +298,7 @@ describe('Paywall screen', () => {
       purchase: mockPurchase,
       restore: mockRestore,
       refreshSubscription: mockRefreshSubscription,
+      clearError: jest.fn(),
       requiresAuth: false,
     });
   });
@@ -657,6 +658,7 @@ describe('Paywall screen', () => {
 
   it('sends a guest to the account section and remembers to come back to the paywall', () => {
     mockUseSubscription.mockReturnValue({
+      clearError: jest.fn(),
       status: { tier: 'free', isActive: false, expiryDate: null },
       isActive: false,
       loading: false,
@@ -675,6 +677,16 @@ describe('Paywall screen', () => {
     expect(mockRequestReturnToPaywallIntent).toHaveBeenCalledWith('settings', { persist: true });
     expect(mockReplace).toHaveBeenCalledWith('/settings?section=account');
     expect(mockPurchase).not.toHaveBeenCalled();
+  });
+
+  it('does not open on an error left in the shared provider by a refresh made elsewhere', () => {
+    const clearStaleError = jest.fn();
+    mockUseSubscription.mockReturnValue({
+      ...mockUseSubscription(), error: new Error('subscription.error.refresh_unavailable'), clearError: clearStaleError,
+    });
+    render(<PaywallScreen />);
+
+    expect(clearStaleError).toHaveBeenCalledTimes(1);
   });
 
   // The keyless web build falls back to the simulated store, which completes a purchase without payment.
@@ -739,6 +751,7 @@ describe('Paywall screen', () => {
 
   it('shows the free-trial CTA and footnote when the selected plan has a trial', async () => {
     mockUseSubscription.mockReturnValue({
+      clearError: jest.fn(),
       status: { tier: 'free', isActive: false, expiryDate: null },
       isActive: false,
       loading: false,
@@ -762,6 +775,7 @@ describe('Paywall screen', () => {
 
   it('replaces an untranslated store error with the localized generic message', () => {
     mockUseSubscription.mockReturnValue({
+      clearError: jest.fn(),
       status: { tier: 'free', isActive: false, expiryDate: null },
       isActive: false,
       loading: false,
@@ -808,6 +822,7 @@ describe('Paywall screen', () => {
     ['active non-renewing plan', true, '2099-01-01T12:00:00Z', false],
   ] as const)('shows the expiration explanation only for %s', (_label: string, active: boolean, expiryDate: string | null, visible: boolean) => {
     mockUseSubscription.mockReturnValue({
+      clearError: jest.fn(),
       status: { tier: active ? 'plus' : 'free', isActive: active, expiryDate, willRenew: false },
       isActive: active, loading: false, processing: false, error: null,
       packages, purchase: mockPurchase, restore: mockRestore, requiresAuth: false,
