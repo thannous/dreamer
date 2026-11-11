@@ -464,6 +464,56 @@ describe('lucidTrainerSync', () => {
     expect(remoteWinsStore.state.experiments[0]?.id).toBe('experiment-1');
   });
 
+  it('never blocks a change over an outage, however many times the push could not be sent', async () => {
+    const queued = mutation(preferencesEntity(), { retryCount: 7, status: 'failed' });
+    const store = memoryAdapter(state(), [queued]);
+
+    const result = await replayLucidTrainerQueue(SCOPE, {
+      storage: store.adapter,
+      transport: { push: async () => Promise.reject(new Error('network timeout')) },
+      isNetworkReachable: async () => true,
+      now: () => NOW,
+      jitter: () => 0,
+      maxRetries: 8,
+    });
+
+    // The server never answered about this change: only its own refusals count toward the limit.
+    expect(result).toMatchObject({ failed: 1, blocked: 0 });
+    expect(store.queue[0]).toMatchObject({ status: 'failed', retryCount: 8 });
+    expect(store.queue[0]?.nextAttemptAt).toBeGreaterThan(NOW);
+  });
+
+  it('does not bring back an entry deleted on this device while its deletion waits to be sent', async () => {
+    const experiment = {
+      id: 'experiment-1', occurredAt: NOW, technique: 'mild' as const, preparationMinutes: 5,
+      result: 'none' as const, lucidityLevel: 0, recallLevel: 2, sleepQuality: 3, factors: [], updatedAt: NOW + 5,
+    };
+    const pendingDelete = mutation({ entityType: 'experiment', entityKey: 'experiment-1', value: experiment }, {
+      id: 'delete-1', operation: 'delete', payload: {}, clientUpdatedAt: NOW + 20,
+    });
+    const store = memoryAdapter(state(), [pendingDelete]);
+
+    await pullLucidTrainerRemoteState(SCOPE, {
+      storage: store.adapter,
+      transport: {
+        pull: async () => ({
+          entities: [{
+            entity_type: 'experiment', entity_key: 'experiment-1', revision: '2',
+            client_updated_at: new Date(NOW + 5).toISOString(),
+            entity: { entityType: 'experiment', entityKey: 'experiment-1', value: experiment },
+          }],
+        }),
+      },
+      isNetworkReachable: async () => true,
+      now: () => NOW + 30,
+      idFactory: () => 'rebased-delete',
+    });
+
+    expect(store.state.experiments).toHaveLength(0);
+    // The deletion is still queued, now against the revision the server holds.
+    expect(store.queue).toEqual([expect.objectContaining({ operation: 'delete', entityKey: 'experiment-1', baseRevision: '2' })]);
+  });
+
   it('keeps the same client request id across transient transport retries', async () => {
     const queued = mutation();
     const store = memoryAdapter(state(), [queued]);
@@ -1073,6 +1123,8 @@ describe('lucidTrainerSync', () => {
     expect(states.get(SCOPE)?.experiments.map((item) => item.id)).toContain(
       'guest-experiment'
     );
+    // A reset made on another device after the guest state was created must not read the import as older data.
+    expect(states.get(SCOPE)?.createdAt).toBe(account.createdAt);
     expect(queues.get(SCOPE)?.some((item) => item.entityKey === 'guest-experiment')).toBe(
       true
     );

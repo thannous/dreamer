@@ -53,6 +53,24 @@ describe('Lucid Trainer reminder plans', () => {
     );
   });
 
+  it('stops the night-time WBTB reminder when the safety policy refuses WBTB', () => {
+    const wbtbReminder = (wakeSensitivity: 'not_sensitive' | 'sensitive') => {
+      const state = createInitialLucidTrainerState({ now: 1, timeZone: 'Europe/Paris', locale: 'en' });
+      state.preferences.notificationsEnabled = true;
+      state.onboarding.audioSafetyAccepted = true;
+      state.onboarding.wakeSensitivity = wakeSensitivity;
+      state.progress = [{
+        technique: 'wbtb', programId: 'wbtb', status: 'active', currentDay: 1,
+        completedExerciseIds: [], practiceDates: [], startedAt: 1, completedAt: null, updatedAt: 1,
+      }];
+      return buildLucidReminderPlan(state, getLucidContent('en')).reminders.find((reminder) => reminder.family === 'wbtb');
+    };
+
+    expect(wbtbReminder('not_sensitive')?.enabled).toBe(true);
+    // Fragile sleep blocks WBTB sessions: a reminder to wake up for one must not keep firing.
+    expect(wbtbReminder('sensitive')?.enabled).toBe(false);
+  });
+
   it('keeps morning and bedtime reminders when mindful-pause reminders are zero', () => {
     const state = createInitialLucidTrainerState({ now: 1, timeZone: 'Europe/Paris', locale: 'en' });
     state.preferences.notificationsEnabled = true;

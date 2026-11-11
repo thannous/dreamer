@@ -46,8 +46,10 @@ jest.mock('@/context/DreamsContext', () => ({
 jest.mock('@/lib/appVariant', () => ({ isLucidTrainer: true }));
 jest.mock('@/lib/analytics', () => ({ trackProductEvent: jest.fn() }));
 jest.mock('@/lib/productAnalytics', () => ({ setProductAnalyticsEnabled: jest.fn() }));
+const mockCancelReminders = jest.fn(async () => [] as string[]);
 jest.mock('@/services/lucidTrainerNotifications', () => ({
   reconcileLucidTrainerReminders: (...args: unknown[]) => mockReconcileReminders(...args),
+  cancelLucidTrainerReminders: () => mockCancelReminders(),
 }));
 
 
@@ -131,6 +133,58 @@ describe('LucidTrainerContext account boundary', () => {
     expect(result.current.guestImportAvailable).toBe(true);
     expect(mockClaimGuestScope).not.toHaveBeenCalled();
     expect(mockClaimGuestVoiceNotes).not.toHaveBeenCalled();
+  });
+
+  it('cancels the previous scope reminders when the loaded scope has not completed onboarding', async () => {
+    mockCancelReminders.mockClear();
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    // Reminders sit in the system schedule: without this, another account's
+    // reminders, the night-time one included, keep firing on this device.
+    await waitFor(() => expect(mockCancelReminders).toHaveBeenCalled());
+    expect(mockReconcileReminders).not.toHaveBeenCalled();
+  });
+
+  it('reports an error, not a completed sync, when the push failed or changes are blocked', async () => {
+    const initial = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' }) as LucidTrainerState;
+    const persistedState: LucidTrainerState = { ...initial, preferences: { ...initial.preferences, cloudSyncEnabled: true } };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    const sync = jest.requireMock('@/services/lucidTrainerSync') as {
+      pullLucidTrainerRemoteState: jest.Mock; replayLucidTrainerQueue: jest.Mock;
+    };
+    sync.pullLucidTrainerRemoteState.mockResolvedValue({ outcome: 'completed', received: 0, merged: 0, deleted: 0, reset: false });
+    sync.replayLucidTrainerQueue.mockResolvedValue({
+      outcome: 'completed', attempted: 3, acknowledged: 0, failed: 3, conflicts: 0, blocked: 0, pending: 3,
+    });
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+
+    await waitFor(() => expect(result.current.syncStatus).toBe('error'));
+    // A failed batch is not retried in a loop within the same run.
+    expect(sync.replayLucidTrainerQueue).toHaveBeenCalledTimes(1);
+  });
+
+  it('sends a long queue batch after batch within one run', async () => {
+    const initial = createInitialLucidTrainerState({ now: 1_700_000_000_000, timeZone: 'UTC' }) as LucidTrainerState;
+    const persistedState: LucidTrainerState = { ...initial, preferences: { ...initial.preferences, cloudSyncEnabled: true } };
+    mockLoadState.mockResolvedValue({ state: persistedState, source: 'stored' });
+    mockGetState.mockImplementation(async () => persistedState);
+    const sync = jest.requireMock('@/services/lucidTrainerSync') as {
+      pullLucidTrainerRemoteState: jest.Mock; replayLucidTrainerQueue: jest.Mock;
+    };
+    sync.pullLucidTrainerRemoteState.mockResolvedValue({ outcome: 'completed', received: 0, merged: 0, deleted: 0, reset: false });
+    sync.replayLucidTrainerQueue.mockReset();
+    sync.replayLucidTrainerQueue
+      .mockResolvedValueOnce({ outcome: 'completed', attempted: 25, acknowledged: 25, failed: 0, conflicts: 0, blocked: 0, pending: 10 })
+      .mockResolvedValueOnce({ outcome: 'completed', attempted: 10, acknowledged: 10, failed: 0, conflicts: 0, blocked: 0, pending: 0 })
+      .mockResolvedValue({ outcome: 'idle', attempted: 0, acknowledged: 0, failed: 0, conflicts: 0, blocked: 0, pending: 0 });
+
+    const { result } = renderHook(() => useLucidTrainer(), { wrapper });
+
+    await waitFor(() => expect(result.current.syncStatus).toBe('synced'));
+    expect(result.current.lastSyncResult).toMatchObject({ acknowledged: 35, pending: 0 });
   });
 
   it('claims guest data only after the explicit context action', async () => {

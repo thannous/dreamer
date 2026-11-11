@@ -1,5 +1,6 @@
 import type { LucidTrainerContent } from '@/lib/lucid/content';
 import type { LucidMindfulPauseAnchor, LucidTrainerState } from '@/lib/lucid/model';
+import { canUseLucidWbtb, evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
 import type { LucidReminderDefinition, LucidReminderPlan } from '@/services/lucidTrainerNotifications';
 
 const EVERY_DAY = [1, 2, 3, 4, 5, 6, 7] as const;
@@ -152,7 +153,9 @@ export function buildLucidReminderPlan(
   reminders.push({
     id: 'wbtb-window',
     family: 'wbtb',
-    enabled: enabled && wbtbActive,
+    // The safety policy refuses a WBTB session after poor sleep or a wake-up
+    // complaint; the night-time reminder for it must stop with it.
+    enabled: enabled && wbtbActive && canUseLucidWbtb(evaluateLucidSafetyPolicyFromState(state)),
     weekdays: [...EVERY_DAY],
     time: shiftLucidLocalTime(schedule.bedtime, 270),
     title: content.programs.wbtb.title,

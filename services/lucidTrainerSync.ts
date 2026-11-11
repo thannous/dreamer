@@ -688,6 +688,15 @@ export async function pullLucidTrainerRemoteState(
   let merged = 0;
   let deleted = 0;
 
+  // A local deletion still waiting to be sent: the server copy must not bring
+  // the entity back on screen until that deletion is acknowledged.
+  const pendingDeletes = new Map<string, number>();
+  (await storage.loadQueue(userScope)).forEach((mutation) => {
+    if (mutation.operation !== 'delete' || mutation.status === 'blocked') return;
+    const key = syncEntityKey(mutation.entityType, mutation.entityKey);
+    pendingDeletes.set(key, Math.max(pendingDeletes.get(key) ?? 0, mutation.clientUpdatedAt));
+  });
+
   await storage.updateState(userScope, (current) => {
     let next = current;
     records.forEach((record) => {
@@ -695,6 +704,12 @@ export async function pullLucidTrainerRemoteState(
       const key = syncEntityKey(record.entityType, record.entityKey);
       const local = findSyncEntity(next, record.entityType, record.entityKey);
       if (record.entity) {
+        const deletedLocallyAt = pendingDeletes.get(key);
+        if (!local && deletedLocallyAt !== undefined && deletedLocallyAt > record.entity.value.updatedAt) {
+          // The queue keeps the newer deletion and rebases it on this revision.
+          decisions.set(key, { kind: 'drop', revision: record.revision, cutoff: record.entity.value.updatedAt });
+          return;
+        }
         const resolved = local
           ? resolveLucidEntityConflict(local, record.entity)
           : record.entity;
@@ -809,6 +824,10 @@ export async function claimLucidTrainerGuestScope(
   const idFactory = options.idFactory ?? defaultIdFactory;
   const mergedForAccount: LucidTrainerState = {
     ...merged,
+    // The merge keeps the older creation date, which can predate a reset of the
+    // account made on another device: the next pull would then read the import
+    // as data from before that reset and erase it.
+    createdAt: account.createdAt,
     preferences: {
       ...merged.preferences,
       cloudSyncEnabled: account.preferences.cloudSyncEnabled,
@@ -1020,10 +1039,13 @@ export async function replayLucidTrainerQueue(
     results = await transport.push(eligible);
   } catch (error) {
     const message = boundedError(error);
+    // The server never saw these changes: an outage or a lost connection says
+    // nothing about them. They keep backing off but are never blocked for it;
+    // only answers from the server count toward the retry limit.
     const failedQueue = await storage.updateQueue(userScope, (current) =>
       current.map((mutation) =>
         eligibleIds.has(mutation.id)
-          ? markFailed({ mutation, now, error: message, jitter, maxRetries })
+          ? markFailed({ mutation, now, error: message, jitter, maxRetries: Number.POSITIVE_INFINITY })
           : mutation
       )
     );

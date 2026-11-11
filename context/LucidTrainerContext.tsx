@@ -89,7 +89,7 @@ import {
 } from '@/lib/lucid/safety';
 import { resetLucidOnboardingCompletionNavigationClaim } from '@/lib/lucid/routes';
 import { setProductAnalyticsEnabled } from '@/lib/productAnalytics';
-import { reconcileLucidTrainerReminders } from '@/services/lucidTrainerNotifications';
+import { cancelLucidTrainerReminders, reconcileLucidTrainerReminders } from '@/services/lucidTrainerNotifications';
 import {
   createLucidTrainerMutation,
   claimLucidTrainerGuestScope,
@@ -114,6 +114,9 @@ import {
   updateLucidTrainerState,
   updateLucidTrainerSyncQueue,
 } from '@/services/lucidTrainerStorage';
+
+/** Batches one sync run may send before leaving the rest to the next run. */
+const LUCID_SYNC_MAX_BATCHES_PER_RUN = 20;
 
 export type LucidSyncStatus = 'local' | 'syncing' | 'synced' | 'offline' | 'error';
 
@@ -438,7 +441,15 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
 
   const reconcileLoadedState = useCallback(
     async (current: LucidTrainerState, requestedScope: string) => {
-      if (current.onboarding.status !== 'completed') return current;
+      if (current.onboarding.status !== 'completed') {
+        // Reminders live in the system schedule, not in this scope's storage:
+        // those of the previous account would otherwise keep firing, the
+        // night-time one included, for whoever uses the device next.
+        if (activeScopeRef.current === requestedScope) {
+          await cancelLucidTrainerReminders().catch(() => []);
+        }
+        return current;
+      }
       try {
         const localeContent = getLucidContent(current.preferences.locale);
         const result = await reconcileLucidTrainerReminders(
@@ -482,7 +493,25 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
       if (activeScopeRef.current === requestedScope) setSyncStatus('syncing');
       try {
         const pullResult = await pullLucidTrainerRemoteState(requestedScope);
-        const result = await replayLucidTrainerQueue(requestedScope);
+        // One replay sends a single batch. Keep going while batches are
+        // acknowledged, so a long queue (cloud sync just enabled) is not left
+        // behind a "synced" status.
+        let result = await replayLucidTrainerQueue(requestedScope);
+        for (let batch = 1; batch < LUCID_SYNC_MAX_BATCHES_PER_RUN; batch += 1) {
+          if (result.outcome !== 'completed' || result.failed > 0 || result.acknowledged === 0 || result.pending === 0) break;
+          const next = await replayLucidTrainerQueue(requestedScope);
+          result = {
+            ...next,
+            attempted: result.attempted + next.attempted,
+            acknowledged: result.acknowledged + next.acknowledged,
+            failed: result.failed + next.failed,
+            conflicts: result.conflicts + next.conflicts,
+          };
+          if (next.outcome !== 'completed') {
+            result = { ...result, outcome: 'completed' };
+            break;
+          }
+        }
         if (activeScopeRef.current === requestedScope) {
           setLastSyncResult(result);
           setSyncStatus(
@@ -490,7 +519,10 @@ export function LucidTrainerProvider({ children }: { children: ReactNode }) {
               ? 'offline'
               : result.outcome === 'disabled'
                 ? 'local'
-                : 'synced'
+                // A push that failed, or changes the server keeps refusing, is not "synced".
+                : result.failed > 0 || result.blocked > 0
+                  ? 'error'
+                  : 'synced'
           );
         }
         if (
