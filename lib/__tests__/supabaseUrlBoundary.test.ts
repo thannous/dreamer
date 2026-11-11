@@ -412,6 +412,81 @@ describe('real Supabase web URL boundary', () => {
     });
   });
 
+  it('signs in from the first of two overlapping email links with the verifier of its own flow', async () => {
+    const fetchMock = jest.fn(async (input: RequestInfo | URL, _init?: RequestInit) => ({
+      ok: true,
+      json: async () => String(input).includes('/otp') ? {} : {
+        access_token: 'first-access', refresh_token: 'first-refresh',
+        token_type: 'bearer', expires_in: 3600,
+        user: { id: 'first-user', email: 'first@example.com' },
+      },
+    }));
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    // The app's own client, as configured for the web, requests both links.
+    const requesting = require('../supabase') as typeof import('../supabase');
+    for (const email of ['first@example.com', 'second@example.com']) {
+      const { error } = await requesting.supabase.auth.signInWithOtp({
+        email, options: { emailRedirectTo: 'https://dream.noctalia.app/recording' },
+      });
+      expect(error).toBeNull();
+    }
+    const [firstLink, secondLink] = fetchMock.mock.calls.map(([input]: [RequestInfo | URL, RequestInit?]) =>
+      new URL(new URL(String(input)).searchParams.get('redirect_to')!)
+    );
+    const firstFlow = firstLink.searchParams.get('sb_flow_id')!;
+    const secondFlow = secondLink.searchParams.get('sb_flow_id')!;
+    expect(firstFlow).toMatch(/^[a-zA-Z0-9_-]{8,64}$/);
+    expect(secondFlow).not.toBe(firstFlow);
+    expect(firstLink.origin + firstLink.pathname).toBe('https://dream.noctalia.app/recording');
+    const firstVerifier = JSON.parse(localStorage.getItem(`${STORAGE_KEY}-flow-${firstFlow}-code-verifier`)!);
+    const secondStored = localStorage.getItem(`${STORAGE_KEY}-flow-${secondFlow}-code-verifier`);
+    expect(JSON.parse(secondStored!)).not.toBe(firstVerifier);
+    await requesting.supabase.auth.dispose();
+
+    // The first email is opened after the second sign-in was requested.
+    jest.resetModules();
+    history.replaceState(null, '', `/recording?code=first-code&sb_flow_id=${firstFlow}`);
+    fetchMock.mockClear();
+    const { supabase, webAuthCallbackPromise } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({
+      auth_code: 'first-code', code_verifier: firstVerifier,
+    });
+    expect((await supabase.auth.getSession()).data.session?.user.id).toBe('first-user');
+    expect(localStorage.getItem(`${STORAGE_KEY}-flow-${secondFlow}-code-verifier`)).toBe(secondStored);
+    expect(location.pathname + location.search + location.hash).toBe('/recording');
+  });
+
+  it('keeps a recovery token hash that the email template glued after the flow id', async () => {
+    storeExistingSession();
+    history.replaceState(null, '', '/auth/reset-password?sb_flow_id=reset-flow-1234?token_hash=recovery-proof&type=recovery');
+    const fetchMock = jest.fn(async () => { throw new Error('unexpected exchange'); });
+    globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+    const {
+      supabase, getWebRecoveryLinkState, getPendingWebRecoveryTokenHash, webAuthCallbackPromise,
+    } = require('../supabase') as typeof import('../supabase');
+    await webAuthCallbackPromise;
+
+    expect(getWebRecoveryLinkState()).toBe('pending');
+    expect(getPendingWebRecoveryTokenHash()).toBe('recovery-proof');
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect((await supabase.auth.getSession()).data.session?.user.id).toBe('existing-user');
+    expect(location.pathname + location.search + location.hash).toBe('/auth/reset-password');
+  });
+
+  it('does not read a glued token hash outside the reset route', async () => {
+    storeExistingSession();
+    history.replaceState(null, '', '/recording?sb_flow_id=reset-flow-1234?token_hash=recovery-proof&type=recovery');
+    const { getWebRecoveryLinkState, getPendingWebRecoveryTokenHash } = require('../supabase') as typeof import('../supabase');
+
+    expect(getWebRecoveryLinkState()).toBe('none');
+    expect(getPendingWebRecoveryTokenHash()).toBeNull();
+  });
+
   it('preserves an existing session when an injected code fails exchange', async () => {
     storeExistingSession();
     localStorage.setItem(`${STORAGE_KEY}-code-verifier`, JSON.stringify('browser-verifier'));
