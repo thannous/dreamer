@@ -114,6 +114,11 @@ const isActiveImageJobStatus = (
 const waitForPollDelay = (delayMs: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, delayMs));
 
+/** A pending image job whose dream has not been seen for this long is no longer waited for. */
+const IMAGE_JOB_ABANDONED_AFTER_MS = 24 * 60 * 60 * 1000;
+const isAbandonedImageJob = (job: PendingImageJob): boolean =>
+  Date.now() - job.requestedAt > IMAGE_JOB_ABANDONED_AFTER_MS;
+
 export const useDreamJournal = () => {
   const { user } = useAuth();
   const { status: subscriptionStatus } = useSubscription();
@@ -1052,7 +1057,11 @@ export const useDreamJournal = () => {
       const observedDream = resolveDreamTarget(dreamsRef.current, job.remoteDreamId != null
         ? { id: job.dreamId, remoteId: job.remoteDreamId } : job.dreamId);
       if (!observedDream) {
-        await removePendingImageJob(job.jobId);
+        // Jobs are kept in one list for the device. A dream that is not in the
+        // journal on screen may belong to the account that just signed out, or
+        // to a guest who is signing up: leave its job for its owner instead of
+        // deleting it, and forget it only once it is old.
+        if (isAbandonedImageJob(job)) await removePendingImageJob(job.jobId);
         return;
       }
 
@@ -1064,7 +1073,7 @@ export const useDreamJournal = () => {
       const currentDream = resolveDreamTarget(dreamsRef.current, job.remoteDreamId != null
         ? { id: job.dreamId, remoteId: job.remoteDreamId } : job.dreamId);
       if (!currentDream) {
-        await removePendingImageJob(job.jobId);
+        if (isAbandonedImageJob(job)) await removePendingImageJob(job.jobId);
         return;
       }
 

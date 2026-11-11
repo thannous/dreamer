@@ -224,6 +224,26 @@ describe('geminiServiceReal', () => {
       expect(jest.getTimerCount()).toBe(0);
     });
 
+    it('gives up with a timeout when the stream falls silent, instead of waiting forever', async () => {
+      const stream = openStream();
+      const onDelta = jest.fn();
+      const result = startOrContinueChat(123, 'question', 'en', undefined, undefined, { onDelta });
+      const rejection = expect(result).rejects.toMatchObject({ name: 'TimeoutError' });
+      await stream.ready;
+      // The real reader rejects when its request is aborted; the stalled one here is told to.
+      const init = mockStreamingFetch.mock.calls[0][1] as { signal: AbortSignal };
+      init.signal.addEventListener('abort', () => stream.fail(new Error('aborted')));
+
+      // A connection dropped without a close: no further byte ever arrives.
+      await jest.advanceTimersByTimeAsync(45_000);
+
+      await rejection;
+      expect(init.signal.aborted).toBe(true);
+      expect(stream.releaseLock).toHaveBeenCalledTimes(1);
+      jest.runAllTimers();
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
     it.each(['error', 'abort'])('cancels queued UI work when the stream ends with %s', async (ending: string) => {
       const stream = openStream();
       const controller = new AbortController();

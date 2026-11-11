@@ -566,6 +566,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const [isRetryingImage, setIsRetryingImage] = useState(false);
   const [illustrationAskedOnSeal, setIllustrationAskedOnSeal] = useState(false);
   const [isRetryingSync, setIsRetryingSync] = useState(false);
+  const [isResolvingConflict, setIsResolvingConflict] = useState(false);
+  const resolvingConflictRef = useRef(false);
+  const savingEditRef = useRef(false);
   const [syncRetryFailed, setSyncRetryFailed] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRecoveringMetadata, setIsRecoveringMetadata] = useState(false);
@@ -1276,7 +1279,21 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       transcript: normalizedTranscript,
     };
 
-    await updateDream(updatedDream);
+    // One save at a time: a second tap would write twice and count the story twice.
+    if (savingEditRef.current) return;
+    savingEditRef.current = true;
+    try {
+      await updateDream(updatedDream);
+    } catch (error) {
+      // The editor stays open with the text: nothing typed is lost, and the failure is said.
+      Alert.alert(
+        t('common.error_title'),
+        classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage
+      );
+      return;
+    } finally {
+      savingEditRef.current = false;
+    }
     setIsEditing(false);
     // Saved: a story the dreamer completed by hand counts once it gained enough words.
     const start = editStartTranscriptRef.current;
@@ -1464,15 +1481,28 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     }
   }, [dream, retryDreamSync]);
 
-  const handleUseServerVersion = useCallback(async () => {
-    if (!dream) return;
-    await resolveDreamConflict(dream, 'use_server');
+  // Resolving fetches the server copy and then writes. A second tap must not
+  // start another resolution, and a failure must be said, as for the retry.
+  const resolveConflict = useCallback(async (choice: 'use_server' | 'keep_local') => {
+    if (!dream || resolvingConflictRef.current) return;
+    resolvingConflictRef.current = true;
+    setSyncRetryFailed(false);
+    setIsResolvingConflict(true);
+    try {
+      await resolveDreamConflict(dream, choice);
+    } catch (error) {
+      if (__DEV__) {
+        console.warn('[JournalDetail] Failed to resolve sync conflict', error);
+      }
+      setSyncRetryFailed(true);
+    } finally {
+      resolvingConflictRef.current = false;
+      setIsResolvingConflict(false);
+    }
   }, [dream, resolveDreamConflict]);
 
-  const handleKeepLocalVersion = useCallback(async () => {
-    if (!dream) return;
-    await resolveDreamConflict(dream, 'keep_local');
-  }, [dream, resolveDreamConflict]);
+  const handleUseServerVersion = useCallback(() => resolveConflict('use_server'), [resolveConflict]);
+  const handleKeepLocalVersion = useCallback(() => resolveConflict('keep_local'), [resolveConflict]);
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
@@ -2489,6 +2519,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             <PressableScale
               className="flex-1 items-center justify-center rounded-[14px] bg-danger-icon py-3.5"
               onPress={handleKeepLocalVersion}
+              disabled={isResolvingConflict}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: isResolvingConflict, busy: isResolvingConflict }}
             >
               <Text className="font-sans-bold text-[15px] text-on-champagne">
                 {t('journal.detail.sync.keep_local')}
@@ -2497,6 +2530,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             <PressableScale
               className="flex-1 items-center justify-center rounded-[14px] border border-danger-line py-3.5"
               onPress={handleUseServerVersion}
+              disabled={isResolvingConflict}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: isResolvingConflict, busy: isResolvingConflict }}
             >
               <Text className="font-sans-bold text-[15px] text-danger-on">
                 {t('journal.detail.sync.use_server')}

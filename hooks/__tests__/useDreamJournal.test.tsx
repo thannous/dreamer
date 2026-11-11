@@ -2347,6 +2347,51 @@ describe('useDreamJournal', () => {
       expect(mockInvalidateQuota).toHaveBeenCalledWith(expect.objectContaining({ id: 'user-1' }));
     });
 
+    it('leaves an image job alone when its dream is not in the journal on screen', async () => {
+      setMockUser({ id: 'user-2' });
+      mockFetchDreamsFromSupabase.mockResolvedValueOnce([buildDream({ id: 7, remoteId: 707 })]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          remoteDreamId: 101,
+          jobId: 'job-of-another-account',
+          clientRequestId: 'image-request-1',
+          status: 'running',
+          requestedAt: Date.now(),
+        },
+      ]);
+
+      await renderLoadedDreamJournal();
+      await act(async () => {
+        await new Promise(resolve => setTimeout(resolve, 50));
+      });
+
+      expect(mockGetImageGenerationJobStatus).not.toHaveBeenCalled();
+      expect(mockSavePendingImageJobs).not.toHaveBeenCalledWith([]);
+    });
+
+    it('forgets an image job whose dream has been missing for more than a day', async () => {
+      setMockUser({ id: 'user-2' });
+      mockFetchDreamsFromSupabase.mockResolvedValueOnce([buildDream({ id: 7, remoteId: 707 })]);
+      mockGetPendingImageJobs.mockResolvedValue([
+        {
+          dreamId: 1,
+          remoteDreamId: 101,
+          jobId: 'job-long-gone',
+          clientRequestId: 'image-request-1',
+          status: 'running',
+          requestedAt: Date.now() - 25 * 60 * 60 * 1000,
+        },
+      ]);
+
+      await renderLoadedDreamJournal();
+
+      await waitFor(() => {
+        expect(mockSavePendingImageJobs).toHaveBeenCalledWith([]);
+      }, FAST_WAIT_OPTIONS);
+      expect(mockGetImageGenerationJobStatus).not.toHaveBeenCalled();
+    });
+
     it('invalidates quota after a terminal image success is persisted locally', async () => {
       const pendingDream = buildDream({
         id: 1,

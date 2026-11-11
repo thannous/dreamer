@@ -1036,6 +1036,14 @@ function JournalListScreen() {
   ]);
 
   const keyExtractor = useCallback((item: DreamAnalysis) => getDreamIdentityKey(item), []);
+  // Web measurements can arrive after a filter or a deletion removed their
+  // row, so the web list is recreated when its membership changes. The key
+  // follows the whole filtered journal, not the page shown: "load more" only
+  // appends, and recreating the list for it sent the reader back to the top.
+  const webMembershipKey = useMemo(
+    () => (isWeb ? filteredDreams.map(keyExtractor).join(',') : ''),
+    [filteredDreams, isWeb, keyExtractor]
+  );
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
     if (!item) {
       // FlashList can query item types during layout passes where data isn't resolved yet.
@@ -1239,7 +1247,7 @@ function JournalListScreen() {
         ref={flatListRef}
         // Web grid measurements can arrive after filtering removed their row.
         // Recreate the grid when its item membership changes to discard stale layouts.
-        key={`desktop-${desktopColumns}-${Platform.OS === 'web' ? visibleItems.map(keyExtractor).join(',') : ''}`}
+        key={`desktop-${desktopColumns}-${webMembershipKey}`}
         data={visibleItems}
         onEndReached={hasMore ? loadMore : undefined}
         onEndReachedThreshold={0.5}
@@ -1268,7 +1276,7 @@ function JournalListScreen() {
         testID={TID.List.Dreams}
         ref={flatListRef}
         // Like the desktop grid, discard stale web measurements after filtering.
-        key={isWeb ? `${mobileListKey}-${visibleItems.map(keyExtractor).join(',')}` : mobileListKey}
+        key={isWeb ? `${mobileListKey}-${webMembershipKey}` : mobileListKey}
         data={visibleItems}
         onEndReached={hasMore ? loadMore : undefined}
         onEndReachedThreshold={0.5}

@@ -432,6 +432,9 @@ export async function startOrContinueChat(
   return res;
 }
 
+/** Longest silence tolerated on the chat stream before the request is given up. */
+const CHAT_STREAM_IDLE_TIMEOUT_MS = NETWORK_REQUEST_POLICIES.chat.timeoutMs;
+
 /**
  * Streaming /chat transport: POSTs with stream=true and consumes the SSE
  * response incrementally. No automatic transport retry: the UI may retry
@@ -442,6 +445,45 @@ async function streamChatRequest(
   body: Record<string, unknown>,
   onDelta: (accumulated: string) => void,
   signal?: AbortSignal
+): Promise<{ text: string; message?: Partial<ChatMessage> }> {
+  // A connection dropped without a close leaves the reader waiting forever and
+  // the composer locked with it. No byte for this long ends the request with
+  // the timeout error every other request raises.
+  const watchdog = new AbortController();
+  let timedOut = false;
+  let idleTimer: ReturnType<typeof setTimeout> | undefined;
+  const armIdleTimer = () => {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      timedOut = true;
+      watchdog.abort();
+    }, CHAT_STREAM_IDLE_TIMEOUT_MS);
+  };
+  const forwardAbort = () => watchdog.abort();
+  signal?.addEventListener('abort', forwardAbort, { once: true });
+  if (signal?.aborted) watchdog.abort();
+
+  armIdleTimer();
+  try {
+    return await consumeChatStream(body, onDelta, watchdog.signal, armIdleTimer);
+  } catch (error) {
+    if (timedOut) {
+      const timeout = new Error(`Request timeout after ${CHAT_STREAM_IDLE_TIMEOUT_MS}ms`);
+      timeout.name = 'TimeoutError';
+      throw timeout;
+    }
+    throw error;
+  } finally {
+    clearTimeout(idleTimer);
+    signal?.removeEventListener('abort', forwardAbort);
+  }
+}
+
+async function consumeChatStream(
+  body: Record<string, unknown>,
+  onDelta: (accumulated: string) => void,
+  signal: AbortSignal,
+  onActivity: () => void
 ): Promise<{ text: string; message?: Partial<ChatMessage> }> {
   const url = `${getApiBaseUrl()}/chat`;
   const headers = {
@@ -537,6 +579,7 @@ async function streamChatRequest(
   try {
     for (;;) {
       const { done, value } = await reader.read();
+      onActivity();
       if (value) {
         buffer += decoder.decode(value, { stream: true });
         drainBuffer();

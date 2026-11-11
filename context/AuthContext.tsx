@@ -253,9 +253,13 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       }
       if (!isLucidTrainer && previousUserId !== nextUserId) {
         try {
+          // Called without an account on purpose: this only removes the journal
+          // cache and queue written before they were stored per account, which
+          // no account can safely claim. Each account's own cache and unsent
+          // changes stay on the device, so signing back in loses nothing.
           await clearRemoteDreamStorage();
         } catch {
-          // Best-effort cache clearing on account switch/logout.
+          // Best-effort: a leftover legacy blob is never read.
         }
       }
       if (!mounted || event !== authEvent) return;
