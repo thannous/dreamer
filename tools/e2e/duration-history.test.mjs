@@ -7,6 +7,9 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, 
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { seedDurations, keepDurations } from './duration-history.mjs';
+// The timings report reads the kept reports; it joins this file instead of a new
+// package.json script: root scripts feed the Expo runtime fingerprint.
+import './timings.test.mjs';
 
 const report = (status, passed, marker) => JSON.stringify({ run: { status, summary: { passed } }, marker });
 
