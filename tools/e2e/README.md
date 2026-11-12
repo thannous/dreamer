@@ -87,6 +87,30 @@ The seven Dreamer smoke journeys repeated three times take about 50 s. A file, a
 `--grep` or another product narrows or moves the check. It is run on demand, after
 touching a journey or when one fails without a cause; it is not part of `verify:pr`.
 
+## Where a run spends its time
+
+`timings.mjs` reads a finished run's `report.json` and answers where its time went:
+wall and summed test time, the slowest files, tests and steps (with their source
+line), time per step API, the slow steps that repeat (the same API and label over
+`--slow`, 3 s by default) and the artifacts' size by kind. It takes a report, a run
+directory, or a product-platform for the kept last full run:
+
+```sh
+mise exec -- node tools/e2e/timings.mjs dreamer-web
+mise exec -- node tools/e2e/timings.mjs tools/e2e/.e2e/lucid-web/<before> lucid-web
+```
+
+A second report sets the two runs side by side (wall time, summed test time, time per
+API, artifact size), to measure a change before proposing it. `--top <n>` bounds each
+list (10) and `--json` prints the same figures for a script.
+
+## Test ID guard
+
+`test-ids.test.mjs`, run with the zone tests whenever app code changes, fails when a
+journey asks for a literal test ID the app no longer writes, directly or through a
+fixture helper. It reads text: every string literal in the app counts as written, IDs
+unpacked from an array in a loop and helpers called as methods are not followed.
+
 ## Authoring a journey
 
 New journeys are written from this directory with
