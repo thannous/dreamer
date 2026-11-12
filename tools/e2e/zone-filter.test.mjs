@@ -384,3 +384,13 @@ test('the lucid zone names every Lucid web journey file the config and the gate 
   assert.ok(files.length > 1);
   assert.deepEqual([...ZONES.find(zone => zone.id === 'lucid').tests].sort(), files);
 });
+
+// A journey raises a `restore` flag before it changes a device-wide setting; only the
+// afterEach hook puts the setting back when the journey fails or times out.
+test('every native journey file that uses the restore flags registers the restore hook', () => {
+  const dir = fileURLToPath(new URL('./tests/', import.meta.url));
+  const using = readdirSync(dir).filter(name => name.endsWith('.e2e.ts'))
+    .filter(name => /\brestore\b[^;]*from '\.\.\/dreamer-native-fixtures'/.test(readFileSync(dir + name, 'utf8')));
+  assert.ok(using.length > 0);
+  for (const name of using) assert.match(readFileSync(dir + name, 'utf8'), /^afterEach\(restoreDeviceSettings\);$/m, name);
+});
