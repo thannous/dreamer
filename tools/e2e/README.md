@@ -104,6 +104,13 @@ A second report sets the two runs side by side (wall time, summed test time, tim
 API, artifact size), to measure a change before proposing it. `--top <n>` bounds each
 list (10) and `--json` prints the same figures for a script.
 
+## Test ID guard
+
+`test-ids.test.mjs`, run with the zone tests whenever app code changes, fails when a
+journey asks for a literal test ID the app no longer writes, directly or through a
+fixture helper. It reads text: every string literal in the app counts as written, IDs
+unpacked from an array in a loop and helpers called as methods are not followed.
+
 ## Authoring a journey
 
 New journeys are written from this directory with

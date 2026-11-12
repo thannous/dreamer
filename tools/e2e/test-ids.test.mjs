@@ -3,6 +3,12 @@
 // This test reads the sources instead: every literal ID a journey asks for, directly or
 // through one of its helpers, must still be written in the app, or be composed there from
 // a template. A registry entry (`TID.Button.SaveDream`) counts only while the app uses it.
+//
+// Limits: it reads text, not JSX. Every string literal in the app sources counts as written,
+// not only test IDs, so an ID that survives as another string (a key, a route) still passes.
+// IDs listed in an array and unpacked in a loop are not collected, and a helper called as a
+// method (`fixtures.tap(id)`) is not followed. An ID composed after a variable
+// (`${testID}.option.${value}`) is checked up to the next variable, not beyond.
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
@@ -83,15 +89,33 @@ export function appText(sources, registries) {
   return [...outside.map(({ text }) => text), ...used].join('\n');
 }
 
+const SEPARATORS = '.-_:';
+
+/**
+ * Whether a template writes the end of `id` from `at` after a variable: `${x}-toggle` ends
+ * there, or `${x}.option.${y}` goes on with another variable after a separator.
+ */
+function composedAfter(source, id, at) {
+  const segment = id.slice(at).match(/^.[^.\-_:]*/)[0];
+  if (!source.includes(`}${segment}`)) return false;
+  if (source.includes(`}${id.slice(at)}\``)) return true;
+  for (let end = at + 2; end < id.length; end++) {
+    if (SEPARATORS.includes(id[end - 1]) && source.includes(`}${id.slice(at, end)}\${`)) return true;
+  }
+  return false;
+}
+
 /** Whether `source` writes `id` in full, or builds it from a template or a concatenation. */
 export function sourceWrites(source, id) {
   if ([`'${id}'`, `"${id}"`, `\`${id}\``].some(quoted => source.includes(quoted))) return true;
   for (let at = 1; at < id.length; at++) {
-    if (!'.-_:'.includes(id[at])) continue;
+    if (!SEPARATORS.includes(id[at])) continue;
     const head = id.slice(0, at + 1);
-    const tail = id.slice(at).match(/^[.\-_:][^.\-_:]*/)[0];
-    // `prefix.${x}`, 'prefix.' + x, or `${x}.suffix`.
-    if (source.includes(`\`${head}\${`) || source.includes(`'${head}' +`) || source.includes(`"${head}" +`) || source.includes(`}${tail}`)) return true;
+    // `prefix.${x}` or 'prefix.' + x.
+    if (source.includes(`\`${head}\${`) || source.includes(`'${head}' +`) || source.includes(`"${head}" +`)) return true;
+    // `${x}.suffix`: only on a base the app writes itself, or `${x}-toggle` would vouch for
+    // every ID ending in `-toggle` once any control composes one.
+    if (composedAfter(source, id, at) && sourceWrites(source, id.slice(0, at))) return true;
   }
   return false;
 }
@@ -242,12 +266,28 @@ export function journeyTestIds() {
 }
 
 test('a composed or renamed test ID is told apart from one the source writes', () => {
-  const source = "testID='btn.save' testID={`${testID}.price`} testID={`dream.item.${id}`}";
+  const source = "testID='btn.save' testID='btn.paywall.selectAnnual' testID={`${testID}.price`} testID={`dream.item.${id}`}";
   assert.equal(sourceWrites(source, 'btn.save'), true);
   assert.equal(sourceWrites(source, 'btn.paywall.selectAnnual.price'), true);
   assert.equal(sourceWrites(source, 'dream.item.42'), true);
   assert.equal(sourceWrites(source, 'btn.saveDream'), false);
   assert.equal(sourceWrites(source, 'screen.journal'), false);
+});
+
+test('an ID composed after a variable needs a base the app writes, and the rest of the template', () => {
+  const source = [
+    "<Disclosure testID='sleep-timer' /> <Pressable testID={`${testID}-toggle`} />",
+    "<Choice testID='settings-choice' /> <Option testID={`${testID}.option.${option.value}`} />",
+  ].join('\n');
+  assert.equal(sourceWrites(source, 'sleep-timer-toggle'), true);
+  assert.equal(sourceWrites(source, 'sleep-playback-toggle'), false, 'the app writes `-toggle` after a variable, but never `sleep-playback`');
+  assert.equal(sourceWrites(source, 'sleep-timer-toggle-extra'), false, 'the template ends at `-toggle`');
+  assert.equal(sourceWrites(source, 'settings-choice.option.fr'), true);
+  assert.equal(sourceWrites(source, 'settings-choice.option'), false, 'the template goes on with a variable after `.option.`');
+  assert.equal(sourceWrites("<Row testID={`${prefix}-timer`} /> testID='sleep' testID={`${testID}-sheet`}", 'sleep-timer-sheet'), true,
+    'a base may itself be composed');
+  assert.equal(sourceWrites("<Row testID={`${prefix}-timer`} /> testID={`${testID}-sheet`}", 'sleep-timer-sheet'), false,
+    'down to a base the app writes');
 });
 
 test('a registry entry the app no longer reads is not written by the app', () => {
