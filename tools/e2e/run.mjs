@@ -94,8 +94,10 @@ if (nativeJourneys) env.E2E_NATIVE_JOURNEYS = '1';
 // Local web files run in parallel against the one local server, each attempt in its
 // own browser context and storage: half the cores, at most eight. CI keeps e2e's single
 // worker and shards; a native target drives its one named device. The resolved count
-// reaches the config and the evidence's rerun environment.
-if (['backend', 'branch'].includes(product)) env.E2E_WORKERS = '1';
+// reaches the config and the evidence's rerun environment. Backend files share only
+// their run's own stack: each test creates its accounts, and limits are per account.
+// The branch target keeps one worker: its journeys share persistent test accounts.
+if (product === 'branch') env.E2E_WORKERS = '1';
 else if (platform === 'web' && env.E2E_WORKERS === undefined)
   env.E2E_WORKERS = String(!['', '0', 'false'].includes(env.CI ?? '') ? 1 : Math.min(8, Math.max(1, Math.floor(availableParallelism() / 2))));
 function cliEnvironment() {

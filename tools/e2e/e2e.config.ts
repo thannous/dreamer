@@ -60,7 +60,7 @@ if (native && (!device || (platform === 'android' && !fleetPhone && !/^emulator-
 const requestedWorkers = process.env.E2E_WORKERS;
 if (requestedWorkers !== undefined && (native || !/^[1-9]\d?$/.test(requestedWorkers)))
   throw new Error('E2E_WORKERS takes 1-99 web workers; native runs use one device.');
-const workers = backend || branch ? 1 : Number(requestedWorkers ?? 1);
+const workers = branch ? 1 : Number(requestedWorkers ?? 1);
 if (personas && workers !== 1) throw new Error('Bound the persona pilot with E2E_WORKERS=1.');
 const appRoot = product === 'meditation' ? `${root}apps/meditation` : root;
 const managedCommand = !native && product !== 'site'

@@ -47,6 +47,11 @@ One long file therefore sets a campaign's length, so long journeys are split int
 files of a few minutes at most: the site's `tests/site*.web.e2e.ts` (shared code in
 `site-fixtures.ts`), Dreamer's `dreamer-onboarding-features*.web.e2e.ts`, the
 release-only `dreamer-release-*.web.e2e.ts` and Lucid's `lucid.*web.e2e.ts`.
+The backend's `backend-*.web.e2e.ts` files run side by side as well: each test
+creates its own accounts on the run's own stack, AI admission limits count per
+account (the shared backlog cap of 200 is far above the few jobs the files queue)
+and its helper servers take free ports. The branch target keeps one worker, since its journeys
+share persistent test accounts.
 A native target drives one device, so Dreamer's `dreamer.*mobile.e2e.ts` files are
 split by the Release profile their journeys need, for reading rather than for speed.
 With `CI` set the runner keeps one worker; no hosted CI launches these campaigns,
