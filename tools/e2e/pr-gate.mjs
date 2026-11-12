@@ -26,7 +26,7 @@ export function changedJourneyProduct(file) {
   const name = file.slice('tools/e2e/tests/'.length);
   if (name.includes('/')) return null;
   if (name.startsWith('dreamer')) return 'dreamer';
-  if (name === 'lucid.web.e2e.ts') return 'lucid';
+  if (/^lucid\.([a-z0-9]+\.)?web\.e2e\.ts$/.test(name)) return 'lucid';
   if (name === 'meditation.web.e2e.ts') return 'meditation';
   return null;
 }

@@ -445,7 +445,12 @@ export const NEW_SYMBOL_PACKS = [
 export const PACK_FILES = 6;
 export const packsOfFile = (file: number) => NEW_SYMBOL_PACKS.filter((_, index) => index % PACK_FILES === file - 1);
 
+// Nothing compares these captures, and the 239 packs share one template: the first pack of each
+// file keeps its five as a sample to look at. A failing pack still gets the runner's own capture.
+const SAMPLE_PACKS: ReadonlySet<string> = new Set(NEW_SYMBOL_PACKS.slice(0, PACK_FILES).map(pack => pack.id));
+
 export async function expectNewSymbolPack(page: typeof NEW_SYMBOL_PACKS[number], { app, browser, screen }: { app: App; browser: Browser; screen: Screen }) {
+  const sample = async (label: string) => { if (SAMPLE_PACKS.has(page.id)) await app.screenshot(label); };
   await browser.setViewport({ width: 2560, height: 1440 });
   await app.open('/fr/symboles/' + page.slug + '.html');
   await browser.emulateMedia({ reducedMotion: 'no-preference' });
@@ -473,7 +478,7 @@ export async function expectNewSymbolPack(page: typeof NEW_SYMBOL_PACKS[number],
   expect(wide.paintingAnimations).toBe(0);
   expect(wide.hero.top).toBe(0);
   expect(wide.hero.width).toBe(2560);
-  await app.screenshot('pack-' + page.id + '-2560-hero');
+  await sample('pack-' + page.id + '-2560-hero');
 
   for (const name of ['plate', ...page.scenes.map(scene => 'scene-' + scene)]) {
     await browser.evaluate((surface: string) => {
@@ -481,14 +486,14 @@ export async function expectNewSymbolPack(page: typeof NEW_SYMBOL_PACKS[number],
       return window.scrollY;
     }, name);
     await moving(name);
-    if (name === 'plate') await app.screenshot('pack-' + page.id + '-2560-plate');
+    if (name === 'plate') await sample('pack-' + page.id + '-2560-plate');
   }
   for (const scene of page.scenes) {
     const label = await browser.evaluate((id: string) => document.querySelector('label[for="atlas-scene-' + id + '"] .atlas-scene-label')!.textContent!.trim(), scene);
     await screen.getByText(label, { exact: true }).first().tap();
     expectSixScene(await browser.evaluate(readAtlasSix), scene);
   }
-  await app.screenshot('pack-' + page.id + '-2560-scenes');
+  await sample('pack-' + page.id + '-2560-scenes');
   await browser.emulateMedia({ reducedMotion: 'reduce' });
   await expectReducedSurfaces(browser);
 
@@ -502,7 +507,7 @@ export async function expectNewSymbolPack(page: typeof NEW_SYMBOL_PACKS[number],
   expect(phone.hero.height).toBeCloseTo(844 * 0.75, 0);
   expect(phone.overflow).toBe(false);
   expect(await browser.evaluate(() => performance.getEntriesByType('resource').some(e => /\/plate-[0-9]+-/.test(e.name)))).toBe(false);
-  await app.screenshot('pack-' + page.id + '-390-hero');
+  await sample('pack-' + page.id + '-390-hero');
   await app.open('/fr/symboles/' + page.slug + '.html#scenes');
   await expect(screen.getByRole('heading', { name: 'Scènes courantes', exact: true })).toBeVisible();
   await expect.poll(() => browser.evaluate(() => {
@@ -513,7 +518,7 @@ export async function expectNewSymbolPack(page: typeof NEW_SYMBOL_PACKS[number],
     return title.top >= Math.max(0, ...covers) && title.bottom <= innerHeight && Boolean(hit?.closest('#atlas-scenes-title'));
   }), { timeout: 15_000 }).toBe(true);
   for (const scene of page.scenes) await moving('scene-' + scene);
-  await app.screenshot('pack-' + page.id + '-390-scenes');
+  await sample('pack-' + page.id + '-390-scenes');
 
   const catalog = JSON.parse(readFileSync(new URL('../../data/dream-symbols.json', import.meta.url), 'utf8')).symbols.find((s: {id: string}) => s.id === page.id);
   const paths: Record<string,string> = { en: 'symbols', es: 'simbolos', de: 'traumsymbole', it: 'simboli', 'pt-br': 'simbolos' };

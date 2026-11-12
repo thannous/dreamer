@@ -595,7 +595,7 @@ Ce qui est réellement en place :
 La logique décidable du module est presque entièrement pure et testée à ce titre : plans de signaux,
 plans de rappels, calendrier, fusion d'états, résolution de conflits, backoff, coaching.
 
-**E2E** : TesterArmy — `tools/e2e/tests/lucid.web.e2e.ts` (`npm run test:testerarmy:lucid`) et
+**E2E** : TesterArmy — `tools/e2e/tests/lucid.*web.e2e.ts` (quatre fichiers, `npm run test:testerarmy:lucid`) et
 `tools/e2e/tests/lucid.mobile.e2e.ts` (`npm run test:testerarmy:mobile -- lucid <android|ios>`, profil
 `lucid-mock`, deux parcours natifs : intention et expérience requises, plan local activé puis
 redémarrage). L'ancienne suite Maestro `lucid` a été retirée le 2026-10-14 (§14.8).

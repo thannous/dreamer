@@ -74,7 +74,9 @@ export default {
       ? ['tests/dreamer*.web.e2e.ts', 'tests/bugbash/**/*.e2e.ts']
       : product === 'dreamer' && !native ? 'tests/dreamer*.web.e2e.ts'
       // Each file runs on one worker: the site's journeys are split into files that run side by side.
-      : product === 'site' ? 'tests/site*.web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
+      : product === 'site' ? 'tests/site*.web.e2e.ts'
+      // Lucid's web journeys sit in several files so the web workers run them side by side.
+      : product === 'lucid' && !native ? 'tests/lucid.*web.e2e.ts' : `tests/${product}.${native ? 'mobile' : 'web'}.e2e.ts`,
   ...(personas ? { agents: product === 'dreamer' ? createDreamerPersonaAgents(
     process.env.E2E_PERSONA_MODEL?.trim() || process.env.E2E_PERSONA_ACT_MODEL?.trim() || undefined,
     process.env.E2E_PERSONA_JUDGE_MODEL?.trim() || undefined,
