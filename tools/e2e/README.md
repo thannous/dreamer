@@ -22,7 +22,7 @@ future engine bump from nesting another version unnoticed).
 accessibility snapshots, Android snapshot-helper retirement and daemon lease recovery
 ([release notes](https://github.com/callstack/agent-device/releases/tag/v0.21.36)).
 A native campaign qualifies it; a web run does not use it. The model stack is
-pinned too: `ai` 7.0.162 runs the agent steps, `@ai-sdk/openai` 4.0.108 wraps the
+pinned too: `ai` 7.0.170 runs the agent steps, `@ai-sdk/openai` 4.0.115 wraps the
 saved ChatGPT login, and `@e2e-dev/decision` 0.3.2 is the PR gate's decision filter.
 `SDK_PINS` in `qualification.mjs` holds these four runtime versions and those three.
 A run, collection, build, inspection or MCP session refuses another installed version
