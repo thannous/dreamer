@@ -88,3 +88,13 @@ test('two runs compare their wall time, test time, artifacts and time per API', 
   assert.deepEqual(gone.apis.at(-1), { api: 'locator.tap', before: { ms: 200, count: 1 }, after: { ms: 0, count: 0 }, deltaMs: -200 });
   assert.match(formatComparison(comparison), /wall\s+20\.0 s\s+12\.0 s\s+-8\.0 s/);
 });
+
+test('a run that recorded no step, and --top 0, still print the run', () => {
+  const skipped = { schemaVersion: 'report-1', run: { status: 'passed', startedAt: '2026-11-12T10:00:00.000Z', finishedAt: '2026-11-12T10:00:01.000Z',
+    summary: { discovered: 1, selected: 1, executed: 0, skipped: 1 }, results: [{ file: 'tests/b.web.e2e.ts', titlePath: ['skipped'], status: 'skipped', attempts: [] }] } };
+  const empty = formatSummary(summarise(skipped));
+  assert.match(empty, /^Run: passed \(1 discovered, 1 selected, 1 skipped\)/);
+  assert.match(empty, /Time by step API:\n {2}none/);
+  const none = formatSummary(summarise(report(), { top: 0 }), 0);
+  assert.match(none, /Slowest files:\n {2}none/);
+});

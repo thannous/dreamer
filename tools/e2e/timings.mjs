@@ -124,7 +124,9 @@ export const megabytes = bytes => `${(bytes / 1e6).toFixed(1)} MB`;
 const signed = (value, unit) => `${value > 0 ? '+' : value < 0 ? '-' : '±'}${unit(Math.abs(value))}`;
 const clip = (text, width = 90) => text.length > width ? `${text.slice(0, width - 1)}…` : text;
 // Columns of figures align right, text columns left; the last column is never padded.
+// A run with nothing to list (every test skipped, or `--top 0`) still prints its other sections.
 const table = (rows, header = false) => {
+  if (rows.length === (header ? 1 : 0)) return ['  none'];
   const widths = rows[0].map((_, at) => Math.max(...rows.map(row => String(row[at]).length)));
   const figures = rows[0].map((_, at) => rows.slice(header ? 1 : 0).every(row => /^[-+±\d?(]|^$/.test(String(row[at]))));
   return rows.map(row => row.map((cell, at) => at === row.length - 1 ? cell
