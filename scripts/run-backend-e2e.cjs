@@ -32,8 +32,8 @@ const rerunArgs = [...(requestedRuntime ? ['--runtime', requestedRuntime] : []),
   ...(qualifyTi528 ? ['--qualify-ti528'] : []), ...args].map(quote).join(' ');
 // Supabase documents this one for root runs of the native runtime; other SUPABASE_* settings are dropped.
 const keptSupabaseEnv = ['SUPABASE_NATIVE_POSTGRES_USER'];
-// The rerun repeats the overrides that chose the executable and the database user.
-const rerunEnv = ['E2E_SUPABASE_CLI', 'E2E_SUPABASE_HOME', ...keptSupabaseEnv]
+// The rerun repeats the overrides that chose the executable, the database user and the workers.
+const rerunEnv = ['E2E_SUPABASE_CLI', 'E2E_SUPABASE_HOME', 'E2E_WORKERS', ...keptSupabaseEnv]
   .filter(key => process.env[key]).map(key => `${key}=${quote(process.env[key])} `).join('');
 const cliEnv = {
   ...Object.fromEntries(Object.entries(process.env)
