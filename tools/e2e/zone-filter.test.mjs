@@ -377,3 +377,10 @@ test('each shared journey step lists exactly the gated web journeys that import 
     assert.equal(parcoursExclude([journey], [step]).exclude.shared, undefined, step);
   }
 });
+
+test('the lucid zone names every Lucid web journey file the config and the gate select', () => {
+  const dir = fileURLToPath(new URL('./tests/', import.meta.url));
+  const files = readdirSync(dir).filter(name => /^lucid\.([a-z0-9]+\.)?web\.e2e\.ts$/.test(name)).map(name => `tools/e2e/tests/${name}`).sort();
+  assert.ok(files.length > 1);
+  assert.deepEqual([...ZONES.find(zone => zone.id === 'lucid').tests].sort(), files);
+});
