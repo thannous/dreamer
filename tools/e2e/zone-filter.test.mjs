@@ -5,6 +5,9 @@ import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
 import { qualifyingSdkEnvironment } from './qualification.mjs';
+// The test ID check joins this file, which verify:pr already runs whenever app code
+// changes, instead of a new check or package.json script.
+import './test-ids.test.mjs';
 import { DECISION_KEY_ENV, DECISION_MODEL, SHARED_JOURNEY_STEPS, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, sentToDecisionModel, widenWithDecision, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
