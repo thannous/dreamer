@@ -3529,7 +3529,7 @@ ${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
                                 aria-label="${escapeHtml(dc.hero_search_placeholder)}"
                                 class="hero-search w-full bg-white/8 border border-white/15 rounded-full py-4 pl-12 pr-14 text-base text-dream-cream placeholder:text-purple-200/55 transition-colors">
                         </div>
-                        <button type="button" id="heroSearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
+                        <button type="button" id="heroSearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" hidden>
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -3558,7 +3558,7 @@ ${renderMobileAlphaHtml(letters, lang)}
                             aria-label="${escapeHtml(dc.sticky_search_placeholder)}"
                             class="search-input w-full rounded-full py-2 pl-12 pr-14 text-sm text-dream-cream transition-colors"
                             style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);outline:none;">
-                        <button type="button" id="stickySearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" onclick="document.getElementById('stickySearch').value='';document.getElementById('stickySearch').dispatchEvent(new Event('input',{bubbles:true}));" hidden>
+                        <button type="button" id="stickySearchClear" class="search-clear" aria-label="${escapeHtml(uiCopy.clearSearch)}" title="${escapeHtml(uiCopy.clearSearch)}" hidden>
                             <i data-lucide="x" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -3600,7 +3600,7 @@ ${conversionPanelHtml}
                     <span class="search-feedback-label">${escapeHtml(uiCopy.activeSearchLabel)}</span>
                     <span id="searchFeedbackText" class="search-feedback-text" role="status" aria-live="polite" aria-atomic="true"></span>
                 </div>
-                <button type="button" id="searchFeedbackClear" class="search-feedback-clear" onclick="document.getElementById('heroSearch').value='';document.getElementById('heroSearch').dispatchEvent(new Event('input',{bubbles:true}));">${escapeHtml(uiCopy.clearSearch)}</button>
+                <button type="button" id="searchFeedbackClear" class="search-feedback-clear">${escapeHtml(uiCopy.clearSearch)}</button>
             </div>
 
             <!-- Symbols Dictionary -->
@@ -3874,15 +3874,18 @@ ${symbolCatEntries}
                     && document.activeElement === heroSearch;
                 if (heroSearchClear) heroSearchClear.hidden = !hasValue;
                 if (stickySearchClear) stickySearchClear.hidden = !hasValue;
+                // Move focus before changing hundreds of cards: focusing after
+                // filtering forces the browser to lay out the whole result list.
+                if (moveFocusToSticky) {
+                    stickyBar?.classList.add('sb-visible');
+                    stickySearch.focus({ preventScroll: true });
+                    stickySearch.setSelectionRange(nextValue.length, nextValue.length);
+                }
                 const visibleCount = filterSymbols(nextValue);
                 updateSearchUi(nextValue, visibleCount);
                 if (hasValue && isMobile) {
                     stickyBar?.classList.add('sb-visible');
                     updateSectionScrollOffset();
-                    if (moveFocusToSticky) {
-                        stickySearch.focus({ preventScroll: true });
-                        stickySearch.setSelectionRange(nextValue.length, nextValue.length);
-                    }
                 } else if (!hasValue && isMobile) {
                     syncStickyBarVisibility();
                 }

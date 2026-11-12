@@ -956,6 +956,50 @@ test('the symbol article, a missing FAQ or a thumbnail that fails stays in the p
   await app.screenshot('atlas-pt-br-moon-broken-thumbnail-390');
 });
 
+test('the German dictionary keeps mobile typing and clearing usable', { timeout: 180_000 }, async ({ app, browser, screen }) => {
+  await browser.setViewport({ width: 390, height: 844 });
+  await app.open('/de/guides/traumsymbole-lexikon.html');
+  const search = screen.getByRole('textbox', { name: 'Traumsymbol suchen (Wasser, Tür, Wolf…)' }).first();
+  const results = () => browser.evaluate(() => ({
+    focus: document.activeElement?.id ?? null,
+    hero: document.querySelector<HTMLInputElement>('#heroSearch')!.value,
+    sticky: document.querySelector<HTMLInputElement>('#stickySearch')!.value,
+    shown: Array.from(document.querySelectorAll<HTMLElement>('.symbol-card'))
+      .filter(card => getComputedStyle(card).display !== 'none')
+      .map(card => card.dataset.symbol ?? ''),
+    emptyShown: getComputedStyle(document.querySelector<HTMLElement>('#noResults')!).display !== 'none',
+  }));
+  await search.tap();
+  // Keep typing after the first character transfers focus to the sticky input.
+  await browser.keyboard.type('Wasser');
+  await expect.poll(results).toMatchObject({ focus: 'stickySearch', hero: 'Wasser', sticky: 'Wasser', emptyShown: false });
+  const filtered = await results();
+  expect(filtered.shown).toContain('wasser');
+  expect(filtered.shown).not.toContain('hund');
+  expect(filtered.shown.length).toBeLessThan(240);
+
+  await screen.getByRole('button', { name: 'Suche löschen', exact: true }).first().tap();
+  await expect.poll(results).toMatchObject({ hero: '', sticky: '', emptyShown: false });
+  expect((await results()).shown).toHaveLength(240);
+
+  // A subsequent search can reach the empty state and be cleared too.
+  await search.tap();
+  await browser.keyboard.type('zzzxqz');
+  await expect.poll(results).toMatchObject({ sticky: 'zzzxqz', shown: [], emptyShown: true });
+  await screen.getByRole('button', { name: 'Suche löschen', exact: true }).last().tap();
+  await expect.poll(() => results().then(state => [state.sticky, state.shown.length, state.emptyShown])).toEqual(['', 240, false]);
+  await app.screenshot('dictionary-de-search-cleared-390');
+
+  // On desktop focus stays in the original field and its own clear button works.
+  await browser.setViewport({ width: 1280, height: 900 });
+  await app.open('/de/guides/traumsymbole-lexikon.html');
+  await search.tap();
+  await browser.keyboard.type('Wasser');
+  await expect.poll(results).toMatchObject({ focus: 'heroSearch', hero: 'Wasser', sticky: 'Wasser' });
+  await screen.getByRole('button', { name: 'Suche löschen', exact: true }).first().tap();
+  await expect.poll(() => results().then(state => [state.hero, state.shown.length])).toEqual(['', 240]);
+});
+
 test('the pt-br dictionary links every pt-br symbol, searches and filters in Portuguese, and its translations link to each other', { timeout: 180_000 }, async ({ app, browser, screen }) => {
   await serveCleanUrls(browser);
   await browser.setViewport({ width: 1920, height: 1080 });
