@@ -357,7 +357,7 @@ export const PARCOURS_WHEN = [
   // Shared steps of web journeys (SHARED_JOURNEY_STEPS in zones.mjs): a change runs their importers.
   'tools/e2e/web-journeys.ts', 'tools/e2e/traced-parity-test.ts', 'tools/e2e/onboarding-fixtures.ts',
   // Every web journey of the three campaigns: a changed journey runs (pr-gate.mjs changedJourneyProduct).
-  'tools/e2e/tests/dreamer*.web.e2e.ts', 'tools/e2e/tests/lucid.web.e2e.ts', 'tools/e2e/tests/meditation.web.e2e.ts',
+  'tools/e2e/tests/dreamer*.web.e2e.ts', 'tools/e2e/tests/lucid.*web.e2e.ts', 'tools/e2e/tests/meditation.web.e2e.ts',
   'tools/e2e/tests/bugbash/', 'verify-local.config.mjs',
 ];
 

@@ -172,6 +172,9 @@ test('verify:pr scopes skip docs and keep the named app paths', async () => {
 test('a changed web journey runs its campaign even without a source zone', () => {
   assert.deepEqual(decideParcours(['tools/e2e/tests/dreamer-billing.web.e2e.ts']).products, ['dreamer']);
   assert.deepEqual(decideParcours(['tools/e2e/tests/lucid.web.e2e.ts']).products, ['lucid']);
+  // Lucid's web journeys sit in several files; its persona pilot is not one of them.
+  assert.deepEqual(decideParcours(['tools/e2e/tests/lucid.sleep.web.e2e.ts']).products, ['lucid']);
+  assert.equal(decideParcours(['tools/e2e/tests/lucid-personas.web.e2e.ts']).launch, false);
   assert.deepEqual(decideParcours(['tools/e2e/tests/meditation.web.e2e.ts']).products, ['meditation']);
   // Native, bug bash, backend and support files are not web journeys of these campaigns.
   for (const file of ['tools/e2e/tests/dreamer.mobile.e2e.ts', 'tools/e2e/tests/bugbash/example.e2e.ts',

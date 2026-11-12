@@ -295,7 +295,7 @@ export const ZONES = [
     product: 'lucid',
     platform: 'web',
     sources: ['routes/lucid/', 'components/lucid/', 'services/lucid'],
-    tests: ['tools/e2e/tests/lucid.web.e2e.ts'],
+    tests: ['tools/e2e/tests/lucid.web.e2e.ts', 'tools/e2e/tests/lucid.ambience.web.e2e.ts', 'tools/e2e/tests/lucid.pr237.web.e2e.ts', 'tools/e2e/tests/lucid.sleep.web.e2e.ts'],
   },
   {
     id: 'meditation',
