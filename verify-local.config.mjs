@@ -350,6 +350,7 @@ export const PARCOURS_WHEN = [
   'app/', 'components/', 'context/', 'hooks/', 'lib/', 'constants/', 'services/', 'routes/', 'apps/meditation/',
   ...UNIT_TESTS,
   'tools/e2e/zones.mjs', 'tools/e2e/zones.d.mts', 'tools/e2e/zone-filter.ts', 'tools/e2e/zone-filter.test.mjs',
+  'tools/e2e/test-ids.test.mjs',
   'tools/e2e/decision-verdict.mjs', 'tools/e2e/decision-verdict.d.mts', 'tools/e2e/decision-verdict.test.mjs',
   'tools/e2e/pr-gate.mjs', 'tools/e2e/pr-gate.test.mjs', 'tools/e2e/e2e.config.ts', 'tools/e2e/e2e.bugbash.config.ts',
   'tools/e2e/run.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/persona-models.d.mts',
