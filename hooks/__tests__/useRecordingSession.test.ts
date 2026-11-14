@@ -542,7 +542,7 @@ describe('useRecordingSession', () => {
       ['no-speech', false, 'no_speech'],
     ] as const)(
       'on iOS, a %s error with listening started=%s ends as %s',
-      async (errorCode, startedListening, expected) => {
+      async (errorCode: string, startedListening: boolean | undefined, expected: string) => {
         (Platform as { OS: string }).OS = 'ios';
         jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
           stop: jest.fn().mockResolvedValue({ transcript: '', errorCode, startedListening }),
