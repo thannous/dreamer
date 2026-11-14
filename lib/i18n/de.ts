@@ -812,6 +812,7 @@ const translations: Record<string, string> = {
     'recording.dictation_off.step_keyboard': 'Geh zu Allgemein und dann zu Tastatur',
     'recording.dictation_off.step_toggle': 'Schalte „Diktierfunktion aktivieren“ ein',
     'recording.dictation_off.use_text': 'Traum eintippen',
+    'recording.dictation_off.retry': 'Ich habe die Diktierfunktion aktiviert',
     'recording.dictation_off.dismiss': 'Schließen',
     'recording.alert.start_failed': 'Aufnahme konnte nicht gestartet werden. Bitte versuche es erneut.',
     'recording.alert.language_pack_missing.title': 'Sprachpaket fehlt',

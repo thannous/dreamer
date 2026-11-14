@@ -40,6 +40,7 @@ export const TID = {
     MicRationaleDismiss: 'btn.recording.micRationale.dismiss',
     DictationOffUseText: 'btn.recording.dictationOff.useText',
     DictationOffDismiss: 'btn.recording.dictationOff.dismiss',
+    DictationOffRetry: 'btn.recording.dictationOff.retry',
     SaveDream: 'btn.saveDream',
     NavigateJournal: 'btn.navigateJournal',
     NavigateSettings: 'btn.navigateSettings',

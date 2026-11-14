@@ -1829,6 +1829,19 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
 
   const handleDictationOffClose = useCallback(() => setShowDictationOffSheet(false), []);
 
+  // After turning Dictation on in Settings, the reader starts listening from the sheet.
+  // If Dictation is still off, iOS refuses again and the sheet comes back.
+  const handleDictationOffRetry = useCallback(async () => {
+    if (!isHydrated || recordingTransitionRef.current) return;
+    setShowDictationOffSheet(false);
+    recordingTransitionRef.current = true;
+    try {
+      await startRecording();
+    } finally {
+      recordingTransitionRef.current = false;
+    }
+  }, [isHydrated, startRecording]);
+
   const handleDictationOffUseText = useCallback(async () => {
     setShowDictationOffSheet(false);
     await switchToTextMode();
@@ -2246,6 +2259,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
         visible={showDictationOffSheet}
         onClose={handleDictationOffClose}
         onUseText={handleDictationOffUseText}
+        onRetry={handleDictationOffRetry}
       />
       <OfflineModelDownloadSheet
         visible={showOfflineModelSheet}

@@ -198,7 +198,8 @@ describe('RecordingSheets', () => {
   it('walks through turning iOS Dictation back on, step by step, and offers typing instead', () => {
     const onUseText = jest.fn();
     const onClose = jest.fn();
-    render(<DictationOffSheet visible onClose={onClose} onUseText={onUseText} />);
+    const onRetry = jest.fn();
+    render(<DictationOffSheet visible onClose={onClose} onUseText={onUseText} onRetry={onRetry} />);
 
     expect(screen.getByText('recording.dictation_off.title')).toBeTruthy();
     expect(screen.getByText('recording.dictation_off.intro')).toBeTruthy();
@@ -208,6 +209,9 @@ describe('RecordingSheets', () => {
     expect(steps).toHaveLength(3);
     fireEvent.click(screen.getByTestId(TID.Button.DictationOffUseText));
     expect(onUseText).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId(TID.Button.DictationOffRetry));
+    expect(screen.getByText('recording.dictation_off.retry')).toBeTruthy();
+    expect(onRetry).toHaveBeenCalledTimes(1);
     fireEvent.click(screen.getByTestId(TID.Button.DictationOffDismiss));
     expect(onClose).toHaveBeenCalledTimes(1);
   });

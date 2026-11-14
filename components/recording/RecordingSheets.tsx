@@ -54,10 +54,12 @@ export function DictationOffSheet({
   visible,
   onClose,
   onUseText,
+  onRetry,
 }: {
   visible: boolean;
   onClose: () => void;
   onUseText: () => void;
+  onRetry: () => void;
 }) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
@@ -79,6 +81,9 @@ export function DictationOffSheet({
         primaryLabel: t('recording.dictation_off.use_text'),
         onPrimary: onUseText,
         primaryTestID: TID.Button.DictationOffUseText,
+        secondaryLabel: t('recording.dictation_off.retry'),
+        onSecondary: onRetry,
+        secondaryTestID: TID.Button.DictationOffRetry,
         linkLabel: t('recording.dictation_off.dismiss'),
         onLink: onClose,
         linkTestID: TID.Button.DictationOffDismiss,

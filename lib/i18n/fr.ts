@@ -813,6 +813,7 @@ const translations: Record<string, string> = {
     'recording.dictation_off.step_keyboard': 'Va dans Général, puis Clavier',
     'recording.dictation_off.step_toggle': 'Active l’option « Activer Dictée »',
     'recording.dictation_off.use_text': 'Écrire mon rêve',
+    'recording.dictation_off.retry': 'J’ai activé la Dictée',
     'recording.dictation_off.dismiss': 'Fermer',
     'recording.alert.start_failed': 'Impossible de démarrer l’enregistrement. Réessaie.',
     'recording.alert.language_pack_missing.title': 'Pack de langue manquant',

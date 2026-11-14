@@ -812,6 +812,7 @@ const translations: Record<string, string> = {
     'recording.dictation_off.step_keyboard': 'Vai su Generali, poi su Tastiera',
     'recording.dictation_off.step_toggle': 'Attiva «Abilita dettatura»',
     'recording.dictation_off.use_text': 'Scrivi il mio sogno',
+    'recording.dictation_off.retry': 'Ho attivato la Dettatura',
     'recording.dictation_off.dismiss': 'Chiudi',
     'recording.alert.start_failed': 'Impossibile avviare la registrazione. Riprova.',
     'recording.alert.language_pack_missing.title': 'Pacchetto lingua mancante',

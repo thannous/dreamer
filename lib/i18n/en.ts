@@ -812,6 +812,7 @@ const translations: Record<string, string> = {
     'recording.dictation_off.step_keyboard': 'Go to General, then Keyboard',
     'recording.dictation_off.step_toggle': 'Turn on Enable Dictation',
     'recording.dictation_off.use_text': 'Type my dream',
+    'recording.dictation_off.retry': 'I’ve turned on Dictation',
     'recording.dictation_off.dismiss': 'Close',
     'recording.alert.start_failed': 'Failed to start recording. Please try again.',
     'recording.alert.language_pack_missing.title': 'Language pack missing',

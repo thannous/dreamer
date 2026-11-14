@@ -481,15 +481,20 @@ jest.doMock('@/components/recording/RecordingSheets', () => ({
     ) : null,
   DictationOffSheet: ({
     onClose,
+    onRetry,
     onUseText,
     visible,
   }: {
     onClose: () => void;
+    onRetry: () => void;
     onUseText: () => void;
     visible: boolean;
   }) =>
     visible ? (
       <div data-testid="dictation-off">
+        <button data-testid="dictation-off-retry" onClick={onRetry}>
+          Retry
+        </button>
         <button data-testid="dictation-off-text" onClick={onUseText}>
           Type
         </button>
@@ -1228,6 +1233,32 @@ describe('Recording screen', () => {
       expect(screen.queryByTestId('dictation-off')).toBeNull();
     }
   );
+
+  it('starts listening again from the Dictation sheet once Dictation is back on', async () => {
+    mockPlatformOS = 'ios';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    mockStopRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = false;
+      mockOnDictationOff?.();
+      return { transcript: '', error: 'dictation_off' };
+    });
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+    await waitFor(() => expect(screen.getByTestId('dictation-off')).toBeTruthy());
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('dictation-off-retry'));
+    });
+
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    expect(screen.queryByTestId('dictation-off')).toBeNull();
+  });
 
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {
     mockPlatformOS = 'android';
