@@ -562,11 +562,14 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
   const openDictationOffSheet = useCallback(() => setShowDictationOffSheet(true), []);
+  // The Dictation sheet stays up through a retry and closes once listening has begun.
+  const closeDictationOffSheet = useCallback(() => setShowDictationOffSheet(false), []);
 
   const recordingSession = useRecordingSession({
     transcriptionLocale,
     t,
     onDictationOff: openDictationOffSheet,
+    onListeningStart: closeDictationOffSheet,
     onNativeEnd: () => {
       stopRecordingFromNativeEndRef.current?.();
     },
@@ -1576,9 +1579,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   }, [appliedEntry]);
 
   const isVoiceListening = isSpeechListening;
-  useEffect(() => {
-    if (isVoiceListening) setShowDictationOffSheet(false);
-  }, [isVoiceListening]);
   const recordingDurationLabel = isVoiceListening
     ? <RecordingDurationLabel startedAtRef={recordingStartedAtRef} />
     : undefined;

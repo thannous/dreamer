@@ -89,6 +89,7 @@ let mockKeyboardSubscribers: Record<string, Set<(event: MockKeyboardEvent) => vo
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
 let mockOnDictationOff: (() => void) | undefined;
+let mockOnListeningStart: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
 const mockAppStateHandlers = new Set<(state: string) => void>();
 let mockIsRecording = false;
@@ -633,14 +634,17 @@ jest.doMock('@/hooks/useQuota', () => ({
 jest.doMock('@/hooks/useRecordingSession', () => ({
   useRecordingSession: ({
     onDictationOff,
+    onListeningStart,
     onNativeEnd,
     onPartialTranscript,
   }: {
     onDictationOff?: () => void;
+    onListeningStart?: () => void;
     onNativeEnd?: () => void;
     onPartialTranscript?: (text: string) => void;
   }) => {
     mockOnDictationOff = onDictationOff;
+    mockOnListeningStart = onListeningStart;
     mockOnNativeEnd = onNativeEnd;
     mockOnPartialTranscript = onPartialTranscript;
     return {
@@ -1008,6 +1012,7 @@ describe('Recording screen', () => {
     mockOnPartialTranscript = undefined;
     mockOnNativeEnd = undefined;
     mockOnDictationOff = undefined;
+    mockOnListeningStart = undefined;
     mockAppStateHandler = undefined;
     mockAppStateHandlers.clear();
     mockIsRecording = false;
@@ -1270,8 +1275,8 @@ describe('Recording screen', () => {
 
     // Turned on: listening begins and the sheet closes.
     mockStartRecording.mockImplementationOnce(async () => {
-      mockIsRecording = true;
       mockIsRecordingRef.current = true;
+      mockOnListeningStart?.();
       return { success: true };
     });
     await act(async () => {

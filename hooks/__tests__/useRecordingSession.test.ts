@@ -516,6 +516,24 @@ describe('useRecordingSession', () => {
       );
     });
 
+    it('tells the screen when the recognizer starts listening, not before', async () => {
+      const onListeningStart = jest.fn();
+      let listeningChange: ((listening: boolean) => void) | undefined;
+      jest.mocked(startNativeSpeechSession).mockImplementationOnce(async (_language, options) => {
+        listeningChange = options?.onListeningChange;
+        return { stop: jest.fn().mockResolvedValue({ transcript: '' }), abort: jest.fn() };
+      });
+      const { result } = renderHook(() => useRecordingSession({ ...defaultOptions, onListeningStart }));
+      await act(async () => { await result.current.startRecording(''); });
+      expect(onListeningStart).not.toHaveBeenCalled();
+
+      act(() => listeningChange?.(false));
+      expect(onListeningStart).not.toHaveBeenCalled();
+      act(() => listeningChange?.(true));
+      expect(onListeningStart).toHaveBeenCalledTimes(1);
+      expect(result.current.isSpeechListening).toBe(true);
+    });
+
     it('lets the screen show its own Dictation steps instead of an alert', async () => {
       (Platform as { OS: string }).OS = 'ios';
       const onDictationOff = jest.fn();

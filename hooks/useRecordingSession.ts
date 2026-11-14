@@ -94,6 +94,8 @@ export interface UseRecordingSessionOptions {
   onNativeEnd?: () => void;
   /** Shows how to turn iOS Dictation back on; an alert is used when absent. */
   onDictationOff?: () => void;
+  /** Called when the recognizer reports it is listening. */
+  onListeningStart?: () => void;
 }
 
 export function useRecordingSession({
@@ -103,6 +105,7 @@ export function useRecordingSession({
   onLanguagePackMissing,
   onNativeEnd,
   onDictationOff,
+  onListeningStart,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
   // Held from a start's first audio mode change to its stop's last, with or without a
@@ -348,7 +351,10 @@ export function useRecordingSession({
 
         const nativeSession = await startNativeSpeechSession(transcriptionLocale, {
           signal: controller.signal,
-          onListeningChange: setIsSpeechListening,
+          onListeningChange: (listening) => {
+            setIsSpeechListening(listening);
+            if (listening) onListeningStart?.();
+          },
           permissionAlreadyGranted: Platform.OS !== 'web',
           onEnd: onNativeEnd,
           onPartial: (text) => {
@@ -414,7 +420,7 @@ export function useRecordingSession({
         pendingStartRef.current = null;
       }
     },
-    [t, transcriptionLocale, onNativeEnd, onPartialTranscript]
+    [t, transcriptionLocale, onNativeEnd, onPartialTranscript, onListeningStart]
   );
 
   const toggleRecording = useCallback(
