@@ -3,7 +3,7 @@
 // browser's own. Only then is the account deleted on the server and the device signed out.
 // The mock app has no server: the journey answers its request the way the API does.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog, leaveOnboarding, signInFromToday } from '../web-parity-fixtures';
 const test = createParityTest({ tags: ['zone-connexion'] });
 
 const QUESTION = 'Delete your account?\n\nThis action is irreversible. Your dreams and your data will be permanently deleted.';
@@ -13,18 +13,9 @@ const FAILED = 'We couldn’t delete your account right now. Try again, or write
 
 async function openSettingsSignedIn(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId('btn.mockProfile.existing').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromToday(page, 'existing');
   await page.getByTestId('tab.settings').filter({ visible: true }).click();
   await expect(page.getByTestId('screen.settings').filter({ visible: true })).toHaveCount(1);
 }

@@ -23,6 +23,29 @@ export type ParityInfo = {
 type Fixtures = { page: Page; context: BrowserContext };
 const ownedBrowsers = new WeakMap<Page, Browser>();
 
+/**
+ * From the opened onboarding to the screen after it: past the introduction and, with
+ * feature sheets, out of the three stories "Commencer" tells first (the cross moves on).
+ */
+export async function leaveOnboarding(page: Page) {
+  await page.getByTestId('btn.onboarding.intro.next').click();
+  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
+    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
+  }
+  await page.getByTestId('btn.onboarding.skip').click();
+}
+
+export type MockProfile = 'new' | 'existing' | 'plus';
+
+/** From Today, a guest signs in with one of the mock profiles and lands back on Capture. */
+export async function signInFromToday(page: Page, profile: MockProfile) {
+  await page.getByTestId('btn.header.home.settings').click();
+  await page.getByTestId('quick-settings.all').click();
+  await page.getByTestId('settings-account-open-signin').click();
+  await page.getByTestId(`btn.mockProfile.${profile}`).click();
+  await expect(page.getByTestId('screen.recording')).toBeVisible();
+}
+
 /** Route a historical page's dialog through its SDK-owned attempt. */
 export async function withDialog(page: Page, handler: DialogHandler, action: () => Promise<unknown>) {
   const browser = ownedBrowsers.get(page);

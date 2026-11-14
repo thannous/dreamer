@@ -1,7 +1,7 @@
 // In a browser the app's alerts are the browser's own dialogs: a choice is a confirmation whose
 // OK takes the action and whose Cancel keeps things as they are. Before, they did nothing.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog, leaveOnboarding } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const LIMIT = 'Guest recording limit reached\n\nYou have saved 5 dreams without an account. Your draft stays on this device. Create a free account to add this dream.';
@@ -9,12 +9,7 @@ const RESTART = 'Start the story again?\n\nThe story and current answers will be
 
 async function startAsGuest(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
 

@@ -1,7 +1,7 @@
 // Paths from a free account to the Plus offer: the remaining-analyses row, the chat limit,
 // a saved dream waiting for its reading, Trends and the weekly recap.
 import type { Page } from 'playwright/test';
-import { answerSeal, createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { answerSeal, createParityTest, expect, leaveOnboarding, signInFromToday } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const nudge = 'btn.quota.freeAnalysesNudge';
@@ -11,18 +11,9 @@ const dreamRow = (page: Page) => page.getByTestId('screen.dreamDetail').getByTes
 
 async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await home(page);
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId(`btn.mockProfile.${profile}`).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromToday(page, profile);
 }
 
 async function home(page: Page) {
@@ -81,11 +72,7 @@ test('a free account that used its analyses learns when they come back and opens
 
 test('the analyses row stays away from guests', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await home(page);
   await expect(homeRow(page)).toHaveCount(0);
 });

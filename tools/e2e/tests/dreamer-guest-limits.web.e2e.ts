@@ -2,17 +2,12 @@
 // account adds none of its own; a guest at the chat limit is asked for an account first, while a
 // free account at the same limit goes straight to Plus.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, leaveOnboarding, signInFromToday } from '../web-parity-fixtures';
 const test = createParityTest();
 
 async function startGuest(page: Page) {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
 
@@ -111,11 +106,7 @@ test('a guest at the chat limit is sent to create an account, not to Plus', asyn
 test('a free account at the chat limit still goes to Plus, not to an account form', async ({ page }) => {
   await startGuest(page);
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId('btn.mockProfile.existing').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromToday(page, 'existing');
   await page.getByTestId('tab.journal').filter({ visible: true }).click();
   await page.getByRole('textbox', { name: 'Search dreams…' }).fill('The Infinite Library');
   await page.getByTestId(/^dream\.item\./).filter({ hasText: 'The Infinite Library', visible: true }).click();

@@ -4,7 +4,7 @@
 // but not yet deepened, else the newest not yet read, through Plus once the free analyses
 // are used. An empty week asks for a dream. Its back button returns to Today.
 import type { Page } from 'playwright/test';
-import { answerSeal, createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { answerSeal, createParityTest, expect, leaveOnboarding } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -17,12 +17,7 @@ const NEXT_MORNING = new Date('2026-09-17T09:00:00+02:00');
 async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus', journalAt?: Date) {
   if (journalAt) await page.clock.setSystemTime(new Date(journalAt.getTime() - 60_000));
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await home(page);
   await page.getByTestId('btn.header.home.settings').click();
   await page.getByTestId('quick-settings.all').click();
