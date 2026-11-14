@@ -3,6 +3,39 @@
 What each TesterArmy SDK version changed for this harness, newest first. The versions
 the harness runs today, and how to adopt a new one, are in the [README](README.md).
 
+## 0.23.1
+
+Adopted together with web 0.16.0, mobile 0.12.7, decision 0.3.3, agent-device 0.21.37
+and the matcher Playwright 1.65.0 (released 2026-11-13). These five move as one:
+decision 0.3.3 and web 0.16.0 ask for e2e 0.23.1, and an older runner refuses a
+filter's `relevance` key and drops the whole filter.
+
+- A test filter may score the tests it keeps (`relevance`, 0 to 1). With
+  `--changed-since`, each target starts its likeliest files first, in bands at 75,
+  50 and 25 %. `parcoursTouches` now scores a journey whose own file changed 1, a
+  journey of a touched zone 0.75, and a parcours the model brings back with the
+  model's score (0.5 when it gives none). With the PR gate's `--max-failures 3`
+  a broken journey shows and stops the gate sooner. Scores never leave a test out.
+- `decisionFilter()` returns those scores; `decision-verdict.mjs` keeps them with
+  the cached verdict so `e2e list` and `e2e run` order the same way.
+- `e2e run` keeps `<output>/timings.json` and `--timings <file>` moves it. Our
+  runner still seeds the previous `report.json` (duration-history.mjs), which e2e
+  keeps as its fallback; moving to `--timings` is a later simplification.
+- An app command that exits after readiness, even with code 0, now fails the run.
+  Every managed command here stays in the foreground.
+- Web 0.16.0: `headers` and `basicAuth` reach the app's own origin only
+  (`credentialOrigins` lists others). `webEngine` passes `headers: {}` only to
+  block service workers, so nothing changes. The `browser` fixture gains tabs
+  (`tabs()`, `newTab()`, `waitForPopup()`); actions wait for an element to leave an
+  `inert` subtree.
+- Mobile 0.12.7: a test's own swipe and scroll skip agent-device's post-gesture
+  wait (up to 3.5 s each, ignored by 0.21.36); the first tap within 2 s re-reads the
+  control until two reads agree. A node under the soft keyboard counts as hidden
+  and a tap the keyboard covers fails `ACTION_FAILED` naming the cover. Each
+  device's prepare logs its boot and runner times. A native campaign qualifies it.
+- PNG decoding moves to `@napi-rs/image` (screenshots 4 to 12 times faster, about
+  20 MB more install).
+
 ## 0.23.0
 
 - `test.fail` (or `{ fail: 'reason' }`) marks a test expected to fail: its failure

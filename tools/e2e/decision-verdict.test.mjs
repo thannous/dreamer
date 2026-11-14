@@ -79,9 +79,12 @@ test('the real decision filter leaves out the journey the change cannot reach, a
     assert.match(first.exclude['tests/billing.web.e2e.ts::billing opens the paywall'], /5% likely affected/);
     assert.equal(loads, 1);
     assert.equal(calls.length, 1);
+    // decision 0.3.3 scores the journey it keeps with the model's answer; the score is kept with the verdict.
+    assert.equal(first.relevance['tests/today.web.e2e.ts::today shows the moon'], 0.9);
     // `e2e run` after `e2e list`: same commit, change and tests, so the same answer and no call.
     const second = await decisionVerdict(tests, context(root, base), { load });
     assert.deepEqual(second.exclude, first.exclude);
+    assert.deepEqual(second.relevance, first.relevance);
     assert.match(second.note, /^verdict repris/);
     assert.equal(loads, 1);
     // Another test set is another question.

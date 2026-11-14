@@ -18,4 +18,4 @@ export function decisionVerdict(
     git?: (file: string, args: readonly string[], options: { cwd: string; encoding: 'utf8' }) => string;
     now?: () => number;
   },
-): Promise<{ exclude: Record<string, string>; note?: string }>;
+): Promise<{ exclude: Record<string, string>; relevance?: Record<string, number>; note?: string }>;

@@ -9,8 +9,8 @@ import { sameServedOrigin } from './web-ports.mjs';
 // The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
 // The model stack is pinned with it: agent steps load `ai` (e2e/dist/agent/ai-sdk.js), the
 // ChatGPT route wraps @ai-sdk/openai, and the gate's decision filter is @e2e-dev/decision.
-export const SDK_PINS = { e2e: '0.23.0', '@e2e-dev/web': '0.15.5', '@e2e-dev/mobile': '0.12.6', 'agent-device': '0.21.36',
-  ai: '7.0.170', '@ai-sdk/openai': '4.0.115', '@e2e-dev/decision': '0.3.2' };
+export const SDK_PINS = { e2e: '0.23.1', '@e2e-dev/web': '0.16.0', '@e2e-dev/mobile': '0.12.7', 'agent-device': '0.21.37',
+  ai: '7.0.170', '@ai-sdk/openai': '4.0.115', '@e2e-dev/decision': '0.3.3' };
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 // Preserve the former UTF-8 stdout.trim() identity without buffering a whole diff.
 // A hash copy marks the last content byte; later whitespace stays provisional.
