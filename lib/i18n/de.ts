@@ -806,6 +806,8 @@ const translations: Record<string, string> = {
     'recording.alert.insecure_context': 'Das Mikrofon ist blockiert, weil diese Seite nicht über HTTPS (oder localhost) bereitgestellt wird. Öffne die Seite über HTTPS oder localhost, um die Diktierfunktion zu aktivieren.',
     'recording.alert.stt_unavailable.title': 'Spracherkennung nicht verfügbar',
     'recording.alert.stt_unavailable.message': 'Die Spracherkennung ist hier nicht verfügbar. Bitte tippe deinen Traum ein.',
+    'recording.alert.dictation_off.title': 'Die Diktierfunktion des iPhone ist aus',
+    'recording.alert.dictation_off.message': 'Um deinen Traum zu diktieren, aktiviere die Diktierfunktion unter Einstellungen > Allgemein > Tastatur und komm dann hierher zurück. Du kannst deinen Traum auch eintippen.',
     'recording.alert.start_failed': 'Aufnahme konnte nicht gestartet werden. Bitte versuche es erneut.',
     'recording.alert.language_pack_missing.title': 'Sprachpaket fehlt',
     'recording.alert.language_pack_missing.message': 'Die Sprache {locale} ist auf diesem Gerät nicht installiert. Lade das Offline-Sprachpaket in den Google-Einstellungen herunter (Google App → Einstellungen → Sprache → Offline-Spracherkennung) oder wechsle zu einer installierten Sprache: {installed}.',

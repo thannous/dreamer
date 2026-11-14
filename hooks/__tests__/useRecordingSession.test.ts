@@ -494,6 +494,75 @@ describe('useRecordingSession', () => {
       }
     );
 
+    it('tells the user to turn on iOS Dictation when the system refuses the speech service', async () => {
+      (Platform as { OS: string }).OS = 'ios';
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({
+          transcript: '',
+          error: 'Assets are not installed, Siri or Dictation is disabled.',
+          errorCode: 'service-not-allowed',
+        }),
+        abort: jest.fn(),
+      });
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+      await act(async () => { await result.current.startRecording(''); });
+      let response: RecordingSessionResult | undefined;
+      await act(async () => { response = await result.current.stopRecording(); });
+
+      expect(response).toEqual({ transcript: '', error: 'dictation_off' });
+      expect(Alert.alert).toHaveBeenCalledWith(
+        'recording.alert.dictation_off.title',
+        'recording.alert.dictation_off.message'
+      );
+    });
+
+    it('offers Settings when iOS refuses speech recognition after the session started', async () => {
+      (Platform as { OS: string }).OS = 'ios';
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: '', errorCode: 'not-allowed' }),
+        abort: jest.fn(),
+      });
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+      await act(async () => { await result.current.startRecording(''); });
+      let response: RecordingSessionResult | undefined;
+      await act(async () => { response = await result.current.stopRecording(); });
+
+      expect(response).toEqual({ transcript: '', error: 'permission_denied' });
+      const buttons = jest.mocked(Alert.alert).mock.calls[0]?.[2];
+      expect(jest.mocked(Alert.alert).mock.calls[0]?.[1]).toBe('recording.alert.speech_permission_required.message');
+      buttons?.[1]?.onPress?.();
+      expect(Linking.openSettings).toHaveBeenCalled();
+    });
+
+    it('keeps the words and stays quiet when iOS reports a service error after real speech', async () => {
+      (Platform as { OS: string }).OS = 'ios';
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: 'Un jardin', errorCode: 'service-not-allowed' }),
+        abort: jest.fn(),
+      });
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+      await act(async () => { await result.current.startRecording(''); });
+      let response: RecordingSessionResult | undefined;
+      await act(async () => { response = await result.current.stopRecording(); });
+
+      expect(response).toEqual({ transcript: 'Un jardin', error: undefined });
+      expect(Alert.alert).not.toHaveBeenCalled();
+    });
+
+    it('leaves the Android service error to the existing no-speech path', async () => {
+      (Platform as { OS: string }).OS = 'android';
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: '', errorCode: 'service-not-allowed' }),
+        abort: jest.fn(),
+      });
+      const { result } = renderHook(() => useRecordingSession(defaultOptions));
+      await act(async () => { await result.current.startRecording(''); });
+      let response: RecordingSessionResult | undefined;
+      await act(async () => { response = await result.current.stopRecording(); });
+
+      expect(response).toEqual({ transcript: '', error: 'no_speech' });
+    });
+
     it('should return no_speech when native error is "no speech"', async () => {
       jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
         stop: jest.fn().mockResolvedValue({ transcript: '', error: 'no speech detected' }),

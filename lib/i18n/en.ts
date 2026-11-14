@@ -806,6 +806,8 @@ const translations: Record<string, string> = {
     'recording.alert.insecure_context': 'The microphone is blocked because this page is not served over HTTPS (or localhost). Open the page over HTTPS or via localhost to enable dictation.',
     'recording.alert.stt_unavailable.title': 'Voice transcription unavailable',
     'recording.alert.stt_unavailable.message': 'Speech recognition is unavailable here. Please type your dream instead.',
+    'recording.alert.dictation_off.title': 'iPhone Dictation is turned off',
+    'recording.alert.dictation_off.message': 'To speak your dream, turn on Dictation in Settings > General > Keyboard, then come back here. You can also type your dream.',
     'recording.alert.start_failed': 'Failed to start recording. Please try again.',
     'recording.alert.language_pack_missing.title': 'Language pack missing',
     'recording.alert.language_pack_missing.message': '{locale} speech is not installed on this device. Download the offline speech pack in Google settings (Google app → Settings → Voice → Offline speech recognition) or switch to an installed language: {installed}.',

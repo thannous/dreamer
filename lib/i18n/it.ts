@@ -806,6 +806,8 @@ const translations: Record<string, string> = {
     'recording.alert.insecure_context': 'Il microfono è bloccato perché la pagina non è servita tramite HTTPS (o localhost). Apri la pagina tramite HTTPS o localhost per abilitare la dettatura.',
     'recording.alert.stt_unavailable.title': 'Trascrizione vocale non disponibile',
     'recording.alert.stt_unavailable.message': 'Il riconoscimento vocale non è disponibile qui. Scrivi il tuo sogno.',
+    'recording.alert.dictation_off.title': 'La dettatura dell’iPhone è disattivata',
+    'recording.alert.dictation_off.message': 'Per dettare il tuo sogno, attiva la Dettatura in Impostazioni > Generali > Tastiera, poi torna qui. Puoi anche scrivere il tuo sogno.',
     'recording.alert.start_failed': 'Impossibile avviare la registrazione. Riprova.',
     'recording.alert.language_pack_missing.title': 'Pacchetto lingua mancante',
     'recording.alert.language_pack_missing.message': 'Il riconoscimento vocale {locale} non è installato su questo dispositivo. Scarica il pacchetto vocale offline nelle impostazioni di Google (app Google \u2192 Impostazioni \u2192 Voce \u2192 Riconoscimento vocale offline) oppure passa a una lingua installata: {installed}.',

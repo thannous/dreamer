@@ -36,6 +36,19 @@ async function getOrRequestRecordingPermission(): Promise<RecordingPermissionRes
   return { granted: requested.granted, prompted: true };
 }
 
+function showSpeechPermissionAlert(t: UseRecordingSessionOptions['t']): void {
+  Alert.alert(
+    t('recording.alert.permission_required.title'),
+    t('recording.alert.speech_permission_required.message'),
+    [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('recording.alert.open_settings'), onPress: () => {
+        void Linking.openSettings().catch((error) => log.warn('Failed to open settings', error));
+      } },
+    ],
+  );
+}
+
 export type RecordingPermissionState = 'unknown' | 'granted' | 'denied';
 
 export interface RecordingSessionResult {
@@ -177,6 +190,21 @@ export function useRecordingSession({
           nativeResult.errorCode === 'too-many-requests' ||
           normalizedNativeError?.includes('too many requests') ||
           false;
+
+        // iOS ends the session at once when Dictation is turned off in Settings
+        // (kLSRErrorDomain 201 -> service-not-allowed) or speech recognition was
+        // revoked (not-allowed). Without words the user would otherwise see nothing.
+        if (!transcriptText && Platform.OS === 'ios' && nativeResult.errorCode === 'service-not-allowed') {
+          Alert.alert(
+            t('recording.alert.dictation_off.title'),
+            t('recording.alert.dictation_off.message')
+          );
+          return { transcript: '', error: 'dictation_off' };
+        }
+        if (!transcriptText && Platform.OS === 'ios' && nativeResult.errorCode === 'not-allowed') {
+          showSpeechPermissionAlert(t);
+          return { transcript: '', error: 'permission_denied' };
+        }
 
         if (!transcriptText && isLanguagePackMissing) {
           const availability = await getSpeechLocaleAvailability(transcriptionLocale);
@@ -347,16 +375,7 @@ export function useRecordingSession({
         }
         if (controller.signal.aborted) return { success: false, error: 'cancelled' };
         if (err instanceof Error && err.message === 'speech_permission_denied') {
-          Alert.alert(
-            t('recording.alert.permission_required.title'),
-            t('recording.alert.speech_permission_required.message'),
-            [
-              { text: t('common.cancel'), style: 'cancel' },
-              { text: t('recording.alert.open_settings'), onPress: () => {
-                void Linking.openSettings().catch((error) => log.warn('Failed to open settings', error));
-              } },
-            ],
-          );
+          showSpeechPermissionAlert(t);
           return { success: false, error: 'permission_denied' };
         }
         log.error('Failed to start recording', err);

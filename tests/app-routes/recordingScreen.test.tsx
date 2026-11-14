@@ -1174,6 +1174,32 @@ describe('Recording screen', () => {
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Brouillon précédent.');
   });
 
+  it.each(['voice', 'text'] as const)(
+    'tells why iOS speech stopped when Dictation is off (%s mode), instead of staying silent',
+    async (mode) => {
+      mockPlatformOS = 'ios';
+      mockRecordingPermissionState = 'granted';
+      mockGetInputModePreference.mockResolvedValue(mode);
+      render(<RecordingScreen />);
+      await awaitEditorReady();
+      fireEvent.click(screen.getByTestId('recording-voice-control'));
+      await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+      mockStopRecording.mockImplementationOnce(async () => {
+        mockIsRecordingRef.current = false;
+        return { transcript: '', error: 'dictation_off' };
+      });
+
+      await act(async () => {
+        mockOnNativeEnd?.();
+      });
+
+      await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
+        .toContain('recording.status.fallback.stt_unavailable'));
+      expect(mockStartRecording).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('recording-voice-control').textContent).not.toContain('recording.mic.resume');
+    }
+  );
+
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {
     mockPlatformOS = 'android';
     mockRecordingPermissionState = 'granted';

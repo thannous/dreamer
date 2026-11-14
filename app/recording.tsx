@@ -867,6 +867,13 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       }
 
       recordingStartedAtRef.current = null;
+      // The session already told the user why speech stopped (iOS Dictation off or speech
+      // recognition refused). It ends listening even when the stop came from the system.
+      if (result.error === 'dictation_off' || result.error === 'permission_denied') {
+        setDictationIntentState('idle');
+        handleVoiceCaptureFailure(result.error === 'dictation_off' ? 'stt_unavailable' : 'permission_denied');
+        return;
+      }
       if (silent || reason === 'pause' || reason === 'background') {
         return;
       }
@@ -1063,6 +1070,11 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       if (dictationIntentRef.current !== 'listening') {
         return;
       }
+      if (result.error === 'dictation_off' || result.error === 'permission_denied') {
+        setDictationIntentState('idle');
+        handleVoiceCaptureFailure(result.error === 'dictation_off' ? 'stt_unavailable' : 'permission_denied');
+        return;
+      }
       if (applied) {
         consecutiveEmptyHandsFreeRestartsRef.current = 0;
       } else {
@@ -1107,6 +1119,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   }, [
     inputMode,
     applyStoppedTranscript,
+    handleVoiceCaptureFailure,
     setDictationIntentState,
     speechPlatform,
     startRecording,
