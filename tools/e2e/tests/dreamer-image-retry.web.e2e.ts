@@ -10,6 +10,11 @@ const test = journeyTest({ tags: ['zone-journal'] });
 // The mock's one dream analysed without a picture (mock-data/predefinedDreams.ts).
 const DREAM = 'Garden in the Clouds';
 
+// The button that opens the picture is there before the picture is: wait for decoded pixels
+// from the network, not the blurred placeholder.
+const PAINTED = `Array.from(document.querySelectorAll('[data-testid="btn.dreamDetail.savedMoment.open"] img, [data-testid="btn.journal.illustration.expand"] img'))
+  .some(img => img.complete && img.naturalWidth > 0 && /^https?:/.test(img.currentSrc))`;
+
 test('a failed illustration offers a retry that paints the dream', async ({ app, screen, browser }) => {
   // The mock paints with a remote placeholder, which isolation blocks: serve one of the app's own.
   await browser.route('https://picsum.photos/**', route => route.fulfill({ path: MOCK_PAINTING, contentType: 'image/webp' }));
@@ -27,6 +32,7 @@ test('a failed illustration offers a retry that paints the dream', async ({ app,
   const picture = screen.getByTestId('btn.dreamDetail.savedMoment.open').or(screen.getByTestId('btn.journal.illustration.expand'));
   await expect(picture).toHaveCount(1);
   await expect(picture).toHaveAccessibleName('View illustration full screen');
+  await expect.poll(() => browser.evaluate<boolean>(PAINTED)).toBe(true);
   await expect(retry).toHaveCount(0);
   await expect(screen.getByText('The illustration couldn’t be created')).toHaveCount(0);
   await app.screenshot('image-retry-painted');
@@ -36,5 +42,6 @@ test('a failed illustration offers a retry that paints the dream', async ({ app,
   await expect(screen.getByTestId('component.transcriptCard')).toContainText('I was walking through a beautiful garden');
   await expect(retry).toHaveCount(0);
   await expect(picture).toHaveCount(1);
+  await expect.poll(() => browser.evaluate<boolean>(PAINTED)).toBe(true);
   await app.screenshot('image-retry-revisit');
 });
