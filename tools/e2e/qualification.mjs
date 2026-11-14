@@ -303,7 +303,6 @@ export function campaignFailureRecord(output, error) {
 }
 
 // What a red run's terminal keeps, since verify:pr deletes its copy and sdk.log with it.
-// Only this run's report counts: seedDurations put the previous run's there first.
 // A message, title, candidate or app log can quote the user's text, so a line holds
 // a code, a test file:line or a path, and never the evidence line callers search for.
 const DIGEST_CODE = /^[A-Z][A-Z0-9_]*$/;

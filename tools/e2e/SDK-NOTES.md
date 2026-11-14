@@ -18,9 +18,11 @@ filter's `relevance` key and drops the whole filter.
   a broken journey shows and stops the gate sooner. Scores never leave a test out.
 - `decisionFilter()` returns those scores; `decision-verdict.mjs` keeps them with
   the cached verdict so `e2e list` and `e2e run` order the same way.
-- `e2e run` keeps `<output>/timings.json` and `--timings <file>` moves it. Our
-  runner still seeds the previous `report.json` (duration-history.mjs), which e2e
-  keeps as its fallback; moving to `--timings` is a later simplification.
+- `e2e run` keeps `<output>/timings.json`, smoothed over recent runs.
+  `duration-history.mjs` now seeds that file into each new output directory and
+  keeps it after a full run, instead of planting the previous `report.json` there
+  (and deleting it when the run wrote none). The first run after this change has
+  no timings history yet and starts in collection order.
 - An app command that exits after readiness, even with code 0, now fails the run.
   Every managed command here stays in the foreground.
 - Web 0.16.0: `headers` and `basicAuth` reach the app's own origin only

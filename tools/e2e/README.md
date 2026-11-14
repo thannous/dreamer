@@ -57,13 +57,14 @@ A native target drives one device, so Dreamer's `dreamer.*mobile.e2e.ts` files a
 split by the Release profile their journeys need, for reading rather than for speed.
 With `CI` set the runner keeps one worker; no hosted CI launches these campaigns,
 and `--shard` stays a local selection that `collect` unions. Native runs keep one
-worker per named device. e2e starts the slowest files first when the
-previous report sits in the same output directory. Each run gets a new one, so
-the runner keeps the report of the last run with no `--grep`, `--tag`, `--shard`
-or run budget in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
-seeds it into the next output directory; a seed the run does not replace is
-deleted. A blocked run, or one where no test passed, leaves the kept report as
-it was. Without that file, files start in collection order.
+worker per named device. e2e starts the slowest files first from
+`<output>/timings.json`, a history it smooths over recent runs. Each run gets a new
+output directory, so the runner keeps that file, and the report of the last run with
+no `--grep`, `--tag`, `--shard` or run budget, in
+`$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and seeds the timings
+into the next output directory (the kept report is what `timings.mjs` reads; it is
+never seeded back). A blocked run, or one where no test passed, leaves both as
+they were. Without that file, files start in collection order.
 
 ## SDK version notes
 

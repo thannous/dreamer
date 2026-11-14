@@ -1,20 +1,25 @@
-// e2e starts the slowest files first from the previous report in the output
-// directory, and each run gets a new one. run.mjs keeps the last report of a
-// run with no selection in the clone's git directory and seeds it into the
-// next output directory. These helpers only move that file: the history
-// orders files, it never decides whether a run passes.
-import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
+// e2e (0.23.1) starts the slowest files first from `<output>/timings.json`, a
+// small history it smooths over recent runs, and each run here gets a new
+// output directory. run.mjs keeps that file, and the report of the last run
+// with no selection, in the clone's git directory, and seeds the timings into
+// the next output directory. These helpers only move those files: the history
+// orders files, it never decides whether a run passes. The kept report is what
+// timings.mjs reads; nothing seeds it back, so an output directory only ever
+// holds its own run's report.
+import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
+/** The timings history kept beside a campaign's kept report (`<campaign>.report.json`). */
+export const timingsHistory = history => history.replace(/\.report\.json$/, '.timings.json');
+
 // Without a history, or with an unreadable one, files start in collection
-// order and nothing else changes.
+// order and nothing else changes. e2e ignores an invalid timings file.
 export function seedDurations(history, output) {
-  if (!history || !existsSync(history)) return null;
+  if (!history) return false;
   try {
-    const seed = readFileSync(history);
-    writeFileSync(join(output, 'report.json'), seed, { flag: 'wx' });
-    return seed;
-  } catch { return null; }
+    copyFileSync(timingsHistory(history), join(output, 'timings.json'), 1 /* COPYFILE_EXCL */);
+    return true;
+  } catch { return false; }
 }
 
 // Only a run that reached the app measured its files: a blocked one (the app
@@ -26,17 +31,22 @@ export function measuredDurations(report) {
   } catch { return false; }
 }
 
-// A seed the run did not replace is removed: its provenance predates this run,
-// so it could never qualify, and no later reader mistakes it for this run's report.
-export function keepDurations(history, seed, selected, output, suffix = process.pid) {
+function replace(file, bytes, suffix) {
+  writeFileSync(`${file}.${suffix}`, bytes);
+  renameSync(`${file}.${suffix}`, file);
+}
+
+// A selected or budgeted run times only part of its files, so neither its
+// report nor the timings e2e folded it into replace the history of a full run.
+export function keepDurations(history, selected, output, suffix = process.pid) {
   const report = join(output, 'report.json');
-  if (!existsSync(report)) return;
+  if (!history || selected || !existsSync(report)) return;
   const written = readFileSync(report);
-  if (seed && written.equals(seed)) { unlinkSync(report); return; }
-  if (!history || selected || !measuredDurations(written)) return;
+  if (!measuredDurations(written)) return;
   try {
     mkdirSync(dirname(history), { recursive: true });
-    writeFileSync(`${history}.${suffix}`, written);
-    renameSync(`${history}.${suffix}`, history);
+    replace(history, written, suffix);
+    const timings = join(output, 'timings.json');
+    if (existsSync(timings)) replace(timingsHistory(history), readFileSync(timings), suffix);
   } catch {}
 }
