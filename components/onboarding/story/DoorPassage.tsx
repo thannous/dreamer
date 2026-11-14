@@ -1,5 +1,5 @@
 import * as Haptics from 'expo-haptics';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useEffectEvent, useRef } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   Easing, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withTiming,
@@ -108,7 +108,8 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
     onDone();
   };
 
-  useEffect(() => {
+  // One passage per mount: the callbacks of the first render are the ones that count.
+  const startPassage = useEffectEvent(() => {
     const beat = reduced ? REDUCED : BEAT;
     if (!reduced) {
       arrive.set(withDelay(BEAT.arrive, withTiming(1, { duration: BEAT.arriveFor, easing: EASING.out })));
@@ -130,9 +131,8 @@ export function DoorPassage({ onCovered, onDone }: { onCovered: () => void; onDo
       ]),
     ];
     return () => timers.current.forEach(clearTimeout);
-    // One passage per mount: the callbacks of the first render are the ones that count.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  });
+  useEffect(() => startPassage(), []);
 
   // A touch is a hurry: the light lifts at once on the next step.
   const skip = () => {

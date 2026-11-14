@@ -8,11 +8,13 @@ const LABELS = [
   ['Pergunta:', 'Resposta:'], ['Domanda:', 'Risposta:'], ['Frage:', 'Antwort:'],
 ] as const;
 const escapeRegex = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// Built once: the capture screen parses the draft on every keystroke.
+const QUESTION_PATTERNS = LABELS.map(([question, answer]) =>
+  new RegExp(`(?:\\r?\\n){2}${escapeRegex(question)}[ \\t]*([^\\r\\n]+)\\r?\\n${escapeRegex(answer)}[ \\t]*`, 'g'));
 
 export function parseCaptureEditableDraft(source: string): CaptureEditableDraft {
   const boundaries: { start: number; prefix: string; question: string }[] = [];
-  for (const [question, answer] of LABELS) {
-    const pattern = new RegExp(`(?:\\r?\\n){2}${escapeRegex(question)}[ \\t]*([^\\r\\n]+)\\r?\\n${escapeRegex(answer)}[ \\t]*`, 'g');
+  for (const pattern of QUESTION_PATTERNS) {
     for (const match of source.matchAll(pattern)) {
       boundaries.push({ start: match.index!, prefix: match[0], question: match[1].trim() });
     }

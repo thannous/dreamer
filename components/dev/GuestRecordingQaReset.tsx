@@ -5,6 +5,7 @@ import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { attempt } from '@/lib/attempt';
 import { resetGuestDreamRecordingAllowanceForDev } from '@/services/quota/GuestDreamCounter';
 
 export function GuestRecordingQaReset() {
@@ -19,15 +20,14 @@ export function GuestRecordingQaReset() {
     if (!enabled || user || working) return;
     setWorking(true);
     setMessage(null);
-    try {
+    await attempt(async () => {
       const savedDreamCount = await resetGuestDreamRecordingAllowanceForDev();
       const remaining = Math.max(0, GUEST_DREAM_RECORDING_LIMIT - savedDreamCount);
       setMessage(`${remaining} rêve${remaining > 1 ? 's' : ''} encore enregistrable${remaining > 1 ? 's' : ''} sans compte.`);
-    } catch {
-      setMessage('Remise à zéro impossible : vérifie que le journal local est lisible.');
-    } finally {
-      setWorking(false);
-    }
+    }, {
+      catch: () => { setMessage('Remise à zéro impossible : vérifie que le journal local est lisible.'); },
+      finally: () => { setWorking(false); },
+    });
   }, [enabled, user, working]);
 
   if (!enabled || user) return null;

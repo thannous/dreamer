@@ -7,6 +7,7 @@ import {
   subscribeAiConsent,
   withdrawAiConsent,
 } from '@/lib/aiConsent';
+import { attempt } from '@/lib/attempt';
 
 /**
  * The AI permission as a setting. Turning it on shows the same disclosure as any AI action;
@@ -37,19 +38,20 @@ export function useAiConsentController() {
     if (saving) return;
     setSaving(true);
     setError(false);
-    try {
+    await attempt(async () => {
       if (nextEnabled) {
         setEnabled(await requestAiConsent(t));
       } else {
         setEnabled(false);
         await withdrawAiConsent();
       }
-    } catch {
-      // Withdrawal already holds for this session even if the device could not store it.
-      setError(true);
-    } finally {
-      setSaving(false);
-    }
+    }, {
+      catch: () => {
+        // Withdrawal already holds for this session even if the device could not store it.
+        setError(true);
+      },
+      finally: () => { setSaving(false); },
+    });
   }, [saving, t]);
 
   return {

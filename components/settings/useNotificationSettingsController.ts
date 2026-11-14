@@ -8,6 +8,7 @@ import {
   resolveInactivityPlan,
   resolveStreakRiskPlan,
 } from '@/lib/engagementReminders';
+import { attempt } from '@/lib/attempt';
 import { getFormattingLocale } from '@/lib/locale';
 import type { NotificationSettings } from '@/lib/types';
 import {
@@ -126,7 +127,7 @@ export function useNotificationSettingsController(): NotificationSettingsControl
   useEffect(() => {
     let active = true;
     const loadSettings = async () => {
-      try {
+      await attempt(async () => {
         const savedSettings = await getNotificationSettings();
         if (active) {
           setSettings(savedSettings);
@@ -134,15 +135,18 @@ export function useNotificationSettingsController(): NotificationSettingsControl
             await refreshPermissions();
           }
         }
-      } catch (error) {
-        if (__DEV__) {
-          console.error('Failed to load notification settings:', error);
-        }
-      } finally {
-        if (active) {
-          setIsLoading(false);
-        }
-      }
+      }, {
+        catch: (error) => {
+          if (__DEV__) {
+            console.error('Failed to load notification settings:', error);
+          }
+        },
+        finally: () => {
+          if (active) {
+            setIsLoading(false);
+          }
+        },
+      });
     };
 
     void loadSettings();
@@ -308,16 +312,18 @@ export function useNotificationSettingsController(): NotificationSettingsControl
     const newSettings = { ...settings, [key]: time };
     setSettings(newSettings);
 
-    try {
+    await attempt(async () => {
       await saveNotificationSettings(newSettings);
       if (!unsupported && (newSettings.weekdayEnabled || newSettings.weekendEnabled)) {
         await scheduleDailyNotification(newSettings);
       }
-    } catch (error) {
-      if (__DEV__) {
-        console.error('Failed to update notification time:', error);
-      }
-    }
+    }, {
+      catch: (error) => {
+        if (__DEV__) {
+          console.error('Failed to update notification time:', error);
+        }
+      },
+    });
   }, [settings, unsupported]);
 
   const setWeekdayTime = useCallback(

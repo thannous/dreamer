@@ -8,6 +8,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useQuota } from '@/hooks/useQuota';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
+import { attempt } from '@/lib/attempt';
 import { TID } from '@/lib/testIDs';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { router } from 'expo-router';
@@ -124,7 +125,6 @@ export const QuotaStatusCard: React.FC<Props> = ({
   const ctaLabel = tier === 'guest'
     ? t('settings.quota.cta_guest')
     : t('settings.quota.cta_upgrade');
-  const tierLabel = t(`settings.quota.tier.${tier}` as const);
   const isGuest = tier === 'guest';
   const firstQuotaReason = quotaStatus?.reasons?.[0];
   const localizedQuotaReason = firstQuotaReason
@@ -146,16 +146,19 @@ export const QuotaStatusCard: React.FC<Props> = ({
     if (managing) return;
     setManaging(true);
     setManageError(false);
-    try {
+    await attempt(async () => {
       await manageSubscription(user?.id ?? null);
       refetch();
-    } catch (error) {
-      log.warn('Subscription management unavailable', error);
-      setManageError(true);
-    } finally {
-      setManaging(false);
-    }
+    }, {
+      catch: (error) => {
+        log.warn('Subscription management unavailable', error);
+        setManageError(true);
+      },
+      finally: () => { setManaging(false); },
+    });
   }, [managing, refetch, user]);
+
+  const tierLabel = t(`settings.quota.tier.${tier}` as const);
 
   const handleUpgrade = () => {
     if (onUpgradePress) {

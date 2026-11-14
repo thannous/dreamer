@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FlatList, Pressable, Text, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
+import { whileHeld } from '@/lib/attempt';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { useRemoteJournalList } from '@/hooks/useRemoteJournalList';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -20,11 +21,11 @@ export function RemoteJournalList({ userId, searchQuery, onOpenDream, header, bo
   useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
   const open = async (item: DreamListItem) => {
     if (openingRef.current) return;
-    openingRef.current = true;
     setOpening(item.id); setFailed(null);
-    try { await onOpenDream(item); }
-    catch { if (active.current) setFailed(item.id); }
-    finally { openingRef.current = false; if (active.current) setOpening(null); }
+    await whileHeld(openingRef, () => onOpenDream(item), {
+      catch: () => { if (active.current) setFailed(item.id); },
+      finally: () => { if (active.current) setOpening(null); },
+    });
   };
   const query = searchQuery.trim().toLocaleLowerCase();
   const matches = items.filter(item => !query || `${item.title ?? ''} ${item.transcript}`.toLocaleLowerCase().includes(query));

@@ -1,5 +1,6 @@
 import type { LayoutChangeEvent, ViewInstance, ScrollViewInstance, TextInputInstance } from 'react-native';
 import { getSavedAnalysisAction } from '@/lib/savedAnalysisAccess';
+import { attempt, whileHeld } from '@/lib/attempt';
 import { AnalysisPreviewCard } from '@/components/journal/AnalysisPreviewCard';
 import { DreamAnalysisContent, DreamQuote } from '@/components/journal/DreamAnalysisContent';
 import { countStoryWords } from '@/lib/badges/ledger';
@@ -29,6 +30,7 @@ import {
 } from '@/components/journal/JournalPageTurner';
 import { JournalPaper } from '@/components/journal/JournalPaper';
 import { JournalRunningHead, RUNNING_HEAD_GAP, RUNNING_HEAD_HEIGHT } from '@/components/journal/JournalRunningHead';
+import { StaleAnalysisBanner } from '@/components/journal/StaleAnalysisBanner';
 import { SavedDreamMoment, type SavedDreamAction, type SavedDreamPhase, type SealMark } from '@/components/journal/SavedDreamMoment';
 import { CoverFlight } from '@/components/journal/story/CoverFlight';
 import { SEAL_EMBLEMS, SEAL_GOLD, SEAL_MEASURES, SEAL_NAME_LINES } from '@/components/journal/story/sealMarks';
@@ -109,19 +111,21 @@ import {
   shouldOfferSavedDreamAnalysis,
 } from '@/lib/journalSavedConfirmation';
 import { FreeAnalysesNudge, getFreeAnalysesNudge } from '@/components/quota/FreeAnalysesNudge';
-import { buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn, hasPendingPurchasedAnalysisReturn } from '@/lib/paywallRoute';
+import {
+  buildAnalysisPaywallHref, buildPaywallHref, consumePurchasedAnalysisReturn, hasPendingPurchasedAnalysisReturn,
+  PURCHASE_RETURN_TTL_MS,
+} from '@/lib/paywallRoute';
 import { sortWithSelectionFirst } from '@/lib/sorting';
 import { TID } from '@/lib/testIDs';
 import type { DreamAnalysis, DreamTheme, DreamType } from '@/lib/types';
 import { recordBadgeEvent } from '@/services/badgeLedgerStore';
 import { categorizeDream } from '@/services/geminiService';
 import { playSignature } from '@/services/signatureSounds';
-import { getStaleAnalysisBannerDismissed, saveStaleAnalysisBannerDismissed } from '@/services/storageService';
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import React, { memo, useCallback, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -209,6 +213,10 @@ const getCenteredCropRect = (width: number, height: number, targetAspect: number
   const originY = Math.max(0, Math.floor((height - cropHeight) / 2));
   return { originX: 0, originY, width, height: cropHeight };
 };
+
+// Loaded when a picture is first chosen. Outside the component: React Compiler does not
+// compile a function that holds an `import()`.
+const loadImagePicker = () => import('expo-image-picker');
 
 const cropDreamImageToAspect = async (
   asset: PickedImageAsset,
@@ -531,14 +539,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const compactTextScale = Math.min(1.3, Math.max(1, windowSize.fontScale));
   const titleTextScale = Math.min(1.4, Math.max(1, windowSize.fontScale));
   const metadataTextStyle = { fontSize: 14 * compactTextScale, lineHeight: 20 * compactTextScale };
-  const [coverViewport, setCoverViewport] = useState<{ width: number; height: number } | null>(null);
+  // Starts as the window: a page that fills it is not drawn again when its layout says the same.
+  const [coverViewport, setCoverViewport] = useState(() => ({ width: windowSize.width, height: windowSize.height }));
   const [readingActionVisible, setReadingActionVisible] = useState(false);
   const [failedCoverUri, setFailedCoverUri] = useState<string | null>(null);
   const [actionDockHeight, setActionDockHeight] = useState(100);
   const [previewHoldsOffer, setPreviewHoldsOffer] = useState(false);
   const [previewShowsReading, setPreviewShowsReading] = useState(false);
   const [coverIntroHeight, setCoverIntroHeight] = useState<number | null>(null);
-  const viewportHeight = coverViewport?.height ?? windowSize.height;
+  const viewportHeight = coverViewport.height;
   const navigationHeight = insets.top + 76;
   // A page with its illustration opens on it as a plate filling the screen; the dream's
   // name is set at its foot, at its own measured height (including enlarged native text).
@@ -648,9 +657,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const hasUncategorizedDraft = Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending'
     && !dream.theme && dream.title === deriveDraftTitle(dream.transcript, ''));
   const needsMetadataRecovery = hasUncategorizedDraft && !initialCategorizationPending;
-  const [editableTitle, setEditableTitle] = useState('');
-  const [editableTheme, setEditableTheme] = useState('');
-  const [editableDreamType, setEditableDreamType] = useState('');
+  // They start as the dream has them: the effect below then finds nothing to set on arrival,
+  // and the page is not rendered a second time for it.
+  const [editableTitle, setEditableTitle] = useState(dream?.title || '');
+  const [editableTheme, setEditableTheme] = useState<string>(dream?.theme || '');
+  const [editableDreamType, setEditableDreamType] = useState<string>(dream?.dreamType || '');
   // For the collection: the story as it stood when editing began.
   const editStartTranscriptRef = useRef<string | null>(null);
   const recoverMetadata = useCallback(async () => {
@@ -658,12 +669,11 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       || metadataRecoveryInFlightRef.current) return;
     // Metadata recovery sends the dream text to the AI provider.
     if (!(await requestAiConsent(t))) return;
-    metadataRecoveryInFlightRef.current = true;
     // Fields changed while the name is being found keep what was entered.
     const asked = { title: editableTitle, theme: editableTheme, dreamType: editableDreamType };
     setIsRecoveringMetadata(true);
     setMetadataRecoveryFailed(false);
-    try {
+    await whileHeld(metadataRecoveryInFlightRef, async () => {
       const result = await categorizeDream(dream.transcript, language);
       if (latestMetadataDreamRef.current !== dream) return;
       const named = await applyDreamCategorization(dream, result);
@@ -675,13 +685,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         setEditableTheme((current) => found('theme', current));
         setEditableDreamType((current) => found('dreamType', current));
       }
-    } catch (error) {
-      if (error instanceof AiConsentWithdrawnError) return;
-      if (latestMetadataDreamRef.current === dream) setMetadataRecoveryFailed(true);
-    } finally {
-      metadataRecoveryInFlightRef.current = false;
-      setIsRecoveringMetadata(false);
-    }
+    }, {
+      catch: (error) => {
+        if (error instanceof AiConsentWithdrawnError) return;
+        if (latestMetadataDreamRef.current === dream) setMetadataRecoveryFailed(true);
+      },
+      finally: () => {
+        setIsRecoveringMetadata(false);
+      },
+    });
   }, [applyDreamCategorization, dream, editableDreamType, editableTheme, editableTitle, language, needsMetadataRecovery, t]);
   const handleImageUpgrade = useCallback(() => {
     router.push(buildPaywallHref('image_generation'));
@@ -764,7 +776,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
     return items;
   }, [dreamMemory, t]);
-  const [editableTranscript, setEditableTranscript] = useState('');
+  const [editableTranscript, setEditableTranscript] = useState(dream?.transcript || '');
   const [isEditing, setIsEditing] = useState(false);
   const [isInteractingWithNote, setIsInteractingWithNote] = useState(false);
   const [isPickingImage, setIsPickingImage] = useState(false);
@@ -835,6 +847,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     revealRecallInput();
   }, [revealRecallInput]);
   const editingStoryRef = useRef(false);
+  const markStoryFocused = () => { editingStoryRef.current = true; };
+  const markStoryBlurred = () => { editingStoryRef.current = false; };
   const [lastAnalysisNotice, setLastAnalysisNotice] = useState<AnalysisNotice | null>(null);
   const previousDreamRef = useRef(dream);
 
@@ -942,21 +956,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   );
   const analysisFreshness = useMemo(() => getDreamAnalysisFreshness(dream), [dream]);
   const isAnalysisStale = analysisFreshness === 'stale';
-  // Closed once for good: the next-step card below keeps offering the update.
-  const [staleBannerDismissed, setStaleBannerDismissed] = useState(true);
-  useEffect(() => {
-    let active = true;
-    getStaleAnalysisBannerDismissed()
-      .then((dismissed) => { if (active) setStaleBannerDismissed(dismissed); })
-      .catch(() => { if (active) setStaleBannerDismissed(false); });
-    return () => { active = false; };
-  }, []);
-  const dismissStaleBanner = useCallback(() => {
-    setStaleBannerDismissed(true);
-    saveStaleAnalysisBannerDismissed(true).catch(() => {
-      // Closed for this visit; it may reappear next time.
-    });
-  }, []);
   const visibleIllustrationCta =
     quotaLoading && illustrationCta === 'quota' ? 'none' : illustrationCta;
   // A guest out of illustrations goes to Plus too: a free account adds none of its own.
@@ -1044,10 +1043,18 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     [analysisRecoveryClock, dream, isAnalyzing]
   );
   const isAnalysisPending = reflectionJourney.isPendingFresh && !isAnalyzing;
-  const hasPurchasedAnalysisReturn = Boolean(dream && user && analysisOwnerId === user.id
+  const [purchaseReturnLapsed, setPurchaseReturnLapsed] = useState(false);
+  const hasPurchasedAnalysisReturn = !purchaseReturnLapsed && Boolean(dream && user && analysisOwnerId === user.id
     && hasPendingPurchasedAnalysisReturn(getDreamRouteParams(dream), user.id));
   const awaitingPurchasedAnalysis = analyzeAfterPurchase === '1' && hasPurchasedAnalysisReturn
     && Boolean(dream && !dream.isAnalyzed && dream.analysisStatus !== 'pending');
+  // A purchase return lapses on its own, and nothing else tells this page: a page still
+  // waiting for its subscription then stops waiting, instead of staying locked.
+  useEffect(() => {
+    if (!awaitingPurchasedAnalysis) return undefined;
+    const timer = setTimeout(() => setPurchaseReturnLapsed(true), PURCHASE_RETURN_TTL_MS);
+    return () => clearTimeout(timer);
+  }, [awaitingPurchasedAnalysis]);
   const isPrimaryActionBusy = visiblePrimaryAction === 'analyze'
     && (awaitingPurchasedAnalysis || isAnalyzing || isAnalysisPending);
   const detailActionCard = useMemo(() => {
@@ -1226,7 +1233,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     shareScreenMountedRef.current = true;
     return () => { shareScreenMountedRef.current = false; };
   }, []);
-  const clipboardSupported = Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText);
 
   // The page has one way to edit it: its name, details and story together.
   const startEditing = useCallback(() => {
@@ -1276,19 +1282,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
     // One save at a time: a second tap would write twice and count the story twice.
     if (savingEditRef.current) return;
-    savingEditRef.current = true;
-    try {
+    const saved = await whileHeld(savingEditRef, async () => {
       await updateDream(updatedDream);
-    } catch (error) {
-      // The editor stays open with the text: nothing typed is lost, and the failure is said.
-      Alert.alert(
-        t('common.error_title'),
-        classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage
-      );
-      return;
-    } finally {
-      savingEditRef.current = false;
-    }
+      return true;
+    }, {
+      catch: (error) => {
+        // The editor stays open with the text: nothing typed is lost, and the failure is said.
+        Alert.alert(
+          t('common.error_title'),
+          classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage
+        );
+        return false;
+      },
+    });
+    if (!saved) return;
     setIsEditing(false);
     // Saved: a story the dreamer completed by hand counts once it gained enough words.
     const start = editStartTranscriptRef.current;
@@ -1302,9 +1309,9 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     if (!dream || isAnalysisLocked) return;
 
     const cropErrorMessage = t('journal.detail.image.crop_error');
-    try {
+    await attempt(async () => {
       setIsPickingImage(true);
-      const ImagePicker = await import('expo-image-picker');
+      const ImagePicker = await loadImagePicker();
       const allowCropInPicker = Platform.OS === 'android';
       const pickerQuality = allowCropInPicker ? 1 : 0.9;
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -1347,18 +1354,25 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
       await updateDream(updatedDream);
       setIsEditing(false);
-    } catch (error) {
-      // A raw exception message is technical and often English: show a plain one.
-      const msg = error instanceof Error && error.message === cropErrorMessage
-        ? cropErrorMessage
-        : classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage;
-      Alert.alert(t('common.error_title'), msg);
-    } finally {
-      setIsPickingImage(false);
-    }
+    }, {
+      catch: (error) => {
+        // A raw exception message is technical and often English: show a plain one.
+        const msg = error instanceof Error && error.message === cropErrorMessage
+          ? cropErrorMessage
+          : classifyError(error instanceof Error ? error : new Error(String(error)), t).userMessage;
+        Alert.alert(t('common.error_title'), msg);
+      },
+      finally: () => {
+        setIsPickingImage(false);
+      },
+    });
   }, [dream, isAnalysisLocked, updateDream, t]);
 
+  // Read as the window opens, not during a render: the compiled page keeps what a render
+  // reads from the browser.
+  const [clipboardSupported, setClipboardSupported] = useState(false);
   const openShareModal = useCallback(() => {
+    setClipboardSupported(Platform.OS === 'web' && Boolean(getShareNavigator()?.clipboard?.writeText));
     setShareCopyStatus('idle');
     setShareModalVisible(true);
   }, []);
@@ -1372,13 +1386,15 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       setShareCopyStatus('error');
       return;
     }
-    try {
+    await attempt(async () => {
       await webNavigator.clipboard.writeText(shareMessage || '');
       setShareCopyStatus('success');
       if (dream) recordBadgeEvent({ type: 'dream_shared', dream });
-    } catch {
-      setShareCopyStatus('error');
-    }
+    }, {
+      catch: () => {
+        setShareCopyStatus('error');
+      },
+    });
   }, [dream, shareMessage]);
   // Use full-resolution image config for detail view
   const imageConfig = useMemo(() => getImageConfig('full'), []);
@@ -1412,30 +1428,29 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       setShareSheetVisible(true);
       return;
     }
-    shareInFlightRef.current = true;
     setIsSharing(true);
-    try {
+    await whileHeld(shareInFlightRef, async () => {
       const webNavigator = getShareNavigator();
       if (webNavigator?.share) {
-        try {
+        // Shared, or given up by the dreamer: either way the text is not offered to copy.
+        const settled = await attempt(async () => {
           await webNavigator.share({ text: shareMessage, title: shareTitle });
           recordBadgeEvent({ type: 'dream_shared', dream });
-          return;
-        } catch (error) {
-          if (error instanceof DOMException && error.name === 'AbortError') {
-            return;
-          }
-        }
+          return true;
+        }, { catch: (error) => error instanceof DOMException && error.name === 'AbortError' });
+        if (settled) return;
       }
       openShareModal();
-    } catch (error) {
-      if (!shareScreenMountedRef.current) return;
-      console.error('Share failed:', error);
-      openShareModal();
-    } finally {
-      shareInFlightRef.current = false;
-      if (shareScreenMountedRef.current) setIsSharing(false);
-    }
+    }, {
+      catch: (error) => {
+        if (!shareScreenMountedRef.current) return;
+        console.error('Share failed:', error);
+        openShareModal();
+      },
+      finally: () => {
+        if (shareScreenMountedRef.current) setIsSharing(false);
+      },
+    });
   }, [dream, isAnalysisLocked, openShareModal, shareMessage, shareTitle]);
 
   // Opened from a journal card's share icon: share once the dream is here, then drop the request.
@@ -1462,38 +1477,40 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
   const handleRetrySync = useCallback(async () => {
     if (!dream) return;
-    try {
+    await attempt(async () => {
       setSyncRetryFailed(false);
       setIsRetryingSync(true);
       await retryDreamSync(dream);
-    } catch (error) {
-      if (__DEV__) {
-        console.warn('[JournalDetail] Failed to retry sync', error);
-      }
-      setSyncRetryFailed(true);
-    } finally {
-      setIsRetryingSync(false);
-    }
+    }, {
+      catch: (error) => {
+        if (__DEV__) {
+          console.warn('[JournalDetail] Failed to retry sync', error);
+        }
+        setSyncRetryFailed(true);
+      },
+      finally: () => {
+        setIsRetryingSync(false);
+      },
+    });
   }, [dream, retryDreamSync]);
 
   // Resolving fetches the server copy and then writes. A second tap must not
   // start another resolution, and a failure must be said, as for the retry.
   const resolveConflict = useCallback(async (choice: 'use_server' | 'keep_local') => {
     if (!dream || resolvingConflictRef.current) return;
-    resolvingConflictRef.current = true;
     setSyncRetryFailed(false);
     setIsResolvingConflict(true);
-    try {
-      await resolveDreamConflict(dream, choice);
-    } catch (error) {
-      if (__DEV__) {
-        console.warn('[JournalDetail] Failed to resolve sync conflict', error);
-      }
-      setSyncRetryFailed(true);
-    } finally {
-      resolvingConflictRef.current = false;
-      setIsResolvingConflict(false);
-    }
+    await whileHeld(resolvingConflictRef, () => resolveDreamConflict(dream, choice), {
+      catch: (error) => {
+        if (__DEV__) {
+          console.warn('[JournalDetail] Failed to resolve sync conflict', error);
+        }
+        setSyncRetryFailed(true);
+      },
+      finally: () => {
+        setIsResolvingConflict(false);
+      },
+    });
   }, [dream, resolveDreamConflict]);
 
   const handleUseServerVersion = useCallback(() => resolveConflict('use_server'), [resolveConflict]);
@@ -1501,7 +1518,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
   const deleteAndNavigate = useCallback(async () => {
     if (!dream) return;
-    try {
+    await attempt(async () => {
       setIsDeleting(true);
       onDeletingChange?.(true);
       await deleteDream(dream);
@@ -1510,15 +1527,17 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       setShowDeleteSheet(false);
       router.replace('/(tabs)/journal');
-    } catch (error) {
-      if (__DEV__) {
-        console.error('Failed to delete dream', error);
-      }
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
-      Alert.alert(t('common.error_title'), t('common.unknown_error'));
-      setIsDeleting(false);
-      onDeletingChange?.(false);
-    }
+    }, {
+      catch: (error) => {
+        if (__DEV__) {
+          console.error('Failed to delete dream', error);
+        }
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
+        Alert.alert(t('common.error_title'), t('common.unknown_error'));
+        setIsDeleting(false);
+        onDeletingChange?.(false);
+      },
+    });
   }, [deleteDream, dream, onDeletingChange, t]);
 
   const handleCloseDeleteSheet = useCallback(() => {
@@ -1560,7 +1579,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     if (!(await requestAiConsent(t))) return;
 
     setIsRetryingImage(true);
-    try {
+    await attempt(async () => {
       const sourceText = dream.transcript?.trim() || dream.interpretation?.trim();
       if (!sourceText) {
         throw new Error(t('journal.detail.image.no_source'));
@@ -1571,28 +1590,31 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
         previousImageUrl: dream.imageUrl || undefined,
         clientRequestId: illustrationAccess.bundledRequestId,
       });
-    } catch (error) {
-      if (error instanceof AiConsentWithdrawnError) return;
-      if (error instanceof QuotaError) {
-        setImageErrorCanRetry(false);
-        setImageErrorNeedsSubscription(Boolean(user));
-        setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
-        return;
-      }
-      const classified = classifyError(
-        error instanceof Error ? error : new Error(t('common.unknown_error')),
-        t
-      );
-      setImageErrorCanRetry(classified.canRetry);
-      setImageErrorNeedsSubscription(classified.type === ErrorType.IMAGE_AUTHORIZATION);
-      setImageErrorMessage(
-        classified.userMessage === t('error.interpretation_limit')
-          ? t('journal.detail.image.quota_exceeded_message')
-          : classified.userMessage
-      );
-    } finally {
-      setIsRetryingImage(false);
-    }
+    }, {
+      catch: (error) => {
+        if (error instanceof AiConsentWithdrawnError) return;
+        if (error instanceof QuotaError) {
+          setImageErrorCanRetry(false);
+          setImageErrorNeedsSubscription(Boolean(user));
+          setImageErrorMessage(t('journal.detail.image.quota_exceeded_message'));
+          return;
+        }
+        const classified = classifyError(
+          error instanceof Error ? error : new Error(t('common.unknown_error')),
+          t
+        );
+        setImageErrorCanRetry(classified.canRetry);
+        setImageErrorNeedsSubscription(classified.type === ErrorType.IMAGE_AUTHORIZATION);
+        setImageErrorMessage(
+          classified.userMessage === t('error.interpretation_limit')
+            ? t('journal.detail.image.quota_exceeded_message')
+            : classified.userMessage
+        );
+      },
+      finally: () => {
+        setIsRetryingImage(false);
+      },
+    });
   }, [dream, generateDreamImage, illustrationAccess.allowed, illustrationAccess.bundledRequestId, t, user]);
 
   const handleBackPress = useCallback(() => {
@@ -1809,11 +1831,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
 
   const handleAnalyze = useCallback(async () => {
     if (!dream || analysisPressInFlightRef.current) return;
-    analysisPressInFlightRef.current = true;
     // The explicit tap owns the action if quota recovery happens concurrently.
     autoAnalysisHandledRef.current = true;
     if (autoAnalyzeParam === '1') router.setParams({ autoAnalyze: undefined });
-    try {
+    await whileHeld(analysisPressInFlightRef, async () => {
       if (user && savedAnalysisAction === 'upgrade' && !canResumeAnalysis) {
         router.push(buildAnalysisPaywallHref(dream, user.id));
         return;
@@ -1834,9 +1855,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       }
 
       await runAnalyze(shouldReplaceExistingImage('first'), true);
-    } finally {
-      analysisPressInFlightRef.current = false;
-    }
+    });
   }, [autoAnalyzeParam, canResumeAnalysis, dream, ensureAnalyzeAllowed, guestNeedsAccount, hasExistingImage, runAnalyze, savedAnalysisAction, user]);
 
   // Asked in the journal as the seal was struck, the reader chose to read the dream now: the
@@ -1915,7 +1934,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   const hasIllustratedCover = (artworkAtArrival === true || plateRevealed) && Boolean(dream?.imageUrl?.trim())
     && !shouldHideHeroMedia && !coverImageFailed;
   // Only the plate's picture drifts; without a plate its frame is never mounted.
-  const coverParallax = useFrameParallax(hasIllustratedCover ? coverTravel : 0);
+  const { frame: coverFrame, onLayout: onCoverLayout, style: coverDrift } = useFrameParallax(hasIllustratedCover ? coverTravel : 0);
   useEffect(() => {
     if (readingStory === 'waiting') {
       readingRevealScrolledRef.current = false;
@@ -1946,15 +1965,20 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   useEffect(() => {
     if (pageReady) pageLaidOut();
   }, [pageLaidOut, pageReady]);
-  const handoffTarget = useMemo(() => dream && ({ id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId }),
-    [dream?.id, dream?.remoteId, dream?.clientRequestId]); // eslint-disable-line react-hooks/exhaustive-deps
+  // What names the dream elsewhere: the same object for as long as it is the same dream.
+  const dreamId = dream?.id;
+  const dreamRemoteId = dream?.remoteId;
+  const dreamClientRequestId = dream?.clientRequestId;
+  const dreamTarget = useMemo(
+    () => (dreamId === undefined ? undefined : { id: dreamId, remoteId: dreamRemoteId, clientRequestId: dreamClientRequestId }),
+    [dreamId, dreamRemoteId, dreamClientRequestId]);
   useEffect(() => {
-    if (!pageReady || !windowHandedOver || !handoffTarget) return;
+    if (!pageReady || !windowHandedOver || !dreamTarget) return;
     let frame = requestAnimationFrame(() => {
-      frame = requestAnimationFrame(() => markDreamStoryPageReady(handoffTarget));
+      frame = requestAnimationFrame(() => markDreamStoryPageReady(dreamTarget));
     });
     return () => cancelAnimationFrame(frame);
-  }, [handoffTarget, pageReady, windowHandedOver]);
+  }, [dreamTarget, pageReady, windowHandedOver]);
   const paintedArtwork = !coverImageFailed && displayImageUrl ? { uri: displayImageUrl, cacheKey: imageCacheKey } : null;
   // Act III keeps painting until the image can actually be shown: stored artwork is
   // saved on the dream before its signed URL resolves. Its landing plays once per visit,
@@ -2011,10 +2035,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     setNaming({ stage: showSavedMoment ? 'striking' : windowHandedOver ? 'named' : 'writing', title, seal });
     if (!seal && !windowHandedOver) setHeldTitle(title);
   }
-  const namedDream = useMemo(() => (naming.title && dream
-    ? { id: dream.id, remoteId: dream.remoteId, clientRequestId: dream.clientRequestId }
-    : null
-  ), [naming.title, dream?.id, dream?.remoteId, dream?.clientRequestId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const namedDream = naming.title ? dreamTarget : undefined;
   const namedProvisionally = !naming.seal;
   useEffect(() => {
     if (namedDream) markDreamNamed(namedDream, namedProvisionally);
@@ -2123,9 +2144,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
   // After each commit, before the browser paints, its top is read again; while the plate
   // comes in above, the page scrolls by as much, leaving the reading where the reader has it.
   const readingPlaceRef = useRef<number | null>(null);
-  // Every commit, on purpose: any of them may move the reading. A top that did not move sets nothing.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useLayoutEffect(() => {
+  const followReadingPlace = useEffectEvent(() => {
     if (Platform.OS !== 'web') return;
     const place = (readingContentRef.current as unknown as HTMLElement | null)?.offsetTop ?? null;
     const previous = readingPlaceRef.current;
@@ -2134,6 +2153,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     setReadingContentTop(place);
     if (!holdsReading || previous === null) return;
     scrollViewRef.current?.scrollTo({ y: Math.max(0, readingScrollOffset.get() + place - previous), animated: false });
+  });
+  // Every commit, on purpose: any of them may move the reading. A top that did not move sets nothing.
+  useLayoutEffect(() => {
+    followReadingPlace();
   });
   // The flight fades once the plate shows under it, or after a moment at most.
   const plateUnderFlight = plateRevealed && Boolean(coverFlight) && !coverFlight?.landed;
@@ -2211,8 +2234,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           value={editableTranscript}
           onChangeText={setEditableTranscript}
           maxLength={getDreamTextInputLimit(editableTranscript.length, dream.transcript.length)}
-          onFocus={() => { editingStoryRef.current = true; }}
-          onBlur={() => { editingStoryRef.current = false; }}
+          onFocus={markStoryFocused}
+          onBlur={markStoryBlurred}
           placeholder={t('recording.placeholder.accessibility')}
           accessibilityLabel={t('recording.placeholder.accessibility')}
           placeholderTextColor={noctalia.text.secondary}
@@ -2879,43 +2902,6 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     );
   };
 
-  const renderStaleBanner = () => {
-    if (!isAnalysisStale || isEditing || staleBannerDismissed) {
-      return null;
-    }
-
-    return (
-      <View
-        testID={TID.Component.AnalysisStaleBanner}
-        className="mb-[18px] gap-3 rounded-lg border border-warning-line bg-warning p-4"
-      >
-        <View className="flex-row items-start gap-3">
-          <IconSymbol name="exclamationmark.triangle.fill" size={20} color={noctalia.status.warning.icon} />
-          <View className="flex-1 gap-1">
-            <Text className="font-sans-bold text-[11px] uppercase text-warning-on">
-              {t('journal.detail.stale.label')}
-            </Text>
-            <Text
-              className="font-sans text-[13px] leading-[18px] text-warning-on"
-              testID={TID.Text.AnalysisStaleBanner}
-            >
-              {t('journal.detail.stale.banner')}
-            </Text>
-          </View>
-          <PressableScale
-            testID={TID.Button.AnalysisStaleDismiss}
-            onPress={dismissStaleBanner}
-            accessibilityRole="button"
-            accessibilityLabel={t('journal.detail.stale.dismiss')}
-            className="-m-2.5 h-11 w-11 items-center justify-center"
-          >
-            <IconSymbol name="xmark" size={16} color={noctalia.status.warning.icon} />
-          </PressableScale>
-        </View>
-      </View>
-    );
-  };
-
   const shouldShowIllustrationSection =
     Boolean(dream.imageUrl?.trim()) ||
     illustrationSidecar === 'pending' ||
@@ -2923,7 +2909,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     (analysisState.isAnalyzed && visibleIllustrationCta !== 'none');
 
   // The plate's picture: the illustration, drifting as the page scrolls, opens whole when pressed.
-  const renderCoverPicture = () => (
+  const coverPicture = hasIllustratedCover ? (
     <PressableScale
       testID={TID.Button.JournalIllustrationExpand}
       onPress={() => setIsIllustrationFullscreen(true)}
@@ -2931,8 +2917,8 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       accessibilityLabel={t('journal.detail.image.expand_accessibility')}
       className="absolute inset-0"
     >
-      <Animated.View ref={coverParallax.frame} onLayout={coverParallax.onLayout} style={StyleSheet.absoluteFill} pointerEvents="none">
-      <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverParallax.style]}>
+      <Animated.View ref={coverFrame} onLayout={onCoverLayout} style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Animated.View style={[{ position: 'absolute', left: 0, right: 0, top: -coverTravel, bottom: -coverTravel }, coverDrift]}>
       {/* While the plate fills the screen, it follows the phone's tilt. */}
       <PaintingTilt active={!isEditing && !isIllustrationFullscreen && !(coverFlight && !coverFlight.landed)}
         dominantUntil={spreadOpen ? Number.POSITIVE_INFINITY : coverHeight * 0.35}>
@@ -2958,12 +2944,12 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       </Animated.View>
       </Animated.View>
       {repaintingCover ? (
-        <PaintingCanvas testID={TID.Component.CoverPainting} travel={coverViewport?.width ?? windowSize.width}
+        <PaintingCanvas testID={TID.Component.CoverPainting} travel={coverViewport.width}
           ink={SEAL_GOLD} brush={30} label={t('journal.detail.image.generating_title')}
           centre={{ bottom: (coverIntroHeight ?? 0) + insets.bottom }} />
       ) : null}
     </PressableScale>
-  );
+  ) : null;
 
   const renderIllustrationSection = () => {
     if (shouldHideHeroMedia || !shouldShowIllustrationSection) {
@@ -3181,7 +3167,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
       <ScrollView ref={leftPageScrollRef} className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         {hasIllustratedCover ? (
           <JournalCoverPlate testID={TID.Component.JournalIllustration} height={coverHeight} titleHeight={coverIntroHeight}
-            picture={renderCoverPicture()} head={null}>
+            picture={coverPicture} head={null}>
             <View style={{ paddingRight: SPREAD_GUTTER - 16 }}>{heading}</View>
           </JournalCoverPlate>
         ) : (
@@ -3224,8 +3210,10 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
           onContentSizeChange={revealRecallInput}
           className="flex-1"
           onLayout={({ nativeEvent: { layout } }) => {
-            setCoverViewport(previous => previous?.width === layout.width && previous.height === layout.height
-              ? previous : { width: layout.width, height: layout.height });
+            // Android reports a layout to float precision: a size within half a point is the same size.
+            setCoverViewport(previous => (
+              Math.abs(previous.width - layout.width) < 0.5 && Math.abs(previous.height - layout.height) < 0.5
+                ? previous : { width: layout.width, height: layout.height }));
           }}
 
           contentContainerStyle={{
@@ -3262,7 +3250,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
             <View style={{ marginBottom: RUNNING_HEAD_GAP }} collapsable={false}>{facingHead}</View>
           ) : hasIllustratedCover ? (
             <JournalCoverPlate testID={TID.Component.JournalIllustration} height={coverHeight} titleHeight={coverIntroHeight}
-              picture={renderCoverPicture()} head={runningHead}>
+              picture={coverPicture} head={runningHead}>
               {heading}
             </JournalCoverPlate>
           ) : (
@@ -3291,7 +3279,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
               <JournalSealShare onShare={onShare} disabled={isSharing || isAnalysisLocked} busy={isSharing} />
             ) : null}
             {/* The reading, under its seal and before the story it reads. */}
-            <View>{renderStaleBanner()}</View>
+            <View><StaleAnalysisBanner visible={isAnalysisStale && !isEditing} /></View>
             {analysisPreviewDreamId != null && user ? (
               <AnalysisPreviewCard remoteDreamId={analysisPreviewDreamId} transcript={dream.transcript}
                 onOpenPlus={(prepared) => router.push(buildAnalysisPaywallHref(dream, user.id, { prepared }))}
