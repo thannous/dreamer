@@ -37,6 +37,95 @@ const stubbedImportPaths = [
     message: 'Supabase Realtime is shimmed out of native bundles (scripts/metro-native-stubs.js).',
   },
 ];
+// Files React Compiler still leaves unoptimized, or that suppress a hook rule it relies on.
+// The list only shrinks: take a file out with the change that makes it compile.
+const reactCompilerDebt = [
+  'app/_layout.tsx',
+  'app/dream-chat/\\[id\\].tsx',
+  'app/journal/\\[id\\].tsx',
+  'app/onboarding.tsx',
+  'app/paywall.tsx',
+  'components/auth/AppleSignInButton.tsx',
+  'components/auth/EmailAuthCard.tsx',
+  'components/auth/GoogleSignInButton.tsx',
+  'components/auth/ResetPasswordScreen.tsx',
+  'components/badges/BadgeSyncHost.tsx',
+  'components/dev/GuestRecordingQaReset.tsx',
+  'components/guest/GuestProdQALab.tsx',
+  'components/journal/DreamPersonalNotes.tsx',
+  'components/journal/DreamRecallAssistantCard.tsx',
+  'components/journal/DreamShareComposer.tsx',
+  'components/journal/RemoteJournalList.tsx',
+  'components/lucid/LucidJournalDiscovery.tsx',
+  'components/lucid/LucidJourneyMap.tsx',
+  'components/lucid/LucidRootLayout.tsx',
+  'components/onboarding/story/DoorPassage.tsx',
+  'components/quota/QuotaStatusCard.tsx',
+  'components/ritual/RitualPickerSheet.tsx',
+  'components/settings/SettingsSignOutAction.tsx',
+  'components/settings/useAiConsentController.ts',
+  'components/settings/useAnalyticsPreferenceController.ts',
+  'components/settings/useNotificationSettingsController.ts',
+  'components/settings/useSettingsPreferences.ts',
+  'components/settings/useStabilityReportsController.ts',
+  'components/sleep/SleepAmbienceScene.tsx',
+  'components/trends/useCountUp.ts',
+  'context/AuthContext.tsx',
+  'context/LucidTrainerContext.tsx',
+  'context/OnboardingContext.tsx',
+  'hooks/useAnalysisProgress.ts',
+  'hooks/useCaptureConversation.ts',
+  'hooks/useDreamJournal.ts',
+  'hooks/useDreamMedia.ts',
+  'hooks/useDreamPersistence.ts',
+  'hooks/useDreamRecallAssistant.ts',
+  'hooks/useDreamShareComposite.ts',
+  'hooks/useEngagementReminders.ts',
+  'hooks/useJournalLayoutPreference.ts',
+  'hooks/useLocalLucidVoiceAvailability.ts',
+  'hooks/useLucidDreamAtlas.ts',
+  'hooks/useLucidDreamRehearsal.ts',
+  'hooks/useLucidMorningVoiceNotes.ts',
+  'hooks/useLucidMorningVoiceRecorder.ts',
+  'hooks/useLucidNightAudio.ts',
+  'hooks/useLucidSsildSensoryLab.ts',
+  'hooks/useLucidStabilizationLab.ts',
+  'hooks/useNotificationDreamImport.ts',
+  'hooks/useQuota.ts',
+  'hooks/useRecordingDraftPersistence.ts',
+  'hooks/useRecordingSession.ts',
+  'hooks/useReminderOptIn.ts',
+  'hooks/useSubscriptionInternal.ts',
+  'hooks/useTranslation.ts',
+];
+
+// React Compiler skips a component or hook that suppresses one of these rules.
+const hookRuleSuppression = /eslint-disable(?:-next-line|-line)?\s[^\n]*react-hooks\/(?:exhaustive-deps|rules-of-hooks)/;
+const noctaliaPlugin = {
+  rules: {
+    'no-hook-rule-suppression': {
+      meta: {
+        type: 'problem',
+        schema: [],
+        messages: {
+          suppressed: 'React Compiler leaves this whole component unoptimized when a hook rule is suppressed. Read the latest value through useEffectEvent or a ref instead.',
+        },
+      },
+      create(context) {
+        return {
+          Program() {
+            for (const comment of context.sourceCode.getAllComments()) {
+              if (hookRuleSuppression.test(comment.value)) {
+                context.report({ loc: comment.loc, messageId: 'suppressed' });
+              }
+            }
+          },
+        };
+      },
+    },
+  },
+};
+
 const testFiles = [
   '**/__tests__/**/*.{js,jsx,ts,tsx}',
   '**/*.test.{js,jsx,ts,tsx}',
@@ -62,6 +151,18 @@ module.exports = defineConfig([
       'react-hooks/purity': 'warn',
       'react-hooks/refs': 'warn',
       'react-hooks/set-state-in-effect': 'warn',
+    },
+  },
+  {
+    // The build skips silently a component React Compiler cannot compile: here it is an error.
+    // `todo` names what the compiler does not handle yet; lib/attempt.ts says what to do about it.
+    files: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', 'context/**/*.{ts,tsx}', 'hooks/**/*.{ts,tsx}'],
+    ignores: [...testFiles, ...reactCompilerDebt],
+    plugins: { noctalia: noctaliaPlugin },
+    rules: {
+      'react-hooks/todo': 'error',
+      'react-hooks/invariant': 'error',
+      'noctalia/no-hook-rule-suppression': 'error',
     },
   },
   {

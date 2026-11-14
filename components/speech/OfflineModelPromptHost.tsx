@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
-import {
-  registerOfflineModelPromptHandler,
-  type OfflineModelPromptHandler,
-} from '@/services/nativeSpeechRecognition';
+import { registerOfflineModelPromptHandler } from '@/services/nativeSpeechRecognition';
+
+import { offlineModelPromptHandler } from './offlineModelPromptHandler';
 
 type Deferred = {
   promise: Promise<void>;
@@ -60,14 +59,7 @@ export function OfflineModelPromptHost() {
   }, [visible]);
 
   useEffect(() => {
-    const handler: OfflineModelPromptHandler = {
-      get isVisible() {
-        return isVisibleRef.current;
-      },
-      show,
-    };
-
-    return registerOfflineModelPromptHandler(handler);
+    return registerOfflineModelPromptHandler(offlineModelPromptHandler(isVisibleRef, show));
   }, [show]);
 
   useEffect(() => {
