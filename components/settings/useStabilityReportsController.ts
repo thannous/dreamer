@@ -6,6 +6,7 @@ import {
   isStabilityReportingAvailable,
   setStabilityReportsEnabled,
 } from '@/lib/observe';
+import { attempt } from '@/lib/attempt';
 
 /** The opt-out for EAS Observe, which runs on legitimate interest and so is on by default. */
 export function useStabilityReportsController() {
@@ -35,14 +36,13 @@ export function useStabilityReportsController() {
     setEnabled(nextEnabled);
     setSaving(true);
     setError(false);
-    try {
-      await setStabilityReportsEnabled(nextEnabled);
-    } catch {
-      // Observe already took the choice for this session; only storing it failed.
-      setError(true);
-    } finally {
-      setSaving(false);
-    }
+    await attempt(() => setStabilityReportsEnabled(nextEnabled), {
+      catch: () => {
+        // Observe already took the choice for this session; only storing it failed.
+        setError(true);
+      },
+      finally: () => { setSaving(false); },
+    });
   }, [saving]);
 
   return {

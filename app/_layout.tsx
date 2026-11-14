@@ -42,6 +42,7 @@ import { useSplashFailsafe } from '@/hooks/useSplashFailsafe';
 import { useSubscriptionInitialize } from '@/hooks/useSubscriptionInitialize';
 // useSubscriptionMonitor est maintenant intégré dans useSubscription
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { attempt } from '@/lib/attempt';
 import { clearReturnToPaywallIntent, peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { installBrowserAlert } from '@/lib/browserAlert';
@@ -129,6 +130,8 @@ void SplashScreen.preventAutoHideAsync().catch((error) => {
 });
 
 const ROOT_VIEW_STYLE = { flex: 1 } as const;
+// Outside the component: React Compiler does not compile a function that holds an `import()`.
+const loadRuntimeIdentity = () => import('@/lib/runtimeIdentity');
 
 function resolveAppStartupDecision(
   input: Parameters<typeof resolveStartupDecision>[0]
@@ -358,7 +361,7 @@ function RootLayoutNav({
     let active = true;
     const restore = async () => {
       const versionAtStart = notificationMutationVersion.current;
-      try {
+      await attempt(async () => {
         const storedUrl = await getPendingRecordingNotification();
         if (active && notificationMutationVersion.current === versionAtStart) {
           setPendingNotificationUrl(storedUrl);
@@ -375,13 +378,14 @@ function RootLayoutNav({
             await enqueueNotification(response.notification);
           }
         }
-      } catch (error) {
-        if (__DEV__) {
-          console.warn('[RootLayoutNav] Unable to restore notification intent', error);
-        }
-      } finally {
-        if (active) setNotificationQueueLoaded(true);
-      }
+      }, {
+        catch: (error) => {
+          if (__DEV__) {
+            console.warn('[RootLayoutNav] Unable to restore notification intent', error);
+          }
+        },
+        finally: () => { if (active) setNotificationQueueLoaded(true); },
+      });
     };
     void restore();
 
@@ -931,7 +935,7 @@ function RootLayout() {
   useEffect(() => {
     if (Platform.OS !== 'android') return;
     // Lazy and best-effort: release diagnostics must not hold up navigation.
-    void import('@/lib/runtimeIdentity')
+    void loadRuntimeIdentity()
       .then(({ reportRuntimeIdentity }) => reportRuntimeIdentity())
       .catch(() => { /* Optional diagnostic unavailable; never log a raw native error. */ });
   }, []);
@@ -965,32 +969,33 @@ function RootLayout() {
 
     const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-    (async () => {
-      try {
-        const preference = await Promise.race([
-          getLanguagePreference(),
-          sleep(750).then(() => 'auto' as LanguagePreference),
-        ]);
-        if (!active) {
-          return;
-        }
-        setInitialLanguagePreference(preference);
+    void attempt(async () => {
+      const preference = await Promise.race([
+        getLanguagePreference(),
+        sleep(750).then(() => 'auto' as LanguagePreference),
+      ]);
+      if (!active) {
+        return;
+      }
+      setInitialLanguagePreference(preference);
 
-        const effectiveLanguage = resolveEffectiveLanguage(preference, systemLanguage);
-        setProductAnalyticsLocale(effectiveLanguage);
+      const effectiveLanguage = resolveEffectiveLanguage(preference, systemLanguage);
+      setProductAnalyticsLocale(effectiveLanguage);
 
-        await Promise.race([loadTranslations(effectiveLanguage).then(() => undefined), sleep(1500)]);
-      } catch (error) {
+      await Promise.race([loadTranslations(effectiveLanguage).then(() => undefined), sleep(1500)]);
+    }, {
+      catch: (error) => {
         if (__DEV__) {
           console.warn('[RootLayout] Failed to bootstrap language preference', error);
         }
-      } finally {
+      },
+      finally: () => {
         if (active) {
           markPerformance('startup.language_ready');
           setLanguageBootstrapped(true);
         }
-      }
-    })();
+      },
+    });
 
     return () => {
       active = false;

@@ -16,6 +16,7 @@ import { useOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { attempt, whileHeld } from '@/lib/attempt';
 import { isOnboardingFeatureSheetsEnabled } from '@/lib/env';
 import { peekReturnToPaywallTrigger } from '@/lib/navigationIntents';
 import { getAuthReturnSnapshot } from '@/lib/authReturnIntent';
@@ -357,22 +358,21 @@ export default function OnboardingScreen() {
       return;
     }
     markPerformance('onboarding.continue_pressed', { next_step: nextStep });
-    stepTransitionRef.current = true;
     setIsStepTransitioning(true);
     setFailedAction(null);
-    try {
+    await whileHeld(stepTransitionRef, async () => {
       await transition({ type: 'GO_TO_STEP', step: nextStep });
       void trackProductEvent('onboarding_choice_selected', {
         surface: 'app_onboarding',
         step: 'intro',
         choice: 'continue',
       });
-    } catch {
-      setFailedAction({ type: 'step', step: nextStep });
-    } finally {
-      stepTransitionRef.current = false;
-      setIsStepTransitioning(false);
-    }
+    }, {
+      catch: () => {
+        setFailedAction({ type: 'step', step: nextStep });
+      },
+      finally: () => { setIsStepTransitioning(false); },
+    });
   }, [isReplay, transition]);
 
   const startIntro = () => {
@@ -496,7 +496,7 @@ export default function OnboardingScreen() {
     setIsLeaving(true);
     setFailedAction(null);
     const authReturn = getAuthReturnSnapshot().intent;
-    try {
+    await attempt(async () => {
       await transition({ type: 'SKIP' });
       void trackProductEvent('onboarding_choice_selected', {
         surface: 'app_onboarding',
@@ -508,12 +508,14 @@ export default function OnboardingScreen() {
       await waitForExitFade();
       const pendingPaywall = peekReturnToPaywallTrigger();
       router.replace(pendingPaywall ? buildPaywallHref(getPaywallTrigger(pendingPaywall)) : '/recording');
-    } catch {
-      // See `completePath`: the idle CTA only comes back when we stay.
-      isLeavingRef.current = false;
-      setIsLeaving(false);
-      setFailedAction({ type: 'skip' });
-    }
+    }, {
+      catch: () => {
+        // See `completePath`: the idle CTA only comes back when we stay.
+        isLeavingRef.current = false;
+        setIsLeaving(false);
+        setFailedAction({ type: 'skip' });
+      },
+    });
   }, [isReplay, leaveReplay, step, transition, waitForExitFade]);
 
   const selectPath = useCallback((path: OnboardingPath) => {
@@ -613,16 +615,17 @@ export default function OnboardingScreen() {
     setAnalyticsEnabled(enabled);
     setAnalyticsPreferenceLoading(true);
     setAnalyticsPreferenceError(false);
-    try {
+    return attempt(async () => {
       await setProductAnalyticsEnabled(enabled);
       return true;
-    } catch {
-      setAnalyticsEnabled((current) => !current);
-      setAnalyticsPreferenceError(true);
-      return false;
-    } finally {
-      setAnalyticsPreferenceLoading(false);
-    }
+    }, {
+      catch: () => {
+        setAnalyticsEnabled((current) => !current);
+        setAnalyticsPreferenceError(true);
+        return false;
+      },
+      finally: () => { setAnalyticsPreferenceLoading(false); },
+    });
   }, []);
   const handleFooterLayout = useCallback((event: LayoutChangeEvent) => {
     const nextHeight = Math.ceil(event.nativeEvent.layout.height);
@@ -669,10 +672,14 @@ export default function OnboardingScreen() {
   const analyticsAvailable = isProductAnalyticsAvailable();
   // Saves the usage box when it changed (and this build collects at all), then closes.
   const closePrivacy = async () => {
-    if (analyticsAvailable && usageChecked !== analyticsEnabled && !(await toggleAnalytics(usageChecked))) return;
+    if (analyticsAvailable && usageChecked !== analyticsEnabled) {
+      const saved = await toggleAnalytics(usageChecked);
+      if (!saved) return;
+    }
     setShowPrivacySheet(false);
   };
-  const layeredStepHeight = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0) || undefined;
+  const tallestStep = Math.max(stepHeights.intro ?? 0, stepHeights.path ?? 0);
+  const layeredStepHeight = tallestStep || undefined;
 
   return (
     <View

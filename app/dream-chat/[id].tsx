@@ -1,4 +1,5 @@
 import type { ViewInstance } from 'react-native';
+import { attempt } from '@/lib/attempt';
 import { scheduleIdleTask } from '@/lib/scheduleIdleTask';
 import { resolveDreamRoute, getDreamRouteParams } from '@/lib/dreamRoute';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
@@ -48,7 +49,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNetworkState } from 'expo-network';
 import { router, useIsFocused, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
   ActivityIndicator,
@@ -415,7 +416,7 @@ function DreamChatContent() {
 
   // Persist a legacy history migration once per entry/language. Local messages
   // reset only with their identity, so storage updates cannot overwrite a stream.
-  useEffect(() => {
+  const migrateChatHistory = useEffectEvent(() => {
     if (!dream) return;
 
     const { messages: normalized, didChange } = normalizeChatHistory(dream, dreamIdentity, t);
@@ -424,22 +425,21 @@ function DreamChatContent() {
       chatHistoryMigrationCompletedByDreamId.get(dreamIdentity) !== CHAT_HISTORY_MIGRATION_VERSION &&
       !chatHistoryMigrationInFlightByDreamId.has(dreamIdentity)
     ) {
-      const migration = (async () => {
-        try {
-          await updateDream({ ...dream, chatHistory: normalized } as DreamAnalysis);
-          chatHistoryMigrationCompletedByDreamId.set(dreamIdentity, CHAT_HISTORY_MIGRATION_VERSION);
-        } catch (error) {
+      const migration = attempt(async () => {
+        await updateDream({ ...dream, chatHistory: normalized } as DreamAnalysis);
+        chatHistoryMigrationCompletedByDreamId.set(dreamIdentity, CHAT_HISTORY_MIGRATION_VERSION);
+      }, {
+        catch: (error) => {
           if (__DEV__) {
             console.warn('[DreamChat] Failed to persist chat history migration', error);
           }
-        } finally {
-          chatHistoryMigrationInFlightByDreamId.delete(dreamIdentity);
-        }
-      })();
+        },
+        finally: () => { chatHistoryMigrationInFlightByDreamId.delete(dreamIdentity); },
+      });
       chatHistoryMigrationInFlightByDreamId.set(dreamIdentity, migration);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dreamIdentity, t]);
+  });
+  useEffect(() => { migrateChatHistory(); }, [dreamIdentity, t]);
 
   const sendMessage = useCallback(
     async (
@@ -462,7 +462,7 @@ function DreamChatContent() {
         return;
       }
 
-      try {
+      await attempt(async () => {
       if (debugChat) {
         const baseMessages = options?.baseMessages ?? messages;
         console.debug('[DreamChat] sendMessage start', {
@@ -556,7 +556,7 @@ function DreamChatContent() {
       // A dream still being synced shows its turn only with the reply.
       let syncing = false;
       let updatedMessages = baseMessages;
-      try {
+      await attempt(async () => {
         const result = await sendChat({
           dream, userId: user?.id, mock: isMockMode, text: textToSend,
           displayText: resolvedDisplayText, language, requestId: chatRequestId,
@@ -596,44 +596,43 @@ function DreamChatContent() {
         }
         quotaService.invalidate(user);
         if (result.synced && isMountedRef.current) router.setParams(getDreamRouteParams(result.dream));
-      } catch (error) {
-        if (!isMountedRef.current) return;
-        if (error instanceof AiConsentWithdrawnError) {
-          if (!syncing) setMessages(baseMessages);
-          restoreUnsentChatText(composerRef.current, options?.userText);
-          return;
-        }
-        if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
-          if (!syncing) setMessages(baseMessages);
-          router.push(buildPaywallHref('exploration_limit'));
-          return;
-        }
-        if (syncing) {
-          if (__DEV__) console.error('[DreamChat] Sync error:', error);
-          Alert.alert(t('dream_chat.sync_failed_title'), t('dream_chat.sync_failed_message'), [{ text: t('common.ok') }]);
-          return;
-        }
-        if (__DEV__) console.error('Chat error:', error);
-        const classified = error instanceof Error ? classifyError(error, t) : null;
-        const errorText = classified?.userMessage ?? t('dream_chat.error_message');
-        if (coerceQuotaError(error, tier)?.code === QuotaErrorCode.EXPLORATION_LIMIT_REACHED) {
-          setExplorationBlocked(true);
-          quotaService.invalidate(user);
-        }
-        const errorMessage = createChatMessage('model', errorText, {
-          isError: true,
-          retry: classified?.canRetry === false ? undefined : {
-            messageText: textToSend, displayText: resolvedDisplayText,
-            userText: options?.userText, clientRequestId: chatRequestId,
-          },
-        });
-        setMessages([...updatedMessages, errorMessage]);
-      } finally {
-        finishStreaming();
-      }
-      } finally {
-        releaseSendLock();
-      }
+      }, {
+        catch: (error) => {
+          if (!isMountedRef.current) return;
+          if (error instanceof AiConsentWithdrawnError) {
+            if (!syncing) setMessages(baseMessages);
+            restoreUnsentChatText(composerRef.current, options?.userText);
+            return;
+          }
+          if (messageMeta?.exploration360Synthesis && isExploration360SynthesisUpgradeError(error)) {
+            if (!syncing) setMessages(baseMessages);
+            router.push(buildPaywallHref('exploration_limit'));
+            return;
+          }
+          if (syncing) {
+            if (__DEV__) console.error('[DreamChat] Sync error:', error);
+            Alert.alert(t('dream_chat.sync_failed_title'), t('dream_chat.sync_failed_message'), [{ text: t('common.ok') }]);
+            return;
+          }
+          if (__DEV__) console.error('Chat error:', error);
+          const classified = error instanceof Error ? classifyError(error, t) : null;
+          const errorText = classified?.userMessage ?? t('dream_chat.error_message');
+          if (coerceQuotaError(error, tier)?.code === QuotaErrorCode.EXPLORATION_LIMIT_REACHED) {
+            setExplorationBlocked(true);
+            quotaService.invalidate(user);
+          }
+          const errorMessage = createChatMessage('model', errorText, {
+            isError: true,
+            retry: classified?.canRetry === false ? undefined : {
+              messageText: textToSend, displayText: resolvedDisplayText,
+              userText: options?.userText, clientRequestId: chatRequestId,
+            },
+          });
+          setMessages([...updatedMessages, errorMessage]);
+        },
+        finally: () => { finishStreaming(); },
+      });
+      }, { finally: releaseSendLock });
     },
     [
       debugChat,

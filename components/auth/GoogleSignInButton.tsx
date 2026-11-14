@@ -2,6 +2,7 @@ import { LucidRadius } from '@/constants/lucidTheme';
 import { isLucidTrainer } from '@/lib/appVariant';
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert, Platform } from 'react-native';
+import { attempt } from '@/lib/attempt';
 import { signInWithGoogle, signInWithGoogleWeb } from '@/lib/auth';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getAuthDesignTokens } from '@/constants/authTheme';
@@ -39,7 +40,7 @@ export default function GoogleSignInButton({
   const handleGoogleSignIn = async () => {
     setLoading(true);
     log.debug('User tapped "Continue with Google"');
-    try {
+    await attempt(async () => {
       if (Platform.OS === 'web') {
         log.debug('Platform is Web, using OAuth popup');
         requestStayOnSettingsIntent({ persist: true, destination: returnTo });
@@ -53,31 +54,32 @@ export default function GoogleSignInButton({
       await signInWithGoogle();
       log.debug('Sign-in successful');
       // Navigation is handled by auth state listener in settings screen
-    } catch (error: unknown) {
-      clearStayOnSettingsIntent();
-      log.warn('Sign-in failed', error);
-      const errorCode = getErrorCode(error);
-      const errorMessage = getErrorMessage(error);
+    }, {
+      catch: (error) => {
+        clearStayOnSettingsIntent();
+        log.warn('Sign-in failed', error);
+        const errorCode = getErrorCode(error);
+        const errorMessage = getErrorMessage(error);
 
-      // Don't show error if user cancelled
-      if (errorMessage === 'SIGN_IN_CANCELLED' || errorCode === 'SIGN_IN_CANCELLED') {
-        log.debug('User cancelled the sign-in dialog');
-      } else if (errorMessage?.includes('Play Services') || errorCode === 'PLAY_SERVICES_NOT_AVAILABLE') {
-        log.warn('Play Services error detected', error);
-        Alert.alert(
-          t('auth.google.play_services_title'),
-          t('auth.google.play_services_message')
-        );
-      } else {
-        log.warn('Showing generic error alert', { errorCode, errorMessage });
-        Alert.alert(
-          t('auth.google.error_title'),
-          t('auth.google.error_generic')
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
+        // Don't show error if user cancelled
+        if (errorMessage === 'SIGN_IN_CANCELLED' || errorCode === 'SIGN_IN_CANCELLED') {
+          log.debug('User cancelled the sign-in dialog');
+        } else if (errorMessage?.includes('Play Services') || errorCode === 'PLAY_SERVICES_NOT_AVAILABLE') {
+          log.warn('Play Services error detected', error);
+          Alert.alert(
+            t('auth.google.play_services_title'),
+            t('auth.google.play_services_message')
+          );
+        } else {
+          log.warn('Showing generic error alert', { errorCode, errorMessage });
+          Alert.alert(
+            t('auth.google.error_title'),
+            t('auth.google.error_generic')
+          );
+        }
+      },
+      finally: () => { setLoading(false); },
+    });
   };
 
   return (
