@@ -60,7 +60,9 @@ function ShootingStar({ path, color }: { path: typeof PATHS[number]; color: stri
 export function StoryNight({ tokens, page }: { tokens: NoctaliaDesignTokens; page: { key: string; index: number } }) {
   const reduced = useReducedMotion();
   const scrim = tokens.illustration.scrim;
-  return <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants" style={StyleSheet.absoluteFill}>
+  // Clipped to the sheet: the sky drifts in larger than it and each shooting star comes to
+  // rest past its edge, which gave the web sheet room to scroll sideways.
+  return <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants" style={[StyleSheet.absoluteFill, styles.clipped]}>
     <Animated.View style={[StyleSheet.absoluteFill, !reduced && {
       animationName: {
         from: { transform: [{ translateY: -14 }, { scale: 1.12 }] },
@@ -91,6 +93,7 @@ export function StoryNight({ tokens, page }: { tokens: NoctaliaDesignTokens; pag
 }
 
 const styles = StyleSheet.create({
+  clipped: { overflow: 'hidden' },
   veil: { opacity: 0.9 },
   star: { position: 'absolute' },
   shootingStar: { position: 'absolute', width: 72, height: 1.5, borderRadius: 1, overflow: 'hidden', transformOrigin: 'right center' },
