@@ -42,7 +42,6 @@ const stubbedImportPaths = [
 const reactCompilerDebt = [
   'app/_layout.tsx',
   'app/dream-chat/\\[id\\].tsx',
-  'app/journal/\\[id\\].tsx',
   'app/onboarding.tsx',
   'app/paywall.tsx',
   'components/auth/AppleSignInButton.tsx',
@@ -52,10 +51,6 @@ const reactCompilerDebt = [
   'components/badges/BadgeSyncHost.tsx',
   'components/dev/GuestRecordingQaReset.tsx',
   'components/guest/GuestProdQALab.tsx',
-  'components/journal/DreamPersonalNotes.tsx',
-  'components/journal/DreamRecallAssistantCard.tsx',
-  'components/journal/DreamShareComposer.tsx',
-  'components/journal/RemoteJournalList.tsx',
   'components/lucid/LucidJournalDiscovery.tsx',
   'components/lucid/LucidJourneyMap.tsx',
   'components/lucid/LucidRootLayout.tsx',

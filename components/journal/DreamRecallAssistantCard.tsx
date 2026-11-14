@@ -10,6 +10,7 @@ import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
 import { DREAM_RECALL_MAX_QUESTIONS } from '@/lib/dreamRecallQuestions';
 import { getTranscriptionLocale } from '@/lib/locale';
+import { attempt, whileHeld } from '@/lib/attempt';
 import { canDictate } from '@/lib/speechCapability';
 import { TID } from '@/lib/testIDs';
 import { combineTranscript } from '@/lib/transcriptMerge';
@@ -255,18 +256,18 @@ export function DreamRecallAssistantCard({
     setIsVoiceTransitioning(true);
 
     let cancelled = false;
-    void (async () => {
-      try {
-        await forceStopRecording('blur');
-        if (cancelled) return;
-        baseTranscriptRef.current = answerRef.current;
-      } finally {
+    void attempt(async () => {
+      await forceStopRecording('blur');
+      if (cancelled) return;
+      baseTranscriptRef.current = answerRef.current;
+    }, {
+      finally: () => {
         if (!cancelled) {
           ignoreVoiceUpdatesRef.current = false;
           setIsVoiceTransitioning(false);
         }
-      }
-    })();
+      },
+    });
 
     return () => {
       cancelled = true;
@@ -298,47 +299,50 @@ export function DreamRecallAssistantCard({
     const typed = answerRef.current;
     voiceQuestionKeyRef.current = questionKeyRef.current;
     baseTranscriptRef.current = typed;
-    try {
+    await attempt(async () => {
       const response = await startSessionRecording(typed);
       if (response.error === 'cancelled') return;
       if (!response.success) {
         setVoiceError(true);
       }
-    } catch {
-      setVoiceError(true);
-    } finally {
-      setIsPreparingRecording(false);
-    }
+    }, {
+      catch: () => {
+        setVoiceError(true);
+      },
+      finally: () => {
+        setIsPreparingRecording(false);
+      },
+    });
   }, [baseTranscriptRef, startSessionRecording]);
 
   const toggleDictation = useCallback(async () => {
     if (recordingTransitionRef.current) return;
-    recordingTransitionRef.current = true;
     setIsVoiceTransitioning(true);
-    try {
+    await whileHeld(recordingTransitionRef, async () => {
       if (isRecordingRef.current || isPreparingRecording) {
         await stopAndMerge();
         return;
       }
       await startDictation();
-    } finally {
-      recordingTransitionRef.current = false;
-      setIsVoiceTransitioning(false);
-    }
+    }, {
+      finally: () => {
+        setIsVoiceTransitioning(false);
+      },
+    });
   }, [isPreparingRecording, isRecordingRef, startDictation, stopAndMerge]);
 
   const runAfterVoice = useCallback(
     async (action: (finalText: string) => Promise<void>) => {
       if (recordingTransitionRef.current) return;
-      recordingTransitionRef.current = true;
       setIsVoiceTransitioning(true);
-      try {
+      await whileHeld(recordingTransitionRef, async () => {
         const finalText = await stopAndMerge();
         await action(finalText);
-      } finally {
-        recordingTransitionRef.current = false;
-        setIsVoiceTransitioning(false);
-      }
+      }, {
+        finally: () => {
+          setIsVoiceTransitioning(false);
+        },
+      });
     },
     [stopAndMerge]
   );

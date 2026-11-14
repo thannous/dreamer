@@ -33,8 +33,19 @@ export async function attempt<T>(
 /**
  * Runs `task` with `flag` up, and lowers it when the task ends, however it ends. The caller
  * checks the flag first: a second gesture arriving meanwhile finds it up and leaves.
+ * `handlers` are those of `attempt`; `finally` runs once the flag is down.
  */
-export function whileHeld<T>(flag: { current: boolean }, task: () => T | Promise<T>): Promise<T> {
+export function whileHeld<T>(
+  flag: { current: boolean },
+  task: () => T | Promise<T>,
+  handlers: AttemptHandlers<T> = {}
+): Promise<T> {
   flag.current = true;
-  return attempt(task, { finally: () => { flag.current = false; } });
+  return attempt(task, {
+    catch: handlers.catch,
+    finally: () => {
+      flag.current = false;
+      handlers.finally?.();
+    },
+  });
 }
