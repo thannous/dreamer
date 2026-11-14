@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
 import {
+  DictationOffSheet,
   QuotaLimitSheet,
 } from '@/components/recording/RecordingSheets';
 import { TID } from '@/lib/testIDs';
@@ -194,6 +195,23 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingSheets', () => {
+  it('walks through turning iOS Dictation back on, step by step, and offers typing instead', () => {
+    const onUseText = jest.fn();
+    const onClose = jest.fn();
+    render(<DictationOffSheet visible onClose={onClose} onUseText={onUseText} />);
+
+    expect(screen.getByText('recording.dictation_off.title')).toBeTruthy();
+    expect(screen.getByText('recording.dictation_off.intro')).toBeTruthy();
+    expect(['1', '2', '3'].map((n) => screen.getByText(n).textContent)).toEqual(['1', '2', '3']);
+    const steps = ['step_settings', 'step_keyboard', 'step_toggle']
+      .map((key) => screen.getByText(`recording.dictation_off.${key}`));
+    expect(steps).toHaveLength(3);
+    fireEvent.click(screen.getByTestId(TID.Button.DictationOffUseText));
+    expect(onUseText).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId(TID.Button.DictationOffDismiss));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   const noop = () => undefined;
 
   it('offers a direct quota reset action when mock reset is available', () => {

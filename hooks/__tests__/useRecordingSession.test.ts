@@ -511,9 +511,26 @@ describe('useRecordingSession', () => {
 
       expect(response).toEqual({ transcript: '', error: 'dictation_off' });
       expect(Alert.alert).toHaveBeenCalledWith(
-        'recording.alert.dictation_off.title',
-        'recording.alert.dictation_off.message'
+        'recording.dictation_off.title',
+        'recording.dictation_off.intro'
       );
+    });
+
+    it('lets the screen show its own Dictation steps instead of an alert', async () => {
+      (Platform as { OS: string }).OS = 'ios';
+      const onDictationOff = jest.fn();
+      jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+        stop: jest.fn().mockResolvedValue({ transcript: '', errorCode: 'service-not-allowed' }),
+        abort: jest.fn(),
+      });
+      const { result } = renderHook(() => useRecordingSession({ ...defaultOptions, onDictationOff }));
+      await act(async () => { await result.current.startRecording(''); });
+      let response: RecordingSessionResult | undefined;
+      await act(async () => { response = await result.current.stopRecording(); });
+
+      expect(response).toEqual({ transcript: '', error: 'dictation_off' });
+      expect(onDictationOff).toHaveBeenCalledTimes(1);
+      expect(Alert.alert).not.toHaveBeenCalled();
     });
 
     it('offers Settings when iOS refuses speech recognition after the session started', async () => {

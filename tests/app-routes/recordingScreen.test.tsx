@@ -88,6 +88,7 @@ type MockKeyboardEvent = { duration: number; endCoordinates: { screenX: number; 
 let mockKeyboardSubscribers: Record<string, Set<(event: MockKeyboardEvent) => void>> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
+let mockOnDictationOff: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
 const mockAppStateHandlers = new Set<(state: string) => void>();
 let mockIsRecording = false;
@@ -478,6 +479,25 @@ jest.doMock('@/components/recording/RecordingSheets', () => ({
         </button>
       </div>
     ) : null,
+  DictationOffSheet: ({
+    onClose,
+    onUseText,
+    visible,
+  }: {
+    onClose: () => void;
+    onUseText: () => void;
+    visible: boolean;
+  }) =>
+    visible ? (
+      <div data-testid="dictation-off">
+        <button data-testid="dictation-off-text" onClick={onUseText}>
+          Type
+        </button>
+        <button data-testid="dictation-off-close" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    ) : null,
   QuotaLimitSheet: () => null,
 }));
 
@@ -607,12 +627,15 @@ jest.doMock('@/hooks/useQuota', () => ({
 
 jest.doMock('@/hooks/useRecordingSession', () => ({
   useRecordingSession: ({
+    onDictationOff,
     onNativeEnd,
     onPartialTranscript,
   }: {
+    onDictationOff?: () => void;
     onNativeEnd?: () => void;
     onPartialTranscript?: (text: string) => void;
   }) => {
+    mockOnDictationOff = onDictationOff;
     mockOnNativeEnd = onNativeEnd;
     mockOnPartialTranscript = onPartialTranscript;
     return {
@@ -979,6 +1002,7 @@ describe('Recording screen', () => {
     mockKeyboardSubscribers = {};
     mockOnPartialTranscript = undefined;
     mockOnNativeEnd = undefined;
+    mockOnDictationOff = undefined;
     mockAppStateHandler = undefined;
     mockAppStateHandlers.clear();
     mockIsRecording = false;
@@ -1184,8 +1208,10 @@ describe('Recording screen', () => {
       await awaitEditorReady();
       fireEvent.click(screen.getByTestId('recording-voice-control'));
       await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+      expect(screen.queryByTestId('dictation-off')).toBeNull();
       mockStopRecording.mockImplementationOnce(async () => {
         mockIsRecordingRef.current = false;
+        mockOnDictationOff?.();
         return { transcript: '', error: 'dictation_off' };
       });
 
@@ -1193,10 +1219,13 @@ describe('Recording screen', () => {
         mockOnNativeEnd?.();
       });
 
+      await waitFor(() => expect(screen.getByTestId('dictation-off')).toBeTruthy());
       await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
         .toContain('recording.status.fallback.stt_unavailable'));
       expect(mockStartRecording).toHaveBeenCalledTimes(1);
       expect(screen.getByTestId('recording-voice-control').textContent).not.toContain('recording.mic.resume');
+      fireEvent.click(screen.getByTestId('dictation-off-close'));
+      expect(screen.queryByTestId('dictation-off')).toBeNull();
     }
   );
 

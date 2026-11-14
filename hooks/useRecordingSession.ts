@@ -67,6 +67,8 @@ export interface UseRecordingSessionOptions {
   onLanguagePackMissing?: (info: { locale: string; installedLocales: string[] }) => void;
   /** Called when native recognition ends without an explicit stop/abort. */
   onNativeEnd?: () => void;
+  /** Shows how to turn iOS Dictation back on; an alert is used when absent. */
+  onDictationOff?: () => void;
 }
 
 export function useRecordingSession({
@@ -75,6 +77,7 @@ export function useRecordingSession({
   onPartialTranscript,
   onLanguagePackMissing,
   onNativeEnd,
+  onDictationOff,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
   // Held from a start's first audio mode change to its stop's last, with or without a
@@ -195,10 +198,11 @@ export function useRecordingSession({
         // (kLSRErrorDomain 201 -> service-not-allowed) or speech recognition was
         // revoked (not-allowed). Without words the user would otherwise see nothing.
         if (!transcriptText && Platform.OS === 'ios' && nativeResult.errorCode === 'service-not-allowed') {
-          Alert.alert(
-            t('recording.alert.dictation_off.title'),
-            t('recording.alert.dictation_off.message')
-          );
+          if (onDictationOff) {
+            onDictationOff();
+          } else {
+            Alert.alert(t('recording.dictation_off.title'), t('recording.dictation_off.intro'));
+          }
           return { transcript: '', error: 'dictation_off' };
         }
         if (!transcriptText && Platform.OS === 'ios' && nativeResult.errorCode === 'not-allowed') {
@@ -257,7 +261,7 @@ export function useRecordingSession({
         stopPromiseRef.current = null;
       }
     }
-  }, [onLanguagePackMissing, transcriptionLocale, t]);
+  }, [onDictationOff, onLanguagePackMissing, transcriptionLocale, t]);
 
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {

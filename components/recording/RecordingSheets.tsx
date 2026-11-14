@@ -46,6 +46,58 @@ export function MicPermissionRationaleSheet({
   );
 }
 
+/**
+ * iOS gives an app no way to open the Keyboard settings page, so the path is
+ * written out as steps the reader follows in Settings.
+ */
+export function DictationOffSheet({
+  visible,
+  onClose,
+  onUseText,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  onUseText: () => void;
+}) {
+  const { t } = useTranslation();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const steps = [
+    t('recording.dictation_off.step_settings'),
+    t('recording.dictation_off.step_keyboard'),
+    t('recording.dictation_off.step_toggle'),
+  ];
+
+  return (
+    <StandardBottomSheet
+      visible={visible}
+      onClose={onClose}
+      title={t('recording.dictation_off.title')}
+      subtitle={t('recording.dictation_off.intro')}
+      testID={TID.Sheet.DictationOff}
+      actions={{
+        primaryLabel: t('recording.dictation_off.use_text'),
+        onPrimary: onUseText,
+        primaryTestID: TID.Button.DictationOffUseText,
+        linkLabel: t('recording.dictation_off.dismiss'),
+        onLink: onClose,
+        linkTestID: TID.Button.DictationOffDismiss,
+      }}
+    >
+      <View style={styles.dictationSteps}>
+        {steps.map((step, index) => (
+          <View key={step} style={styles.dictationStep}>
+            <View style={[styles.dictationStepNumber, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}>
+              <Text style={[styles.dictationStepNumberText, { color: noctalia.text.primary }]}>{index + 1}</Text>
+            </View>
+            <Text style={[styles.dictationStepText, { color: noctalia.text.primary }]}>{step}</Text>
+          </View>
+        ))}
+      </View>
+    </StandardBottomSheet>
+  );
+}
+
 export function QuotaLimitSheet({
   visible,
   onClose,
@@ -181,6 +233,35 @@ export function QuotaLimitSheet({
 }
 
 const styles = StyleSheet.create({
+  dictationSteps: {
+    width: '100%',
+    gap: ThemeLayout.spacing.sm,
+    marginBottom: ThemeLayout.spacing.md,
+    paddingHorizontal: ThemeLayout.spacing.sm,
+  },
+  dictationStep: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ThemeLayout.spacing.sm,
+  },
+  dictationStepNumber: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dictationStepNumberText: {
+    fontFamily: Fonts.outfit.medium,
+    fontSize: 14,
+  },
+  dictationStepText: {
+    flex: 1,
+    fontFamily: Fonts.outfit.regular,
+    fontSize: 15,
+    lineHeight: 21,
+  },
   analysisOfferError: {
     width: '100%',
     borderWidth: 1,
