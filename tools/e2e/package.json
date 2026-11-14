@@ -11,14 +11,14 @@
   },
   "devDependencies": {
     "@ai-sdk/openai": "4.0.115",
-    "@e2e-dev/decision": "0.3.2",
-    "@e2e-dev/mobile": "0.12.6",
-    "@e2e-dev/web": "0.15.5",
+    "@e2e-dev/decision": "0.3.3",
+    "@e2e-dev/mobile": "0.12.7",
+    "@e2e-dev/web": "0.16.0",
     "@types/node": "^24.0.0",
-    "agent-device": "0.21.36",
+    "agent-device": "0.21.37",
     "ai": "7.0.170",
-    "e2e": "0.23.0",
-    "playwright": "1.64.1",
+    "e2e": "0.23.1",
+    "playwright": "1.65.0",
     "typescript": "~5.9.2"
   },
   "overrides": {

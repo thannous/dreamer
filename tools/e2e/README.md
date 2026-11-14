@@ -16,24 +16,25 @@ migration record (Git history).
 
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.23.0,
-`@e2e-dev/web` 0.15.5, `@e2e-dev/mobile` 0.12.6 and `agent-device` 0.21.36
-(a direct pin; the mobile engine depends on 0.21.36 too, and the override keeps a
+from the application's Playwright version. The locked runtime is `e2e` 0.23.1,
+`@e2e-dev/web` 0.16.0, `@e2e-dev/mobile` 0.12.7 and `agent-device` 0.21.37
+(a direct pin; the mobile engine depends on 0.21.37 too, and the override keeps a
 future engine bump from nesting another version unnoticed).
-0.21.36 rebuilds the iOS runner and changes iOS alert and modal-surface reads, deep
-accessibility snapshots, Android snapshot-helper retirement and daemon lease recovery
-([release notes](https://github.com/callstack/agent-device/releases/tag/v0.21.36)).
+0.21.37 lists a paired iPhone whose CoreDevice tunnel is down as not booted, and
+honours the engine's request to skip its post-gesture wait after a test's own swipe
+or scroll ([release notes](https://github.com/callstack/agent-device/releases/tag/v0.21.37)).
 A native campaign qualifies it; a web run does not use it. The model stack is
 pinned too: `ai` 7.0.170 runs the agent steps, `@ai-sdk/openai` 4.0.115 wraps the
-saved ChatGPT login, and `@e2e-dev/decision` 0.3.2 is the PR gate's decision filter.
+saved ChatGPT login, and `@e2e-dev/decision` 0.3.3 is the PR gate's decision filter.
 `SDK_PINS` in `qualification.mjs` holds these four runtime versions and those three.
 A run, collection, build, inspection or MCP session refuses another installed version
 of any of them, `evidence.json` `pins` records all seven, and a report from another
 runner or engine does not qualify. Nor does a persona step whose provider is not
 `chatgpt.responses`, the saved login's route: an API-key `openai(…)` reports
-`openai.responses`. The engine peer ranges ask for e2e `>=0.22.1 <1`.
-Web 0.15.5 drives `playwright-core` 1.64.1, so the matcher Playwright moves to
-1.64.1 too and both share one Chromium build.
+`openai.responses`. Web 0.16.0 and decision 0.3.3 ask for e2e `>=0.23.1 <1` (an older
+runner refuses the filter's `relevance` and drops the whole filter); mobile asks `>=0.22.1 <1`.
+Web 0.16.0 drives `playwright-core` 1.65.0, so the matcher Playwright moves to
+1.65.0 too and both share one Chromium build.
 Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.23's
 `^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
 loader; the scoped public matcher preload is unchanged.
@@ -56,13 +57,14 @@ A native target drives one device, so Dreamer's `dreamer.*mobile.e2e.ts` files a
 split by the Release profile their journeys need, for reading rather than for speed.
 With `CI` set the runner keeps one worker; no hosted CI launches these campaigns,
 and `--shard` stays a local selection that `collect` unions. Native runs keep one
-worker per named device. e2e starts the slowest files first when the
-previous report sits in the same output directory. Each run gets a new one, so
-the runner keeps the report of the last run with no `--grep`, `--tag`, `--shard`
-or run budget in `$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and
-seeds it into the next output directory; a seed the run does not replace is
-deleted. A blocked run, or one where no test passed, leaves the kept report as
-it was. Without that file, files start in collection order.
+worker per named device. e2e starts the slowest files first from
+`<output>/timings.json`, a history it smooths over recent runs. Each run gets a new
+output directory, so the runner keeps that file, and the report of the last run with
+no `--grep`, `--tag`, `--shard` or run budget, in
+`$(git rev-parse --git-common-dir)/verify-cache/e2e-durations/` and seeds the timings
+into the next output directory (the kept report is what `timings.mjs` reads; it is
+never seeded back). A blocked run, or one where no test passed, leaves both as
+they were. Without that file, files start in collection order.
 
 ## SDK version notes
 
@@ -120,7 +122,7 @@ unpacked from an array in a loop and helpers called as methods are not followed.
 
 New journeys are written from this directory with
 `E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 mise exec -- npx e2e run --watch`
-(e2e 0.23.0). Watch reruns when a test, a neighbouring source file, or the
+(e2e 0.23.1). Watch reruns when a test, a neighbouring source file, or the
 config is saved. It is for authoring. Qualifying runs stay on `run.mjs`.
 `run.mjs`, `full-campaign.mjs`, the bug bash, the iPhone sandbox runner and
 `npm run test:testerarmy:login` set both variables themselves; a direct `npx e2e`
@@ -414,14 +416,14 @@ consent, then opens `/`, so a body starts on onboarding. Their shared steps
 (`startGuest`, `openSettings`, `selectProfile`, `journal`, `openDream`…) live in
 `web-journeys.ts`. A password field's attributes are withheld, so its masking is
 read with a `browser.locator` count; the forgot-password cooldown moves
-`Date.now()` because e2e has no clock yet. `surfaceOf()` stays only for what e2e 0.23.0 and
-web 0.15.5 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
+`Date.now()` because e2e has no clock yet. `surfaceOf()` stays only for what e2e 0.23.1 and
+web 0.16.0 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
 `toHaveRole`, `toBeEditable`, `context.setOffline`, per-test `grantPermissions`,
 page events (`page.on`), `addStyleTag` (or `browser.evaluate`), second
 contexts/pages and the branch target's `routeWebSocket`. Raw-page steps are not recorded, redacted or masked in
 trace.md. Existing parity bodies keep their coverage until a replacement passes.
 TesterArmy owns isolated attempts and traces; the pinned isolated Playwright
-1.64.1 package supplies matchers only. The parity fixture preserves
+1.65.0 package supplies matchers only. The parity fixture preserves
 Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
 30-second actions and 15-second exact assertions from the historical config.
 Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
@@ -818,7 +820,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package pins `agent-device` 0.21.36 for its local CLI and the mobile engine
+package pins `agent-device` 0.21.37 for its local CLI and the mobile engine
 through a targeted dependency override. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured

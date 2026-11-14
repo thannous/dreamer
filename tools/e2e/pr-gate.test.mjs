@@ -274,10 +274,10 @@ test('model selection retains Dreamer language passes and the Lucid campaign', (
 
 function browserRuntime(overrides = {}) {
   const closed = [];
-  const browser = { version: () => '156.0.8078.4', close: async () => { closed.push(true); } };
+  const browser = { version: () => '158.0.8127.18', close: async () => { closed.push(true); } };
   const runtime = {
     e2eVersion: SDK_PINS.e2e, webVersion: SDK_PINS['@e2e-dev/web'],
-    coreVersion: '1.64.1', matcherVersion: '1.64.1', expectedBrowserVersion: '156.0.8078.4',
+    coreVersion: '1.65.0', matcherVersion: '1.65.0', expectedBrowserVersion: '158.0.8127.18',
     chromium: { launch: async options => {
       assert.deepEqual(options, { headless: true, timeout: 10_000 });
       return browser;
@@ -289,7 +289,7 @@ function browserRuntime(overrides = {}) {
 test('browser readiness accepts the installed headless engine and closes it', async () => {
   const { runtime, closed } = browserRuntime();
   assert.deepEqual(await probeWebBrowser('/unused', () => runtime), {
-    ok: true, version: '156.0.8078.4', webVersion: SDK_PINS['@e2e-dev/web'], playwrightVersion: '1.64.1',
+    ok: true, version: '158.0.8127.18', webVersion: SDK_PINS['@e2e-dev/web'], playwrightVersion: '1.65.0',
   });
   assert.equal(closed.length, 1);
 });
