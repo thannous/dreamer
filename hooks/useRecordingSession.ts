@@ -36,6 +36,44 @@ async function getOrRequestRecordingPermission(): Promise<RecordingPermissionRes
   return { granted: requested.granted, prompted: true };
 }
 
+/**
+ * Errors that mean something else than iOS refusing to listen: the user stopped,
+ * nothing was said, the language or the authorization is the problem.
+ */
+const IOS_ERRORS_NOT_DICTATION_OFF = new Set([
+  'aborted',
+  'no-speech',
+  'speech-timeout',
+  'not-allowed',
+  'language-not-supported',
+  'too-many-requests',
+  'client',
+]);
+
+/**
+ * With Dictation off, a real iPhone accepts the start, then ends the session before
+ * it ever listens. Apple's error varies (201 maps to service-not-allowed, 1101/1107 to
+ * network), so any other error before listening began is treated the same way.
+ */
+function isIosDictationRefusal(result: { errorCode?: string; startedListening?: boolean }): boolean {
+  if (result.errorCode === 'service-not-allowed') return true;
+  if (!result.errorCode || result.startedListening !== false) return false;
+  return !IOS_ERRORS_NOT_DICTATION_OFF.has(result.errorCode);
+}
+
+function showSpeechPermissionAlert(t: UseRecordingSessionOptions['t']): void {
+  Alert.alert(
+    t('recording.alert.permission_required.title'),
+    t('recording.alert.speech_permission_required.message'),
+    [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('recording.alert.open_settings'), onPress: () => {
+        void Linking.openSettings().catch((error) => log.warn('Failed to open settings', error));
+      } },
+    ],
+  );
+}
+
 export type RecordingPermissionState = 'unknown' | 'granted' | 'denied';
 
 export interface RecordingSessionResult {
@@ -54,6 +92,10 @@ export interface UseRecordingSessionOptions {
   onLanguagePackMissing?: (info: { locale: string; installedLocales: string[] }) => void;
   /** Called when native recognition ends without an explicit stop/abort. */
   onNativeEnd?: () => void;
+  /** Shows how to turn iOS Dictation back on; an alert is used when absent. */
+  onDictationOff?: () => void;
+  /** Called when the recognizer reports it is listening. */
+  onListeningStart?: () => void;
 }
 
 export function useRecordingSession({
@@ -62,6 +104,8 @@ export function useRecordingSession({
   onPartialTranscript,
   onLanguagePackMissing,
   onNativeEnd,
+  onDictationOff,
+  onListeningStart,
 }: UseRecordingSessionOptions) {
   const [isRecording, setIsRecording] = useState(false);
   // Held from a start's first audio mode change to its stop's last, with or without a
@@ -178,6 +222,22 @@ export function useRecordingSession({
           normalizedNativeError?.includes('too many requests') ||
           false;
 
+        // iOS ends the session at once when Dictation is turned off in Settings
+        // (kLSRErrorDomain 201 -> service-not-allowed) or speech recognition was
+        // revoked (not-allowed). Without words the user would otherwise see nothing.
+        if (!transcriptText && Platform.OS === 'ios' && isIosDictationRefusal(nativeResult)) {
+          if (onDictationOff) {
+            onDictationOff();
+          } else {
+            Alert.alert(t('recording.dictation_off.title'), t('recording.dictation_off.intro'));
+          }
+          return { transcript: '', error: 'dictation_off' };
+        }
+        if (!transcriptText && Platform.OS === 'ios' && nativeResult.errorCode === 'not-allowed') {
+          showSpeechPermissionAlert(t);
+          return { transcript: '', error: 'permission_denied' };
+        }
+
         if (!transcriptText && isLanguagePackMissing) {
           const availability = await getSpeechLocaleAvailability(transcriptionLocale);
           const installedLocales = availability?.installedLocales ?? [];
@@ -229,7 +289,7 @@ export function useRecordingSession({
         stopPromiseRef.current = null;
       }
     }
-  }, [onLanguagePackMissing, transcriptionLocale, t]);
+  }, [onDictationOff, onLanguagePackMissing, transcriptionLocale, t]);
 
   const startRecording = useCallback(
     async (currentTranscript: string): Promise<{ success: boolean; error?: string }> => {
@@ -291,7 +351,10 @@ export function useRecordingSession({
 
         const nativeSession = await startNativeSpeechSession(transcriptionLocale, {
           signal: controller.signal,
-          onListeningChange: setIsSpeechListening,
+          onListeningChange: (listening) => {
+            setIsSpeechListening(listening);
+            if (listening) onListeningStart?.();
+          },
           permissionAlreadyGranted: Platform.OS !== 'web',
           onEnd: onNativeEnd,
           onPartial: (text) => {
@@ -347,16 +410,7 @@ export function useRecordingSession({
         }
         if (controller.signal.aborted) return { success: false, error: 'cancelled' };
         if (err instanceof Error && err.message === 'speech_permission_denied') {
-          Alert.alert(
-            t('recording.alert.permission_required.title'),
-            t('recording.alert.speech_permission_required.message'),
-            [
-              { text: t('common.cancel'), style: 'cancel' },
-              { text: t('recording.alert.open_settings'), onPress: () => {
-                void Linking.openSettings().catch((error) => log.warn('Failed to open settings', error));
-              } },
-            ],
-          );
+          showSpeechPermissionAlert(t);
           return { success: false, error: 'permission_denied' };
         }
         log.error('Failed to start recording', err);
@@ -366,7 +420,7 @@ export function useRecordingSession({
         pendingStartRef.current = null;
       }
     },
-    [t, transcriptionLocale, onNativeEnd, onPartialTranscript]
+    [t, transcriptionLocale, onNativeEnd, onPartialTranscript, onListeningStart]
   );
 
   const toggleRecording = useCallback(

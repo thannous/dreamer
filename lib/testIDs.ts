@@ -38,6 +38,9 @@ export const TID = {
     MicRationaleAllow: 'btn.recording.micRationale.allow',
     MicRationaleUseText: 'btn.recording.micRationale.useText',
     MicRationaleDismiss: 'btn.recording.micRationale.dismiss',
+    DictationOffUseText: 'btn.recording.dictationOff.useText',
+    DictationOffDismiss: 'btn.recording.dictationOff.dismiss',
+    DictationOffRetry: 'btn.recording.dictationOff.retry',
     SaveDream: 'btn.saveDream',
     NavigateJournal: 'btn.navigateJournal',
     NavigateSettings: 'btn.navigateSettings',
@@ -266,6 +269,7 @@ export const TID = {
     JournalIllustrationFullscreen: 'modal.journal.illustration.fullscreen',
   },
   Component: {
+    DictationStepsCarousel: 'component.recording.dictationStepsCarousel',
     SearchBar: 'component.searchBar',
     SymbolVariations: 'symbol.detail.variations',
     /** A variation card of a symbol's page, by its place in the entry. */
@@ -416,6 +420,7 @@ export const TID = {
     AnalysisNotice: 'sheet.analysisNotice',
     SavedDreamAnalysis: 'sheet.savedDreamAnalysis',
     MicRationale: 'sheet.recording.micRationale',
+    DictationOff: 'sheet.recording.dictationOff',
     OnboardingPrivacy: 'sheet.onboarding.privacy',
     AnalysisOffer: 'sheet.recording.analysisOffer',
     RememberedDreamDetails: 'sheet.recording.remembered.details',

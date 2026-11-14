@@ -143,6 +143,7 @@ jest.mock('@/components/recording/RecordingDraftProgress', () => ({ RecordingDra
 jest.mock('@/components/Toast', () => ({ Toast: () => null }));
 jest.mock('@/components/ui/StandardBottomSheet', () => ({ StandardBottomSheet: () => null }));
 jest.mock('@/components/recording/RecordingSheets', () => ({
+  DictationOffSheet: () => null,
   MicPermissionRationaleSheet: ({ visible, onAllow }: { visible: boolean; onAllow: () => void }) =>
     visible ? <button data-testid="allow-microphone" onClick={onAllow}>Allow</button> : null,
 }));
