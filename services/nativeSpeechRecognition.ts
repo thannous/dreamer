@@ -31,6 +31,8 @@ export type NativeSpeechSession = {
     transcript: string;
     error?: string;
     errorCode?: string;
+    /** True once the recognizer reported it was listening ('start' event). */
+    startedListening?: boolean;
   }>;
   abort: () => void;
 };
@@ -660,6 +662,7 @@ export async function startNativeSpeechSession(
     let lastPartial = '';
     let lastPublishedPreview = '';
     let lastError: { code?: string; message?: string } | null = null;
+    let startedListening = false;
     let finalChunks: string[] = [];
 
     let resolveEnd: (() => void) | null = null;
@@ -678,6 +681,7 @@ export async function startNativeSpeechSession(
 
     const startSub = speechModule.addListener('start', () => {
       if (sessionId !== globalSessionCounter || ended || stopRequested) return;
+      startedListening = true;
       options?.onListeningChange?.(true);
     });
 
@@ -861,6 +865,7 @@ export async function startNativeSpeechSession(
         transcript,
         error: lastError?.message,
         errorCode: lastError?.code,
+        startedListening,
       };
     };
 

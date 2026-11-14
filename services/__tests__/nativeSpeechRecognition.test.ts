@@ -585,6 +585,42 @@ describe('native speech module integration', () => {
 
     expect(result.error).toBe('lost');
     expect(result.errorCode).toBe('network');
+    expect(result.startedListening).toBe(false);
+  });
+
+  it('reports a session that reached listening before its error', async () => {
+    const { Platform } = require('react-native');
+    Platform.OS = 'ios';
+    (Platform as any).Version = 17;
+
+    const listeners = new Map<string, (event?: any) => void>();
+    const speechModule = {
+      isRecognitionAvailable: () => true,
+      requestPermissionsAsync: async () => ({ granted: true }),
+      supportsOnDeviceRecognition: () => false,
+      supportsRecording: () => false,
+      getStateAsync: async () => 'inactive',
+      start: jest.fn(),
+      stop: jest.fn(() => {
+        listeners.get('end')?.();
+      }),
+      abort: jest.fn(),
+      addListener: jest.fn((event: string, cb: (payload?: any) => void) => {
+        listeners.set(event, cb);
+        return { remove: jest.fn() };
+      }),
+    } as any;
+
+    __setCachedSpeechModuleForTests(speechModule);
+
+    const session = await startNativeSpeechSession('en-US');
+    listeners.get('start')?.();
+    listeners.get('error')?.({ error: 'network', message: 'lost' });
+
+    const result = await session!.stop();
+
+    expect(result.errorCode).toBe('network');
+    expect(result.startedListening).toBe(true);
   });
 });
 

@@ -533,6 +533,30 @@ describe('useRecordingSession', () => {
       expect(Alert.alert).not.toHaveBeenCalled();
     });
 
+    it.each([
+      ['network', false, 'dictation_off'],
+      ['audio-capture', false, 'dictation_off'],
+      ['network', true, 'no_speech'],
+      ['network', undefined, 'no_speech'],
+      ['aborted', false, 'no_speech'],
+      ['no-speech', false, 'no_speech'],
+    ] as const)(
+      'on iOS, a %s error with listening started=%s ends as %s',
+      async (errorCode, startedListening, expected) => {
+        (Platform as { OS: string }).OS = 'ios';
+        jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({
+          stop: jest.fn().mockResolvedValue({ transcript: '', errorCode, startedListening }),
+          abort: jest.fn(),
+        });
+        const { result } = renderHook(() => useRecordingSession(defaultOptions));
+        await act(async () => { await result.current.startRecording(''); });
+        let response: RecordingSessionResult | undefined;
+        await act(async () => { response = await result.current.stopRecording(); });
+
+        expect(response).toEqual({ transcript: '', error: expected });
+      }
+    );
+
     it('offers Settings when iOS refuses speech recognition after the session started', async () => {
       (Platform as { OS: string }).OS = 'ios';
       jest.mocked(startNativeSpeechSession).mockResolvedValueOnce({

@@ -36,6 +36,31 @@ async function getOrRequestRecordingPermission(): Promise<RecordingPermissionRes
   return { granted: requested.granted, prompted: true };
 }
 
+/**
+ * Errors that mean something else than iOS refusing to listen: the user stopped,
+ * nothing was said, the language or the authorization is the problem.
+ */
+const IOS_ERRORS_NOT_DICTATION_OFF = new Set([
+  'aborted',
+  'no-speech',
+  'speech-timeout',
+  'not-allowed',
+  'language-not-supported',
+  'too-many-requests',
+  'client',
+]);
+
+/**
+ * With Dictation off, a real iPhone accepts the start, then ends the session before
+ * it ever listens. Apple's error varies (201 maps to service-not-allowed, 1101/1107 to
+ * network), so any other error before listening began is treated the same way.
+ */
+function isIosDictationRefusal(result: { errorCode?: string; startedListening?: boolean }): boolean {
+  if (result.errorCode === 'service-not-allowed') return true;
+  if (!result.errorCode || result.startedListening !== false) return false;
+  return !IOS_ERRORS_NOT_DICTATION_OFF.has(result.errorCode);
+}
+
 function showSpeechPermissionAlert(t: UseRecordingSessionOptions['t']): void {
   Alert.alert(
     t('recording.alert.permission_required.title'),
@@ -197,7 +222,7 @@ export function useRecordingSession({
         // iOS ends the session at once when Dictation is turned off in Settings
         // (kLSRErrorDomain 201 -> service-not-allowed) or speech recognition was
         // revoked (not-allowed). Without words the user would otherwise see nothing.
-        if (!transcriptText && Platform.OS === 'ios' && nativeResult.errorCode === 'service-not-allowed') {
+        if (!transcriptText && Platform.OS === 'ios' && isIosDictationRefusal(nativeResult)) {
           if (onDictationOff) {
             onDictationOff();
           } else {
