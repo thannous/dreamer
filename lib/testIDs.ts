@@ -269,6 +269,7 @@ export const TID = {
     JournalIllustrationFullscreen: 'modal.journal.illustration.fullscreen',
   },
   Component: {
+    DictationStepsCarousel: 'component.recording.dictationStepsCarousel',
     SearchBar: 'component.searchBar',
     SymbolVariations: 'symbol.detail.variations',
     /** A variation card of a symbol's page, by its place in the entry. */

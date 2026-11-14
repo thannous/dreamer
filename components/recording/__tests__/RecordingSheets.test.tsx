@@ -203,10 +203,15 @@ describe('RecordingSheets', () => {
 
     expect(screen.getByText('recording.dictation_off.title')).toBeTruthy();
     expect(screen.getByText('recording.dictation_off.intro')).toBeTruthy();
-    expect(['1', '2', '3'].map((n) => screen.getByText(n).textContent)).toEqual(['1', '2', '3']);
-    const steps = ['step_settings', 'step_keyboard', 'step_toggle']
-      .map((key) => screen.getByText(`recording.dictation_off.${key}`));
-    expect(steps).toHaveLength(3);
+    // One drawn page per step: the Settings screen, the row to tap, and the step below it.
+    expect(screen.getByTestId(TID.Component.DictationStepsCarousel)).toBeTruthy();
+    expect(screen.getByText('recording.dictation_off.screen_settings')).toBeTruthy();
+    expect(screen.getAllByText('recording.dictation_off.row_general')).toHaveLength(2);
+    expect(screen.getAllByText('recording.dictation_off.row_keyboard')).toHaveLength(2);
+    expect(screen.getByText('recording.dictation_off.row_dictation')).toBeTruthy();
+    for (const [index, key] of ['step_settings', 'step_keyboard', 'step_toggle'].entries()) {
+      expect(screen.getByText(`${index + 1}. recording.dictation_off.${key}`)).toBeTruthy();
+    }
     fireEvent.click(screen.getByTestId(TID.Button.DictationOffUseText));
     expect(onUseText).toHaveBeenCalledTimes(1);
     fireEvent.click(screen.getByTestId(TID.Button.DictationOffRetry));

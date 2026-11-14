@@ -1,5 +1,13 @@
-import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from 'react-native';
 
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { ThemeLayout } from '@/constants/journalTheme';
@@ -62,14 +70,6 @@ export function DictationOffSheet({
   onRetry: () => void;
 }) {
   const { t } = useTranslation();
-  const { colors, mode } = useTheme();
-  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
-  const steps = [
-    t('recording.dictation_off.step_settings'),
-    t('recording.dictation_off.step_keyboard'),
-    t('recording.dictation_off.step_toggle'),
-  ];
-
   return (
     <StandardBottomSheet
       visible={visible}
@@ -89,17 +89,107 @@ export function DictationOffSheet({
         linkTestID: TID.Button.DictationOffDismiss,
       }}
     >
-      <View style={styles.dictationSteps}>
-        {steps.map((step, index) => (
-          <View key={step} style={styles.dictationStep}>
-            <View style={[styles.dictationStepNumber, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}>
-              <Text style={[styles.dictationStepNumberText, { color: noctalia.text.primary }]}>{index + 1}</Text>
+      <DictationStepsCarousel />
+    </StandardBottomSheet>
+  );
+}
+
+type DictationStepSlide = {
+  caption: string;
+  /** The screen title drawn at the top of the thumbnail. */
+  screen: string;
+  /** The row to tap, drawn highlighted between faded rows. */
+  row: string;
+  toggle?: boolean;
+};
+
+/**
+ * Drawn thumbnails of the three Settings screens (no real screenshots): they follow the
+ * app language and stay true when Apple restyles Settings. One page per step.
+ */
+function DictationStepsCarousel() {
+  const { t } = useTranslation();
+  const { colors, mode } = useTheme();
+  const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
+  const [pageWidth, setPageWidth] = useState(0);
+  const [page, setPage] = useState(0);
+  const slides: DictationStepSlide[] = [
+    {
+      caption: t('recording.dictation_off.step_settings'),
+      screen: t('recording.dictation_off.screen_settings'),
+      row: t('recording.dictation_off.row_general'),
+    },
+    {
+      caption: t('recording.dictation_off.step_keyboard'),
+      screen: t('recording.dictation_off.row_general'),
+      row: t('recording.dictation_off.row_keyboard'),
+    },
+    {
+      caption: t('recording.dictation_off.step_toggle'),
+      screen: t('recording.dictation_off.row_keyboard'),
+      row: t('recording.dictation_off.row_dictation'),
+      toggle: true,
+    },
+  ];
+  const onLayout = useCallback((event: LayoutChangeEvent) => {
+    setPageWidth(event.nativeEvent.layout.width);
+  }, []);
+  const onScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (!pageWidth) return;
+    const next = Math.round(event.nativeEvent.contentOffset.x / pageWidth);
+    setPage((current) => (current === next ? current : next));
+  }, [pageWidth]);
+  const faded = { backgroundColor: noctalia.surface.border };
+
+  return (
+    <View style={styles.dictationCarousel} onLayout={onLayout} testID={TID.Component.DictationStepsCarousel}>
+      <ScrollView
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={32}
+      >
+        {slides.map((slide, index) => (
+          <View
+            key={slide.caption}
+            style={[styles.dictationSlide, pageWidth ? { width: pageWidth } : null]}
+            accessible
+            accessibilityLabel={`${index + 1}. ${slide.caption}`}
+          >
+            <View style={[styles.dictationThumb, { backgroundColor: noctalia.surface.soft, borderColor: noctalia.surface.border }]}>
+              <Text style={[styles.dictationThumbTitle, { color: noctalia.text.primary }]}>{slide.screen}</Text>
+              <View style={[styles.dictationFadedRow, faded]} />
+              <View style={[styles.dictationRow, { borderColor: noctalia.accent.base }]}>
+                <Text style={[styles.dictationRowText, { color: noctalia.text.primary }]} numberOfLines={1}>{slide.row}</Text>
+                {slide.toggle ? (
+                  <View style={[styles.dictationToggle, { backgroundColor: noctalia.accent.base }]}>
+                    <View style={styles.dictationToggleKnob} />
+                  </View>
+                ) : (
+                  <Text style={[styles.dictationChevron, { color: noctalia.text.secondary }]}>›</Text>
+                )}
+              </View>
+              <View style={[styles.dictationFadedRow, faded]} />
             </View>
-            <Text style={[styles.dictationStepText, { color: noctalia.text.primary }]}>{step}</Text>
+            <Text style={[styles.dictationStepText, { color: noctalia.text.primary }]}>
+              {index + 1}. {slide.caption}
+            </Text>
           </View>
         ))}
+      </ScrollView>
+      <View style={styles.dictationDots}>
+        {slides.map((slide, index) => (
+          <View
+            key={slide.caption}
+            style={[
+              styles.dictationDot,
+              { backgroundColor: index === page ? noctalia.accent.base : noctalia.surface.border },
+            ]}
+          />
+        ))}
       </View>
-    </StandardBottomSheet>
+    </View>
   );
 }
 
@@ -238,31 +328,77 @@ export function QuotaLimitSheet({
 }
 
 const styles = StyleSheet.create({
-  dictationSteps: {
+  dictationCarousel: {
     width: '100%',
-    gap: ThemeLayout.spacing.sm,
     marginBottom: ThemeLayout.spacing.md,
-    paddingHorizontal: ThemeLayout.spacing.sm,
   },
-  dictationStep: {
+  dictationSlide: {
+    alignItems: 'center',
+    paddingHorizontal: ThemeLayout.spacing.sm,
+    gap: ThemeLayout.spacing.sm,
+  },
+  dictationThumb: {
+    width: '100%',
+    borderWidth: 1,
+    borderRadius: ThemeLayout.borderRadius.lg,
+    padding: ThemeLayout.spacing.md,
+    gap: 10,
+  },
+  dictationThumbTitle: {
+    fontFamily: Fonts.outfit.medium,
+    fontSize: 16,
+  },
+  dictationFadedRow: {
+    height: 12,
+    borderRadius: 6,
+    opacity: 0.7,
+  },
+  dictationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: ThemeLayout.spacing.sm,
+    justifyContent: 'space-between',
+    borderWidth: 2,
+    borderRadius: ThemeLayout.borderRadius.md,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    gap: 8,
   },
-  dictationStepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dictationStepNumberText: {
+  dictationRowText: {
+    flex: 1,
     fontFamily: Fonts.outfit.medium,
-    fontSize: 14,
+    fontSize: 15,
+  },
+  dictationChevron: {
+    fontFamily: Fonts.outfit.medium,
+    fontSize: 20,
+    lineHeight: 20,
+  },
+  dictationToggle: {
+    width: 44,
+    height: 26,
+    borderRadius: 13,
+    padding: 3,
+    alignItems: 'flex-end',
+  },
+  dictationToggleKnob: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#ffffff',
+  },
+  dictationDots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: ThemeLayout.spacing.sm,
+  },
+  dictationDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
   },
   dictationStepText: {
-    flex: 1,
+    textAlign: 'center',
     fontFamily: Fonts.outfit.regular,
     fontSize: 15,
     lineHeight: 21,
