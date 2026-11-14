@@ -6,7 +6,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
-import { MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
+import { DictationOffSheet, MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
 import { offlineModelPromptHandler } from '@/components/speech/offlineModelPromptHandler';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
@@ -274,6 +274,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   const captureMicrophoneMutedRef = useRef(false);
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
+  const [showDictationOffSheet, setShowDictationOffSheet] = useState(false);
   const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
   const [offlineModelLocale, setOfflineModelLocale] = useState('');
   const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
@@ -573,9 +574,15 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
 
   const stopRecordingFromNativeEndRef = useRef<(() => void) | null>(null);
 
+  const openDictationOffSheet = useCallback(() => setShowDictationOffSheet(true), []);
+  // The Dictation sheet stays up through a retry and closes once listening has begun.
+  const closeDictationOffSheet = useCallback(() => setShowDictationOffSheet(false), []);
+
   const recordingSession = useRecordingSession({
     transcriptionLocale,
     t,
+    onDictationOff: openDictationOffSheet,
+    onListeningStart: closeDictationOffSheet,
     onNativeEnd: () => {
       stopRecordingFromNativeEndRef.current?.();
     },
@@ -873,6 +880,13 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       }
 
       recordingStartedAtRef.current = null;
+      // The session already told the user why speech stopped (iOS Dictation off or speech
+      // recognition refused). It ends listening even when the stop came from the system.
+      if (result.error === 'dictation_off' || result.error === 'permission_denied') {
+        setDictationIntentState('idle');
+        handleVoiceCaptureFailure(result.error === 'dictation_off' ? 'stt_unavailable' : 'permission_denied');
+        return;
+      }
       if (silent || reason === 'pause' || reason === 'background') {
         return;
       }
@@ -1072,6 +1086,11 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       if (dictationIntentRef.current !== 'listening') {
         return;
       }
+      if (result.error === 'dictation_off' || result.error === 'permission_denied') {
+        setDictationIntentState('idle');
+        handleVoiceCaptureFailure(result.error === 'dictation_off' ? 'stt_unavailable' : 'permission_denied');
+        return;
+      }
       if (applied) {
         consecutiveEmptyHandsFreeRestartsRef.current = 0;
       } else {
@@ -1119,6 +1138,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   }, [
     inputMode,
     applyStoppedTranscript,
+    handleVoiceCaptureFailure,
     setDictationIntentState,
     speechPlatform,
     startRecording,
@@ -1802,6 +1822,21 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     await whileHeld(recordingTransitionRef, () => startRecording());
   }, [isHydrated, startRecording]);
 
+  const handleDictationOffClose = useCallback(() => setShowDictationOffSheet(false), []);
+
+  // After turning Dictation on in Settings, the reader starts listening from the sheet.
+  // The sheet stays up through the attempt: iOS accepts the start and refuses a moment
+  // later when Dictation is still off, so it only closes once listening has begun.
+  const handleDictationOffRetry = useCallback(async () => {
+    if (!isHydrated || recordingTransitionRef.current) return;
+    await whileHeld(recordingTransitionRef, () => startRecording());
+  }, [isHydrated, startRecording]);
+
+  const handleDictationOffUseText = useCallback(async () => {
+    setShowDictationOffSheet(false);
+    await switchToTextMode();
+  }, [switchToTextMode]);
+
   const handleMicRationaleUseText = useCallback(async () => {
     hasSeenMicRationaleRef.current = true;
     setShowMicRationaleSheet(false);
@@ -2213,6 +2248,12 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
         onClose={handleMicRationaleClose}
         onAllow={handleMicRationaleAllow}
         onUseText={handleMicRationaleUseText}
+      />
+      <DictationOffSheet
+        visible={showDictationOffSheet}
+        onClose={handleDictationOffClose}
+        onUseText={handleDictationOffUseText}
+        onRetry={handleDictationOffRetry}
       />
       <OfflineModelDownloadSheet
         visible={showOfflineModelSheet}

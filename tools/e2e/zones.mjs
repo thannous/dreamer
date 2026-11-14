@@ -420,12 +420,18 @@ export function filterIsActive(context) {
   return Array.isArray(context?.changes?.files);
 }
 
+/** Relevance a test filter gives a kept journey (e2e 0.23.1 bands at 0.75, 0.5 and 0.25). */
+export const RELEVANCE_CHANGED_TEST = 1;
+export const RELEVANCE_ZONE = 0.75;
+export const RELEVANCE_UNSCORED = 0.5;
+
 export function parcoursExclude(tests, files, locale) {
   const zones = zonesForFiles(files);
   const changedTests = new Set(files.flatMap(journeysOfChange));
   const tags = new Set(zones.flatMap(zone => zone.tags));
   const testFiles = new Set(zones.flatMap(zone => zone.tests));
   const exclude = {};
+  const relevance = {};
   for (const test of tests) {
     const locales = test.tags.filter(tag => tag.startsWith('locale-'));
     if (locale && locales.length && !locales.includes(`locale-${locale}`)) {
@@ -443,10 +449,13 @@ export function parcoursExclude(tests, files, locale) {
     const tagged = test.tags.some(tag => tags.has(tag));
     const listed = testFiles.has(test.file) || changedTests.has(test.file);
     if (!tagged && !listed) exclude[test.id] = UNTOUCHED;
+    // e2e 0.23.1 starts the likeliest files first: a journey whose own file changed,
+    // then the journeys of a touched zone. It never leaves a test out.
+    else relevance[test.id] = changedTests.has(test.file) ? RELEVANCE_CHANGED_TEST : RELEVANCE_ZONE;
   }
   const names = zones.map(zone => zone.id);
   const note = names.length ? names.join(',') : changedTests.size ? 'tests-modifies' : 'aucun-parcours';
-  return { exclude, note };
+  return { exclude, relevance, note };
 }
 
 /**
@@ -476,12 +485,18 @@ export function selectionOwesNothing(pairs, files, locale) {
  */
 export function widenWithDecision(zones, verdict) {
   const exclude = {};
+  const relevance = { ...zones.relevance };
   let kept = 0;
   for (const [id, reason] of Object.entries(zones.exclude)) {
     if (reason !== UNTOUCHED) exclude[id] = reason;
     else if (verdict.exclude[id] !== undefined) exclude[id] = `${UNTOUCHED} (modele : ${verdict.exclude[id]})`;
-    else kept += 1;
+    else {
+      kept += 1;
+      // The model's own score for a parcours it brought back (decision 0.3.3), else the middle band.
+      const score = verdict.relevance?.[id];
+      relevance[id] = Number.isFinite(score) && score >= 0 && score <= 1 ? score : RELEVANCE_UNSCORED;
+    }
   }
   const note = [zones.note, `modele : ${kept} parcours hors zone repris`, verdict.note].filter(Boolean).join('; ');
-  return { exclude, note };
+  return { exclude, relevance, note };
 }

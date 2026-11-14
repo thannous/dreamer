@@ -88,6 +88,8 @@ type MockKeyboardEvent = { duration: number; endCoordinates: { screenX: number; 
 let mockKeyboardSubscribers: Record<string, Set<(event: MockKeyboardEvent) => void>> = {};
 let mockOnPartialTranscript: ((text: string) => void) | undefined;
 let mockOnNativeEnd: (() => void) | undefined;
+let mockOnDictationOff: (() => void) | undefined;
+let mockOnListeningStart: (() => void) | undefined;
 let mockAppStateHandler: ((state: string) => void) | undefined;
 const mockAppStateHandlers = new Set<(state: string) => void>();
 let mockIsRecording = false;
@@ -478,6 +480,30 @@ jest.doMock('@/components/recording/RecordingSheets', () => ({
         </button>
       </div>
     ) : null,
+  DictationOffSheet: ({
+    onClose,
+    onRetry,
+    onUseText,
+    visible,
+  }: {
+    onClose: () => void;
+    onRetry: () => void;
+    onUseText: () => void;
+    visible: boolean;
+  }) =>
+    visible ? (
+      <div data-testid="dictation-off">
+        <button data-testid="dictation-off-retry" onClick={onRetry}>
+          Retry
+        </button>
+        <button data-testid="dictation-off-text" onClick={onUseText}>
+          Type
+        </button>
+        <button data-testid="dictation-off-close" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    ) : null,
   QuotaLimitSheet: () => null,
 }));
 
@@ -607,12 +633,18 @@ jest.doMock('@/hooks/useQuota', () => ({
 
 jest.doMock('@/hooks/useRecordingSession', () => ({
   useRecordingSession: ({
+    onDictationOff,
+    onListeningStart,
     onNativeEnd,
     onPartialTranscript,
   }: {
+    onDictationOff?: () => void;
+    onListeningStart?: () => void;
     onNativeEnd?: () => void;
     onPartialTranscript?: (text: string) => void;
   }) => {
+    mockOnDictationOff = onDictationOff;
+    mockOnListeningStart = onListeningStart;
     mockOnNativeEnd = onNativeEnd;
     mockOnPartialTranscript = onPartialTranscript;
     return {
@@ -987,6 +1019,8 @@ describe('Recording screen', () => {
     mockKeyboardSubscribers = {};
     mockOnPartialTranscript = undefined;
     mockOnNativeEnd = undefined;
+    mockOnDictationOff = undefined;
+    mockOnListeningStart = undefined;
     mockAppStateHandler = undefined;
     mockAppStateHandlers.clear();
     mockIsRecording = false;
@@ -1180,6 +1214,84 @@ describe('Recording screen', () => {
     await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
       .toContain('recording.status.fallback.stt_unavailable'));
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('Brouillon précédent.');
+  });
+
+  it.each(['voice', 'text'] as const)(
+    'tells why iOS speech stopped when Dictation is off (%s mode), instead of staying silent',
+    async (mode: 'voice' | 'text') => {
+      mockPlatformOS = 'ios';
+      mockRecordingPermissionState = 'granted';
+      mockGetInputModePreference.mockResolvedValue(mode);
+      render(<RecordingScreen />);
+      await awaitEditorReady();
+      fireEvent.click(screen.getByTestId('recording-voice-control'));
+      await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+      expect(screen.queryByTestId('dictation-off')).toBeNull();
+      mockStopRecording.mockImplementationOnce(async () => {
+        mockIsRecordingRef.current = false;
+        mockOnDictationOff?.();
+        return { transcript: '', error: 'dictation_off' };
+      });
+
+      await act(async () => {
+        mockOnNativeEnd?.();
+      });
+
+      await waitFor(() => expect(screen.getByTestId('dictation-off')).toBeTruthy());
+      await waitFor(() => expect(screen.getByTestId(TID.Text.RecordingFallbackNotice).textContent)
+        .toContain('recording.status.fallback.stt_unavailable'));
+      expect(mockStartRecording).toHaveBeenCalledTimes(1);
+      expect(screen.getByTestId('recording-voice-control').textContent).not.toContain('recording.mic.resume');
+      fireEvent.click(screen.getByTestId('dictation-off-close'));
+      expect(screen.queryByTestId('dictation-off')).toBeNull();
+    }
+  );
+
+  it('starts listening again from the Dictation sheet once Dictation is back on', async () => {
+    mockPlatformOS = 'ios';
+    mockRecordingPermissionState = 'granted';
+    mockGetInputModePreference.mockResolvedValue('voice');
+    render(<RecordingScreen />);
+    await awaitEditorReady();
+    fireEvent.click(screen.getByTestId('recording-voice-control'));
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    mockStopRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = false;
+      mockOnDictationOff?.();
+      return { transcript: '', error: 'dictation_off' };
+    });
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+    await waitFor(() => expect(screen.getByTestId('dictation-off')).toBeTruthy());
+
+    // Still off: iOS accepts the start, then refuses; the sheet never leaves the screen.
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('dictation-off-retry'));
+    });
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    expect(screen.getByTestId('dictation-off')).toBeTruthy();
+    mockStopRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = false;
+      mockOnDictationOff?.();
+      return { transcript: '', error: 'dictation_off' };
+    });
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+    expect(screen.getByTestId('dictation-off')).toBeTruthy();
+
+    // Turned on: listening begins and the sheet closes.
+    mockStartRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = true;
+      mockOnListeningStart?.();
+      return { success: true };
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('dictation-off-retry'));
+    });
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(screen.queryByTestId('dictation-off')).toBeNull());
   });
 
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {

@@ -8,7 +8,7 @@ import { qualifyingSdkEnvironment } from './qualification.mjs';
 // The test ID check joins this file, which verify:pr already runs whenever app code
 // changes, instead of a new check or package.json script.
 import './test-ids.test.mjs';
-import { DECISION_KEY_ENV, DECISION_MODEL, SHARED_JOURNEY_STEPS, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, sentToDecisionModel, widenWithDecision, zonesForFiles } from './zones.mjs';
+import { DECISION_KEY_ENV, DECISION_MODEL, RELEVANCE_CHANGED_TEST, RELEVANCE_UNSCORED, RELEVANCE_ZONE, SHARED_JOURNEY_STEPS, UNTOUCHED, UNZONED, ZONES, decisionEnabled, filterIsActive, isDreamerAppPath, isNativeJourney, parcoursExclude, selectionOwesNothing, sentToDecisionModel, widenWithDecision, zonesForFiles } from './zones.mjs';
 
 const billing = { id: 'billing', tags: ['zone-paiement', 'historical-parity'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
 const billingSmoke = { id: 'billing-smoke', tags: ['smoke', 'zone-paiement'], file: 'tools/e2e/tests/dreamer-billing.web.e2e.ts' };
@@ -105,7 +105,7 @@ test('the zone filter stays inactive unless --changed-since supplied changes', (
   assert.match(source, /if \(!filterIsActive\(context\)\) return \{ exclude: \{\} \}/);
 });
 
-test('a full campaign does not pass --changed-since, and e2e 0.23.0 skips filters without it', async () => {
+test('a full campaign does not pass --changed-since, and e2e 0.23 skips filters without it', async () => {
   const { default: config } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
   for (const name of ['testerarmy-dreamer', 'testerarmy-lucid', 'testerarmy-meditation', 'testerarmy-site', 'bugbash-repros']) {
     const check = config.checks.find(entry => entry.name === name);
@@ -113,7 +113,7 @@ test('a full campaign does not pass --changed-since, and e2e 0.23.0 skips filter
   }
   const runner = readFileSync(new URL('./node_modules/e2e/dist/run/runner.js', import.meta.url), 'utf8');
   const at = runner.indexOf('changedSince === undefined');
-  assert.ok(at > 0, 'e2e 0.23.0 listSelection short-circuits when --changed-since is absent');
+  assert.ok(at > 0, 'e2e 0.23 listSelection short-circuits when --changed-since is absent');
   const slice = runner.slice(at, at + 280);
   assert.match(slice, /changedSince === undefined\s*\?\s*first/);
   assert.match(slice, /filterSelection/);
@@ -121,7 +121,7 @@ test('a full campaign does not pass --changed-since, and e2e 0.23.0 skips filter
   assert.match(gate, /args\[index\] === '--changed-since'/);
 });
 
-test('a leftover test.only fails the gate\'s e2e 0.23.0 selection instead of narrowing it', async () => {
+test('a leftover test.only fails the gate\'s e2e 0.23 selection instead of narrowing it', async () => {
   const { isCiMode } = await import('./node_modules/e2e/dist/config/resolve.js');
   const { select } = await import('./node_modules/e2e/dist/collect/select.js');
   // A caller that turned CI off still hands the SDK child CI mode.
@@ -143,6 +143,21 @@ test('the decision model only takes back parcours the zones left out as untouche
   assert.equal(widened.exclude['billing-smoke'], 'la fumée PR joue ce parcours');
   assert.equal(widened.exclude.bug, 'bug bash hors porte PR');
   assert.equal(widened.note, 'journal; modele : 2 parcours hors zone repris; 1 call, 9.1k tokens, $0.0004');
+});
+
+test('kept parcours carry a relevance so the likeliest run first, and a left-out one has none', () => {
+  const zones = parcoursExclude(suite, ['app/journal/[id].tsx']);
+  assert.equal(zones.relevance.journal, RELEVANCE_ZONE);
+  assert.equal(zones.relevance.home, undefined);
+  const changedFile = suite.find(test => test.id === 'home').file;
+  assert.equal(parcoursExclude(suite, [changedFile]).relevance.home, RELEVANCE_CHANGED_TEST);
+  // The model's score for a parcours it brings back; none, or one out of range, is the middle band.
+  const scored = widenWithDecision(zones, { exclude: {}, relevance: { home: 0.31, capture: 7 } });
+  assert.equal(scored.relevance.journal, RELEVANCE_ZONE);
+  assert.equal(scored.relevance.home, 0.31);
+  assert.equal(scored.relevance.capture, RELEVANCE_UNSCORED);
+  assert.equal(scored.relevance['billing-smoke'], undefined);
+  for (const score of Object.values(scored.relevance)) assert.ok(score >= 0 && score <= 1);
 });
 
 test('the decision model is off without an OpenAI key and is OpenAI\'s decision model', () => {
@@ -176,14 +191,15 @@ test('the zone filter keeps the zones when the model is off or cannot answer', a
   const saved = process.env.OPENAI_API_KEY;
   try {
     delete process.env.OPENAI_API_KEY;
-    assert.deepEqual(await parcoursTouches.filter(candidates, context), { exclude: { home: UNTOUCHED }, note: 'journal' });
+    assert.deepEqual(await parcoursTouches.filter(candidates, context), { exclude: { home: UNTOUCHED }, relevance: { journal: RELEVANCE_ZONE }, note: 'journal' });
     // With a key, a model that cannot even start (here: no repository) leaves the zones' answer, and says so.
     process.env.OPENAI_API_KEY = 'sk-test';
     const fallback = await parcoursTouches.filter(candidates, context);
     assert.deepEqual(fallback.exclude, { home: UNTOUCHED });
+    assert.deepEqual(fallback.relevance, { journal: RELEVANCE_ZONE });
     assert.match(fallback.note, /^journal; modele indisponible \(.+\), zones seules$/);
     // Nothing left out as untouched: nothing to ask.
-    assert.deepEqual(await parcoursTouches.filter(candidates.slice(0, 1), context), { exclude: {}, note: 'journal' });
+    assert.deepEqual(await parcoursTouches.filter(candidates.slice(0, 1), context), { exclude: {}, relevance: { journal: RELEVANCE_ZONE }, note: 'journal' });
   } finally {
     if (saved === undefined) delete process.env.OPENAI_API_KEY;
     else process.env.OPENAI_API_KEY = saved;

@@ -32,9 +32,17 @@ function readVerdict(file, now) {
     if (kept && typeof kept.failed === 'string' && Number.isFinite(kept.at))
       return now - kept.at < FAILURE_TTL_MS ? kept : null;
     if (kept && typeof kept.exclude === 'object' && kept.exclude !== null && !Array.isArray(kept.exclude)
-      && Object.values(kept.exclude).every(reason => typeof reason === 'string')) return kept;
+      && Object.values(kept.exclude).every(reason => typeof reason === 'string'))
+      return { ...kept, relevance: scores(kept.relevance) };
   } catch {}
   return null;
+}
+
+/** The model's scores (decision 0.3.3), kept only when each is a number from 0 to 1. */
+function scores(relevance) {
+  if (!relevance || typeof relevance !== 'object' || Array.isArray(relevance)) return undefined;
+  const entries = Object.entries(relevance).filter(([, score]) => Number.isFinite(score) && score >= 0 && score <= 1);
+  return entries.length ? Object.fromEntries(entries) : undefined;
 }
 
 function keep(file, value) {
@@ -73,7 +81,8 @@ export async function decisionVerdict(asked, context, { load = loadDecisionFilte
   const file = join(gitRead(git, root, ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'verify-cache', 'e2e-decision', `${key}.json`);
   const cached = readVerdict(file, now());
   if (cached?.failed !== undefined) throw new Error(`${cached.failed} (echec repris)`);
-  if (cached) return { exclude: cached.exclude, note: ['verdict repris', cached.note].filter(Boolean).join(', ') };
+  if (cached) return { exclude: cached.exclude, ...(cached.relevance ? { relevance: cached.relevance } : {}),
+    note: ['verdict repris', cached.note].filter(Boolean).join(', ') };
   let verdict;
   try {
     verdict = await (await load()).filter(asked, judged);
@@ -82,7 +91,8 @@ export async function decisionVerdict(asked, context, { load = loadDecisionFilte
     if (!interrupted) keep(file, { failed: (error instanceof Error ? error.message : String(error)).split('\n')[0], at: now() });
     throw error;
   }
-  const kept = { exclude: { ...verdict.exclude }, ...(verdict.note ? { note: verdict.note } : {}) };
+  const relevance = scores(verdict.relevance);
+  const kept = { exclude: { ...verdict.exclude }, ...(relevance ? { relevance } : {}), ...(verdict.note ? { note: verdict.note } : {}) };
   keep(file, kept);
   return kept;
 }

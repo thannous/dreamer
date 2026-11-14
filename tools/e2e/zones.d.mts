@@ -35,12 +35,15 @@ export function parcoursExclude(
   tests: readonly { id: string; tags: readonly string[]; file: string }[],
   files: readonly string[],
   locale?: string,
-): { exclude: Record<string, string>; note?: string };
+): { exclude: Record<string, string>; relevance: Record<string, number>; note?: string };
 
 export function decisionEnabled(env: Record<string, string | undefined>): boolean;
 export function sentToDecisionModel(file: string): boolean;
 
 export function widenWithDecision(
-  zones: { exclude: Record<string, string>; note?: string },
-  verdict: { exclude: Readonly<Record<string, string>>; note?: string },
-): { exclude: Record<string, string>; note: string };
+  zones: { exclude: Record<string, string>; relevance?: Readonly<Record<string, number>>; note?: string },
+  verdict: { exclude: Readonly<Record<string, string>>; relevance?: Readonly<Record<string, number>>; note?: string },
+): { exclude: Record<string, string>; relevance: Record<string, number>; note: string };
+export const RELEVANCE_CHANGED_TEST: number;
+export const RELEVANCE_ZONE: number;
+export const RELEVANCE_UNSCORED: number;

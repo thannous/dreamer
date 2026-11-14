@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
 import {
+  DictationOffSheet,
   QuotaLimitSheet,
 } from '@/components/recording/RecordingSheets';
 import { TID } from '@/lib/testIDs';
@@ -194,6 +195,32 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingSheets', () => {
+  it('walks through turning iOS Dictation back on, step by step, and offers typing instead', () => {
+    const onUseText = jest.fn();
+    const onClose = jest.fn();
+    const onRetry = jest.fn();
+    render(<DictationOffSheet visible onClose={onClose} onUseText={onUseText} onRetry={onRetry} />);
+
+    expect(screen.getByText('recording.dictation_off.title')).toBeTruthy();
+    expect(screen.getByText('recording.dictation_off.intro')).toBeTruthy();
+    // One drawn page per step: the Settings screen, the row to tap, and the step below it.
+    expect(screen.getByTestId(TID.Component.DictationStepsCarousel)).toBeTruthy();
+    expect(screen.getByText('recording.dictation_off.screen_settings')).toBeTruthy();
+    expect(screen.getAllByText('recording.dictation_off.row_general')).toHaveLength(2);
+    expect(screen.getAllByText('recording.dictation_off.row_keyboard')).toHaveLength(2);
+    expect(screen.getByText('recording.dictation_off.row_dictation')).toBeTruthy();
+    for (const [index, key] of ['step_settings', 'step_keyboard', 'step_toggle'].entries()) {
+      expect(screen.getByText(`${index + 1}. recording.dictation_off.${key}`)).toBeTruthy();
+    }
+    fireEvent.click(screen.getByTestId(TID.Button.DictationOffUseText));
+    expect(onUseText).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId(TID.Button.DictationOffRetry));
+    expect(screen.getByText('recording.dictation_off.retry')).toBeTruthy();
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByTestId(TID.Button.DictationOffDismiss));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   const noop = () => undefined;
 
   it('offers a direct quota reset action when mock reset is available', () => {

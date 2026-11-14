@@ -386,8 +386,9 @@ function collectCampaign() {
   }
   writeOnce(join(output, 'campaign.json'), { campaignId, revision: sourceBefore.revision, ...aggregate });
 }
-// The last report of a run with no selection is kept in the clone's git
-// directory, shared by every worktree (verify:release runs in one).
+// The last report of a run with no selection, and e2e's timings history beside it
+// (duration-history.mjs), are kept in the clone's git directory, shared by every
+// worktree (verify:release runs in one).
 function durationHistory() {
   try { return join(read('git', ['rev-parse', '--path-format=absolute', '--git-common-dir']), 'verify-cache', 'e2e-durations', `${product}-${platform}.report.json`); }
   catch { return null; }
@@ -422,15 +423,15 @@ async function runSdk() {
   }
   writeOnce(join(output, 'collection.json'), collection);
   const history = durationHistory();
-  const seed = seedDurations(history, output);
+  seedDurations(history, output);
   sdkLaunched = true;
   const stopStallMonitor = startHostStallMonitor();
   try {
     primary = await execute(process.execPath, [...webNodeArgs, cli, 'run', ...args], 'sdk.log', qualifyingSdkEnvironment(cliEnvironment()));
     sdkExit = primary;
   }
-  // A budgeted run can stop before the slow files, so its report is no duration seed.
-  finally { hostStalls = stopStallMonitor(); keepDurations(history, seed, collectionArgs.length > 0 || args.some(arg => budgets.has(arg)), output); }
+  // A budgeted run can stop before the slow files, so its timings are no duration history.
+  finally { hostStalls = stopStallMonitor(); keepDurations(history, collectionArgs.length > 0 || args.some(arg => budgets.has(arg)), output); }
   if (primary === 0) {
     const report = JSON.parse(readFileSync(join(output, 'report.json'), 'utf8'));
     const proof = verifyReport(report, { target: `${product}-${platform}`, platform, revision: sourceBefore.revision,
