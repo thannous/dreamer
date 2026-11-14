@@ -1252,12 +1252,33 @@ describe('Recording screen', () => {
     });
     await waitFor(() => expect(screen.getByTestId('dictation-off')).toBeTruthy());
 
+    // Still off: iOS accepts the start, then refuses; the sheet never leaves the screen.
     await act(async () => {
       fireEvent.click(screen.getByTestId('dictation-off-retry'));
     });
-
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
-    expect(screen.queryByTestId('dictation-off')).toBeNull();
+    expect(screen.getByTestId('dictation-off')).toBeTruthy();
+    mockStopRecording.mockImplementationOnce(async () => {
+      mockIsRecordingRef.current = false;
+      mockOnDictationOff?.();
+      return { transcript: '', error: 'dictation_off' };
+    });
+    await act(async () => {
+      mockOnNativeEnd?.();
+    });
+    expect(screen.getByTestId('dictation-off')).toBeTruthy();
+
+    // Turned on: listening begins and the sheet closes.
+    mockStartRecording.mockImplementationOnce(async () => {
+      mockIsRecording = true;
+      mockIsRecordingRef.current = true;
+      return { success: true };
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('dictation-off-retry'));
+    });
+    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(screen.queryByTestId('dictation-off')).toBeNull());
   });
 
   it('stops inline dictation when clearing and ignores late speech until a new dictation starts', async () => {

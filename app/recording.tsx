@@ -1576,6 +1576,9 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   }, [appliedEntry]);
 
   const isVoiceListening = isSpeechListening;
+  useEffect(() => {
+    if (isVoiceListening) setShowDictationOffSheet(false);
+  }, [isVoiceListening]);
   const recordingDurationLabel = isVoiceListening
     ? <RecordingDurationLabel startedAtRef={recordingStartedAtRef} />
     : undefined;
@@ -1830,10 +1833,10 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   const handleDictationOffClose = useCallback(() => setShowDictationOffSheet(false), []);
 
   // After turning Dictation on in Settings, the reader starts listening from the sheet.
-  // If Dictation is still off, iOS refuses again and the sheet comes back.
+  // The sheet stays up through the attempt: iOS accepts the start and refuses a moment
+  // later when Dictation is still off, so it only closes once listening has begun.
   const handleDictationOffRetry = useCallback(async () => {
     if (!isHydrated || recordingTransitionRef.current) return;
-    setShowDictationOffSheet(false);
     recordingTransitionRef.current = true;
     try {
       await startRecording();
