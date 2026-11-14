@@ -1176,7 +1176,7 @@ describe('Recording screen', () => {
 
   it.each(['voice', 'text'] as const)(
     'tells why iOS speech stopped when Dictation is off (%s mode), instead of staying silent',
-    async (mode) => {
+    async (mode: 'voice' | 'text') => {
       mockPlatformOS = 'ios';
       mockRecordingPermissionState = 'granted';
       mockGetInputModePreference.mockResolvedValue(mode);
