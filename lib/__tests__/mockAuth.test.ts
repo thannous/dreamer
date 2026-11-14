@@ -68,6 +68,25 @@ describe('mockAuth', () => {
       expect(user.email_confirmed_at).toBeNull();
     });
 
+    it('given an address tagged +verify when signing up then no session opens until the email is sent again', async () => {
+      // Given
+      const pending = 'mock.pending+verify@dreamer.test';
+
+      // When
+      const user = await signUpWithEmailPassword(pending);
+
+      // Then
+      expect(user.email_confirmed_at).toBeNull();
+      expect(await getCurrentUser()).toBeNull();
+      await expect(signInWithEmailPassword(pending)).rejects.toMatchObject({ code: 'email_not_confirmed' });
+
+      // When
+      await resendVerificationEmail(pending);
+
+      // Then
+      expect((await signInWithEmailPassword(pending)).email).toBe(pending);
+    });
+
     it('given unverified user when resending verification then marks as verified', async () => {
       // Given
       await signUpWithEmailPassword(email);

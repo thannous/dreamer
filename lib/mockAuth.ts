@@ -1,4 +1,5 @@
 import type { Session, User } from '@supabase/supabase-js';
+import { AuthApiError } from '@supabase/supabase-js';
 
 import type { UserTier } from '@/constants/limits';
 
@@ -38,6 +39,11 @@ const PROFILE_CONFIG: Record<MockProfile, ProfileConfig> = {
 
 let currentUser: User | null = null;
 let accountCreatedOnDevice = false;
+// The mock has no mailbox. An address carrying this tag signs up as production does with
+// confirmation on: no session until the address is confirmed, which resending the email simulates.
+const UNCONFIRMED_SIGNUP_TAG = '+verify';
+const unconfirmedSignups = new Set<string>();
+const signupKey = (email: string) => email.trim().toLowerCase();
 const listeners = new Set<(user: User | null, session: Session | null) => void>();
 
 type MockProfileDependencies = {
@@ -167,10 +173,16 @@ export async function signInWithProfile(profile: MockProfile): Promise<User> {
 }
 
 export async function signInWithEmailPassword(email: string, _lang?: string): Promise<User> {
+  if (unconfirmedSignups.has(signupKey(email))) throw new AuthApiError('Email not confirmed', 400, 'email_not_confirmed');
   return applyProfile('existing', email);
 }
 
 export async function signUpWithEmailPassword(email: string, _lang?: string): Promise<User> {
+  if (email.includes(UNCONFIRMED_SIGNUP_TAG)) {
+    unconfirmedSignups.add(signupKey(email));
+    const config = PROFILE_CONFIG.new;
+    return buildMockUser({ email, displayName: config.displayName, tier: config.tier, profile: 'new', emailConfirmed: false });
+  }
   return applyProfile('new', email, { preserveStorage: true });
 }
 
@@ -210,11 +222,13 @@ export async function resetTestState(): Promise<void> {
   const { clearMockDogfoodStorage } = await loadMockProfileDependencies();
   await clearMockDogfoodStorage();
   await signOut();
+  unconfirmedSignups.clear();
   resetAccountCreatedFlag();
 }
 
 // Simulate verification after resending so automated tests can cover both states.
-export async function resendVerificationEmail(_email?: string): Promise<void> {
+export async function resendVerificationEmail(email?: string): Promise<void> {
+  if (email) unconfirmedSignups.delete(signupKey(email));
   if (!currentUser) {
     return;
   }

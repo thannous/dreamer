@@ -15,6 +15,7 @@ import { router } from 'expo-router';
 import { signInMock, signOut, updateUserTier } from '@/lib/auth';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { sortPackages } from '@/lib/paywallUtils';
+import { replayReleaseNotesForQa } from '@/lib/releaseNotesQaReplay';
 import { TID } from '@/lib/testIDs';
 import type { SubscriptionStatus } from '@/lib/types';
 import {
@@ -26,6 +27,7 @@ import {
   applyMockScenario,
   delayMockSubscriptionActivation,
   getMockBillingOperationCounts,
+  offerMockFreeTrial,
   setNextMockPurchaseOutcome,
   type MockPurchaseOutcome,
   type MockSubscriptionScenario,
@@ -263,6 +265,12 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
       setAction({ label: 'Mock activation setup failed', detail: (err as Error).message, kind: 'error' });
     }
   }, [isMockMode, user]);
+
+  const handleTrialOffer = useCallback(() => {
+    if (!isMockMode) return;
+    offerMockFreeTrial();
+    setAction({ label: 'Annual offer: 7-day free trial', kind: 'success' });
+  }, [isMockMode]);
 
   const handleRealPurchase = useCallback(async (interval: 'monthly' | 'annual') => {
     const pkg = interval === 'monthly' ? monthlyPackage : annualPackage;
@@ -565,6 +573,13 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
             onPress={() => void handleDelayedActivation()}
             testID="btn.subscription.qa.delayActivation"
           />
+          <QaButton
+            label="Annual free trial"
+            hint="The annual offer starts with 7 free days"
+            disabled={isBusy}
+            onPress={handleTrialOffer}
+            testID="btn.subscription.qa.trialOffer"
+          />
           {(['success', 'cancelled', 'error'] as const).map((outcome) => (
             <QaButton
               key={outcome}
@@ -575,6 +590,17 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
               testID={`btn.subscription.qa.purchase.${outcome}`}
             />
           ))}
+        </ActionGroup>
+      ) : null}
+
+      {isMockMode ? (
+        <ActionGroup title="App · mock only">
+          <QaButton
+            label="Show what's new"
+            hint="The release notes, as after an update"
+            onPress={replayReleaseNotesForQa}
+            testID="btn.subscription.qa.releaseNotes"
+          />
         </ActionGroup>
       ) : null}
 

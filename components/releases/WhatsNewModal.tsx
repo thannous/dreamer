@@ -27,6 +27,7 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
 import { isOnboardingTerminal } from '@/lib/onboardingState';
+import { onReleaseNotesQaReplay } from '@/lib/releaseNotesQaReplay';
 import { TID } from '@/lib/testIDs';
 import {
   getLastSeenReleaseNotesVersion,
@@ -349,6 +350,8 @@ export function WhatsNewModalHost({ ready }: { ready: boolean }) {
       active = false;
     };
   }, [eligible, scopeKey]);
+
+  useEffect(() => onReleaseNotesQaReplay(() => setVisible(true)), []);
 
   const persistDismissal = useCallback(() => {
     setVisible(false);

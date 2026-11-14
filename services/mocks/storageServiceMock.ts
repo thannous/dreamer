@@ -20,7 +20,7 @@ import type {
 } from '@/lib/types';
 import { migrateLegacyDreamMutation } from '@/lib/dreamUtils';
 import { parsePendingDreamMutationsPayload } from '@/lib/dreamMutationPayload';
-import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
+import { isMockDogfoodPersistenceEnabled, isMockModeEnabled } from '@/lib/env';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
@@ -548,10 +548,33 @@ export async function getOnboardingStateSnapshot(actorScope: string): Promise<st
   return getMockItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope));
 }
 
+/**
+ * Browser QA: session storage may ask the mock to refuse the next writes that would finish the
+ * introduction, as a full or locked device storage would, so its error and recovery can be played.
+ */
+const ONBOARDING_SAVE_FAILURES_KEY = 'noctalia.mock.onboardingSaveFailures';
+
+function refusesOnboardingSave(serializedState: string): boolean {
+  if (!isMockModeEnabled()) return false;
+  const session = (globalThis as { sessionStorage?: Storage }).sessionStorage;
+  if (!session) return false;
+  try {
+    const left = Number(session.getItem(ONBOARDING_SAVE_FAILURES_KEY));
+    if (!Number.isInteger(left) || left <= 0) return false;
+    const status = (JSON.parse(serializedState) as { status?: unknown }).status;
+    if (status !== 'completed' && status !== 'skipped') return false;
+    session.setItem(ONBOARDING_SAVE_FAILURES_KEY, String(left - 1));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function saveOnboardingStateSnapshot(
   actorScope: string,
   serializedState: string
 ): Promise<void> {
+  if (refusesOnboardingSave(serializedState)) throw new Error('Mock storage refused the onboarding write');
   await setMockItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope), serializedState);
 }
 
