@@ -78,12 +78,12 @@ export function DictationOffSheet({
       subtitle={t('recording.dictation_off.intro')}
       testID={TID.Sheet.DictationOff}
       actions={{
-        primaryLabel: t('recording.dictation_off.use_text'),
-        onPrimary: onUseText,
-        primaryTestID: TID.Button.DictationOffUseText,
-        secondaryLabel: t('recording.dictation_off.retry'),
-        onSecondary: onRetry,
-        secondaryTestID: TID.Button.DictationOffRetry,
+        primaryLabel: t('recording.dictation_off.retry'),
+        onPrimary: onRetry,
+        primaryTestID: TID.Button.DictationOffRetry,
+        secondaryLabel: t('recording.dictation_off.use_text'),
+        onSecondary: onUseText,
+        secondaryTestID: TID.Button.DictationOffUseText,
         linkLabel: t('recording.dictation_off.dismiss'),
         onLink: onClose,
         linkTestID: TID.Button.DictationOffDismiss,
