@@ -2,7 +2,7 @@
 // prepared analysis: its title, first sentence, symbols and a band of its illustration.
 // The prepared analysis then opens with Plus. The mock prepares a fixed preview.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, leaveOnboarding, signInFromToday } from '../web-parity-fixtures';
 const test = createParityTest();
 
 const INVITE = 'Your included analyses for this month are used. This week, Noctalia still gives you a preview';
@@ -15,18 +15,9 @@ const STORIES = {
 
 async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus') {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId(`btn.mockProfile.${profile}`).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromToday(page, profile);
 }
 
 async function openDream(page: Page, title: keyof typeof STORIES) {

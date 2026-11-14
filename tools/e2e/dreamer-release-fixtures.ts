@@ -65,14 +65,6 @@ export async function journal(screen: Screen) {
   await expect(screen.getByTestId('screen.journal', { visible: true })).toHaveCount(1);
 }
 
-export async function openDream(screen: Screen, title: string) {
-  await screen.getByRole('textbox', 'Search dreams…', { visible: true }).fill(title);
-  const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: title });
-  await expect(card).toHaveCount(1);
-  await card.tap();
-  await expect(screen.getByTestId('component.transcriptCard', { visible: true })).toBeVisible();
-}
-
 /** Whether the decoded image inside the element with this testID is shown to the reader. */
 export function imageShown(browser: Browser, testID: string) {
   return browser.evaluate((id) => {
