@@ -5,6 +5,7 @@ import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { whileHeld } from '@/lib/attempt';
 import { signOut } from '@/lib/auth';
 import { TID } from '@/lib/testIDs';
 
@@ -19,16 +20,11 @@ export function SettingsSignOutAction() {
 
   const attemptSignOut = async () => {
     if (loading || pending.current) return;
-    pending.current = true;
     setSubmitting(true);
-    try {
-      await signOut();
-    } catch {
-      setFailed(true);
-    } finally {
-      pending.current = false;
-      setSubmitting(false);
-    }
+    await whileHeld(pending, signOut, {
+      catch: () => { setFailed(true); },
+      finally: () => { setSubmitting(false); },
+    });
   };
 
   if (!user) return null;

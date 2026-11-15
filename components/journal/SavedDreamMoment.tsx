@@ -59,6 +59,52 @@ const STRIKE_TAIL_MS = 1100;
 /** After the seal's choice, its signs have faded when it found none to strike. */
 const CHOICE_TAIL_MS = 300;
 
+/**
+ * The strike: the chosen sign meets the window and is pressed into it; the sky dims a
+ * little under it, so the mark reads over the night, and the rim's ink spreads once.
+ * Built outside the component: React Compiler does not take keyframes named by a call.
+ */
+function strikeMotion(reduced: boolean) {
+  const contact = reduced ? 0 : DREAM_STORY.sealContact;
+  const total = contact + 720;
+  const at = (value: number) => percent(value, total);
+  const base = { animationDuration: total, animationFillMode: 'both' } as const;
+  return {
+    emblem: (reduced ? {
+      animationName: { from: { opacity: 0 }, to: { opacity: 1 } }, animationDuration: 240, animationFillMode: 'both',
+    } : {
+      ...base,
+      animationTimingFunction: EASE.out,
+      animationName: {
+        '0%': { opacity: 0, transform: [{ scale: 1.1 }] },
+        [at(contact)]: { opacity: 0, transform: [{ scale: 1.1 }] },
+        [at(contact + 12)]: { opacity: 1, transform: [{ scale: 1.1 }] },
+        [at(contact + 130)]: { opacity: 1, transform: [{ scale: 0.94 }] },
+        [at(contact + 380)]: { opacity: 1, transform: [{ scale: 1 }] },
+        '100%': { opacity: 1, transform: [{ scale: 1 }] },
+      },
+    }) as CSSStyle<ViewStyle>,
+    wash: {
+      ...base,
+      animationTimingFunction: EASE.out,
+      animationName: {
+        '0%': { opacity: 0 }, [at(Math.max(0, contact - 150))]: { opacity: 0 },
+        [at(contact + 150)]: { opacity: 0.32 }, '100%': { opacity: 0.32 },
+      },
+    } as CSSStyle<ViewStyle>,
+    ripple: (reduced ? { opacity: 0 } : {
+      ...base,
+      animationTimingFunction: EASE.out,
+      animationName: {
+        '0%': { opacity: 0, transform: [{ scale: 1 }] },
+        [at(contact)]: { opacity: 0, transform: [{ scale: 1 }] },
+        [at(contact + 12)]: { opacity: 0.6, transform: [{ scale: 1 }] },
+        '100%': { opacity: 0, transform: [{ scale: 1.24 }] },
+      },
+    }) as CSSStyle<ViewStyle>,
+  };
+}
+
 /** Where the dream is in its story: just saved, being read, or read. */
 export type { SealMark };
 
@@ -172,48 +218,7 @@ export function SavedDreamMoment({
     () => READING_STARS.map((_, index) => twinkle(index, READING_STARS.length, reduced)),
     [reduced]
   );
-  // The strike: the chosen sign meets the window and is pressed into it; the sky dims a
-  // little under it, so the mark reads over the night, and the rim's ink spreads once.
-  const strike = useMemo(() => {
-    const contact = reduced ? 0 : DREAM_STORY.sealContact;
-    const total = contact + 720;
-    const at = (value: number) => percent(value, total);
-    const base = { animationDuration: total, animationFillMode: 'both' } as const;
-    return {
-      emblem: (reduced ? {
-        animationName: { from: { opacity: 0 }, to: { opacity: 1 } }, animationDuration: 240, animationFillMode: 'both',
-      } : {
-        ...base,
-        animationTimingFunction: EASE.out,
-        animationName: {
-          '0%': { opacity: 0, transform: [{ scale: 1.1 }] },
-          [at(contact)]: { opacity: 0, transform: [{ scale: 1.1 }] },
-          [at(contact + 12)]: { opacity: 1, transform: [{ scale: 1.1 }] },
-          [at(contact + 130)]: { opacity: 1, transform: [{ scale: 0.94 }] },
-          [at(contact + 380)]: { opacity: 1, transform: [{ scale: 1 }] },
-          '100%': { opacity: 1, transform: [{ scale: 1 }] },
-        },
-      }) as CSSStyle<ViewStyle>,
-      wash: {
-        ...base,
-        animationTimingFunction: EASE.out,
-        animationName: {
-          '0%': { opacity: 0 }, [at(Math.max(0, contact - 150))]: { opacity: 0 },
-          [at(contact + 150)]: { opacity: 0.32 }, '100%': { opacity: 0.32 },
-        },
-      } as CSSStyle<ViewStyle>,
-      ripple: (reduced ? { opacity: 0 } : {
-        ...base,
-        animationTimingFunction: EASE.out,
-        animationName: {
-          '0%': { opacity: 0, transform: [{ scale: 1 }] },
-          [at(contact)]: { opacity: 0, transform: [{ scale: 1 }] },
-          [at(contact + 12)]: { opacity: 0.6, transform: [{ scale: 1 }] },
-          '100%': { opacity: 0, transform: [{ scale: 1.24 }] },
-        },
-      }) as CSSStyle<ViewStyle>,
-    };
-  }, [reduced]);
+  const strike = useMemo(() => strikeMotion(reduced), [reduced]);
   const seal = sealing?.mark ?? null;
   const struckBefore = sealing?.settled === true;
   const struck = seal != null;

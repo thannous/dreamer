@@ -2,6 +2,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { StandardBottomSheet } from '@/components/ui/StandardBottomSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
+import { attempt } from '@/lib/attempt';
 import { createScopedLogger } from '@/lib/logger';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
@@ -32,7 +33,7 @@ export function OfflineModelDownloadSheet({
   const language = languageName && languageName !== languageKey ? languageName : locale;
 
   const handleDownload = useCallback(async () => {
-    try {
+    await attempt(async () => {
       setIsDownloading(true);
       log.debug('triggering offline model download', { locale });
 
@@ -47,13 +48,14 @@ export function OfflineModelDownloadSheet({
 
       onDownloadComplete(downloadSuccess);
       onClose();
-    } catch (error) {
-      log.warn('offline model download failed', { locale, error });
-      onDownloadComplete(false);
-      onClose();
-    } finally {
-      setIsDownloading(false);
-    }
+    }, {
+      catch: (error) => {
+        log.warn('offline model download failed', { locale, error });
+        onDownloadComplete(false);
+        onClose();
+      },
+      finally: () => setIsDownloading(false),
+    });
   }, [locale, onDownloadComplete, onClose]);
 
   const handleCancel = useCallback(() => {

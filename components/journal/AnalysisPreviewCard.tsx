@@ -9,6 +9,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { requestAiConsent } from '@/lib/aiConsent';
+import { attempt } from '@/lib/attempt';
 import { formatQuotaResetDate, withFirstDayOrdinal } from '@/lib/quotaReset';
 import { TID } from '@/lib/testIDs';
 import {
@@ -88,15 +89,15 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
         count: value.count + 1, prepare: false, polls: (value.subject === subject ? value.polls : 0) + 1, subject,
       })), POLL_MS);
     };
-    void (async () => {
-      try {
-        const result = await fetchAnalysisPreview({
-          remoteDreamId, lang: currentLang, prepare: prepareNow, signal: controller.signal,
-        });
-        if (controller.signal.aborted) return;
-        setState({ kind: 'loaded', result, subject });
-        if (result.state === 'writing' || result.preview?.image.state === 'painting') readAgain(result.state === 'writing');
-      } catch (error) {
+    void attempt(async () => {
+      const result = await fetchAnalysisPreview({
+        remoteDreamId, lang: currentLang, prepare: prepareNow, signal: controller.signal,
+      });
+      if (controller.signal.aborted) return;
+      setState({ kind: 'loaded', result, subject });
+      if (result.state === 'writing' || result.preview?.image.state === 'painting') readAgain(result.state === 'writing');
+    }, {
+      catch: (error) => {
         if (controller.signal.aborted) return;
         const refusal = analysisPreviewRefusal(error);
         // A failed read while waiting keeps what shows and reads again.
@@ -106,8 +107,8 @@ export function AnalysisPreviewCard({ remoteDreamId, transcript, onOpenPlus, onO
         }
         // A refused dream keeps the page's own action; a failed preparation can be tried again.
         setState(prepareNow && !refusal ? { kind: 'failed', subject } : { kind: 'hidden' });
-      }
-    })();
+      },
+    });
     return () => {
       controller.abort();
       if (timer) clearTimeout(timer);

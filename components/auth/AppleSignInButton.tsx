@@ -8,6 +8,7 @@ import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
+import { attempt } from '@/lib/attempt';
 import { signInWithApple } from '@/lib/auth';
 import { createScopedLogger } from '@/lib/logger';
 import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
@@ -43,26 +44,27 @@ export default function AppleSignInButton({
   const handleAppleSignIn = async () => {
     setLoading(true);
     log.debug('User tapped "Continue with Apple"');
-    try {
+    await attempt(async () => {
       requestStayOnSettingsIntent({ destination: returnTo });
       await signInWithApple();
       log.debug('Sign-in successful');
-    } catch (error: unknown) {
-      clearStayOnSettingsIntent();
-      log.warn('Sign-in failed', error);
-      const errorCode = getErrorCode(error);
-      const errorMessage = getErrorMessage(error);
+    }, {
+      catch: (error) => {
+        clearStayOnSettingsIntent();
+        log.warn('Sign-in failed', error);
+        const errorCode = getErrorCode(error);
+        const errorMessage = getErrorMessage(error);
 
-      if (errorMessage === 'SIGN_IN_CANCELLED' || errorCode === 'ERR_REQUEST_CANCELED') {
-        log.debug('User cancelled the sign-in dialog');
-      } else if (errorMessage?.includes('not available')) {
-        Alert.alert(t('auth.apple.unavailable_title'), t('auth.apple.unavailable_message'));
-      } else {
-        Alert.alert(t('auth.apple.error_title'), t('auth.apple.error_generic'));
-      }
-    } finally {
-      setLoading(false);
-    }
+        if (errorMessage === 'SIGN_IN_CANCELLED' || errorCode === 'ERR_REQUEST_CANCELED') {
+          log.debug('User cancelled the sign-in dialog');
+        } else if (errorMessage?.includes('not available')) {
+          Alert.alert(t('auth.apple.unavailable_title'), t('auth.apple.unavailable_message'));
+        } else {
+          Alert.alert(t('auth.apple.error_title'), t('auth.apple.error_generic'));
+        }
+      },
+      finally: () => { setLoading(false); },
+    });
   };
 
   return (

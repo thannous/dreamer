@@ -16,6 +16,8 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { attempt } from '@/lib/attempt';
+import { signOut } from '@/lib/auth';
 import { isGuestQaLabEnabled } from '@/lib/env';
 import {
   enrollGuestQaDevice,
@@ -75,6 +77,10 @@ const formatExpiry = (value?: string): string => {
   });
 };
 
+// Loaded on demand. Outside the component: React Compiler does not compile a function
+// that holds an `import()`.
+const loadGuestQaLocalState = () => import('@/lib/guestQaLocalState');
+
 export function GuestProdQALab() {
   const enabled = isGuestQaLabEnabled() && Platform.OS === 'android';
   const { user } = useAuth();
@@ -88,13 +94,12 @@ export function GuestProdQALab() {
     if (!enabled || !user) return;
     setLoading(true);
     setError(null);
-    try {
+    await attempt(async () => {
       setStatus(await getGuestQaStatus());
-    } catch (cause) {
-      setError(getErrorMessage(cause));
-    } finally {
-      setLoading(false);
-    }
+    }, {
+      catch: (cause) => { setError(getErrorMessage(cause)); },
+      finally: () => { setLoading(false); },
+    });
   }, [enabled, user]);
 
   useEffect(() => {
@@ -109,13 +114,12 @@ export function GuestProdQALab() {
       const {
         assertGuestQaLocalStateReady,
         prepareGuestQaLocalState,
-      } = await import('@/lib/guestQaLocalState');
+      } = await loadGuestQaLocalState();
       // Fail before consuming a server reset if unsynchronized local guest
       // content still exists on the device.
       await assertGuestQaLocalStateReady();
       await enrollGuestQaDevice();
       await prepareGuestQaLocalState();
-      const { signOut } = await import('@/lib/auth');
       await signOut();
       router.replace('/onboarding');
     } catch (cause) {

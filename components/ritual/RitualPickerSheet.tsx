@@ -14,6 +14,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getNoctaliaDesignTokens } from "@/constants/noctaliaDesign";
 import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "@/hooks/useTranslation";
+import { whileHeld } from "@/lib/attempt";
 import { RITUALS, type RitualId } from "@/lib/inspirationRituals";
 
 const ORDER: RitualId[] = ["starter", "memory", "lucid"];
@@ -59,17 +60,12 @@ export function RitualPickerSheet({
       onClose();
       return;
     }
-    inFlight.current = true;
     setSaving(true);
     setError(false);
-    try {
-      await onConfirm(draft);
-    } catch {
-      setError(true);
-    } finally {
-      inFlight.current = false;
-      setSaving(false);
-    }
+    await whileHeld(inFlight, () => onConfirm(draft), {
+      catch: () => { setError(true); },
+      finally: () => { setSaving(false); },
+    });
   };
 
   return (

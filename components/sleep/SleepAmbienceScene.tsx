@@ -37,6 +37,7 @@ const SWELL_COUNT = 4;
 const SWELL_INTERVAL_MS = SWELL_PERIOD_MS / SWELL_COUNT;
 /** Share of a swell's cycle spent rolling in; the rest is the backwash. */
 const SWELL_ARRIVAL = 0.8;
+const SWELL_ARRIVAL_KEYFRAME = `${SWELL_ARRIVAL * 100}%`;
 /**
  * Seen from the shore, a swell gathers speed as it nears, the way perspective draws
  * anything coming closer. Close to a quadratic ease-in, which `swellReaches` inverts.
@@ -328,7 +329,7 @@ function Crest({ index, left, top, travel, scale, still }: {
         '30%': { opacity: 1 },
         // Out of the moon's path the near water is dark, so the swell dims as it comes in.
         '60%': { opacity: 0.75 },
-        [`${SWELL_ARRIVAL * 100}%`]: {
+        [SWELL_ARRIVAL_KEYFRAME]: {
           opacity: 0.3,
           transform: [{ translateY: travel }, { scaleX: 1 }, { scaleY: 1 }],
         },
@@ -454,7 +455,8 @@ function Weather({ scene, width, height, still }: { scene: Scene; width: number;
  * the sky keeps a downpour from falling out of a clear night.
  */
 function Rain({ width, height, still }: { width: number; height: number; still: boolean }) {
-  const field = { width: width * 1.4, height: height * 1.2 };
+  const fieldWidth = width * 1.4;
+  const fieldHeight = height * 1.2;
   const drops = useMemo(() => {
     const random = seededRandom(11);
     const count = Math.round(Math.min(150, Math.max(70, (width * height) / 3600)));
@@ -462,22 +464,20 @@ function Rain({ width, height, still }: { width: number; height: number; still: 
       const near = random() < 0.35;
       return {
         index,
-        x: random() * field.width,
+        x: random() * fieldWidth,
         length: near ? 26 + random() * 22 : 12 + random() * 14,
         thickness: near ? 1.5 : 1,
         opacity: near ? 0.32 + random() * 0.26 : 0.14 + random() * 0.14,
         duration: near ? 850 + random() * 300 : 1400 + random() * 600,
         phase: random() * 2000,
-        y: random() * field.height,
+        y: random() * fieldHeight,
       };
     });
-    // The field only depends on the window size.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width, height]);
+  }, [width, height, fieldWidth, fieldHeight]);
   const fall = useMemo(() => ({
     from: { transform: [{ translateY: -60 }] },
-    to: { transform: [{ translateY: field.height + 60 }] },
-  }), [field.height]);
+    to: { transform: [{ translateY: fieldHeight + 60 }] },
+  }), [fieldHeight]);
 
   return (
     <>
@@ -491,8 +491,8 @@ function Rain({ width, height, still }: { width: number; height: number; still: 
           position: 'absolute',
           left: -width * 0.25,
           top: -height * 0.1,
-          width: field.width,
-          height: field.height,
+          width: fieldWidth,
+          height: fieldHeight,
           transform: [{ rotate: '9deg' }],
         }}
       >

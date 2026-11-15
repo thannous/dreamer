@@ -38,6 +38,7 @@ import {
   signOut,
   signUpWithEmailPassword,
 } from '@/lib/auth';
+import { attempt } from '@/lib/attempt';
 import { EMAIL_REGEX, PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import { TID } from '@/lib/testIDs';
 import type { MockProfile } from '@/lib/auth';
@@ -268,7 +269,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     }
     setSubmitting('signin');
     requestAuthReturn();
-    try {
+    await attempt(async () => {
       await signInWithEmailPassword(trimmedEmail, password);
       if (__DEV__) {
         console.log('[EmailAuthCard] signInWithEmailPassword success', {
@@ -280,12 +281,13 @@ export const EmailAuthCard: React.FC<Props> = ({
         console.log('[EmailAuthCard] requested stay-on-settings intent');
       }
       resetSensitiveInputs();
-    } catch (error) {
-      clearStayOnSettingsIntent();
-      handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
-    } finally {
-      setSubmitting(null);
-    }
+    }, {
+      catch: (error) => {
+        clearStayOnSettingsIntent();
+        handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
+      },
+      finally: () => { setSubmitting(null); },
+    });
   };
 
   const attemptSignUp = async () => {
@@ -294,7 +296,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     const passwordForVerification = password;
     setSubmitting('signup');
     requestAuthReturn();
-    try {
+    await attempt(async () => {
       const newUser = await signUpWithEmailPassword(trimmedEmail, passwordForVerification, language);
       const needsVerification = !newUser?.email_confirmed_at;
       if (needsVerification) {
@@ -304,45 +306,46 @@ export const EmailAuthCard: React.FC<Props> = ({
         clearPendingVerification();
       }
       resetSensitiveInputs();
-    } catch (error) {
-      clearStayOnSettingsIntent();
-      handleSupabaseError(error, 'settings.account.alert.signup_failed.title');
-    } finally {
-      setSubmitting(null);
-    }
+    }, {
+      catch: (error) => {
+        clearStayOnSettingsIntent();
+        handleSupabaseError(error, 'settings.account.alert.signup_failed.title');
+      },
+      finally: () => { setSubmitting(null); },
+    });
   };
 
   const attemptSignOut = async () => {
     if (isBusy) return;
     setSubmitting('signout');
-    try {
+    await attempt(async () => {
       await signOut();
       clearPendingVerification();
-    } catch (error) {
-      handleSupabaseError(error, 'settings.account.alert.signout_failed.title');
-    } finally {
-      setSubmitting(null);
-    }
+    }, {
+      catch: (error) => { handleSupabaseError(error, 'settings.account.alert.signout_failed.title'); },
+      finally: () => { setSubmitting(null); },
+    });
   };
 
   const handleMockSignIn = async (profile: MockProfile) => {
     if (!isMockModeEnabled) return;
     setMockProfileLoading(profile);
     requestAuthReturn();
-    try {
+    await attempt(async () => {
       await signInMock(profile);
-    } catch (error) {
-      clearStayOnSettingsIntent();
-      handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
-    } finally {
-      setMockProfileLoading((current) => (current === profile ? null : current));
-    }
+    }, {
+      catch: (error) => {
+        clearStayOnSettingsIntent();
+        handleSupabaseError(error, 'settings.account.alert.signin_failed.title');
+      },
+      finally: () => { setMockProfileLoading((current) => (current === profile ? null : current)); },
+    });
   };
 
   const handleMockReset = async () => {
     if (!isMockModeEnabled || isBusy) return;
     setSubmitting('signout');
-    try {
+    await attempt(async () => {
       await resetMockTestState();
       await dreamsActions?.reloadDreams();
       // The Journal guest scope needs an explicit reload. Lucid has no Journal
@@ -352,11 +355,10 @@ export const EmailAuthCard: React.FC<Props> = ({
       clearStayOnSettingsIntent();
       setAccountSheetVisible(false);
       if (onboarding) router.replace('/onboarding');
-    } catch (error) {
-      handleSupabaseError(error, 'settings.account.alert.signout_failed.title');
-    } finally {
-      setSubmitting(null);
-    }
+    }, {
+      catch: (error) => { handleSupabaseError(error, 'settings.account.alert.signout_failed.title'); },
+      finally: () => { setSubmitting(null); },
+    });
   };
 
   const pollForVerification = useCallback(async () => {
@@ -374,7 +376,7 @@ export const EmailAuthCard: React.FC<Props> = ({
 
     setVerificationPolling(true);
     requestAuthReturn();
-    try {
+    await attempt(async () => {
       await signInWithEmailPassword(pendingVerification.email, pendingVerification.password);
       // Show success state briefly before closing
       setVerificationSuccess(true);
@@ -383,14 +385,15 @@ export const EmailAuthCard: React.FC<Props> = ({
       setTimeout(() => {
         clearPendingVerification();
       }, 1500);
-    } catch (error) {
-      clearStayOnSettingsIntent();
-      if (!isUnverifiedEmailError(error) && __DEV__) {
-        console.warn('[EmailAuthCard] verification poll failed', error);
-      }
-    } finally {
-      setVerificationPolling(false);
-    }
+    }, {
+      catch: (error) => {
+        clearStayOnSettingsIntent();
+        if (!isUnverifiedEmailError(error) && __DEV__) {
+          console.warn('[EmailAuthCard] verification poll failed', error);
+        }
+      },
+      finally: () => { setVerificationPolling(false); },
+    });
   }, [
     authLoading,
     clearPendingVerification,

@@ -3,6 +3,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useTranslation } from '@/hooks/useTranslation';
+import { attempt } from '@/lib/attempt';
 import { updateLanguagePreference } from '@/lib/languagePreference';
 import { TID } from '@/lib/testIDs';
 import type {
@@ -62,16 +63,15 @@ export function useThemeSettingsPreference(): SettingsPreferenceController<Theme
   const select = useCallback(async (value: ThemePreference) => {
     setSaving(true);
     setError(false);
-    try {
-      await setPreference(value);
-    } catch (cause) {
-      setError(true);
-      if (__DEV__) {
-        console.error('Failed to update theme preference:', cause);
-      }
-    } finally {
-      setSaving(false);
-    }
+    await attempt(() => setPreference(value), {
+      catch: (cause) => {
+        setError(true);
+        if (__DEV__) {
+          console.error('Failed to update theme preference:', cause);
+        }
+      },
+      finally: () => { setSaving(false); },
+    });
   }, [setPreference]);
 
   return {
@@ -116,7 +116,7 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
     setOfflineModelCheckedFor(undefined);
     setSaving(true);
     setError(false);
-    try {
+    await attempt(async () => {
       await updateLanguagePreference({
         preference: value,
         systemLanguage,
@@ -126,14 +126,15 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
           if (!pending && offlineModelCheck.current === check) setOfflineModelCheckedFor(value);
         },
       });
-    } catch (cause) {
-      setError(true);
-      if (__DEV__) {
-        console.error('Failed to update language preference:', cause);
-      }
-    } finally {
-      setSaving(false);
-    }
+    }, {
+      catch: (cause) => {
+        setError(true);
+        if (__DEV__) {
+          console.error('Failed to update language preference:', cause);
+        }
+      },
+      finally: () => { setSaving(false); },
+    });
   }, [setPreference, systemLanguage]);
 
   return {
@@ -173,16 +174,15 @@ export function useJournalLayoutSettingsPreference(): SettingsPreferenceControll
   const select = useCallback(async (value: JournalLayoutPreference) => {
     setSaving(true);
     setError(false);
-    try {
-      await setPreference(value);
-    } catch (cause) {
-      setError(true);
-      if (__DEV__) {
-        console.error('Failed to update journal layout preference:', cause);
-      }
-    } finally {
-      setSaving(false);
-    }
+    await attempt(() => setPreference(value), {
+      catch: (cause) => {
+        setError(true);
+        if (__DEV__) {
+          console.error('Failed to update journal layout preference:', cause);
+        }
+      },
+      finally: () => { setSaving(false); },
+    });
   }, [setPreference]);
 
   return {
