@@ -681,7 +681,8 @@ function DreamChatContent() {
 
   const handleRetryMessage = useCallback(
     (message: ChatMessage) => {
-      if (isInteractionLocked) return;
+      // No lock check here: `sendMessage` takes the send lock itself, and a check on this
+      // render's state would refuse a tap made after the lock is already released.
       const retry = message.meta?.retry;
       if (!retry) return;
       // The question and its error stay on screen until the send is accepted, which puts
@@ -695,7 +696,7 @@ function DreamChatContent() {
         userText: retry.userText,
       });
     },
-    [isInteractionLocked, messages, sendMessage]
+    [messages, sendMessage]
   );
   const targetFailedMessage = useMemo(() => {
     if (!targetMessageId) return null;
