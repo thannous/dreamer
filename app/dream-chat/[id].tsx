@@ -684,10 +684,11 @@ function DreamChatContent() {
       if (isInteractionLocked) return;
       const retry = message.meta?.retry;
       if (!retry) return;
+      // The question and its error stay on screen until the send is accepted, which puts
+      // the same question back in place: the list never drops a message it shows again.
       const baseMessages = messages.filter(
         (msg) => msg.id !== message.id && msg.id !== retry.clientRequestId
       );
-      setMessages(baseMessages);
       sendMessage(retry.messageText, retry.displayText, {
         baseMessages,
         clientRequestId: retry.clientRequestId,
