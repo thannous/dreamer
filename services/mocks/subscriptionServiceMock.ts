@@ -15,6 +15,7 @@ let currentStatusUserId: string | null = null;
 let hasExplicitStatus = false;
 let nextPurchase: { userId: string; outcome: MockPurchaseOutcome } | null = null;
 let syncFailures: { userId: string; remaining: number } | null = null;
+let annualTrialDays: number | null = null;
 const operationCounts = new Map<string, { purchases: number; restores: number }>();
 // A simulated store receipt is separate from locally loaded access and scoped to its owner.
 const receipts = new Map<string, SubscriptionStatus>();
@@ -126,7 +127,15 @@ export async function loadOfferings(): Promise<PurchasePackage[]> {
   if (!initialized) {
     return [];
   }
-  return mockPackages;
+  const trialDays = annualTrialDays;
+  return trialDays
+    ? mockPackages.map((pkg) => (pkg.interval === 'annual' ? { ...pkg, freeTrialDays: trialDays } : pkg))
+    : mockPackages;
+}
+
+/** The annual offer starts with a free trial, as a store's introductory offer would, until the page reloads. */
+export function offerMockFreeTrial(days = 7): void {
+  annualTrialDays = days;
 }
 
 function setStatus(status: SubscriptionStatus, userId: string | null): SubscriptionStatus {

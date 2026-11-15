@@ -159,7 +159,7 @@ export const ZONES = [
       'lib/revenuecat.ts',
       'lib/subscriptionErrors.ts',
     ],
-    tests: ['tools/e2e/tests/dreamer-billing.web.e2e.ts'],
+    tests: ['tools/e2e/tests/dreamer-billing.web.e2e.ts', 'tools/e2e/tests/dreamer-paywall-trial.web.e2e.ts'],
   },
   {
     id: 'connexion',
@@ -185,6 +185,7 @@ export const ZONES = [
     ],
     tests: [
       'tools/e2e/tests/dreamer-forgot-password.web.e2e.ts',
+      'tools/e2e/tests/dreamer-email-verification.web.e2e.ts',
       'tools/e2e/tests/dreamer-account-deletion.web.e2e.ts',
       'tools/e2e/tests/dreamer-security-url.web.e2e.ts',
       'tools/e2e/tests/dreamer-settings.web.e2e.ts',
@@ -259,8 +260,11 @@ export const ZONES = [
     id: 'accueil', tags: ['zone-accueil'], product: 'dreamer', platform: 'web',
     sources: ['app/(tabs)/index.tsx', 'components/home/', 'components/quota/MonthEndAnalysesCard.tsx',
       'lib/todayState.ts', 'lib/dreamRediscovery.ts', 'lib/dreamAnniversary.ts', 'lib/monthEndAnalyses.ts',
-      'lib/personalReading.ts', 'lib/fullMoon.ts', 'lib/weekConstellations.ts'],
-    tests: ['tools/e2e/tests/dreamer-home-editorial.web.e2e.ts', 'tools/e2e/tests/dreamer-today-fomo.web.e2e.ts'],
+      'lib/personalReading.ts', 'lib/fullMoon.ts', 'lib/weekConstellations.ts',
+      // The release notes open over the first screen after an update.
+      'components/releases/'],
+    tests: ['tools/e2e/tests/dreamer-home-editorial.web.e2e.ts', 'tools/e2e/tests/dreamer-today-fomo.web.e2e.ts',
+      'tools/e2e/tests/dreamer-whats-new.web.e2e.ts'],
   },
   {
     id: 'tendances', tags: ['zone-tendances'], product: 'dreamer', platform: 'web',
@@ -274,7 +278,8 @@ export const ZONES = [
     sources: ['app/onboarding.tsx', 'components/onboarding/', 'context/OnboardingContext.tsx', 'lib/onboardingState.ts'],
     // Settings replays the introduction and keeps a finished onboarding finished.
     tests: ['tools/e2e/tests/dreamer-onboarding-features.web.e2e.ts', 'tools/e2e/tests/dreamer-onboarding-features-stories.web.e2e.ts',
-      'tools/e2e/tests/dreamer-onboarding-features-explorer.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts'],
+      'tools/e2e/tests/dreamer-onboarding-features-explorer.web.e2e.ts', 'tools/e2e/tests/dreamer-settings.web.e2e.ts',
+      'tools/e2e/tests/dreamer-onboarding-recovery.web.e2e.ts'],
   },
   {
     id: 'navigation', tags: ['zone-navigation'], product: 'dreamer', platform: 'web',
