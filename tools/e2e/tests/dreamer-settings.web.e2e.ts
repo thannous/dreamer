@@ -1,6 +1,6 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, leaveOnboarding, withDialog } from '../web-parity-fixtures';
 
 const test = createParityTest({ viewport: { width: 390, height: 844 }, locale: 'fr-FR' });
 
@@ -24,12 +24,7 @@ for (const theme of ['light', 'dark'] as const) {
   test(`grouped settings preserve account, choices and reminder states in ${theme}`, async ({ page }, testInfo) => {
     await page.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.getByTestId('btn.onboarding.intro.next').click();
-    // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-    if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-    await page.getByTestId('btn.onboarding.skip').click();
+    await leaveOnboarding(page);
     await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
     await openSettings(page);
     await page.getByTestId('settings-account-open-signin').click();
@@ -117,12 +112,7 @@ for (const theme of ['light', 'dark'] as const) {
 
 test('Settings replays the introduction without reopening a finished onboarding', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await expect(page.getByTestId('screen.recording').filter({ visible: true })).toHaveCount(1);
   await openSettings(page);
   await page.getByTestId('settings-onboarding-replay').click();

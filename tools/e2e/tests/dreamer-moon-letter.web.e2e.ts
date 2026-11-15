@@ -2,7 +2,7 @@
 // to a signed-in account with at least three dreams in the cycle. Plus reads it whole, a free
 // account its first sentence, a guest is asked for an account. The mock reads a fixed letter.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, leaveOnboarding, signInFromToday } from '../web-parity-fixtures';
 const test = createParityTest();
 
 // The morning after the 26 October 2026 full moon, in Paris as in UTC. The mock journal
@@ -16,22 +16,13 @@ const BODY = 'At first the sea rose behind you and you looked for a door.';
 async function start(page: Page, at: Date) {
   await page.clock.setSystemTime(at);
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await home(page);
 }
 
 async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus', at: Date) {
   await start(page, at);
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId(`btn.mockProfile.${profile}`).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromToday(page, profile);
   await home(page);
 }
 

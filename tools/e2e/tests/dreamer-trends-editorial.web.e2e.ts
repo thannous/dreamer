@@ -1,6 +1,6 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog, type ParityInfo } from '../web-parity-fixtures';
+import { createParityTest, expect, type ParityInfo, leaveOnboarding } from '../web-parity-fixtures';
 
 const test = createParityTest({ viewport: { width: 390, height: 844 }, timezoneId: 'Europe/Paris' });
 
@@ -12,12 +12,7 @@ async function startGuest(page: Page) {
   await page.clock.setFixedTime(new Date('2026-10-02T12:00:00Z'));
   await page.addInitScript(() => { Math.random = () => 0.5; });
   await page.goto('/');
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
 

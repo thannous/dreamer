@@ -69,6 +69,10 @@ function FeatureNarrative({ feature, step, reduced, tokens, stageHeight, frameHe
   </View>;
 }
 
+// The night's decor runs past the sheet's edges. In a browser that made the sheet scroll
+// sideways (trackpad, or a control scrolled into view), pushing the cross off its corner: clip it.
+const WEB_SHEET_STYLE = (width: number) => ({ width, overflowX: 'clip' }) as ViewStyle;
+
 type FooterLink = { label: string; testID: string; onPress: () => void };
 
 /** How long a fresh page's skip ignores taps, in milliseconds. */
@@ -188,7 +192,7 @@ export function OnboardingFeatureSheet({ feature: opening, onClose, ending }: {
 
   // Only the cross closes the stories, and it asks first: no swipe can end them by accident.
   return <StandardBottomSheet visible onClose={onClose} dismissBehavior="none" title={t(`onboarding.feature.${feature}.title`)} focusKey={page}
-    testID="sheet.onboarding.feature" style={{ height: sheetHeight, ...(Platform.OS === 'web' ? { width } : {}) }}
+    testID="sheet.onboarding.feature" style={{ height: sheetHeight, ...(Platform.OS === 'web' ? WEB_SHEET_STYLE(width) : {}) }}
     surfaceColor={tokens.screen.background} transparentContent
     // The whole sheet is the night: sky, stars, and a shooting star at each page.
     background={<StoryNight tokens={tokens} page={{ key: `${feature}-${step}`, index: CHAPTERS.indexOf(feature) * 4 + step }} />}

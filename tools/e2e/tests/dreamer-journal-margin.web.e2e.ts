@@ -1,18 +1,13 @@
 // Historical UI assertions, run on the public TesterArmy web surface.
 import type { Page } from 'playwright/test';
-import { createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { createParityTest, expect, leaveOnboarding, signInFromToday } from '../web-parity-fixtures';
 const test = createParityTest();
 
 test.use({ viewport: { width: 390, height: 867 }, timezoneId: 'Europe/Paris' });
 
 async function startGuest(page: Page) {
   await page.goto('/');
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await expect(page.getByTestId('screen.recording')).toBeVisible();
 }
 
@@ -28,11 +23,7 @@ async function populatedJournal(page: Page) {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await startGuest(page);
   await page.getByTestId('btn.recording.home').or(page.getByTestId('tab.home')).filter({ visible: true }).click();
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId('btn.mockProfile.existing').click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromToday(page, 'existing');
   await page.setViewportSize({ width: 390, height: 867 });
   // The desktop-to-phone resize can still be closing the drawer over the cards.
   // Observe its nonzero profile row: the scroll container itself can have no

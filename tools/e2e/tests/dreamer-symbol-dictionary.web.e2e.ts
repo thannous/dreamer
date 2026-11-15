@@ -1,18 +1,13 @@
 // Historical exact UI assertions executed under the guarded TesterArmy engine.
 import type { Locator, Page } from 'playwright/test';
-import { createParityTest, expect, withDialog, type ParityInfo } from '../web-parity-fixtures';
+import { createParityTest, expect, withDialog, type ParityInfo, leaveOnboarding } from '../web-parity-fixtures';
 
 const test = createParityTest({ locale: 'fr-FR', viewport: { width: 390, height: 844 }, timezoneId: 'Europe/Paris' });
 
 async function openDictionary(page: Page, theme: 'light' | 'dark' | 'auto' = 'light') {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await expect(page.getByTestId('screen.recording')).toBeVisible();
   await page.getByTestId('tab.explore').filter({ visible: true }).click();
   await page.getByTestId('btn.header.explore.settings').click();

@@ -7,7 +7,7 @@
 // Trends keeps the full moon letters for an account. Dreams are noted through the capture, the
 // clock set to the night they belong to; the journeys run in Paris time.
 import type { Page } from 'playwright/test';
-import { answerSeal, createParityTest, expect, withDialog } from '../web-parity-fixtures';
+import { answerSeal, createParityTest, expect, leaveOnboarding, signInFromToday } from '../web-parity-fixtures';
 const test = createParityTest();
 
 // The full moon of 26 October 2026 comes at 05:12 in Paris: the night it ends is the 25th's,
@@ -41,22 +41,13 @@ const LETTER_BODY = 'At first the sea rose behind you and you looked for a door.
 async function start(page: Page, at: Date) {
   await page.clock.setSystemTime(at);
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await page.getByTestId('btn.onboarding.intro.next').click();
-  // With feature sheets, "Commencer" first tells the three stories; the cross moves on.
-  if (process.env.EXPO_PUBLIC_ONBOARDING_FEATURE_SHEETS_ENABLED === 'true') {
-    await withDialog(page, 'accept', () => page.getByTestId('btn.onboarding.feature.close').click());
-  }
-  await page.getByTestId('btn.onboarding.skip').click();
+  await leaveOnboarding(page);
   await home(page);
 }
 
 async function selectProfile(page: Page, profile: 'new' | 'existing' | 'plus', at: Date) {
   await start(page, at);
-  await page.getByTestId('btn.header.home.settings').click();
-  await page.getByTestId('quick-settings.all').click();
-  await page.getByTestId('settings-account-open-signin').click();
-  await page.getByTestId(`btn.mockProfile.${profile}`).click();
-  await expect(page.getByTestId('screen.recording')).toBeVisible();
+  await signInFromToday(page, profile);
   await home(page);
 }
 
