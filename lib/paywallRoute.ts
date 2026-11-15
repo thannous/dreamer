@@ -36,7 +36,7 @@ export function buildAnalysisPaywallHref(
 
 /** Only resume the saved dream for the account that opened this offer. */
 let pendingPurchasedAnalysis: { key: string; createdAt: number } | null = null;
-const PURCHASE_RETURN_TTL_MS = 10 * 60 * 1000;
+export const PURCHASE_RETURN_TTL_MS = 10 * 60 * 1000;
 
 function analysisReturnKey(route: DreamRouteParams, ownerId: string): string {
   const identity = route.clientRequestId ? ['client', route.clientRequestId]

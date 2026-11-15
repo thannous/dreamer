@@ -1,6 +1,6 @@
 import type { ScrollViewInstance } from 'react-native';
 import { MarkdownText } from '@/components/ui/MarkdownText';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Keyboard, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { useTheme } from '@/context/ThemeContext';
@@ -11,6 +11,7 @@ import { TID } from '@/lib/testIDs';
 import type { MicButtonStatus } from './MicButton';
 import { RecordingTextInput } from './RecordingTextInput';
 import { CaptureConversationCard } from './CaptureConversationCard';
+import { attempt } from '@/lib/attempt';
 import { parseCaptureEditableDraft } from '@/lib/captureEditableDraft';
 import { Fonts } from '@/constants/theme';
 import { CaptureWeaving } from './CaptureWeaving';
@@ -46,6 +47,9 @@ type Props = {
 };
 
 export function RecordingConversation(props: Props) {
+  // Called below, so taken out of `props`: a call written `props.onMute()` reads the whole
+  // `props` object, and what is built from it would be built again on every render.
+  const { onAnswerSubmit, onMute, onVoice: startVoice, onContinueQuestions } = props;
   const { colors, mode } = useTheme();
   const tokens = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const { t } = useTranslation();
@@ -63,13 +67,14 @@ export function RecordingConversation(props: Props) {
     thread.current?.scrollTo({ y: Math.max(reviewTop.current - 12, 0), animated: !reduced });
     return true;
   };
+  // Once each time the page appears, with the motion setting of that moment.
+  const revealReviewNow = useEffectEvent(() => { revealReview.current = !scrollToReview(); });
   useEffect(() => {
     if (!reviewShown) {
       reviewTop.current = null;
       return;
     }
-    revealReview.current = !scrollToReview();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- once each time the page appears
+    revealReviewNow();
   }, [reviewShown]);
   const sections = useMemo(() => parseCaptureEditableDraft(props.storyTranscript).sections, [props.storyTranscript]);
   const hasStory = sections.some(section => Boolean(section.text.trim()));
@@ -82,14 +87,14 @@ export function RecordingConversation(props: Props) {
   const submitDisabled = locked || props.loading || !props.answer.trim();
   const submit = async () => {
     setSwitching(true);
-    try { await props.onAnswerSubmit(); Keyboard.dismiss(); } finally { setSwitching(false); }
+    await attempt(async () => { await onAnswerSubmit(); Keyboard.dismiss(); }, { finally: () => setSwitching(false) });
   };
   const onVoice = async () => {
     Keyboard.dismiss();
     if (listening) {
       setSwitching(true);
-      try { await props.onMute(); } finally { setSwitching(false); }
-    } else { props.onVoice(); }
+      await attempt(onMute, { finally: () => setSwitching(false) });
+    } else { startVoice(); }
   };
   const currentQuestion = props.loading ? t('recording.conversation.thinking')
     : props.review ? null
@@ -129,7 +134,7 @@ export function RecordingConversation(props: Props) {
         />
       </View> : null}
     </ScrollView>
-    {props.needsDecision && !props.review ? <Pressable onPress={() => { void props.onContinueQuestions?.(); }} disabled={locked || props.loading}
+    {props.needsDecision && !props.review ? <Pressable onPress={() => { void onContinueQuestions?.(); }} disabled={locked || props.loading}
       accessibilityRole="button" style={styles.secondary} testID="recording-conversation-continue-questions">
       <Text style={[styles.hint, { color: tokens.text.primary }]}>{t('recording.conversation.continue_questions')}</Text>
     </Pressable> : null}

@@ -10,6 +10,7 @@
  */
 
 import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
+import { offlineModelPromptHandler } from '@/components/speech/offlineModelPromptHandler';
 import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
@@ -24,7 +25,6 @@ import { canDictate } from '@/lib/speechCapability';
 import {
   registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
-  type OfflineModelPromptHandler,
 } from '@/services/nativeSpeechRecognition';
 import {
   openGoogleVoiceSettingsBestEffort,
@@ -228,13 +228,9 @@ function Root({
 
   // Register offline model prompt handler
   useEffect(() => {
-    const handler: OfflineModelPromptHandler = {
-      get isVisible() {
-        return offlineModelSheetVisibleRef.current;
-      },
-      show: handleOfflineModelPromptShow,
-    };
-    return registerOfflineModelPromptHandler(handler);
+    return registerOfflineModelPromptHandler(
+      offlineModelPromptHandler(offlineModelSheetVisibleRef, handleOfflineModelPromptShow)
+    );
   }, [handleOfflineModelPromptShow]);
 
   useEffect(() => {

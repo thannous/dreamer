@@ -805,6 +805,14 @@ async function awaitEditorReady() {
   });
 }
 
+/**
+ * A tap, then all it started: the handlers behind the microphone are asynchronous, and a
+ * person's next gesture always lands after they have settled.
+ */
+async function tap(testID: string) {
+  await act(async () => { fireEvent.click(screen.getByTestId(testID)); });
+}
+
 async function advancePastAutosaveWindow() {
   await act(async () => {
     await jest.advanceTimersByTimeAsync(RECORDING_DRAFT_AUTOSAVE_DELAY_MS + 100);
@@ -1098,12 +1106,12 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'A garden.' } });
-    await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+    await tap('conversation-submit');
     let expected = 'A garden.';
     for (const answer of ['Blue flowers.', 'A bird.', 'It was quiet.']) {
       expected = answerPair(expected, answer);
       fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: answer } });
-      await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+      await tap('conversation-submit');
     }
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(3);
     await waitFor(() => expect((screen.getByTestId('capture-review-text') as HTMLTextAreaElement).value).toBe('A blue garden at dawn. A door was open.'));
@@ -1188,7 +1196,7 @@ describe('Recording screen', () => {
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(''));
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Nouveau rêve.' } });
-    await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+    await tap('conversation-submit');
     expect(mockRequestCaptureQuestion).toHaveBeenLastCalledWith('Nouveau rêve.', expect.any(String), [], expect.anything());
     expect(mockAddDream).not.toHaveBeenCalled();
   });
@@ -1295,7 +1303,7 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     await act(async () => { mockOnPartialTranscript?.('Ancien rêve.'); });
-    await act(async () => { fireEvent.click(screen.getByTestId(TID.Button.ClearDream)); });
+    await tap(TID.Button.ClearDream);
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
     await act(async () => { mockOnPartialTranscript?.('Ancien rêve revenu.'); });
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe('');
@@ -1328,7 +1336,7 @@ describe('Recording screen', () => {
     mockGetSavedTranscript.mockResolvedValueOnce(source);
     render(<RecordingScreen />);
     await awaitEditorReady();
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
+    await tap('recording-review-transcript');
     expect(screen.queryByTestId('recording-mode-text')).toBeNull();
     expect(screen.getByText('Quelle couleur ?')).toBeTruthy();
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Noir.');
@@ -1339,7 +1347,7 @@ describe('Recording screen', () => {
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(edited));
     fireEvent.click(screen.getByTestId('capture-adjust-close'));
     expect(screen.getByTestId('conversation-story').textContent).toBe(edited);
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
+    await tap('recording-review-transcript');
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Gris, je crois.');
     fireEvent.click(screen.queryByTestId('conversation-finish') ?? getCaptureSaveAction());
     await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith(
@@ -1361,7 +1369,7 @@ describe('Recording screen', () => {
     mockRequestCaptureQuestion.mockResolvedValueOnce({ question: 'Que cherchais-tu ?', done: false });
     render(<RecordingScreen />);
     await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('Que cherchais-tu ?'));
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
+    await tap('recording-review-transcript');
     fireEvent.change(screen.getByTestId('capture-adjust-section-0'), { target: { value: 'Je cherchais une valise rouge.' } });
     fireEvent.click(screen.getByTestId('capture-adjust-close'));
     expect(screen.getByTestId('conversation-question').textContent).toBe('');
@@ -1379,7 +1387,7 @@ describe('Recording screen', () => {
     mockGetSavedTranscript.mockResolvedValueOnce(answerPair('Une plage.', 'Noir.', 'Quelle couleur ?'));
     render(<RecordingScreen />);
     await awaitEditorReady();
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
+    await tap('recording-review-transcript');
     fireEvent.change(screen.getByTestId('capture-adjust-section-0'), { target: { value: '' } });
     fireEvent.change(screen.getByTestId('capture-adjust-section-1'), { target: { value: '' } });
     expect((getCaptureSaveAction() as HTMLButtonElement).disabled).toBe(true);
@@ -1396,14 +1404,14 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('Noir'));
     mockStopRecording.mockImplementationOnce(async () => {
       mockIsRecordingRef.current = false;
       return { transcript: 'Noir, je crois.' };
     });
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-review-transcript')); });
+    await tap('recording-review-transcript');
     expect((screen.getByTestId('capture-adjust-section-1') as HTMLTextAreaElement).value).toBe('Noir, je crois.');
     expect(mockFormatCaptureNarrative).not.toHaveBeenCalled();
     expect(mockAddDream).not.toHaveBeenCalled();
@@ -1517,8 +1525,8 @@ describe('Recording screen', () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     render(<RecordingScreen />);
     await awaitEditorReady();
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('Une plage'));
     mockStopRecording.mockImplementationOnce(async () => {
       mockIsRecordingRef.current = false;
@@ -1538,8 +1546,8 @@ describe('Recording screen', () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     const view = render(<RecordingScreen />);
     await awaitEditorReady();
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('Une plage.'));
     let resolve!: (value: { transcript: string }) => void;
     mockStopRecording.mockReturnValueOnce(new Promise(done => { resolve = done; }));
@@ -2572,15 +2580,15 @@ describe('Recording screen', () => {
     fireEvent.change(editor, { target: { value: 'Le jardin fleuri' } });
     editor.setSelectionRange(start, end);
     fireEvent.select(editor);
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('gran'));
     act(() => mockOnPartialTranscript?.('grand'));
     expect(editor.value).toBe(expected);
 
     mockStopRecording.mockResolvedValueOnce({ transcript: 'grand' });
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStopRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
     expect(editor.value).toBe(expected);
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenCalledWith(expected));
   });
@@ -2593,20 +2601,20 @@ describe('Recording screen', () => {
     fireEvent.change(editor, { target: { value: 'Le jardin fleuri' } });
     editor.setSelectionRange(3, 3);
     fireEvent.select(editor);
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('grand'));
     mockStopRecording.mockImplementationOnce(async () => {
       mockIsRecordingRef.current = false;
       return { transcript: 'grand' };
     });
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStopRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStopRecording).toHaveBeenCalledTimes(1);
 
     editor.setSelectionRange(0, 0);
     fireEvent.select(editor);
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(2);
     act(() => mockOnPartialTranscript?.('Hier'));
     expect(editor.value).toBe('Hier Le grand jardin fleuri');
   });
@@ -2616,8 +2624,8 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     const editor = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.("J'ai rêvé"));
     act(() => mockOnPartialTranscript?.("J'ai rêvé que j'étais à la montagne"));
     // iOS multiline inputs can emit onChange for text the app set, possibly a stale preview.
@@ -2638,8 +2646,8 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     const editor = screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement;
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('Un chat pixel'));
 
     let resolveStop!: (value: { transcript: string }) => void;
@@ -2650,13 +2658,13 @@ describe('Recording screen', () => {
     // The recognizer ends on silence just as the user taps the microphone to stop.
     act(() => { mockOnNativeEnd?.(); });
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    await tap('recording-voice-control');
     expect(mockStartRecording).toHaveBeenCalledTimes(1);
 
     await act(async () => { resolveStop({ transcript: 'Un chat pixel.' }); });
     expect(editor.value).toBe('Un chat pixel.');
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(2);
   });
 
   it('continues at the insertion point after Android restarts recognition', async () => {
@@ -2771,8 +2779,8 @@ describe('Recording screen', () => {
     render(<RecordingScreen />);
     await awaitEditorReady();
     await waitFor(() => expect(screen.getByTestId('conversation-question').textContent).toBe('What else do you remember?'));
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('Une porte rouge.'));
     expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('Une porte rouge.');
     expect(screen.getByTestId('conversation-story').textContent).toBe('Un jardin.');
@@ -2780,20 +2788,20 @@ describe('Recording screen', () => {
       mockIsRecordingRef.current = false;
       return { transcript: 'Une porte rouge.' };
     });
-    await act(async () => { fireEvent.click(screen.getByTestId('conversation-mute')); });
+    await tap('conversation-mute');
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Une porte bleue.' } });
     expect((screen.getByTestId(TID.Input.DreamTranscript) as HTMLTextAreaElement).value).toBe(answerPair('Un jardin.', 'Une porte bleue.'));
     act(() => mockAppStateHandler?.('background'));
     await waitFor(() => expect(mockSaveTranscript).toHaveBeenLastCalledWith(answerPair('Un jardin.', 'Une porte bleue.')));
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(2);
     act(() => mockOnPartialTranscript?.('Puis un oiseau.'));
     expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('Une porte bleue. Puis un oiseau.');
     mockStopRecording.mockImplementationOnce(async () => {
       mockIsRecordingRef.current = false;
       return { transcript: 'Puis un oiseau.' };
     });
-    await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+    await tap('conversation-submit');
     expect((screen.getByTestId('conversation-answer') as HTMLTextAreaElement).value).toBe('');
     expect(screen.getByTestId('conversation-story').textContent).toBe(answerPair('Un jardin.', 'Une porte bleue. Puis un oiseau.'));
     fireEvent.change(screen.getByTestId('conversation-answer'), { target: { value: 'Du soleil.' } });
@@ -2811,7 +2819,7 @@ describe('Recording screen', () => {
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     act(() => mockOnPartialTranscript?.('Un jardin au soleil.'));
     const questionCount = mockRequestCaptureQuestion.mock.calls.length;
-    await act(async () => { fireEvent.click(screen.getByTestId('conversation-mute')); });
+    await tap('conversation-mute');
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
     expect(mockRequestCaptureQuestion).toHaveBeenCalledTimes(questionCount);
     await act(async () => { mockOnNativeEnd?.(); });
@@ -2883,13 +2891,13 @@ describe('Recording screen', () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     const view = render(<RecordingScreen />);
     await awaitEditorReady();
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-bottom-nav')); });
+    await tap('recording-bottom-nav');
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     mockIsRecording = true;
     view.rerender(<RecordingScreen />);
     act(() => mockOnPartialTranscript?.('Un jardin au soleil.'));
     const questionCount = mockRequestCaptureQuestion.mock.calls.length;
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-bottom-nav')); });
+    await tap('recording-bottom-nav');
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
     await act(async () => { mockOnNativeEnd?.(); });
     // Muting from the bar keeps the reply for the dreamer to send; it asks nothing new.
@@ -2904,11 +2912,11 @@ describe('Recording screen', () => {
     mockGetInputModePreference.mockResolvedValue('voice');
     render(<RecordingScreen />);
     await awaitEditorReady();
-    fireEvent.click(screen.getByTestId('recording-voice-control'));
-    await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
+    await tap('recording-voice-control');
+    expect(mockStartRecording).toHaveBeenCalledTimes(1);
     act(() => mockOnPartialTranscript?.('Un jardin'));
     mockStopRecording.mockResolvedValueOnce({ transcript: 'Un jardin au soleil.' });
-    await act(async () => { fireEvent.click(screen.getByTestId('conversation-submit')); });
+    await tap('conversation-submit');
     expect(mockStopRecording).toHaveBeenCalledTimes(1);
     await waitFor(() => expect(mockRequestCaptureQuestion).toHaveBeenCalledWith(
       'Un jardin au soleil.', expect.any(String), expect.any(Array), expect.anything()
@@ -2970,7 +2978,7 @@ describe('Recording screen', () => {
     await act(async () => { mockOnNativeEnd?.(); });
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(2));
     // The pause finds no session yet: the restart is still opening it.
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    await tap('recording-voice-control');
     expect(mockStopRecording).toHaveBeenCalledTimes(2);
 
     await act(async () => {
@@ -2981,7 +2989,7 @@ describe('Recording screen', () => {
     expect(mockIsRecordingRef.current).toBe(false);
     expect(mockStartRecording).toHaveBeenCalledTimes(2);
     // Still paused: the next tap resumes rather than pausing again.
-    await act(async () => { fireEvent.click(screen.getByTestId('recording-voice-control')); });
+    await tap('recording-voice-control');
     expect(mockStartRecording).toHaveBeenCalledTimes(3);
   });
 

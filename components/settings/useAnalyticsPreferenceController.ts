@@ -6,6 +6,7 @@ import {
   isProductAnalyticsAvailable,
   setProductAnalyticsEnabled,
 } from '@/lib/productAnalytics';
+import { attempt } from '@/lib/attempt';
 
 export function useAnalyticsPreferenceController() {
   const { t } = useTranslation();
@@ -34,16 +35,15 @@ export function useAnalyticsPreferenceController() {
     setEnabled(nextEnabled);
     setSaving(true);
     setError(false);
-    try {
-      await setProductAnalyticsEnabled(nextEnabled);
-    } catch {
-      // Keep disabling fail-closed for the current session, matching the
-      // existing privacy control even if the preference cannot be persisted.
-      setEnabled(nextEnabled ? previous : false);
-      setError(true);
-    } finally {
-      setSaving(false);
-    }
+    await attempt(() => setProductAnalyticsEnabled(nextEnabled), {
+      catch: () => {
+        // Keep disabling fail-closed for the current session, matching the
+        // existing privacy control even if the preference cannot be persisted.
+        setEnabled(nextEnabled ? previous : false);
+        setError(true);
+      },
+      finally: () => { setSaving(false); },
+    });
   }, [collectionAvailable, enabled, saving]);
 
   // Previously granted consent must remain withdrawable while collection is off.

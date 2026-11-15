@@ -19,6 +19,7 @@ import { Fonts } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { QUOTAS } from '@/constants/limits';
 import { useDreamsData } from '@/context/DreamsContext';
+import { whileHeld } from '@/lib/attempt';
 import { formatQuotaResetDate } from '@/lib/quotaReset';
 import { resolveDreamRoute } from '@/lib/dreamRoute';
 import { getSavedDreamReturnRoute, requestAnalysisReturnRoute, type AnalysisPaywallParams } from '@/lib/paywallRoute';
@@ -141,7 +142,7 @@ function PaywallScreen() {
     });
     return (dream?.transcript || dream?.title || '').trim();
   }, [dreams, isDreamAnalysisOffer, params.dreamId, params.dreamRemoteId, params.dreamClientRequestId]);
-  const resetDate = formatQuotaResetDate(locale);
+  const resetDate = useMemo(() => formatQuotaResetDate(locale), [locale]);
 
   // Keeps rating requests away from the paywall and the minutes after it.
   useEffect(() => {
@@ -286,26 +287,23 @@ function PaywallScreen() {
 
   const handleRetryActivation = useCallback(async () => {
     if (!currentSession() || operationInFlightRef.current || processing) return;
-    operationInFlightRef.current = true;
     setOperationPending(true);
-    try {
+    await whileHeld(operationInFlightRef, async () => {
       showActivationOutcome(await confirmAccessAndResume(null));
-    } finally {
-      operationInFlightRef.current = false;
-      if (currentSession()) setOperationPending(false);
-    }
+    }, {
+      finally: () => { if (currentSession()) setOperationPending(false); },
+    });
   }, [confirmAccessAndResume, currentSession, processing, showActivationOutcome]);
 
   const handlePurchase = useCallback(async () => {
     if (!currentSession() || !effectiveSelectedId || !canPurchase || !selectedPlan || operationInFlightRef.current) return;
-    operationInFlightRef.current = true;
     setOperationPending(true);
     void trackProductEvent('purchase_started', {
       trigger: paywallTrigger,
       plan: selectedPlan,
       tier: analyticsTier,
     });
-    try {
+    await whileHeld(operationInFlightRef, async () => {
       const nextStatus = await purchase(effectiveSelectedId);
       if (!currentSession()) return;
       purchaseOutcomeRef.current = 'completed';
@@ -316,23 +314,22 @@ function PaywallScreen() {
         tier: nextStatus.storeActive ? 'plus' : nextStatus.tier,
       });
       showActivationOutcome(await confirmAccessAndResume(nextStatus));
-    } catch (purchaseError) {
-      if (currentSession()) void trackProductEvent('purchase_failed', {
-        trigger: paywallTrigger,
-        plan: selectedPlan,
-        reason: classifyPurchaseFailure(purchaseError),
-      });
-    } finally {
-      operationInFlightRef.current = false;
-      if (currentSession()) setOperationPending(false);
-    }
+    }, {
+      catch: (purchaseError) => {
+        if (currentSession()) void trackProductEvent('purchase_failed', {
+          trigger: paywallTrigger,
+          plan: selectedPlan,
+          reason: classifyPurchaseFailure(purchaseError),
+        });
+      },
+      finally: () => { if (currentSession()) setOperationPending(false); },
+    });
   }, [analyticsTier, canPurchase, confirmAccessAndResume, currentSession, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, showActivationOutcome]);
 
   const handleRestore = useCallback(async () => {
     if (!currentSession() || processing || requiresAuth || awaitingServerAccess || operationInFlightRef.current) return;
-    operationInFlightRef.current = true;
     setOperationPending(true);
-    try {
+    await whileHeld(operationInFlightRef, async () => {
       const nextStatus = await restore();
       if (!currentSession()) return;
       purchaseOutcomeRef.current = 'restored';
@@ -344,15 +341,15 @@ function PaywallScreen() {
         outcome: outcome === 'plus' ? 'restored' : 'nothing_to_restore',
       });
       showActivationOutcome(outcome);
-    } catch (restoreError) {
-      if (currentSession()) void trackProductEvent('restore_completed', {
-        trigger: paywallTrigger,
-        outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
-      });
-    } finally {
-      operationInFlightRef.current = false;
-      if (currentSession()) setOperationPending(false);
-    }
+    }, {
+      catch: (restoreError) => {
+        if (currentSession()) void trackProductEvent('restore_completed', {
+          trigger: paywallTrigger,
+          outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
+        });
+      },
+      finally: () => { if (currentSession()) setOperationPending(false); },
+    });
   }, [awaitingServerAccess, confirmAccessAndResume, currentSession, paywallTrigger, processing, requiresAuth, restore, showActivationOutcome]);
 
   useEffect(() => {

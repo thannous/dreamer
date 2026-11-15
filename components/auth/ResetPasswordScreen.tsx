@@ -22,6 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { isLucidTrainer } from '@/lib/appVariant';
+import { attempt } from '@/lib/attempt';
 import { getWebRecoveryLinkState, onPasswordRecovery, updatePassword, updatePasswordFromNativeRecovery, updatePasswordFromWebRecovery, webAuthCallbackPromise } from '@/lib/auth';
 import { isValidEmail, PASSWORD_MIN_LENGTH } from '@/lib/authValidation';
 import type { NativeRecoveryLink } from '@/lib/nativeRecoveryLink';
@@ -116,7 +117,7 @@ const ResetPasswordScreen: React.FC<{ nativeRecoveryLink?: NativeRecoveryLink }>
     if (submitDisabled) return;
     setSubmitting(true);
     setErrorKey(null);
-    try {
+    await attempt(async () => {
       if (recoveryLinkState === 'pending') {
         if (Platform.OS === 'web') {
           await updatePasswordFromWebRecovery(email, password);
@@ -133,14 +134,15 @@ const ResetPasswordScreen: React.FC<{ nativeRecoveryLink?: NativeRecoveryLink }>
       setPassword('');
       setConfirmPassword('');
       setCompleted(true);
-    } catch (error) {
-      if (__DEV__) {
-        console.warn('[ResetPasswordScreen] updatePassword failed', error);
-      }
-      setErrorKey(getUpdateErrorKey(error));
-    } finally {
-      setSubmitting(false);
-    }
+    }, {
+      catch: (error) => {
+        if (__DEV__) {
+          console.warn('[ResetPasswordScreen] updatePassword failed', error);
+        }
+        setErrorKey(getUpdateErrorKey(error));
+      },
+      finally: () => { setSubmitting(false); },
+    });
   };
 
   const handleContinue = () => {

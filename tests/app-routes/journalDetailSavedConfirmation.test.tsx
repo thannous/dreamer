@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 
 import type { PendingRecordingIntent } from '@/lib/onboardingState';
 import type { DreamAnalysis } from '@/lib/types';
-import { requestAnalysisReturnRoute } from '@/lib/paywallRoute';
+import { PURCHASE_RETURN_TTL_MS, requestAnalysisReturnRoute } from '@/lib/paywallRoute';
 import { trackInitialDreamCategorization } from '@/lib/initialDreamCategorization';
 import { TID } from '@/lib/testIDs';
 
@@ -1028,6 +1028,24 @@ describe('journal detail saved confirmation route', () => {
     expect(mockAnalyzeDream).not.toHaveBeenCalled();
     expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(true);
     expect((screen.getByTestId(TID.Button.DreamDelete) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('stops waiting and unlocks the page when the purchase never reaches it', async () => {
+    jest.useFakeTimers();
+    try {
+      requestAnalysisReturnRoute({ dreamId: '42', dreamClientRequestId: 'persisted-original-42', dreamOwnerId: 'user-1' }, 'user-1');
+      mockSearchParams = { id: '42', analyzeAfterPurchase: '1', analysisOwnerId: 'user-1' };
+      render(<JournalDetailScreen />);
+      expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(true);
+      expect(mockSetParams).not.toHaveBeenCalled();
+
+      await act(async () => { jest.advanceTimersByTime(PURCHASE_RETURN_TTL_MS); });
+      expect(mockSetParams).toHaveBeenCalledWith({ analyzeAfterPurchase: undefined, analysisOwnerId: undefined });
+      expect(mockAnalyzeDream).not.toHaveBeenCalled();
+      expect((screen.getByTestId(TID.Button.EditDream) as HTMLButtonElement).disabled).toBe(false);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it.each(['another-account', 'done', 'pending'])('does not resume an analysis for %s', async (state: string) => {

@@ -10,6 +10,7 @@ import { useDreamShareComposite } from '@/hooks/useDreamShareComposite';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
+import { whileHeld } from '@/lib/attempt';
 import { getDreamImageCacheKey } from '@/lib/imageUtils';
 import type { ShareCardOptions } from '@/lib/journal/shareCard';
 import type { DreamAnalysis } from '@/lib/types';
@@ -130,9 +131,8 @@ export function DreamShareComposer({
   const shareCard = useCallback(async (options: ShareCardOptions) => {
     if (locked || shareInFlightRef.current) return;
     if (options.painting && shareMediaPending) return;
-    shareInFlightRef.current = true;
     setIsSharing(true);
-    try {
+    await whileHeld(shareInFlightRef, async () => {
       const requestId = ++shareRequestIdRef.current;
       const source = options.painting ? shareSource : '';
       setPreparingShare(true);
@@ -158,19 +158,21 @@ export function DreamShareComposer({
       // The share sheet opened with the card: whether it was then sent cannot be known.
       recordBadgeEvent({ type: 'dream_shared', dream });
       if (mountedRef.current) onClose();
-    } catch (error) {
-      if (!mountedRef.current) return;
-      console.error('Share failed:', error);
-      Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
-    } finally {
-      pendingShareRef.current = null;
-      shareInFlightRef.current = false;
-      if (mountedRef.current) {
-        setShareRequest(null);
-        setPreparingShare(false);
-        setIsSharing(false);
-      }
-    }
+    }, {
+      catch: (error) => {
+        if (!mountedRef.current) return;
+        console.error('Share failed:', error);
+        Alert.alert(t('common.error_title'), t('journal.detail.share.error_message'));
+      },
+      finally: () => {
+        pendingShareRef.current = null;
+        if (mountedRef.current) {
+          setShareRequest(null);
+          setPreparingShare(false);
+          setIsSharing(false);
+        }
+      },
+    });
   }, [dream, locked, onClose, shareComposite, shareSource, shareCacheKey, shareDate, t, shareMediaPending, shareDreamIdentity, shareImageRef, onShareMediaReady]);
 
   return (

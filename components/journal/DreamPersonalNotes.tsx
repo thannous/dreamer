@@ -6,6 +6,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useTheme } from '@/context/ThemeContext';
 import { useContentWindow } from '@/context/ContentWindowContext';
 import { formatDreamDate } from '@/lib/dateUtils';
+import { whileHeld } from '@/lib/attempt';
 import { generateUUID } from '@/lib/dreamUtils';
 import { PERSONAL_NOTE_MAX_LENGTH, PERSONAL_NOTES_MAX_COUNT } from '@/lib/dreamPersonalNotes';
 import type { DreamAnalysis, DreamPersonalNote } from '@/lib/types';
@@ -42,12 +43,14 @@ export function DreamPersonalNotes({ dream, disabled = false, onInteractionChang
   const close = useCallback(() => { setEditing(null); setDraft(''); setError(false); setInputFocused(false); }, []);
   const write = useCallback(async (next: DreamPersonalNote[]) => {
     if (locked || busy.current) return;
-    busy.current = true; setSaving(true); setError(false);
-    try {
+    setSaving(true); setError(false);
+    await whileHeld(busy, async () => {
       await updateDream({ ...dream, personalNotes: next, clientUpdatedAt: Date.now() });
       close(); setDeleting(null);
-    } catch { setError(true); }
-    finally { busy.current = false; setSaving(false); }
+    }, {
+      catch: () => { setError(true); },
+      finally: () => { setSaving(false); },
+    });
   }, [close, dream, locked, updateDream]);
   const save = useCallback(() => {
     const text = draft.trim();
