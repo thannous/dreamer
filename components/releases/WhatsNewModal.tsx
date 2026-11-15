@@ -35,8 +35,8 @@ import {
 } from '@/services/storageService';
 import { TypeScale } from '@/constants/typeScale';
 
-export const RELEASE_NOTES_VERSION = '3.8.0';
-// The title names the release series (3.8), so a version bump cannot leave an older one behind.
+export const RELEASE_NOTES_VERSION = '4.0.0';
+// The title names the release series (4.0), so a version bump cannot leave an older one behind.
 const RELEASE_NOTES_SERIES = RELEASE_NOTES_VERSION.split('.').slice(0, 2).join('.');
 
 const webTitleFocusResetStyle: TextStyle | null = process.env.EXPO_OS === 'web'
