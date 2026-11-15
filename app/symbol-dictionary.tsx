@@ -496,7 +496,10 @@ function SymbolDictionaryScreen() {
         renderItem={({ item }: { item: unknown }) => renderListRow(item as Row)}
         ListHeaderComponent={listHeader}
         ListEmptyComponent={renderEmptyComponent()}
-        initialNumToRender={12}
+        // The header fills most of a phone screen: two or three rows show under it. The
+        // rows after these mount in the next batch, off screen, instead of holding back
+        // the frame the screen opens on.
+        initialNumToRender={4}
         maxToRenderPerBatch={10}
         windowSize={5}
         removeClippedSubviews={false}
