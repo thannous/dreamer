@@ -109,7 +109,7 @@ const LINT = ['**', ...not(DOCS), ...not(SITE_ONLY), ...not(AGENT_META), '!supab
 // list; that graph keys app.json and app/index.tsx alike, hence the latter.
 const LINT_SCRIPTS = [
   'scripts/', 'eslint.config.js', 'package.json', 'package-lock.json', 'tsconfig.json', 'babel.config.js', 'jest.config.js',
-  'app.config.ts', 'app.json', 'apps/meditation/app.json', 'apps/meditation/app/index.tsx', 'apps/site/dependencies.js',
+  'app.config.ts', 'app.json', 'eas.json', 'apps/meditation/app.json', 'apps/meditation/app/index.tsx', 'apps/site/dependencies.js',
   'context/DreamsContext.tsx', 'context/ThemeContext.tsx', 'lib/types.ts', 'lib/journalSyncContracts.ts',
   'services/storageService.ts', 'services/supabaseDreamService.ts', 'data/site-manifest.json',
   'supabase/db-contract.manifest.json',
