@@ -34,7 +34,7 @@ export type DreamsActionsContextValue = {
   toggleFavorite: (id: DreamTarget) => Promise<void>;
   retryDreamSync: (id: DreamTarget) => Promise<void>;
   resolveDreamConflict: (id: DreamTarget, resolution: 'keep_local' | 'use_server') => Promise<void>;
-  reloadDreams: () => Promise<void>;
+  reloadDreams: (options?: { quiet?: boolean }) => Promise<void>;
   retryPersistence: () => Promise<void>;
   generateDreamImage: (
     dreamId: DreamTarget,

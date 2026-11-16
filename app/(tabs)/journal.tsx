@@ -115,6 +115,16 @@ function JournalListScreen() {
   const openQuickSettings = useQuickSettings();
   const { t, currentLang } = useTranslation();
   const [favoriteError, setFavoriteError] = useState<string | null>(null);
+  // Pull to refresh re-reads the account journal: a dream saved on another
+  // device shows up without relaunching the app. The native spinner is the
+  // feedback, so the reload stays quiet (no loading notice under it).
+  const [pullRefreshing, setPullRefreshing] = useState(false);
+  const handlePullRefresh = useCallback(() => {
+    setPullRefreshing(true);
+    void reloadDreams({ quiet: true })
+      .catch(() => undefined)
+      .finally(() => setPullRefreshing(false));
+  }, [reloadDreams]);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
   const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
@@ -1293,6 +1303,8 @@ function JournalListScreen() {
         ListHeaderComponent={listHeader}
         onScroll={isWeb ? handleStaticListScroll : handleListScroll}
         scrollEventThrottle={16}
+        refreshing={isWeb ? undefined : pullRefreshing}
+        onRefresh={isWeb ? undefined : handlePullRefresh}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode={isWeb ? 'none' : 'on-drag'}
         {...webUserScrollInput}

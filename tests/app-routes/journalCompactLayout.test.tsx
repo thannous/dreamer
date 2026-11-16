@@ -501,6 +501,24 @@ describe('Journal compact large-text layout', () => {
     expect(screen.getByTestId('journal-shared-header')).toBe(header);
     expect(screen.queryByTestId('journal-first-page')).toBeNull();
   });
+  it('pulls to refresh the journal on a phone, quietly, and stops the spinner once read', async () => {
+    let finishReload: () => void = () => undefined;
+    mockReloadDreams.mockImplementationOnce(() => new Promise<undefined>((resolve) => { finishReload = () => resolve(undefined); }));
+    render(<JournalScreen />);
+    expect(mockListProps.refreshing).toBe(false);
+    act(() => { mockListProps.onRefresh(); });
+    expect(mockReloadDreams).toHaveBeenCalledWith({ quiet: true });
+    expect(mockListProps.refreshing).toBe(true);
+    await act(async () => { finishReload(); });
+    expect(mockListProps.refreshing).toBe(false);
+  });
+
+  it('offers no pull to refresh on the web list', () => {
+    mockPlatform = 'web';
+    render(<JournalScreen />);
+    expect(mockListProps.onRefresh).toBeUndefined();
+  });
+
   it('reserves the measured branded header height in a short landscape viewport', () => {
     Object.assign(mockWindow, { width: 640, height: 320, fontScale: 2 });
     render(<JournalScreen />);
