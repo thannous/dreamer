@@ -4478,4 +4478,34 @@ describe('useDreamJournal', () => {
       );
     });
   });
+
+  describe('back in the app', () => {
+    beforeEach(() => {
+      setMockUser({ id: 'user-1' });
+    });
+
+    it('reads the account journal again, so a dream saved on another device appears', async () => {
+      const { AppState } = require('react-native');
+      const listeners: ((state: string) => void)[] = [];
+      const addListener = jest.spyOn(AppState, 'addEventListener').mockImplementation(((_type: string, listener: (state: string) => void) => {
+        listeners.push(listener);
+        return { remove: () => undefined };
+      }) as never);
+      try {
+        const first = buildDream({ id: 1, remoteId: 101, title: 'Here' });
+        mockFetchDreamsFromSupabase.mockResolvedValue([first]);
+        const { result } = await renderLoadedDreamJournal();
+        await waitFor(() => expect(result.current.dreams.map((dream: DreamAnalysis) => dream.remoteId)).toEqual([101]), FAST_WAIT_OPTIONS);
+
+        const fromOtherDevice = buildDream({ id: 2, remoteId: 202, title: 'From the other phone' });
+        mockFetchDreamsFromSupabase.mockResolvedValue([fromOtherDevice, first]);
+        await act(async () => { listeners.forEach((listener) => listener('background')); });
+        await act(async () => { listeners.forEach((listener) => listener('active')); });
+
+        await waitFor(() => expect(result.current.dreams.map((dream: DreamAnalysis) => dream.remoteId).sort()).toEqual([101, 202]), FAST_WAIT_OPTIONS);
+      } finally {
+        addListener.mockRestore();
+      }
+    });
+  });
 });
