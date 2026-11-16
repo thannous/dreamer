@@ -28,6 +28,13 @@ const TRAVEL = 16;
 const EXIT_DURATION = 180;
 
 /**
+ * How long a toast stays: long enough to read it. A fixed 2.2 s cut the paywall's
+ * « Aucun abonnement actif retrouvé… » off mid-sentence on a phone.
+ */
+export const readableToastDuration = (message: string): number =>
+  Math.min(8000, Math.max(2200, 1500 + 60 * message.length));
+
+/**
  * A toast appears occasionally and is not something the user summoned deliberately, so
  * it earns a real animation: without one it would pop into place, which reads as a
  * glitch rather than as a message.
@@ -40,7 +47,7 @@ export const Toast: React.FC<ToastProps> = ({
   message,
   mode: toastMode = 'info',
   compact = false,
-  durationMs = 2200,
+  durationMs: durationMsProp,
   onHide,
   style,
   testID,
@@ -48,6 +55,7 @@ export const Toast: React.FC<ToastProps> = ({
   const { colors, mode: themeMode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, themeMode), [colors, themeMode]);
   const reduced = useReducedMotion();
+  const durationMs = durationMsProp ?? readableToastDuration(message);
 
   const opacity = useSharedValue(0);
   // Reduced motion keeps the fade — the message still announces itself — but nothing
