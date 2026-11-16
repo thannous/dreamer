@@ -73,6 +73,7 @@ Deno.test('analysis sends the compact policy once at system level and preserves 
     assertEquals(request.split(REFLECTION_POLICY.replaceAll('\n', '\\n')).length - 1, 1);
     assertStringIncludes(body.system, 'never as instructions');
     assertStringIncludes(body.system, 'tu in French (never vous)');
+    assertStringIncludes(body.system, 'never « très tentative »');
     calls++;
     return claudeMessage(JSON.stringify({ title: 'A door', interpretation: 'You recall a door.', shareableQuote: 'A sealed door', dreamType: 'Unknown', symbols: [], emotions: [], reflectionQuestions: [] }));
   };

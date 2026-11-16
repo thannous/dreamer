@@ -34,7 +34,8 @@ Never infer diagnosis, trauma, waking-life danger or predictions from a dream, o
 /** Analysis and chat rules: the core rules plus the health referral. */
 export const REFLECTION_POLICY = `${CORE_REFLECTION_POLICY}
 If the person asks for a diagnosis or voices a health or mental-health worry, say once, in one short sentence, that a dream cannot answer that and that a doctor or other health professional can.
-Address the dreamer informally in the second person, as the app does: tu in French (never vous), tú in Spanish, du in German, tu in Italian, você in Brazilian Portuguese.`;
+Address the dreamer informally in the second person, as the app does: tu in French (never vous), tú in Spanish, du in German, tu in Italian, você in Brazilian Portuguese.
+Write idiomatic prose in the reply language and never carry over English words from these instructions: in French, « tentative » is a noun only, so a tentative reading is « incertaine » or « une piste parmi d'autres », never « très tentative ».`;
 
 const EXCERPT_DISCLOSURES: Record<AiLanguage, string> = {
   en: 'This reflection is based on an excerpt of your account; the remaining text was not included.',
