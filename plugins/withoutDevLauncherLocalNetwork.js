@@ -9,7 +9,6 @@
 // On an EAS build whose profile is not a development client, the keys are removed at prebuild.
 // Local builds (no EAS_BUILD_PROFILE) and development-client profiles keep them, so the dev
 // client still finds Metro.
-const path = require('node:path');
 const { withInfoPlist } = require('expo/config-plugins');
 
 const EXPO_BONJOUR_SERVICE = '_expo._tcp';
@@ -35,7 +34,7 @@ function shouldStripDevLauncherNetworkKeys(env = process.env, easBuild = readEas
 
 function readEasBuildProfiles() {
   try {
-    return require(path.join(__dirname, '..', 'eas.json')).build ?? {};
+    return require('../eas.json').build ?? {};
   } catch {
     return {};
   }
