@@ -3,7 +3,7 @@
   "apps": {
     "noctalia": {
       "version": "4.0.0",
-      "sourceRef": "03f5fc50296055b6ee3671c4e3ab1d8883bbf28b",
+      "sourceRef": "af6d2b1bfdc9619ae8df14e565236546c29fa413",
       "published": false,
       "baseline": "Prepared source snapshot; not a Store publication claim"
     },
