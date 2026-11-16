@@ -195,12 +195,21 @@ export const useDreamJournal = () => {
 
   // A dream saved on another device reaches this one only through a read of the
   // account's journal, which ran at launch alone: back in the app, read it again.
+  // The read waits while the network comes back after waking (or the journal
+  // loads), and runs once it can, as long as the app is still in front.
   const wasAppActiveRef = useRef(isAppActive);
+  const foregroundReloadPendingRef = useRef(false);
   const lastForegroundReloadRef = useRef(0);
   useEffect(() => {
     const wasActive = wasAppActiveRef.current;
     wasAppActiveRef.current = isAppActive;
-    if (!isAppActive || wasActive || !canUseRemoteSync || !loaded || !hasNetwork) return;
+    if (!isAppActive) {
+      foregroundReloadPendingRef.current = false;
+      return;
+    }
+    if (!wasActive) foregroundReloadPendingRef.current = true;
+    if (!foregroundReloadPendingRef.current || !canUseRemoteSync || !loaded || !hasNetwork) return;
+    foregroundReloadPendingRef.current = false;
     const now = Date.now();
     if (now - lastForegroundReloadRef.current < FOREGROUND_RELOAD_MIN_INTERVAL_MS) return;
     lastForegroundReloadRef.current = now;
