@@ -33,11 +33,13 @@ Never infer diagnosis, trauma, waking-life danger or predictions from a dream, o
 
 /** Analysis and chat rules: the core rules plus the health referral. */
 export const REFLECTION_POLICY = `${CORE_REFLECTION_POLICY}
-If the person asks for a diagnosis or voices a health or mental-health worry, say once, in one short sentence, that a dream cannot answer that and that a doctor or other health professional can.`;
+If the person asks for a diagnosis or voices a health or mental-health worry, say once, in one short sentence, that a dream cannot answer that and that a doctor or other health professional can.
+Address the dreamer informally in the second person, as the app does: tu in French (never vous), tú in Spanish, du in German, tu in Italian, você in Brazilian Portuguese.
+Write idiomatic prose in the reply language and never carry over English words from these instructions: in French, « tentative » is a noun only, so a tentative reading is « incertaine » or « une piste parmi d'autres », never « très tentative ».`;
 
 const EXCERPT_DISCLOSURES: Record<AiLanguage, string> = {
   en: 'This reflection is based on an excerpt of your account; the remaining text was not included.',
-  fr: 'Cette réflexion repose sur un extrait de votre récit ; la suite du texte n’a pas été incluse.',
+  fr: 'Cette réflexion repose sur un extrait de ton récit ; la suite du texte n’a pas été incluse.',
   es: 'Esta reflexión se basa en un fragmento de tu relato; el resto del texto no se incluyó.',
   de: 'Diese Reflexion beruht auf einem Auszug deines Berichts; der restliche Text wurde nicht einbezogen.',
   it: 'Questa riflessione si basa su un estratto del tuo racconto; il resto del testo non è stato incluso.',
@@ -134,7 +136,7 @@ export type DreamAnalysisDetails = {
  * output-quality regression can be attributed to a prompt change. It is
  * returned to the client and stored with the dream (`promptVersion`).
  */
-export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-10-19.poetic7';
+export const ANALYSIS_PROMPT_VERSION = 'analysis-2026-11-16.poetic8';
 
 export type StructuredDreamAnalysis = {
   title: string;

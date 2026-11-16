@@ -38,6 +38,7 @@ import {
   Platform,
   Pressable,
   StyleSheet,
+  Text,
   View,
   type StyleProp,
   type ViewStyle,
@@ -147,25 +148,37 @@ const AssistantMessage = memo(function AssistantMessage({
             <IconSymbol name="brain" size={20} color={noctalia.action.primaryText} />
           </View>
         </View>
-        <View style={[styles.messageBubble, styles.messageBubbleAI, aiBubbleStyle]}>
-          {messageContent}
-        </View>
-        {isRetryableError && onRetry && (
-          <Pressable
-            onPress={onRetry}
-            accessibilityRole="button"
-            accessibilityLabel={retryA11yLabel}
-            style={({ pressed }) => [
-              styles.retryButton,
-              {
-                backgroundColor: noctalia.surface.soft,
-                borderColor: noctalia.surface.border,
-              },
-              pressed && styles.retryButtonPressed,
-            ]}
-          >
-            <IconSymbol name="arrow.clockwise" size={18} color={noctalia.text.secondary} />
-          </Pressable>
+        {isRetryableError && onRetry ? (
+          // The retry names itself under the failed reply: an icon alone read as decoration.
+          <View style={styles.retryColumn}>
+            <View style={[styles.messageBubble, styles.retryBubble, aiBubbleStyle]}>
+              {messageContent}
+            </View>
+            <Pressable
+              onPress={onRetry}
+              accessibilityRole="button"
+              accessibilityLabel={retryA11yLabel}
+              style={({ pressed }) => [
+                styles.retryButton,
+                {
+                  backgroundColor: noctalia.surface.soft,
+                  borderColor: noctalia.surface.border,
+                },
+                pressed && styles.retryButtonPressed,
+              ]}
+            >
+              <IconSymbol name="arrow.clockwise" size={16} color={noctalia.text.secondary} />
+              {retryA11yLabel ? (
+                <Text style={[styles.retryLabel, { color: noctalia.text.secondary }]} importantForAccessibility="no">
+                  {retryA11yLabel}
+                </Text>
+              ) : null}
+            </Pressable>
+          </View>
+        ) : (
+          <View style={[styles.messageBubble, styles.messageBubbleAI, aiBubbleStyle]}>
+            {messageContent}
+          </View>
         )}
       </View>
     </FadeInStaggered>
@@ -533,14 +546,28 @@ const styles = StyleSheet.create({
   layerVisible: {
     opacity: 1,
   },
+  retryColumn: {
+    maxWidth: '85%',
+    flexShrink: 1,
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  retryBubble: {
+    maxWidth: '100%',
+  },
   retryButton: {
-    alignSelf: 'center',
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 6,
+    minHeight: 36,
+    paddingHorizontal: 14,
+    borderRadius: 18,
     borderWidth: 1,
+  },
+  retryLabel: {
+    fontSize: TypeScale.bodySm.fontSize,
+    lineHeight: TypeScale.bodySm.lineHeight,
+    fontFamily: Fonts.outfit.medium,
   },
   retryButtonPressed: {
     opacity: 0.7,

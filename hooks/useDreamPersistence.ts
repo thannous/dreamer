@@ -119,7 +119,7 @@ export type UseDreamPersistenceResult = {
   /** Persist an explicit conflict choice in the owner-attributed guest migration. */
   persistMigrationResolution: (dream: DreamAnalysis, resolved: DreamAnalysis) => Promise<void>;
   /** Reload dreams from storage/server */
-  reloadDreams: () => Promise<void>;
+  reloadDreams: (options?: { quiet?: boolean }) => Promise<void>;
   /** Retry the last failed read or write for the active scope. */
   retryPersistence: () => Promise<void>;
 };
@@ -1311,12 +1311,16 @@ export function useDreamPersistence({
   /**
    * Public reload function
    */
-  const reloadDreams = useCallback(async () => {
+  const reloadDreams = useCallback(async (options?: { quiet?: boolean }) => {
     const mounted = { current: true };
     if (mountedRef.current && activeScopeKeyRef.current === activeScopeKey) {
-      setRemotePreviewAllowed(false);
-      setCompleteness({ status: 'loading' });
       const scope = getWriteScope(activeScopeKey);
+      // A quiet reload (back to the app) keeps the journal on screen while it reads:
+      // a hydrated journal is only replaced by the newer read.
+      if (!options?.quiet || !scope.hydrated) {
+        setRemotePreviewAllowed(false);
+        setCompleteness({ status: 'loading' });
+      }
       if (!scope.hydrated) {
         setLoaded(false);
         setStateForScope(activeScopeKey, { status: 'loading', target: canUseRemoteSync ? 'remote-cache' : 'device' });

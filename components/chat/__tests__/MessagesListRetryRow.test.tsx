@@ -13,6 +13,7 @@ jest.mock('react-native', () => ({
     <button aria-label={accessibilityLabel} onClick={onPress}>{children}</button>
   ),
   StyleSheet: { create: (styles: any) => styles },
+  Text: ({ children }: any) => <span>{children}</span>,
   View: ({ children }: any) => <div>{children}</div>,
 }));
 jest.mock('@/context/ThemeContext', () => ({
@@ -80,5 +81,10 @@ describe('MessagesList retry row', () => {
 
     expect(onRetry).toHaveBeenCalledTimes(1);
     expect(onRetry).toHaveBeenCalledWith(failure, false);
+  });
+
+  it('shows the retry label next to its icon', () => {
+    render(<Screen locked={false} onRetry={jest.fn()} />);
+    expect(screen.getByLabelText('Retry').textContent).toBe('Retry');
   });
 });
