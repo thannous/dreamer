@@ -150,6 +150,7 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
+      "./plugins/withoutDevLauncherLocalNetwork",
       "expo-router",
       [
         "expo-splash-screen",
