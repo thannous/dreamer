@@ -430,6 +430,9 @@ export function MessagesList({
         ref={ref}
         data={listData}
         renderItem={renderItem}
+        // A row renders again only when its item or `extraData` changes, not with
+        // `renderItem`: without this a row keeps the handlers of its first render.
+        extraData={renderItem}
         keyExtractor={keyExtractor}
         onContentSizeChange={onContentSizeChange}
         onLayout={onLayout}
