@@ -12,6 +12,7 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useDreamsData } from '@/context/DreamsContext';
 import { ScrollPerfProvider } from '@/context/ScrollPerfContext';
+import { useContentWindow } from '@/context/ContentWindowContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
 import { useDreamMedia } from '@/hooks/useDreamMedia';
@@ -40,6 +41,8 @@ function DreamCategoriesScreen() {
   const { fontScale } = useWindowDimensions();
   const tokens = getNoctaliaDesignTokens(colors, mode);
   const insets = useSafeAreaInsets();
+  const { width: contentWidth } = useContentWindow();
+  const artworkBleed = CONTENT_GUTTER + Math.max(0, (contentWidth - CONTENT_MAX_WIDTH) / 2);
   const scrollPerf = useScrollIdle();
   const [reading, setReading] = useState(false);
   const [failedImage, setFailedImage] = useState<string | null>(null);
@@ -77,7 +80,8 @@ function DreamCategoriesScreen() {
         <HeaderScrollView onScroll={onHeaderScroll} scrollEventThrottle={16} contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
           onScrollBeginDrag={scrollPerf.onScrollBeginDrag} onScrollEndDrag={scrollPerf.onScrollEndDrag}
           onMomentumScrollBegin={scrollPerf.onMomentumScrollBegin} onMomentumScrollEnd={scrollPerf.onMomentumScrollEnd}>
-          <DreamerArtworkWindow scene="dialogue" style={{ marginHorizontal: -32 }} bleedTop={insets.top + 8} />
+          {/* Full width even where the reading column is capped (an open Duo, a tablet). */}
+          <DreamerArtworkWindow scene="dialogue" style={{ marginHorizontal: -artworkBleed }} bleedTop={insets.top + 8} />
           <Pressable onPress={() => router.back()} accessibilityRole="button" accessibilityLabel={t('navigation.back')}
             style={({ pressed }) => [styles.back, pressed && styles.pressed]}>
             <IconSymbol name="chevron.left" size={22} color={tokens.accent.text} />
@@ -148,10 +152,13 @@ function DreamCategoriesScreen() {
   );
 }
 
+const CONTENT_GUTTER = 32;
+const CONTENT_MAX_WIDTH = 640;
+
 const styles = StyleSheet.create({
   screen: { flex: 1 },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  content: { paddingHorizontal: 32, width: '100%', maxWidth: 640, alignSelf: 'center' },
+  content: { paddingHorizontal: CONTENT_GUTTER, width: '100%', maxWidth: CONTENT_MAX_WIDTH, alignSelf: 'center' },
   back: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44, alignSelf: 'flex-start', marginLeft: -5 },
   backText: { fontFamily: Fonts.outfit.medium, fontSize: TypeScale.body.fontSize },
   title: { fontFamily: Fonts.fraunces.semiBold, fontSize: TypeScale.display.fontSize, lineHeight: 42, marginTop: 4 },

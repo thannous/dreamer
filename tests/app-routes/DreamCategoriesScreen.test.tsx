@@ -14,6 +14,9 @@ const mockPush = jest.fn();
 const mockBack = jest.fn();
 const mockUseLocalSearchParams = jest.fn();
 
+let mockWindowWidth = 390;
+let mockArtworkProps: { style?: { marginHorizontal?: number } } = {};
+
 jest.mock('expo-router', () => ({
   router: { push: mockPush, back: mockBack },
   useLocalSearchParams: mockUseLocalSearchParams,
@@ -63,7 +66,7 @@ jest.mock('react-native', () => {
     ScrollView: createElement('div'),
     Text: createElement('span'),
     View: createElement('div'),
-    useWindowDimensions: () => ({ width: 390, height: 844, scale: 1, fontScale: 1 }),
+    useWindowDimensions: () => ({ width: mockWindowWidth, height: 844, scale: 1, fontScale: 1 }),
     Platform: {
       OS: 'web',
       select: (values: Record<string, any>) => values?.web ?? values?.default,
@@ -187,6 +190,13 @@ jest.mock('@/lib/moti', () => ({
   MotiText: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
 }));
 
+jest.mock('@/components/ui/DreamerBackground', () => ({
+  DreamerArtworkWindow: (props: { style?: { marginHorizontal?: number } }) => {
+    mockArtworkProps = props;
+    return null;
+  },
+}));
+
 const { default: DreamCategoriesScreen } = require('@/app/dream-categories/[id]');
 
 describe('Dream categories screen', () => {
@@ -237,6 +247,21 @@ describe('Dream categories screen', () => {
       pathname: '/dream-chat/[id]',
       params: { id: '123', mode: 'synthesis' },
     });
+  });
+
+  it('keeps the painting edge to edge where the reading column is capped, as on an open Duo', () => {
+    mockUseLocalSearchParams.mockReturnValue({ id: '123' });
+    mockUseDreams.mockReturnValue({ dreams: [{ id: 123, title: 'A dream', chatHistory: [] }] });
+    try {
+      render(<DreamCategoriesScreen />);
+      expect(mockArtworkProps.style?.marginHorizontal).toBe(-32);
+
+      mockWindowWidth = 951;
+      render(<DreamCategoriesScreen />);
+      expect(mockArtworkProps.style?.marginHorizontal).toBe(-(32 + (951 - 640) / 2));
+    } finally {
+      mockWindowWidth = 390;
+    }
   });
 
   it('[E] Given an unknown dream id When rendering Then it shows a not-found message', () => {
