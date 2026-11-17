@@ -938,7 +938,10 @@ function DreamChatContent() {
 
   const headerComponent = (
     <>
-      <View style={styles.imageContainer}>
+      {/* Without its own image the dream shows the bundled painting, which sets its own
+          height (short in a short window, like a phone or an open Duo on its side); the
+          title then sits just under it instead of at the bottom of a fixed frame. */}
+      <View style={dream?.imageUrl ? styles.imageContainer : styles.artworkContainer}>
         {dream?.imageUrl ? (
           <Image
             source={dreamImageUri ? { uri: dreamImageUri } : null}
@@ -1322,6 +1325,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 320,
     position: 'relative',
+  },
+  artworkContainer: {
+    width: '100%',
+    position: 'relative',
+    // Room for the title under the painting: 240 + 80 matches the image frame on a phone.
+    paddingBottom: 80,
   },
   dreamImage: {
     width: '100%',

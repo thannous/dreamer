@@ -326,6 +326,21 @@ describe('Paywall screen', () => {
     expect(screen.queryByTestId(TID.Text.PaywallDreamExcerpt)).toBeNull();
   });
 
+  it('gives the floating Close a band of the page ground, so a scrolled table never runs into it', () => {
+    const { container } = render(<PaywallScreen />);
+    // The reanimated stub keeps the prop name: the band is found by its testID attribute.
+    const backdrop = container.querySelector('[testid="paywall.closeBackdrop"]') as HTMLElement | null;
+    const close = screen.getByTestId(TID.Button.PaywallClose);
+    expect(backdrop).not.toBeNull();
+    // Drawn under the Close (before it), never catching a touch.
+    expect(backdrop!.compareDocumentPosition(close) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(backdrop!.contains(close)).toBe(false);
+    expect(backdrop!.getAttribute('pointer-events')).toBe('none');
+    // Solid ground behind the Close's row (8 + 44 + 8 with no top inset), then a short fade.
+    const [, solidEnd] = (backdrop!.firstElementChild?.getAttribute('locations') ?? '').split(',').map(Number);
+    expect(solidEnd).toBeCloseTo(60 / 76);
+  });
+
   it('goes back when the paywall was opened from an existing route', () => {
     render(<PaywallScreen />);
 

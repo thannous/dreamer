@@ -3,6 +3,8 @@ import { router, useFocusEffect, useLocalSearchParams, type Href } from 'expo-ro
 import { usePreventRemove } from 'expo-router/react-navigation';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, BackHandler, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DreamerArtworkWindow } from '@/components/ui/DreamerBackground';
@@ -46,6 +48,7 @@ import { getPaywallVariant, PLUS_PAYWALL_FEATURE_KEYS } from '@/lib/paywallVaria
 import { classifyPurchaseFailure } from '@/lib/subscriptionErrors';
 import { TID } from '@/lib/testIDs';
 import { HeaderScrollView, useHeaderScroll } from '@/components/ui/headerStretch';
+import { useHeaderScrollY } from '@/components/ui/scrollDepth';
 import { withHeaderScroll } from '@/components/ui/HeaderScrollScope';
 import { TypeScale } from '@/constants/typeScale';
 
@@ -541,6 +544,7 @@ function PaywallScreen() {
     <View style={rootStyle} testID={TID.Screen.Paywall}>
       {/* Close stays in reach over the painting, whatever the scroll. It comes first so
           keyboard and screen-reader focus meets it first; zIndex keeps it above the scroll. */}
+      <CloseRowBackdrop top={insets.top} ground={noctalia.screen.background} />
       <View pointerEvents="box-none" style={[styles.closeOverlay, { top: ThemeLayout.spacing.sm + insets.top }]}>
         <ScreenContainer maxWidth={PAYWALL_MAX_WIDTH} pointerEvents="box-none">
           <Pressable
@@ -941,11 +945,20 @@ function PaywallScreen() {
   );
 }
 
+const CLOSE_BAND_FADE = 16;
+
 const styles = StyleSheet.create({
   root: {
     flex: 1,
     overflow: 'hidden',
     position: 'relative',
+  },
+  closeBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
   closeOverlay: {
     position: 'absolute',
@@ -1281,6 +1294,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+/**
+ * Once the page leaves the top, the floating Close gets its own band of the page's ground:
+ * what scrolls up (the comparison table's PLUS column on a narrow window such as the folded
+ * Duo) passes under the band and melts into it, instead of running into the button.
+ */
+function CloseRowBackdrop({ top, ground }: { top: number; ground: string }) {
+  const scrollY = useHeaderScrollY();
+  const style = useAnimatedStyle(() => ({
+    opacity: interpolate(scrollY.get(), [8, 64], [0, 1], Extrapolation.CLAMP),
+  }));
+  const solid = top + ThemeLayout.spacing.sm + 44 + ThemeLayout.spacing.sm;
+  const height = solid + CLOSE_BAND_FADE;
+  return (
+    <Animated.View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants"
+      testID="paywall.closeBackdrop" style={[styles.closeBackdrop, { height }, style]}>
+      <LinearGradient colors={[ground, ground, `${ground}00`]} locations={[0, solid / height, 1]}
+        style={StyleSheet.absoluteFill} />
+    </Animated.View>
+  );
+}
 
 const PaywallWithHeader = withHeaderScroll(PaywallScreen);
 
