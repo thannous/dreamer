@@ -414,9 +414,12 @@ function assertUpdateTarget(build, platform, expected) {
   if (build.distribution !== 'STORE' || build.buildProfile !== 'production') throw new Error('An update targets a production STORE build');
   if (build.app?.id !== expected.projectId) throw new Error('EAS build belongs to a different project');
   if (build.appVersion !== expected.version) throw new Error(`EAS build is ${build.appVersion}, not ${expected.version}`);
-  if (build.channel !== 'production') throw new Error(`EAS build listens to channel ${build.channel ?? 'none'}, not production`);
-  if (!build.runtimeVersion || build.runtimeVersion !== expected.runtimeVersion) {
-    throw new Error(`Native fingerprint changed since this build (${build.runtimeVersion ?? 'none'} vs ${expected.runtimeVersion}): this change needs a new store build, not an update.`);
+  // `eas build:view --json` (eas-cli 25.1.1) names them updateChannel.name and runtime.version.
+  const channel = build.updateChannel?.name;
+  if (channel !== 'production') throw new Error(`EAS build listens to channel ${channel ?? 'none'}, not production`);
+  const runtime = build.runtime?.version;
+  if (!runtime || runtime !== expected.runtimeVersion) {
+    throw new Error(`Native fingerprint changed since this build (${runtime ?? 'none'} vs ${expected.runtimeVersion}): this change needs a new store build, not an update.`);
   }
 }
 

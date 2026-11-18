@@ -410,8 +410,10 @@ describe('release planning against real Git histories', () => {
   });
   it('refuses an update over a build it cannot reach or whose native fingerprint changed', () => {
     const expected = { projectId: 'project-1', version: '4.0.0', runtimeVersion: 'abc123' };
+    // The shape eas-cli 25.1.1 `build:view --json` returns for the iOS 4.0.0 (26) store build.
     const build = { status: 'FINISHED', platform: 'IOS', distribution: 'STORE', buildProfile: 'production',
-      app: { id: 'project-1' }, appVersion: '4.0.0', channel: 'production', runtimeVersion: 'abc123' };
+      app: { id: 'project-1' }, appVersion: '4.0.0', releaseChannel: null, updateChannel: { id: 'channel-1', name: 'production' },
+      runtime: { id: 'runtime-1', version: 'abc123' }, fingerprint: { id: 'fingerprint-1', hash: 'abc123' } };
     expect(() => assertUpdateTarget(build, 'ios', expected)).not.toThrow();
     expect(() => assertUpdateTarget({ ...build, status: 'IN_PROGRESS' }, 'ios', expected)).toThrow('FINISHED');
     expect(() => assertUpdateTarget({ ...build, platform: 'ANDROID' }, 'ios', expected)).toThrow('platform');
@@ -419,9 +421,10 @@ describe('release planning against real Git histories', () => {
     expect(() => assertUpdateTarget({ ...build, buildProfile: 'release-smoke' }, 'ios', expected)).toThrow('production STORE');
     expect(() => assertUpdateTarget({ ...build, app: { id: 'other' } }, 'ios', expected)).toThrow('project');
     expect(() => assertUpdateTarget({ ...build, appVersion: '3.8.0' }, 'ios', expected)).toThrow('not 4.0.0');
-    expect(() => assertUpdateTarget({ ...build, channel: 'preview' }, 'ios', expected)).toThrow('channel preview');
-    expect(() => assertUpdateTarget({ ...build, runtimeVersion: 'old' }, 'ios', expected)).toThrow('needs a new store build');
-    expect(() => assertUpdateTarget({ ...build, runtimeVersion: undefined }, 'ios', { ...expected, runtimeVersion: undefined })).toThrow('fingerprint');
+    expect(() => assertUpdateTarget({ ...build, updateChannel: { id: 'channel-2', name: 'preview' } }, 'ios', expected)).toThrow('channel preview');
+    expect(() => assertUpdateTarget({ ...build, updateChannel: null }, 'ios', expected)).toThrow('channel none');
+    expect(() => assertUpdateTarget({ ...build, runtime: { id: 'runtime-2', version: 'old' } }, 'ios', expected)).toThrow('needs a new store build');
+    expect(() => assertUpdateTarget({ ...build, runtime: null }, 'ios', { ...expected, runtimeVersion: undefined })).toThrow('fingerprint');
   });
   it('refuses an update that would drop what the installed build ships', () => {
     const root = fixture();
