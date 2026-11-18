@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, assertUpdateTarget, assertUpdateSource, main } = require('./mobile-release');
+const { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, remoteEnvNames, assertNoEnvOverlap, assertUpdateTarget, assertUpdateSource, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -393,6 +393,14 @@ describe('release planning against real Git histories', () => {
     expect(() => updateArgs('android', '  ')).toThrow('--message');
     expect(parseArgs(['update', '--platform', 'ios', '--message', 'fix', '--dry-run'])).toMatchObject({ message: 'fix', dryRun: true });
     expect(() => parseArgs(['build', '--platform', 'ios', '--message', 'fix'])).toThrow('only available for update');
+  });
+  it('refuses an update whose bundle could take another value than the store build', () => {
+    const listed = '\u001b[1mEXPO_PUBLIC_SUPABASE_URL\u001b[22m=https://project.supabase.co\nREVENUECAT_IOS_KEY=*****\n\nnot a variable line\n';
+    expect(remoteEnvNames(listed)).toEqual(['EXPO_PUBLIC_SUPABASE_URL', 'REVENUECAT_IOS_KEY']);
+    const profile = { EXPO_PUBLIC_API_URL: 'https://api', EXPO_PUBLIC_MOCK_MODE: 'false' };
+    expect(() => assertNoEnvOverlap(profile, ['EXPO_PUBLIC_SUPABASE_URL'])).not.toThrow();
+    expect(() => assertNoEnvOverlap(profile, ['EXPO_PUBLIC_MOCK_MODE', 'EXPO_PUBLIC_SUPABASE_URL'])).toThrow('EXPO_PUBLIC_MOCK_MODE');
+    expect(() => assertNoEnvOverlap(profile, remoteEnvNames(''))).toThrow('Could not read');
   });
   it('refuses an update over a build it cannot reach or whose native fingerprint changed', () => {
     const expected = { projectId: 'project-1', version: '4.0.0', runtimeVersion: 'abc123' };

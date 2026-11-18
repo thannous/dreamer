@@ -377,6 +377,20 @@ function updateEnv(eas, base = process.env) {
   return { ...buildEnv('noctalia', 'production', base), ...profileEnv(eas, 'production') };
 }
 
+// `eas env:list` prints one NAME=value line per variable (values of secrets masked).
+function remoteEnvNames(output) {
+  const plain = String(output ?? '').replace(/\u001b\[[0-9;]*m/g, '');
+  return [...new Set(plain.split(/\r?\n/).map(line => /^([A-Za-z_][A-Za-z0-9_]*)=/.exec(line.trim())?.[1]).filter(Boolean))];
+}
+
+// EAS Update overlays the EAS production environment on the bundling process, while a store
+// build keeps the eas.json profile value: a key defined in both could differ between the two.
+function assertNoEnvOverlap(profile, remoteNames) {
+  if (!remoteNames.length) throw new Error('Could not read the EAS production environment variable names; no update published');
+  const both = Object.keys(profile).filter(key => remoteNames.includes(key));
+  if (both.length) throw new Error(`Defined both in eas.json production env and in the EAS production environment: ${both.join(', ')}. The update could bundle another value than the store build; keep each key in one place.`);
+}
+
 function updateArgs(platform, message) {
   if (!['android', 'ios'].includes(platform)) throw new Error('An update needs --platform android|ios');
   if (typeof message !== 'string' || !message.trim()) throw new Error('An update needs --message "what it changes"');
@@ -438,9 +452,9 @@ function main(args = process.argv.slice(2), root = ROOT) {
       throw new Error('Noctalia store builds must load updates from EAS with a fingerprint runtime version');
     }
     assertClean(root, { allowBuildNumbers: true });
-    // An update is a publication to every installed build with this fingerprint: the same
-    // release proof of exactly this commit as a store build, checked before anything is sent.
-    const proof = spawnSync(process.execPath, [path.join(root, 'scripts/check-site-publish-proof.mjs'), '--build', '--root', root], { cwd: root, stdio: 'inherit' });
+    // An update is a publication to every installed build with this fingerprint: like a web
+    // deploy, it ships only the fetched origin/master, clean, with verify:release passed on it.
+    const proof = spawnSync(process.execPath, [path.join(root, 'scripts/check-site-publish-proof.mjs'), '--update', '--root', root], { cwd: root, stdio: 'inherit' });
     if (proof.error || proof.status !== 0) throw new Error(`No update published: ${proof.error?.message || 'the release proof of this commit is missing or not passed (see above)'}`);
     const env = updateEnv(readJson(root, 'eas.json'));
     const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
@@ -451,6 +465,11 @@ function main(args = process.argv.slice(2), root = ROOT) {
     let build;
     try { build = JSON.parse(inspected.stdout); }
     catch { throw new Error('EAS build inspection returned invalid JSON; no update published'); }
+    const listed = spawnSync(command, ['--yes', 'eas-cli@25.1.1', 'env:list', 'production', '--format', 'short'], {
+      cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 32 * 1024 * 1024,
+    });
+    if (listed.error || listed.status !== 0) throw new Error(`Could not list the EAS production environment: ${listed.error?.message || listed.status}`);
+    assertNoEnvOverlap(profileEnv(readJson(root, 'eas.json'), 'production'), remoteEnvNames(listed.stdout));
     const resolved = spawnSync(command, ['expo-updates', 'runtimeversion:resolve', '--platform', options.platform], {
       cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 64 * 1024 * 1024,
     });
@@ -547,4 +566,4 @@ function main(args = process.argv.slice(2), root = ROOT) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, assertUpdateTarget, assertUpdateSource, main };
+module.exports = { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, remoteEnvNames, assertNoEnvOverlap, assertUpdateTarget, assertUpdateSource, main };

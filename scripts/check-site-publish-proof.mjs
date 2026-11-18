@@ -207,6 +207,16 @@ export async function assertReleaseBuildProof({ root = defaultRoot, gitEnv } = {
   return { head: result.head, tree: result.tree, message: `${PREFIX} OK: ${RELEASE_COMMAND} passed on HEAD ${result.head} (tree ${result.tree}).` };
 }
 
+/**
+ * The guard of an over-the-air update (scripts/mobile-release.js update): it
+ * replaces the JavaScript of installed production apps at once, so it is a
+ * production publish of the app target, like the web app: HEAD must be the
+ * fetched origin/master, clean, with `npm run verify:release` passed on it.
+ */
+export function assertUpdatePublishProof({ root = defaultRoot, gitEnv } = {}) {
+  return assertSitePublishProof({ root, gitEnv, label: 'an over-the-air update of the Noctalia store builds', targets: [...BUILD_TARGETS] });
+}
+
 function parseRoot(argv) {
   const index = argv.indexOf('--root');
   return index !== -1 && argv[index + 1] ? path.resolve(argv[index + 1]) : defaultRoot;
@@ -214,8 +224,10 @@ function parseRoot(argv) {
 
 async function main(argv) {
   try {
-    // --build: the guard of a store build (release:build) instead of the site publish.
-    const guard = argv.includes('--build') ? assertReleaseBuildProof : assertSitePublishProof;
+    // --build: the guard of a store build (release:build); --update: the guard of an
+    // over-the-air update (mobile-release.js update); neither: the site publish.
+    const guard = argv.includes('--update') ? assertUpdatePublishProof
+      : argv.includes('--build') ? assertReleaseBuildProof : assertSitePublishProof;
     console.log((await guard({ root: parseRoot(argv) })).message);
     return 0;
   } catch (error) {

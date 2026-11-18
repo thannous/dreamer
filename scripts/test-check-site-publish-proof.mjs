@@ -16,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 import {
   SITE_PUBLISH_PROOF_CHECKS,
   assertReleaseBuildProof,
+  assertUpdatePublishProof,
   assertSitePublishProof,
   checkSitePublishProof,
   formatRefusal,
@@ -216,6 +217,30 @@ test('a store build needs the app release proof of the commit that is checked ou
     git(['commit', '--quiet', '-am', 'later']);
     await assert.rejects(assertReleaseBuildProof({ root: work, gitEnv: env }), /store build refused/);
     assert.equal(spawnSync(process.execPath, [guardScript, '--build', '--root', work], { env, encoding: 'utf8' }).status, 1);
+  });
+});
+
+test('an over-the-air update publishes only origin/master with the app release proof, never a release branch', async () => {
+  await withRepository(async ({ engine, env, git, work }) => {
+    const appRelease = () => engine('release', ['--target', 'app'], { extraEnv: { APP_E2E_AVAILABLE: '1' } });
+    // A release-proven branch is enough for a store build, not for an update of installed apps.
+    git(['checkout', '--quiet', '-b', 'feature/screen']);
+    writeFileSync(path.join(work, 'tracked.txt'), 'unmerged screen\n');
+    git(['commit', '--quiet', '-am', 'unmerged screen']);
+    assert.equal((await appRelease()).status, 0);
+    await assertReleaseBuildProof({ root: work, gitEnv: env });
+    await assert.rejects(assertUpdatePublishProof({ root: work, gitEnv: env }), /over-the-air update of the Noctalia store builds refused.*is not origin\/master/s);
+    assert.equal(spawnSync(process.execPath, [guardScript, '--update', '--root', work], { env, encoding: 'utf8' }).status, 1);
+
+    git(['checkout', '--quiet', 'master']);
+    await assert.rejects(assertUpdatePublishProof({ root: work, gitEnv: env }), /refused/);
+    assert.equal((await engine('release', SITE)).status, 0);
+    await assert.rejects(assertUpdatePublishProof({ root: work, gitEnv: env }), /does not cover target app/);
+    assert.equal((await appRelease()).status, 0);
+    const accepted = await assertUpdatePublishProof({ root: work, gitEnv: env });
+    assert.equal(accepted.head, git(['rev-parse', 'HEAD']));
+    const cli = spawnSync(process.execPath, [guardScript, '--update', '--root', work], { env, encoding: 'utf8' });
+    assert.equal(cli.status, 0, cli.stderr);
   });
 });
 
