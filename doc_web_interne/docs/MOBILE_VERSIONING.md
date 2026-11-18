@@ -68,6 +68,40 @@ Après l'envoi iOS, vérifier l'upload dans **App Store Connect → TestFlight �
 
 La configuration Expo résolue est un contrôle avant compilation. Avant un nouvel envoi iOS après un changement natif ou de plugin, vérifier aussi l'`Info.plist` de l'IPA produit. Une IPA qui lie HealthKit, aujourd'hui seulement Lucid, doit porter deux textes non vides, `NSHealthShareUsageDescription` et `NSHealthUpdateUsageDescription`. Depuis que `react-native.config.js` retire HealthKit et Nitro du build iOS de Dreamer, l'IPA Dreamer ne lie plus HealthKit et ne porte plus ces clés ; `otool -L` sur son binaire ne doit plus lister `HealthKit.framework`. La build 3.4.4 (10) a passé ce contrôle et le traitement TestFlight ; une future IPA doit être requalifiée.
 
+## Choisir le chemin d'une correction
+
+Avant de refaire un build, classer le changement :
+
+| Changement | Livraison |
+| --- | --- |
+| Texte ou consignes côté serveur | Déploiement de la fonction Supabase, sans build. |
+| Code JavaScript de l'app (texte, mise en page, logique) dont le fingerprint natif n'a pas changé | Mise à jour à distance sur les builds installés (`mobile-release.js update`). |
+| Code natif, permissions, dépendance native, plugin, configuration de build, ou un script de `package.json` | Nouveau build (`release:build`). |
+| Plusieurs retouches pendant une phase de test | Les regrouper et faire un seul build avant la soumission. |
+
+Le 18 novembre 2026, deux builds de store (4.0.0 iOS 26, Android 90) ont été refaits pour une correction de guillemets alors que le fingerprint des builds 25 et 89 était identique : une mise à jour à distance suffisait.
+
+## Publier une mise à jour à distance
+
+Les builds Noctalia de profil `production` écoutent le canal EAS Update `production` (`updates.url` dans `app.json`, `runtimeVersion.policy: fingerprint`). Une mise à jour publiée sur ce canal remplace le JavaScript de **tous** les builds installés qui ont le même fingerprint : c'est une publication, au même titre qu'un déploiement, et elle demande la même autorisation explicite.
+
+```bash
+node scripts/mobile-release.js update --app noctalia --platform ios --id <ID_BUILD_IOS_INSTALLÉ> --message "Ce que la mise à jour change" --dry-run
+node scripts/mobile-release.js update --app noctalia --platform android --id <ID_BUILD_ANDROID_INSTALLÉ> --message "Ce que la mise à jour change" --dry-run
+# Retirer --dry-run pour publier après vérification.
+```
+
+La commande refuse de publier tant que :
+- `HEAD` n'est pas `origin/master` après fetch, le checkout n'est pas propre, ou `npm run verify:release` n'a pas réussi sur ce commit exact (même garde qu'un déploiement web : une branche, même prouvée, ne publie pas) ;
+- le build visé n'est pas un build `production` `STORE` terminé du projet, de la version d'`app.json` et du canal `production` ;
+- le fingerprint calculé localement (avec le profil `production`) diffère du `runtimeVersion` du build : le changement demande alors un nouveau build ;
+- le commit du build n'est pas un ancêtre de `HEAD` (la mise à jour retirerait ce que le build contient) ;
+- une clé de l'`env` du profil `production` d'`eas.json` existe aussi dans l'environnement EAS `production` : EAS Update y prendrait la valeur distante, un build la valeur d'`eas.json`.
+
+La commande n'a volontairement pas de script `npm run` : `@expo/fingerprint` hache les `scripts` de `package.json`, si bien qu'ajouter ou modifier un script change l'empreinte et coupe les builds installés des mises à jour (constaté sur cette commande le 18 novembre 2026).
+
+Elle publie avec `eas update --channel production --environment production`, et passe au bundle les variables `env` du profil `production` d'`eas.json`, qu'EAS Update n'applique pas de lui-même. Elle ne change ni la version ni `release/mobile-versions.json` : le prochain build de store reprend ces changements avec `release:plan` comme d'habitude. Le téléphone télécharge la mise à jour à l'ouverture et l'applique à l'ouverture suivante. Pour revenir en arrière, republier la mise à jour précédente du canal avec `eas update:republish` ou `eas update:rollback`. Vérifier une première mise à jour sur les builds de test avant de compter dessus pour des utilisateurs.
+
 ## Risques de distribution interne constatés le 24 septembre 2026
 
 Les builds Android 70, 71, 73 et 77 ont échoué dans `CONFIGURE_EXPO_UPDATES` : le fingerprint local incluait des chemins de modules hors du checkout (`../../../Users/tanuki/Documents/dreamer/node_modules/...`), alors que le builder EAS utilisait `node_modules/...`. Un build lancé depuis des dépendances liées à un autre dossier peut donc consommer un numéro EAS et échouer avant la compilation. Les builds récents issus d'un checkout isolé ont réussi, mais ce résultat ne protège pas les futurs checkouts.
