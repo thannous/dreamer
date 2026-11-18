@@ -1188,7 +1188,7 @@ const JournalDetailContent = memo(function JournalDetailContent({ dream, folio, 
     }
     const quote = dream.shareableQuote?.trim();
     if (quote) {
-      sections.push(`“${quote}”`);
+      sections.push(t('common.quoted', { text: quote }));
       if (isPoeticDreamQuote(dream)) sections.push(t('journal.detail.quote_attribution'));
     }
     if (dream.interpretation?.trim()) {

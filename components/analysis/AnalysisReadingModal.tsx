@@ -122,7 +122,7 @@ export function AnalysisReadingModal({ dream, imageUri, imageCacheKey, imageLoad
           ) : null}
           {quote ? (
             <View style={[styles.quoteBlock, { borderTopColor: tokens.accent.base }]}>
-              <Text style={[styles.quote, { color: tokens.text.secondary }]}>{`« ${quote} »`}</Text>
+              <Text style={[styles.quote, { color: tokens.text.secondary }]}>{t('common.quoted', { text: quote })}</Text>
               {isPoeticDreamQuote(dream) ? <Text style={[styles.attribution, { color: tokens.text.secondary }]}>{t('journal.detail.quote_attribution')}</Text> : null}
             </View>
           ) : null}

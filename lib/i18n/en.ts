@@ -643,6 +643,7 @@ const translations: Record<string, string> = {
     'journal.detail.delete_confirm.message': 'Are you sure you want to delete this dream?',
     'journal.detail.delete_confirm.confirm': 'Delete',
     'common.copy': 'Copy',
+    'common.quoted': '“{text}”',
     'analysis.reading.eyebrow': 'Your dream, in a new light',
     'analysis.reading.image_queued': 'Illustration queued…',
     'analysis.reading.image_generating': 'Creating your illustration…',

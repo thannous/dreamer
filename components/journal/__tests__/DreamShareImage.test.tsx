@@ -45,6 +45,8 @@ jest.mock('react-native', () => {
 });
 
 const drawMarks = () => screen.getAllByAltText('Noctalia').forEach(mark => fireEvent.load(mark));
+// The card quotes the dream's line the way the reader's language does; English here.
+const englishQuotes = (key: string, params?: { text?: string }) => (key === 'common.quoted' ? `“${params?.text}”` : key);
 
 it('uses resolved media and signals readiness only after the image is displayed', () => {
   const ready = jest.fn();
@@ -141,7 +143,7 @@ it('does not wait long for a mark that never reports', () => {
 it.each([undefined, 'analysis-2026-09-17.1', 'analysis-2026-09-17.poetic1'])(
   'shares the quotation and only attributes a poetic generation to Noctalia (%s)', (promptVersion) => {
     const quote = 'A red bird carried me above the silence of the forest.';
-    render(<DreamShareImage dream={{ id: 1, shareableQuote: quote, promptVersion } as DreamAnalysis} t={key => key} />);
+    render(<DreamShareImage dream={{ id: 1, shareableQuote: quote, promptVersion } as DreamAnalysis} t={englishQuotes} />);
     expect(screen.getByText(`“${quote}”`)).toBeTruthy();
     expect(Boolean(screen.queryByText('journal.detail.quote_attribution'))).toBe(promptVersion?.endsWith('.poetic1') ?? false);
   }
@@ -187,7 +189,7 @@ const chosenDream = {
 
 it('shows only what the dreamer chose, with the Noctalia Dream footer', () => {
   const ready = jest.fn();
-  render(<DreamShareImage dream={{ ...chosenDream, imageUrl: 'https://cdn/image' }} t={key => key} date="Sunday 18 October 2026"
+  render(<DreamShareImage dream={{ ...chosenDream, imageUrl: 'https://cdn/image' }} t={englishQuotes} date="Sunday 18 October 2026"
     resolvedMedia={{ imageUrl: 'https://signed/image' }} onMediaReady={ready}
     options={{ painting: false, title: false, date: true, text: 'story' }} />);
   expect(screen.queryByAltText('Dream')).toBeNull();

@@ -477,7 +477,7 @@ jest.mock('@/hooks/useScrollIdle', () => ({
 
 jest.mock('@/hooks/useTranslation', () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
+    t: (key: string, params?: { text?: string }) => (key === 'common.quoted' ? `« ${params?.text} »` : key),
   }),
 }));
 
