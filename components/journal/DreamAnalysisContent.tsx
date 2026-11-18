@@ -44,7 +44,7 @@ export function DreamQuote({ dream, align = 'center', className = '' }: {
     <View className={`gap-3 ${centred ? 'items-center px-2' : 'items-start'} ${className}`}>
       {centred ? <BookOrnament /> : <View accessible={false} className="h-px w-8 bg-champagne opacity-40" />}
       <Text testID={tid(TID.Text.DreamDetailQuote)}
-        className={`font-serif-italic text-[18px] leading-7 text-ivory ${centred ? 'text-center' : ''}`}>{`« ${quote} »`}</Text>
+        className={`font-serif-italic text-[18px] leading-7 text-ivory ${centred ? 'text-center' : ''}`}>{t('common.quoted', { text: quote })}</Text>
       {isPoeticDreamQuote(dream) ? (
         <Text className={`font-serif-italic text-[13px] text-ivory-muted ${centred ? 'text-center' : ''}`}>
           {t('journal.detail.quote_attribution')}

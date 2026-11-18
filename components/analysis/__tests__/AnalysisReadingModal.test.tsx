@@ -15,7 +15,11 @@ jest.mock('react-native/Libraries/Components/ScrollView/ScrollView', () => {
 });
 jest.mock('expo-image', () => ({ Image: require('react-native').Image }));
 jest.mock('@/context/ThemeContext', () => ({ useTheme: () => ({ colors: {}, mode: 'light' }) }));
-jest.mock('@/hooks/useTranslation', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+jest.mock('@/hooks/useTranslation', () => ({
+  useTranslation: () => ({
+    t: (key: string, params?: { text?: string }) => (key === 'common.quoted' ? `« ${params?.text} »` : key),
+  }),
+}));
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 24, bottom: 24, left: 0, right: 0 }) }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/motion', () => ({ PressableScale: require('react-native').Pressable }));

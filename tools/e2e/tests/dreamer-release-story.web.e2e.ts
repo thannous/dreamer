@@ -99,8 +99,9 @@ test('plus account watches its saved dream being read, then lit as a constellati
     questions?.scrollIntoView({ block: 'center' });
     return Boolean(questions);
   })).toBe(true);
+  // An English reader sees the dream's line in English quote marks.
   const quote = screen.getByTestId('text.dreamDetail.quote', { visible: true });
-  await expect(quote).toContainText('«');
+  await expect(quote).toContainText('“');
   // The last chapter enters after the others; wait until the reader can actually see it.
   await expect.poll(() => browser.evaluate(() => {
     let node: Element | null = document.querySelector('[data-testid="text.dreamDetail.quote"]');

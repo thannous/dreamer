@@ -964,7 +964,7 @@ function DreamChatContent() {
           </Text>
           {dream.shareableQuote ? (
             <Text style={[styles.dreamQuotePreview, { color: noctalia.text.secondary }]}>
-              {`« ${dream.shareableQuote} »`}
+              {t('common.quoted', { text: dream.shareableQuote })}
             </Text>
           ) : null}
         </LinearGradient>
