@@ -151,7 +151,7 @@ export const DreamShareImage = forwardRef<ViewInstance, DreamShareImageProps>(fu
         {quote ? (
           <View>
             <Text style={[styles.quote, { color: noctalia.text.secondary }]} numberOfLines={4}>
-              “{quote}”
+              {t('common.quoted', { text: quote })}
             </Text>
             {isPoeticDreamQuote(dream) ? (
               <Text style={[styles.quoteAttribution, { color: noctalia.text.secondary }]}>
