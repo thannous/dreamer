@@ -181,6 +181,7 @@
     "release:check": "node ./scripts/mobile-release.js check",
     "release:simulators": "node ./scripts/release-simulators.mjs",
     "release:build": "node ./scripts/mobile-release.js build",
+    "release:update": "node ./scripts/mobile-release.js update --app noctalia",
     "release:versions:sync": "node ./scripts/mobile-release.js sync-versions",
     "release:versions:check": "node ./scripts/mobile-release.js check-versions",
     "eas-build-pre-install": "node ./scripts/mobile-release.js verify",

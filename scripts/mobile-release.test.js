@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, main } = require('./mobile-release');
+const { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, assertUpdateTarget, assertUpdateSource, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -376,6 +376,55 @@ describe('release planning against real Git histories', () => {
     fs.writeFileSync(file, JSON.stringify(state));
     write(root, 'app/home.tsx', 'new feature'); commit(root, 'feat: new flow');
     expect(plan(root, 'noctalia').next).toBe('3.2.0');
+  });
+  it('bundles an update with the production profile env the store build was made with', () => {
+    const eas = { build: { base: { env: { SHARED: 'base', OVERRIDDEN: 'base' } },
+      production: { extends: 'base', env: { EXPO_PUBLIC_API_URL: 'https://api', OVERRIDDEN: 'production' } } } };
+    expect(profileEnv(eas, 'production')).toEqual({ SHARED: 'base', OVERRIDDEN: 'production', EXPO_PUBLIC_API_URL: 'https://api' });
+    expect(updateEnv(eas, { PATH: '/bin', EAS_BUILD_PROFILE: 'preview' })).toEqual({ PATH: '/bin', EAS_BUILD_PROFILE: 'production', EXPO_NO_DOTENV: '1',
+      NOCTALIA_APP_VARIANT: 'noctalia', EXPO_PUBLIC_APP_VARIANT: 'noctalia', SHARED: 'base', OVERRIDDEN: 'production', EXPO_PUBLIC_API_URL: 'https://api' });
+    expect(() => profileEnv({ build: { a: { extends: 'b' }, b: { extends: 'a' } } }, 'a')).toThrow('circular');
+    expect(() => profileEnv(eas, 'missing')).toThrow('Unknown');
+  });
+  it('publishes an update only on the production channel, per platform, with a message', () => {
+    expect(updateArgs('ios', ' Quote marks per language ')).toEqual(['--yes', 'eas-cli@25.1.1', 'update', '--channel', 'production',
+      '--environment', 'production', '--platform', 'ios', '--message', 'Quote marks per language', '--non-interactive']);
+    expect(() => updateArgs('all', 'x')).toThrow('--platform');
+    expect(() => updateArgs('android', '  ')).toThrow('--message');
+    expect(parseArgs(['update', '--platform', 'ios', '--message', 'fix', '--dry-run'])).toMatchObject({ message: 'fix', dryRun: true });
+    expect(() => parseArgs(['build', '--platform', 'ios', '--message', 'fix'])).toThrow('only available for update');
+  });
+  it('refuses an update over a build it cannot reach or whose native fingerprint changed', () => {
+    const expected = { projectId: 'project-1', version: '4.0.0', runtimeVersion: 'abc123' };
+    const build = { status: 'FINISHED', platform: 'IOS', distribution: 'STORE', buildProfile: 'production',
+      app: { id: 'project-1' }, appVersion: '4.0.0', channel: 'production', runtimeVersion: 'abc123' };
+    expect(() => assertUpdateTarget(build, 'ios', expected)).not.toThrow();
+    expect(() => assertUpdateTarget({ ...build, status: 'IN_PROGRESS' }, 'ios', expected)).toThrow('FINISHED');
+    expect(() => assertUpdateTarget({ ...build, platform: 'ANDROID' }, 'ios', expected)).toThrow('platform');
+    expect(() => assertUpdateTarget({ ...build, distribution: 'INTERNAL' }, 'ios', expected)).toThrow('STORE');
+    expect(() => assertUpdateTarget({ ...build, buildProfile: 'release-smoke' }, 'ios', expected)).toThrow('production STORE');
+    expect(() => assertUpdateTarget({ ...build, app: { id: 'other' } }, 'ios', expected)).toThrow('project');
+    expect(() => assertUpdateTarget({ ...build, appVersion: '3.8.0' }, 'ios', expected)).toThrow('not 4.0.0');
+    expect(() => assertUpdateTarget({ ...build, channel: 'preview' }, 'ios', expected)).toThrow('channel preview');
+    expect(() => assertUpdateTarget({ ...build, runtimeVersion: 'old' }, 'ios', expected)).toThrow('needs a new store build');
+    expect(() => assertUpdateTarget({ ...build, runtimeVersion: undefined }, 'ios', { ...expected, runtimeVersion: undefined })).toThrow('fingerprint');
+  });
+  it('refuses an update that would drop what the installed build ships', () => {
+    const root = fixture();
+    const built = git(root, 'rev-parse', 'HEAD');
+    write(root, 'app/home.tsx', 'fixed after the build'); commit(root, 'fix: quote marks');
+    expect(() => assertUpdateSource(root, { gitCommitHash: built })).not.toThrow();
+    git(root, 'checkout', '-q', '-b', 'older', `${built}~1`);
+    expect(() => assertUpdateSource(root, { gitCommitHash: built })).toThrow('not part of HEAD');
+    expect(() => assertUpdateSource(root, { gitCommitHash: undefined })).toThrow('source commit');
+  });
+  it('rejects an update for another app, without a target build or message, before invoking EAS', () => {
+    const root = fixture();
+    const id = '12345678-1234-4234-8234-123456789abc';
+    expect(() => main(['update', '--app', 'lucid', '--platform', 'ios', '--id', id, '--message', 'fix'], root)).toThrow('only for Noctalia');
+    expect(() => main(['update', '--platform', 'ios', '--id', id], root)).toThrow('--message');
+    expect(() => main(['update', '--platform', 'ios', '--message', 'fix'], root)).toThrow('--id');
+    expect(() => main(['update', '--platform', 'ios', '--id', id, '--message', 'fix'], root)).toThrow('fingerprint runtime version');
   });
   it('rejects an unprepared build before invoking EAS', () => {
     const root = fixture();

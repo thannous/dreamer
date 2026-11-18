@@ -68,6 +68,37 @@ Après l'envoi iOS, vérifier l'upload dans **App Store Connect → TestFlight �
 
 La configuration Expo résolue est un contrôle avant compilation. Avant un nouvel envoi iOS après un changement natif ou de plugin, vérifier aussi l'`Info.plist` de l'IPA produit. Une IPA qui lie HealthKit, aujourd'hui seulement Lucid, doit porter deux textes non vides, `NSHealthShareUsageDescription` et `NSHealthUpdateUsageDescription`. Depuis que `react-native.config.js` retire HealthKit et Nitro du build iOS de Dreamer, l'IPA Dreamer ne lie plus HealthKit et ne porte plus ces clés ; `otool -L` sur son binaire ne doit plus lister `HealthKit.framework`. La build 3.4.4 (10) a passé ce contrôle et le traitement TestFlight ; une future IPA doit être requalifiée.
 
+## Choisir le chemin d'une correction
+
+Avant de refaire un build, classer le changement :
+
+| Changement | Livraison |
+| --- | --- |
+| Texte ou consignes côté serveur | Déploiement de la fonction Supabase, sans build. |
+| Code JavaScript de l'app (texte, mise en page, logique) dont le fingerprint natif n'a pas changé | Mise à jour à distance sur les builds installés (`release:update`). |
+| Code natif, permissions, dépendance native, plugin ou configuration de build | Nouveau build (`release:build`). |
+| Plusieurs retouches pendant une phase de test | Les regrouper et faire un seul build avant la soumission. |
+
+Le 18 novembre 2026, deux builds de store (4.0.0 iOS 26, Android 90) ont été refaits pour une correction de guillemets alors que le fingerprint des builds 25 et 89 était identique : une mise à jour à distance suffisait.
+
+## Publier une mise à jour à distance
+
+Les builds Noctalia de profil `production` écoutent le canal EAS Update `production` (`updates.url` dans `app.json`, `runtimeVersion.policy: fingerprint`). Une mise à jour publiée sur ce canal remplace le JavaScript de **tous** les builds installés qui ont le même fingerprint : c'est une publication, au même titre qu'un déploiement, et elle demande la même autorisation explicite.
+
+```bash
+npm run release:update -- --platform ios --id <ID_BUILD_IOS_INSTALLÉ> --message "Ce que la mise à jour change" --dry-run
+npm run release:update -- --platform android --id <ID_BUILD_ANDROID_INSTALLÉ> --message "Ce que la mise à jour change" --dry-run
+# Retirer --dry-run pour publier après vérification.
+```
+
+La commande refuse de publier tant que :
+- le checkout n'est pas propre, ou `npm run verify:release` n'a pas réussi sur ce commit exact (même preuve que `release:build`) ;
+- le build visé n'est pas un build `production` `STORE` terminé du projet, de la version d'`app.json` et du canal `production` ;
+- le fingerprint calculé localement (avec le profil `production`) diffère du `runtimeVersion` du build : le changement demande alors un nouveau build ;
+- le commit du build n'est pas un ancêtre de `HEAD` (la mise à jour retirerait ce que le build contient).
+
+Elle publie avec `eas update --channel production --environment production`, et passe au bundle les variables `env` du profil `production` d'`eas.json`, qu'EAS Update n'applique pas de lui-même. Elle ne change ni la version ni `release/mobile-versions.json` : le prochain build de store reprend ces changements avec `release:plan` comme d'habitude. Le téléphone télécharge la mise à jour à l'ouverture et l'applique à l'ouverture suivante. Pour revenir en arrière, republier la mise à jour précédente du canal avec `eas update:republish` ou `eas update:rollback`. Vérifier une première mise à jour sur les builds de test avant de compter dessus pour des utilisateurs.
+
 ## Risques de distribution interne constatés le 24 septembre 2026
 
 Les builds Android 70, 71, 73 et 77 ont échoué dans `CONFIGURE_EXPO_UPDATES` : le fingerprint local incluait des chemins de modules hors du checkout (`../../../Users/tanuki/Documents/dreamer/node_modules/...`), alors que le builder EAS utilisait `node_modules/...`. Un build lancé depuis des dépendances liées à un autre dossier peut donc consommer un numéro EAS et échouer avant la compilation. Les builds récents issus d'un checkout isolé ont réussi, mais ce résultat ne protège pas les futurs checkouts.

@@ -313,10 +313,12 @@ function parseArgs(args) {
     else if (args[i] === '--dry-run') options.dryRun = true;
     else if (args[i] === '--allow-major') options.allowMajor = true;
     else if (args[i] === '--ref') options.ref = args[++i];
+    else if (args[i] === '--message') options.message = args[++i];
     else throw new Error(`Unknown option: ${args[i]}`);
   }
   if (![...APPS, 'all'].includes(options.app)) throw new Error('Choose --app noctalia|lucid|meditation|all');
-  if (options.dryRun && options.action !== 'submit-internal') throw new Error('--dry-run is only available for submit-internal');
+  if (options.dryRun && !['submit-internal', 'update'].includes(options.action)) throw new Error('--dry-run is only available for submit-internal and update');
+  if (options.message !== undefined && options.action !== 'update') throw new Error('--message is only available for update');
   if (options.ref !== undefined && options.action !== 'published') throw new Error('--ref is only available for published');
   return options;
 }
@@ -360,6 +362,50 @@ function assertBuildSource(root, build) {
   if (changed.length) throw new Error(`EAS build predates mobile source changes: ${changed.slice(0, 5).join(', ')}. Build a new binary before submission.`);
 }
 
+// An over-the-air update is bundled here, not on an EAS Build worker, so it gets none of the
+// build profile's `env`: give it the same EXPO_PUBLIC_* values the store build was made with.
+function profileEnv(eas, profile) {
+  const chain = [];
+  for (let name = profile; name; name = eas.build?.[name]?.extends) {
+    if (chain.includes(name) || !eas.build?.[name]) throw new Error(`Unknown or circular EAS build profile: ${name}`);
+    chain.unshift(name);
+  }
+  return Object.assign({}, ...chain.map(name => eas.build[name].env ?? {}));
+}
+
+function updateEnv(eas, base = process.env) {
+  return { ...buildEnv('noctalia', 'production', base), ...profileEnv(eas, 'production') };
+}
+
+function updateArgs(platform, message) {
+  if (!['android', 'ios'].includes(platform)) throw new Error('An update needs --platform android|ios');
+  if (typeof message !== 'string' || !message.trim()) throw new Error('An update needs --message "what it changes"');
+  return ['--yes', 'eas-cli@25.1.1', 'update', '--channel', 'production', '--environment', 'production',
+    '--platform', platform, '--message', message.trim(), '--non-interactive'];
+}
+
+// The update rides on an installed store binary: it must be a production Store build of this
+// version, on the production channel, with the native fingerprint this checkout still has.
+function assertUpdateTarget(build, platform, expected) {
+  if (build?.status !== 'FINISHED') throw new Error('An update targets a FINISHED EAS build');
+  if (build.platform !== platform.toUpperCase()) throw new Error(`EAS build platform does not match ${platform}`);
+  if (build.distribution !== 'STORE' || build.buildProfile !== 'production') throw new Error('An update targets a production STORE build');
+  if (build.app?.id !== expected.projectId) throw new Error('EAS build belongs to a different project');
+  if (build.appVersion !== expected.version) throw new Error(`EAS build is ${build.appVersion}, not ${expected.version}`);
+  if (build.channel !== 'production') throw new Error(`EAS build listens to channel ${build.channel ?? 'none'}, not production`);
+  if (!build.runtimeVersion || build.runtimeVersion !== expected.runtimeVersion) {
+    throw new Error(`Native fingerprint changed since this build (${build.runtimeVersion ?? 'none'} vs ${expected.runtimeVersion}): this change needs a new store build, not an update.`);
+  }
+}
+
+// An update replaces the build's JavaScript: it must carry everything the build already had.
+function assertUpdateSource(root, build) {
+  const ref = build?.gitCommitHash;
+  if (!/^[a-f0-9]{40}$/.test(ref ?? '')) throw new Error('EAS build has no verifiable source commit');
+  try { git(root, 'merge-base', '--is-ancestor', ref, 'HEAD'); }
+  catch { throw new Error(`EAS build commit ${ref.slice(0, 12)} is not part of HEAD: the update would drop what that build ships.`); }
+}
+
 function main(args = process.argv.slice(2), root = ROOT) {
   const options = parseArgs(args);
   const apps = options.app === 'all' ? APPS : [options.app];
@@ -383,7 +429,45 @@ function main(args = process.argv.slice(2), root = ROOT) {
     console.log(JSON.stringify(markPublished(root, options.app, options.ref), null, 2));
     return;
   }
-  if (!['plan', 'check', 'build', 'submit-internal'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|published|check|verify|build|submit-internal|sync-versions|check-versions --app APP [--platform android|ios|all] [--id EAS_BUILD_ID] [--dry-run] [--allow-major]');
+  if (options.action === 'update') {
+    if (options.app !== 'noctalia') throw new Error('Over-the-air updates are configured only for Noctalia');
+    const args = updateArgs(options.platform, options.message);
+    if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(options.id ?? '')) throw new Error('An update needs --id of the installed EAS store build it targets');
+    const appConfig = readJson(root, 'app.json').expo;
+    if (!appConfig.updates?.url || appConfig.updates.enabled === false || appConfig.runtimeVersion?.policy !== 'fingerprint') {
+      throw new Error('Noctalia store builds must load updates from EAS with a fingerprint runtime version');
+    }
+    assertClean(root, { allowBuildNumbers: true });
+    // An update is a publication to every installed build with this fingerprint: the same
+    // release proof of exactly this commit as a store build, checked before anything is sent.
+    const proof = spawnSync(process.execPath, [path.join(root, 'scripts/check-site-publish-proof.mjs'), '--build', '--root', root], { cwd: root, stdio: 'inherit' });
+    if (proof.error || proof.status !== 0) throw new Error(`No update published: ${proof.error?.message || 'the release proof of this commit is missing or not passed (see above)'}`);
+    const env = updateEnv(readJson(root, 'eas.json'));
+    const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+    const inspected = spawnSync(command, ['--yes', 'eas-cli@25.1.1', 'build:view', options.id, '--json'], {
+      cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 32 * 1024 * 1024,
+    });
+    if (inspected.error || inspected.status !== 0) throw new Error(`Could not inspect EAS build before the update: ${inspected.error?.message || inspected.status}`);
+    let build;
+    try { build = JSON.parse(inspected.stdout); }
+    catch { throw new Error('EAS build inspection returned invalid JSON; no update published'); }
+    const resolved = spawnSync(command, ['expo-updates', 'runtimeversion:resolve', '--platform', options.platform], {
+      cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 64 * 1024 * 1024,
+    });
+    let runtimeVersion;
+    try { runtimeVersion = JSON.parse(resolved.stdout).runtimeVersion; }
+    catch { throw new Error('Could not resolve the local runtime version; no update published'); }
+    assertUpdateTarget(build, options.platform, { projectId: appConfig.extra?.eas?.projectId, version: appConfig.version, runtimeVersion });
+    assertUpdateSource(root, build);
+    if (options.dryRun) {
+      console.log(`Update ready: ${options.platform} ${appConfig.version}, runtime ${runtimeVersion}, channel production, over build ${options.id}. Nothing published.`);
+      return;
+    }
+    const published = spawnSync(command, args, { cwd: root, env, stdio: 'inherit' });
+    if (published.error || published.status !== 0) throw new Error(`EAS update failed: ${published.error?.message || published.status}`);
+    return;
+  }
+  if (!['plan', 'check', 'build', 'submit-internal'].includes(options.action)) throw new Error('Usage: mobile-release.js plan|prepare|published|check|verify|build|submit-internal|update|sync-versions|check-versions --app APP [--platform android|ios|all] [--id EAS_BUILD_ID] [--message TEXT] [--dry-run] [--allow-major]');
   const plans = apps.map(app => plan(root, app));
   if (options.action === 'plan') {
     console.log(JSON.stringify(plans, null, 2));
@@ -463,4 +547,4 @@ function main(args = process.argv.slice(2), root = ROOT) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, main };
+module.exports = { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, assertUpdateTarget, assertUpdateSource, main };
