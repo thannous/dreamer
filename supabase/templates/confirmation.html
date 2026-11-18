@@ -1,11 +1,12 @@
+{{- $fr := eq .Data.lang "fr" -}}
 <!doctype html>
-<html lang="en">
+<html lang="{{ if $fr }}fr{{ else }}en{{ end }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="supported-color-schemes" content="light dark">
-  <title>Confirm your email for Noctalia</title>
+  <title>{{ if $fr }}Confirmez votre e-mail pour Noctalia{{ else }}Confirm your email for Noctalia{{ end }}</title>
   <style>
     :root { color-scheme: light dark; supported-color-schemes: light dark; }
     @media (max-width: 480px) {
@@ -26,7 +27,7 @@
 </head>
 <body class="email-ground" style="margin: 0; padding: 0; background-color: #F0E4D4; -webkit-text-size-adjust: 100%; text-size-adjust: 100%;">
   <div aria-hidden="true" style="display: none; max-height: 0; max-width: 0; overflow: hidden; mso-hide: all;">
-    One step to open your Noctalia dream journal.
+    {{ if $fr }}Une dernière étape pour ouvrir votre journal de rêves Noctalia.{{ else }}One step to open your Noctalia dream journal.{{ end }}
   </div>
   <table class="email-ground" role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#F0E4D4" style="background-color: #F0E4D4;">
     <tr>
@@ -42,7 +43,7 @@
                   </td>
                   <td valign="middle" style="padding-left: 13px;">
                     <p class="email-ink" style="margin: 0; color: #382D35; font: 27px/1.05 Georgia, 'Times New Roman', serif;">Noctalia</p>
-                    <p class="email-accent" style="margin: 4px 0 0; color: #7C4C2B; font: bold 11px/1.35 Arial, sans-serif; letter-spacing: 2px;">DREAM JOURNAL</p>
+                    <p class="email-accent" style="margin: 4px 0 0; color: #7C4C2B; font: bold 11px/1.35 Arial, sans-serif; letter-spacing: 2px;">{{ if $fr }}JOURNAL DE RÊVES{{ else }}DREAM JOURNAL{{ end }}</p>
                   </td>
                 </tr>
               </table>
@@ -55,12 +56,12 @@
           </tr>
           <tr>
             <td class="email-inset" style="padding: 27px 32px 30px;">
-              <h1 class="email-title email-ink" style="margin: 0 0 12px; color: #382D35; font: 38px/1.15 Georgia, 'Times New Roman', serif;">Confirm your email</h1>
-              <p class="email-muted" style="margin: 0 0 22px; color: #64514F; font: 16px/1.6 Arial, sans-serif;">Your dream journal is waiting. Confirm your address to start recording your dreams and exploring their meaning.</p>
+              <h1 class="email-title email-ink" style="margin: 0 0 12px; color: #382D35; font: 38px/1.15 Georgia, 'Times New Roman', serif;">{{ if $fr }}Confirmez votre e-mail{{ else }}Confirm your email{{ end }}</h1>
+              <p class="email-muted" style="margin: 0 0 22px; color: #64514F; font: 16px/1.6 Arial, sans-serif;">{{ if $fr }}Votre journal de rêves vous attend. Confirmez votre adresse pour commencer à noter vos rêves et à explorer leur sens.{{ else }}Your dream journal is waiting. Confirm your address to start recording your dreams and exploring their meaning.{{ end }}</p>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td class="email-action" bgcolor="#7C4C2B" style="background-color: #7C4C2B; border-radius: 8px; mso-padding-alt: 14px 22px;">
-                    <a class="email-action" href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 14px 22px; mso-padding-alt: 0; border-radius: 8px; background-color: #7C4C2B; color: #FFF9EF; font: bold 16px/22px Arial, sans-serif; text-decoration: none;">Confirm my email</a>
+                    <a class="email-action" href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 14px 22px; mso-padding-alt: 0; border-radius: 8px; background-color: #7C4C2B; color: #FFF9EF; font: bold 16px/22px Arial, sans-serif; text-decoration: none;">{{ if $fr }}Confirmer mon e-mail{{ else }}Confirm my email{{ end }}</a>
                   </td>
                 </tr>
               </table>
@@ -68,7 +69,7 @@
           </tr>
           <tr>
             <td class="email-inset email-rule" style="padding: 16px 32px 19px; border-top: 1px solid #DDCDB2;">
-              <p class="email-muted" style="margin: 0; color: #64514F; font: 14px/1.5 Arial, sans-serif;">If you didn&rsquo;t sign up for Noctalia, you can ignore this email.</p>
+              <p class="email-muted" style="margin: 0; color: #64514F; font: 14px/1.5 Arial, sans-serif;">{{ if $fr }}Si vous n&rsquo;avez pas créé de compte Noctalia, vous pouvez ignorer cet e-mail.{{ else }}If you didn&rsquo;t sign up for Noctalia, you can ignore this email.{{ end }}</p>
             </td>
           </tr>
         </table>

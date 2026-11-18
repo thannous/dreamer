@@ -2,11 +2,12 @@
 
 In the intended Supabase project, open **Authentication → Email Templates →
 Confirm sign up**. Save the current subject and message body for rollback, then
-set the subject to **Confirm your email for Noctalia** and paste the full
-[confirmation template](confirmation.html) as the message body. Apply only
-this template. The confirmation link uses Supabase's `{{ .ConfirmationURL }}`.
+paste the full [subject template](confirmation.subject.txt) and
+[confirmation template](confirmation.html) in their corresponding fields.
+The French copy is selected when the signup metadata contains `lang: fr`.
+English is the fallback. The link uses Supabase's `{{ .ConfirmationURL }}`.
 
-Validate on an isolated project with a fresh test signup. Open the delivered
+Validate on an isolated project with fresh French and English test signups. Open the delivered
 message in Gmail for iOS in light and dark modes, then tap **Confirm my email** and check that the account is confirmed. The images are decorative
 and served from Noctalia's public site. The message and action are also
 available with remote images disabled.

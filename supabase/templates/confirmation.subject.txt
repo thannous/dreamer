@@ -1,0 +1,1 @@
+{{ if eq .Data.lang "fr" }}Confirmez votre e-mail pour Noctalia{{ else }}Confirm your email for Noctalia{{ end }}
