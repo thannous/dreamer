@@ -80,5 +80,5 @@ Deno.test('parts-only user text remains verbatim and does not include thought pa
 
 Deno.test('chat instructions keep concise language, source attribution and absence uncertainty explicit', () => {
   const system = buildChatSystem('fr');
-  for (const fragment of ['Réponds en français', '2–4 short sentences', 'at most one optional question', 'An unreported emotion is not an unfelt emotion', 'never evidence', 'quotation', 'corrections', 'tu in French (never vous)', 'never « très tentative »']) assertStringIncludes(system, fragment);
+  for (const fragment of ['Réponds en français', '2–4 short sentences', 'at most one optional question', 'An unreported emotion is not an unfelt emotion', 'never evidence', 'quotation', 'corrections', 'tu in French (never vous)', 'never use it as an adjective, neither « une association tentative » nor « très tentative »']) assertStringIncludes(system, fragment);
 });
