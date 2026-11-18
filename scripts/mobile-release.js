@@ -377,18 +377,26 @@ function updateEnv(eas, base = process.env) {
   return { ...buildEnv('noctalia', 'production', base), ...profileEnv(eas, 'production') };
 }
 
-// `eas env:list` prints one NAME=value line per variable (values of secrets masked).
-function remoteEnvNames(output) {
+// `eas env:list --include-sensitive` prints `Environment: <name>`, then one NAME=value line per
+// variable; a secret's value stays masked. The values stay in memory, never in a log.
+function remoteEnv(output) {
   const plain = String(output ?? '').replace(/\u001b\[[0-9;]*m/g, '');
-  return [...new Set(plain.split(/\r?\n/).map(line => /^([A-Za-z_][A-Za-z0-9_]*)=/.exec(line.trim())?.[1]).filter(Boolean))];
+  const variables = new Map();
+  for (const line of plain.split(/\r?\n/)) {
+    const match = /^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/.exec(line.trim());
+    if (match) variables.set(match[1], match[2].trim());
+  }
+  return variables;
 }
 
 // EAS Update overlays the EAS production environment on the bundling process, while a store
-// build keeps the eas.json profile value: a key defined in both could differ between the two.
-function assertNoEnvOverlap(profile, remoteNames) {
-  if (!remoteNames.length) throw new Error('Could not read the EAS production environment variable names; no update published');
-  const both = Object.keys(profile).filter(key => remoteNames.includes(key));
-  if (both.length) throw new Error(`Defined both in eas.json production env and in the EAS production environment: ${both.join(', ')}. The update could bundle another value than the store build; keep each key in one place.`);
+// build keeps the eas.json profile value: a key defined in both must hold the same value there.
+function assertNoEnvOverlap(profile, remote) {
+  if (!remote.size) throw new Error('Could not read the EAS production environment; no update published');
+  const masked = Object.keys(profile).filter(key => remote.has(key) && /\*{3,}/.test(remote.get(key)));
+  if (masked.length) throw new Error(`Cannot compare ${masked.join(', ')}: masked in the EAS production environment and also set in eas.json production env. No update published.`);
+  const differing = Object.keys(profile).filter(key => remote.has(key) && remote.get(key) !== String(profile[key]));
+  if (differing.length) throw new Error(`Different in eas.json production env and in the EAS production environment: ${differing.join(', ')}. The update would bundle another value than the store build; make them equal first.`);
 }
 
 function updateArgs(platform, message) {
@@ -465,11 +473,11 @@ function main(args = process.argv.slice(2), root = ROOT) {
     let build;
     try { build = JSON.parse(inspected.stdout); }
     catch { throw new Error('EAS build inspection returned invalid JSON; no update published'); }
-    const listed = spawnSync(command, ['--yes', 'eas-cli@25.1.1', 'env:list', 'production', '--format', 'short'], {
+    const listed = spawnSync(command, ['--yes', 'eas-cli@25.1.1', 'env:list', 'production', '--format', 'short', '--include-sensitive'], {
       cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 32 * 1024 * 1024,
     });
     if (listed.error || listed.status !== 0) throw new Error(`Could not list the EAS production environment: ${listed.error?.message || listed.status}`);
-    assertNoEnvOverlap(profileEnv(readJson(root, 'eas.json'), 'production'), remoteEnvNames(listed.stdout));
+    assertNoEnvOverlap(profileEnv(readJson(root, 'eas.json'), 'production'), remoteEnv(listed.stdout));
     const resolved = spawnSync(command, ['expo-updates', 'runtimeversion:resolve', '--platform', options.platform], {
       cwd: root, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'], maxBuffer: 64 * 1024 * 1024,
     });
@@ -566,4 +574,4 @@ function main(args = process.argv.slice(2), root = ROOT) {
 if (require.main === module) {
   try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, remoteEnvNames, assertNoEnvOverlap, assertUpdateTarget, assertUpdateSource, main };
+module.exports = { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, remoteEnv, assertNoEnvOverlap, assertUpdateTarget, assertUpdateSource, main };

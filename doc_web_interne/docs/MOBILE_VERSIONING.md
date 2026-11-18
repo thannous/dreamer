@@ -96,7 +96,7 @@ La commande refuse de publier tant que :
 - le build visé n'est pas un build `production` `STORE` terminé du projet, de la version d'`app.json` et du canal `production` ;
 - le fingerprint calculé localement (avec le profil `production`) diffère du `runtimeVersion` du build : le changement demande alors un nouveau build ;
 - le commit du build n'est pas un ancêtre de `HEAD` (la mise à jour retirerait ce que le build contient) ;
-- une clé de l'`env` du profil `production` d'`eas.json` existe aussi dans l'environnement EAS `production` : EAS Update y prendrait la valeur distante, un build la valeur d'`eas.json`.
+- une clé de l'`env` du profil `production` d'`eas.json` a, dans l'environnement EAS `production`, une autre valeur ou une valeur masquée qu'on ne peut pas comparer : EAS Update y prendrait la valeur distante, un build la valeur d'`eas.json`. La commande lit cet environnement avec `--include-sensitive` et ne compare les valeurs qu'en mémoire ; ses messages ne nomment que les clés. Au 18 novembre 2026, six clés sont aux deux endroits avec la même valeur, ce qui est accepté.
 
 La commande n'a volontairement pas de script `npm run` : `@expo/fingerprint` hache les `scripts` de `package.json`, si bien qu'ajouter ou modifier un script change l'empreinte et coupe les builds installés des mises à jour (constaté sur cette commande le 18 novembre 2026).
 

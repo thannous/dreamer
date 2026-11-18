@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
-const { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, remoteEnvNames, assertNoEnvOverlap, assertUpdateTarget, assertUpdateSource, main } = require('./mobile-release');
+const { affects, bump, changeLevel, impliedLevel, markPublished, normalized, plan, prepare, verify, assertEasStoreBuildEnvironment, parseArgs, buildEnv, internalSubmitArgs, assertInternalBuild, assertBuildSource, assertClean, profileEnv, updateEnv, updateArgs, remoteEnv, assertNoEnvOverlap, assertUpdateTarget, assertUpdateSource, main } = require('./mobile-release');
 
 const fixtures = [];
 let baselineRoot = null;
@@ -395,12 +395,18 @@ describe('release planning against real Git histories', () => {
     expect(() => parseArgs(['build', '--platform', 'ios', '--message', 'fix'])).toThrow('only available for update');
   });
   it('refuses an update whose bundle could take another value than the store build', () => {
-    const listed = '\u001b[1mEXPO_PUBLIC_SUPABASE_URL\u001b[22m=https://project.supabase.co\nREVENUECAT_IOS_KEY=*****\n\nnot a variable line\n';
-    expect(remoteEnvNames(listed)).toEqual(['EXPO_PUBLIC_SUPABASE_URL', 'REVENUECAT_IOS_KEY']);
-    const profile = { EXPO_PUBLIC_API_URL: 'https://api', EXPO_PUBLIC_MOCK_MODE: 'false' };
-    expect(() => assertNoEnvOverlap(profile, ['EXPO_PUBLIC_SUPABASE_URL'])).not.toThrow();
-    expect(() => assertNoEnvOverlap(profile, ['EXPO_PUBLIC_MOCK_MODE', 'EXPO_PUBLIC_SUPABASE_URL'])).toThrow('EXPO_PUBLIC_MOCK_MODE');
-    expect(() => assertNoEnvOverlap(profile, remoteEnvNames(''))).toThrow('Could not read');
+    // The shape eas-cli 25.1.1 prints for `env:list production --format short --include-sensitive`.
+    const listed = '\nEnvironment: production\n\u001b[1mEXPO_PUBLIC_MOCK_MODE\u001b[22m=false\nEXPO_PUBLIC_API_URL=https://api?a=b\nEXPO_PUBLIC_SUPABASE_URL=https://project.supabase.co\nUPLOAD_SECRET=********\n';
+    const remote = remoteEnv(listed);
+    expect([...remote.keys()]).toEqual(['EXPO_PUBLIC_MOCK_MODE', 'EXPO_PUBLIC_API_URL', 'EXPO_PUBLIC_SUPABASE_URL', 'UPLOAD_SECRET']);
+    expect(remote.get('EXPO_PUBLIC_API_URL')).toBe('https://api?a=b');
+    const profile = { EXPO_PUBLIC_API_URL: 'https://api?a=b', EXPO_PUBLIC_MOCK_MODE: 'false' };
+    // The same key in both places with the same value is the setup of the store builds.
+    expect(() => assertNoEnvOverlap(profile, remote)).not.toThrow();
+    expect(() => assertNoEnvOverlap({ ...profile, EXPO_PUBLIC_MOCK_MODE: 'true' }, remote)).toThrow('Different in eas.json production env and in the EAS production environment: EXPO_PUBLIC_MOCK_MODE.');
+    expect(() => assertNoEnvOverlap({ ...profile, UPLOAD_SECRET: 'x' }, remote)).toThrow('Cannot compare UPLOAD_SECRET');
+    try { assertNoEnvOverlap({ EXPO_PUBLIC_API_URL: 'https://other' }, remote); } catch (error) { expect(error.message).not.toContain('https://'); }
+    expect(() => assertNoEnvOverlap(profile, remoteEnv('\nEnvironment: production\n'))).toThrow('Could not read');
   });
   it('refuses an update over a build it cannot reach or whose native fingerprint changed', () => {
     const expected = { projectId: 'project-1', version: '4.0.0', runtimeVersion: 'abc123' };
