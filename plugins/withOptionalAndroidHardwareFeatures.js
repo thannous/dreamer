@@ -35,6 +35,7 @@ module.exports = function withOptionalAndroidHardwareFeatures(config) {
       'android.hardware.camera',
       'android.hardware.camera.any',
       'android.hardware.microphone',
+      'android.hardware.wifi',
     ];
 
     const features = asArray(manifest.manifest['uses-feature']);
@@ -43,7 +44,7 @@ module.exports = function withOptionalAndroidHardwareFeatures(config) {
       features
     );
 
-    console.log('[withOptionalAndroidHardwareFeatures] Marked camera and microphone as optional');
+    console.log('[withOptionalAndroidHardwareFeatures] Marked camera, microphone and Wi-Fi as optional');
     return config;
   });
 };
