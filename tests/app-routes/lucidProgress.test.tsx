@@ -450,4 +450,22 @@ describe('Lucid Trainer progress screen', () => {
     const body = (document.body.textContent ?? '').toLowerCase();
     expect(body).not.toMatch(/did not dream|no dream|no recall/);
   });
+
+  it('shows 7-day mindful pause counts and active days separately from the 4 overview metrics', () => {
+    (mockTrainerState as { realityChecks?: { id: string; occurredAt: number }[] }).realityChecks = [
+      { id: 'rc-1', occurredAt: NOW - 3_600_000 },
+      { id: 'rc-2', occurredAt: NOW - 86_400_000 },
+      { id: 'rc-old', occurredAt: NOW - 10 * 86_400_000 },
+    ];
+
+    render(<LucidProgressScreen />);
+
+    expect(screen.getByTestId('lucid-progress-reality-checks-count').textContent).toContain('2');
+    expect(screen.getByTestId('lucid-progress-reality-checks-days').textContent).toContain('2');
+    expect(screen.getAllByTestId(/metric-/)).toHaveLength(4);
+    fireEvent.click(screen.getByTestId('lucid-progress-reality-checks-open'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
+
+    delete (mockTrainerState as { realityChecks?: { id: string; occurredAt: number }[] }).realityChecks;
+  });
 });

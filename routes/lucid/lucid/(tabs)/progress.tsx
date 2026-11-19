@@ -27,8 +27,8 @@ import { useLucidNow } from '@/hooks/useLucidNow';
 import { useLucidStabilizationLab } from '@/hooks/useLucidStabilizationLab';
 import { getLucidGuidanceProfile } from '@/lib/lucid/personalization';
 import type { LucidGuidanceFocus } from '@/lib/lucid/personalization';
-import { buildLucidWeeklyReview } from '@/lib/lucid/progress';
-import type { LucidExperiment, LucidTechnique } from '@/lib/lucid/model';
+import { buildLucidWeeklyReview, countLucidPracticeDays } from '@/lib/lucid/progress';
+import type { LucidExperiment, LucidLocale, LucidTechnique } from '@/lib/lucid/model';
 
 const PROGRESS_CONSTELLATION = require('../../../../assets/images/lucid/progress-constellation.webp');
 
@@ -364,6 +364,50 @@ const METRIC_ORDER: Record<LucidGuidanceFocus, readonly LucidProgressMetric[]> =
   stability: ['sleep', 'lucid', 'attempts', 'recall'],
 };
 
+const PAUSES_COPY: Record<LucidLocale, {
+  title: string;
+  hint: string;
+  checks: string;
+  days: string;
+  action: string;
+}> = {
+  en: {
+    title: 'Mindful pauses (7 days)',
+    hint: 'Daytime reality checks logged over the last 7 days.',
+    checks: 'checks',
+    days: 'active days',
+    action: 'Do a mindful check',
+  },
+  fr: {
+    title: 'Tests de réalité (7 jours)',
+    hint: 'Pauses conscientes enregistrées sur les 7 derniers jours.',
+    checks: 'tests',
+    days: 'jours actifs',
+    action: 'Faire un test conscient',
+  },
+  es: {
+    title: 'Pruebas de realidad (7 días)',
+    hint: 'Pausas conscientes registradas en los últimos 7 días.',
+    checks: 'pruebas',
+    days: 'días activos',
+    action: 'Hacer una prueba consciente',
+  },
+  de: {
+    title: 'Realitätschecks (7 Tage)',
+    hint: 'Bewusste Pausen der letzten 7 Tage.',
+    checks: 'Checks',
+    days: 'aktive Tage',
+    action: 'Bewusst prüfen',
+  },
+  it: {
+    title: 'Test di realtà (7 giorni)',
+    hint: 'Pause consapevoli registrate negli ultimi 7 giorni.',
+    checks: 'test',
+    days: 'giorni attivi',
+    action: 'Fare un test consapevole',
+  },
+};
+
 export default function LucidProgressScreen() {
   const [heroHeight, setHeroHeight] = React.useState<number>();
   const { fontScale, width } = useWindowDimensions();
@@ -372,6 +416,7 @@ export default function LucidProgressScreen() {
   const palette = getLucidPalette(colors, mode);
   const { state, content, activeDreamSigns = [], deleteExperiment, userScope } = useLucidTrainer();
   const copy = COPY[content.locale];
+  const pausesCopy = PAUSES_COPY[content.locale];
   const lab = useLucidStabilizationLab({ userScope });
   const profile = getLucidGuidanceProfile({
     goal: state!.onboarding.goal,
@@ -382,6 +427,27 @@ export default function LucidProgressScreen() {
     const endAt = now + 1;
     return buildLucidWeeklyReview(state!.experiments, { startAt: endAt - 7 * 86400000, endAt });
   }, [now, state]);
+  const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
+  const recentRealityChecks = useMemo(
+    () =>
+      (state!.realityChecks ?? []).filter(
+        (check) =>
+          Number.isFinite(check.occurredAt) &&
+          check.occurredAt >= review.currentWindow.startAt &&
+          check.occurredAt < review.currentWindow.endAt
+      ),
+    [review.currentWindow.endAt, review.currentWindow.startAt, state]
+  );
+  const recentRealityCheckDays = useMemo(
+    () =>
+      countLucidPracticeDays({
+        progress: [],
+        realityChecks: recentRealityChecks,
+        window: review.currentWindow,
+        timeZone,
+      }),
+    [recentRealityChecks, review.currentWindow, timeZone]
+  );
   const weeklyReviews = useMemo(
     () =>
       [...state!.weeklyReviews]
@@ -584,6 +650,50 @@ export default function LucidProgressScreen() {
           <Text style={[styles.coachText, { color: palette.text }]}>{coachingCopy}</Text>
           <Text style={[styles.small, { color: palette.textSecondary }]}>{content.weeklyReview.coachingNote}</Text>
         </View>
+
+        <LucidCard
+          style={styles.labCard}
+          testID="lucid-progress-reality-checks"
+        >
+          <Text accessibilityRole="header" style={[styles.sectionTitle, { color: palette.text }]}>
+            {pausesCopy.title}
+          </Text>
+          <Text style={[styles.small, { color: palette.textSecondary }]}>{pausesCopy.hint}</Text>
+          <View style={styles.labMetrics}>
+            <View
+              accessible
+              accessibilityLabel={`${pausesCopy.checks}: ${recentRealityChecks.length}`}
+              style={styles.metric}
+              testID="lucid-progress-reality-checks-count"
+            >
+              <Text style={[styles.metricValue, { color: palette.text }]}>
+                {String(recentRealityChecks.length)}
+              </Text>
+              <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>
+                {pausesCopy.checks}
+              </Text>
+            </View>
+            <View
+              accessible
+              accessibilityLabel={`${pausesCopy.days}: ${recentRealityCheckDays}`}
+              style={styles.metric}
+              testID="lucid-progress-reality-checks-days"
+            >
+              <Text style={[styles.metricValue, { color: palette.text }]}>
+                {String(recentRealityCheckDays)}
+              </Text>
+              <Text style={[styles.metricLabel, { color: palette.textSecondary }]}>
+                {pausesCopy.days}
+              </Text>
+            </View>
+          </View>
+          <LucidButton
+            label={pausesCopy.action}
+            onPress={() => router.push('/lucid/reality-check')}
+            testID="lucid-progress-reality-checks-open"
+            variant="secondary"
+          />
+        </LucidCard>
 
         <Pressable
           accessibilityRole="button"

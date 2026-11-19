@@ -318,6 +318,32 @@ describe('Lucid Trainer session', () => {
     expect(screen.getByTestId('lucid-guided-mild-source')).not.toBeNull();
   });
 
+  it('does not repeat the opening sentence during mild_recall when title is truncated from transcript', () => {
+    const transcript =
+      'I walked through an old glass station with a tall clock without hands standing above the quiet platform.';
+    mockDreams = [{ id: 42, title: 'I walked through an old glass station with a tall clock without hands\u2026', transcript }];
+    mockActiveDreamSigns = [{
+      id: 'sign:clock',
+      label: 'Clock',
+      category: null,
+      distinctDreamCount: 2,
+      sourceDreamIds: ['42'],
+    }];
+    mockProgress = [{
+      technique: 'mild',
+      status: 'active',
+      currentDay: 1,
+      completedExerciseIds: [],
+      guidedRitual: guidedProgress({ stepIndex: 1 }),
+    }];
+
+    render(<LucidSessionScreen />);
+
+    const recallPhase = screen.getByTestId('lucid-guided-phase-mild_recall');
+    const matches = recallPhase.textContent?.match(/I walked through an old glass station/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+
   it('resumes an abandoned ritual at its persisted phase', async () => {
     addMildSource();
     mockProgress = [{

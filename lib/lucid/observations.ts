@@ -14,15 +14,33 @@ export interface LucidObservation extends LucidTrainingSource {
   provenance: { kind: 'lucid_observation'; experimentId: string };
   voiceCapture?: LucidExperiment['voiceCapture'];
 }
+export function truncateLucidTextAtWordBoundary(value: string, maxLength: number): string {
+  const compact = String(value ?? '').replace(/\s+/g, ' ').trim();
+  if (maxLength <= 0 || compact.length <= maxLength) return compact;
+  if (maxLength === 1) return '\u2026';
+  const limit = maxLength - 1;
+  const rawSlice = compact.slice(0, limit);
+  let cut = rawSlice;
+  if (compact[limit] !== ' ') {
+    const lastSpace = rawSlice.lastIndexOf(' ');
+    if (lastSpace > 0 && lastSpace >= Math.floor(limit * 0.4)) {
+      cut = rawSlice.slice(0, lastSpace);
+    }
+  }
+  const cleaned = cut.replace(/[\s,;:–—-]+$/u, '').trimEnd();
+  return `${cleaned || rawSlice.trimEnd()}\u2026`;
+}
+
 export function projectLucidObservations(experiments: readonly LucidExperiment[], localVoiceExperimentIds: ReadonlySet<string> = new Set()): LucidObservation[] {
   return experiments.filter(item => Boolean(item.recallText?.trim() || item.notes?.trim() || (item.voiceCapture === 'local_note' && localVoiceExperimentIds.has(item.id))))
     .map(item => {
       const transcript = [item.recallText?.trim(), item.notes?.trim()].filter(Boolean).join('\n\n');
+      const firstLine = transcript.split('\n')[0] ?? '';
       return {
         id: lucidObservationSourceId(item.id, item.occurredAt),
         occurredAt: item.occurredAt,
         provenance: { kind: 'lucid_observation' as const, experimentId: item.id },
-        title: transcript.split('\n')[0]?.slice(0, 80) ?? '',
+        title: truncateLucidTextAtWordBoundary(firstLine, 80),
         transcript,
         voiceCapture: item.voiceCapture === 'local_note' && localVoiceExperimentIds.has(item.id) ? 'local_note' as const : undefined,
       };

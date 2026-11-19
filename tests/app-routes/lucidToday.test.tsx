@@ -133,11 +133,20 @@ jest.mock('@/hooks/useLucidNow', () => ({
   useLucidNow: () => mockNow,
 }));
 
+let mockRealityChecks: { id: string; occurredAt: number }[] = [];
+let mockPreferences: { notificationsEnabled?: boolean; timeZone?: string } | undefined;
+
 jest.mock('@/context/LucidTrainerContext', () => {
   const { getLucidContent } = jest.requireActual('@/lib/lucid/content');
   return {
     useLucidTrainer: () => ({
-      state: { onboarding: mockOnboarding, progress: mockProgress, experiments: mockExperiments },
+      state: {
+        onboarding: mockOnboarding,
+        progress: mockProgress,
+        experiments: mockExperiments,
+        realityChecks: mockRealityChecks,
+        ...(mockPreferences ? { preferences: mockPreferences } : {}),
+      },
       content: getLucidContent('fr'),
     }),
   };
@@ -168,6 +177,8 @@ describe('Lucid Trainer today screen', () => {
     jest.clearAllMocks();
     mockProgress = [];
     mockExperiments = [];
+    mockRealityChecks = [];
+    mockPreferences = undefined;
     mockNow = Date.UTC(2026, 7, 24, 12, 0);
     mockOnboarding = {
       goal: 'improve_recall',
@@ -434,5 +445,35 @@ describe('Lucid Trainer today screen', () => {
     expect(screen.queryByTestId('lucid-today-why-reason')).toBeNull();
     fireEvent.click(screen.getByTestId('lucid-today-primary'));
     expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
+  });
+
+  it('shows today counts on morning capture and reality-check shortcuts', () => {
+    mockExperiments = [
+      { id: 'today-1', occurredAt: mockNow - 3_600_000, updatedAt: mockNow - 3_600_000, captureMode: 'write', recallText: 'A clock without hands.' },
+      { id: 'yesterday', occurredAt: mockNow - 86_400_000, updatedAt: mockNow - 86_400_000, captureMode: 'write', recallText: 'Old dream' },
+    ];
+    mockRealityChecks = [
+      { id: 'rc-1', occurredAt: mockNow - 1_800_000 },
+      { id: 'rc-2', occurredAt: mockNow - 600_000 },
+    ];
+
+    render(<LucidTodayScreen />);
+
+    expect(screen.getByTestId('lucid-today-morning-count').textContent).toBe('1 aujourd’hui');
+    expect(screen.getByTestId('lucid-today-reality-count').textContent).toBe('2 aujourd’hui');
+  });
+
+  it('surfaces a calm reminders opt-in card when training notifications are off and opens Permissions', () => {
+    mockPreferences = { notificationsEnabled: false, timeZone: 'UTC' };
+    render(<LucidTodayScreen />);
+
+    expect(screen.getByTestId('lucid-today-reminders')).not.toBeNull();
+    fireEvent.click(screen.getByTestId('lucid-today-reminders-enable'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/permissions');
+
+    cleanup();
+    mockPreferences = { notificationsEnabled: true, timeZone: 'UTC' };
+    render(<LucidTodayScreen />);
+    expect(screen.queryByTestId('lucid-today-reminders')).toBeNull();
   });
 });

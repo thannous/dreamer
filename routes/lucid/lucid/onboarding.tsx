@@ -1,5 +1,6 @@
 import { BottomSheet } from '@/components/ui/BottomSheet';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { router } from 'expo-router';
 import React, { useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
@@ -29,6 +30,7 @@ import type {
 } from '@/lib/lucid/model';
 import { isLucidLocalTime } from '@/lib/lucid/model';
 import { getLucidPersonalizedPlan } from '@/lib/lucid/personalization';
+import { LUCID_ACCOUNT_HREF } from '@/lib/lucid/routes';
 import { evaluateLucidSafetyPolicyFromState } from '@/lib/lucid/safety';
 import type { ThemeAmbience } from '@/lib/themeAmbience';
 
@@ -37,18 +39,38 @@ const STEP_COUNT = 4;
 const LOCAL = {
   en: {
     step: 'Step', bed: 'Bedtime', wake: 'Wake time', timePickerHint: 'Opens the system time picker.',
+    alreadyAccount: 'I already have an account',
+    guestFoundTitle: 'Training found on this device',
+    guestFoundBody: 'You already started training as a guest on this device. Open Account to review and import your dreams and progress.',
+    guestFoundAction: 'Review guest import',
   },
   fr: {
     step: 'Étape', bed: 'Coucher', wake: 'Réveil', timePickerHint: 'Ouvre le sélecteur d’heure du système.',
+    alreadyAccount: 'J’ai déjà un compte',
+    guestFoundTitle: 'Entraînement trouvé sur cet appareil',
+    guestFoundBody: 'Vous avez déjà commencé un entraînement en invité sur cet appareil. Ouvrez Compte pour vérifier et importer vos rêves et votre parcours.',
+    guestFoundAction: 'Vérifier l’import',
   },
   es: {
     step: 'Paso', bed: 'Hora de dormir', wake: 'Hora de despertar', timePickerHint: 'Abre el selector de hora del sistema.',
+    alreadyAccount: 'Ya tengo una cuenta',
+    guestFoundTitle: 'Entrenamiento encontrado en este dispositivo',
+    guestFoundBody: 'Ya empezaste a entrenar como invitado en este dispositivo. Abre Cuenta para revisar e importar tus sueños y progreso.',
+    guestFoundAction: 'Revisar importación',
   },
   de: {
     step: 'Schritt', bed: 'Schlafenszeit', wake: 'Aufstehzeit', timePickerHint: 'Öffnet die Zeitauswahl des Systems.',
+    alreadyAccount: 'Ich habe bereits ein Konto',
+    guestFoundTitle: 'Training auf diesem Gerät gefunden',
+    guestFoundBody: 'Du hast auf diesem Gerät bereits als Gast trainiert. Öffne Konto, um deine Träume und Fortschritte zu prüfen und zu importieren.',
+    guestFoundAction: 'Import prüfen',
   },
   it: {
     step: 'Passaggio', bed: 'Ora di dormire', wake: 'Ora di sveglia', timePickerHint: 'Apre il selettore dell’ora di sistema.',
+    alreadyAccount: 'Ho già un account',
+    guestFoundTitle: 'Training trovato su questo dispositivo',
+    guestFoundBody: 'Hai già iniziato un training ospite su questo dispositivo. Apri Account per verificare e importare i tuoi sogni e progressi.',
+    guestFoundAction: 'Verifica importazione',
   },
 } as const;
 
@@ -94,7 +116,13 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
   const { fontScale, height, width } = useWindowDimensions();
-  const { state, content, completeOnboarding, saveOnboardingDraft } = useLucidTrainer();
+  const {
+    state,
+    content,
+    completeOnboarding,
+    saveOnboardingDraft,
+    guestImportAvailable = false,
+  } = useLucidTrainer();
   const locale = content.locale;
   const legacyCopy = LOCAL[locale];
   const copy = FLOW[locale];
@@ -337,6 +365,22 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
         </View>
       )}
 
+      {guestImportAvailable ? (
+        <LucidCard accent="accent" style={styles.planCard} testID="lucid-onboarding-guest-import">
+          <PlanRow
+            icon="download-outline"
+            title={legacyCopy.guestFoundTitle}
+            detail={legacyCopy.guestFoundBody}
+          />
+          <LucidButton
+            label={legacyCopy.guestFoundAction}
+            icon="download-outline"
+            onPress={() => router.push(LUCID_ACCOUNT_HREF)}
+            testID="lucid-onboarding-guest-import-action"
+          />
+        </LucidCard>
+      ) : null}
+
       <LucidOnboardingStage
         direction={stepDirection}
         reduceMotion={reduceMotion}
@@ -378,6 +422,13 @@ function LucidOnboardingContent({ ambience }: { ambience: ThemeAmbience }) {
                 />
               ))}
             </View>
+            <LucidButton
+              label={legacyCopy.alreadyAccount}
+              variant="ghost"
+              icon="person-outline"
+              onPress={() => router.push(LUCID_ACCOUNT_HREF)}
+              testID="lucid-onboarding-account"
+            />
           </View>
         ) : null}
 

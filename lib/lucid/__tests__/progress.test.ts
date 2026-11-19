@@ -2,6 +2,8 @@ import {
   adaptLucidExperimentForProgress,
   buildLucidWeeklyReview,
   compareLucidMethods,
+  countLucidPracticeDays,
+  countLucidRecallDays,
   getDeterministicLucidCoaching,
   getLucidProgressTrend,
   isLucidTrainingAttempt,
@@ -284,7 +286,7 @@ describe('lucid progress', () => {
       records: 3,
       attempts: 1,
       lucidDreams: 1,
-      recalledDreams: 1,
+      recalledDreams: 2,
       successRate: 1,
       recallRate: 1,
       averageRecall: 3.5,
@@ -302,6 +304,74 @@ describe('lucid progress', () => {
       { technique: 'ssild', attempts: 0, records: 0 },
       { technique: 'wbtb', attempts: 0, records: 0 },
     ]);
+  });
+
+  it('counts morning dream recalls without a technique in recallRate and distinct recall/practice days', () => {
+    const day1Morning = Date.UTC(2026, 7, 24, 7, 0);
+    const day1Afternoon = Date.UTC(2026, 7, 24, 14, 0);
+    const day2Morning = Date.UTC(2026, 7, 25, 7, 0);
+    const window = { startAt: Date.UTC(2026, 7, 20, 0, 0), endAt: Date.UTC(2026, 7, 27, 0, 0) };
+
+    const dream1 = record({
+      id: 'd1',
+      occurredAt: day1Morning,
+      captureMode: 'write',
+      recallText: 'A glass station with a clock without hands.',
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+    });
+    const dream2SameDay = record({
+      id: 'd2',
+      occurredAt: day1Afternoon,
+      captureMode: 'write',
+      recallText: 'Second fragment from the same morning.',
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+    });
+    const dream3NextDay = record({
+      id: 'd3',
+      occurredAt: day2Morning,
+      captureMode: 'write',
+      recallText: 'Floating stairs over the sea.',
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+    });
+
+    const summary = summarizeLucidProgress([dream1, dream2SameDay], window);
+    expect(summary).toMatchObject({
+      attempts: 0,
+      recalledDreams: 2,
+      recallRate: 1,
+      successRate: null,
+    });
+
+    expect(countLucidRecallDays([dream1, dream2SameDay], window, 'UTC')).toBe(1);
+    expect(countLucidRecallDays([dream1, dream2SameDay, dream3NextDay], window, 'UTC')).toBe(2);
+
+    expect(
+      countLucidPracticeDays({
+        progress: [{ practiceDates: ['2026-08-24'] }],
+        realityChecks: [
+          { occurredAt: day1Afternoon },
+          { occurredAt: day2Morning },
+        ],
+        experiments: [dream1],
+        window,
+        timeZone: 'UTC',
+      })
+    ).toBe(2);
   });
 
   it('rejects invalid or overlapping review windows', () => {

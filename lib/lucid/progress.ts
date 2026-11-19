@@ -1,9 +1,13 @@
+import { getLucidLocalDateKey } from './calendar';
 import {
   LUCID_TECHNIQUES,
   type LucidExperiment,
   type LucidPersonalFactor,
+  type LucidProgramProgress,
+  type LucidRealityCheck,
   type LucidTechnique,
 } from './model';
+import { getLucidDateKeyInTimeZone } from './morningCapture';
 import { isLucidRecentSleepDegraded } from './personalization';
 
 export { LUCID_TECHNIQUES } from './model';
@@ -239,6 +243,64 @@ function getExperimentsInWindow(
   return experiments.filter((experiment) => isExperimentInWindow(experiment, window));
 }
 
+function resolveProgressDateKey(timestamp: number, timeZone?: string): string {
+  return (timeZone ? getLucidDateKeyInTimeZone(timestamp, timeZone) : null)
+    ?? getLucidLocalDateKey(timestamp);
+}
+
+export function countLucidRecallDays(
+  experiments: readonly LucidExperiment[],
+  window?: LucidProgressWindow,
+  timeZone?: string
+): number {
+  const relevantExperiments = getExperimentsInWindow(experiments, window);
+  const days = new Set<string>();
+  for (const experiment of relevantExperiments) {
+    const outcome = adaptLucidOutcome(experiment);
+    if (outcome === 'lucid' || outcome === 'remembered') {
+      days.add(resolveProgressDateKey(experiment.occurredAt, timeZone));
+    }
+  }
+  return days.size;
+}
+
+export function countLucidPracticeDays(input: {
+  progress: readonly Pick<LucidProgramProgress, 'practiceDates'>[];
+  realityChecks?: readonly Pick<LucidRealityCheck, 'occurredAt'>[];
+  experiments?: readonly LucidExperiment[];
+  window?: LucidProgressWindow;
+  timeZone?: string;
+}): number {
+  const { progress, realityChecks = [], experiments = [], window, timeZone } = input;
+  if (window) assertProgressWindow(window, 'Progress window');
+  const startDateKey = window ? resolveProgressDateKey(window.startAt, timeZone) : null;
+  const endDateKey = window ? resolveProgressDateKey(window.endAt - 1, timeZone) : null;
+  const days = new Set<string>();
+
+  for (const item of progress) {
+    for (const dateKey of item.practiceDates) {
+      if (!startDateKey || !endDateKey || (dateKey >= startDateKey && dateKey <= endDateKey)) {
+        days.add(dateKey);
+      }
+    }
+  }
+
+  for (const check of realityChecks) {
+    if (!Number.isFinite(check.occurredAt)) continue;
+    if (!window || (check.occurredAt >= window.startAt && check.occurredAt < window.endAt)) {
+      days.add(resolveProgressDateKey(check.occurredAt, timeZone));
+    }
+  }
+
+  for (const experiment of getExperimentsInWindow(experiments, window)) {
+    if (isLucidTrainingAttempt(experiment)) {
+      days.add(resolveProgressDateKey(experiment.occurredAt, timeZone));
+    }
+  }
+
+  return days.size;
+}
+
 export function summarizeLucidProgress(
   experiments: readonly LucidExperiment[],
   window?: LucidProgressWindow
@@ -247,6 +309,7 @@ export function summarizeLucidProgress(
   let attempts = 0;
   let lucidDreams = 0;
   let recalledDreams = 0;
+  let recallObserved = 0;
   let preparedAttempts = 0;
   let preparationObserved = 0;
   const lucidityScores: number[] = [];
@@ -257,12 +320,15 @@ export function summarizeLucidProgress(
   for (const experiment of relevantExperiments) {
     const record = adaptLucidExperimentForProgress(experiment);
     const attempt = isLucidTrainingAttempt(experiment);
-    if (attempt) {
-      attempts += 1;
-      if (record.outcome === 'lucid') lucidDreams += 1;
+    if (record.outcome !== null) {
+      recallObserved += 1;
       if (record.outcome === 'lucid' || record.outcome === 'remembered') {
         recalledDreams += 1;
       }
+    }
+    if (attempt) {
+      attempts += 1;
+      if (record.outcome === 'lucid') lucidDreams += 1;
       if (record.preparationMinutes != null) {
         preparationObserved += 1;
         if (record.preparationMinutes > 0) preparedAttempts += 1;
@@ -297,7 +363,7 @@ export function summarizeLucidProgress(
     recalledDreams,
     preparedAttempts,
     successRate: getRate(lucidDreams, attempts),
-    recallRate: getRate(recalledDreams, attempts),
+    recallRate: getRate(recalledDreams, recallObserved),
     preparationRate: getRate(preparedAttempts, preparationObserved),
     averageLucidity: getAverage(lucidityScores),
     averageRecall: getAverage(recallScores),

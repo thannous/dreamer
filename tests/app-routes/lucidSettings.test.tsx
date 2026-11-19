@@ -363,4 +363,12 @@ describe('Lucid Trainer settings', () => {
 
     expect(screen.getByRole('button', { name: 'Reduce motion' })).toBeTruthy();
   });
+
+  it('marks reality-check reminders as paused while training notifications are off', () => {
+    state.preferences.notificationsEnabled = false;
+    render(<LucidSettingsScreen />);
+
+    expect(screen.getByTestId('lucid-reminders-summary').textContent).toContain('3 per day · paused');
+    state.preferences.notificationsEnabled = true;
+  });
 });

@@ -1544,4 +1544,48 @@ describe('lucidTrainerSync', () => {
     expect(queue.find((item) => item.id === 'pending-experiment')).toEqual(pendingExperiment);
     expect(store.cleared).toEqual(['guest']);
   });
+
+  it('preserves completed guest onboarding and locale when importing into a freshly created account with newer default timestamps', async () => {
+    const guest = createInitialLucidTrainerState({ now: NOW, timeZone: 'Europe/Paris', locale: 'fr' });
+    guest.onboarding = {
+      ...guest.onboarding,
+      status: 'completed',
+      goal: 'first_lucid_dream',
+      experience: 'beginner',
+      wakeSensitivity: 'not_sensitive',
+      sleepScheduleConfirmed: true,
+      completedAt: NOW + 1_000,
+      updatedAt: NOW + 1_000,
+    };
+    guest.preferences = {
+      ...guest.preferences,
+      locale: 'fr',
+      theme: 'dark',
+      updatedAt: NOW + 1_000,
+    };
+    guest.updatedAt = NOW + 1_000;
+
+    // Simulates a brand-new account loaded later with default `now = Date.now()` and default `locale = 'en'`.
+    const account = createInitialLucidTrainerState({
+      now: NOW + 60_000,
+      timeZone: 'UTC',
+      locale: 'en',
+    });
+    const store = guestClaimStore(guest, account);
+
+    const result = await claimLucidTrainerGuestScope(SCOPE, {
+      storage: store.adapter,
+      now: () => NOW + 60_000,
+    });
+
+    expect(result).toEqual({ claimed: true, queued: 0 });
+    const imported = store.states.get(SCOPE);
+    expect(imported?.onboarding.status).toBe('completed');
+    expect(imported?.onboarding.goal).toBe('first_lucid_dream');
+    expect(imported?.preferences.locale).toBe('fr');
+    expect(imported?.preferences.theme).toBe('dark');
+    expect(imported?.createdAt).toBe(account.createdAt);
+    expect(imported?.preferences.cloudSyncEnabled).toBe(false);
+    expect(store.cleared).toEqual(['guest']);
+  });
 });

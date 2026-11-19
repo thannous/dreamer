@@ -405,4 +405,13 @@ describe('Lucid Trainer night audio safety', () => {
     fireEvent.click(stop);
     expect(mockStopNight).toHaveBeenCalledTimes(1);
   });
+
+  it('keeps both ambience play/pause and stop buttons inside a wrapping control container', () => {
+    render(<LucidNightScreen />);
+    fireEvent.click(screen.getByTestId('lucid-night-signals-toggle'));
+
+    expect(screen.getByTestId('lucid-night-ambience-controls')).not.toBeNull();
+    expect(screen.getByTestId('lucid-night-ambience-play')).not.toBeNull();
+    expect(screen.getByTestId('lucid-night-ambience-stop')).not.toBeNull();
+  });
 });
