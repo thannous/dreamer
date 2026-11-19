@@ -30,7 +30,7 @@
   "preloadImage": "/img/blog/sleep-paralysis-guide.webp",
   "jsonLd": [
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BlogPosting\",\n    \"headline\": \"Schlaflähmung: warum du dich nicht bewegen kannst und wie du sie beendest\",\n    \"description\": \"Aufgewacht, bewegungsunfähig und jemand scheint im Raum zu sein? Ursachen der Schlaflähmung, was in der Episode hilft und wann du zum Arzt solltest.\",\n    \"image\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/img/blog/sleep-paralysis-guide.webp\",\n        \"width\": 1200,\n        \"height\": 630\n    },\n    \"author\": [\n        {\n            \"@type\": \"Person\",\n            \"@id\": \"https://noctalia.app/de/ueber-uns#person\",\n            \"name\": \"Thanh Chau\",\n            \"jobTitle\": \"Founder & Publication Director\",\n            \"url\": \"https://noctalia.app/de/ueber-uns\",\n            \"worksFor\": {\n                \"@type\": \"Organization\",\n                \"@id\": \"https://noctalia.app/#organization\",\n                \"name\": \"Noctalia\",\n                \"url\": \"https://noctalia.app\"\n            }\n        },\n        {\n            \"@type\": \"Organization\",\n            \"@id\": \"https://noctalia.app/#organization\",\n            \"name\": \"Noctalia\",\n            \"url\": \"https://noctalia.app\",\n            \"logo\": {\n                \"@type\": \"ImageObject\",\n                \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n            }\n        }\n    ],\n    \"publisher\": {\n        \"@type\": \"Organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\",\n        \"logo\": {\n            \"@type\": \"ImageObject\",\n            \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n        }\n    },\n    \"datePublished\": \"2025-12-11\",\n    \"dateModified\": \"2026-10-09\",\n    \"mainEntityOfPage\": {\n        \"@type\": \"WebPage\",\n        \"@id\": \"https://noctalia.app/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen\"\n    },\n    \"inLanguage\": \"de\",\n    \"isAccessibleForFree\": true,\n    \"wordCount\": 2180,\n    \"timeRequired\": \"PT10M\",\n    \"url\": \"https://noctalia.app/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen\"\n}",
-    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist eine Schlaflähmung gefährlich?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Sie ist beängstigend, aber an sich harmlos und endet von selbst, meist nach einigen Sekunden bis wenigen Minuten. Wenn Episoden häufig sind oder dir Angst vor dem Schlafengehen machen, sprich mit einem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann man an einer Schlaflähmung sterben?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein, eine Schlaflähmung kann nicht zum Tod führen. Auch wenn sich die Brust wie zerdrückt anfühlt, läuft die Atmung während der ganzen Episode automatisch weiter. Der Druck ist eine Empfindung, kein Hindernis.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie komme ich aus einer Schlaflähmung heraus?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Versuch eine winzige Bewegung: einen Finger, einen Zeh, eine Faust. Atme langsam und erinnere dich daran, dass es vorbeigeht. Wenn Kämpfen die Angst verstärkt, tu das Gegenteil: Hör auf, dich zu wehren, richte die Aufmerksamkeit auf etwas Neutrales und lass die Muskeln locker, bis es vorüber ist.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist die Präsenz bei einer Schlaflähmung real?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Präsenz, Gestalt und Schritte gehören zu den häufigsten Halluzinationen der Schlaflähmung und werden in vielen Kulturen beschrieben. Sie entstehen aus Traumbildern, die sich mit dem Wachsein mischen, in einem Moment, in dem das Gehirn in Alarmbereitschaft ist.\"\n            }\n        }\n    ]\n}",
+    "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"FAQPage\",\n    \"mainEntity\": [\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist eine Schlaflähmung gefährlich?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Sie ist beängstigend, aber an sich harmlos und endet von selbst, meist nach einigen Sekunden bis wenigen Minuten. Wenn Episoden häufig sind oder dir Angst vor dem Schlafengehen machen, sprich mit einem Arzt.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Kann man an einer Schlaflähmung sterben?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein, eine Schlaflähmung kann nicht zum Tod führen. Auch wenn sich die Brust wie zerdrückt anfühlt, läuft die Atmung während der ganzen Episode automatisch weiter. Der Druck ist eine Empfindung, kein Hindernis.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Wie komme ich aus einer Schlaflähmung heraus?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Versuche eine winzige Bewegung: einen Finger, einen Zeh, eine Faust. Atme langsam und erinnere dich daran, dass es vorbeigeht. Wenn Kämpfen die Angst verstärkt, tu das Gegenteil: Hör auf, dich zu wehren, richte die Aufmerksamkeit auf etwas Neutrales und lass die Muskeln locker, bis es vorüber ist.\"\n            }\n        },\n        {\n            \"@type\": \"Question\",\n            \"name\": \"Ist die Präsenz bei einer Schlaflähmung real?\",\n            \"acceptedAnswer\": {\n                \"@type\": \"Answer\",\n                \"text\": \"Nein. Präsenz, Gestalt und Schritte gehören zu den häufigsten Halluzinationen der Schlaflähmung und werden in vielen Kulturen beschrieben. Sie entstehen aus Traumbildern, die sich mit dem Wachsein mischen, in einem Moment, in dem das Gehirn in Alarmbereitschaft ist.\"\n            }\n        }\n    ]\n}",
     "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"BreadcrumbList\",\n    \"itemListElement\": [\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 1,\n            \"name\": \"Startseite\",\n            \"item\": \"https://noctalia.app/de/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 2,\n            \"name\": \"Ressourcen\",\n            \"item\": \"https://noctalia.app/de/blog/\"\n        },\n        {\n            \"@type\": \"ListItem\",\n            \"position\": 3,\n            \"name\": \"Schlaflähmung\",\n            \"item\": \"https://noctalia.app/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen\"\n        }\n    ]\n}"
   ],
   "activeNav": "resources"
@@ -221,21 +221,7 @@
 <p>
                     Schweben, Fliegen, Drehen, Fallen oder sich selbst von oben sehen. Eine wahrscheinliche Erklärung ist ein Widerspruch: Gleichgewichts- und Bewegungssysteme melden Bewegung, während der reglose Körper keine Rückmeldung gibt. Das kann sich anfühlen, als würdest du deinen Körper verlassen.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halte die Episode fest, solange sie frisch ist</h4>
-<p class="text-sm text-gray-400 mb-4">Erzähl in Noctalia so bald wie möglich laut, was passiert ist: Uhrzeit, Schlafposition, was du gesehen hast. Der Bericht wird in dein Tagebuch transkribiert, und du kannst deine Episoden nebeneinander lesen, um zu sehen, was ihnen vorausgeht.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-                                Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="stop">Was du während einer Episode tun kannst</h2>
 <p>
                     Zu wissen, was gerade passiert, nimmt schon einen Teil der Angst: Eine Episode ist beängstigend, aber nicht gefährlich, und sie endet von selbst. Keiner dieser Ansätze wirkt bei allen; behalte, was dir hilft.
@@ -308,9 +294,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Bewahre deine Episoden und Träume in Noctalia auf, mit Uhrzeit und der Nacht davor. Wenn du sie nebeneinander liest, siehst du, was ihnen vorausgeht.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=schlaflaehmung-erklaert-warum-sie-sich-nicht-beweg_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -389,13 +376,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Albträume: Ursachen, Bedeutung und wie man sie stoppt</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Albträume: Ursachen und was dagegen helfen kann</div>
       </div>
     </a>
     <a href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Traumtagebuch: Der vollständige Leitfaden zum Aufzeichnen deiner nächtlichen Abenteuer</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Traumtagebuch führen: eine einfache Methode für den Morgen</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -412,17 +399,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Wie du dich an deine Träume erinnerst: 10 effektive Techniken</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">So erinnerst du dich an Träume: 10 praktische Techniken</h3>
             <p class="text-sm text-gray-400">Zehn einfache Gewohnheiten, mit denen du mehr Traumfragmente behältst, vom ruhigen Aufwachen bis zur Notiz vor dem Aufstehen.</p>
         </a>
         <a href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du heute Abend genau das träumst, was du willst</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst</h3>
             <p class="text-sm text-gray-400">Eine Methode in sechs Schritten, um vor dem Schlafen eine Frage zu wählen und morgens festzuhalten, was zurückkommt, mit Forschungsstand und Grenzen.</p>
         </a>
         <a href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen, Bedeutung und wie man sie stoppt</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen und was dagegen helfen kann</h3>
             <p class="text-sm text-gray-400">Warum haben wir Albträume? Erfahre die Ursachen schlechter Träume, ihre Bedeutung und bewährte Techniken, um Albträume zu reduzieren und besser zu schlafen.</p>
         </a>
   </div>

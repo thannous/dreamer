@@ -162,20 +162,7 @@ What the lab adds is not a miracle but a method: compare cued and uncued problem
 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Catch the dream before the problem pulls you away</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia, tell your dream out loud or type it as soon as you wake up. It is transcribed and saved to your journal, so you can reread several nights side by side and see whether your problem comes back.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-See how the voice journal works <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="practice">How to try it at home</h2>
@@ -236,9 +223,10 @@ Dream science is moving from "what do we dream?" to "can we steer what we dream?
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Keep your dreams in Noctalia by voice or in writing, with what you felt. Reading them side by side shows whether a problem keeps coming back, and how it changes.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=dream-control-problem-solving_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -316,13 +304,13 @@ A simplified version, yes: write your question before bed, pair it with a short 
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">AI and Sleep Analysis: How Artificial Intelligence Decodes Your Dreams</div>
+<div class="font-serif text-lg text-dream-cream mt-1">The AI that reads your sleep: what Stanford's SleepFM can and cannot do</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="daylight-saving-time-sleep">
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Daylight saving time and sleep: what the clock change does to your nights and dreams</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -338,17 +326,17 @@ A simplified version, yes: write your question before bed, pair it with a short 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="lucid-dreaming-beginners-guide">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Lucid Dreaming for Beginners: A Complete Guide</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Lucid dreaming guide for beginners: journal, reality checks and MILD</h3>
 <p class="text-sm text-gray-400">Learn how to become aware within your dreams and direct them with proven techniques.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-and-creativity">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Creativity: How Your Sleeping Brain Solves Problems</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and creativity: how your sleeping brain helps solve problems</h3>
 <p class="text-sm text-gray-400">What sleep research says about dreams and problem solving, and how to note an idea before it fades.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dream-incubation-guide">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Dream Incubation Guide: Programming Your Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dream incubation: how to ask for a dream tonight, and what to expect</h3>
 <p class="text-sm text-gray-400">Practical techniques to steer your dream content toward a specific topic or problem.</p>
 </a>
 </div>

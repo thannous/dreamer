@@ -94,7 +94,8 @@
 <div>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Notez le ressenti de la nuit, pas seulement l'histoire</h3>
 <p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute dès le réveil : il est transcrit et rangé dans votre journal. Ajoutez un mot sur sa vivacité et votre forme du matin, puis relisez vos nuits côte à côte.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">Essayer le journal de rêves vocal <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<a class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full text-sm font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-vivaces-sommeil-reparateur_fr" rel="nofollow noopener noreferrer" target="_blank">Télécharger Noctalia sur Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<p class="text-xs text-purple-300/70 mt-3">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </div>
 </div>
 </aside>
@@ -139,9 +140,9 @@
 <section aria-label="À lire ensuite" class="mt-12" data-blog-related="">
 <header class="mb-6"><h2 class="font-serif text-2xl text-dream-cream mb-2">À lire ensuite</h2><p class="text-sm text-purple-300/60">Ressources complémentaires sur les rêves et le sommeil</p></header>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves"><span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span><h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves</h3><p class="text-sm text-gray-400">Comprendre la phase où se déroulent de nombreux rêves vivaces.</p></a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guide-journal-reves"><span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span><h3 class="font-serif text-lg text-dream-cream mb-2">Guide du journal de rêves</h3><p class="text-sm text-gray-400">Créer une routine matinale qui capture les détails fragiles.</p></a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-pas-aleatoires-etude-ia"><span class="text-xs text-dream-salmon uppercase mb-2 block">Actualité</span><h3 class="font-serif text-lg text-dream-cream mb-2">Vos rêves ne sont pas aléatoires</h3><p class="text-sm text-gray-400">Une étude IA montre comment vos nuits remixent votre vie éveillée.</p></a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves"><span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span><h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves : ce qui se passe vraiment dans votre cerveau la nuit</h3><p class="text-sm text-gray-400">Comprendre la phase où se déroulent de nombreux rêves vivaces.</p></a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guide-journal-reves"><span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span><h3 class="font-serif text-lg text-dream-cream mb-2">Journal de rêves : commencer et tenir la routine</h3><p class="text-sm text-gray-400">Créer une routine matinale qui capture les détails fragiles.</p></a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-pas-aleatoires-etude-ia"><span class="text-xs text-dream-salmon uppercase mb-2 block">Actualité</span><h3 class="font-serif text-lg text-dream-cream mb-2">Vos rêves ne sont pas aléatoires : ce qu'a vraiment montré une étude IA de 2026</h3><p class="text-sm text-gray-400">Une étude IA montre comment vos nuits remixent votre vie éveillée.</p></a>
 </div>
 </section>
 </article>

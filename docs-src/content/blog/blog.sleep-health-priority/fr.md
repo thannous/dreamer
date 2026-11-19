@@ -168,20 +168,7 @@
                 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="moon"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Gardez vos nuits et vos rêves au même endroit</h4>
-<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou écrivez-le au réveil, avec un mot sur votre nuit. Il est transcrit et rangé dans votre journal, et vous pouvez relire vos matins côte à côte.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="dream-warnings">Vos rêves peuvent-ils signaler un manque de sommeil ?</h2>
@@ -238,9 +225,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Chaque matin, racontez votre rêve à Noctalia à voix haute ou par écrit, et ajoutez un mot sur votre nuit. Tout est rangé dans un même journal : en relisant vos entrées côte à côte, vous voyez ce qui revient.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sommeil-sante-priorite_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -323,13 +311,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article pr&#233;c&#233;dent</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Perturbation du sommeil au printemps</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Perturbation du sommeil au printemps : quand les jours plus longs bousculent vos nuits et vos rêves</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traqueurs-sommeil-connectes-reves">
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Traqueurs de sommeil connect&#233;s et r&#234;ves</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Traqueurs de sommeil connectés et rêves : ce qu'ils mesurent, et ce qui leur échappe</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -345,17 +333,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et r&#234;ves : la science de votre th&#233;&#226;tre nocturne</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves : ce qui se passe vraiment dans votre cerveau la nuit</h3>
 <p class="text-sm text-gray-400">À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dette-sommeil-sante-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Sant&#233;</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Dette de sommeil : comment la privation chronique affecte votre sant&#233; et vos r&#234;ves</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dette de sommeil : comment la privation chronique affecte votre santé et vos rêves</h3>
 <p class="text-sm text-gray-400">La dette de sommeil s'accumule silencieusement et perturbe le sommeil paradoxal, le rappel onirique et la sant&#233; &#224; long terme.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traqueurs-sommeil-connectes-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Traqueurs de sommeil connect&#233;s et r&#234;ves : ce qu'ils mesurent vs ce qu'ils manquent</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Traqueurs de sommeil connectés et rêves : ce qu'ils mesurent, et ce qui leur échappe</h3>
 <p class="text-sm text-gray-400">Ce que mesurent vraiment une montre ou une bague la nuit, leur fiabilité, et pourquoi aucun capteur n'enregistre ce que vous avez rêvé.</p>
 </a>
 </div>

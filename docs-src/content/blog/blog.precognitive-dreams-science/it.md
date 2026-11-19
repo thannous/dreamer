@@ -215,21 +215,7 @@
 <p>
                     Mentre la scienza tradizionale non accetta la precognizione come dimostrata, i ricercatori riconoscono che <strong>l'esperienza soggettiva è reale</strong> - le persone hanno veramente dei sogni che in seguito sembrano corrispondere agli eventi. La domanda riguarda il meccanismo: previsione o qualcos'altro?
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Documenta i tuoi sogni potenzialmente predittivi</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia contrassegna i record dei tuoi sogni, creando un registro verificabile. Se in seguito un sogno sembra profetico, avrai prove documentate di quando lo hai registrato.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Inizia a registrare i sogni <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="explanations">Spiegazioni scientifiche per i sogni precognitivi</h2>
 <p>
                     Se i sogni non vedono effettivamente il futuro, cosa spiega l'avvincente esperienza dei sogni precognitivi? La scienza offre diverse alternative affascinanti:
@@ -319,9 +305,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Documenta i tuoi sogni con il diario con timestamp di Noctalia. Tieni traccia dei modelli nel tempo. Se mai i tuoi sogni sembrano predire il futuro, ne avrai le prove.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia a monitorare i tuoi sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=i-sogni-possono-predire-il-futuro-la-sorprendente-_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -374,7 +361,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Esplora i simboli citati in questo articolo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/luna">Significato del sogno lunare</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/sole">Significato del sogno del sole</a>
@@ -390,13 +377,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Incubazione dei sogni: come sognare esattamente ciò che desideri stasera</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti</div>
       </div>
     </a>
     <a href="sogni-inseguiti-significato-e-interpretazione" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sogni di essere inseguiti: significato e interpretazione</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sognare di essere inseguiti: perché è un sogno così frequente e cosa può significare</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -413,17 +400,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i sogni? La scienza dietro l'amnesia onirica</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i nostri sogni? La scienza dietro l'amnesia onirica</h3>
             <p class="text-sm text-gray-400">Scopri i meccanismi cerebrali e la neurochimica che spiegano perché dimentichiamo il 95% dei sogni al risveglio.</p>
         </a>
         <a href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: come il tuo sonno rivela la tua mente</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: cosa possono dire di te le tue notti, e cosa no</h3>
             <p class="text-sm text-gray-400">Scopri la profonda connessione tra sogni e salute mentale. Come ansia, depressione e trauma influenzano i tuoi sogni e come il lavoro onirico può supportare la guarigione.</p>
         </a>
         <a href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Perché sogniamo? La scienza dietro le tue avventure notturne</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Perché sogniamo? Cosa sa la scienza e cosa ancora non sa</h3>
             <p class="text-sm text-gray-400">Esplora l'affascinante scienza del sognare. Scopri le principali teorie, l'attività cerebrale durante i sogni e cosa i tuoi sogni rivelano sulla coscienza.</p>
         </a>
   </div>

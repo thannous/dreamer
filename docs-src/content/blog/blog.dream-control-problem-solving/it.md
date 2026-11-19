@@ -162,20 +162,7 @@ Il laboratorio non porta un miracolo ma un metodo: confrontare problemi con e se
 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Fissa il sogno prima che il problema ti riprenda</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia racconta il tuo sogno a voce o scrivilo appena sveglio. Viene trascritto e salvato nel tuo diario: puoi rileggere più notti una accanto all'altra e vedere se il tuo problema ritorna.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
-Guarda come funziona il diario vocale <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="practice">Come provarci a casa</h2>
@@ -236,9 +223,10 @@ La scienza dei sogni sta passando da «cosa sogniamo?» a «possiamo orientare c
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Conserva i tuoi sogni in Noctalia, a voce o per iscritto, con ciò che hai provato. Rileggerli uno accanto all'altro ti mostra se un problema ritorna e come cambia.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=controllare-sogni-risoluzione-problemi_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -316,13 +304,13 @@ In versione semplificata, sì: scrivi la tua domanda prima di dormire, abbinala 
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-<div class="font-serif text-lg text-dream-cream mt-1">IA e analisi del sonno: come l'intelligenza artificiale decifra i tuoi sogni</div>
+<div class="font-serif text-lg text-dream-cream mt-1">L'IA che analizza il tuo sonno: che cosa sa fare SleepFM di Stanford, e i suoi limiti</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="ora-legale-sonno-sogni">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Ora legale e sonno: come il cambio dell'ora altera i tuoi sogni</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Ora legale e sonno: cosa fa il cambio dell'ora alle tue notti e ai tuoi sogni</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -338,17 +326,17 @@ In versione semplificata, sì: scrivi la tua domanda prima di dormire, abbinala 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Guida al sogno lucido per principianti</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sogni lucidi per principianti: diario, controlli di realtà e tecnica MILD</h3>
 <p class="text-sm text-gray-400">Impara a diventare consapevole nei tuoi sogni e a dirigerli con tecniche comprovate.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sogni-e-creativita">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e creatività: come il tuo cervello addormentato risolve problemi</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e creatività: come il cervello addormentato aiuta a risolvere i problemi</h3>
 <p class="text-sm text-gray-400">Cosa dice la ricerca sul sonno a proposito di sogni e soluzione dei problemi, e come annotare un'idea prima che svanisca.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Guida all'incubazione dei sogni: programmare i tuoi sogni</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti</h3>
 <p class="text-sm text-gray-400">Tecniche pratiche per orientare il contenuto dei tuoi sogni verso un argomento o problema specifico.</p>
 </a>
 </div>

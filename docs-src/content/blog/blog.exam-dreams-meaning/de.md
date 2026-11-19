@@ -141,9 +141,8 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Halte die Prüfung fest, bevor sie verblasst</h4>
 <p class="text-sm text-gray-400 mb-4">Erzähl deinen Traum in Noctalia gleich nach dem Aufwachen laut nach. Er wird transkribiert und in deinem Tagebuch abgelegt, sodass du deine Prüfungsträume später nebeneinander lesen und sehen kannst, was wiederkehrt.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full text-sm font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=pruefungstraum-bedeutung_de" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play laden <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<p class="text-xs text-purple-300/70 mt-3">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </div>
 </div>
 </aside>

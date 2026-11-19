@@ -184,21 +184,7 @@
 <p>
                     Questo è proprio l'approccio adottato da Noctalia: basta parlare all'app al risveglio e questa trascriverà automaticamente il tuo racconto. Non dovrai più cercare una penna al buio o sforzarti di scrivere.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Cattura i tuoi sogni con la voce</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia ti permette di dettare e conservare il racconto, poi rileggerlo quando vuoi.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
-                                Scopri Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="technique-7">7. Un momento tranquillo prima di dormire</h2>
 <p>Se ti piace, dedica qualche istante a respirare normalmente e a osservare i pensieri senza inseguirli. È un’opzione per rilassarti, non una tecnica di efficacia dimostrata qui per il ricordo dei sogni.</p><p>Puoi semplicemente preparare il quaderno e andare a dormire. Salta l’esercizio se diventa faticoso o ti tiene sveglio.</p>
 <h2 id="technique-8">8. Ricostruisci il sogno a ritroso</h2>
@@ -240,9 +226,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia combina registrazione vocale, trascrizione automatica e analisi Noctalia per aiutarti a comprendere meglio le tue notti.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Scopri Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=come-ricordare-i-tuoi-sogni-10-tecniche-efficaci_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -280,7 +267,7 @@
 <i class="w-5 h-5 text-dream-salmon" data-lucide="book-open"></i>
                     Esplora i simboli correlati
                 </h2>
-<p class="text-sm text-purple-300/60 mb-4">Immergiti più a fondo nei simboli di questo articolo:</p>
+<p class="text-sm text-purple-300/60 mb-4">Esplora i simboli citati in questo articolo:</p>
 <div class="flex flex-wrap gap-3">
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/notte">Significato del sogno notturno</a>
 <a class="inline-flex items-center gap-2 px-4 py-2 glass-button rounded-full text-sm hover:text-dream-salmon transition-colors" href="../simboli/acqua">Significato del sogno dell'acqua</a>
@@ -302,7 +289,7 @@
     <a href="perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Perché dimentichiamo i sogni? La scienza dietro l'amnesia onirica</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Perché dimentichiamo i nostri sogni? La scienza dietro l'amnesia onirica</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -319,7 +306,7 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubazione dei sogni: come sognare esattamente ciò che desideri stasera</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti</h3>
             <p class="text-sm text-gray-400">Impara l'antica arte dell'incubazione dei sogni per risolvere problemi, stimolare la creatività ed esplorare argomenti specifici nei tuoi sogni.</p>
         </a>
         <a href="incubi-cause-significato-e-come-fermarli" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -329,7 +316,7 @@
         </a>
         <a href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisi del sonno: perché non puoi muoverti e come fermarla</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisi del sonno: perché non riesci a muoverti e come uscirne</h3>
             <p class="text-sm text-gray-400">Guida completa per comprendere la paralisi del sonno. Scopri le cause, perché si verificano allucinazioni e tecniche comprovate per prevenirla.</p>
         </a>
   </div>

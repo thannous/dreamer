@@ -172,20 +172,7 @@ Ein einzelner Eintrag ist nur eine Szene. Über einige Wochen zeigen die Notizen
 <p>
 Klarträume werden vor allem aus dem <a class="text-dream-salmon hover:underline" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">REM-Schlaf</a> berichtet, der in der zweiten Nachthälfte mehr Raum einnimmt. Behalte deine gewohnten Schlafzeiten bei: Wer Schlaf kürzt, um mehr Übungen unterzubringen, arbeitet gegen sich selbst.
 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Den Traum festhalten, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia erzählst du deinen Traum laut oder tippst ihn ein. Er wird transkribiert und in deinem Tagebuch gespeichert, Details ergänzt du später.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="reality-checks">Wie ein Realitätscheck sinnvoll wird</h2>
 <p>
 Bei einem Realitätscheck hältst du kurz inne und prüfst ernsthaft, ob du wach bist, in der Hoffnung, dass sich die Gewohnheit in einen Traum überträgt. Laut der <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a> gibt es kaum Belege dafür, dass Realitätschecks allein Klarträume auslösen; sie könnten aber andere Techniken unterstützen.
@@ -330,7 +317,10 @@ Behandle Klarheit als etwas, das du zu bemerken übst, nicht als Ergebnis, das d
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Deine Traumzeichen stecken schon in deinen Träumen</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-Halte jeden Traum in deinem <a class="text-dream-salmon hover:underline" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">Traumtagebuch</a> in Noctalia fest, per Stimme oder schriftlich, und lies die Einträge nebeneinander. Orte, Personen und Ungereimtheiten, die wiederkehren, sind die Details, auf die du heute Nacht achten kannst.
+Halte jeden Traum in deinem <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=leitfaden-zum-klartraeumen-fuer-anfaenger-ueberneh_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p> in Noctalia fest, per Stimme oder schriftlich, und lies die Einträge nebeneinander. Orte, Personen und Ungereimtheiten, die wiederkehren, sind die Details, auf die du heute Nacht achten kannst.
 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
 Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -415,13 +405,13 @@ Ein Klartraum an sich gilt nicht als gefährlich. Methoden, die die Nacht unterb
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Wiederkehrende Träume beobachten und einordnen</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -438,17 +428,17 @@ Ein Klartraum an sich gilt nicht als gefährlich. Methoden, die die Nacht unterb
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wie du Traumerinnerungen am Morgen festhältst</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">So erinnerst du dich an Träume: 10 praktische Techniken</h3>
                         <p class="text-sm text-gray-400">Praktische Schritte, mit denen du Traumerinnerungen direkt nach dem Aufwachen festhalten kannst.</p>
                     </a>
                     <a href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume?</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß</h3>
                         <p class="text-sm text-gray-400">Was Forschung über Traumerinnerung weiß und warum feste Prozentangaben mit Vorsicht zu lesen sind.</p>
                     </a>
                     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume im persönlichen Kontext</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann</h3>
                         <p class="text-sm text-gray-400">So vergleichst du wiederkehrende Szenen, Gefühle und mögliche Auslöser, ohne feste Botschaften vorauszusetzen.</p>
                     </a>
               </div>

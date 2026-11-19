@@ -251,9 +251,10 @@ Führe eine eigene Liste mit Bildern, die nützlich sein könnten, sortiert nach
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Mit Noctalia erzählst du deinen Traum direkt nach dem Aufwachen laut. Er wird transkribiert und in deinem Tagebuch gespeichert, wo du deine Träume nebeneinander lesen und wiederkehrende Bilder erkennen kannst.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/traumtagebuch-spracheingabe">
-Traumtagebuch per Sprache ausprobieren <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=traeume-und-kreativitaet_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -344,7 +345,7 @@ Nein. Wiederholtes Wecken zerstückelt den Schlaf, und Schlafmangel beeinträcht
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="angsttraeume-bedeutung">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Angstträume: Warum du sie hast und wie du sie stoppst</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Angstträume: mögliche Auslöser und was wirklich hilft</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -360,17 +361,17 @@ Nein. Wiederholtes Wecken zerstückelt den Schlaf, und Schlafmangel beeinträcht
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du heute Abend genau das träumst, was du willst</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst</h3>
 <p class="text-sm text-gray-400">Lerne die antiken und modernen Techniken, um gezielt Träume hervorzurufen und Probleme zu lösen sowie Kreativität zu entfachen.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Träume: Den nächtlichen Reset deines Gehirns verstehen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Träume: Was nachts wirklich in deinem Gehirn passiert</h3>
 <p class="text-sm text-gray-400">Wann der REM-Schlaf in der Nacht auftritt, warum seine Träume so lebhaft wirken und was ihn verkürzt.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">So erinnerst du dich an deine Träume: 10 effektive Techniken</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">So erinnerst du dich an Träume: 10 praktische Techniken</h3>
 <p class="text-sm text-gray-400">Praktische Methoden zur Verbesserung der Traumerinnerung, damit du nie wieder eine kreative Erkenntnis aus deinem schlafenden Geist verlierst.</p>
 </a>
 </div>

@@ -160,20 +160,7 @@
                 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Den Traum festhalten, bevor das Licht ihn löscht</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia erzählst du deinen Traum direkt nach dem Aufwachen. Er wird transkribiert und im Tagebuch gespeichert, und du kannst eine Zeile zu deiner Nacht ergänzen.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
-                                So funktioniert das Traumtagebuch per Sprache <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="adaptation">Was in der Umstellungszeit hilft</h2>
@@ -220,9 +207,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Halte jeden Traum direkt nach dem Aufwachen per Sprache oder schriftlich fest, mit einer Notiz zur Nacht. In Noctalia liest du die Einträge später nebeneinander und siehst, was im Lauf der Jahreszeit wiederkehrt.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Traumtagebuch starten <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=fruehling-schlaf-stoerung-traeume_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -300,13 +288,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Tr&auml;ume</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Träume</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlaf-gesundheit-prioritaet">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">N&auml;chster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Schlaf und Gesundheit: eine OHSU-Studie</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -322,17 +310,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="zeitumstellung-schlaf-traeume">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Gesundheit</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Zeitumstellung, Schlaf und Tr&auml;ume</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Zeitumstellung und Schlaf: Was die Sommerzeit mit deinen Nächten und Träumen macht</h3>
 <p class="text-sm text-gray-400">Was sich rund um die Sommerzeit bei Schlafrhythmus und Traumerinnerung ver&auml;ndern kann.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlafschuld-gesundheit-traeume">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Gesundheit</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Tr&auml;ume</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Träume</h3>
 <p class="text-sm text-gray-400">Wie Schlafschuld entstehen kann und welche Gewohnheiten den Schlaf unterst&uuml;tzen k&ouml;nnen.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Tr&auml;ume erinnern: Praktische Tipps</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">So erinnerst du dich an Träume: 10 praktische Techniken</h3>
 <p class="text-sm text-gray-400">Praktische Anregungen, mit denen sich Traumfragmente nach dem Aufwachen leichter festhalten lassen.</p>
 </a>
 </div>

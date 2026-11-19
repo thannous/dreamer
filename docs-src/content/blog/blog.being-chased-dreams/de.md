@@ -163,7 +163,10 @@ Im Traum verfolgt werden: Bedeutung, Flucht und Ausgang
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halte deinen Verfolgungstraum fest</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Notiere in Noctalia den Ablauf und deine eigenen Fragen. Vergleiche die Szenen, ohne aus ihnen eine Diagnose abzuleiten.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">Traumtagebuch beginnen</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=traeume-verfolgt-werden-bedeutung-und-interpretati_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -205,7 +208,7 @@ Im Traum verfolgt werden: Bedeutung, Flucht und Ausgang
     <a href="traeume-vom-tod-bedeutung-und-interpretation" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Todesträume: Bedeutung und Deutung</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Träume vom Tod: Bedeutung und was sie nicht vorhersagen</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -221,17 +224,17 @@ Im Traum verfolgt werden: Bedeutung, Flucht und Ausgang
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: Szenen und Zusammenhänge</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann</h3>
             <p class="text-sm text-gray-400">Vergleiche wiederkehrende Szenen und ihre möglichen Zusammenhänge.</p>
         </a>
         <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt</h3>
             <p class="text-sm text-gray-400">Zahnausfall im Traum: Szenen und Empfindungen beim Aufwachen.</p>
         </a>
         <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Vom Fallen träumen: Szenarien und Einordnung</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann</h3>
             <p class="text-sm text-gray-400">Unterscheide Traumszenen und Empfindungen beim Einschlafen.</p>
         </a>
   </div>

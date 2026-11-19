@@ -236,21 +236,7 @@ A veces la explicación más sencilla es la buena: un diente sensible, la mandí
 <p>
 Una sola entrada no demuestra nada. Si anotas los mismos datos durante varias noches, verás si se confirma la pista del cuerpo, la de la presión o alguna otra.
 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Anota tu sueño antes de que se borre</h4>
-<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta o escríbelo nada más despertar. Se transcribe y se guarda en tu diario, y puedes releer tus sueños con dientes uno al lado del otro para ver qué se repite.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="psicología">Lo que dice la investigación, y lo que pensaban Freud y Jung</h2>
 <p>
 En este tema se suelen mezclar dos cosas: lo que se ha medido y las formas históricas de leer los sueños. Conviene separarlas.
@@ -330,9 +316,10 @@ Si estos sueños, o las pesadillas en general, aparecen varias veces por semana,
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Guarda tus sueños con dientes en Noctalia, junto con lo que sentiste y lo que estabas viviendo. Al releerlos juntos, verás cuándo vuelven y qué los acompaña.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=suenos-dientes-caen_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- Symbol Guide CTA -->
 <aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
@@ -418,13 +405,13 @@ Casi nunca. Si aparece varias veces por semana, estropea tu descanso o te deja c
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños Lucidos para Principiantes: Toma el Control de tus Noches</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Cómo tener sueños lúcidos: guía paso a paso para principiantes</div>
       </div>
     </a>
     <a href="suenos-de-caer" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de caer: por qué sueñas que caes al vacío</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Soñar que caes de un lugar alto: por qué ocurre y qué puede significar</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -441,17 +428,17 @@ Casi nunca. Si aparece varias veces por semana, estropea tu descanso o te deja c
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: por qué se repite el mismo sueño y qué puede ayudar</h3>
             <p class="text-sm text-gray-400">Por qué vuelve el mismo sueño, qué anotar entre un episodio y otro, y cuándo las pesadillas repetidas merecen una consulta médica.</p>
         </a>
         <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que caes de un lugar alto: por qué ocurre y qué puede significar</h3>
             <p class="text-sm text-gray-400">Por qué soñamos con caer, desde la sacudida hípnica al dormirse hasta las caídas largas, y qué anotar al despertar.</p>
         </a>
         <a href="suenos-de-volar" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de volar: qué significa volar en sueños</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que vuelas: qué significa según cómo volabas</h3>
             <p class="text-sm text-gray-400">Qué puede sugerir volar sin esfuerzo, no lograr despegar o huir volando, y qué anotar al despertar.</p>
         </a>
   </div>
@@ -461,6 +448,6 @@ Casi nunca. Si aparece varias veces por semana, estropea tu descanso o te deja c
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

@@ -55,7 +55,7 @@
 <span class="text-sm text-purple-300/60">6 min read</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Heatwaves, sleep and dreams: why hot nights change what you remember</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">It is 4 a.m., the sheet is damp and the fan only pushes warm air around. You were running through a train station, late for something, and the scene stopped dead. During a heatwave, many people wake up with more dream fragments than usual. Heat does not write your dreams; it mostly changes how often you wake, and so what you catch.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed">The window is wide open, yet the night air barely moves. You flip the pillow to the cooler side, drift back off, and surface a third time before dawn with half a conversation still ringing in your head. During a heatwave, many people wake up with more dream fragments than usual. Heat does not write your dreams; it mostly changes how often you wake, and so what you catch.</p>
 </header>
 <figure class="mb-10 overflow-hidden rounded-2xl border border-white/10 bg-dream-purple/20">
 <img alt="Hot bedroom at night with dream fragments above the bed" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="1200">
@@ -94,7 +94,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Catch the dream before the morning erases it</h2>
 <p>Say the dream and the night out loud, or type them. Noctalia transcribes them and keeps them in your journal, so you can read your heatwave dreams side by side and see what comes back once the nights cool down.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/en/voice-dream-journal">Record your next dream by voice</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=heatwave-sleep-dreams_en" rel="nofollow noopener noreferrer" target="_blank">Get Noctalia on Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </div>
 <h2>FAQ</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Why do I feel like I dream more when it is hot?</summary><p class="mt-3">You probably do not dream more. You wake more often, and each waking can catch a dream in progress, so more fragments stay with you in the morning.</p></details>

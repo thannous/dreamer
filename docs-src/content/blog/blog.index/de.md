@@ -30,7 +30,7 @@
   "preloadImage": "",
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Blog\",\n  \"name\": \"Noctalia-Ressourcen\",\n  \"description\": \"Artikel und Ratgeber über Träume, Deutung und klares Träumen\",\n  \"url\": \"https://noctalia.app/de/blog/\",\n  \"inLanguage\": \"de\",\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  }\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"numberOfItems\": 50,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"url\": \"https://noctalia.app/de/blog/pruefungstraum-bedeutung\",\n      \"name\": \"Prüfungstraum Bedeutung: nicht gelernt, bestanden oder durchgefallen\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"url\": \"https://noctalia.app/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken\",\n      \"name\": \"So erinnerst du dich an Träume: 10 praktische Techniken\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"url\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\",\n      \"name\": \"Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"url\": \"https://noctalia.app/de/blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen\",\n      \"name\": \"Wiederkehrende Träume: mögliche Ursachen und was helfen kann\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"url\": \"https://noctalia.app/de/blog/leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte\",\n      \"name\": \"Klarträumen für Anfänger: Methoden, Grenzen und ein ruhiger Einstieg\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"url\": \"https://noctalia.app/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer\",\n      \"name\": \"Traumtagebuch führen: eine einfache Methode für den Morgen\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"url\": \"https://noctalia.app/de/blog/falsches-erwachen-traum\",\n      \"name\": \"Falsches Erwachen: träumen, man sei schon wach\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"url\": \"https://noctalia.app/de/blog/traum-zurueck-in-die-schule\",\n      \"name\": \"Von der Rückkehr in die Schule träumen: alte Schule, erster Tag und Stress zum Schulanfang\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"url\": \"https://noctalia.app/de/blog/albtraeume-schulanfang-kinder\",\n      \"name\": \"Albträume zum Schulanfang bei Kindern: Stress, Schlaf und Abendroutine\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"url\": \"https://noctalia.app/de/blog/klimatraeume-klimaangst\",\n      \"name\": \"Klimaträume: Wenn die Klimaangst mit ins Bett geht\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"url\": \"https://noctalia.app/de/blog/hitzewelle-schlaf-traeume\",\n      \"name\": \"Hitzewelle, Schlaf und Traumerinnerung\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 12,\n      \"url\": \"https://noctalia.app/de/blog/urlaub-schlaf-traeume\",\n      \"name\": \"Urlaub, Schlaf und Träume: warum Schlafen unterwegs deine Nächte verändert\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 13,\n      \"url\": \"https://noctalia.app/de/blog/naechtlicher-laerm-schlaf-traeume\",\n      \"name\": \"Nächtlicher Lärm, Schlaf und Träume: warum eine laute Nacht im Gedächtnis bleibt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 14,\n      \"url\": \"https://noctalia.app/de/blog/naechtliches-erwachen-traumerinnerung\",\n      \"name\": \"Nächtliches Erwachen und Traumerinnerung: eine Unterbrechung sinnvoll nutzen\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 15,\n      \"url\": \"https://noctalia.app/de/blog/albtraeume-hitze-stress\",\n      \"name\": \"Hitze, Stress und Albträume: Warum sie intensiver wirken können\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 16,\n      \"url\": \"https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026\",\n      \"name\": \"Regulieren Träume unsere Gefühle? Was eine Studie von 2026 wirklich zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 17,\n      \"url\": \"https://noctalia.app/de/blog/ki-traumtagebuch-datenschutz\",\n      \"name\": \"KI-Traumtagebuch und Datenschutz: Fragen vor der ersten Notiz\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 18,\n      \"url\": \"https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende\",\n      \"name\": \"Wachträumen: Traumähnliche Zustände gibt es nicht nur im Schlaf\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 19,\n      \"url\": \"https://noctalia.app/de/blog/traeume-zu-real-mobius-modell\",\n      \"name\": \"Wenn Träume zu real wirken: Was das MÖBIUS-Modell erklärt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 20,\n      \"url\": \"https://noctalia.app/de/blog/traeume-nicht-zufaellig-ki-studie\",\n      \"name\": \"Träume sind nicht zufällig: Was eine KI-Studie von 2026 zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 21,\n      \"url\": \"https://noctalia.app/de/blog/lebendige-traeume-erholsamer-schlaf\",\n      \"name\": \"Lebendige Träume und erholsamer Schlaf: Was die PLOS-Biology-Studie zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 22,\n      \"url\": \"https://noctalia.app/de/blog/traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation\",\n      \"name\": \"Träume von ausfallenden Zähnen: Bedeutung und Interpretation\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 23,\n      \"url\": \"https://noctalia.app/de/blog/bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen\",\n      \"name\": \"Träume vom Fallen: Bedeutung und mögliche Auslöser\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 24,\n      \"url\": \"https://noctalia.app/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen\",\n      \"name\": \"Traum vom Fliegen: Bedeutung nach Gefühl, Höhe und Kontrolle\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 25,\n      \"url\": \"https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt\",\n      \"name\": \"Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 26,\n      \"url\": \"https://noctalia.app/de/blog/trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen\",\n      \"name\": \"Dream Incubation: Wie du heute Abend genau das träumst, was du willst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 27,\n      \"url\": \"https://noctalia.app/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume\",\n      \"name\": \"Können Träume die Zukunft vorhersagen? Die Wissenschaft präkognitiver Träume\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 28,\n      \"url\": \"https://noctalia.app/de/blog/traeume-verfolgt-werden-bedeutung-und-interpretation\",\n      \"name\": \"Träume verfolgt werden: Bedeutung und Interpretation\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 29,\n      \"url\": \"https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation\",\n      \"name\": \"Träume vom Tod: Bedeutung und Interpretation\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 30,\n      \"url\": \"https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen\",\n      \"name\": \"Wasser- und Überschwemmungsträume: Bedeutung nach Traumdetail\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 31,\n      \"url\": \"https://noctalia.app/de/blog/traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten\",\n      \"name\": \"Träume über deinen Ex: Was sie wirklich bedeuten\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 32,\n      \"url\": \"https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind\",\n      \"name\": \"Schwangerschaftsträume: Was sie bedeuten (auch wenn du nicht schwanger bist)\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 33,\n      \"url\": \"https://noctalia.app/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann\",\n      \"name\": \"Albträume: Ursachen und was dagegen helfen kann\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 34,\n      \"url\": \"https://noctalia.app/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen\",\n      \"name\": \"Erklärung der Schlaflähmung: Warum du dich nicht bewegen kannst und wie du sie stoppen kannst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 35,\n      \"url\": \"https://noctalia.app/de/blog/traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart\",\n      \"name\": \"Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 36,\n      \"url\": \"https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern\",\n      \"name\": \"Warum träumen wir? Die Wissenschaft hinter deinen nächtlichen Abenteuern\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 37,\n      \"url\": \"https://noctalia.app/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen\",\n      \"name\": \"REM-Schlaf und Träume: Den nächtlichen Reset deines Gehirns verstehen\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 38,\n      \"url\": \"https://noctalia.app/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft\",\n      \"name\": \"Die Geschichte der Traumdeutung: Von antiken Tempeln bis zur modernen Wissenschaft\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 39,\n      \"url\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\",\n      \"name\": \"Stressträume über die Arbeit: Warum dein Job dich in den Schlaf verfolgt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 40,\n      \"url\": \"https://noctalia.app/de/blog/traeume-und-kreativitaet\",\n      \"name\": \"Träume und Kreativität: Wie dein schlafendes Gehirn Probleme löst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 41,\n      \"url\": \"https://noctalia.app/de/blog/angsttraeume-bedeutung\",\n      \"name\": \"Angstträume: mögliche Auslöser und hilfreiche Schritte\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 42,\n      \"url\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\",\n      \"name\": \"Kinderträume: Wovon Kinder träumen und wie man ihnen hilft\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 43,\n      \"url\": \"https://noctalia.app/de/blog/schlaftag-umgebung-traeume\",\n      \"name\": \"Schlaftag 2026: Wie deine Umgebung deine Träume verändert\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 44,\n      \"url\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\",\n      \"name\": \"Die KI, die deinen Schlaf liest: Stanfords SleepFM-Revolution\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 45,\n      \"url\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\",\n      \"name\": \"Träume steuern zur Problemlösung: Die Studie, die alles verändert\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 46,\n      \"url\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\",\n      \"name\": \"Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel deine Träume stört\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 47,\n      \"url\": \"https://noctalia.app/de/blog/schlafschuld-gesundheit-traeume\",\n      \"name\": \"Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Träume\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 48,\n      \"url\": \"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\",\n      \"name\": \"Schlafstörung im Frühling: Licht, Schlaf und Träume\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 49,\n      \"url\": \"https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet\",\n      \"name\": \"Schlaf als Gesundheitsfaktor Nr. 1: Die OHSU-Studie, die alles verändert\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 50,\n      \"url\": \"https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume\",\n      \"name\": \"Schlaf-Tracker und Träume: Was Wearables messen und was ihnen entgeht\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"numberOfItems\": 50,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"url\": \"https://noctalia.app/de/blog/pruefungstraum-bedeutung\",\n      \"name\": \"Prüfungstraum: Bedeutung, wenn du nicht gelernt hast, bestehst oder durchfällst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"url\": \"https://noctalia.app/de/blog/so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken\",\n      \"name\": \"So erinnerst du dich an Träume: 10 praktische Techniken\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"url\": \"https://noctalia.app/de/blog/warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie\",\n      \"name\": \"Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"url\": \"https://noctalia.app/de/blog/wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen\",\n      \"name\": \"Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"url\": \"https://noctalia.app/de/blog/leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte\",\n      \"name\": \"Klarträumen für Anfänger: Traumtagebuch, Realitätschecks und MILD\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"url\": \"https://noctalia.app/de/blog/dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer\",\n      \"name\": \"Traumtagebuch führen: eine einfache Methode für den Morgen\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"url\": \"https://noctalia.app/de/blog/falsches-erwachen-traum\",\n      \"name\": \"Falsches Erwachen: träumen, man sei schon aufgewacht\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"url\": \"https://noctalia.app/de/blog/traum-zurueck-in-die-schule\",\n      \"name\": \"Von der Rückkehr in die Schule träumen: alte Schule, erster Tag und Stress zum Schulanfang\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"url\": \"https://noctalia.app/de/blog/albtraeume-schulanfang-kinder\",\n      \"name\": \"Albträume zum Schulanfang bei Kindern: Stress, Schlaf und Abendroutine\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"url\": \"https://noctalia.app/de/blog/klimatraeume-klimaangst\",\n      \"name\": \"Klimaträume: Wenn die Klimaangst mit ins Bett geht\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"url\": \"https://noctalia.app/de/blog/hitzewelle-schlaf-traeume\",\n      \"name\": \"Hitzewelle, Schlaf und Traumerinnerung: warum heiße Nächte verändern, was du behältst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 12,\n      \"url\": \"https://noctalia.app/de/blog/urlaub-schlaf-traeume\",\n      \"name\": \"Urlaub, Schlaf und Träume: warum deine Nächte unterwegs anders sind\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 13,\n      \"url\": \"https://noctalia.app/de/blog/naechtlicher-laerm-schlaf-traeume\",\n      \"name\": \"Nächtlicher Lärm, Schlaf und Träume: warum eine laute Nacht im Gedächtnis bleibt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 14,\n      \"url\": \"https://noctalia.app/de/blog/naechtliches-erwachen-traumerinnerung\",\n      \"name\": \"Nächtliches Erwachen und Traumerinnerung: den Traum sichern und weiterschlafen\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 15,\n      \"url\": \"https://noctalia.app/de/blog/albtraeume-hitze-stress\",\n      \"name\": \"Albträume bei Hitze und Stress: Warum sie in heißen Nächten stärker wirken\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 16,\n      \"url\": \"https://noctalia.app/de/blog/traeume-emotionsregulation-studie-2026\",\n      \"name\": \"Regulieren Träume unsere Gefühle? Was eine Studie von 2026 wirklich zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 17,\n      \"url\": \"https://noctalia.app/de/blog/ki-traumtagebuch-datenschutz\",\n      \"name\": \"KI-Traumtagebuch und Datenschutz: Was du vor dem ersten Eintrag prüfen solltest\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 18,\n      \"url\": \"https://noctalia.app/de/blog/wachtraeumen-onirische-zustaende\",\n      \"name\": \"Wachträumen: Traumähnliche Zustände gibt es nicht nur im Schlaf\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 19,\n      \"url\": \"https://noctalia.app/de/blog/traeume-zu-real-mobius-modell\",\n      \"name\": \"Wenn Träume zu real wirken: Was das MÖBIUS-Modell erklärt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 20,\n      \"url\": \"https://noctalia.app/de/blog/traeume-nicht-zufaellig-ki-studie\",\n      \"name\": \"Träume sind nicht zufällig: Was eine KI-Studie von 2026 tatsächlich zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 21,\n      \"url\": \"https://noctalia.app/de/blog/lebendige-traeume-erholsamer-schlaf\",\n      \"name\": \"Lebendige Träume und erholsamer Schlaf: Was die PLOS-Biology-Studie zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 22,\n      \"url\": \"https://noctalia.app/de/blog/traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation\",\n      \"name\": \"Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 23,\n      \"url\": \"https://noctalia.app/de/blog/bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen\",\n      \"name\": \"Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 24,\n      \"url\": \"https://noctalia.app/de/blog/bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen\",\n      \"name\": \"Traum vom Fliegen: Bedeutung je nachdem, wie du geflogen bist\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 25,\n      \"url\": \"https://noctalia.app/de/blog/traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt\",\n      \"name\": \"Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 26,\n      \"url\": \"https://noctalia.app/de/blog/trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen\",\n      \"name\": \"Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 27,\n      \"url\": \"https://noctalia.app/de/blog/koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume\",\n      \"name\": \"Können Träume die Zukunft vorhersagen? Die Wissenschaft präkognitiver Träume\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 28,\n      \"url\": \"https://noctalia.app/de/blog/traeume-verfolgt-werden-bedeutung-und-interpretation\",\n      \"name\": \"Im Traum verfolgt werden: Bedeutung, Flucht und Ausgang\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 29,\n      \"url\": \"https://noctalia.app/de/blog/traeume-vom-tod-bedeutung-und-interpretation\",\n      \"name\": \"Träume vom Tod: Bedeutung und was sie nicht vorhersagen\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 30,\n      \"url\": \"https://noctalia.app/de/blog/wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen\",\n      \"name\": \"Wasser- und Überschwemmungsträume: was sie bedeuten können, Detail für Detail\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 31,\n      \"url\": \"https://noctalia.app/de/blog/traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten\",\n      \"name\": \"Träume vom Ex: Was sie bedeuten können und was nicht\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 32,\n      \"url\": \"https://noctalia.app/de/blog/schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind\",\n      \"name\": \"Schwangerschaftsträume: was sie bedeuten können, auch wenn du nicht schwanger bist\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 33,\n      \"url\": \"https://noctalia.app/de/blog/albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann\",\n      \"name\": \"Albträume: Ursachen und was dagegen helfen kann\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 34,\n      \"url\": \"https://noctalia.app/de/blog/schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen\",\n      \"name\": \"Schlaflähmung: warum du dich nicht bewegen kannst und wie du sie beendest\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 35,\n      \"url\": \"https://noctalia.app/de/blog/traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart\",\n      \"name\": \"Träume und psychische Gesundheit: Was deine Nächte über dich sagen können (und was nicht)\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 36,\n      \"url\": \"https://noctalia.app/de/blog/warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern\",\n      \"name\": \"Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 37,\n      \"url\": \"https://noctalia.app/de/blog/rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen\",\n      \"name\": \"REM-Schlaf und Träume: Was nachts wirklich in deinem Gehirn passiert\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 38,\n      \"url\": \"https://noctalia.app/de/blog/die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft\",\n      \"name\": \"Die Geschichte der Traumdeutung: von antiken Tempeln bis zur modernen Wissenschaft\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 39,\n      \"url\": \"https://noctalia.app/de/blog/stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet\",\n      \"name\": \"Stressträume über die Arbeit: Warum dein Job dich in den Schlaf verfolgt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 40,\n      \"url\": \"https://noctalia.app/de/blog/traeume-und-kreativitaet\",\n      \"name\": \"Träume und Kreativität: Wie das schlafende Gehirn beim Lösen von Problemen hilft\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 41,\n      \"url\": \"https://noctalia.app/de/blog/angsttraeume-bedeutung\",\n      \"name\": \"Angstträume: mögliche Auslöser und was wirklich hilft\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 42,\n      \"url\": \"https://noctalia.app/de/blog/kindertraeume-ratgeber\",\n      \"name\": \"Kinderträume: Wovon Kinder träumen und wie du helfen kannst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 43,\n      \"url\": \"https://noctalia.app/de/blog/schlaftag-umgebung-traeume\",\n      \"name\": \"Schlaftag 2026: wie dein Schlafzimmer deine Träume beeinflusst\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 44,\n      \"url\": \"https://noctalia.app/de/blog/ki-schlafanalyse-traeume\",\n      \"name\": \"Die KI, die deinen Schlaf liest: was Stanfords SleepFM kann und was nicht\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 45,\n      \"url\": \"https://noctalia.app/de/blog/traumkontrolle-problemloesung\",\n      \"name\": \"Träume steuern zur Problemlösung: Was die Northwestern-Studie wirklich zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 46,\n      \"url\": \"https://noctalia.app/de/blog/zeitumstellung-schlaf-traeume\",\n      \"name\": \"Zeitumstellung und Schlaf: Was die Sommerzeit mit deinen Nächten und Träumen macht\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 47,\n      \"url\": \"https://noctalia.app/de/blog/schlafschuld-gesundheit-traeume\",\n      \"name\": \"Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Träume\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 48,\n      \"url\": \"https://noctalia.app/de/blog/fruehling-schlaf-stoerung-traeume\",\n      \"name\": \"Schlafstörung im Frühling: Wie längere Tage Schlaf und Träume verändern können\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 49,\n      \"url\": \"https://noctalia.app/de/blog/schlaf-gesundheit-prioritaet\",\n      \"name\": \"Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 50,\n      \"url\": \"https://noctalia.app/de/blog/schlaf-tracker-wearables-traeume\",\n      \"name\": \"Schlaf-Tracker und Träume: Was Wearables messen und was ihnen entgeht\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Startseite\",\n      \"item\": \"https://noctalia.app/de/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Ressourcen\",\n      \"item\": \"https://noctalia.app/de/blog/\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -219,7 +219,7 @@
 <!-- Articles Grid -->
 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="articles-grid" id="articlesGrid">
 <!-- Article - blog.false-awakening-dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="7" data-title="Falsches Erwachen: Träumen, man sei wach">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="7" data-title="Falsches Erwachen: träumen, man sei schon aufgewacht">
 <a class="block" href="falsches-erwachen-traum">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sanftes REM-Schlaf-Licht um eine schlafende Person, wie ein Traum, der sich wie Erwachen anfühlt" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="800">
@@ -230,7 +230,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Leitfaden</span>
 <span class="text-xs text-purple-300/60">7 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Falsches Erwachen: Träumen, man sei wach</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Falsches Erwachen: träumen, man sei schon aufgewacht
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Ein falsches Erwachen erkennen, von Schlaflähmung abgrenzen und die Nacht sachlich notieren.</p>
 </div>
 </a>
@@ -247,7 +249,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Deutung</span>
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Von der Rückkehr in die Schule träumen: alte Schule, erster Tag und Stress zum Schulanfang</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Von der Rückkehr in die Schule träumen: alte Schule, erster Tag und Stress zum Schulanfang
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Alte Schule, erster Tag, Zuspätkommen: was diese Träume zum Schulanfang über deine Übergänge erzählen.</p>
 </div>
 </a>
@@ -264,7 +268,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Ratgeber</span>
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Albträume zum Schulanfang bei Kindern: Stress, Schlaf und Abendroutine</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Albträume zum Schulanfang bei Kindern: Stress, Schlaf und Abendroutine
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Warum der Schulanfang bei Kindern Albträume auslöst und welche Abendroutine beruhigt.</p>
 </div>
 </a>
@@ -282,13 +288,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Saison</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Klimaträume: Wenn die Klimaangst mit ins Bett geht</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Klimaträume: Wenn die Klimaangst mit ins Bett geht
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Warum Fluten, Brände und Stürme durch deine Träume ziehen und wie du sie notierst, ohne sie zu nähren.</p>
 </div>
 </a>
 </article>
 <!-- Article - Hitzewelle Schlaf Traeume -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Hitzewelle, Schlaf und Traumerinnerung">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Hitzewelle, Schlaf und Traumerinnerung: warum heiße Nächte verändern, was du behältst">
 <a class="block" href="hitzewelle-schlaf-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Heißes Schlafzimmer bei Nacht mit Traumfragmenten über dem Bett" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="800">
@@ -299,13 +307,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Saison</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Hitzewelle, Schlaf und Traumerinnerung</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Hitzewelle, Schlaf und Traumerinnerung: warum heiße Nächte verändern, was du behältst
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Wie hei&szlig;e N&auml;chte den Schlaf unterbrechen und dadurch die Traumerinnerung beeinflussen k&ouml;nnen.</p>
 </div>
 </a>
 </article>
 <!-- Article - Urlaub Schlaf Traeume -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Urlaub, Schlaf und Träume: besser schlafen unterwegs">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Urlaub, Schlaf und Träume: warum deine Nächte unterwegs anders sind">
 <a class="block" href="urlaub-schlaf-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Ruhiges Reiseschlafzimmer mit sanftem Licht und Traumtagebuch" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-day-environment-dreams.webp" srcset="../../img/blog/sleep-day-environment-dreams-480w.webp 480w, ../../img/blog/sleep-day-environment-dreams-800w.webp 800w, ../../img/blog/sleep-day-environment-dreams-1200w.webp 1200w" width="800">
@@ -316,13 +326,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Saison</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Urlaub, Schlaf und Träume: besser schlafen unterwegs</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Urlaub, Schlaf und Träume: warum deine Nächte unterwegs anders sind
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Wie fremde Betten, Hitze und verschobene Zeiten die Traumerinnerung beeinflussen k&ouml;nnen.</p>
 </div>
 </a>
 </article>
 <!-- Article - Naechtlicher Laerm Schlaf Traeume -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Nächtlicher Lärm, Schlaf und Träume">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Nächtlicher Lärm, Schlaf und Träume: warum eine laute Nacht im Gedächtnis bleibt">
 <a class="block" href="naechtlicher-laerm-schlaf-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Nächtliches Schlafzimmer mit fernem Geräusch und Traumtagebuch neben dem Bett" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-day-environment-dreams.webp" srcset="../../img/blog/sleep-day-environment-dreams-480w.webp 480w, ../../img/blog/sleep-day-environment-dreams-800w.webp 800w, ../../img/blog/sleep-day-environment-dreams-1200w.webp 1200w" width="800">
@@ -333,13 +345,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Saison</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Nächtlicher Lärm, Schlaf und Träume</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Nächtlicher Lärm, Schlaf und Träume: warum eine laute Nacht im Gedächtnis bleibt
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Stra&szlig;enl&auml;rm, Nachbarn, Hotel oder Klimaanlage: wie kurze Wachmomente die Erinnerung beeinflussen k&ouml;nnen.</p>
 </div>
 </a>
 </article>
 <!-- Article - Naechtliches Erwachen Traumerinnerung -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Nächtliches Erwachen und Traumerinnerung">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Nächtliches Erwachen und Traumerinnerung: den Traum sichern und weiterschlafen">
 <a class="block" href="naechtliches-erwachen-traumerinnerung">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Traumtagebuch im Licht neben dem Bett nach nächtlichem Erwachen" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -350,13 +364,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Wissen</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Nächtliches Erwachen und Traumerinnerung</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Nächtliches Erwachen und Traumerinnerung: den Traum sichern und weiterschlafen
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Wie nächtliches Erwachen mit Traumerinnerung zusammenhängen kann, was beim kurzen Notieren hilft und wann Schlaf Vorrang hat.</p>
 </div>
 </a>
 </article>
 <!-- Article - Albtraeume Hitze Stress -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Albträume bei Hitze oder Stress: Was hilft?">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Albträume bei Hitze und Stress: Warum sie in heißen Nächten stärker wirken">
 <a class="block" href="albtraeume-hitze-stress">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Person nach einem belastenden Traum wach in einem heißen Schlafzimmer" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="800">
@@ -367,13 +383,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Saison</span>
 <span class="text-xs text-purple-300/60">7 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Albträume bei Hitze oder Stress: Was hilft?</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Albträume bei Hitze und Stress: Warum sie in heißen Nächten stärker wirken
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Warum ein Albtraum in einer heißen oder angespannten Nacht präsenter wirkt und was ohne Überdeutung hilft.</p>
 </div>
 </a>
 </article>
 <!-- Article - Traeume Emotionsregulation Studie -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Regulieren Träume Gefühle? Was eine Studie von 2026 zeigt">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Regulieren Träume unsere Gefühle? Was eine Studie von 2026 wirklich zeigt">
 <a class="block" href="traeume-emotionsregulation-studie-2026">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Traumfragmente wechseln vor dem Morgen von Angst zu Ruhe" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -384,13 +402,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Wissen</span>
 <span class="text-xs text-purple-300/60">7 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Regulieren Träume Gefühle? Studie von 2026</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Regulieren Träume unsere Gefühle? Was eine Studie von 2026 wirklich zeigt
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Traumangst sagte keine sofortige Entlastung voraus. 4.715 Tagesberichte zeigen einen komplexeren Bezug zur Morgenstimmung.</p>
 </div>
 </a>
 </article>
 <!-- Article - KI Traumtagebuch Datenschutz -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="KI-Traumtagebuch und Datenschutz: Fragen vor der ersten Notiz">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="KI-Traumtagebuch und Datenschutz: Was du vor dem ersten Eintrag prüfen solltest">
 <a class="block" href="ki-traumtagebuch-datenschutz">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Geschützte Traumerinnerungen in nächtlichem Licht" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -401,7 +421,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">KI</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">KI-Traumtagebuch und Datenschutz</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                KI-Traumtagebuch und Datenschutz: Was du vor dem ersten Eintrag prüfen solltest
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Was du prüfen solltest, bevor du einem KI-Traumtagebuch intime Notizen anvertraust.</p>
 </div>
 </a>
@@ -418,7 +440,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Wissenschaft</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Wachträumen: Traumähnliche Zustände gibt es nicht nur im Schlaf</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Wachträumen: Traumähnliche Zustände gibt es nicht nur im Schlaf
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Eine Cell-Reports-Studie zeigt, dass traumähnliche Zustände auch im Wachsein entstehen können.</p>
 </div>
 </a>
@@ -435,13 +459,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Wissenschaft</span>
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Wenn Träume zu real wirken: Was das MÖBIUS-Modell erklärt</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Wenn Träume zu real wirken: Was das MÖBIUS-Modell erklärt
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Ein Communications-Biology-Modell untersucht, warum manche Träume wie Erinnerungen wirken.</p>
 </div>
 </a>
 </article>
 <!-- Article - Traeume Nicht Zufaellig KI -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Trauminhalte und Alltag: eine KI-Studie von 2026">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Träume sind nicht zufällig: Was eine KI-Studie von 2026 tatsächlich zeigt">
 <a class="block" href="traeume-nicht-zufaellig-ki-studie">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Traumerinnerungen als leuchtendes Muster in der Nacht" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -452,13 +478,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Wissenschaft</span>
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Trauminhalte und Alltag: eine KI-Studie von 2026</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Träume sind nicht zufällig: Was eine KI-Studie von 2026 tatsächlich zeigt
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Die Studie untersucht Zusammenh&auml;nge zwischen Traumberichten, Alltag, Pers&ouml;nlichkeit und emotionalem Kontext.</p>
 </div>
 </a>
 </article>
 <!-- Article - Lebendige Traeume Erholsamer Schlaf -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Lebendige Träume und subjektiv erholsamer Schlaf">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Lebendige Träume und erholsamer Schlaf: Was die PLOS-Biology-Studie zeigt">
 <a class="block" href="lebendige-traeume-erholsamer-schlaf">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Schlafende Person mit traumhaftem Licht und REM-Schlaf-Wellen" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="800">
@@ -469,13 +497,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Wissenschaft</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Lebendige Tr&auml;ume und subjektiv erholsamer Schlaf</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Lebendige Träume und erholsamer Schlaf: Was die PLOS-Biology-Studie zeigt
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Was eine PLOS-Biology-Studie &uuml;ber Traumerleben und die Einsch&auml;tzung der eigenen Schlafqualit&auml;t untersucht.</p>
 </div>
 </a>
 </article>
 <!-- Article - Exam Dreams Seasonal -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Prüfungstraum: nicht gelernt, bestanden oder durchgefallen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Prüfungstraum: Bedeutung, wenn du nicht gelernt hast, bestehst oder durchfällst">
 <a class="block" href="pruefungstraum-bedeutung">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Angespannte Person vor einem unvollständigen Prüfungsbogen" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="800">
@@ -486,13 +516,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Deutung</span>
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Prüfungstraum: nicht gelernt, bestanden oder durchgefallen</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Prüfungstraum: Bedeutung, wenn du nicht gelernt hast, bestehst oder durchfällst
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Ein saisonaler Leitfaden für Prüfungsstress und Bewertungsangst im Traum.</p>
 </div>
 </a>
 </article>
 <!-- Article - Why We Forget Dreams (NEW) -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß">
 <a class="block" href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Offenes Traumtagebuch auf einer Bettdecke im Morgenlicht" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/why-we-forget-dreams.webp" srcset="../../img/blog/why-we-forget-dreams-480w.webp 480w, ../../img/blog/why-we-forget-dreams-800w.webp 800w, ../../img/blog/why-we-forget-dreams-1200w.webp 1200w" width="800">
@@ -504,7 +536,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Warum vergessen wir unsere Träume?
+                                Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Welche Prozesse dazu beitragen können, dass Traumerinnerungen nach dem Aufwachen rasch verblassen.
@@ -513,7 +545,7 @@
 </a>
 </article>
 <!-- Article 2 - Recurring Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Wiederkehrende Träume: Muster und mögliche Auslöser">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann">
 <a class="block" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Wiederkehrende Traumsymbole in einer kreisförmigen nächtlichen Szene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/recurring-dreams-meaning.webp" srcset="../../img/blog/recurring-dreams-meaning-480w.webp 480w, ../../img/blog/recurring-dreams-meaning-800w.webp 800w, ../../img/blog/recurring-dreams-meaning-1200w.webp 1200w" width="800">
@@ -524,7 +556,7 @@
 <span class="text-xs text-purple-300/60">3 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Wiederkehrende Tr&auml;ume: Muster und m&ouml;gliche Ausl&ouml;ser
+                                Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Was sich in wiederkehrenden Tr&auml;umen &auml;hnelt und welche Fragen beim Einordnen helfen k&ouml;nnen.
@@ -533,7 +565,7 @@
 </a>
 </article>
 <!-- Article 3 - Lucid Dreaming -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="lucid-dreams" data-reading-time="4" data-title="Klarträumen für Anfänger: Methoden und Grenzen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="lucid-dreams" data-reading-time="4" data-title="Klarträumen für Anfänger: Traumtagebuch, Realitätschecks und MILD">
 <a class="block" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Schlafende Person mit leuchtender Klartraumlandschaft" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/lucid-dreaming-beginners-guide.webp" srcset="../../img/blog/lucid-dreaming-beginners-guide-480w.webp 480w, ../../img/blog/lucid-dreaming-beginners-guide-800w.webp 800w, ../../img/blog/lucid-dreaming-beginners-guide-1200w.webp 1200w" width="800">
@@ -544,7 +576,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Klartr&auml;umen f&uuml;r Anf&auml;nger: Methoden und Grenzen
+                                Klarträumen für Anfänger: Traumtagebuch, Realitätschecks und MILD
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Grundlegende Techniken, Sicherheitsaspekte und realistische Erwartungen an das Klartr&auml;umen.
@@ -553,7 +585,7 @@
 </a>
 </article>
 <!-- Article 4 - Teeth Falling Out Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Träume von ausfallenden Zähnen: Bedeutung und Interpretation">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt">
 <a class="block" href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Person berührt in einer Traumszene einen lockeren Zahn" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/teeth-falling-out-dreams.webp" srcset="../../img/blog/teeth-falling-out-dreams-480w.webp 480w, ../../img/blog/teeth-falling-out-dreams-800w.webp 800w, ../../img/blog/teeth-falling-out-dreams-1200w.webp 1200w" width="800">
@@ -564,7 +596,7 @@
 <span class="text-xs text-purple-300/60">3 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Träume von ausfallenden Zähnen: Bedeutung und Deutung
+                                Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 M&ouml;gliche Bez&uuml;ge zu K&ouml;rperempfindungen, Anspannung und pers&ouml;nlichem Kontext.
@@ -573,7 +605,7 @@
 </a>
 </article>
 <!-- Article 5 - Falling Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Fallträume: mögliche Auslöser und Deutungen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann">
 <a class="block" href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Fallende Person über einer dunklen Traumlandschaft" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/falling-dreams-meaning.webp" srcset="../../img/blog/falling-dreams-meaning-480w.webp 480w, ../../img/blog/falling-dreams-meaning-800w.webp 800w, ../../img/blog/falling-dreams-meaning-1200w.webp 1200w" width="800">
@@ -584,7 +616,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Falltr&auml;ume: m&ouml;gliche Ausl&ouml;ser und Deutungen
+                                Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Wie K&ouml;rperempfindung, Kontrollverlust und die konkrete Traumszene zusammenh&auml;ngen k&ouml;nnen.
@@ -593,7 +625,7 @@
 </a>
 </article>
 <!-- Article 6 - Flying Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Flugträume: Kontext und mögliche Deutungen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Traum vom Fliegen: Bedeutung je nachdem, wie du geflogen bist">
 <a class="block" href="bedeutung-von-fliegenden-traeumen-was-es-bedeutet-in-seinen-traeumen-zu-fliegen">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Fliegende Person über einer nächtlichen Landschaft" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/flying-dreams-meaning.webp" srcset="../../img/blog/flying-dreams-meaning-480w.webp 480w, ../../img/blog/flying-dreams-meaning-800w.webp 800w, ../../img/blog/flying-dreams-meaning-1200w.webp 1200w" width="800">
@@ -604,7 +636,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Flugtr&auml;ume: Kontext und m&ouml;gliche Deutungen
+                                Traum vom Fliegen: Bedeutung je nachdem, wie du geflogen bist
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Freiheit, Unsicherheit oder Perspektivwechsel: Die Traumszene entscheidet, welche Fragen passen.
@@ -633,7 +665,7 @@
 </a>
 </article>
 <!-- Article 8 - Snake Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Schlangenträume: Kontext, Gefühl und mögliche Deutungen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können">
 <a class="block" href="traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Schlange in einer n&auml;chtlichen Traumszene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/snake-dreams-meaning.webp" srcset="../../img/blog/snake-dreams-meaning-480w.webp 480w, ../../img/blog/snake-dreams-meaning-800w.webp 800w, ../../img/blog/snake-dreams-meaning-1200w.webp 1200w" width="800">
@@ -644,7 +676,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Schlangentr&auml;ume: Kontext, Gef&uuml;hl und m&ouml;gliche Deutungen
+                                Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Ob die Schlange bedrohlich, ruhig oder vertraut wirkte, ver&auml;ndert die pers&ouml;nliche Einordnung.
@@ -653,7 +685,7 @@
 </a>
 </article>
 <!-- Article 9 - Dream Incubation -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="3" data-title="Trauminkubation: Ein Thema vor dem Einschlafen setzen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="3" data-title="Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst">
 <a class="block" href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Notizbuch f&uuml;r eine Trauminkubations&uuml;bung" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-incubation-guide.webp" srcset="../../img/blog/dream-incubation-guide-480w.webp 480w, ../../img/blog/dream-incubation-guide-800w.webp 800w, ../../img/blog/dream-incubation-guide-1200w.webp 1200w" width="800">
@@ -664,7 +696,7 @@
 <span class="text-xs text-purple-300/60">3 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Trauminkubation: Ein Thema vor dem Einschlafen setzen
+                                Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Eine einfache Methode, um sich vor dem Schlafen mit einem Thema zu besch&auml;ftigen, ohne einen bestimmten Traum zu versprechen.
@@ -693,7 +725,7 @@
 </a>
 </article>
 <!-- Article 11 - Being Chased Dreams: Meaning and Interpretation -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Verfolgungsträume: Bedeutung und Deutung">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Im Traum verfolgt werden: Bedeutung, Flucht und Ausgang">
 <a class="block" href="traeume-verfolgt-werden-bedeutung-und-interpretation">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Dunkler Korridor in einer Verfolgungsszene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/being-chased-dreams.webp" srcset="../../img/blog/being-chased-dreams-480w.webp 480w, ../../img/blog/being-chased-dreams-800w.webp 800w, ../../img/blog/being-chased-dreams-1200w.webp 1200w" width="800">
@@ -704,7 +736,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Verfolgungsträume: Bedeutung und Deutung
+                                Im Traum verfolgt werden: Bedeutung, Flucht und Ausgang
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Achte auf Verfolger, Fluchtweg und Gef&uuml;hl im Traum, statt eine feste Bedeutung vorauszusetzen.
@@ -713,7 +745,7 @@
 </a>
 </article>
 <!-- Article 12 - Dreams About Death: Meaning and Interpretation -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Todesträume: Bedeutung und Deutung">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Träume vom Tod: Bedeutung und was sie nicht vorhersagen">
 <a class="block" href="traeume-vom-tod-bedeutung-und-interpretation">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Nebeliger Wald in einer Traumszene &uuml;ber Tod und Abschied" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/death-dreams-meaning.webp" srcset="../../img/blog/death-dreams-meaning-480w.webp 480w, ../../img/blog/death-dreams-meaning-800w.webp 800w, ../../img/blog/death-dreams-meaning-1200w.webp 1200w" width="800">
@@ -724,7 +756,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Todesträume: Bedeutung und Deutung
+                                Träume vom Tod: Bedeutung und was sie nicht vorhersagen
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Todestr&auml;ume sagen kein Ereignis voraus. Der Ratgeber betrachtet Abschied, Angst und Ver&auml;nderung im pers&ouml;nlichen Kontext.
@@ -733,7 +765,7 @@
 </a>
 </article>
 <!-- Article 13 - Water Dreams: Meaning of Drowning, Ocean, and Flood Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Wasserträume: Bedeutung von Ertrinkungs-, Ozean- und Überschwemmungsträumen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Wasser- und Überschwemmungsträume: was sie bedeuten können, Detail für Detail">
 <a class="block" href="wassertraeume-bedeutung-von-ertrinkungs-ozean-und-ueberschwemmungstraeumen">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Weite Meeresoberfl&auml;che in einer Wassertraumszene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/water-dreams-meaning.webp" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" width="800">
@@ -744,7 +776,7 @@
 <span class="text-xs text-purple-300/60">3 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Wasserträume: Bedeutung von Ertrinkungs-, Ozean- und Überschwemmungsträumen
+                                Wasser- und Überschwemmungsträume: was sie bedeuten können, Detail für Detail
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Ruhiges Meer, Hochwasser oder Ertrinken f&uuml;hren zu unterschiedlichen Fragen. Eine feste Wasserbedeutung gibt es nicht.
@@ -753,7 +785,7 @@
 </a>
 </article>
 <!-- Article 14 - Dreams About Your Ex: What They Really Mean -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Träume über den Ex: Erinnerungen und aktueller Kontext">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Träume vom Ex: Was sie bedeuten können und was nicht">
 <a class="block" href="traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Nachdenkliche Silhouette vor Bildern einer fr&uuml;heren Beziehung" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-about-ex.webp" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" width="800">
@@ -764,7 +796,7 @@
 <span class="text-xs text-purple-300/60">3 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Tr&auml;ume &uuml;ber den Ex: Erinnerungen und aktueller Kontext
+                                Träume vom Ex: Was sie bedeuten können und was nicht
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Ein ehemaliger Partner im Traum kann an eine Person, eine Lebensphase oder ein aktuelles Gef&uuml;hl ankn&uuml;pfen.
@@ -773,7 +805,7 @@
 </a>
 </article>
 <!-- Article 15 - Pregnancy Dreams: What They Mean (Even If You're Not Pregnant) -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Schwangerschaftsträume: Was sie bedeuten (auch wenn du nicht schwanger bist)">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Schwangerschaftsträume: was sie bedeuten können, auch wenn du nicht schwanger bist">
 <a class="block" href="schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sanftes Licht in einer Traumszene &uuml;ber Schwangerschaft" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="800">
@@ -784,7 +816,7 @@
 <span class="text-xs text-purple-300/60">3 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Schwangerschaftsträume: Was sie bedeuten (auch wenn du nicht schwanger bist)
+                                Schwangerschaftsträume: was sie bedeuten können, auch wenn du nicht schwanger bist
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Schwangerschaft, Geburt oder Baby im Traum: m&ouml;gliche Bez&uuml;ge und wichtige Unterschiede zwischen den Szenen.
@@ -793,7 +825,7 @@
 </a>
 </article>
 <!-- Article 16 - Nightmares: Causes, Meaning, and How to Stop Them -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="3" data-title="Albträume: mögliche Ursachen und hilfreiche Schritte">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="3" data-title="Albträume: Ursachen und was dagegen helfen kann">
 <a class="block" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Morgenlicht nach einer dunklen Albtraumszene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stop-nightmares-guide.webp" srcset="../../img/blog/stop-nightmares-guide-480w.webp 480w, ../../img/blog/stop-nightmares-guide-800w.webp 800w, ../../img/blog/stop-nightmares-guide-1200w.webp 1200w" width="800">
@@ -804,7 +836,7 @@
 <span class="text-xs text-purple-300/60">3 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Albtr&auml;ume: m&ouml;gliche Ursachen und hilfreiche Schritte
+                                Albträume: Ursachen und was dagegen helfen kann
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 M&ouml;gliche Ausl&ouml;ser von Albtr&auml;umen, praktische Schritte und Hinweise dazu, wann fachliche Hilfe sinnvoll ist.
@@ -813,7 +845,7 @@
 </a>
 </article>
 <!-- Article 17 - Sleep Paralysis Explained: Why You Can't Move and How to Stop It -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Schlaflähmung: Ursachen, Wahrnehmungen und Umgang">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Schlaflähmung: warum du dich nicht bewegen kannst und wie du sie beendest">
 <a class="block" href="schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Schlafl&auml;hmung in einer dunkelblauen n&auml;chtlichen Szene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-paralysis-guide.webp" srcset="../../img/blog/sleep-paralysis-guide-480w.webp 480w, ../../img/blog/sleep-paralysis-guide-800w.webp 800w, ../../img/blog/sleep-paralysis-guide-1200w.webp 1200w" width="800">
@@ -824,7 +856,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Schlafl&auml;hmung: Ursachen, Wahrnehmungen und Umgang
+                                Schlaflähmung: warum du dich nicht bewegen kannst und wie du sie beendest
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Was bei einer Schlafl&auml;hmung geschieht, warum Wahrnehmungen auftreten k&ouml;nnen und was Betroffenen helfen kann.
@@ -833,7 +865,7 @@
 </a>
 </article>
 <!-- Article 18 - Dream Journaling: The Complete Guide to Recording Your Night Adventures -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Traumtagebuch: Einfache Methode für den Einstieg">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Traumtagebuch führen: eine einfache Methode für den Morgen">
 <a class="block" href="dream-journaling-der-vollstaendige-leitfaden-zum-aufzeichnen-ihrer-naechtlichen-abenteuer">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Offenes Traumtagebuch mit Stift auf dem Nachttisch" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-journal-guide.webp" srcset="../../img/blog/dream-journal-guide-480w.webp 480w, ../../img/blog/dream-journal-guide-800w.webp 800w, ../../img/blog/dream-journal-guide-1200w.webp 1200w" width="800">
@@ -844,7 +876,7 @@
 <span class="text-xs text-purple-300/60">4 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Traumtagebuch: Einfache Methode f&uuml;r den Einstieg
+                                Traumtagebuch führen: eine einfache Methode für den Morgen
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Papier, Text oder Sprache: Finde eine kurze Routine, die direkt nach dem Aufwachen praktikabel ist.
@@ -853,7 +885,7 @@
 </a>
 </article>
 <!-- Article 19 - Dreams and Mental Health: How Your Sleep Reveals Your Mind -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Träume und psychische Gesundheit: Zusammenhänge und Grenzen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Träume und psychische Gesundheit: Was deine Nächte über dich sagen können (und was nicht)">
 <a class="block" href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Nachdenkliche Person vor einer abstrakten Traumlandschaft" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-mental-health.webp" srcset="../../img/blog/dreams-mental-health-480w.webp 480w, ../../img/blog/dreams-mental-health-800w.webp 800w, ../../img/blog/dreams-mental-health-1200w.webp 1200w" width="800">
@@ -864,7 +896,7 @@
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Tr&auml;ume und psychische Gesundheit: Zusammenh&auml;nge und Grenzen
+                                Träume und psychische Gesundheit: Was deine Nächte über dich sagen können (und was nicht)
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Was Belastung und psychische Gesundheit mit Tr&auml;umen zu tun haben k&ouml;nnen, ohne Tr&auml;ume als Diagnose zu verwenden.
@@ -873,7 +905,7 @@
 </a>
 </article>
 <!-- Article 20 - Why Do We Dream? The Science Behind Your Nightly Adventures -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Warum träumen wir? Theorien und offene Fragen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist">
 <a class="block" href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Leuchtende Nervenverbindungen in einer Gehirnsilhouette" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/why-we-dream-science.webp" srcset="../../img/blog/why-we-dream-science-480w.webp 480w, ../../img/blog/why-we-dream-science-800w.webp 800w, ../../img/blog/why-we-dream-science-1200w.webp 1200w" width="800">
@@ -884,7 +916,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Warum tr&auml;umen wir? Theorien und offene Fragen
+                                Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Ein &Uuml;berblick &uuml;ber wichtige Traumtheorien, Gehirnaktivit&auml;t im Schlaf und noch offene Forschungsfragen.
@@ -893,7 +925,7 @@
 </a>
 </article>
 <!-- Article 21 - REM Sleep and Dreams: Understanding Your Brain's Nightly Reset -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="REM-Schlaf und Träume: Schlafphasen verständlich erklärt">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="REM-Schlaf und Träume: Was nachts wirklich in deinem Gehirn passiert">
 <a class="block" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Darstellung von Gehirnaktivit&auml;t und Augenbewegungen im REM-Schlaf" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="800">
@@ -904,7 +936,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                REM-Schlaf und Tr&auml;ume: Schlafphasen verst&auml;ndlich erkl&auml;rt
+                                REM-Schlaf und Träume: Was nachts wirklich in deinem Gehirn passiert
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Wie REM- und Non-REM-Schlaf sich unterscheiden und warum Tr&auml;ume nicht auf eine einzige Schlafphase beschr&auml;nkt sind.
@@ -913,7 +945,7 @@
 </a>
 </article>
 <!-- Article 22 - The History of Dream Interpretation: From Ancient Temples to Modern Science -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Die Geschichte der Traumdeutung: Von antiken Tempeln bis zur modernen Wissenschaft">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Die Geschichte der Traumdeutung: von antiken Tempeln bis zur modernen Wissenschaft">
 <a class="block" href="die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Antiker Tempel unter einem Sternenhimmel" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-interpretation-history.webp" srcset="../../img/blog/dream-interpretation-history-480w.webp 480w, ../../img/blog/dream-interpretation-history-800w.webp 800w, ../../img/blog/dream-interpretation-history-1200w.webp 1200w" width="800">
@@ -924,7 +956,7 @@
 <span class="text-xs text-purple-300/60">7 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Die Geschichte der Traumdeutung: Von antiken Tempeln bis zur modernen Wissenschaft
+                                Die Geschichte der Traumdeutung: von antiken Tempeln bis zur modernen Wissenschaft
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Wie verschiedene Kulturen Tr&auml;ume deuteten und wie sich die Fragen von der Antike bis zur Forschung ver&auml;ndert haben.
@@ -933,7 +965,7 @@
 </a>
 </article>
 <!-- Article 23 - Stress Dreams About Work -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="2" data-title="Stressträume über die Arbeit: Auslöser und Umgang">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="2" data-title="Stressträume über die Arbeit: Warum dein Job dich in den Schlaf verfolgt">
 <a class="block" href="stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Büroarbeitsplatz verschmilzt mit einer nächtlichen Traumszene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/stress-dreams-work.webp" srcset="../../img/blog/stress-dreams-work-480w.webp 480w, ../../img/blog/stress-dreams-work-800w.webp 800w, ../../img/blog/stress-dreams-work-1200w.webp 1200w" width="800">
@@ -945,7 +977,7 @@
 <span class="text-xs text-purple-300/60">2 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Stresstr&auml;ume &uuml;ber die Arbeit: Ausl&ouml;ser und Umgang
+                                Stressträume über die Arbeit: Warum dein Job dich in den Schlaf verfolgt
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Von der Arbeit träumen: Verspätung, Besprechung, Kündigung oder Überlastung. Fragen zur Einordnung, Schlaf und Grenzen der Traumdeutung.
@@ -954,7 +986,7 @@
 </a>
 </article>
 <!-- Article 24 - Träume und Kreativität -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Träume und Kreativität: Forschung und praktische Ideen">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Träume und Kreativität: Wie das schlafende Gehirn beim Lösen von Problemen hilft">
 <a class="block" href="traeume-und-kreativitaet">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Farbige Ideen und Skizzen rund um eine schlafende Person" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-and-creativity.webp" srcset="../../img/blog/dreams-and-creativity-480w.webp 480w, ../../img/blog/dreams-and-creativity-800w.webp 800w, ../../img/blog/dreams-and-creativity-1200w.webp 1200w" width="800">
@@ -966,7 +998,7 @@
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Tr&auml;ume und Kreativit&auml;t: Forschung und praktische Ideen
+                                Träume und Kreativität: Wie das schlafende Gehirn beim Lösen von Problemen hilft
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Was Studien zum Zusammenhang mit Kreativit&auml;t untersuchen und wie sich Traumideen n&uuml;chtern festhalten lassen.
@@ -975,7 +1007,7 @@
 </a>
 </article>
 <!-- Article 25 - Angstträume -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Angstträume: mögliche Auslöser und hilfreiche Schritte">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Angstträume: mögliche Auslöser und was wirklich hilft">
 <a class="block" href="angsttraeume-bedeutung">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Unruhige Person vor einer bedrohlichen Traumszene" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="800">
@@ -987,7 +1019,7 @@
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Angsttr&auml;ume: m&ouml;gliche Ausl&ouml;ser und hilfreiche Schritte
+                                Angstträume: mögliche Auslöser und was wirklich hilft
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 H&auml;ufige Ausl&ouml;ser, vorsichtige Einordnung und Hinweise dazu, wann professionelle Hilfe sinnvoll ist.
@@ -996,7 +1028,7 @@
 </a>
 </article>
 <!-- Article 26 - Kinderträume -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Kinderträume: Wovon Kinder träumen und wie man ihnen hilft">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Kinderträume: Wovon Kinder träumen und wie du helfen kannst">
 <a class="block" href="kindertraeume-ratgeber">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Kind erzählt einer erwachsenen Person von einem Traum" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/children-dreams-guide.webp" srcset="../../img/blog/children-dreams-guide-480w.webp 480w, ../../img/blog/children-dreams-guide-800w.webp 800w, ../../img/blog/children-dreams-guide-1200w.webp 1200w" width="800">
@@ -1008,7 +1040,7 @@
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Kinderträume: Wovon Kinder träumen und wie man ihnen hilft
+                                Kinderträume: Wovon Kinder träumen und wie du helfen kannst
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Wie Eltern nach einem Albtraum reagieren und altersgerecht &uuml;ber Tr&auml;ume sprechen k&ouml;nnen.
@@ -1017,7 +1049,7 @@
 </a>
 </article>
 <!-- Article 27 - Schlaftag und Umgebung -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Schlafumgebung und Traumerinnerung">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Schlaftag 2026: wie dein Schlafzimmer deine Träume beeinflusst">
 <a class="block" href="schlaftag-umgebung-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Friedliches Schlafzimmer als ideale Schlafumgebung" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-day-environment-dreams.webp" srcset="../../img/blog/sleep-day-environment-dreams-480w.webp 480w, ../../img/blog/sleep-day-environment-dreams-800w.webp 800w, ../../img/blog/sleep-day-environment-dreams-1200w.webp 1200w" width="800">
@@ -1029,7 +1061,7 @@
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Schlafumgebung und Traumerinnerung
+                                Schlaftag 2026: wie dein Schlafzimmer deine Träume beeinflusst
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Licht, L&auml;rm und Temperatur k&ouml;nnen den Schlaf st&ouml;ren und damit auch die Traumerinnerung beeinflussen.
@@ -1038,7 +1070,7 @@
 </a>
 </article>
 <!-- Article 28 - KI und Schlafanalyse -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="SleepFM: Was das Stanford-Modell aus Schlafdaten lernt">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Die KI, die deinen Schlaf liest: was Stanfords SleepFM kann und was nicht">
 <a class="block" href="ki-schlafanalyse-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Leuchtende Gehirnsignale vor einem digitalen Datenmuster" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/ai-sleep-analysis-dreams.webp" srcset="../../img/blog/ai-sleep-analysis-dreams-480w.webp 480w, ../../img/blog/ai-sleep-analysis-dreams-800w.webp 800w, ../../img/blog/ai-sleep-analysis-dreams-1200w.webp 1200w" width="800">
@@ -1050,7 +1082,7 @@
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                SleepFM: Was das Stanford-Modell aus Schlafdaten lernt
+                                Die KI, die deinen Schlaf liest: was Stanfords SleepFM kann und was nicht
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Ein Forschungsmodell f&uuml;r Schlafdaten, seine untersuchten Aufgaben und die Grenzen solcher Vorhersagen.
@@ -1059,7 +1091,7 @@
 </a>
 </article>
 <!-- Article 29 - Traumkontrolle -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Trauminkubation und Problemlösung: eine Studie im Überblick">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Träume steuern zur Problemlösung: Was die Northwestern-Studie wirklich zeigt">
 <a class="block" href="traumkontrolle-problemloesung">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Gehirnsilhouette neben leuchtenden Rätselteilen im Schlaf" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-control-problem-solving.webp" srcset="../../img/blog/dream-control-problem-solving-480w.webp 480w, ../../img/blog/dream-control-problem-solving-800w.webp 800w, ../../img/blog/dream-control-problem-solving-1200w.webp 1200w" width="800">
@@ -1071,7 +1103,7 @@
 <span class="text-xs text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Trauminkubation und Probleml&ouml;sung: eine Studie im &Uuml;berblick
+                                Träume steuern zur Problemlösung: Was die Northwestern-Studie wirklich zeigt
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Was die untersuchte Methode leisten konnte und warum sich daraus kein allgemeines Erfolgsversprechen ableiten l&auml;sst.
@@ -1080,7 +1112,7 @@
 </a>
 </article>
 <!-- Article 30 - Zeitumstellung -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Zeitumstellung, Schlaf und Traumerinnerung">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Zeitumstellung und Schlaf: Was die Sommerzeit mit deinen Nächten und Träumen macht">
 <a class="block" href="zeitumstellung-schlaf-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Uhr umgeben von gest&ouml;rten Schlafzyklen und Traumsymbolen" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/daylight-saving-time-sleep-dreams.webp" srcset="../../img/blog/daylight-saving-time-sleep-dreams-480w.webp 480w, ../../img/blog/daylight-saving-time-sleep-dreams-800w.webp 800w, ../../img/blog/daylight-saving-time-sleep-dreams-1200w.webp 1200w" width="800">
@@ -1092,7 +1124,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Zeitumstellung und Schlaf
+                                Zeitumstellung und Schlaf: Was die Sommerzeit mit deinen Nächten und Träumen macht
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Wie sich die Zeitumstellung auf Schlafdauer und Rhythmus auswirken kann und was das f&uuml;r die Traumerinnerung bedeutet.
@@ -1101,7 +1133,7 @@
 </a>
 </article>
 <!-- Article 31 - Schlafschuld -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Schlafschuld: Folgen von wiederholt zu wenig Schlaf">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Träume">
 <a class="block" href="schlafschuld-gesundheit-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Ersch&ouml;pfte Gestalt umgeben von Schlafschuldsymbolen" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-debt-health-dreams.webp" srcset="../../img/blog/sleep-debt-health-dreams-480w.webp 480w, ../../img/blog/sleep-debt-health-dreams-800w.webp 800w, ../../img/blog/sleep-debt-health-dreams-1200w.webp 1200w" width="800">
@@ -1113,7 +1145,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Schlafschuld: Folgen von wiederholt zu wenig Schlaf
+                                Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Träume
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Wie sich zu wenig Schlaf ansammelt, welche Folgen untersucht sind und warum Erholung mehr als Ausschlafen bedeutet.
@@ -1122,7 +1154,7 @@
 </a>
 </article>
 <!-- Article 32 - Frühling und Schlaf -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Fr&uuml;hling, Licht und Schlaf">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Schlafstörung im Frühling: Wie längere Tage Schlaf und Träume verändern können">
 <a class="block" href="fruehling-schlaf-stoerung-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Fr&uuml;hlingslandschaft mit Bl&uuml;ten und langen Lichtspuren" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/spring-sleep-disruption-dreams.webp" srcset="../../img/blog/spring-sleep-disruption-dreams-480w.webp 480w, ../../img/blog/spring-sleep-disruption-dreams-800w.webp 800w, ../../img/blog/spring-sleep-disruption-dreams-1200w.webp 1200w" width="800">
@@ -1134,7 +1166,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Fr&uuml;hling, Licht und Schlaf
+                                Schlafstörung im Frühling: Wie längere Tage Schlaf und Träume verändern können
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Wie l&auml;ngeres Abendlicht den Schlaf beeinflussen kann und warum sich dadurch die Traumerinnerung ver&auml;ndern kann.
@@ -1143,7 +1175,7 @@
 </a>
 </article>
 <!-- Article 33 - Schlaf als Gesundheitsfaktor -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Schlaf und Gesundheit: eine OHSU-Studie">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt">
 <a class="block" href="schlaf-gesundheit-prioritaet">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Menschliche Silhouette mit leuchtendem Gehirn umgeben von Gesundheitsindikatoren" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-health-priority.webp" srcset="../../img/blog/sleep-health-priority-480w.webp 480w, ../../img/blog/sleep-health-priority-800w.webp 800w, ../../img/blog/sleep-health-priority-1200w.webp 1200w" width="800">
@@ -1155,7 +1187,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Schlaf und Gesundheit: eine OHSU-Studie
+                                Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Was eine OHSU-Studie zum Zusammenhang zwischen Schlafdauer und Lebenserwartung zeigt und was offenbleibt.
@@ -1164,7 +1196,7 @@
 </a>
 </article>
 <!-- Article 34 - Schlaf-Tracker -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Schlaf-Tracker und Tr&auml;ume">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Schlaf-Tracker und Träume: Was Wearables messen und was ihnen entgeht">
 <a class="block" href="schlaf-tracker-wearables-traeume">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Handgelenk mit Smartwatch und Schlafdaten neben &auml;therischen Traumfragmenten" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/wearable-sleep-trackers-dreams.webp" srcset="../../img/blog/wearable-sleep-trackers-dreams-480w.webp 480w, ../../img/blog/wearable-sleep-trackers-dreams-800w.webp 800w, ../../img/blog/wearable-sleep-trackers-dreams-1200w.webp 1200w" width="800">
@@ -1176,7 +1208,7 @@
 <span class="text-xs text-purple-300/60">6 Min. Lesezeit</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Schlaf-Tracker und Tr&auml;ume
+                                Schlaf-Tracker und Träume: Was Wearables messen und was ihnen entgeht
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Was Wearables sch&auml;tzen k&ouml;nnen, wo ihre Grenzen liegen und welche Informationen ein Traumtagebuch erg&auml;nzt.

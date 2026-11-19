@@ -71,7 +71,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Guarda el sueño sin despertarte del todo</h2>
 <p>En Noctalia, cuenta tu sueño en voz alta al despertar: se transcribe y se guarda en tu diario. Añade el ruido y la hora, y relee tus noches ruidosas una al lado de otra.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/es/diario-de-suenos-por-voz">Graba tu sueño por voz</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=ruido-nocturno-descanso-suenos_es" rel="nofollow noopener noreferrer" target="_blank">Descargar Noctalia en Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </div>
 <h2>Preguntas frecuentes</h2>
 <h3>¿El ruido puede entrar en un sueño?</h3>

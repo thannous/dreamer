@@ -171,20 +171,7 @@
 <p>
                     As you settle down, tell yourself calmly that you'd like to remember a dream tomorrow, and picture yourself reaching for the journal. Don't make it a challenge: a restful night matters more than a full page.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Say it before it fades</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia, you tell your dream out loud the moment you wake up. It is transcribed and saved in your journal, ready to reread when you are properly awake.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-                                See the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="what-to-record">What to write in your dream journal</h2>
 <p>
                     A useful entry keeps what you remember apart from what you think it means. Use the same headings every time: rereading gets much easier.
@@ -369,9 +356,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     With Noctalia, speak or type your dream as soon as you wake up. It stays in one journal, so you can reread your dreams side by side and spot what comes back.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=dream-journal-guide_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -460,13 +448,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sleep Paralysis Explained: Why You Can't Move and How to Stop It</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sleep paralysis: why you can't move and how to stop it</div>
       </div>
     </a>
     <a href="dreams-mental-health" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Dreams and Mental Health: How Your Sleep Reveals Your Mind</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Dreams and mental health: what your nights can (and can't) tell you</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -488,12 +476,12 @@
         </a>
         <a href="dream-incubation-guide" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Dream Incubation: How to Dream About Exactly What You Want Tonight</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Dream incubation: how to ask for a dream tonight, and what to expect</h3>
             <p class="text-sm text-gray-400">A six-step method for choosing a question before sleep and noting what comes back on waking, with what research shows and its limits.</p>
         </a>
         <a href="stop-nightmares-guide" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: Causes, Meaning, and How to Stop Them</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: causes, meaning and how to stop them</h3>
             <p class="text-sm text-gray-400">Why do we have nightmares? Learn the causes of bad dreams, what they mean, and proven techniques to reduce nightmare frequency and sleep better.</p>
         </a>
   </div>

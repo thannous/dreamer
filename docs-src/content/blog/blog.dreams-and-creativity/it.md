@@ -251,9 +251,10 @@ Tieni un elenco a parte con le immagini che potrebbero servirti, ordinate per pr
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Con Noctalia racconti il sogno a voce appena sveglio. Viene trascritto e salvato nel tuo diario, dove puoi rileggere i sogni uno accanto all'altro e notare le immagini che ritornano.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/diario-dei-sogni-vocale">
-Prova il diario dei sogni vocale <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sogni-e-creativita_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -344,7 +345,7 @@ No. Le sveglie ripetute frammentano il sonno, e dormire poco peggiora attenzione
     <a href="sogni-ansia-significato" class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div class="text-right">
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sogni d'ansia: perché li fai e come fermarli</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sogni d'ansia: perché li fai e cosa aiuta davvero</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -360,17 +361,17 @@ No. Le sveglie ripetute frammentano il sonno, e dormire poco peggiora attenzione
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubazione dei sogni: come sognare esattamente ciò che desideri stasera</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti</h3>
             <p class="text-sm text-gray-400">Impara le tecniche antiche e moderne per piantare sogni specifici per risolvere problemi e stimolare la creatività.</p>
         </a>
         <a href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: cosa succede davvero nel tuo cervello di notte</h3>
             <p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
         </a>
         <a href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche efficaci</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche pratiche</h3>
             <p class="text-sm text-gray-400">Metodi pratici per migliorare il ricordo dei sogni e non perdere mai più un'intuizione creativa dalla tua mente addormentata.</p>
         </a>
   </div>

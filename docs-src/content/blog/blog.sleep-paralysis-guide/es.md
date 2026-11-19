@@ -239,21 +239,7 @@
 <p>
                     Flotar, volar, girar, caer o verte desde arriba. Una explicación probable es un desajuste: los sistemas del equilibrio y del movimiento envían señales de desplazamiento, mientras el cuerpo inmóvil no devuelve ninguna. El resultado puede ser la sensación de salir del cuerpo.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Anota el episodio mientras lo recuerdas</h4>
-<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta en voz alta lo que pasó en cuanto puedas: la hora, tu postura, lo que viste. Se transcribe en tu diario y puedes releer tus episodios uno al lado del otro para ver qué suele precederlos.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-                                Probar Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="detener">Qué hacer durante un episodio</h2>
 <p>
                     Saber lo que está pasando ya quita parte del miedo: un episodio asusta, pero no es peligroso, y termina solo. Ninguno de estos recursos funciona para todo el mundo; quédate con lo que te sirva.
@@ -326,9 +312,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Guarda tus episodios y tus sueños en Noctalia, con la hora y cómo dormiste. Al releerlos juntos verás qué suele venir antes.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=guia-paralisis-sueno_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -407,13 +394,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Pesadillas: Causas, Significado y Cómo Detenerlas</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">¿Por qué tengo pesadillas? Causas y soluciones</div>
       </div>
     </a>
     <a href="guia-diario-suenos" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Diario de sueños: la guía completa para registrar tus aventuras nocturnas</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Diario de sueños: método simple para empezar esta noche</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -430,17 +417,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas prácticas</h3>
             <p class="text-sm text-gray-400">Diez hábitos sencillos para retener más fragmentos al despertar, desde despertarte con calma hasta anotar antes de moverte.</p>
         </a>
         <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo soñar exactamente lo que quieres esta noche</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo pedir un sueño esta noche y qué esperar</h3>
             <p class="text-sm text-gray-400">Un método en seis pasos para elegir una pregunta antes de dormir y anotar lo que vuelve al despertar, con lo que dice la investigación y sus límites.</p>
         </a>
         <a href="guia-pesadillas" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Pesadillas: Causas, Significado y Cómo Detenerlas</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué tengo pesadillas? Causas y soluciones</h3>
             <p class="text-sm text-gray-400">Por qué aparecen las pesadillas, qué pueden significar y qué no, y cómo el ensayo en imaginación y un sueño más regular ayudan a reducirlas.</p>
         </a>
   </div>
@@ -450,6 +437,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

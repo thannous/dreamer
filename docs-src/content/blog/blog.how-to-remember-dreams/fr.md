@@ -198,21 +198,7 @@
 <p>
                     C'est précisément l'approche adoptée par Noctalia : parlez simplement à l'application au réveil, et elle transcrit automatiquement votre récit. Plus besoin de chercher un stylo dans le noir ou de vous forcer à écrire.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Capturez vos rêves à la voix</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia transcrit vos récits oniriques, garde les symboles et propose des pistes d’interprétation quand vous êtes prêt à relire.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/application-interpretation-reves-ia">
-                                Voir l’application d’interprétation IA <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="technique-7">7. Un moment calme avant de dormir</h2>
 <p>Si vous appréciez une courte pause au coucher, prenez quelques instants pour respirer normalement et laisser passer les pensées. C’est une option de détente, pas une technique démontrée ici pour améliorer le rappel.</p><p>Vous pouvez terminer en préparant votre carnet ou votre dictaphone. Ne prolongez pas l’exercice au détriment du sommeil et laissez-le de côté s’il devient une obligation.</p>
 <h2 id="technique-8">8. Reconstituer le rêve à rebours</h2>
@@ -263,9 +249,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia combine l’enregistrement vocal, la transcription et les pistes d’interprétation pour vous aider à garder le rêve avant qu’il ne s’efface.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/application-interpretation-reves-ia">
-                    Découvrir Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=comment-se-souvenir-de-ses-reves_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -333,7 +320,7 @@
     <a href="pourquoi-oublie-reves-reveil" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Pourquoi oublie-t-on ses rêves au réveil ? Ce que dit la science</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -350,12 +337,12 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="guide-incubation-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubation des rêves : comment rêver exactement de ce que vous voulez</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubation de rêves : la méthode, ses limites et une routine pour ce soir</h3>
             <p class="text-sm text-gray-400">Apprenez l'art ancien de l'incubation onirique pour résoudre des problèmes et stimuler votre créativité.</p>
         </a>
         <a href="guide-cauchemars" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Cauchemars : Causes, Signification et Comment les Arrêter</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Cauchemars : causes, signification et comment les arrêter</h3>
             <p class="text-sm text-gray-400">Pourquoi fait-on des cauchemars ? Découvrez les causes des mauvais rêves, leur signification et les techniques prouvées pour réduire leur fréquence et mieux dormir.</p>
         </a>
         <a href="guide-paralysie-sommeil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">

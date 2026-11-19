@@ -162,20 +162,7 @@ Was das Labor beiträgt, ist kein Wunder, sondern eine Methode: beschallte und n
 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halte den Traum fest, bevor das Problem dich einholt</h4>
-<p class="text-sm text-gray-400 mb-4">Erzähl deinen Traum in Noctalia direkt nach dem Aufwachen laut oder tipp ihn ein. Er wird transkribiert und in deinem Tagebuch gespeichert. So kannst du mehrere Nächte nebeneinander lesen und sehen, ob dein Problem wiederkehrt.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
-So funktioniert das Traumtagebuch per Sprache <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="practice">So probierst du es zu Hause aus</h2>
@@ -236,9 +223,10 @@ Die Traumforschung bewegt sich von „Was träumen wir?“ zu „Können wir len
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Bewahre deine Träume in Noctalia auf, per Sprache oder schriftlich, zusammen mit dem, was du gefühlt hast. Nebeneinander gelesen zeigen sie, ob ein Problem wiederkehrt und wie es sich verändert.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=traumkontrolle-problemloesung_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -316,13 +304,13 @@ In vereinfachter Form, ja: Schreib deine Frage vor dem Schlafen auf, verknüpf s
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">KI und Schlafanalyse: Wie künstliche Intelligenz deine Träume entschlüsselt</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Die KI, die deinen Schlaf liest: was Stanfords SleepFM kann und was nicht</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="zeitumstellung-schlaf-traeume">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">N&auml;chster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Zeitumstellung und Schlaf: Wie der Uhrzeitwechsel deine Tr&auml;ume st&ouml;rt</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Zeitumstellung und Schlaf: Was die Sommerzeit mit deinen Nächten und Träumen macht</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -338,17 +326,17 @@ In vereinfachter Form, ja: Schreib deine Frage vor dem Schlafen auf, verknüpf s
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="leitfaden-zum-klartraeumen-fuer-anfaenger-uebernehmen-sie-die-kontrolle-ueber-ihre-naechte">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Luzides Träumen für Anfänger: Ein vollständiger Leitfaden</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Klarträumen für Anfänger: Traumtagebuch, Realitätschecks und MILD</h3>
 <p class="text-sm text-gray-400">Lerne, in deinen Träumen bewusst zu werden und sie mit bewährten Techniken zu steuern.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-kreativitaet">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und Kreativität: Wie dein schlafendes Gehirn Probleme löst</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und Kreativität: Wie das schlafende Gehirn beim Lösen von Problemen hilft</h3>
 <p class="text-sm text-gray-400">Was die Schlafforschung über Träume und Problemlösen sagt und wie du eine Idee notierst, bevor sie verblasst.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Leitfaden zur Trauminkubation: Deine Träume programmieren</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst</h3>
 <p class="text-sm text-gray-400">Praktische Techniken, um deinen Trauminhalt auf ein bestimmtes Thema oder Problem zu lenken.</p>
 </a>
 </div>

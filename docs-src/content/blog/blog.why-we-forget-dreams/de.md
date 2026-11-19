@@ -69,7 +69,7 @@
                     Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Du wachst auf, und der Traum ist noch da: ein Flur, eine vertraute Stimme, ein Gefühl, das sich schwer benennen lässt. Du greifst zum Handy, und bis der Bildschirm aufleuchtet, ist alles weg. Träume so schnell zu vergessen ist normal. Hier liest du, was die Schlafforschung über die Gründe weiß und was hilft, mehr davon festzuhalten.
+                    Du schlägst die Augen auf, und das Ende eines Traums ist noch ganz klar: Eben bist du über Dächer geflogen oder hast gespürt, wie der Boden unter deinen Füßen weggab. Du drehst dich um, schaltest den Wecker aus, und zehn Sekunden später ist nur noch das Gefühl da. Träume so schnell zu vergessen ist normal. Hier liest du, was die Schlafforschung über die Gründe weiß und was hilft, mehr davon festzuhalten.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -236,21 +236,7 @@
 <p>
                     Nach einigen Wochen zeigen solche Einträge auch, in welchen Nächten du dich am besten erinnerst. Weitere Techniken findest du in unserem <a class="text-dream-salmon hover:underline" href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken">Leitfaden zur Traumerinnerung</a>.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Sprich ihn aus, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Mit halb geschlossenen Augen zu schreiben ist mühsam. In Noctalia erzählst du deinen Traum gleich nach dem Aufwachen laut: Er wird transkribiert und in deinem Tagebuch gespeichert, damit du ihn später nachlesen kannst.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
-                                Traumtagebuch per Sprache testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h3>Einen Moment still liegen bleiben</h3>
 <p>
                     Lass nach dem Aufwachen die Augen geschlossen und beweg dich ein paar Sekunden nicht. Frag dich: Wo war ich gerade? Die Bilder kommen oft einzeln zurück, manchmal vom Ende des Traums her. Bewegung oder ein Blick auf den Bildschirm reißt den Faden meist ab.
@@ -312,9 +298,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Mit Noctalia sprichst oder schreibst du deinen Traum direkt nach dem Aufwachen auf. Deine Einträge bleiben in einem Tagebuch: So kannst du sie nebeneinander lesen und erkennen, was wiederkehrt.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=warum-vergessen-wir-unsere-traeume-die-wissenschaf_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16" id="faq">
@@ -404,13 +391,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Wie du dich an deine Träume erinnerst: 10 effektive Techniken</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">So erinnerst du dich an Träume: 10 praktische Techniken</div>
       </div>
     </a>
     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -432,12 +419,12 @@
         </a>
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Was deine Nächte über dich sagen können (und was nicht)</h3>
             <p class="text-sm text-gray-400">Wie sich Angst, Depression, Stress und Trauma in Träumen zeigen und wann häufige Albträume ein Gespräch mit einer Fachperson wert sind.</p>
         </a>
         <a href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Die Wissenschaft hinter deinen nächtlichen Abenteuern</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist</h3>
             <p class="text-sm text-gray-400">Was die Forschung über Gedächtnis, Gefühle und das Proben von Bedrohungen im Traum gemessen hat und was noch Hypothese ist.</p>
         </a>
   </div>

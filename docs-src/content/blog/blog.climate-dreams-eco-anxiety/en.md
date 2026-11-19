@@ -94,7 +94,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Capture the dream, keep a hand on the feeling</h2>
 <p>When you wake up, say the dream out loud or type it. Noctalia transcribes it and keeps it in your journal, so you can read your climate dreams side by side and see what comes back.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/en/voice-dream-journal">Record your next dream by voice</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=climate-dreams-eco-anxiety_en" rel="nofollow noopener noreferrer" target="_blank">Get Noctalia on Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </div>
 <h2>FAQ</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Is it normal to dream about climate disasters?</summary><p class="mt-3">Yes, it is an understandable response. Dreams reuse the worries of the day, and heatwaves and alarming news give them plenty of material.</p></details>

@@ -85,7 +85,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Conserva il contesto, non solo la trama</h2>
 <p>In Noctalia racconti il sogno a voce appena sveglio: viene trascritto e salvato nel diario, con una riga su caldo, risvegli e giornata. Rileggi i tuoi incubi uno accanto all'altro per vedere che cosa li accompagna.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/it/diario-dei-sogni-vocale">Registra il tuo incubo a voce</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=incubi-caldo-stress_it" rel="nofollow noopener noreferrer" target="_blank">Scarica Noctalia su Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </div>
 <h2>Domande frequenti</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Il caldo può far venire gli incubi?</summary><p class="mt-3">Non ci sono prove dirette. Il caldo rende il sonno più leggero e moltiplica i risvegli, e svegliarsi durante un sogno o subito dopo aiuta a ricordarlo.</p></details>

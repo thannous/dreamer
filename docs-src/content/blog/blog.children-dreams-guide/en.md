@@ -257,20 +257,7 @@
                     Many young children like a bedtime ritual: a dream catcher made together, a flashlight by the bed, a sentence said every night (“My room is safe”). Pick one that gives your child a sense of control without confirming that the monster is real. A “monster spray” reassures some children and convinces others that there is something to fight.
                 </p>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Keep the dreams your child wants to share</h4>
-<p class="text-sm text-gray-400 mb-4">When your child enjoys telling a dream, record it by voice in Noctalia in the morning. It is transcribed and saved in your <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a>, and you can illustrate it to look at together. Only note what your child agrees to share.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <h2 id="journaling-for-kids">Can children keep a dream journal?</h2>
 <p>
@@ -322,9 +309,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     With Noctalia, record a dream by voice as soon as you wake up. It is transcribed and saved in your journal, and you can reread entries side by side to see what comes back. A journal does not replace medical advice.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=children-dreams-guide_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -406,13 +394,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Anxiety Dreams: What They Mean and How to Stop Them</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Anxiety dreams: why you have them and what actually helps</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sleep-day-environment-dreams">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sleep Day 2026: How Your Environment Transforms Your Dreams</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Sleep Day 2026: how your bedroom environment shapes your dreams</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -428,17 +416,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="stop-nightmares-guide">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: Causes, Meaning, and How to Stop Them</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: causes, meaning and how to stop them</h3>
 <p class="text-sm text-gray-400">Understand why nightmares happen and learn proven techniques to reduce their frequency.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="why-we-dream-science">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Dream? The Science Behind Your Nightly Adventures</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Why do we dream? What science knows, and what it still doesn't</h3>
 <p class="text-sm text-gray-400">Explore the latest scientific theories on why we dream and what purpose dreams serve.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams: Understanding Your Brain's Nightly Reset</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams: what really happens in your brain at night</h3>
 <p class="text-sm text-gray-400">When REM sleep happens in the night, why its dreams feel so vivid, and what cuts it short.</p>
 </a>
 </div>

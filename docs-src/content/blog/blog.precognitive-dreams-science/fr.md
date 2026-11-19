@@ -162,17 +162,7 @@
 <p>Considérez ceci : si vous faites 5 rêves par nuit, c'est environ <strong>1 825 rêves par an</strong>. Sur une vie, vous pourriez avoir plus de 100 000 rêves. Avec des milliards de personnes qui rêvent, le nombre même de rêves garantit virtuellement que certains correspondront à des événements futurs par pure probabilité.</p>
 <h3>Position de la communauté scientifique</h3>
 <p>Bien que la science mainstream n'accepte pas la précognition comme prouvée, les chercheurs reconnaissent que <strong>l'expérience subjective est réelle</strong> - les gens ont véritablement des rêves qui semblent ensuite correspondre à des événements. La question <a class="text-dream-salmon hover:underline" href="../symboles/porte">porte</a> sur le mécanisme : prédiction, ou autre chose ?</p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl"><i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i></div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Documentez Vos Rêves Potentiellement Prédictifs</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia horodate vos enregistrements de rêves, créant un journal vérifiable. Si un rêve semble plus tard prophétique, vous aurez des preuves documentées de quand vous l'avez enregistré.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">Commencer à Enregistrer Vos Rêves <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
-</div>
-</div>
-</aside>
+
 <h2 id="explications">Pourquoi certains rêves semblent se réaliser</h2>
 <p>Si les rêves ne voient pas réellement l'avenir, qu'est-ce qui explique l'expérience convaincante des rêves prémonitoires ? La science offre plusieurs alternatives fascinantes :</p>
 <h3>Le biais de confirmation dans les rêves</h3>
@@ -220,7 +210,10 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Devenez Votre Propre Chercheur sur les Rêves</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Documentez vos rêves avec le journal horodaté de Noctalia. Suivez les patterns au fil du temps. Si vos rêves semblent un jour prédire l'avenir, vous aurez les preuves.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">Commencer à Suivre Vos Rêves <i class="w-5 h-5" data-lucide="arrow-right"></i></a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-premonitoires-science_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -278,13 +271,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Incubation des rêves : comment rêver exactement de ce que vous voulez</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Incubation de rêves : la méthode, ses limites et une routine pour ce soir</div>
       </div>
     </a>
     <a href="reves-etre-poursuivi" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves d'Être Poursuivi : Signification et Interprétation</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêver d'être poursuivi : pourquoi ce rêve est si fréquent, et ce qu'il peut signifier</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -301,17 +294,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="pourquoi-oublie-reves-reveil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi oublie-t-on ses rêves au réveil ? Ce que dit la science</h3>
             <p class="text-sm text-gray-400">Découvrez les mécanismes cérébraux et neurochimiques qui expliquent pourquoi nous oublions 95% de nos rêves.</p>
         </a>
         <a href="reves-sante-mentale" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et santé mentale : ce que vos nuits peuvent dire de vous, et ce qu'elles ne disent pas</h3>
             <p class="text-sm text-gray-400">Découvrez le lien profond entre les rêves et la santé mentale. Apprenez comment l'anxiété, la dépression et les traumatismes affectent vos rêves, et comment le travail onirique peut soutenir la guérison.</p>
         </a>
         <a href="pourquoi-nous-revons-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi rêvons-nous ? Ce que la science sait, et ce qu'elle ignore encore</h3>
             <p class="text-sm text-gray-400">Explorez la science fascinante des rêves. Découvrez les théories majeures, l'activité cérébrale pendant les rêves et ce qu'ils révèlent sur la conscience.</p>
         </a>
   </div>

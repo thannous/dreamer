@@ -223,21 +223,7 @@
 <li><strong>Question à garder :</strong> « La chute revient-elle avant d'autres débuts, ou aussi les nuits calmes ? »</li>
 </ul>
 <p>Une seule entrée ne prouve rien. C'est en notant les mêmes éléments sur plusieurs nuits, y compris celles où vous ne tombez pas, que les liens deviennent visibles.</p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Notez votre chute avant qu'elle ne s'efface</h4>
-<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute au réveil. Il est transcrit, rangé dans votre journal, et vous pouvez relire vos rêves de chute côte à côte.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="hypnique">La secousse hypnique : le sursaut de l'endormissement</h2>
 <p>
                     Vous sombrez dans le sommeil, vous avez l'impression de rater une marche, et tout votre corps sursaute. Ce réflexe porte un nom : la <strong>secousse hypnique</strong>, ou myoclonie d'endormissement. C'est une contraction musculaire brève et involontaire qui survient au passage de l'éveil au sommeil, parfois accompagnée d'une courte image de chute.
@@ -332,9 +318,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Gardez vos rêves de chute dans Noctalia, avec ce que vous avez ressenti. En les relisant ensemble, vous verrez quand ils reviennent et ce qui les accompagne.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-de-chute_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- Symbol Guide CTA -->
 <aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
@@ -412,13 +399,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêver de perdre ses dents : signification et interprétation</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve</div>
       </div>
     </a>
     <a href="reves-de-voler" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de voler : ce que ça signifie</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêver de voler : scénarios, émotions et signification</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -435,17 +422,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves récurrents : causes possibles et pistes utiles</h3>
             <p class="text-sm text-gray-400">Pourquoi le même rêve revient, quoi noter d'une nuit à l'autre et quand des cauchemars répétés justifient un avis médical.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de perdre ses dents : signification et interprétation</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve</h3>
             <p class="text-sm text-gray-400">Sept pistes pour les rêves de dents qui tombent, de la tension de la mâchoire à la peur du regard des autres, et les variantes à noter.</p>
         </a>
         <a href="reves-de-voler" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de voler : ce que ça signifie</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de voler : scénarios, émotions et signification</h3>
             <p class="text-sm text-gray-400">Ce que peuvent suggérer un vol sans effort, un décollage raté ou une fuite dans les airs, et quoi noter au réveil.</p>
         </a>
   </div>

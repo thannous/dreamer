@@ -172,20 +172,7 @@ Una pagina da sola è solo una scena. In qualche settimana, le note ti mostrano 
 <p>
 I sogni lucidi vengono riferiti soprattutto durante il <a class="text-dream-salmon hover:underline" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">sonno REM</a>, che occupa più spazio nella seconda metà della notte. Mantieni i tuoi orari abituali: togliere ore di sonno per fare più esercizi ti rema contro.
 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Annota il sogno prima che svanisca</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia racconta il sogno a voce o scrivilo. Viene trascritto e salvato nel tuo diario, pronto da completare più tardi.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="reality-checks">Come fare un controllo di realtà che serva</h2>
 <p>
 Un controllo di realtà è una breve pausa in cui verifichi sul serio se sei sveglio, sperando che l’abitudine si ripresenti anche in sogno. Secondo la <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a>, ci sono poche prove che i controlli di realtà, da soli, provochino sogni lucidi, anche se potrebbero sostenere altre tecniche.
@@ -330,7 +317,10 @@ Tratta la lucidità come qualcosa che ti alleni a notare, non come un risultato 
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">I tuoi segni onirici sono già nei tuoi sogni</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-Conserva ogni sogno nel tuo <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a> su Noctalia, a voce o per iscritto, poi rileggili uno accanto all’altro. I luoghi, le persone e le incongruenze che ritornano sono i dettagli da tenere d’occhio già stanotte.
+Conserva ogni sogno nel tuo <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=guida-ai-sogni-lucidi-per-principianti-prendi-il-c_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p> su Noctalia, a voce o per iscritto, poi rileggili uno accanto all’altro. I luoghi, le persone e le incongruenze che ritornano sono i dettagli da tenere d’occhio già stanotte.
 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
 Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -415,13 +405,13 @@ Il sogno lucido in sé non è considerato pericoloso. I metodi che interrompono 
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Significato dei sogni ricorrenti: comprendere i loro messaggi</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="sogni-di-denti-che-cadono-significato-e-interpretazione" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sogni di denti che cadono: significato e interpretazione</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sognare denti che cadono o si sgretolano: scenari e ricerca</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -438,17 +428,17 @@ Il sogno lucido in sé non è considerato pericoloso. I metodi che interrompono 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche efficaci</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche pratiche</h3>
                         <p class="text-sm text-gray-400">Dieci abitudini semplici per trattenere più frammenti al risveglio, dal risveglio graduale alla nota presa prima di alzarti.</p>
                     </a>
                     <a href="perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i sogni? La scienza dietro l'amnesia onirica</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i nostri sogni? La scienza dietro l'amnesia onirica</h3>
                         <p class="text-sm text-gray-400">Perché i sogni svaniscono pochi minuti dopo il risveglio, che ruolo hanno il sonno REM e la memoria, e abitudini semplici per ricordarne di più.</p>
                     </a>
                     <a href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Significato dei sogni ricorrenti: comprendere i loro messaggi</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare</h3>
                         <p class="text-sm text-gray-400">Perché lo stesso sogno ritorna, cosa annotare tra un episodio e l'altro e quando gli incubi ripetuti meritano un parere medico.</p>
                     </a>
               </div>

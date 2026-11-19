@@ -162,20 +162,7 @@ Une seule entrée ne prouve rien. Sur un mois, les heures de coucher notées à 
 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="moon"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Vos nuits et vos rêves au même endroit</h4>
-<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute au réveil et ajoutez une ligne sur votre nuit. Il est transcrit et rangé dans votre journal : vous pouvez relire vos semaines côte à côte.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
-Voir comment marche le journal vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="health">Quels effets sur la santé ?</h2>
@@ -236,9 +223,10 @@ Les rêves ne sont pas une mesure médicale. Mais un <a class="text-dream-salmon
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Notez vos rêves dans Noctalia chaque matin, à la voix ou par écrit, avec un mot sur votre nuit. En relisant vos semaines côte à côte, vous verrez quand les rêves vivaces apparaissent et ce qui les précède.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=dette-sommeil-sante-reves_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -319,13 +307,13 @@ Si vous dormez assez d'heures et vous réveillez quand même épuisé, si l'on r
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article pr&#233;c&#233;dent</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Changement d'heure et sommeil : comment l'heure d'&#233;t&#233; perturbe vos r&#234;ves</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Changement d'heure et sommeil : ce que l'heure d'été fait à vos nuits et à vos rêves</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="perturbation-sommeil-printemps-reves">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Perturbation du sommeil au printemps : comment les jours plus longs alt&#232;rent votre sommeil et vos r&#234;ves</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Perturbation du sommeil au printemps : quand les jours plus longs bousculent vos nuits et vos rêves</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -341,17 +329,17 @@ Si vous dormez assez d'heures et vous réveillez quand même épuisé, si l'on r
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et r&#234;ves : la science de votre th&#233;&#226;tre nocturne</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves : ce qui se passe vraiment dans votre cerveau la nuit</h3>
 <p class="text-sm text-gray-400">À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="heure-ete-sommeil-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Sant&#233;</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Changement d'heure et sommeil : comment l'heure d'&#233;t&#233; perturbe vos r&#234;ves</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Changement d'heure et sommeil : ce que l'heure d'été fait à vos nuits et à vos rêves</h3>
 <p class="text-sm text-gray-400">Comprenez comment le changement d'heure biannuel perturbe votre rythme circadien, alt&#232;re la qualit&#233; du sommeil et transforme votre vie onirique.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="comment-se-souvenir-de-ses-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses r&#234;ves : techniques prouv&#233;es</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves au réveil : 10 techniques simples</h3>
 <p class="text-sm text-gray-400">Strat&#233;gies pratiques et fond&#233;es sur la science pour am&#233;liorer votre rappel onirique et enrichir votre journal de r&#234;ves.</p>
 </a>
 </div>
