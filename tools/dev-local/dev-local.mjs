@@ -17,7 +17,7 @@ import { parseArgs } from 'node:util';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { normalizeStackStatus, prepareLocalMigrations } = require('../../scripts/lib/backend-e2e-local.cjs');
+const { assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations } = require('../../scripts/lib/backend-e2e-local.cjs');
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const { values: options } = parseArgs({ options: {
@@ -156,10 +156,10 @@ async function main() {
   const status = normalizeStackStatus(JSON.parse(supabase(['stack', 'start', '--workdir', workdir,
     '--runtime', 'native', '--exclude', 'realtime,functions,studio,mail,analytics,pooler', '--eager', '--output-format', 'json'])));
   // A resumed stack keeps its data; migrations added since then are applied now.
-  supabase(['migration', 'up', '--workdir', workdir, '--db-url', status.DB_URL, '--include-all']);
-  const safety = JSON.parse(supabase(['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
+  supabase(['migration', 'up', '--workdir', workdir, '--include-all']);
+  const safety = JSON.parse(supabase(['db', 'query', '--workdir', workdir,
     'select count(*) as active_jobs from cron.job where active', '--output-format', 'json']));
-  if (Number(safety.rows?.[0]?.active_jobs) !== 0) throw new Error('Local scheduled jobs must stay inactive.');
+  assertNoActiveCronJobs(safety);
   const accounts = await ensureAccounts(status);
   const secrets = readJson(secretsFile, {});
   secrets.guestSessionSecret ??= randomBytes(32).toString('hex');
