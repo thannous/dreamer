@@ -68,10 +68,8 @@ describe('GuestQuotaProvider', () => {
 
       const provider = new GuestQuotaProvider();
 
-      // When
       const canAnalyze = await provider.canAnalyzeDream(null);
 
-      // Then
       expect(canAnalyze).toBe(false);
     });
 
@@ -81,22 +79,17 @@ describe('GuestQuotaProvider', () => {
 
       const provider = new GuestQuotaProvider();
 
-      // When
       const canAnalyze = await provider.canAnalyzeDream(null);
 
-      // Then
       expect(canAnalyze).toBe(true);
     });
 
     it('given authenticated user when checking analysis then allows', async () => {
-      // Given
       const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
       const provider = new GuestQuotaProvider();
 
-      // When
       const canAnalyze = await provider.canAnalyzeDream(user);
 
-      // Then
       expect(canAnalyze).toBe(true);
     });
   });
@@ -108,10 +101,8 @@ describe('GuestQuotaProvider', () => {
       setMockDreamsOnce([dream]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const canExplore = await provider.canExploreDream({ dreamId: dream.id }, null);
 
-      // Then
       expect(canExplore).toBe(true);
     });
 
@@ -121,10 +112,8 @@ describe('GuestQuotaProvider', () => {
       setMockDreamsOnce([]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const canExplore = await provider.canExploreDream({ dreamId: 999 }, null);
 
-      // Then
       expect(canExplore).toBe(true);
     });
 
@@ -134,29 +123,23 @@ describe('GuestQuotaProvider', () => {
       setMockDreamsOnce([]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const canExplore = await provider.canExploreDream({ dreamId: 999 }, null);
 
-      // Then
       expect(canExplore).toBe(true);
     });
 
     it('given authenticated user when checking exploration then allows', async () => {
-      // Given
       const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
       const provider = new GuestQuotaProvider();
 
-      // When
       const canExplore = await provider.canExploreDream({ dreamId: 999 }, user);
 
-      // Then
       expect(canExplore).toBe(true);
     });
   });
 
   describe('message validation', () => {
     it('given guest within message limit when checking messages then allows', async () => {
-      // Given
       const dream = buildDream({ 
         id: 123, 
         chatHistory: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
@@ -164,15 +147,12 @@ describe('GuestQuotaProvider', () => {
       setMockDreamsOnce([dream]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, null);
 
-      // Then
       expect(canSendMessage).toBe(true);
     });
 
     it('given guest beyond message limit when checking messages then denies', async () => {
-      // Given
       const dream = buildDream({ 
         id: 123, 
         chatHistory: Array.from({ length: 25 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
@@ -180,22 +160,17 @@ describe('GuestQuotaProvider', () => {
       setMockDreamsOnce([dream]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, null);
 
-      // Then
       expect(canSendMessage).toBe(false);
     });
 
     it('given authenticated user when checking messages then allows', async () => {
-      // Given
       const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
       const provider = new GuestQuotaProvider();
 
-      // When
       const canSendMessage = await provider.canSendChatMessage({ dreamId: 123 }, user);
 
-      // Then
       expect(canSendMessage).toBe(true);
     });
   });
@@ -206,10 +181,8 @@ describe('GuestQuotaProvider', () => {
       mockLocalCounterConfig.analysisCount = 2;
       const provider = new GuestQuotaProvider();
 
-      // When
       const count = await provider.getUsedAnalysisCount(null);
 
-      // Then
       expect(count).toBe(2);
     });
 
@@ -218,15 +191,12 @@ describe('GuestQuotaProvider', () => {
       mockLocalCounterConfig.explorationCount = 2;
       const provider = new GuestQuotaProvider();
 
-      // When
       const count = await provider.getUsedExplorationCount(null);
 
-      // Then
       expect(count).toBe(2);
     });
 
     it('given dream with chat history when counting messages then returns correct count', async () => {
-      // Given
       const dream = buildDream({
         id: 123,
         chatHistory: Array.from({ length: 8 }, (_, i) => ({ id: `m${i}`, role: 'user' as const, text: 'test' })),
@@ -234,10 +204,8 @@ describe('GuestQuotaProvider', () => {
       setMockDreamsOnce([dream]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const count = await provider.getUsedMessagesCount({ dreamId: 123 }, null);
 
-      // Then
       expect(count).toBe(8);
     });
 
@@ -262,10 +230,8 @@ describe('GuestQuotaProvider', () => {
       ]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const count = await provider.getUsedAnalysisCount(null);
 
-      // Then
       expect(count).toBe(2);
     });
 
@@ -278,24 +244,19 @@ describe('GuestQuotaProvider', () => {
       ]);
       const provider = new GuestQuotaProvider();
 
-      // When
       const count = await provider.getUsedExplorationCount(null);
 
-      // Then
       expect(count).toBe(2);
     });
   });
 
   describe('quota status', () => {
     it('given authenticated user when getting status then returns free tier placeholder', async () => {
-      // Given
       const user = { id: 'test-user', user_metadata: { tier: 'free' } } as any;
       const provider = new GuestQuotaProvider();
 
-      // When
       const status = await provider.getQuotaStatus(user, 'guest');
 
-      // Then
       expect(status.tier).toBe('free');
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
@@ -318,10 +279,8 @@ describe('GuestQuotaProvider', () => {
 
       const provider = new GuestQuotaProvider();
 
-      // When
       const status = await provider.getQuotaStatus(null, 'guest', { dreamId: dreamB.id });
 
-      // Then
       expect(status.usage.analysis.used).toBe(2);
       expect(status.usage.messages.used).toBe(2);
       expect(status.canAnalyze).toBe(false);
@@ -335,10 +294,8 @@ describe('GuestQuotaProvider', () => {
 
       const provider = new GuestQuotaProvider();
 
-      // When
       const status = await provider.getQuotaStatus(null, 'guest', { dreamId: 999 });
 
-      // Then
       expect(status.tier).toBe('guest');
       expect(status.canAnalyze).toBe(true);
       expect(status.canExplore).toBe(true);
@@ -382,10 +339,8 @@ describe('GuestQuotaProvider', () => {
 
       const provider = new GuestQuotaProvider();
 
-      // When
       const status = await provider.getQuotaStatus(null, 'guest', { dreamId: 999 });
 
-      // Then
       expect(status.canExplore).toBe(true);
       expect(status.usage.exploration.limit).toBeNull();
       expect(status.reasons).toBeUndefined();

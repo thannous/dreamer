@@ -5,7 +5,8 @@
 const fs = require('fs');
 const path = require('path');
 const { imageSize } = require('../apps/site/dependencies')('image-size');
-const { DOCS_DIR, ROOT_DIR, siteConfig } = require('./lib/docs-site-config');
+const { DOCS_DIR, ROOT_DIR, getStaticPageConfig, siteConfig } = require('./lib/docs-site-config');
+const { comparisonChartPath, comparisonFeatureCounts, loadComparisonData } = require('./lib/alternatives-table');
 const {
   getPageResponsiveImages,
   getResponsiveImageData,
@@ -25,7 +26,7 @@ const WARNING_BYTES = 180_000;
 const MAX_BYTES = 250_000;
 const LEGACY_SOCIAL_IMAGE = /\/img\/og\/noctalia-(?:en|fr|es|de|it)-1200x630\.jpg/i;
 const FEATURE_SNAPSHOT_METADATA = Object.freeze({
-  contentUrl: deliveredImage('https://noctalia.app/img/research/dream-journal-apps-feature-snapshot-2026.svg'),
+  contentUrl: deliveredImage(siteConfig.domain + comparisonChartPath('en')),
   copyrightNotice: '© 2026 Noctalia',
   license: 'https://noctalia.app/en/press#media-license',
   acquireLicensePage: 'https://noctalia.app/en/press#media-contact',
@@ -118,6 +119,27 @@ function collectSchemaImageObjects(blocks) {
   }
   visit(blocks);
   return images;
+}
+
+function validateComparisonCharts(docsDir, errors) {
+  const rows = [...loadComparisonData().values()];
+  const expectedLabels = comparisonFeatureCounts(rows).map((count) => `${count} / ${rows.length}`);
+  for (const lang of Object.keys(getStaticPageConfig('page.alternatives').slugs)) {
+    const chart = comparisonChartPath(lang);
+    const file = path.join(docsDir, chart);
+    if (!fs.existsSync(file)) {
+      errors.push(`${chart}: comparison chart missing`);
+      continue;
+    }
+    const svg = fs.readFileSync(file, 'utf8');
+    const labels = Array.from(
+      svg.matchAll(/<text\b[^>]*>\s*(\d+)\s*\/\s*(\d+)\s*<\/text>/g),
+      (match) => `${match[1]} / ${match[2]}`
+    );
+    if (labels.join(', ') !== expectedLabels.join(', ')) {
+      errors.push(`${chart}: expected CSV counts ${expectedLabels.join(', ')}, found ${labels.join(', ')}`);
+    }
+  }
 }
 
 function validateFeatureSnapshotLicenseMetadata({ pageMap, errors }) {
@@ -474,6 +496,7 @@ function checkImageSeoContract(options = {}) {
   }
 
   validateFeatureSnapshotLicenseMetadata({ pageMap, errors });
+  validateComparisonCharts(DOCS_DIR, errors);
 
   const allHtmlFiles = walkFiles(DOCS_DIR, (candidate) => candidate.endsWith('.html'));
   let editorialHeroCount = 0;
@@ -519,6 +542,7 @@ module.exports = {
   collectSchemaImageUrls,
   parseAttributes,
   validateAltText,
+  validateComparisonCharts,
   validateEditorialHero,
   validateFeatureSnapshotLicenseMetadata,
   validateSitewidePageIllustrations,

@@ -135,7 +135,6 @@ describe('RemoteGuestQuotaProvider', () => {
     const { RemoteGuestQuotaProvider } = require('../RemoteGuestQuotaProvider');
     const provider = new RemoteGuestQuotaProvider(fallback as any);
 
-    // When
     const status = await provider.getQuotaStatus(null, 'guest');
 
     // Then usage should reflect the fallback counts, not the remote zeros

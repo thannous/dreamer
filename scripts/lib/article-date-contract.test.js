@@ -1,3 +1,6 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const { DOCS_SRC_DIR } = require('./docs-site-config');
 const {
   parseContentDate,
   sanitizeReviewedBy,
@@ -196,18 +199,30 @@ describe('article date and content release contracts', () => {
   });
 
   it('loads only the first blog-index image eagerly and adds stable dimensions', () => {
-    const html = optimizeBlogIndexImages(
-      '<img src="../../img/blog/anxiety-dreams-meaning.webp" alt="First">' +
-        '<img src="../../img/blog/why-we-forget-dreams.webp" alt="Second" loading="eager">'
-    );
+    const imagesDir = path.join(DOCS_SRC_DIR, 'static', 'img', 'blog');
+    const variants = new Set([480, 800, 1200].map(
+      (width) => path.join(imagesDir, `first-${width}w.webp`)
+    ));
+    variants.add(path.join(imagesDir, 'second-480w.webp'));
+    const exists = jest.spyOn(fs, 'existsSync').mockImplementation((file) => variants.has(file));
+    let html;
+    try {
+      html = optimizeBlogIndexImages(
+        '<img src="../../img/blog/first.webp" alt="First">' +
+          '<img src="../../img/blog/second.webp" alt="Second" loading="eager">'
+      );
+    } finally {
+      exists.mockRestore();
+    }
     const images = html.match(/<img\b[^>]*>/g);
     expect(images[0]).toContain('loading="eager"');
     expect(images[0]).toContain('fetchpriority="high"');
     expect(images[0]).toContain('width="800"');
     expect(images[0]).toContain('height="450"');
-    expect(images[0]).toContain('srcset=');
+    expect(images[0]).toContain('srcset="../../img/blog/first-480w.webp 480w, ../../img/blog/first-800w.webp 800w, ../../img/blog/first-1200w.webp 1200w"');
     expect(images[1]).toContain('loading="lazy"');
     expect(images[1]).not.toContain('fetchpriority=');
+    expect(images[1]).not.toContain('srcset=');
   });
 
   it('keeps public mailto links out of Cloudflare email obfuscation', () => {

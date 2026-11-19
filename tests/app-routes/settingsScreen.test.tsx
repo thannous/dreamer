@@ -348,7 +348,6 @@ describe('Settings screen', () => {
   });
 
   it('[B] Given a free user When rendering Then the compact Plus card opens the paywall', () => {
-    // Given
     capturedSettingsProps = null;
     mockUseAuth.mockReturnValue({ user: null });
     mockUseSubscription.mockReturnValue({
@@ -357,10 +356,8 @@ describe('Settings screen', () => {
       status: null,
     });
 
-    // When
     render(<SettingsScreen />);
 
-    // Then
     expect(screen.getByTestId('settings-plus-card')).toBeTruthy();
     expect(capturedSettingsProps).toMatchObject({
       subscriptionTitle: 'subscription.settings.title.plus',

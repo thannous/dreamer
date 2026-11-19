@@ -1,6 +1,10 @@
 import { Platform } from 'react-native';
 
-import type { ExpoSpeechRecognitionModuleType } from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
+import type {
+  ExpoSpeechRecognitionModuleType,
+  ExpoSpeechRecognitionNativeEventMap,
+  ExpoSpeechRecognitionNativeEvents,
+} from 'expo-speech-recognition/build/ExpoSpeechRecognitionModule.types';
 
 import { getNativeQaSpeechAudioSource } from '@/services/nativeQaSpeechAudio';
 
@@ -650,127 +654,30 @@ export async function startNativeSpeechSession(
       options?.onEnd?.();
     };
 
-    const startSub = speechModule.addListener('start', () => {
-      if (sessionId !== globalSessionCounter || ended || stopRequested) return;
-      startedListening = true;
-      options?.onListeningChange?.(true);
-    });
-
-    const resultSub = speechModule.addListener('result', (event) => {
-      // Ignore events from old sessions (race condition protection)
-      if (sessionId !== globalSessionCounter) {
-        if (__DEV__) {
-          console.log('[nativeSpeech] ignoring result from old session', {
-            sessionId,
-            current: globalSessionCounter,
-          });
-        }
-        return;
-      }
-
-      const transcript = event.results?.[0]?.transcript?.trim();
-      if (!transcript) {
-        return;
-      }
-
-      if (event.isFinal) {
-        if (__DEV__) {
-          console.log('[nativeSpeech] result', {
-            sessionId,
-            isFinal: event.isFinal,
-            textLength: transcript.length,
-            textSample: transcript.substring(0, 15) + '...',
-          });
-        }
-        finalChunks = mergeFinalChunk(finalChunks, transcript);
-        lastPartial = '';
-      } else {
-        if (transcript === lastPartial) return;
-        lastPartial = transcript;
-      }
-
-      const preview = buildPreview(finalChunks, lastPartial);
-      if (preview && preview !== lastPublishedPreview && options?.onPartial) {
-        lastPublishedPreview = preview;
-        options.onPartial(preview);
-      }
-    });
-
-    const endSub = speechModule.addListener('end', () => {
-      // Ignore events from old sessions
-      if (sessionId !== globalSessionCounter) {
-        if (__DEV__) {
-          console.log('[nativeSpeech] ignoring end from old session', { sessionId, current: globalSessionCounter });
-        }
-        return;
-      }
-
-      if (__DEV__) {
-        console.log('[nativeSpeech] end', { sessionId });
-      }
-      resolveEnd?.();
-      notifyUnexpectedEnd();
-    });
-
-    const audioEndSub = speechModule.addListener('audioend', () => {
-      // Ignore events from old sessions
-      if (sessionId !== globalSessionCounter) {
-        if (__DEV__) {
-          console.log('[nativeSpeech] ignoring audioend from old session', { sessionId });
-        }
-        return;
-      }
-
-      if (__DEV__) {
-        console.log('[nativeSpeech] audioend', { sessionId });
-      }
-      options?.onListeningChange?.(false);
-    });
-
-    // Loudness for the listening orb only; it carries no audio or text.
-    const volumeSub = speechModule.addListener('volumechange', (event: { value: number }) => {
-      if (sessionId !== globalSessionCounter || ended || stopRequested) return;
-      publishVoiceLevel(event.value);
-    });
-
-    const errorSub = speechModule.addListener('error', (event) => {
-      // Ignore events from old sessions
-      if (sessionId !== globalSessionCounter) {
-        if (__DEV__) {
-          console.log('[nativeSpeech] ignoring error from old session', { sessionId });
-        }
-        return;
-      }
-
-      const isBenignClientError = event?.error === 'client';
-
-      // Android can emit ERROR_CLIENT when we stop/abort; treat it as noise unless debugging.
-      if (isBenignClientError) {
-        if (__DEV__) {
-          console.log('[nativeSpeech] client error ignored after stop/abort', { sessionId });
-        }
-        resolveEnd?.();
-        notifyUnexpectedEnd();
-        return;
-      }
-
-      console.warn('[nativeSpeech] error', { sessionId, code: event?.error, message: event?.message });
-      lastError = { code: event.error, message: event.message };
-      resolveEnd?.();
-      notifyUnexpectedEnd();
-    });
+    const subscriptions: ReturnType<typeof speechModule.addListener>[] = [];
+    let released = false;
+    const listen = <K extends keyof ExpoSpeechRecognitionNativeEventMap>(
+      name: K,
+      onEvent: (event: ExpoSpeechRecognitionNativeEventMap[K]) => void,
+    ) => {
+      const handleEvent = (event: ExpoSpeechRecognitionNativeEventMap[K]) => {
+        if (!released && sessionId === globalSessionCounter) onEvent(event);
+      };
+      subscriptions.push(speechModule.addListener(name, handleEvent as ExpoSpeechRecognitionNativeEvents[K]));
+    };
 
     const cleanup = () => {
+      if (released) return;
+      released = true;
       resolveEnd = null;
+      for (const subscription of subscriptions.splice(0)) {
+        try {
+          subscription.remove();
+        } catch {
+          // The native emitter may already be torn down when the app loses its audio session.
+        }
+      }
       options?.onListeningChange?.(false);
-
-      // Guaranteed cleanup: remove all listeners even if one fails
-      try { startSub.remove(); } catch {}
-      try { resultSub.remove(); } catch {}
-      try { endSub.remove(); } catch {}
-      try { audioEndSub.remove(); } catch {}
-      try { errorSub.remove(); } catch {}
-      try { volumeSub?.remove(); } catch {}
       publishVoiceLevel(VOICE_LEVEL_SILENT);
 
       if (__DEV__) {
@@ -779,6 +686,81 @@ export async function startNativeSpeechSession(
     };
 
     try {
+      listen('start', () => {
+        if (ended || stopRequested) return;
+        startedListening = true;
+        options?.onListeningChange?.(true);
+      });
+
+      listen('result', (event) => {
+        const transcript = event.results?.[0]?.transcript?.trim();
+        if (!transcript) {
+          return;
+        }
+
+        if (event.isFinal) {
+          if (__DEV__) {
+            console.log('[nativeSpeech] result', {
+              sessionId,
+              isFinal: event.isFinal,
+              textLength: transcript.length,
+              textSample: transcript.substring(0, 15) + '...',
+            });
+          }
+          finalChunks = mergeFinalChunk(finalChunks, transcript);
+          lastPartial = '';
+        } else {
+          if (transcript === lastPartial) return;
+          lastPartial = transcript;
+        }
+
+        const preview = buildPreview(finalChunks, lastPartial);
+        if (preview && preview !== lastPublishedPreview && options?.onPartial) {
+          lastPublishedPreview = preview;
+          options.onPartial(preview);
+        }
+      });
+
+      listen('end', () => {
+        if (__DEV__) {
+          console.log('[nativeSpeech] end', { sessionId });
+        }
+        resolveEnd?.();
+        notifyUnexpectedEnd();
+      });
+
+      listen('audioend', () => {
+        if (__DEV__) {
+          console.log('[nativeSpeech] audioend', { sessionId });
+        }
+        options?.onListeningChange?.(false);
+      });
+
+      // Loudness for the listening orb only; it carries no audio or text.
+      listen('volumechange', (event: { value: number }) => {
+        if (ended || stopRequested) return;
+        publishVoiceLevel(event.value);
+      });
+
+      listen('error', (event) => {
+        const isBenignClientError = event?.error === 'client';
+
+        // Android can emit ERROR_CLIENT when we stop/abort; treat it as noise unless debugging.
+        if (isBenignClientError) {
+          if (__DEV__) {
+            console.log('[nativeSpeech] client error ignored after stop/abort', { sessionId });
+          }
+          resolveEnd?.();
+          notifyUnexpectedEnd();
+          return;
+        }
+
+        console.warn('[nativeSpeech] error', { sessionId, code: event?.error, message: event?.message });
+        lastError = { code: event.error, message: event.message };
+        resolveEnd?.();
+        notifyUnexpectedEnd();
+      });
+
       speechModule.start({
         lang: languageCode,
         interimResults: true,
@@ -850,7 +832,7 @@ export async function startNativeSpeechSession(
         }
         resolveEnd?.();
       }
-      cleanup(); // Always cleanup, even after errors
+      cleanup();
     };
 
     return { stop, abort };

@@ -74,37 +74,28 @@ describe('storageServiceMock', () => {
 
   describe('dream preloading', () => {
     it('given disabled preloading when getting dreams then returns empty journal', async () => {
-      // Given
       // Preloading is disabled by default in beforeEach
 
-      // When
       const result = await getSavedDreams();
 
-      // Then
       expect(result).toEqual({ status: 'absent' });
     });
 
     it('given enabled preloading when preloading dreams then loads predefined dreams', async () => {
-      // Given
       setPreloadDreamsEnabled(true);
 
-      // When
       preloadDreamsNow();
       const dreams = await readLoadedDreams(getSavedDreams());
 
-      // Then
       expect(dreams).toHaveLength(PREDEFINED_DREAMS.length);
     });
 
     it('given enabled preloading when loading dreams then fixtures cover canonical product states', async () => {
-      // Given
       setPreloadDreamsEnabled(true);
 
-      // When
       preloadDreamsNow();
       const dreams = await readLoadedDreams(getSavedDreams());
 
-      // Then
       const states = dreams.map((dream) => getDreamAnalysisState(dream));
       expect(states.filter((state) => state.status === 'done')).toHaveLength(5);
       expect(states.filter((state) => state.status === 'pending')).toHaveLength(1);
@@ -139,54 +130,42 @@ describe('storageServiceMock', () => {
     });
 
     it('given preloaded dreams when disabling preloading then resets to empty journal', async () => {
-      // Given
       setPreloadDreamsEnabled(true);
       preloadDreamsNow();
 
-      // When
       setPreloadDreamsEnabled(false);
       const result = await getSavedDreams();
 
-      // Then
       expect(result).toEqual({ status: 'absent' });
     });
   });
 
   describe('dream storage', () => {
     it('given saved dreams when retrieving dreams then returns sorted dreams', async () => {
-      // Given
       const testDreams = [buildDream({ id: 2 }), buildDream({ id: 1 })];
       await saveDreams(testDreams);
 
-      // When
       const dreams = await readLoadedDreams(getSavedDreams());
 
-      // Then
       expect(dreams).toHaveLength(2);
       // Dreams are sorted by the service, verify both are present
       expect(dreams.map(d => d.id)).toEqual(expect.arrayContaining([1, 2]));
     });
 
     it('given empty dreams array when saving then stores empty array', async () => {
-      // Given
       const emptyDreams: DreamAnalysis[] = [];
 
-      // When
       await saveDreams(emptyDreams);
 
-      // Then
       const dreams = await readLoadedDreams(getSavedDreams());
       expect(dreams).toEqual([]);
     });
 
     it('given no saved dreams when retrieving then returns empty array', async () => {
-      // Given
       resetMockStorage();
 
-      // When
       const result = await getSavedDreams();
 
-      // Then
       expect(result).toEqual({ status: 'absent' });
     });
   });
@@ -211,49 +190,37 @@ describe('storageServiceMock', () => {
       expect(await getSavedTranscript('user:a')).toBe('private dream of A');
     });
     it('given saved transcript when retrieving transcript then returns saved transcript', async () => {
-      // Given
       const testTranscript = 'This is a test transcript for audio recording';
       await saveTranscript(testTranscript, 'guest');
 
-      // When
       const transcript = await getSavedTranscript('guest');
 
-      // Then
       expect(transcript).toBe(testTranscript);
     });
 
     it('given empty transcript when saving then clears stored transcript', async () => {
-      // Given
       await saveTranscript('initial transcript', 'guest');
 
-      // When
       await saveTranscript('', 'guest');
 
-      // Then
       const transcript = await getSavedTranscript('guest');
       expect(transcript).toBe('');
     });
 
     it('given no saved transcript when retrieving then returns empty string', async () => {
-      // Given
       resetMockStorage();
 
-      // When
       const transcript = await getSavedTranscript('guest');
 
-      // Then
       expect(transcript).toBe('');
     });
 
     it('given saved transcript when clearing then removes transcript', async () => {
-      // Given
       const testTranscript = 'This is a test transcript for audio recording';
       await saveTranscript(testTranscript, 'guest');
 
-      // When
       await clearSavedTranscript('guest');
 
-      // Then
       const transcript = await getSavedTranscript('guest');
       expect(transcript).toBe('');
     });
@@ -270,18 +237,14 @@ describe('storageServiceMock', () => {
 	      };
 	      await saveNotificationSettings(testSettings);
 
-      // When
       const settings = await getNotificationSettings();
 
-      // Then
       expect(settings).toEqual(testSettings);
     });
 
 	    it('given no saved settings when retrieving then returns default settings', async () => {
-      // Given
       resetMockStorage();
 
-      // When
       const settings = await getNotificationSettings();
 
 	      // Then
@@ -296,24 +259,18 @@ describe('storageServiceMock', () => {
 
   describe('theme preference', () => {
     it('given saved theme preference when retrieving then returns saved preference', async () => {
-      // Given
       await saveThemePreference('dark');
 
-      // When
       const preference = await getThemePreference();
 
-      // Then
       expect(preference).toBe('dark');
     });
 
     it('given no saved theme preference when retrieving then returns default preference', async () => {
-      // Given
       resetMockStorage();
 
-      // When
       const preference = await getThemePreference();
 
-      // Then
       expect(preference).toBe('dynamic');
     });
   });

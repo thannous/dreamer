@@ -1,4 +1,7 @@
+const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const { comparisonChartPath, comparisonFeatureCounts, loadComparisonData } = require('./lib/alternatives-table');
 const { publicUrl, readMedia } = require('./lib/site-media');
 const media = readMedia(path.resolve(__dirname, '..'));
 const {
@@ -6,11 +9,34 @@ const {
   collectSchemaImageUrls,
   parseAttributes,
   validateAltText,
+  validateComparisonCharts,
   validateEditorialHero,
   validateFeatureSnapshotLicenseMetadata,
 } = require('./check-image-seo-contract');
 
 describe('image SEO contract helpers', () => {
+  it('checks the published counts in each localized chart against the comparison dataset', () => {
+    const docsDir = fs.mkdtempSync(path.join(os.tmpdir(), 'comparison-charts-'));
+    try {
+      const rows = [...loadComparisonData().values()];
+      const labels = comparisonFeatureCounts(rows).map((count) => `${count} / ${rows.length}`);
+      const svg = `<svg>${labels.map((label) => `<text>${label}</text>`).join('')}</svg>`;
+      fs.mkdirSync(path.join(docsDir, 'img/research'), { recursive: true });
+      for (const lang of ['en', 'fr', 'es', 'de', 'it']) {
+        fs.writeFileSync(path.join(docsDir, comparisonChartPath(lang)), svg);
+      }
+      const errors = [];
+      validateComparisonCharts(docsDir, errors);
+      expect(errors).toEqual([]);
+
+      fs.writeFileSync(path.join(docsDir, comparisonChartPath('it')), svg.replace(labels[0], '0 / 1'));
+      validateComparisonCharts(docsDir, errors);
+      expect(errors).toEqual([expect.stringContaining(`${comparisonChartPath('it')}: expected CSV counts`)]);
+    } finally {
+      fs.rmSync(docsDir, { recursive: true, force: true });
+    }
+  });
+
   it('parses and decodes image attributes', () => {
     expect(parseAttributes('<img src="/dream.webp" alt="Dreamer&#39;s journal" width="1200">')).toEqual(
       expect.objectContaining({

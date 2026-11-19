@@ -163,112 +163,83 @@ describe('Journal i18n - badges & filter accessibility', () => {
 
 describe('getTranslator replacement functionality', () => {
   it('given double brace replacements when translating then replaces correctly', () => {
-    // Given
     const t = getTranslator('en');
     
-    // When
     const result = t('test {{name}} template', { name: 'John' });
     
-    // Then
     expect(result).toBe('test John template');
   });
 
   it('given single brace replacements when translating then replaces correctly', () => {
-    // Given
     const t = getTranslator('en');
     
-    // When
     const result = t('test {count} items', { count: 5 });
     
-    // Then
     expect(result).toBe('test 5 items');
   });
 
   it('given mixed brace replacements when translating then replaces both types', () => {
-    // Given
     const t = getTranslator('en');
     
-    // When
     const result = t('{{user}} has {count} dreams', { user: 'Alice', count: 3 });
     
-    // Then
     expect(result).toBe('Alice has 3 dreams');
   });
 
   it('given numeric replacements when translating then converts to string', () => {
-    // Given
     const t = getTranslator('en');
     
-    // When
     const result = t('Progress: {{percent}}%', { percent: 75.5 });
     
-    // Then
     expect(result).toBe('Progress: 75.5%');
   });
 
   it('given no replacements when translating then returns original string', () => {
-    // Given
     const t = getTranslator('en');
     
-    // When
     const result = t('simple string');
     
-    // Then
     expect(result).toBe('simple string');
   });
 
   it('given empty replacements when translating then returns original string', () => {
-    // Given
     const t = getTranslator('en');
     
-    // When
     const result = t('simple string', {});
     
-    // Then
     expect(result).toBe('simple string');
   });
 
   it('given unknown key when translating then returns key as fallback', () => {
-    // Given
     const t = getTranslator('en');
     
-    // When
     const result = t('unknown.key');
     
-    // Then
     expect(result).toBe('unknown.key');
   });
 
   it('given unknown language when translating then falls back to english', () => {
-    // Given
     const t = getTranslator('unknown');
     
-    // When
     const result = t('test {{name}} template', { name: 'John' });
     
-    // Then
     expect(result).toBe('test John template');
   });
 
   it('given no language when translating then defaults to english', () => {
-    // Given
     const t = getTranslator();
 
-    // When
     const result = t('nav.home');
 
-    // Then
     expect(result).toBe('Today');
   });
 
   it('given region-specific language when translating then normalizes to base language', async () => {
-    // Given
     await Promise.all([loadTranslations('fr'), loadTranslations('es'), loadTranslations('pt')]);
     const tFr = getTranslator('fr-FR');
     const tEs = getTranslator('es_MX');
     const tPt = getTranslator('pt-BR');
 
-    // When
     const resultFr = tFr('nav.home');
     const resultEs = tEs('nav.home');
     const resultPt = [
@@ -279,7 +250,6 @@ describe('getTranslator replacement functionality', () => {
       tPt('nav.settings'),
     ];
 
-    // Then
     expect(resultFr).toBe('Aujourd’hui');
     expect(resultEs).toBe('Hoy');
     expect(resultPt).toEqual(['Hoje', 'Diário', 'Registrar', 'Tendências', 'Ajustes']);

@@ -18,6 +18,20 @@ const TABLE_COPY_KEYS = [
 
 let comparisonDataCache;
 
+function comparisonFeatureCounts(rows) {
+  return [
+    rows.filter((row) => ['Yes', 'Former listing advertised it'].includes(row.ai_interpretation)).length,
+    rows.filter((row) => ['Strong', 'Yes', 'Text and voice positioning'].includes(row.voice_capture)).length,
+    rows.filter((row) => ['Yes', 'Former listing advertised it'].includes(row.generated_images)).length,
+    rows.filter((row) => ['Strong', 'Yes', 'Former listing advertised reality checks'].includes(row.lucid_dreaming)).length,
+  ];
+}
+
+function comparisonChartPath(lang) {
+  const suffix = lang === 'en' ? '' : `-${lang}`;
+  return `/img/research/dream-journal-apps-feature-snapshot-2026${suffix}.svg`;
+}
+
 function parseCsvRows(input) {
   const rows = [];
   let row = [];
@@ -347,6 +361,8 @@ function enhanceAlternativesTable(
 
 module.exports = {
   COMPARISON_DATA_PATH,
+  comparisonChartPath,
+  comparisonFeatureCounts,
   enhanceAlternativesTable,
   formatReviewDate,
   loadComparisonData,
