@@ -222,20 +222,7 @@
 <li><strong>Question à garder :</strong> « Est-ce lui qui me manque, ou cette période de ma vie ? Le rêve revient-il autour d'autres départs ? »</li>
 </ul>
 <p>Une seule entrée ne prouve rien. En notant les mêmes éléments sur plusieurs semaines, vous verrez si l'ex apparaît autour de certaines dates, de certains lieux ou de certaines humeurs, et si l'émotion change.</p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Notez le rêve avant qu'il ne s'efface</h4>
-<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou écrivez-le au réveil. Il est transcrit et rangé dans votre journal avec votre émotion, et vous pouvez relire vos rêves d'ex côte à côte.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="psychologie">Ce que dit la recherche sur les rêves d'ex</h2>
 <p>
                     Peu d'études portent directement sur ce thème. La plus nette est une étude de journaux de rêves menée par Michael Schredl et Lara Wood (2021) : 1 612 récits de rêves de 425 étudiants. Un ex apparaissait dans environ 5 % des récits (77 rêves), bien moins souvent que le partenaire actuel.
@@ -317,9 +304,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Gardez vos rêves d'ex dans Noctalia, avec ce que vous avez ressenti. En les relisant ensemble, vous verrez quand ils reviennent et ce qui les accompagne.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-ex-partenaire_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <section class="mt-16">
 <h2 class="font-serif text-2xl text-dream-cream mb-8">Questions fréquentes</h2>
@@ -394,13 +382,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêver d’inondation et d’eau : signification selon le rêve</div>
       </div>
     </a>
     <a href="reves-de-grossesse" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de Grossesse : Ce Qu'ils Signifient (Même Si Vous N'Êtes Pas Enceinte)</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de grossesse : ce qu'ils peuvent signifier, même si vous n'êtes pas enceinte</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -417,17 +405,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves récurrents : causes possibles et pistes utiles</h3>
             <p class="text-sm text-gray-400">Pourquoi le même rêve revient, quoi noter d'une nuit à l'autre et quand des cauchemars répétés justifient un avis médical.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de perdre ses dents : signification et interprétation</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve</h3>
             <p class="text-sm text-gray-400">Sept pistes pour les rêves de dents qui tombent, de la tension de la mâchoire à la peur du regard des autres, et les variantes à noter.</p>
         </a>
         <a href="reves-de-chute" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi rêvez-vous de tomber ?</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi on rêve de tomber, et ce que cela peut signifier</h3>
             <p class="text-sm text-gray-400">Pourquoi on rêve de tomber, de la secousse hypnique à l'endormissement aux longues chutes, et quoi noter au réveil.</p>
         </a>
   </div>

@@ -157,7 +157,10 @@ Sognare serpenti: significato, comportamento e contesto
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Racconta il sogno con le tue parole</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">In Noctalia puoi conservare la scena e le emozioni, poi confrontarle con altri racconti. Le associazioni restano spunti personali, non avvertimenti verificati.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">Inizia il diario dei sogni</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -191,13 +194,13 @@ Sognare serpenti: significato, comportamento e contesto
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sogni di volare: cosa significa volare nei tuoi sogni</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sognare di volare: il significato dipende da come volavi</div>
       </div>
     </a>
     <a href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Incubazione dei sogni: come sognare esattamente ciò che desideri stasera</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -213,17 +216,17 @@ Sognare serpenti: significato, comportamento e contesto
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni ricorrenti: scene e contesto</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare</h3>
             <p class="text-sm text-gray-400">Perché continui a fare lo stesso sogno? Confronta le scene ricorrenti e il loro contesto personale.</p>
         </a>
         <a href="sogni-di-denti-che-cadono-significato-e-interpretazione" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di denti che cadono: significato e interpretazione</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sognare denti che cadono o si sgretolano: scenari e ricerca</h3>
             <p class="text-sm text-gray-400">Perché sogni di perdere i denti? Confronta gli scenari e le sensazioni al risveglio.</p>
         </a>
         <a href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di cadere: perché sogni di cadere nel vuoto</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sognare di cadere: significato, scenari e risvegli</h3>
             <p class="text-sm text-gray-400">Perché sogni di cadere nel vuoto? Scopri il significato psicologico.</p>
         </a>
   </div>

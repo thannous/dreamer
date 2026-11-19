@@ -172,20 +172,7 @@ Una entrada sola es solo una escena. En unas semanas, las notas te enseñan en q
 <p>
 Los sueños lúcidos se describen sobre todo durante el <a class="text-dream-salmon hover:underline" href="sueno-rem-suenos">sueño REM</a>, que ocupa más tiempo en la segunda mitad de la noche. Mantén tus horarios: recortar horas de sueño para meter más ejercicios juega en tu contra.
 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Apunta el sueño antes de que se borre</h4>
-<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta o escríbelo. Se transcribe y se guarda en tu diario, listo para completarlo después.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/">
-Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="reality-checks">Cómo hacer un test de realidad que sirva</h2>
 <p>
 Un test de realidad es una pausa breve en la que compruebas en serio si estás despierto, con la idea de que el hábito aparezca también en un sueño. Según la <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a>, hay poca evidencia de que los tests de realidad, por sí solos, provoquen sueños lúcidos, aunque podrían reforzar otras técnicas.
@@ -330,7 +317,10 @@ Trata la lucidez como algo que practicas notar, no como un resultado que te debe
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Tus señales de sueño ya están en tus sueños</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-Guarda cada sueño en tu <a class="text-dream-salmon hover:underline" href="guia-diario-suenos">diario de sueños</a> de Noctalia, por voz o por escrito, y después léelos uno al lado del otro. Los lugares, las personas y los fallos que se repiten son los detalles en los que fijarte esta noche.
+Guarda cada sueño en tu <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=guia-suenos-lucidos-principiantes_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p> de Noctalia, por voz o por escrito, y después léelos uno al lado del otro. Los lugares, las personas y los fallos que se repiten son los detalles en los que fijarte esta noche.
 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
 Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -415,13 +405,13 @@ El sueño lúcido en sí no se considera peligroso. Los métodos que interrumpen
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Significado de Sueños Recurrentes: Entender sus Mensajes</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sueños recurrentes: por qué se repite el mismo sueño y qué puede ayudar</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Soñar que se caen los dientes: significado e interpretación</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Soñar que se te caen los dientes: 7 pistas para entender este sueño</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -438,17 +428,17 @@ El sueño lúcido en sí no se considera peligroso. Los métodos que interrumpen
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas prácticas</h3>
                         <p class="text-sm text-gray-400">Diez hábitos sencillos para retener más fragmentos al despertar, desde despertarte con calma hasta anotar antes de moverte.</p>
                     </a>
                     <a href="por-que-olvidamos-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué olvidamos los sueños al despertar? Las explicaciones científicas</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué olvidamos los sueños al despertar? La ciencia lo explica</h3>
                         <p class="text-sm text-gray-400">Por qué los sueños se borran a los pocos minutos de despertar, qué papel tienen el sueño REM y la memoria, y hábitos sencillos para recordar más.</p>
                     </a>
                     <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: por qué se repite el mismo sueño y qué puede ayudar</h3>
                         <p class="text-sm text-gray-400">Por qué vuelve el mismo sueño, qué anotar entre un episodio y otro, y cuándo las pesadillas repetidas merecen una consulta médica.</p>
                     </a>
               </div>
@@ -458,6 +448,6 @@ El sueño lúcido en sí no se considera peligroso. Los métodos que interrumpen
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

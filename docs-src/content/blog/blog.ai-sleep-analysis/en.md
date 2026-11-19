@@ -181,20 +181,7 @@ A night in a sleep lab: electrodes on your scalp, a clip on your finger, belts a
                 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Keep what no sensor records</h4>
-<p class="text-sm text-gray-400 mb-4">No lab captures the story of your dream. In Noctalia, tell it out loud or type it when you wake up: it is transcribed and saved to your journal, so you can reread your dreams side by side.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-                                Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="ai-dream-analysis">What can AI do with your dream reports?</h2>
@@ -250,9 +237,10 @@ A night in a sleep lab: electrodes on your scalp, a clip on your finger, belts a
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia keeps the part of the night only you remember. Record your dream by voice or in writing, get it transcribed, and reread your entries to see what comes back.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=ai-sleep-analysis-dreams_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -330,13 +318,13 @@ A night in a sleep lab: electrodes on your scalp, a clip on your finger, belts a
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sleep Day, Environment and Dreams</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Sleep Day 2026: how your bedroom environment shapes your dreams</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dream-control-problem-solving">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Dream Control for Problem Solving</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Controlling your dreams to solve problems: what the Northwestern study really shows</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -352,17 +340,17 @@ A night in a sleep lab: electrodes on your scalp, a clip on your finger, belts a
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams: what really happens in your brain at night</h3>
 <p class="text-sm text-gray-400">Understanding the role of REM sleep in dream formation and memory consolidation.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="why-we-dream-science">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Why We Dream: What Science Says</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Why do we dream? What science knows, and what it still doesn't</h3>
 <p class="text-sm text-gray-400">Current scientific theories on the function of dreams and their role in survival.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-mental-health">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Mental Health</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and mental health: what your nights can (and can't) tell you</h3>
 <p class="text-sm text-gray-400">How dreams reflect and influence your psychological well-being.</p>
 </a>
 </div>

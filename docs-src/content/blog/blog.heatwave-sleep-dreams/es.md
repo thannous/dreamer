@@ -55,7 +55,7 @@
 <span class="text-sm text-purple-300/60">6 min de lectura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Ola de calor, sueño y sueños: por qué las noches calurosas cambian lo que recuerdas</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">Son las cuatro de la madrugada, la sábana se pega y el ventilador solo mueve aire caliente. Corrías por una estación, llegabas tarde a algo, y la escena se cortó de golpe. En plena ola de calor, mucha gente recuerda más trozos de sueños. El calor no escribe tus sueños: sobre todo cambia cuántas veces te despiertas y, por tanto, lo que alcanzas a retener.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed">La ventana está abierta de par en par, pero el aire nocturno apenas corre. Das la vuelta a la almohada buscando el lado fresco, vuelves a adormilarte y te despiertas por tercera vez antes del alba con media conversación aún en la cabeza. En plena ola de calor, mucha gente recuerda más trozos de sueños. El calor no escribe tus sueños: sobre todo cambia cuántas veces te despiertas y, por tanto, lo que alcanzas a retener.</p>
 </header>
 <figure class="mb-10 overflow-hidden rounded-2xl border border-white/10 bg-dream-purple/20">
 <img alt="Dormitorio caluroso de noche con fragmentos de sueños sobre la cama" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="1200">
@@ -94,7 +94,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Atrapa el sueño antes de que la mañana lo borre</h2>
 <p>Cuenta en voz alta el sueño y la noche, o escríbelos. Noctalia los transcribe y los guarda en tu diario: podrás releer tus sueños de ola de calor uno al lado del otro y ver qué vuelve cuando las noches refrescan.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/es/diario-de-suenos-por-voz">Graba tu próximo sueño por voz</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=ola-calor-sueno-suenos_es" rel="nofollow noopener noreferrer" target="_blank">Descargar Noctalia en Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </div>
 <h2>Preguntas frecuentes</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">¿Por qué siento que sueño más cuando hace calor?</summary><p class="mt-3">Probablemente no sueñas más. Te despiertas más a menudo y cada despertar puede atrapar un sueño en curso, así que por la mañana te quedan más fragmentos.</p></details>

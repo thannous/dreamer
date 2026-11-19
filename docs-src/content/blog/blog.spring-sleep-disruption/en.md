@@ -179,20 +179,7 @@
                 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Catch the dream before the light does</h4>
-<p class="text-sm text-gray-400 mb-4">With Noctalia, you tell your dream out loud as soon as you wake. It is transcribed and saved in your journal, and you can add a line about your night.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-                                See how voice journaling works <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="adaptation">What helps during the transition</h2>
@@ -251,9 +238,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Record each dream by voice or in writing as soon as you wake, with a note about your night. In Noctalia, you can reread them together and spot what comes back as the season turns.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start your dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=spring-sleep-disruption-dreams_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -331,13 +319,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sleep Debt: The Hidden Cost of Chronic Sleep Deprivation</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Sleep debt: how chronic sleep deprivation affects your health and dreams</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sleep-health-priority">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sleep Is Your #1 Health Lever</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Is sleep your #1 health lever? What the OHSU study really shows</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -353,17 +341,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="daylight-saving-time-sleep">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Health</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Daylight Saving Time and Sleep: How the Clock Change Disrupts Your Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Daylight saving time and sleep: what the clock change does to your nights and dreams</h3>
 <p class="text-sm text-gray-400">The abrupt one-hour shift of DST disrupts circadian rhythm, compresses REM sleep, and alters dream patterns for days.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams: Understanding the Dream Phase</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams: what really happens in your brain at night</h3>
 <p class="text-sm text-gray-400">When REM sleep happens in the night, why its dreams feel so vivid, and what cuts it short.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="why-we-forget-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Why do we forget our dreams? The science behind dream amnesia</h3>
 <p class="text-sm text-gray-400">Practical, science-backed techniques to improve your dream recall starting tonight.</p>
 </a>
 </div>

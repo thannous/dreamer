@@ -151,7 +151,10 @@ Rêver de mort : comprendre les scènes et leur contexte
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Gardez une trace à votre rythme</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Notez dans Noctalia la scène, les émotions et les questions que vous souhaitez conserver. Les interprétations restent des pistes personnelles, sans valeur de diagnostic ou de prédiction.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">Commencer un journal de rêves</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-de-mort_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -186,13 +189,13 @@ Rêver de mort : comprendre les scènes et leur contexte
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves d'Être Poursuivi : Signification et Interprétation</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêver d'être poursuivi : pourquoi ce rêve est si fréquent, et ce qu'il peut signifier</div>
       </div>
     </a>
     <a href="reves-eau" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves d'Eau : Signification des Rêves de Noyade, Océan et Inondation</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêver d’inondation et d’eau : signification selon le rêve</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -208,17 +211,17 @@ Rêver de mort : comprendre les scènes et leur contexte
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
-            <p class="text-sm text-gray-400">Pourquoi refaites-vous toujours le même rêve ? Découvrez ce que votre inconscient essaie de vous dire.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves récurrents : causes possibles et pistes utiles</h3>
+            <p class="text-sm text-gray-400">Détails à comparer lorsqu’un rêve revient et repères pour les cauchemars pénibles.</p>
         </a>
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de perdre ses dents : signification et interprétation</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve</h3>
             <p class="text-sm text-gray-400">Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus courantes.</p>
         </a>
         <a href="reves-de-chute" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi rêvez-vous de tomber ?</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi on rêve de tomber, et ce que cela peut signifier</h3>
             <p class="text-sm text-gray-400">Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique.</p>
         </a>
   </div>

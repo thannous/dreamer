@@ -148,9 +148,10 @@ Une réunion commence sans vous, une échéance approche ou votre boîte mail ne
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Gardez une trace de vos rêves</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Noctalia permet de garder une trace de vos rêves et de les relire. Le journal est un support de réflexion, pas une méthode garantie pour améliorer le sommeil. Si l’exercice vous pèse, vous pouvez l’interrompre.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Créer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-stress-travail_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -215,7 +216,7 @@ Une réunion commence sans vous, une échéance approche ou votre boîte mail ne
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-et-creativite">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Rêves et créativité : comment votre cerveau endormi résout des problèmes</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Rêves et créativité : comment le cerveau endormi aide à résoudre des problèmes</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -231,12 +232,12 @@ Une réunion commence sans vous, une échéance approche ou votre boîte mail ne
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="signification-reves-recurrents">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Rêves récurrents : comprendre leurs messages cachés</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Rêves récurrents : causes possibles et pistes utiles</h3>
 <p class="text-sm text-gray-400">Explorez pourquoi certains rêves reviennent sans cesse et ce que votre subconscient essaie de vous dire.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-sante-mentale">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et santé mentale : ce que vos nuits peuvent dire de vous, et ce qu'elles ne disent pas</h3>
 <p class="text-sm text-gray-400">Découvrez le lien profond entre les rêves et la santé mentale. Apprenez comment l'anxiété, la dépression et les traumatismes affectent vos rêves.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guide-cauchemars">

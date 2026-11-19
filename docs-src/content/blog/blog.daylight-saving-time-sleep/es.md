@@ -188,20 +188,7 @@ El cansancio suele pasar en una semana más o menos. Consulta con un médico si 
 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Anota tus sueños durante la semana del cambio</h4>
-<p class="text-sm text-gray-400 mb-4">Cuenta tu sueño en voz alta nada más despertar, o escríbelo. Noctalia lo transcribe y lo guarda en tu diario, para que puedas releer una junto a otra las noches de antes y de después del cambio de hora.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
-Probar el diario de sueños por voz <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="tips">Cómo adaptarte antes y después del cambio</h2>
@@ -246,9 +233,10 @@ Mientras tanto, la palanca más útil es personal: prepara el cambio unos días 
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Anota tu sueño por voz o por escrito al despertar. Noctalia lo transcribe y lo guarda en tu diario, para comparar las noches de antes y de después del cambio y ver qué se repite.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=horario-verano-sueno-suenos_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -329,13 +317,13 @@ Acuéstate y levántate entre 15 y 20 minutos antes cada día durante los tres o
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Art&iacute;culo anterior</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Controlar tus sue&ntilde;os para resolver problemas: el estudio que lo cambia todo</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Controlar tus sueños para resolver problemas: lo que muestra de verdad el estudio de Northwestern</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="deuda-sueno-salud-suenos">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Siguiente art&iacute;culo</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Deuda de sue&ntilde;o: c&oacute;mo la privaci&oacute;n cr&oacute;nica afecta tu salud y tus sue&ntilde;os</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Deuda de sueño y privación crónica: cómo afectan a tu salud y a tus sueños</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -351,17 +339,17 @@ Acuéstate y levántate entre 15 y 20 minutos antes cada día durante los tres o
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sue&ntilde;o REM y sue&ntilde;os: comprender la fase on&iacute;rica</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños: qué pasa de verdad en tu cerebro por la noche</h3>
 <p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="como-recordar-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Gu&iacute;a</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">C&oacute;mo recordar tus sue&ntilde;os</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas prácticas</h3>
 <p class="text-sm text-gray-400">T&eacute;cnicas pr&aacute;cticas respaldadas por la ciencia para mejorar tu recuerdo on&iacute;rico desde esta noche.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dia-sueno-medio-ambiente-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">D&iacute;a del Sue&ntilde;o 2026: c&oacute;mo tu entorno transforma tus sue&ntilde;os</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Día del Sueño 2026: cómo tu dormitorio influye en tus sueños</h3>
 <p class="text-sm text-gray-400">Cómo la luz, el ruido y la temperatura del dormitorio influyen en el sueño y en los sueños, y qué puedes ajustar esta noche.</p>
 </a>
 </div>
@@ -371,6 +359,6 @@ Acuéstate y levántate entre 15 y 20 minutos antes cada día durante los tres o
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional de la salud cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional de la salud cualificado.
 </p>
 </aside>

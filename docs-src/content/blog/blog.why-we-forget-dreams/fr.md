@@ -69,7 +69,7 @@
                     Pourquoi oublie-t-on ses rêves au réveil ? Ce que dit la science
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Vous vous réveillez avec un rêve encore là : un couloir, une voix familière, une sensation difficile à nommer. Vous attrapez votre téléphone, et le temps que l'écran s'allume, tout a disparu. Oublier ses rêves au réveil est normal. Voici ce que la recherche sur le sommeil sait de ce phénomène, et ce qui aide à en garder davantage.
+                    Vous ouvrez les yeux avec la fin d'un rêve encore nette : vous veniez de survoler des toits, ou de sentir le sol céder sous vos pieds. Vous vous retournez pour couper le réveil, et dix secondes plus tard il ne reste que la sensation. Oublier ses rêves au réveil est normal. Voici ce que la recherche sur le sommeil sait de ce phénomène, et ce qui aide à en garder davantage.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -236,21 +236,7 @@
 <p>
                     Au bout de quelques semaines, ces notes montrent aussi quelles nuits vous réussissent le mieux. Pour d'autres techniques, lisez notre guide <a class="text-dream-salmon hover:underline" href="comment-se-souvenir-de-ses-reves">comment se souvenir de ses rêves</a>.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Dites-le à voix haute avant qu'il s'efface</h4>
-<p class="text-sm text-gray-400 mb-4">Écrire les yeux à moitié ouverts n'est pas facile. Dans Noctalia, racontez votre rêve à voix haute dès le réveil : il est transcrit et rangé dans votre journal, prêt à être relu plus tard.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
-                                Essayer le journal de rêves vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h3>Rester immobile un instant</h3>
 <p>
                     Au réveil, gardez les yeux fermés et ne bougez pas pendant quelques secondes. Demandez-vous : où étais-je à l'instant ? Les images reviennent souvent une à une, parfois en partant de la fin du rêve. Bouger ou regarder un écran a tendance à couper le fil.
@@ -312,9 +298,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Avec Noctalia, racontez ou écrivez votre rêve dès le réveil. Vos notes restent dans un même journal : vous pouvez les relire côte à côte et repérer ce qui revient.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=pourquoi-oublie-reves-reveil_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16" id="faq">
@@ -404,13 +391,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Comment se souvenir de ses rêves : 10 techniques efficaces</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Comment se souvenir de ses rêves au réveil : 10 techniques simples</div>
       </div>
     </a>
     <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Signification des rêves récurrents : comprendre leurs messages</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêves récurrents : causes possibles et pistes utiles</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -427,17 +414,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="reves-premonitoires-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Les rêves peuvent-ils prédire l'avenir ? La science des rêves prémonitoires</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Les Rêves Peuvent-ils Prédire l'Avenir ? La Science Surprenante des Rêves Prémonitoires</h3>
             <p class="text-sm text-gray-400">Ce que disent les études contrôlées sur les rêves qui semblent prédire l'avenir, et comment le hasard et les biais de mémoire expliquent beaucoup de cas.</p>
         </a>
         <a href="reves-sante-mentale" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et santé mentale : ce que vos nuits peuvent dire de vous, et ce qu'elles ne disent pas</h3>
             <p class="text-sm text-gray-400">Comment l'anxiété, la dépression, le stress et les traumatismes se retrouvent dans les rêves, et quand des cauchemars fréquents justifient d'en parler à un professionnel.</p>
         </a>
         <a href="pourquoi-nous-revons-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi rêvons-nous ? La science derrière vos aventures nocturnes</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi rêvons-nous ? Ce que la science sait, et ce qu'elle ignore encore</h3>
             <p class="text-sm text-gray-400">Ce que la recherche a mesuré sur la mémoire, les émotions et la répétition des menaces pendant le rêve, et ce qui reste une hypothèse.</p>
         </a>
   </div>

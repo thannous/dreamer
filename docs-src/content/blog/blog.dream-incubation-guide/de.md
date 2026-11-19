@@ -269,21 +269,7 @@
 <li><strong>Frage für später:</strong> „Was muss ich übergeben, bevor ich gehe?“</li>
 </ul>
 <p>Der Traum hat nicht wörtlich geantwortet. Er hat auf eine Sorge gezeigt, um die du dich im Wachzustand kümmern kannst.</p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Den Traum festhalten, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Erzähl Noctalia deinen Traum gleich nach dem Aufwachen laut und ergänze die gewählte Frage. Er wird transkribiert und in deinem Tagebuch gespeichert, sodass du eine Woche Versuche nebeneinander lesen kannst.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
-                                Traumtagebuch per Sprache ansehen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="uses">Wonach kannst du deine Träume fragen?</h2>
 <p>
                     Die Praxis liefert vor allem Material zum Nachlesen. So nutzt du sie, ohne zu viel von ihr zu verlangen.
@@ -350,9 +336,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Halte jede Frage und jeden Traum in Noctalia fest, per Sprache oder schriftlich. Lies am Ende der Woche alles zusammen und sieh, was wiederkam und was nicht.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=trauminkubation-wie-sie-heute-abend-genau-das-trae_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -455,17 +442,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="so-erinnern-sie-sich-an-ihre-traeume-10-effektive-techniken" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Wie du dich an deine Träume erinnerst: 10 effektive Techniken</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">So erinnerst du dich an Träume: 10 praktische Techniken</h3>
             <p class="text-sm text-gray-400">Zehn einfache Gewohnheiten, mit denen du mehr Traumfragmente behältst, vom ruhigen Aufwachen bis zur Notiz vor dem Aufstehen.</p>
         </a>
         <a href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen, Bedeutung und wie man sie stoppt</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen und was dagegen helfen kann</h3>
             <p class="text-sm text-gray-400">Warum haben wir Albträume? Erfahre die Ursachen schlechter Träume, ihre Bedeutung und bewährte Techniken, um Albträume zu reduzieren und besser zu schlafen.</p>
         </a>
         <a href="schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Schlaflähmung erklärt: Warum du dich nicht bewegen kannst und wie du sie stoppst</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Schlaflähmung: warum du dich nicht bewegen kannst und wie du sie beendest</h3>
             <p class="text-sm text-gray-400">Vollständiger Ratgeber zum Verständnis der Schlaflähmung. Erfahre, was sie verursacht, warum Halluzinationen auftreten und bewährte Techniken zur Vorbeugung.</p>
         </a>
   </div>

@@ -172,20 +172,7 @@ One entry is just a scene. Over a few weeks, the notes show you what to watch fo
 <p>
 Lucid dreams are mostly reported from <a class="text-dream-salmon hover:underline" href="rem-sleep-dreams">REM sleep</a>, which takes up more of the second half of the night. Keep your usual hours: cutting sleep to fit in more exercises works against you.
 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Note the dream before it fades</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia, say your dream out loud or type it. It is transcribed and saved to your journal, ready to complete later.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="reality-checks">How to do a reality check that counts</h2>
 <p>
 A reality check is a short pause in which you seriously test whether you are awake, hoping the habit carries over into a dream. According to the <a class="text-dream-salmon hover:underline" href="https://www.sleepfoundation.org/dreams/lucid-dreams" rel="nofollow noopener noreferrer" target="_blank">Sleep Foundation</a>, there is little evidence that reality checks alone bring on lucid dreams, though they may support other techniques.
@@ -330,7 +317,10 @@ Treat lucidity as something you practice noticing, not a result you are owed by 
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Your dream signs are already in your dreams</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-Keep every dream in your Noctalia <a class="text-dream-salmon hover:underline" href="dream-journal-guide">dream journal</a>, by voice or in writing, then read them side by side. The places, people and glitches that keep coming back are the details to watch for tonight.
+Keep every dream in your Noctalia <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=lucid-dreaming-beginners-guide_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>, by voice or in writing, then read them side by side. The places, people and glitches that keep coming back are the details to watch for tonight.
 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
 Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -415,13 +405,13 @@ A lucid dream itself is not considered dangerous. Methods that interrupt the nig
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Recurring Dreams Meaning: Understanding Their Messages</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Recurring dreams: why the same dream keeps coming back, and what helps</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="teeth-falling-out-dreams" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Teeth Falling Out Dreams: Meaning and Interpretation</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Teeth falling out dreams: 7 possible meanings, and what research says</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -438,17 +428,17 @@ A lucid dream itself is not considered dangerous. Methods that interrupt the nig
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="how-to-remember-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">How to remember dreams: 10 practical recall techniques</h3>
                         <p class="text-sm text-gray-400">Practical recall habits to capture fragments on waking, before trying induction methods.</p>
                     </a>
                     <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Forget Our Dreams? The Science Behind Dream Amnesia</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Why do we forget our dreams? The science behind dream amnesia</h3>
                         <p class="text-sm text-gray-400">Why dreams fade within minutes of waking, what REM sleep and memory have to do with it, and simple habits to keep more of them.</p>
                     </a>
                     <a href="recurring-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring Dreams Meaning: Understanding Their Messages</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring dreams: why the same dream keeps coming back, and what helps</h3>
                         <p class="text-sm text-gray-400">Why the same dream keeps coming back, what to note between episodes, and when repeated nightmares are worth a doctor's visit.</p>
                     </a>
               </div>

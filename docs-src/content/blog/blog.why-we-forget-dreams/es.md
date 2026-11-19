@@ -69,7 +69,7 @@
                     ¿Por qué olvidamos los sueños al despertar? La ciencia lo explica
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    Te despiertas con un sueño todavía ahí: un pasillo, una voz conocida, una sensación difícil de nombrar. Coges el móvil y, cuando se enciende la pantalla, ya no queda nada. Olvidar los sueños al despertar es normal. Esto es lo que sabe la investigación sobre el sueño de por qué ocurre, y qué te ayuda a recordar más.
+                    Abres los ojos con el final de un sueño todavía nítido: acababas de volar sobre los tejados o de sentir que el suelo cedía bajo tus pies. Te giras para apagar la alarma y, diez segundos después, solo queda la sensación. Olvidar los sueños al despertar es normal. Esto es lo que sabe la investigación sobre el sueño de por qué ocurre, y qué te ayuda a recordar más.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -236,21 +236,7 @@
 <p>
                     Con unas semanas de notas así, también verás qué noches recuerdas mejor. Si quieres más técnicas, lee nuestra <a class="text-dream-salmon hover:underline" href="como-recordar-suenos">guía para recordar tus sueños</a>.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Cuéntalo en voz alta antes de que se borre</h4>
-<p class="text-sm text-gray-400 mb-4">Escribir con los ojos medio cerrados cuesta. En Noctalia, cuenta tu sueño en voz alta nada más despertar: se transcribe y se guarda en tu diario, listo para releerlo después.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
-                                Probar el diario de sueños por voz <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h3>Quedarte quieto un momento</h3>
 <p>
                     Al despertar, mantén los ojos cerrados y no te muevas durante unos segundos. Pregúntate: ¿dónde estaba hace un momento? Las imágenes suelen volver una a una, a veces empezando por el final del sueño. Moverte o mirar una pantalla tiende a cortar el hilo.
@@ -330,9 +316,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Con Noctalia, cuenta o escribe tu sueño nada más despertar. Tus notas quedan en un mismo diario: puedes releerlas una junto a otra y ver qué se repite.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=por-que-olvidamos-suenos_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16" id="faq">
@@ -422,13 +409,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Cómo recordar tus sueños: 10 técnicas efectivas</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Cómo recordar tus sueños: 10 técnicas prácticas</div>
       </div>
     </a>
     <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Significado de Sueños Recurrentes: Entender sus Mensajes</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sueños recurrentes: por qué se repite el mismo sueño y qué puede ayudar</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -445,17 +432,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="suenos-premonitorios-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Pueden los sueños predecir el futuro? La ciencia de los sueños premonitorios</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Pueden los sueños predecir el futuro? La sorprendente ciencia de los sueños premonitorios</h3>
             <p class="text-sm text-gray-400">Lo que dicen los estudios controlados sobre los sueños que parecen predecir el futuro, y cómo el azar y los sesgos de memoria explican muchos casos.</p>
         </a>
         <a href="suenos-salud-mental" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y salud mental: lo que tus noches pueden decir de ti, y lo que no</h3>
             <p class="text-sm text-gray-400">Cómo la ansiedad, la depresión, el estrés y el trauma aparecen en los sueños, y cuándo conviene hablar de las pesadillas frecuentes con un profesional.</p>
         </a>
         <a href="por-que-sonamos-ciencia" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué soñamos? La ciencia detrás de tus aventuras nocturnas</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué soñamos? Lo que la ciencia sabe y lo que todavía no</h3>
             <p class="text-sm text-gray-400">Lo que la investigación ha medido sobre la memoria, las emociones y el ensayo de amenazas en los sueños, y lo que sigue siendo hipótesis.</p>
         </a>
   </div>
@@ -465,6 +452,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

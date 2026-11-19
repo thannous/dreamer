@@ -278,21 +278,7 @@
 <p>
                     Imagery rehearsal therapy, described in detail by Barry Krakow and Antonio Zadra, follows three steps: write down the recurring dream, change its course into a less threatening version, then rehearse the new version in your mind for a few minutes each day while awake. It has mainly been studied for recurring nightmares, and the American Academy of Sleep Medicine lists it among the treatments that may be used for nightmare disorder. If the dream is linked to trauma, practice it with a professional.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Note the dream before it fades</h4>
-<p class="text-sm text-gray-400 mb-4">With Noctalia, tell your dream out loud as soon as you wake up. It is transcribed and saved in your journal, so you can reread your anxious dreams side by side and spot what keeps coming back.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="seek-help">When to talk to a professional</h2>
 <p>
                     Most anxiety dreams need no treatment. They deserve medical advice when they start to weigh on your sleep or your days.
@@ -323,9 +309,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Keep your anxiety dreams in Noctalia, with what you felt and what was going on that week. Reread side by side, they show when they come back and what tends to come with them.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=anxiety-dreams-meaning_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -417,13 +404,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Dreams and Creativity</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Dreams and creativity: how your sleeping brain helps solve problems</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="children-dreams-guide">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Children's Dreams Guide</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Children's dreams: what kids dream about and how to help</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -439,17 +426,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="stop-nightmares-guide">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: Causes, Meaning, and How to Stop Them</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: causes, meaning and how to stop them</h3>
 <p class="text-sm text-gray-400">Understand why nightmares happen and learn proven techniques to reduce their frequency.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-mental-health">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Mental Health: How Your Sleep Reveals Your Mind</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and mental health: what your nights can (and can't) tell you</h3>
 <p class="text-sm text-gray-400">How anxiety, depression, stress and trauma show up in dreams, and when frequent nightmares are worth raising with a professional.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="stress-dreams-work">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Complete Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Stress Dreams About Work: Why Your Job Follows You to Sleep</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dreaming About Work Every Night? What Stress Dreams May Reflect</h3>
 <p class="text-sm text-gray-400">Understand why you dream about work and proven strategies to stop your career from invading your sleep.</p>
 </a>
 </div>

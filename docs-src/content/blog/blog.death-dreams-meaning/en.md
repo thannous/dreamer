@@ -151,7 +151,10 @@ Dreams about death: meaning, grief and different scenarios
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Keep a record at your own pace</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Use Noctalia to write down the scene, feelings and questions you want to keep. Treat interpretations as possibilities, not predictions or diagnoses.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">Start a dream journal</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=death-dreams-meaning_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -186,13 +189,13 @@ Dreams about death: meaning, grief and different scenarios
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Being Chased Dreams: Meaning and Interpretation</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Being chased dreams: why you dream of being chased, and what it can mean</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="water-dreams-meaning" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Water Dreams: Meaning of Drowning, Ocean, and Flood Dreams</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Water and flood dreams: what they can mean, detail by detail</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -208,17 +211,17 @@ Dreams about death: meaning, grief and different scenarios
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="recurring-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring Dreams Meaning: Understanding Their Messages</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring dreams: why the same dream keeps coming back, and what helps</h3>
                         <p class="text-sm text-gray-400">Why do you keep having the same dream? Compare recurring scenes and their personal context.</p>
                     </a>
                     <a href="teeth-falling-out-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Teeth Falling Out Dreams: Meaning and Interpretation</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Teeth falling out dreams: 7 possible meanings, and what research says</h3>
                         <p class="text-sm text-gray-400">Why do you dream about losing your teeth? Discover the 7 most common interpretations.</p>
                     </a>
                     <a href="falling-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Falling Dreams Meaning: Why You Dream of Falling</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Why do you dream of falling and wake up?</h3>
                         <p class="text-sm text-gray-400">Why do you dream about falling into the void? Discover the psychological meaning.</p>
                     </a>
               </div>

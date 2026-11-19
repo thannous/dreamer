@@ -263,20 +263,7 @@
 <p>
                     In 2009, Matthew Walker and Els van der Helm proposed an "overnight therapy" hypothesis: because noradrenaline is very low during REM, the brain could reactivate emotional memories while softening their charge. It is an influential idea, still being tested. In practice, the emotion you wake up with is often more useful to write down than the setting of the dream.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Catch your morning dream before it fades</h4>
-<p class="text-sm text-gray-400 mb-4">The most vivid dreams often come in the last REM periods, just before you wake. In Noctalia, tell your dream out loud: it is transcribed and saved in your journal, ready to reread.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-                                Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="optimize">How can you protect your REM sleep?</h2>
 <p>
                     There is no proven trick to "boost" REM. Since it is concentrated in the second half of the night, the most effective lever is simple: sleep long enough, at regular times.
@@ -391,9 +378,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Tell Noctalia your dream when you wake, by voice or in writing. Then reread your dreams side by side and see what comes back from one night to the next.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=rem-sleep-dreams_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -482,13 +470,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Why Do We Dream? The Science Behind Your Nightly Adventures</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Why do we dream? What science knows, and what it still doesn't</div>
       </div>
     </a>
     <a href="dream-interpretation-history" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">The History of Dream Interpretation: From Ancient Temples to Modern Science</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">The history of dream interpretation: from ancient temples to modern science</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -505,17 +493,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Forget Our Dreams? The Science Behind Dream Amnesia</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Why do we forget our dreams? The science behind dream amnesia</h3>
             <p class="text-sm text-gray-400">Why dreams fade within minutes of waking, what REM sleep and memory have to do with it, and simple habits to keep more of them.</p>
         </a>
         <a href="precognitive-dreams-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Can Dreams Predict the Future? The Science of Precognitive Dreams</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Can Dreams Predict the Future? What Science Shows</h3>
             <p class="text-sm text-gray-400">What controlled studies say about dreams that seem to predict the future, and how coincidence and memory bias explain many cases.</p>
         </a>
         <a href="dreams-mental-health" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Mental Health: How Your Sleep Reveals Your Mind</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and mental health: what your nights can (and can't) tell you</h3>
             <p class="text-sm text-gray-400">How anxiety, depression, stress and trauma show up in dreams, and when frequent nightmares are worth raising with a professional.</p>
         </a>
   </div>

@@ -188,20 +188,7 @@ La stanchezza di solito passa in una settimana circa. Parlane con il medico se d
 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Annota i tuoi sogni nella settimana del cambio</h4>
-<p class="text-sm text-gray-400 mb-4">Racconta il sogno ad alta voce appena sveglio, oppure scrivilo. Noctalia lo trascrive e lo conserva nel tuo diario, così puoi rileggere fianco a fianco le notti prima e dopo il cambio dell'ora.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
-Prova il diario dei sogni vocale <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="tips">Come adattarsi prima e dopo il cambio</h2>
@@ -246,9 +233,10 @@ Nel frattempo, la leva più utile è personale: preparare il cambio qualche gior
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Registra il tuo sogno a voce o per iscritto al risveglio. Noctalia lo trascrive e lo conserva nel tuo diario, così puoi confrontare le notti prima e dopo il cambio e notare che cosa ritorna.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=ora-legale-sonno-sogni_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -328,13 +316,13 @@ Vai a letto e alzati 15-20 minuti prima ogni giorno nei tre o quattro giorni pre
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Controllare i sogni per risolvere problemi: lo studio che cambia tutto</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Controllare i sogni per risolvere problemi: cosa mostra davvero lo studio di Northwestern</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="debito-sonno-salute-sogni">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Debito di sonno: come la privazione cronica influisce sulla salute e sui sogni</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Debito di sonno e privazione cronica: come influiscono sulla salute e sui sogni</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -350,17 +338,17 @@ Vai a letto e alzati 15-20 minuti prima ogni giorno nei tre o quattro giorni pre
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere la fase onirica</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: cosa succede davvero nel tuo cervello di notte</h3>
 <p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche pratiche</h3>
 <p class="text-sm text-gray-400">Tecniche pratiche supportate dalla scienza per migliorare il ricordo dei sogni da stanotte.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="giornata-sonno-ambiente-sogni">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Giornata del Sonno 2026: come il tuo ambiente trasforma i sogni</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Giornata del Sonno 2026: come la tua camera influisce sui tuoi sogni</h3>
 <p class="text-sm text-gray-400">Come luce, rumore e temperatura della camera influiscono sul sonno e sui sogni, e cosa puoi regolare stasera.</p>
 </a>
 </div>

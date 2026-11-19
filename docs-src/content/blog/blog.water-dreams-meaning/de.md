@@ -261,20 +261,7 @@
 <p>
                     Ein einzelner Eintrag beweist nichts. Über mehrere Nächte siehst du, welche Spur sich hält.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halte die Details fest, bevor sie verblassen</h4>
-<p class="text-sm text-gray-400 mb-4">Sprich deinen Traum in Noctalia direkt nach dem Aufwachen ein oder tipp ihn. Er wird transkribiert und mit Ort, Wasser und Gefühl in deinem Tagebuch gespeichert, sodass du deine Wasserträume später nebeneinander lesen kannst.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/ki-traumdeutung-app">
-                                Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="psychology">Was die Forschung sagt und wie Jung und Freud es sahen</h2>
 <h3>Was die Forschung stützt</h3>
 <p>
@@ -360,9 +347,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Bewahre deine Wasserträume in Noctalia auf, mit Ort, Wasser und Gefühl. Wenn du sie nebeneinander liest, siehst du, wann sie wiederkommen und was sie begleitet.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=wassertraeume-bedeutung-von-ertrinkungs-ozean-und-_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -434,13 +422,13 @@ Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Ome
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Todesträume: Bedeutung und Deutung</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume vom Tod: Bedeutung und was sie nicht vorhersagen</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume über deinen Ex: Was sie wirklich bedeuten</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Träume vom Ex: Was sie bedeuten können und was nicht</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -457,17 +445,17 @@ Klares Wasser geht oft mit Erleichterung oder Klarheit einher, ist aber kein Ome
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann</h3>
                         <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was du zwischen den Episoden notieren kannst und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
                     </a>
                     <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt</h3>
                         <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die du achten kannst.</p>
                     </a>
                     <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum du vom Fallen träumst</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann</h3>
                         <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was du nach dem Aufwachen notieren kannst.</p>
                     </a>
               </div>

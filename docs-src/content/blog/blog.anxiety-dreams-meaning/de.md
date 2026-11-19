@@ -278,20 +278,7 @@
 <p>
                     Die Imagery Rehearsal Therapy (IRT), ausführlich beschrieben von Barry Krakow und Antonio Zadra, umfasst drei Schritte: den wiederkehrenden Traum aufschreiben, seinen Verlauf in eine weniger bedrohliche Fassung ändern und diese neue Fassung im Wachzustand täglich einige Minuten lang innerlich durchgehen. Untersucht wurde sie vor allem bei wiederkehrenden Albträumen; die American Academy of Sleep Medicine zählt sie zu den Behandlungen, die bei einer Albtraumstörung eingesetzt werden können. Hängt der Traum mit einem Trauma zusammen, übe sie mit fachlicher Begleitung.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halte den Traum fest, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Erzähl deinen Traum in Noctalia direkt nach dem Aufwachen laut. Er wird transkribiert und in deinem Tagebuch gespeichert, sodass du deine Angstträume nebeneinander lesen und erkennen kannst, was wiederkehrt.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-                                Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="seek-help">Wann fachlicher Rat sinnvoll ist</h2>
 <p>
                     Die meisten Angstträume brauchen keine Behandlung. Ärztlichen Rat verdienen sie, wenn sie anfangen, auf deinen Schlaf oder deinen Alltag zu drücken.
@@ -322,9 +309,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Bewahre deine Angstträume in Noctalia auf, zusammen mit deinem Gefühl und dem, was in dieser Woche los war. Nebeneinander gelesen zeigen sie, wann sie wiederkommen und was sie begleitet.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=angsttraeume-bedeutung_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -416,13 +404,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Träume und Kreativität: Wie dein schlafendes Gehirn Probleme löst</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Träume und Kreativität: Wie das schlafende Gehirn beim Lösen von Problemen hilft</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="kindertraeume-ratgeber">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Kinderträume: Wovon Kinder träumen und wie man ihnen hilft</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Kinderträume: Wovon Kinder träumen und wie du helfen kannst</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -438,12 +426,12 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Leitfaden</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen, Bedeutung und wie man sie stoppt</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen und was dagegen helfen kann</h3>
 <p class="text-sm text-gray-400">Mögliche Einflussfaktoren, praktische Beobachtung und Hinweise zu professioneller Unterstützung.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit vorsichtig einordnen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Was deine Nächte über dich sagen können (und was nicht)</h3>
 <p class="text-sm text-gray-400">Was Traumberichte zeigen können, was sie nicht diagnostizieren und wann Beschwerden fachlich abgeklärt werden sollten.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="stresstraeume-von-der-arbeit-warum-ihr-job-sie-in-den-schlaf-begleitet">

@@ -105,6 +105,19 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">¿Y si sois vosotros quienes soñáis con la vuelta?</h2>
 <p class="text-purple-100/80 leading-relaxed">Los padres tampoco se libran: retraso, verja cerrada, la antigua escuela reencontrada. Si vuestras propias noches retoman los escenarios escolares en agosto, nuestro artículo sobre <a class="text-dream-salmon hover:underline" href="sonar-volver-escuela">soñar con volver a la escuela</a> analiza estos escenarios del lado adulto — transición, evaluación y estrés de la vuelta.</p>
 </section>
+
+<!-- CTA Section -->
+<aside class="glass-panel rounded-3xl p-8 md:p-10 my-12 text-center border border-dream-salmon/20">
+<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+<i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
+</div>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Anota tus propios sueños en la vuelta al cole</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Cuando el cambio de horario altera el descanso en casa, Noctalia permite a los adultos dictar sus sueños al despertar y ver qué se repite.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=pesadillas-vuelta-al-cole-ninos_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
+</aside>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">FAQ</h2>
 <div class="grid gap-4">

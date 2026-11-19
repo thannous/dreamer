@@ -58,7 +58,14 @@
 <li><strong>Pubblicità:</strong> niente vendita di dati né annunci mirati, nero su bianco.</li>
 </ul>
 <h2>Cosa risponde Noctalia</h2>
-<p>Secondo la nostra <a class="text-dream-salmon hover:underline" href="/it/privacy-policy">informativa privacy</a>, la dettatura usa il riconoscimento vocale del dispositivo o del browser, che può elaborare la voce localmente o inviarla al proprio fornitore. Alcune versioni dell'app possono anche inviare temporaneamente l'audio a Google Cloud Speech-to-Text tramite Noctalia. Il testo va ad Anthropic (Claude) per analisi e conversazione, e a Google (Gemini) per le immagini e, se necessario, per prepararne le istruzioni a partire dal sogno, senza addestrare modelli generali quando il servizio lo consente. Analisi, conversazione e immagini avvengono solo dopo che accetti nell'app. Diario ospitato nell'UE, niente vendita di dati né annunci mirati. Puoi <a class="text-dream-salmon hover:underline" href="/it/eliminazione-account">eliminare l'account</a> in Impostazioni; i dati vengono di norma cancellati entro 30 giorni.</p>
+<p>Ecco cosa indica la nostra <a class="text-dream-salmon hover:underline" href="/it/privacy-policy">informativa privacy</a>, punto per punto:</p>
+<ul>
+<li><strong>Audio:</strong> la dettatura usa il riconoscimento vocale del dispositivo o del browser, che può elaborare la voce localmente o inviarla al proprio fornitore. Alcune versioni dell'app possono anche inviare temporaneamente l'audio a Google Cloud Speech-to-Text tramite Noctalia.</li>
+<li><strong>Provider IA:</strong> il testo va ad Anthropic (Claude) per analisi e conversazione, e a Google (Gemini) per le immagini e, se necessario, per prepararne le istruzioni a partire dal sogno. Analisi, conversazione e immagini avvengono solo dopo che accetti nell'app.</li>
+<li><strong>Addestramento:</strong> l'addestramento di modelli generali è disattivato quando il servizio lo consente.</li>
+<li><strong>Cancellazione:</strong> puoi <a class="text-dream-salmon hover:underline" href="/it/eliminazione-account">eliminare l'account</a> in Impostazioni; i dati vengono di norma cancellati entro 30 giorni.</li>
+<li><strong>Pubblicità e hosting:</strong> il diario è ospitato nell'UE, senza vendita di dati né annunci mirati.</li>
+</ul>
 <h2>Che cosa cambia con l'AI Act europeo</h2>
 <p>L'AI Act, adottato nel 2024, si applica a tappe dal 2025. Un diario dei sogni non rientra tra gli usi ad alto rischio; se chatti con un'IA, devi esserne informato. Un bollino «conforme all'AI Act» dice quindi poco sulle tue note: accesso e cancellazione dipendono dal GDPR.</p>
 <h2>Una buona analisi resta correggibile</h2>
@@ -66,7 +73,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Racconta il sogno, tieni il testo</h2>
 <p>In Noctalia racconta il sogno a voce al risveglio: viene trascritto nel diario e la registrazione non viene conservata. Poi rileggi i tuoi sogni fianco a fianco.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/it/diario-dei-sogni-vocale">Prova il diario dei sogni vocale</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=privacy-ia-diario-sogni_it" rel="nofollow noopener noreferrer" target="_blank">Scarica Noctalia su Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </div>
 </section>
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">

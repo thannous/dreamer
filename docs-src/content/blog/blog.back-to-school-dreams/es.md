@@ -113,6 +113,19 @@
 <p class="text-purple-100/80 leading-relaxed mb-4">Estos contenidos se complementan sin solaparse. La <a class="text-dream-salmon hover:underline" href="../simbolos/escuela">ficha del símbolo de la escuela</a> sigue siendo la referencia rápida para soñar con la escuela en general: aulas, deberes, timbres. Este artículo cubre la intención más específica de la vuelta: la antigua escuela, el primer día, la reanudación después del verano.</p>
 <p class="text-purple-100/80 leading-relaxed">Si en el sueño el examen es el centro — hojas por rellenar, suspensos, no haber estudiado — la lectura adecuada es la dedicada a <a class="text-dream-salmon hover:underline" href="sonar-con-examen-significado">soñar con un examen</a>, que trata exclusivamente evaluación, fracaso y preparación.</p>
 </section>
+
+<!-- CTA Section -->
+<aside class="glass-panel rounded-3xl p-8 md:p-10 my-12 text-center border border-dream-salmon/20">
+<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+<i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
+</div>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Anota tus sueños de colegio cuando vuelven</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Dicta o escribe tu sueño al despertar en Noctalia. Releer tus entradas juntas te muestra qué etapas los traen de vuelta.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sonar-volver-escuela_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
+</aside>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">FAQ</h2>
 <div class="grid gap-4">

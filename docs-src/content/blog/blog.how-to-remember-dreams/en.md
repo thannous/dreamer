@@ -214,21 +214,7 @@ Writing half asleep is slow, and some mornings you can’t find the pen. <strong
 <p>
 That is the idea behind Noctalia: you tell the app your dream when you wake up, and it transcribes it into your journal. Read how the <a class="text-dream-salmon hover:underline" href="/en/voice-dream-journal">voice dream journal</a> works, or compare voice, text, privacy and pricing in our guide to the <a class="text-dream-salmon hover:underline" href="/en/dream-journal-apps">best dream journal apps</a>.
 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Say it before it fades</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia, tell your dream out loud with your eyes still half closed. It is transcribed and saved to your journal, ready to reread once you are awake.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-See the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="technique-7">7. A quiet minute before sleep</h2>
 <p>
 If you like to wind down, take a minute in bed to breathe normally and let your thoughts pass. Finish by setting your journal or phone where your hand will find it. It helps you relax; it is not proven to boost recall. If it feels like homework, drop it.
@@ -297,9 +283,10 @@ What matters is regularity. Note even the smallest fragment, and on blank mornin
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 With Noctalia, you speak or type your dream as soon as you wake. It is transcribed and saved, and over the weeks you can reread your dreams side by side to see what keeps coming back.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=how-to-remember-dreams_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -387,7 +374,7 @@ Write “no dream this morning” and how you feel, then get on with your day. I
     <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Why Do We Forget Our Dreams? The Science Behind Dream Amnesia</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Why do we forget our dreams? The science behind dream amnesia</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -404,17 +391,17 @@ Write “no dream this morning” and how you feel, then get on with your day. I
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="dream-incubation-guide" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Dream Incubation: How to Dream About Exactly What You Want Tonight</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Dream incubation: how to ask for a dream tonight, and what to expect</h3>
             <p class="text-sm text-gray-400">A six-step method for choosing a question before sleep and noting what comes back on waking, with what research shows and its limits.</p>
         </a>
         <a href="stop-nightmares-guide" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: Causes, Meaning, and How to Stop Them</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: causes, meaning and how to stop them</h3>
             <p class="text-sm text-gray-400">Why do we have nightmares? Learn the causes of bad dreams, what they mean, and proven techniques to reduce nightmare frequency and sleep better.</p>
         </a>
         <a href="sleep-paralysis-guide" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sleep Paralysis Explained: Why You Can't Move and How to Stop It</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sleep paralysis: why you can't move and how to stop it</h3>
             <p class="text-sm text-gray-400">Complete guide to understanding sleep paralysis. Learn what causes it, why hallucinations occur, and proven techniques to prevent and stop episodes.</p>
         </a>
   </div>

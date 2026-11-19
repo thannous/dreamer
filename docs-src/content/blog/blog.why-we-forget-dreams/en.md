@@ -69,7 +69,7 @@
                     Why do we forget our dreams? The science behind dream amnesia
                 </h1>
 <p class="text-lg text-purple-200/80 leading-relaxed">
-                    You wake up with a dream still there: a corridor, a familiar voice, a feeling you can't quite name. You reach for your phone, and by the time the screen lights up, it's gone. Forgetting dreams like this is normal. Here is what sleep research knows about why it happens, and what helps you keep more of them.
+                    You open your eyes with the end of a dream still sharp: you were soaring over rooftops, or feeling the ground give way beneath your feet. You turn over to silence the alarm, and ten seconds later only the feeling is left. Forgetting dreams like this is normal. Here is what sleep research knows about why it happens, and what helps you keep more of them.
                 </p>
 </header>
 <!-- Author Byline (E-E-A-T) -->
@@ -236,21 +236,7 @@
 <p>
                     After a few weeks, entries like this one also show you which nights you remember best. For more techniques, read our guide on <a class="text-dream-salmon hover:underline" href="how-to-remember-dreams">how to remember your dreams</a>.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Say it out loud before it fades</h4>
-<p class="text-sm text-gray-400 mb-4">Writing with half-open eyes is hard. In Noctalia, tell your dream out loud as soon as you wake up: it is transcribed and saved in your journal, ready to reread later.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-                                Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h3>Stay still for a moment</h3>
 <p>
                     When you wake up, keep your eyes closed and don't move for a few seconds. Ask yourself: where was I just now? Images often come back one by one, sometimes starting from the end of the dream. Moving or looking at a screen tends to cut that thread.
@@ -321,9 +307,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     With Noctalia, speak or type your dream the moment you wake up. Your entries stay in one journal, so you can reread them side by side and spot what comes back.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=why-we-forget-dreams_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16" id="faq">
@@ -413,13 +400,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">How to Remember Your Dreams: 10 Effective Techniques</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Why do we forget our dreams? The science behind dream amnesia</div>
       </div>
     </a>
     <a href="recurring-dreams-meaning" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Recurring Dreams Meaning: Understanding Their Messages</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Recurring dreams: why the same dream keeps coming back, and what helps</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -436,17 +423,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="precognitive-dreams-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Can Dreams Predict the Future? The Science of Precognitive Dreams</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Can Dreams Predict the Future? What Science Shows</h3>
             <p class="text-sm text-gray-400">What controlled studies say about dreams that seem to predict the future, and how coincidence and memory bias explain many cases.</p>
         </a>
         <a href="dreams-mental-health" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Mental Health: How Your Sleep Reveals Your Mind</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and mental health: what your nights can (and can't) tell you</h3>
             <p class="text-sm text-gray-400">How anxiety, depression, stress and trauma show up in dreams, and when frequent nightmares are worth raising with a professional.</p>
         </a>
         <a href="why-we-dream-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Dream? The Science Behind Your Nightly Adventures</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Why do we dream? What science knows, and what it still doesn't</h3>
             <p class="text-sm text-gray-400">What dream research has measured about memory, emotion and threat rehearsal, and which explanations are still theory.</p>
         </a>
   </div>

@@ -261,20 +261,7 @@
 <p>
                     One entry proves nothing. Over several nights, you will see which lead holds up.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Save the details before they fade</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia, say your dream out loud or type it as soon as you wake up. It is transcribed and saved to your journal with the place, the water and your emotion, so you can read your water dreams side by side later.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/ai-dream-interpretation-app">
-                                Try Noctalia for free <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="psychology">What research says, and what Jung and Freud thought</h2>
 <h3>What research supports</h3>
 <p>
@@ -360,9 +347,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Keep your water dreams in Noctalia, with the place, the water and what you felt. Reading them together shows you when they come back and what tends to come with them.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=water-dreams-meaning_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -434,13 +422,13 @@ Clear water often comes with a pleasant feeling of relief or clarity, but it is 
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Dreams About Death: Meaning and Interpretation</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Dreams about death: meaning, grief and different scenarios</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="dreams-about-ex" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Dreams About Your Ex: What They Really Mean</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Dreams about an ex: scenarios, feelings and meaning</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -457,17 +445,17 @@ Clear water often comes with a pleasant feeling of relief or clarity, but it is 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="recurring-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring Dreams Meaning: Understanding Their Messages</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Recurring dreams: why the same dream keeps coming back, and what helps</h3>
                         <p class="text-sm text-gray-400">Why the same dream keeps coming back, what to note between episodes, and when repeated nightmares are worth a doctor's visit.</p>
                     </a>
                     <a href="teeth-falling-out-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Teeth Falling Out Dreams: Meaning and Interpretation</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Teeth falling out dreams: 7 possible meanings, and what research says</h3>
                         <p class="text-sm text-gray-400">Seven possible readings of dreams about teeth falling out, from jaw tension to fear of being judged, and the variations worth noting.</p>
                     </a>
                     <a href="falling-dreams-meaning" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Falling Dreams Meaning: Why You Dream of Falling</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Why do you dream of falling and wake up?</h3>
                         <p class="text-sm text-gray-400">Why falling dreams happen, from the hypnic jerk at sleep onset to long falls, and what to note when you wake.</p>
                     </a>
               </div>

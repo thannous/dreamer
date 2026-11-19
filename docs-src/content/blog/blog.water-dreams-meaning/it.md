@@ -29,7 +29,7 @@
   "nextPath": "/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente",
   "preloadImage": "/img/blog/water-dreams-meaning.webp",
   "jsonLd": [
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Sognare acqua e alluvioni: significato in base ai dettagli\",\n  \"description\": \"Cosa significa sognare alluvioni, acqua pulita, acqua sporca, casa allagata o acqua di mare, e come leggerlo attraverso le emozioni.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/it/chi-siamo\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-09\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione\"\n  },\n  \"inLanguage\": \"it\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 913,\n  \"timeRequired\": \"PT4M\",\n  \"url\": \"https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione\"\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"headline\": \"Sognare acqua e alluvioni: significato in base ai dettagli\",\n  \"description\": \"Cosa significa sognare alluvioni, acqua pulita, acqua sporca, casa allagata o acqua di mare, e come leggerlo attraverso le emozioni.\",\n  \"image\": {\n    \"@type\": \"ImageObject\",\n    \"url\": \"https://noctalia.app/img/blog/water-dreams-meaning.webp\",\n    \"width\": 1200,\n    \"height\": 630\n  },\n  \"author\": [\n    {\n      \"@type\": \"Person\",\n      \"@id\": \"https://noctalia.app/it/chi-siamo#person\",\n      \"name\": \"Thanh Chau\",\n      \"jobTitle\": \"Founder & Publication Director\",\n      \"url\": \"https://noctalia.app/it/chi-siamo\",\n      \"worksFor\": {\n        \"@type\": \"Organization\",\n        \"@id\": \"https://noctalia.app/#organization\",\n        \"name\": \"Noctalia\",\n        \"url\": \"https://noctalia.app\"\n      }\n    },\n    {\n      \"@type\": \"Organization\",\n      \"@id\": \"https://noctalia.app/#organization\",\n      \"name\": \"Noctalia\",\n      \"url\": \"https://noctalia.app\",\n      \"logo\": {\n        \"@type\": \"ImageObject\",\n        \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n      }\n    }\n  ],\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"url\": \"https://noctalia.app\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  },\n  \"datePublished\": \"2025-12-11\",\n  \"dateModified\": \"2026-07-09\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione\"\n  },\n  \"inLanguage\": \"it\",\n  \"isAccessibleForFree\": true,\n  \"wordCount\": 1960,\n  \"timeRequired\": \"PT9M\",\n  \"url\": \"https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione\"\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"FAQPage\",\n  \"mainEntity\": [\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Cosa significa sognare acqua?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"L’acqua nei sogni rappresenta emozioni, ricordi e stati interiori. Il significato cambia se l’acqua è pulita, sporca, calma, profonda o traboccante.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Cosa significa sognare alluvioni?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"Sognare alluvioni indica emozioni, stress o cambiamenti difficili da contenere.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Cosa significa sognare un’alluvione di acqua di mare?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"L’acqua di mare aggiunge profondità emotiva e incertezza. Può mostrare emozioni antiche o intense che entrano nella vita cosciente.\"\n      }\n    },\n    {\n      \"@type\": \"Question\",\n      \"name\": \"Cosa significa sognare una casa allagata?\",\n      \"acceptedAnswer\": {\n        \"@type\": \"Answer\",\n        \"text\": \"La casa rappresenta il mondo intimo. Una casa allagata suggerisce che preoccupazioni, conflitti o emozioni intense stanno invadendo il tuo spazio sicuro.\"\n      }\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Risorse\",\n      \"item\": \"https://noctalia.app/it/blog/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"name\": \"Sogni d'acqua\",\n      \"item\": \"https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione\"\n    }\n  ]\n}"
   ],
@@ -61,7 +61,7 @@
 <a class="text-xs font-mono text-purple-200/70 border border-white/10 rounded-full px-3 py-1 hover:text-white hover:border-dream-salmon/30 transition-colors" href="significati-dei-sogni-interpretazione-e-simboli">Argomento: significati dei sogni</a>
 <span aria-hidden="true" class="w-full sm:hidden"></span>
 <span class="text-sm text-purple-300/60">Pubblicato l'11 dicembre 2025</span>
-<span class="text-sm text-purple-300/60">3 minuti di lettura</span>
+<span class="text-sm text-purple-300/60">9 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">
                     Sognare acqua e alluvioni: significato in base ai dettagli
@@ -138,7 +138,7 @@
 <h3 class="font-serif text-lg text-dream-cream"><a class="text-dream-cream hover:text-dream-salmon transition-colors" href="../simboli/oceano">Sogni sull'oceano</a></h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Il <a class="text-dream-salmon hover:underline" href="../simboli/oceano">oceano</a> rappresenta il <strong>vasto inconscio, emozioni collettive o le infinite possibilità della vita</strong>. Le sue dimensioni possono sembrare maestose e travolgenti, riflettendo ciò che potresti provare riguardo alla profondità e al mistero della vita.
+                        L'<a class="text-dream-salmon hover:underline" href="../simboli/oceano">oceano</a> rappresenta il <strong>vasto inconscio, emozioni collettive o le infinite possibilità della vita</strong>. Le sue dimensioni possono sembrare maestose e travolgenti, riflettendo ciò che potresti provare riguardo alla profondità e al mistero della vita.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -149,7 +149,7 @@
 <h3 class="font-serif text-lg text-dream-cream">Sogni di annegamento</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Annegare in genere simboleggia <strong>sentirsi sopraffatto da emozioni o circostanze</strong>. Potresti sentirti "fuori di testa"; o incapace di affrontare ciò che la vita ti sta riservando.
+                        Annegare in genere simboleggia <strong>sentirsi sopraffatto da emozioni o circostanze</strong>. Potresti sentirti sommerso o incapace di affrontare ciò che la vita ti sta riservando.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -168,10 +168,10 @@
 <div class="p-2 bg-dream-salmon/10 rounded-lg">
 <i class="w-5 h-5 text-dream-salmon" data-lucide="fish"></i>
 </div>
-<h3 class="font-serif text-lg text-dream-cream">Swimming Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream">Sogni di nuotare</h3>
 </div>
 <p class="text-sm text-gray-300">
-                        Il nuoto suggerisce che stai <strong>navigando nella tua vita emotiva</strong>. Il nuoto facile indica competenza emotiva; difficoltà a <a class="text-dream-salmon hover:underline" href="../simboli/nuotare">nuotare</a> suggerisce difficoltà nel gestire sentimenti o situazioni.
+                        Il nuoto suggerisce il modo in cui <strong>gestisci la tua vita emotiva</strong>. Il nuoto facile indica padronanza emotiva; difficoltà a <a class="text-dream-salmon hover:underline" href="../simboli/nuotare">nuotare</a> suggerisce fatica nel gestire sentimenti o situazioni.
                     </p>
 </div>
 <div class="dream-card glass-panel rounded-xl p-6 border border-transparent">
@@ -251,20 +251,7 @@
 <p>
                     In molte tradizioni, l'acqua rappresenta <strong>la purificazione spirituale e la profondità dell'esperienza spirituale</strong>. Il tuo sogno potrebbe chiamarti verso un'esplorazione spirituale più profonda.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Decodifica i tuoi sogni sull'acqua</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia analizza i dettagli specifici del tuo sogno sull'acqua - il tipo di acqua, il suo stato, le tue azioni ed emozioni - per fornire approfondimenti personalizzati su ciò che il tuo inconscio sta comunicando.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/app-interpretazione-sogni-ai">
-                                Prova Noctalia gratuitamente <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="psychology">Prospettive psicologiche</h2>
 <h3>Vista junghiana</h3>
 <p>
@@ -281,7 +268,7 @@
 <blockquote>
                     "I sogni acquatici sono il modo in cui la psiche ci mostra il nostro paesaggio emotivo. Presta attenzione a come si comporta l'acqua: ti dice come scorrono le tue emozioni." - Dott.ssa Kelly Bulkeley, ricercatrice sui sogni
                 </blockquote>
-<h2 id="action">Lavorare con Water Dreams</h2>
+<h2 id="action">Lavorare con i sogni d'acqua</h2>
 <p>
                     Ecco come ottenere informazioni dettagliate dai tuoi sogni acquatici:
                 </p>
@@ -359,9 +346,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     I sogni acquatici rivelano il paesaggio delle tue emozioni. Registra il tuo in Noctalia e lascia che l'analisi di Noctalia ti aiuti a capire cosa il tuo inconscio sta cercando di far emergere.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia a esplorare i tuoi sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sogni-acquatici-significato-dei-sogni-di-annegamen_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
                                                             <!-- Blog Nav Start -->
                                                             <section class="mt-12" aria-label="Navigazione tra articoli" data-blog-nav="">
@@ -370,13 +358,13 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sogni sulla morte: significato e interpretazione</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sogni sulla morte: significato e cosa non annunciano</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="sogni-sul-tuo-ex-cosa-significano-veramente" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sogni sul tuo ex: cosa significano veramente</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sognare il tuo ex: cosa può significare e cosa non dimostra</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -392,18 +380,23 @@
                 <div class="grid gap-4">
 
                 <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Cosa simboleggia l'acqua nei sogni?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">L'acqua nei sogni rappresenta universalmente le emozioni e la mente inconscia. Lo stato dell'acqua - calmo, turbolento, limpido o torbido - riflette il tuo stato emotivo. L'acqua profonda spesso simboleggia le emozioni profonde o l'inconscio, mentre la superficie rappresenta la consapevolezza cosciente.</p>
+                    <h3 class="font-medium text-dream-cream mb-2">Cosa significa sognare acqua?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">L’acqua nei sogni rappresenta emozioni, ricordi e stati interiori. Il significato cambia se l’acqua è pulita, sporca, calma, profonda o traboccante.</p>
                 </div>
 
                 <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Cosa significa sognare di annegare?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">I sogni di annegamento simboleggiano tipicamente il sentirsi sopraffatti dalle emozioni o dalle circostanze della vita. Potresti sentirti come se fossi "fuori di testa" con responsabilità, relazioni o sentimenti. Può anche indicare emozioni represse che minacciano di emergere.</p>
+                    <h3 class="font-medium text-dream-cream mb-2">Cosa significa sognare alluvioni?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">Sognare alluvioni indica emozioni, stress o cambiamenti difficili da contenere.</p>
                 </div>
 
                 <div class="glass-panel rounded-2xl p-6 border border-transparent">
-                    <h3 class="font-medium text-dream-cream mb-2">Cosa significano i sogni di alluvione?</h3>
-                    <p class="text-sm text-gray-300 leading-relaxed">I sogni di inondazione spesso rappresentano emozioni travolgenti, grandi cambiamenti di vita o sensazione di perdita di controllo. Possono simboleggiare il rilascio emotivo, la pulizia o situazioni della tua vita che sembrano incontenibili. Il contesto e la tua risposta emotiva forniscono importanti indizi sul significato.</p>
+                    <h3 class="font-medium text-dream-cream mb-2">Cosa significa sognare un’alluvione di acqua di mare?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">L’acqua di mare aggiunge profondità emotiva e incertezza. Può mostrare emozioni antiche o intense che entrano nella vita cosciente.</p>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-6 border border-transparent">
+                    <h3 class="font-medium text-dream-cream mb-2">Cosa significa sognare una casa allagata?</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">La casa rappresenta il mondo intimo. Una casa allagata suggerisce che preoccupazioni, conflitti o emozioni intense stanno invadendo il tuo spazio sicuro.</p>
                 </div>
                 </div>
             </section>
@@ -417,17 +410,17 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Significato dei sogni ricorrenti: comprendere i loro messaggi</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare</h3>
                         <p class="text-sm text-gray-400">Perché lo stesso sogno ritorna, cosa annotare tra un episodio e l'altro e quando gli incubi ripetuti meritano un parere medico.</p>
                     </a>
                     <a href="sogni-di-denti-che-cadono-significato-e-interpretazione" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di denti che cadono: significato e interpretazione</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sognare denti che cadono o si sgretolano: scenari e ricerca</h3>
                         <p class="text-sm text-gray-400">Denti che cadono, si muovono o si sgretolano in sogno, con gli scenari da confrontare, le emozioni in gioco e cosa dice la ricerca.</p>
                     </a>
                     <a href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di cadere: perché sogni di cadere nel vuoto</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Sognare di cadere: significato, scenari e risvegli</h3>
                         <p class="text-sm text-gray-400">Perché si sogna di cadere, dalla scossa ipnica all'addormentamento alle cadute lunghe, e cosa annotare al risveglio.</p>
                     </a>
               </div>

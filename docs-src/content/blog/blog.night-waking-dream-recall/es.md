@@ -65,7 +65,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Guarda el sueño y vuelve a dormir</h2>
 <p>Di unas palabras al despertar: Noctalia las transcribe en tu diario y, con las semanas, verás qué se repite.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/es/diario-de-suenos-por-voz">Empezar mi diario de sueños por voz</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=despertares-nocturnos-recordar-suenos_es" rel="nofollow noopener noreferrer" target="_blank">Descargar Noctalia en Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </div>
 <h2>Preguntas frecuentes</h2>
 <h3>¿Conviene anotar un sueño a las 3 de la mañana?</h3>

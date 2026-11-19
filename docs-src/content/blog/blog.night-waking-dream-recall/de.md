@@ -65,7 +65,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Den Traum sichern, dann weiterschlafen</h2>
 <p>Sprich beim Aufwachen ein paar Wörter ein: Noctalia schreibt sie in dein Traumtagebuch. Mit der Zeit siehst du, was wiederkehrt.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/de/traumtagebuch-spracheingabe">Traumtagebuch per Sprache starten</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=naechtliches-erwachen-traumerinnerung_de" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play laden <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </div>
 <h2>Häufige Fragen</h2>
 <h3>Sollte ich um 3 Uhr nachts einen Traum notieren?</h3>

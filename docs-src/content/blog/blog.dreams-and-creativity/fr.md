@@ -251,9 +251,10 @@ Tenez une liste à part des images qui pourraient servir, classées par projet. 
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Avec Noctalia, racontez votre rêve à voix haute dès le réveil. Il est transcrit et rangé dans votre journal, où vous pouvez relire vos rêves côte à côte et repérer les images qui reviennent.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/journal-de-reves-vocal">
-Essayer le journal de rêves vocal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-et-creativite_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -344,7 +345,7 @@ Non. Des réveils répétés fragmentent le sommeil, et le manque de sommeil nui
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-anxiete-signification">
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Rêves d'anxiété : ce qu'ils signifient et comment les arrêter</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Rêves d'anxiété : pourquoi on en fait, et ce qui aide vraiment</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -360,17 +361,17 @@ Non. Des réveils répétés fragmentent le sommeil, et le manque de sommeil nui
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guide-incubation-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Incubation des rêves : comment rêver exactement ce que vous désirez</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Incubation de rêves : la méthode, ses limites et une routine pour ce soir</h3>
 <p class="text-sm text-gray-400">Apprenez les techniques ancestrales et modernes pour implanter des rêves spécifiques et stimuler la créativité.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sommeil-paradoxal-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves : comprendre la réinitialisation nocturne du cerveau</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sommeil paradoxal et rêves : ce qui se passe vraiment dans votre cerveau la nuit</h3>
 <p class="text-sm text-gray-400">À quel moment de la nuit survient le sommeil paradoxal, pourquoi ses rêves sont si intenses et ce qui le raccourcit.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="comment-se-souvenir-de-ses-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves : 10 techniques efficaces</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves au réveil : 10 techniques simples</h3>
 <p class="text-sm text-gray-400">Méthodes pratiques pour améliorer le rappel onirique et ne plus jamais perdre une intuition créative.</p>
 </a>
 </div>

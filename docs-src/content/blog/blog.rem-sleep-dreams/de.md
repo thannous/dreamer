@@ -245,20 +245,7 @@
 <p>
                     2009 schlugen Matthew Walker und Els van der Helm die Hypothese einer „Therapie über Nacht“ vor: Weil Noradrenalin im REM-Schlaf sehr niedrig ist, könnte das Gehirn emotionale Erinnerungen reaktivieren und dabei ihre Wucht abschwächen. Die Idee ist einflussreich, wird aber noch geprüft. Praktisch heißt das: Das Gefühl, mit dem du aufwachst, ist oft wertvoller für deine Notizen als die Kulisse des Traums.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halte den Morgentraum fest, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Die lebhaftesten Träume kommen oft in den letzten REM-Phasen kurz vor dem Aufwachen. Erzähl deinen Traum in Noctalia laut: Er wird transkribiert und in deinem Tagebuch gespeichert, bereit zum Nachlesen.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
-                                Traumtagebuch per Sprache testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="optimize">Wie schützt du deinen REM-Schlaf?</h2>
 <p>
                     Einen nachgewiesenen Trick, um den REM-Schlaf zu „steigern“, gibt es nicht. Da er sich in der zweiten Nachthälfte ballt, ist der wirksamste Hebel einfach: genug schlafen, zu regelmäßigen Zeiten.
@@ -373,9 +360,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Erzähl Noctalia deinen Traum nach dem Aufwachen, per Sprache oder schriftlich. Lies deine Träume dann nebeneinander und sieh, was von Nacht zu Nacht wiederkehrt.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=rem-schlaf-und-traeume-den-naechtlichen-reset-ihre_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -464,13 +452,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Warum träumen wir? Die Wissenschaft hinter deinen nächtlichen Abenteuern</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist</div>
       </div>
     </a>
     <a href="die-geschichte-der-traumdeutung-von-antiken-tempeln-bis-zur-modernen-wissenschaft" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Die Geschichte der Traumdeutung: Von antiken Tempeln bis zur modernen Wissenschaft</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Die Geschichte der Traumdeutung: von antiken Tempeln bis zur modernen Wissenschaft</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -487,7 +475,7 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß</h3>
             <p class="text-sm text-gray-400">Warum Träume wenige Minuten nach dem Aufwachen verblassen, welche Rolle REM-Schlaf und Gedächtnis spielen und welche einfachen Gewohnheiten helfen.</p>
         </a>
         <a href="koennen-traeume-die-zukunft-vorhersagen-die-ueberraschende-wissenschaft-praekognitiver-traeume" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -497,7 +485,7 @@
         </a>
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Was deine Nächte über dich sagen können (und was nicht)</h3>
             <p class="text-sm text-gray-400">Wie sich Angst, Depression, Stress und Trauma in Träumen zeigen und wann häufige Albträume ein Gespräch mit einer Fachperson wert sind.</p>
         </a>
   </div>

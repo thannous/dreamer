@@ -113,6 +113,19 @@
 <p class="text-purple-100/80 leading-relaxed mb-4">These contents complement each other without overlapping. The <a class="text-dream-salmon hover:underline" href="../symbols/school">school symbol page</a> remains the quick reference for dreaming about school in general: classrooms, homework, bells. This article covers the more specific intent of going back: your old school, the first day, the return after summer.</p>
 <p class="text-purple-100/80 leading-relaxed">If the exam is at the center of the dream — papers to fill in, failing, not having studied — the right read is the article about <a class="text-dream-salmon hover:underline" href="exam-dreams-meaning">exam dreams</a>, which deals exclusively with evaluation, failure and preparation.</p>
 </section>
+
+<!-- CTA Section -->
+<aside class="glass-panel rounded-3xl p-8 md:p-10 my-12 text-center border border-dream-salmon/20">
+<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+<i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
+</div>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Keep track of your recurring school dreams</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Speak or write your dream on waking in Noctalia. Comparing entries over time shows which transitions bring these scenes back.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=back-to-school-dreams-meaning_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
+</aside>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">FAQ</h2>
 <div class="grid gap-4">

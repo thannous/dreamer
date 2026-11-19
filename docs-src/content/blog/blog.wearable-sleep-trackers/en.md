@@ -166,20 +166,7 @@
                 </blockquote>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="moon"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Your watch keeps the hours. Keep the dream.</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia, tell your dream out loud or type it as soon as you wake up. It is transcribed and saved to your journal, ready to be read again next to your other nights.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-                                Record a dream by voice <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="tracker-plus-journal">Tracker and dream journal: how to use both</h2>
@@ -245,9 +232,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Record your dream in Noctalia by voice or in writing as soon as you wake up. Read your nights side by side to see what keeps coming back.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=wearable-sleep-trackers-dreams_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -326,7 +314,7 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sleep Is Your #1 Health Lever</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Is sleep your #1 health lever? What the OHSU study really shows</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/en/blog/">
@@ -348,17 +336,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams: The Science of Your Nightly Theater</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams: what really happens in your brain at night</h3>
 <p class="text-sm text-gray-400">When REM sleep happens in the night, why its dreams feel so vivid, and what cuts it short.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sleep-health-priority">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Health</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sleep Is Your #1 Health Lever: The OHSU Study That Changes Everything</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Is sleep your #1 health lever? What the OHSU study really shows</h3>
 <p class="text-sm text-gray-400">What an OHSU study found when it compared short sleep with diet and exercise as predictors of life expectancy, and the limits of that link.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sleep-debt-health-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Health</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sleep Debt: How Chronic Sleep Deprivation Affects Your Health and Dreams</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sleep debt: how chronic sleep deprivation affects your health and dreams</h3>
 <p class="text-sm text-gray-400">Sleep debt accumulates silently and disrupts REM sleep, dream recall, and long-term health. Learn the science of accumulation and recovery.</p>
 </a>
 </div>

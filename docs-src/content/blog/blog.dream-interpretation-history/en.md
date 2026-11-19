@@ -162,11 +162,7 @@
 <p><a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/11515147/" rel="noopener noreferrer" target="_blank">Revonsuo's threat-simulation hypothesis</a> suggests that dreaming rehearses threatening situations. It is a proposal, not an explanation of every <a class="text-dream-salmon hover:underline" href="stop-nightmares-guide">nightmare</a>.</p>
 <h3>Decoding and communicating with dreamers</h3>
 <p>A Japanese team used brain imaging to <a class="text-dream-salmon hover:underline" href="https://bicr.atr.jp/dni/en/research-projects/neural-decoding-of-visual-imagery-during-sleep/" rel="noopener noreferrer" target="_blank">predict broad categories of images</a> reported by three participants at sleep onset (2013). In a <a class="text-dream-salmon hover:underline" href="https://pubmed.ncbi.nlm.nih.gov/33607035/" rel="noopener noreferrer" target="_blank">2021 study of 36 participants</a>, experimenters obtained 29 correct answers from six lucid dreamers during REM sleep. Limited demonstrations, not machines that read a dream.</p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<h4 class="font-serif text-lg text-dream-cream mb-2">Keep your own record</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia, say your dream out loud when you wake up: it is transcribed and saved, so you can add your associations later.</p>
-<a class="text-dream-salmon hover:underline" href="/">Try Noctalia for free</a>
-</aside>
+
 <h2 id="cultural-differences">How to read dream beliefs, and your own dreams</h2>
 <p>One account cannot speak for a whole people. In the 17th century, Jesuit missionaries described Haudenosaunee (Iroquois) communities where a dream could express a wish of the soul that others helped fulfil; Anthony Wallace <a class="text-dream-salmon hover:underline" href="https://doi.org/10.1525/aa.1958.60.2.02a00030" rel="noopener noreferrer" target="_blank">analysed those outsiders' accounts in 1958</a>. Translation misleads too: the English word “Dreaming”, used for Aboriginal Australian concepts, <a class="text-dream-salmon hover:underline" href="https://theconversation.com/dreamtime-and-the-dreaming-who-dreamed-up-these-terms-20835" rel="noopener noreferrer" target="_blank">refers to ancestral law and creation</a>, not mainly to nightly dreams.</p>
 <p>A <a class="text-dream-salmon hover:underline" href="../symbols/snake">snake</a>, <a class="text-dream-salmon hover:underline" href="../symbols/water">water</a> or <a class="text-dream-salmon hover:underline" href="../symbols/fire">fire</a> can carry opposite meanings from one text to another. Before trusting an interpretation, ask who wrote it, when, and whether it describes a belief, a practice or a research finding.</p>
@@ -220,9 +216,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Record your dreams in Noctalia by voice or in writing, with what you felt. Read side by side, they show you what comes back.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start my dream journal <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=dream-interpretation-history_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -283,13 +280,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">REM Sleep and Dreams: Understanding Your Brain's Nightly Reset</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">REM sleep and dreams: what really happens in your brain at night</div>
       </div>
     </a>
     <a href="stress-dreams-work" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Stress Dreams About Work</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Dreaming About Work Every Night? What Stress Dreams May Reflect</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -306,17 +303,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Forget Our Dreams? The Science Behind Dream Amnesia</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Why do we forget our dreams? The science behind dream amnesia</h3>
             <p class="text-sm text-gray-400">Why dreams fade within minutes of waking, what REM sleep and memory have to do with it, and simple habits to keep more of them.</p>
         </a>
         <a href="precognitive-dreams-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Can Dreams Predict the Future? The Science of Precognitive Dreams</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Can Dreams Predict the Future? What Science Shows</h3>
             <p class="text-sm text-gray-400">What controlled studies say about dreams that seem to predict the future, and how coincidence and memory bias explain many cases.</p>
         </a>
         <a href="dreams-mental-health" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Mental Health: How Your Sleep Reveals Your Mind</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and mental health: what your nights can (and can't) tell you</h3>
             <p class="text-sm text-gray-400">How anxiety, depression, stress and trauma show up in dreams, and when frequent nightmares are worth raising with a professional.</p>
         </a>
   </div>

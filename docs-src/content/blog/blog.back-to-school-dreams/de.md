@@ -113,6 +113,19 @@
 <p class="text-purple-100/80 leading-relaxed mb-4">Diese Inhalte ergänzen sich, ohne sich zu überschneiden. Die <a class="text-dream-salmon hover:underline" href="../traumsymbole/schule">Seite zum Traumsymbol Schule</a> bleibt die schnelle Referenz für Schulträume im Allgemeinen: Klassenzimmer, Hausaufgaben, Klingeln. Dieser Artikel deckt die spezifischere Absicht der Rückkehr ab: alte Schule, erster Tag, Neubeginn nach dem Sommer.</p>
 <p class="text-purple-100/80 leading-relaxed">Wenn im Traum die Prüfung im Mittelpunkt steht — auszufüllende Bögen, Durchfallen, nicht gelernt zu haben — ist die passende Lektüre der Artikel über den <a class="text-dream-salmon hover:underline" href="pruefungstraum-bedeutung">Prüfungstraum</a>, der ausschließlich Bewertung, Scheitern und Vorbereitung behandelt.</p>
 </section>
+
+<!-- CTA Section -->
+<aside class="glass-panel rounded-3xl p-8 md:p-10 my-12 text-center border border-dream-salmon/20">
+<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+<i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
+</div>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Halte wiederkehrende Schulträume fest</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Sprich oder notiere deinen Traum direkt nach dem Aufwachen in Noctalia. Im Rückblick erkennst du, welche Umbrüche sie auslösen.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=traum-zurueck-in-die-schule_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
+</aside>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">FAQ</h2>
 <div class="grid gap-4">
