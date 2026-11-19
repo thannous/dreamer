@@ -374,7 +374,7 @@ describe('native speech module integration', () => {
     }
   });
 
-  it.each(['subscribe', 'start'] as const)('releases partial subscriptions and allows retry after native %s failure', async (failure) => {
+  it.each(['subscribe', 'start'] as const)('releases partial subscriptions and allows retry after native %s failure', async (failure: 'subscribe' | 'start') => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     Platform.Version = 34;
