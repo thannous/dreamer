@@ -1,12 +1,60 @@
-{{- $fr := eq .Data.lang "fr" -}}
+{{- $requested := printf "%v" .Data.lang -}}
+{{- $lang := "en" -}}
+{{- $preheader := "One step to open your Noctalia dream journal." -}}
+{{- $journal := "DREAM JOURNAL" -}}
+{{- $heading := "Confirm your email" -}}
+{{- $intro := "Your dream journal is waiting. Confirm your address to start recording your dreams and exploring their meaning." -}}
+{{- $action := "Confirm my email" -}}
+{{- $ignore := "If you didn’t sign up for Noctalia, you can ignore this email." -}}
+{{- if eq $requested "fr" -}}
+  {{- $lang = "fr" -}}
+  {{- $preheader = "Une dernière étape pour ouvrir votre journal de rêves Noctalia." -}}
+  {{- $journal = "JOURNAL DE RÊVES" -}}
+  {{- $heading = "Confirmez votre e-mail" -}}
+  {{- $intro = "Votre journal de rêves vous attend. Confirmez votre adresse pour commencer à noter vos rêves et à explorer leur sens." -}}
+  {{- $action = "Confirmer mon e-mail" -}}
+  {{- $ignore = "Si vous n’avez pas créé de compte Noctalia, vous pouvez ignorer cet e-mail." -}}
+{{- else if eq $requested "es" -}}
+  {{- $lang = "es" -}}
+  {{- $preheader = "Solo queda un paso para abrir tu diario de sueños Noctalia." -}}
+  {{- $journal = "DIARIO DE SUEÑOS" -}}
+  {{- $heading = "Confirma tu correo electrónico" -}}
+  {{- $intro = "Tu diario de sueños te espera. Confirma tu correo para empezar a anotar tus sueños y explorar su significado." -}}
+  {{- $action = "Confirmar mi correo" -}}
+  {{- $ignore = "Si no te registraste en Noctalia, puedes ignorar este correo." -}}
+{{- else if eq $requested "de" -}}
+  {{- $lang = "de" -}}
+  {{- $preheader = "Nur noch ein Schritt bis zu deinem Noctalia-Traumtagebuch." -}}
+  {{- $journal = "TRAUMTAGEBUCH" -}}
+  {{- $heading = "Bestätige deine E-Mail-Adresse" -}}
+  {{- $intro = "Dein Traumtagebuch wartet auf dich. Bestätige deine E-Mail-Adresse, um deine Träume festzuhalten und ihre Bedeutung zu erkunden." -}}
+  {{- $action = "E-Mail bestätigen" -}}
+  {{- $ignore = "Wenn du dich nicht bei Noctalia registriert hast, kannst du diese E-Mail ignorieren." -}}
+{{- else if eq $requested "it" -}}
+  {{- $lang = "it" -}}
+  {{- $preheader = "Manca solo un passaggio per aprire il tuo diario dei sogni Noctalia." -}}
+  {{- $journal = "DIARIO DEI SOGNI" -}}
+  {{- $heading = "Conferma il tuo indirizzo e-mail" -}}
+  {{- $intro = "Il tuo diario dei sogni ti aspetta. Conferma il tuo indirizzo per iniziare ad annotare i tuoi sogni ed esplorarne il significato." -}}
+  {{- $action = "Conferma la mia e-mail" -}}
+  {{- $ignore = "Se non hai creato un account Noctalia, puoi ignorare questa e-mail." -}}
+{{- else if eq $requested "pt" -}}
+  {{- $lang = "pt" -}}
+  {{- $preheader = "Falta só uma etapa para abrir seu diário de sonhos Noctalia." -}}
+  {{- $journal = "DIÁRIO DE SONHOS" -}}
+  {{- $heading = "Confirme seu e‑mail" -}}
+  {{- $intro = "Seu diário de sonhos está esperando por você. Confirme seu endereço para começar a registrar seus sonhos e explorar o significado deles." -}}
+  {{- $action = "Confirmar meu e-mail" -}}
+  {{- $ignore = "Se você não criou uma conta na Noctalia, pode ignorar este e-mail." -}}
+{{- end -}}
 <!doctype html>
-<html lang="{{ if $fr }}fr{{ else }}en{{ end }}">
+<html lang="{{ $lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="supported-color-schemes" content="light dark">
-  <title>{{ if $fr }}Confirmez votre e-mail pour Noctalia{{ else }}Confirm your email for Noctalia{{ end }}</title>
+  <title>{{ $heading }}</title>
   <style>
     :root { color-scheme: light dark; supported-color-schemes: light dark; }
     @media (max-width: 480px) {
@@ -27,7 +75,7 @@
 </head>
 <body class="email-ground" style="margin: 0; padding: 0; background-color: #F0E4D4; -webkit-text-size-adjust: 100%; text-size-adjust: 100%;">
   <div aria-hidden="true" style="display: none; max-height: 0; max-width: 0; overflow: hidden; mso-hide: all;">
-    {{ if $fr }}Une dernière étape pour ouvrir votre journal de rêves Noctalia.{{ else }}One step to open your Noctalia dream journal.{{ end }}
+    {{ $preheader }}
   </div>
   <table class="email-ground" role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#F0E4D4" style="background-color: #F0E4D4;">
     <tr>
@@ -43,7 +91,7 @@
                   </td>
                   <td valign="middle" style="padding-left: 13px;">
                     <p class="email-ink" style="margin: 0; color: #382D35; font: 27px/1.05 Georgia, 'Times New Roman', serif;">Noctalia</p>
-                    <p class="email-accent" style="margin: 4px 0 0; color: #7C4C2B; font: bold 11px/1.35 Arial, sans-serif; letter-spacing: 2px;">{{ if $fr }}JOURNAL DE RÊVES{{ else }}DREAM JOURNAL{{ end }}</p>
+                    <p class="email-accent" style="margin: 4px 0 0; color: #7C4C2B; font: bold 11px/1.35 Arial, sans-serif; letter-spacing: 2px;">{{ $journal }}</p>
                   </td>
                 </tr>
               </table>
@@ -56,12 +104,12 @@
           </tr>
           <tr>
             <td class="email-inset" style="padding: 27px 32px 30px;">
-              <h1 class="email-title email-ink" style="margin: 0 0 12px; color: #382D35; font: 38px/1.15 Georgia, 'Times New Roman', serif;">{{ if $fr }}Confirmez votre e-mail{{ else }}Confirm your email{{ end }}</h1>
-              <p class="email-muted" style="margin: 0 0 22px; color: #64514F; font: 16px/1.6 Arial, sans-serif;">{{ if $fr }}Votre journal de rêves vous attend. Confirmez votre adresse pour commencer à noter vos rêves et à explorer leur sens.{{ else }}Your dream journal is waiting. Confirm your address to start recording your dreams and exploring their meaning.{{ end }}</p>
+              <h1 class="email-title email-ink" style="margin: 0 0 12px; color: #382D35; font: 38px/1.15 Georgia, 'Times New Roman', serif;">{{ $heading }}</h1>
+              <p class="email-muted" style="margin: 0 0 22px; color: #64514F; font: 16px/1.6 Arial, sans-serif;">{{ $intro }}</p>
               <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td class="email-action" bgcolor="#7C4C2B" style="background-color: #7C4C2B; border-radius: 8px; mso-padding-alt: 14px 22px;">
-                    <a class="email-action" href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 14px 22px; mso-padding-alt: 0; border-radius: 8px; background-color: #7C4C2B; color: #FFF9EF; font: bold 16px/22px Arial, sans-serif; text-decoration: none;">{{ if $fr }}Confirmer mon e-mail{{ else }}Confirm my email{{ end }}</a>
+                    <a class="email-action" href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 14px 22px; mso-padding-alt: 0; border-radius: 8px; background-color: #7C4C2B; color: #FFF9EF; font: bold 16px/22px Arial, sans-serif; text-decoration: none;">{{ $action }}</a>
                   </td>
                 </tr>
               </table>
@@ -69,7 +117,7 @@
           </tr>
           <tr>
             <td class="email-inset email-rule" style="padding: 16px 32px 19px; border-top: 1px solid #DDCDB2;">
-              <p class="email-muted" style="margin: 0; color: #64514F; font: 14px/1.5 Arial, sans-serif;">{{ if $fr }}Si vous n&rsquo;avez pas créé de compte Noctalia, vous pouvez ignorer cet e-mail.{{ else }}If you didn&rsquo;t sign up for Noctalia, you can ignore this email.{{ end }}</p>
+              <p class="email-muted" style="margin: 0; color: #64514F; font: 14px/1.5 Arial, sans-serif;">{{ $ignore }}</p>
             </td>
           </tr>
         </table>

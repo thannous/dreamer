@@ -1,1 +1,8 @@
-{{ if eq .Data.lang "fr" }}Confirmez votre e-mail pour Noctalia{{ else }}Confirm your email for Noctalia{{ end }}
+{{- $lang := printf "%v" .Data.lang -}}
+{{- if eq $lang "fr" -}}Confirmez votre e-mail pour Noctalia
+{{- else if eq $lang "es" -}}Confirma tu correo electrónico para Noctalia
+{{- else if eq $lang "de" -}}Bestätige deine E-Mail-Adresse für Noctalia
+{{- else if eq $lang "it" -}}Conferma il tuo indirizzo e-mail per Noctalia
+{{- else if eq $lang "pt" -}}Confirme seu e-mail para usar a Noctalia
+{{- else -}}Confirm your email for Noctalia
+{{- end -}}
