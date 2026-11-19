@@ -6,6 +6,7 @@ import { EmptyIllustration } from '@/components/atmosphere/EmptyIllustration';
 import { DailyReturnCard } from '@/components/profile/DailyReturnCard';
 import { StatTile } from '@/components/profile/StatTile';
 import { StreakCalendar } from '@/components/profile/StreakCalendar';
+import { SettingsRow } from '@/components/settings/SettingsRow';
 import { ArtworkGlassPanel, Button, Rule, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
 import { Atmosphere, Themes } from '@/constants/theme';
@@ -80,9 +81,6 @@ export default function ProfileTab() {
           <Rule className="self-start" />
         </View>
 
-        <Button testID="btn.history.open" variant="secondary" label={t('history.title')}
-          onPress={() => router.push('/history')} />
-
         {empty ? (
           <ArtworkGlassPanel
             appearance={world.appearance}
@@ -99,9 +97,9 @@ export default function ProfileTab() {
             <Text variant="bodySm" className="text-center">
               {t('profile.empty.subtitle')}
             </Text>
+            {/* The one thing to do on an empty page, so the one filled button. */}
             <Button
               label={t('profile.empty.cta')}
-              variant="secondary"
               className="mt-4"
               onPress={() => router.push('/search')}
             />
@@ -168,32 +166,34 @@ export default function ProfileTab() {
           </>
         )}
 
-        <ArtworkGlassPanel
-          appearance={world.appearance}
-          contentStyle={styles.panelContent}
-          testID="profile.actions-glass">
-          <View className="gap-3">
-            <Button
-              label={
-                favorites.length > 0
-                  ? `${t('profile.favorites')} · ${favorites.length}`
-                  : t('profile.favorites')
-              }
-              variant="secondary"
-              onPress={() => router.push('/favorites')}
-            />
-            {lockedSavedCount > 0 ? (
-              <Text variant="caption" testID="profile.favorites.locked">
-                {t('profile.favorites.locked')}
-              </Text>
-            ) : null}
-            <Button
-              testID={TID.Button.ProfileSettings}
-              label={t('profile.settings')}
-              variant="ghost"
-              onPress={() => router.push('/settings')}
-            />
-          </View>
+        {/* Three places to go, so three rows with a chevron — the same row as
+            in Settings. As outlined buttons of equal weight they competed with
+            the page's own action, and History opened the page before there
+            was anything in it. */}
+        <ArtworkGlassPanel appearance={world.appearance} testID="profile.actions-glass">
+          <SettingsRow
+            label={
+              favorites.length > 0
+                ? `${t('profile.favorites')} · ${favorites.length}`
+                : t('profile.favorites')
+            }
+            onPress={() => router.push('/favorites')}
+          />
+          {lockedSavedCount > 0 ? (
+            <Text variant="caption" className="px-gutter pt-3" testID="profile.favorites.locked">
+              {t('profile.favorites.locked')}
+            </Text>
+          ) : null}
+          <SettingsRow
+            testID="btn.history.open"
+            label={t('history.title')}
+            onPress={() => router.push('/history')}
+          />
+          <SettingsRow
+            testID={TID.Button.ProfileSettings}
+            label={t('profile.settings')}
+            onPress={() => router.push('/settings')}
+          />
         </ArtworkGlassPanel>
       </ScrollView>
     </WorldScene>

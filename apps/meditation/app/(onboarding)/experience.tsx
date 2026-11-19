@@ -58,7 +58,7 @@ export default function ExperienceStep() {
       <Screen variant="subtle">
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.atmosphereVeil]} />
         <View testID={TID.Screen.OnboardingExperience} className="flex-1">
-          <View className="flex-row items-center justify-between px-7 pb-2 pt-2">
+          <View className="flex-row items-center justify-between px-gutter pb-2 pt-2">
             <BackLink
               label={t('common.back')}
               fallbackHref="/goals"
@@ -71,7 +71,7 @@ export default function ExperienceStep() {
             className="flex-1"
             contentContainerClassName="pb-2 pt-5"
             showsVerticalScrollIndicator={false}>
-            <View className="gap-3 px-7">
+            <View className="gap-3 px-gutter">
               <Text variant="h1">{t('onboarding.experience.title')}</Text>
               <Rule className="self-start" />
               <Text variant="bodySm">{t('onboarding.experience.subtitle')}</Text>

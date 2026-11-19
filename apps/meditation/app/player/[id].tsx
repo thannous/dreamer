@@ -194,7 +194,10 @@ export default function PlayerScreen() {
                   }
                   accessibilityState={{ checked: player.soundEnabled }}
                   label={player.soundEnabled ? t('trainer.sound.on') : t('trainer.sound.off')}
-                  selected={player.soundEnabled}
+                  // An action, so never filled: the fill is kept for the one
+                  // chosen timer below. Filled, « Mute » read as a selected
+                  // option sitting next to it.
+                  selected={false}
                   onPress={player.toggleSound}
                 />
               </View>
@@ -202,7 +205,10 @@ export default function PlayerScreen() {
               {/* Five timers do not fit one line in French: they wrap rather than
                   scroll sideways, where the last ones sat cut off at the edge.
                   12 pt between rows keeps the chips' 6 pt slops apart. */}
-              <View className="flex-row flex-wrap gap-x-2 gap-y-3">
+              <Text variant="overline" testID="player.timer.title">
+                {t('player.timer.title')}
+              </Text>
+              <View className="-mt-2 flex-row flex-wrap gap-x-2 gap-y-3">
                 <Chip
                   label={t('player.timer.none')}
                   selected={player.fadeMinutes === null}

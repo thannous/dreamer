@@ -65,8 +65,8 @@ test('Meditation release keeps playback across background and records one comple
     await screen.scrollUntilVisible(streak);
     await expect(streak.getByText('1', { exact: true }).first()).toBeVisible();
     const history = screen.getByTestId('btn.history.open', { visible: true });
-    // History is above the statistics; reading the streak can scroll it away.
-    await screen.scrollUntilVisible(history, { direction: 'up' });
+    // History now sits below the statistics, with Saved sessions and Settings.
+    await screen.scrollUntilVisible(history);
     await history.tap();
     await expect(screen.getByTestId(/^history\.entry\./, { visible: true })).toHaveCount(1);
   }

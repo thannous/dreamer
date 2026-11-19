@@ -177,4 +177,15 @@ describe('drawer modal accessibility', () => {
     expect(mockPush).toHaveBeenCalledWith('/favorites');
   });
 
+  it('starts every link at the left edge, so the four icons share a column', () => {
+    render(<DrawerLayout />);
+
+    for (const key of ['favorites.title', 'settings.title', 'settings.help', 'settings.legal'] as const) {
+      const link = screen.getByLabelText(translate('en', key));
+      // `justifyContent: 'center'` on these rows centred each one sideways.
+      expect(flatten(link.props.style).justifyContent).toBeUndefined();
+      expect(link.props.className).toContain('items-center');
+    }
+  });
+
 });

@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
 
-import HomeTab from '@/app/(drawer)/(tabs)/index';
+import HomeTab, { WORLD_INDEX_TOGGLE_TEST_ID } from '@/app/(drawer)/(tabs)/index';
 import { ACTIVE_JOURNEY_CTA_TEST_ID } from '@/components/journey/WorldJourneyPicker';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { OnboardingProvider } from '@/context/OnboardingContext';
@@ -98,8 +98,14 @@ jest.mock('uniwind', () => {
   };
 });
 
-function renderHome() {
-  return render(<HomeTab />, {
+/**
+ * The six world names are folded behind « Change world » since the home was
+ * simplified: open, they pushed the session action under the tab bar on a
+ * short phone. Most journeys below are about choosing a world, so the helper
+ * opens the index unless a test asks for the home as it first appears.
+ */
+function renderHome({ openWorldIndex = true }: { openWorldIndex?: boolean } = {}) {
+  const view = render(<HomeTab />, {
     wrapper: ({ children }) => (
       <OnboardingProvider>
         <WorldProvider>
@@ -108,9 +114,37 @@ function renderHome() {
       </OnboardingProvider>
     ),
   });
+  if (openWorldIndex) fireEvent.press(screen.getByTestId(WORLD_INDEX_TOGGLE_TEST_ID));
+  return view;
 }
 
 describe('immersive home journey', () => {
+  it('opens on the practice, with the six worlds folded behind one row', async () => {
+    renderHome({ openWorldIndex: false });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    const toggle = screen.getByTestId(WORLD_INDEX_TOGGLE_TEST_ID);
+    expect(toggle).toHaveTextContent('Change world');
+    expect(toggle.props.accessibilityState).toMatchObject({ expanded: false });
+    // Counterexample of the old home: no radio is on screen before the row is pressed.
+    expect(screen.queryAllByRole('radio')).toHaveLength(0);
+    expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toBeTruthy();
+
+    fireEvent.press(toggle);
+
+    expect(screen.getAllByRole('radio')).toHaveLength(6);
+    expect(screen.getByTestId(WORLD_INDEX_TOGGLE_TEST_ID).props.accessibilityState).toMatchObject({
+      expanded: true,
+    });
+
+    fireEvent.press(screen.getByTestId(WORLD_INDEX_TOGGLE_TEST_ID));
+
+    expect(screen.queryAllByRole('radio')).toHaveLength(0);
+  });
+
   beforeEach(async () => {
     await AsyncStorage.clear();
     mockDimensions.width = 360;
@@ -502,11 +536,12 @@ describe('immersive home journey', () => {
     mockIsFocused = false;
     view.rerender(<HomeTab />);
 
+    // Leaving the home also folds the index, so the hero names the world
+    // the listener is back in; the radios are no longer on screen to ask.
     await waitFor(() =>
-      expect(screen.getByRole('radio', { name: 'Constellation' }).props.accessibilityState).toMatchObject({
-        checked: true,
-      })
+      expect(screen.getByTestId('home.world.name')).toHaveTextContent('Constellation')
     );
+    expect(screen.queryAllByRole('radio')).toHaveLength(0);
     expect(screen.getByTestId(ACTIVE_JOURNEY_CTA_TEST_ID)).toHaveTextContent(/^Begin$/);
     expect(await AsyncStorage.getItem(StorageKey.world)).not.toBe(JSON.stringify('tide'));
   });
@@ -806,7 +841,10 @@ describe('immersive home journey', () => {
     expect(mockPush).toHaveBeenCalledWith(expect.stringMatching(/^\/session\/.+\?worldId=constellation$/));
   });
 
-  it('shows upcoming premium practices as free while subscriptions are disabled', async () => {
+  // Was « shows … as free »: with nothing sold as Plus, « Free » on every
+  // card told nothing apart, so the cards now carry no access word at all,
+  // like the ritual shelf above them.
+  it('shows no access word on upcoming premium practices while subscriptions are disabled', async () => {
     mockSubscriptionsEnabled = false;
     mockIsPlus = true;
     mockRemainingPlays = 0;
@@ -819,11 +857,13 @@ describe('immersive home journey', () => {
     });
 
     expect(screen.queryByTestId('home.journey.ritual-access')).toBeNull();
-    expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('home.journey.upcoming.dream-threshold.access')).not.toHaveTextContent('Plus');
-    expect(screen.getByTestId('home.journey.upcoming.dream-lucid.access')).not.toHaveTextContent('Plus');
+    expect(screen.queryByTestId('home.journey.upcoming.dream-threshold.access')).toBeNull();
+    expect(screen.queryByTestId('home.journey.upcoming.dream-lucid.access')).toBeNull();
+    expect(screen.queryByText('Free')).toBeNull();
     expect(screen.queryByText('Plus')).toBeNull();
+    expect(
+      screen.getByTestId('home.journey.upcoming.dream-threshold').props.accessibilityLabel
+    ).not.toMatch(/Free|Plus/);
     expect(screen.queryByText('No free sessions left this month')).toBeNull();
     expect(screen.queryByTestId('home.journey.quota')).toBeNull();
 

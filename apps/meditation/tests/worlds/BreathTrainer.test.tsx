@@ -204,6 +204,36 @@ describe('immersive breathing trainer', () => {
     announce.mockRestore();
   });
 
+  it('names the way out for what it does and counts no steps the exercise does not have', () => {
+    const ready = render(<BreatheExercise />);
+
+    // Before the first breath it is a plain « Back »; the player's « Stop
+    // playback » named something this screen never plays.
+    expect(screen.getByTestId(TID.Button.BreatheClose)).toHaveTextContent('Back');
+    expect(screen.queryByText('Stop playback')).toBeNull();
+    // No « 2/3 · Practise »: an exercise opened from the tab has no step 1 or 3.
+    expect(screen.queryByTestId('practice.progress')).toBeNull();
+    ready.unmount();
+
+    mockEngine = engineState({ running: true, started: true, status: 'active', remainingSec: 176 });
+    render(<BreatheExercise />);
+
+    expect(screen.getByTestId(TID.Button.BreatheClose)).toHaveTextContent('End the exercise');
+    expect(screen.queryByTestId('practice.progress')).toBeNull();
+  });
+
+  it('draws both states of an option, so an inactive one does not read as a label', () => {
+    render(<BreatheExercise />);
+
+    // Haptics start on, voice starts off: each carries its own state mark.
+    expect(screen.getByTestId('btn.breathe.haptic').props.accessibilityState).toMatchObject({ checked: true });
+    expect(screen.getByTestId('btn.breathe.voice').props.accessibilityState).toMatchObject({ checked: false });
+    expect(screen.getByTestId('btn.breathe.haptic.state')).toBeTruthy();
+    expect(screen.getByTestId('btn.breathe.voice.state')).toBeTruthy();
+    expect(screen.getByTestId('btn.breathe.voice').props.className).toContain('border-hairline');
+    expect(screen.getByTestId('btn.breathe.haptic').props.className).toContain('border-champagne-text');
+  });
+
   it('keeps phase semantics and maps the same action to pause while running', () => {
     mockEngine = engineState({ running: true, started: true, status: 'active', remainingSec: 176 });
     render(<BreatheExercise />);
