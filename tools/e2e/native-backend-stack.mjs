@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { parseArgs } from 'node:util';
 import { createClient } from '@supabase/supabase-js';
-import { assertBackendTarget, normalizeStackStatus, prepareLocalMigrations } from '../../scripts/lib/backend-e2e-local.cjs';
+import { assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations } from '../../scripts/lib/backend-e2e-local.cjs';
 import { startNativeBackendProxy } from './native-backend-proxy.mjs';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
@@ -77,9 +77,9 @@ export async function startNativeBackendStack({ output, port = 31283, functionsO
     stackId = status.LOCAL_E2E_STACK.id;
     if (status.LOCAL_E2E_STACK.runtime !== 'native') throw new Error('Unexpected stack runtime.');
     const url = assertBackendTarget(status);
-    const safety = JSON.parse(command(['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
+    const safety = JSON.parse(command(['db', 'query', '--workdir', workdir,
       'select count(*) as active_jobs from cron.job where active', '--output-format', 'json']));
-    if (Number(safety.rows?.[0]?.active_jobs) !== 0) throw new Error('Disposable cron jobs must remain inactive.');
+    assertNoActiveCronJobs(safety);
     const admin = createClient(url.origin, status.SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
     const accounts = {};
     for (const kind of ['owner', 'other']) {

@@ -9,11 +9,11 @@ The repository pins CLI 3.2.0. Run `mise exec -- npm exec -- supabase config val
 to check the configuration. It uses `[local_smtp]`. The CLI accepts the existing
 `auth.email.enable_signup` and `auth.sms.enable_signup` settings with deprecation warnings.
 
-Local development applies pending migrations to the native stack selected by
-`migration up --workdir <stack-directory> --include-all`. For SQL checks, the runners
-pass the loopback URL from the validated stack receipt. CLI 3.2.0 accepts their
-`--db-url` flag with a deprecation warning. An explicit URL returns an object with
-`rows`, while a directory-targeted `db query --output-format json` returns an array.
+The local runners select their validated native stack by its working directory for
+queries and pending migrations. The cron check reads the row array from a terminal
+or the `rows` field in agent mode, and requires exactly one zero count. The security
+advisor uses an explicit loopback PostgreSQL URL from the stack receipt to set
+`sslmode=disable`; CLI 3.2.0 accepts this URL through `--remote=<url>`.
 
 Hosted database procedures must name the intended target with `--remote`; linking a
 project alone leaves database commands local by default. See the [CLI v3 migration guide](https://supabase.com/docs/guides/local-development/cli/migrating-to-v3).
