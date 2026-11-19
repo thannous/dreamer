@@ -6,7 +6,7 @@ import { webLocale } from './web-engine';
 // Preserve the historical network guard while migrated cases use SDK locators
 // and assertions. This fixture is acquired automatically for every case.
 export const test = base.extend<{ parityNetwork: void }>({
-  parityNetwork: async ({ app, browser }, provide) => {
+  parityNetwork: [async ({ app, browser }, provide) => {
     const serviceRequests = await guardNetwork(browser, app);
     await provide(undefined);
     // Soft collection is closed by teardown, so these fail the attempt like any expect.
@@ -19,7 +19,7 @@ export const test = base.extend<{ parityNetwork: void }>({
       await navigator.serviceWorker.register('/sw.js').catch(() => undefined);
       return (await navigator.serviceWorker.getRegistrations()).length;
     }), 'Service workers stay blocked (web-engine.ts headers)').toBe(0);
-  },
+  }, { auto: true }],
 });
 
 type Start = {
@@ -39,7 +39,7 @@ type Start = {
 export function journeyTest(start: Start = {}) {
   const locale = start.locale ?? 'en-US';
   const opened = test.extend<{ journeyStart: void }>({
-    journeyStart: async ({ app, browser }, provide) => {
+    journeyStart: [async ({ app, browser, parityNetwork: _network }, provide) => {
       await browser.setViewport(start.viewport ?? { width: 1280, height: 720 });
       if (start.reducedMotion) await browser.emulateMedia({ reducedMotion: start.reducedMotion });
       await browser.addInitScript(() => {
@@ -48,7 +48,7 @@ export function journeyTest(start: Start = {}) {
       });
       await app.open();
       await provide(undefined);
-    },
+    }, { auto: true }],
   });
   type Body = Parameters<typeof opened>[2];
   const skip = locale !== webLocale ? `Requires the real ${locale} browser context; run E2E_WEB_LOCALE=${locale} with --tag locale-${locale}` : false;

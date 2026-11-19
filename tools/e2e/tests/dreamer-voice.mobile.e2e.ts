@@ -3,7 +3,7 @@ import { expect, type TestFixtures } from 'e2e';
 import { injectAndroidMicrophone, voiceInputUnavailable } from '../native-voice-input';
 import { nativeDismissCaptureKeyboard, nativeGuest, nativeJournal, nativeTranscript } from '../native-backend-fixtures';
 
-type VoiceFixtures = TestFixtures & { device: Device };
+type VoiceFixtures = Omit<TestFixtures, 'agent'> & { device: Device };
 const profileUnavailable = process.env.E2E_NATIVE_MOCK_MODE !== 'false' || !process.env.E2E_NATIVE_BACKEND_MANIFEST
   ? 'Requires the identified owned local-backend Release; native speech is not mocked.' : false;
 const options = { platforms: ['ios', 'android'], tags: ['native-voice', 'native-priority'], timeout: 240_000, skip: profileUnavailable };
@@ -99,8 +99,8 @@ async function expectSavedOnceAfterRestart({ app, screen, device }: VoiceFixture
 
 test('Dreamer native denied microphone preserves typed fallback through reauthorization and restart', {
   ...options, tags: [...options.tags, 'native-microphone-permission'],
-}, async fixtures => {
-  const { app, screen, device, platform } = fixtures;
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await prepareVoice(fixtures);
   const draft = 'Voice permission fixture: a purple garden beside the sea.';
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });
@@ -156,8 +156,8 @@ test('Dreamer native real microphone dictation is recognized before correction a
   skip: profileUnavailable || (process.env.E2E_NATIVE_QA_AUDIO === 'true'
     ? 'This build feeds an audio file to the recognizer; it does not qualify microphone injection.' : false)
     || voiceInputUnavailable(process.env.E2E_PLATFORM ?? ''),
-}, async fixtures => {
-  const { app, screen, device } = fixtures;
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await prepareVoice(fixtures);
   microphoneChanged = true;
   await device.setPermission('microphone', 'grant');
@@ -188,8 +188,8 @@ test('Dreamer native system speech recognizes a QA audio file before correction 
   tags: [...options.tags, 'native-speech-file'],
   skip: profileUnavailable || (process.env.E2E_NATIVE_QA_AUDIO !== 'true'
     ? 'Requires the guarded local QA audioSource build; this is file-transcription evidence, not microphone capture.' : false),
-}, async fixtures => {
-  const { app, screen, device, platform } = fixtures;
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await prepareVoice(fixtures);
   microphoneChanged = true;
   await device.setPermission('microphone', 'grant');

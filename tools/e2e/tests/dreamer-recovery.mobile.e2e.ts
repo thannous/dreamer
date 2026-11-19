@@ -54,8 +54,8 @@ async function acceptAi(screen: TestFixtures['screen'], platform: TestFixtures['
   await expect(screen.getByTestId('modal.aiConsent', { visible: true })).toHaveCount(0);
 }
 
-test('Dreamer queued real analysis survives process restart and completes once with one quota claim', recoveryOptions, async fixtures => {
-  const { app, screen, platform, backend } = fixtures;
+test('Dreamer queued real analysis survives process restart and completes once with one quota claim', recoveryOptions, async ({ app, screen, device, platform, backend }) => {
+  const fixtures = { app, screen, device, platform };
   const token = backend.state.proxy.controlToken;
   await control(token, { reset: true, analysisHold: true });
   const admin = createClient(backend.state.status.API_URL, backend.state.status.SERVICE_ROLE_KEY, {
@@ -79,7 +79,7 @@ test('Dreamer queued real analysis survives process restart and completes once w
     await nativeLogin(fixtures);
     await openDream(screen, journalId);
     await tap(screen, 'btn.dream.primaryCta');
-    await acceptAi(screen, fixtures.platform);
+    await acceptAi(screen, platform);
     await expect.poll(async () => (await control(token)).analysisDispatches, { timeout: 30_000 }).toBeGreaterThan(0);
     const pending = await admin.from('ai_jobs').select('id,status,client_request_id,quota_claimed').eq('dream_id', dreamId);
     expect(pending.error).toBeNull();
@@ -130,8 +130,8 @@ test('Dreamer queued real analysis survives process restart and completes once w
   }
 });
 
-test('Dreamer real chat retries a lost completion without duplicate messages or message quota', recoveryOptions, async fixtures => {
-  const { app, screen, device, platform, backend } = fixtures;
+test('Dreamer real chat retries a lost completion without duplicate messages or message quota', recoveryOptions, async ({ app, screen, device, platform, backend }) => {
+  const fixtures = { app, screen, device, platform };
   const token = backend.state.proxy.controlToken;
   await control(token, { reset: true, chatDropDone: true });
   const title = `Recovery conversation ${randomUUID().slice(0, 8)}`;

@@ -8,8 +8,8 @@ const options = { platforms: ['ios', 'android'], tags: ['native-real-backend'], 
 const IOS_TAB_TOUCH_CLEARANCE = 44;
 
 test('Dreamer native offline creation and edit survive process restart and synchronize exactly once',
-  { ...options, tags: [...options.tags, 'native-real-sync'] }, async (fixtures) => {
-    const { app, screen, device, platform, backend } = fixtures;
+  { ...options, tags: [...options.tags, 'native-real-sync'] }, async ({ app, screen, device, platform, backend }) => {
+    const fixtures = { app, screen, device, platform };
     await nativeLogin(fixtures);
     await nativeCapture(screen);
     const story = `Moon train ${randomUUID().slice(0, 8)} crosses a quiet lake.`;
@@ -89,8 +89,8 @@ test('Dreamer native offline creation and edit survive process restart and synch
   });
 
 test('Dreamer native guest dream and draft survive real sign-in, reconnect and account isolation',
-  { ...options, tags: [...options.tags, 'native-real-account'] }, async (fixtures) => {
-    const { app, screen, platform, backend } = fixtures;
+  { ...options, tags: [...options.tags, 'native-real-account'] }, async ({ app, screen, device, platform, backend }) => {
+    const fixtures = { app, screen, device, platform };
     const marker = randomUUID().slice(0, 8);
     const story = `Guest lighthouse ${marker} over the sea.`;
     const draft = `Draft garden ${marker} behind a blue door.`;
@@ -209,8 +209,8 @@ async function answerAlert({ screen, device, platform }: NativeFixtures, button:
 // App Store guideline 5.1.1(v): an account made in the app can be deleted in the app. A mock
 // build would send this DELETE to production, so it runs against the local server only.
 test('Dreamer native account deletion asks twice, then removes the new account and its dreams from the server',
-  { ...options, tags: [...options.tags, 'native-account-deletion'] }, async (fixtures) => {
-    const { app, screen, device, platform, backend } = fixtures;
+  { ...options, tags: [...options.tags, 'native-account-deletion'] }, async ({ app, screen, device, platform, backend }) => {
+    const fixtures = { app, screen, device, platform };
     const { status } = backend.state;
     const session = { auth: { persistSession: false, autoRefreshToken: false } };
     const admin = createClient(status.API_URL, status.SERVICE_ROLE_KEY, session);

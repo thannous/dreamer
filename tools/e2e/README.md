@@ -16,28 +16,17 @@ migration record (Git history).
 
 Follow https://docs.expo.dev/guides/using-e2e/ and the skill bundled in this
 package's `node_modules/e2e/skills/e2e/`. Dependencies and lockfile are isolated
-from the application's Playwright version. The locked runtime is `e2e` 0.23.1,
-`@e2e-dev/web` 0.16.0, `@e2e-dev/mobile` 0.12.7 and `agent-device` 0.21.37
-(a direct pin; the mobile engine depends on 0.21.37 too, and the override keeps a
-future engine bump from nesting another version unnoticed).
-0.21.37 lists a paired iPhone whose CoreDevice tunnel is down as not booted, and
-honours the engine's request to skip its post-gesture wait after a test's own swipe
-or scroll ([release notes](https://github.com/callstack/agent-device/releases/tag/v0.21.37)).
-A native campaign qualifies it; a web run does not use it. The model stack is
-pinned too: `ai` 7.0.170 runs the agent steps, `@ai-sdk/openai` 4.0.115 wraps the
-saved ChatGPT login, and `@e2e-dev/decision` 0.3.3 is the PR gate's decision filter.
-`SDK_PINS` in `qualification.mjs` holds these four runtime versions and those three.
-A run, collection, build, inspection or MCP session refuses another installed version
-of any of them, `evidence.json` `pins` records all seven, and a report from another
-runner or engine does not qualify. Nor does a persona step whose provider is not
-`chatgpt.responses`, the saved login's route: an API-key `openai(…)` reports
-`openai.responses`. Web 0.16.0 and decision 0.3.3 ask for e2e `>=0.23.1 <1` (an older
-runner refuses the filter's `relevance` and drops the whole filter); mobile asks `>=0.22.1 <1`.
-Web 0.16.0 drives `playwright-core` 1.65.0, so the matcher Playwright moves to
-1.65.0 too and both share one Chromium build.
-Node 24.22.1 is pinned by the root mise file and satisfies e2e 0.23's
-`^22.22.3 || >=24.8.0` requirement. The runner uses e2e's bundled TypeScript
-loader; the scoped public matcher preload is unchanged.
+from the application's Playwright version. The runner is `e2e` 0.24.0. The web adapter 0.16.1 and mobile adapter 0.12.8
+use the runner’s `@e2e-dev/core` 0.24.0. The web adapter and the isolated
+Playwright matcher both use 1.65.1. Mobile uses `agent-device` 0.21.39.
+The PR selection filter uses `@e2e-dev/decision` 0.3.4. The model integration
+uses `ai` 7.0.170 and `@ai-sdk/openai` 4.0.115. Node 24.22.1 is pinned at the
+repository root.
+
+The tool manifest owns the direct pins. The runner checks installed versions and
+records them in each run’s evidence. Persona model calls must name the saved-login
+provider `chatgpt.responses`. See the [SDK migration notes](SDK-NOTES.md) for the
+fixture lifecycle and the journeys that use it.
 
 ## Workers and file order
 
@@ -122,7 +111,7 @@ unpacked from an array in a loop and helpers called as methods are not followed.
 
 New journeys are written from this directory with
 `E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 mise exec -- npx e2e run --watch`
-(e2e 0.23.1). Watch reruns when a test, a neighbouring source file, or the
+(e2e 0.24.0). Watch reruns when a test, a neighbouring source file, or the
 config is saved. It is for authoring. Qualifying runs stay on `run.mjs`.
 `run.mjs`, `full-campaign.mjs`, the bug bash, the iPhone sandbox runner and
 `npm run test:testerarmy:login` set both variables themselves; a direct `npx e2e`
@@ -263,12 +252,11 @@ E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:test
 E2E_PERSONAS=1 E2E_WORKERS=1 E2E_WEB_LOCALE=fr-FR mise exec -- npm run test:testerarmy -- run --tag personas
 ```
 
-Act uses `gpt-6.1-terra` and assert uses `gpt-6.1-sol` (`tools/e2e/persona-models.mjs`).
-e2e 0.23.0 `chatgpt(id)` forwards the id and does not embed a catalog; these are
-the OpenAI ids, and `gpt-6.1-sol` is the id this repo already qualified.
-`E2E_PERSONA_MODEL` or `E2E_PERSONA_ACT_MODEL` overrides act.
-`E2E_PERSONA_JUDGE_MODEL` overrides the judge. Set both back to `gpt-6.1-sol`
-to restore the single-model campaign. Each goal allows at most 16 actions, 12 model calls
+Persona actions and judgments default to `gpt-6.2-sol` in
+`tools/e2e/persona-models.mjs`. The guarded runner records the model, provider
+and call count for each action and judgment. `E2E_PERSONA_MODEL` or
+`E2E_PERSONA_ACT_MODEL` overrides the actor. `E2E_PERSONA_JUDGE_MODEL` overrides
+the judge. Each goal allows at most 16 actions, 12 model calls
 and 32,000 input tokens per request. Each test has a 240-second timeout; retries
 and replay stay off. Use one worker. The suite registers 11 web tests in French
 and 7 native tests (the two native allowance journeys allow 360 seconds for exact setup).
@@ -371,10 +359,10 @@ name, and resolve the receipt to that platform's immutable build output:
 E2E_PERSONAS=1 mise exec -- npm run test:testerarmy:mobile -- dreamer ios list --tag personas
 E2E_PERSONAS=1 mise exec -- npm run test:testerarmy:mobile -- dreamer android list --tag personas
 
-E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
+E2E_PERSONAS=1 \
   E2E_DEVICE=SIMULATOR_UDID E2E_RELEASE_RECEIPT=IOS_BUILD_RUN/release.json \
   mise exec -- npm run test:testerarmy:mobile -- dreamer ios run --install-release --tag persona-morning
-E2E_PERSONAS=1 E2E_PERSONA_MODEL=gpt-6.1-sol \
+E2E_PERSONAS=1 \
   E2E_DEVICE=emulator-5554 E2E_AVD_NAME=Noctalia_Personas_QA \
   E2E_RELEASE_RECEIPT=ANDROID_BUILD_RUN/release.json \
   mise exec -- npm run test:testerarmy:mobile -- dreamer android run --install-release --tag persona-morning
@@ -416,14 +404,14 @@ consent, then opens `/`, so a body starts on onboarding. Their shared steps
 (`startGuest`, `openSettings`, `selectProfile`, `journal`, `openDream`…) live in
 `web-journeys.ts`. A password field's attributes are withheld, so its masking is
 read with a `browser.locator` count; the forgot-password cooldown moves
-`Date.now()` because e2e has no clock yet. `surfaceOf()` stays only for what e2e 0.23.1 and
-web 0.16.0 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
-`toHaveRole`, `toBeEditable`, `context.setOffline`, per-test `grantPermissions`,
+`Date.now()` because e2e has no clock yet. `surfaceOf()` stays only for what e2e 0.24.0 and
+web 0.16.1 lack, for example `page.clock`, `toBeInViewport`, `toHaveCSS`,
+`toBeEditable`, `context.setOffline`, per-test `grantPermissions`,
 page events (`page.on`), `addStyleTag` (or `browser.evaluate`), second
 contexts/pages and the branch target's `routeWebSocket`. Raw-page steps are not recorded, redacted or masked in
 trace.md. Existing parity bodies keep their coverage until a replacement passes.
 TesterArmy owns isolated attempts and traces; the pinned isolated Playwright
-1.65.0 package supplies matchers only. The parity fixture preserves
+1.65.1 package supplies matchers only. The parity fixture preserves
 Desktop Chrome 1280x720 by default (explicit mobile overrides remain), with
 30-second actions and 15-second exact assertions from the historical config.
 Attempts allow 180 seconds because a fresh Linux locale campaign used 57 seconds
@@ -820,7 +808,7 @@ typechecked test is not evidence that the user journey passed.
 ## agent-device inspection and live exploration
 
 The host CLI and the official `agent-device` Codex skill are installed. This
-package pins `agent-device` 0.21.37 for its local CLI and the mobile engine
+package pins `agent-device` 0.21.39 for its local CLI and the mobile engine
 through a targeted dependency override. A globally installed CLI may have a different version; the guarded
 package commands use this local pin. Read its version-matched `help workflow`
 or `help debugging` for specialized work. Use exact compatible pins for a measured

@@ -11,8 +11,8 @@ test('Dreamer Release scroll dogfood preserves its journal and painted resource 
   tags: ['framerate'], timeout: 600_000,
   skip: process.env.E2E_SCROLL_DOGFOOD !== 'synthetic200'
     ? 'Requires the work package’s owned 200-dream Release fixture.' : FLEET_PHONE ? PHONE_SETTINGS_SKIP : false,
-}, async (fixtures) => {
-  const { app, screen, device } = fixtures;
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await openApp(app);
   await screen.getByTestId('tab.journal', { visible: true }).tap();
   const card = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({ hasText: 'Noctalia performance 001' });

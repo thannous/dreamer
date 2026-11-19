@@ -7,7 +7,7 @@ import { tapWhenStill } from './native-settle';
 
 const { Client } = createRequire(import.meta.url)('pg');
 
-export type NativeFixtures = TestFixtures & { device: Device };
+export type NativeFixtures = Omit<TestFixtures, 'agent'> & { device: Device };
 type Backend = {
   state: NativeBackendState; owner: SupabaseClient; other: SupabaseClient;
   setOnline(online: boolean): Promise<void>;

@@ -20,9 +20,9 @@ test('Lucid requires intention and experience before opening sleep settings', as
 // Night and Settings are tabs without a button. Expo Router 58 sent every visit
 // to them back to Today, so the profile button, the Night shortcut and the
 // Night link did nothing.
-test('Lucid opens Night and Settings from Today and from a link', async fixtures => {
+test('Lucid opens Night and Settings from Today and from a link', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, browser } = fixtures;
   await openLucid(app, browser, '/lucid?ambience=dark');
   // Night and Settings take no slot either: the four visible tabs share the bar.
   await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
@@ -45,9 +45,9 @@ test('Lucid opens Night and Settings from Today and from a link', async fixtures
   await app.screenshot('lucid-night-from-link');
 });
 
-test('Lucid completes a stabilization practice once and preserves its progress after restart', { tags: ['practice', 'persistence'] }, async fixtures => {
+test('Lucid completes a stabilization practice once and preserves its progress after restart', { tags: ['practice', 'persistence'] }, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, browser } = fixtures;
   const revealMetrics = async () => {
     await browser.evaluate(() => {
       const card = document.querySelector('[data-testid="lucid-progress-stabilization"]');

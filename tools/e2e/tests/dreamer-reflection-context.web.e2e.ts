@@ -91,8 +91,8 @@ function imageWidth(browser: Browser) {
   return browser.evaluate(() => document.querySelector<HTMLImageElement>('[data-testid="image.reflection.dream"] img')?.naturalWidth ?? 0);
 }
 
-test('reflection preserves the artwork across themes and offers a recap after one successful angle', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('reflection preserves the artwork across themes and offers a recap after one successful angle', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await prepareReflection(fixtures);
   const categories = screen.getByTestId('screen.dreamCategories');
   const image = browser.locator('[data-testid="image.reflection.dream"] img');
@@ -131,8 +131,8 @@ test('reflection preserves the artwork across themes and offers a recap after on
   await expect(screen.getByTestId('btn.exploration360.synthesis')).toHaveCount(0);
 });
 
-test('reflection stays usable with failed artwork on a narrow screen', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('reflection stays usable with failed artwork on a narrow screen', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await prepareReflection(fixtures, 'failed');
   await expect(screen.getByTestId('image.reflection.dream')).toHaveCount(0);
   for (const angle of ['symbols', 'emotions', 'growth']) {
@@ -148,8 +148,8 @@ test('reflection stays usable with failed artwork on a narrow screen', options, 
   await app.screenshot('reflection-narrow.png');
 });
 
-test('reflection without an illustration keeps reading and all angles available before the first exchange', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('reflection without an illustration keeps reading and all angles available before the first exchange', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await prepareReflection(fixtures, 'absent');
   await expect(screen.getByTestId('image.reflection.dream')).toHaveCount(0);
   await expect(screen.getByTestId('screen.dreamCategories').getByRole('heading', { name: dreamTitle, exact: true })).toBeVisible();
@@ -167,8 +167,8 @@ test('reflection without an illustration keeps reading and all angles available 
 // The completed-dream Home CTA opens Journal; its existing mobile FlashList
 // CSSStyleDeclaration baseline is outside this surface. Capture the dark state
 // independently instead of routing a completed dream through that broken list.
-test('reflection shows the completed exchange and original artwork in explicit dark mode', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('reflection shows the completed exchange and original artwork in explicit dark mode', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await prepareReflection(fixtures);
   await browser.emulateMedia({ colorScheme: 'light' });
   await appearance(fixtures, 'dark');
