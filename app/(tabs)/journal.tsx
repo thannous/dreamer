@@ -12,6 +12,7 @@ import { AdvancedFilterSheet, type JournalSortOrder } from '@/components/journal
 import { RemoteJournalList } from '@/components/journal/RemoteJournalList';
 import type { DreamListItem } from '@/lib/journalReadContracts';
 import { DreamCard } from '@/components/journal/DreamCard';
+import { JournalCompactRow } from '@/components/journal/JournalCompactRow';
 import { DreamShareComposer } from '@/components/journal/DreamShareComposer';
 import { takeDreamStoryEpilogue } from '@/lib/dreamStoryEpilogue';
 import { EmptyState } from '@/components/journal/EmptyState';
@@ -38,6 +39,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { resolveWithDiskCache } from '@/lib/dreamMediaDiskCache';
 import { useTheme } from '@/context/ThemeContext';
 import { useClearWebFocus } from '@/hooks/useClearWebFocus';
+import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
 import { useLocaleFormatting } from '@/hooks/useLocaleFormatting';
 import { useTranslation } from '@/hooks/useTranslation';
 import { blurActiveElement } from '@/lib/accessibility';
@@ -127,7 +129,10 @@ function JournalListScreen() {
   }, [reloadDreams]);
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   useClearWebFocus();
-  const { formatShortDate: formatDreamListDate } = useLocaleFormatting();
+  const { formatShortDate: formatDreamListDate, formatDate } = useLocaleFormatting();
+  // Settings › Journal display: illustrated cards, or a dense list to reread quickly.
+  const { preference: journalLayout } = useJournalLayoutPreference();
+  const isCompactLayout = journalLayout === 'compact';
   const firstUsefulList = useRef(false);
   const firstUsefulContent = useRef(false);
   const flatListRef = useRef<FlashListRef<DreamAnalysis>>(null);
@@ -193,9 +198,12 @@ function JournalListScreen() {
   const overlayNavClearance = isDesktopLayout || isKeyboardVisible ? 0 : navigationClearance;
   // A column change remounts the list, which opens on the same dream; the keyboard keeps
   // its columns and offset.
-  const mobileListKey = listColumns > 1 ? `tablet-${listColumns}col` : 'mobile-cards-1col';
+  // A layout change does the same: rows and cards have nothing in common to recycle.
+  const mobileListKey = listColumns > 1
+    ? `tablet-${listColumns}col-${journalLayout}`
+    : `mobile-${journalLayout}-1col`;
   // The columns of the list on screen: the desktop grid keeps its own.
-  const columnsKey = isDesktopLayout ? `desktop-${desktopColumns}` : mobileListKey;
+  const columnsKey = isDesktopLayout ? `desktop-${desktopColumns}-${journalLayout}` : mobileListKey;
   const listScrollY = useSharedValue(0);
   // The journal's own scroll, read by its header, painting and dream cards.
   const headerScrollY = useHeaderScrollY();
@@ -786,10 +794,30 @@ function JournalListScreen() {
 
   // No `entering` on a row: FlashList recycles them, so an entrance replays on every
   // scroll. The list itself is the thing that appeared, and it appeared with the screen.
+  // The compact list's month heading: above the first dream of each month, whichever the order.
+  const compactMonthLabel = useCallback(
+    (id: number) => formatDate(id, { month: 'long', year: 'numeric' }),
+    [formatDate],
+  );
   const renderDreamItem = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
     const dateStr = formatDreamListDate(item.id);
     const isFirstItem = index === 0;
+
+    if (isCompactLayout) {
+      const monthLabel = compactMonthLabel(item.id);
+      const previous = index > 0 ? visibleItems[index - 1] : undefined;
+      return (
+        <JournalCompactRow
+          dream={item}
+          onPress={handleDreamPress}
+          onToggleFavorite={handleDreamFavorite}
+          testID={TID.List.DreamItem(item.id)}
+          dateLabel={dateStr}
+          sectionLabel={!previous || compactMonthLabel(previous.id) !== monthLabel ? monthLabel : null}
+        />
+      );
+    }
 
     return (
       <View className="mb-6">
@@ -806,11 +834,27 @@ function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, storyGlowKey]);
+  }, [clearStoryGlow, compactMonthLabel, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare,
+    isCompactLayout, storyGlowKey, visibleItems]);
 
   const renderDreamItemTablet = useCallback(({ item }: ListRenderItemInfo<DreamAnalysis>) => {
     if (!item) return null;
     const dateStr = formatDreamListDate(item.id);
+
+    // In columns the month headings would not line up: each row keeps its date.
+    if (isCompactLayout) {
+      return (
+        <View className="flex-1 px-2">
+          <JournalCompactRow
+            dream={item}
+            onPress={handleDreamPress}
+            onToggleFavorite={handleDreamFavorite}
+            testID={TID.List.DreamItem(item.id)}
+            dateLabel={dateStr}
+          />
+        </View>
+      );
+    }
 
     return (
       <View className="mb-4 flex-1 px-1">
@@ -827,11 +871,24 @@ function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, isCompactLayout, storyGlowKey]);
 
   const renderDreamItemDesktop = useCallback(({ item, index }: ListRenderItemInfo<DreamAnalysis>) => {
     // Recycling can briefly retain an index after a filter shrinks the data array.
     if (!item) return null;
+    if (isCompactLayout) {
+      return (
+        <View className="min-w-0 flex-1 px-3">
+          <JournalCompactRow
+            dream={item}
+            onPress={handleDreamPress}
+            onToggleFavorite={handleDreamFavorite}
+            testID={TID.List.DreamItem(item.id)}
+            dateLabel={formatDreamListDate(item.id)}
+          />
+        </View>
+      );
+    }
     return (
       <View className="mb-6 min-w-0 flex-1 px-1">
         <DreamCard
@@ -847,7 +904,7 @@ function JournalListScreen() {
         />
       </View>
     );
-  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, storyGlowKey]);
+  }, [clearStoryGlow, formatDreamListDate, handleDreamFavorite, handleDreamPress, handleDreamShare, isCompactLayout, storyGlowKey]);
 
   const hasNonDefaultSort = sortOrder !== 'newest';
   // A search or a filter narrows the list; a sort only orders it. Blank search words narrow nothing.
@@ -1055,6 +1112,9 @@ function JournalListScreen() {
     [filteredDreams, isWeb, keyExtractor]
   );
   const getDreamItemType = useCallback((item: DreamAnalysis | undefined, index: number) => {
+    if (isCompactLayout) {
+      return 'compact-row';
+    }
     if (!item) {
       // FlashList can query item types during layout passes where data isn't resolved yet.
       return 'text-only';
@@ -1065,7 +1125,7 @@ function JournalListScreen() {
     return !item.imageGenerationFailed && (item.thumbnailUrl || item.imageUrl)
       ? 'with-image'
       : 'text-only';
-  }, []);
+  }, [isCompactLayout]);
 
   // An element, not a component factory: typing must not create a new header
   // component type and remount the search input when it lives outside FlashList.
@@ -1257,7 +1317,7 @@ function JournalListScreen() {
         ref={flatListRef}
         // Web grid measurements can arrive after filtering removed their row.
         // Recreate the grid when its item membership changes to discard stale layouts.
-        key={`desktop-${desktopColumns}-${webMembershipKey}`}
+        key={`desktop-${desktopColumns}-${journalLayout}-${webMembershipKey}`}
         data={visibleItems}
         onEndReached={hasMore ? loadMore : undefined}
         onEndReachedThreshold={0.5}

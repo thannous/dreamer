@@ -214,7 +214,9 @@ jest.mock('@/hooks/useTranslation', () => {
 });
 jest.mock('@/hooks/useLocaleFormatting', () => {
   const formatShortDate = () => '';
-  return { useLocaleFormatting: () => ({ formatShortDate }) };
+  // Stable like the real hook's, so month headings follow the dream's month only.
+  const formatDate = (value: number) => { const date = new Date(value); return `${date.getUTCFullYear()}-${date.getUTCMonth() + 1}`; };
+  return { useLocaleFormatting: () => ({ formatShortDate, formatDate }) };
 });
 jest.mock('@/hooks/useClearWebFocus', () => ({ useClearWebFocus: () => {} }));
 jest.mock('@/lib/accessibility', () => ({ blurActiveElement: () => {} }));
@@ -240,6 +242,18 @@ jest.mock('@/components/journal/DreamCard', () => ({
     <>
       <button data-testid={testID} data-scroll-state={scrollState} onClick={() => onPress(dream)}>{dream.title}</button>
       <button onClick={() => onShare(dream)}>Share {dream.title}</button>
+    </>
+  ),
+}));
+let mockJournalLayout: 'cards' | 'compact' = 'cards';
+jest.mock('@/hooks/useJournalLayoutPreference', () => ({
+  useJournalLayoutPreference: () => ({ loaded: true, preference: mockJournalLayout, setPreference: jest.fn() }),
+}));
+jest.mock('@/components/journal/JournalCompactRow', () => ({
+  JournalCompactRow: ({ testID, dream, onPress, sectionLabel }: any) => (
+    <>
+      {sectionLabel ? <h3 data-testid="journal-compact-month">{sectionLabel}</h3> : null}
+      <button data-testid={testID} data-layout="compact" onClick={() => onPress(dream)}>{dream.title}</button>
     </>
   ),
 }));
@@ -470,6 +484,7 @@ function collapseSearchByOverlayGesture(offset: number) {
 }
 
 afterEach(() => {
+  mockJournalLayout = 'cards';
   mockThumbnailUri = null;
   mockPreloadImage.mockClear();
   mockCompleteness = undefined;
@@ -931,6 +946,26 @@ describe('Journal compact large-text layout', () => {
     );
   });
 
+  // Settings › Journal display › Compact used to be saved and never read (2026-11-19).
+  it('lists the dreams as compact rows, headed by their month, once Compact is chosen', () => {
+    mockDreams.push({ ...guestDream, id: guestDream.id - 86_400_000, title: 'Same month' });
+    mockDreams.push({ ...guestDream, id: Date.UTC(2023, 5, 15, 12), title: 'Earlier month' });
+    const { rerender } = render(<JournalScreen />);
+    expect(screen.getByTestId(TID.List.DreamItem(guestDream.id)).getAttribute('data-layout')).toBeNull();
+    const cardsKey = mockListProps.getItemType(mockDreams[1], 1);
+
+    mockJournalLayout = 'compact';
+    rerender(<JournalScreen />);
+
+    for (const dream of mockDreams) {
+      expect(screen.getByTestId(TID.List.DreamItem(dream.id)).getAttribute('data-layout')).toBe('compact');
+    }
+    expect(screen.getAllByTestId('journal-compact-month')).toHaveLength(2);
+    expect(mockListProps.getItemType(mockDreams[1], 1)).toBe('compact-row');
+    expect(cardsKey).not.toBe('compact-row');
+    fireEvent.click(screen.getByTestId(TID.List.DreamItem(guestDream.id)));
+    expect(mockPush).toHaveBeenCalled();
+  });
   it('preserves the fixed desktop header and grid', () => {
     mockPlatform = 'web';
     Object.assign(mockWindow, { width: 1440, height: 900, fontScale: 1.5 });

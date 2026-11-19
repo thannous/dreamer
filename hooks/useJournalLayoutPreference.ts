@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 
 import { trackProductEvent } from '@/lib/analytics';
@@ -8,10 +8,32 @@ import {
   saveJournalLayoutPreference,
 } from '@/services/storageService';
 
+// The quick-settings drawer opens over the journal without blurring it, so a choice made
+// there has to reach the journal's own instance of this hook: every mounted instance shares
+// the last known value and hears each saved change. A later mount starts from that value
+// instead of flashing the default layout.
+let knownPreference: JournalLayoutPreference | null = null;
+const listeners = new Set<(preference: JournalLayoutPreference) => void>();
+
+function publish(preference: JournalLayoutPreference) {
+  knownPreference = preference;
+  listeners.forEach((listener) => listener(preference));
+}
+
 export function useJournalLayoutPreference() {
-  const [preference, setPreferenceState] = useState<JournalLayoutPreference>('cards');
-  const [loaded, setLoaded] = useState(false);
-  const preferenceRef = useRef<JournalLayoutPreference>('cards');
+  const [preference, setPreferenceState] = useState<JournalLayoutPreference>(() => knownPreference ?? 'cards');
+  const [loaded, setLoaded] = useState(() => knownPreference !== null);
+
+  useEffect(() => {
+    const listener = (next: JournalLayoutPreference) => {
+      setPreferenceState(next);
+      setLoaded(true);
+    };
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -21,7 +43,7 @@ export function useJournalLayoutPreference() {
         try {
           const savedPreference = await getJournalLayoutPreference();
           if (mounted) {
-            preferenceRef.current = savedPreference;
+            knownPreference = savedPreference;
             setPreferenceState(savedPreference);
           }
         } catch (error) {
@@ -44,10 +66,9 @@ export function useJournalLayoutPreference() {
   );
 
   const setPreference = useCallback(async (nextPreference: JournalLayoutPreference) => {
-    const previousPreference = preferenceRef.current;
+    const previousPreference = knownPreference ?? preference;
     await saveJournalLayoutPreference(nextPreference);
-    preferenceRef.current = nextPreference;
-    setPreferenceState(nextPreference);
+    publish(nextPreference);
     if (previousPreference === nextPreference) {
       return;
     }
@@ -56,11 +77,17 @@ export function useJournalLayoutPreference() {
       to: nextPreference,
       source: 'settings',
     });
-  }, []);
+  }, [preference]);
 
   return {
     loaded,
     preference,
     setPreference,
   };
+}
+
+/** Test seam: forget the shared value between isolated renders. */
+export function resetJournalLayoutPreferenceForTests() {
+  knownPreference = null;
+  listeners.clear();
 }
