@@ -24,11 +24,12 @@ jest.mock('@/services/storageService', () => ({
   saveJournalLayoutPreference: (preference: unknown) => mockSaveJournalLayoutPreference(preference),
 }));
 
-const { useJournalLayoutPreference } = require('../useJournalLayoutPreference');
+const { resetJournalLayoutPreferenceForTests, useJournalLayoutPreference } = require('../useJournalLayoutPreference');
 
 describe('useJournalLayoutPreference', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetJournalLayoutPreferenceForTests();
     mockGetJournalLayoutPreference.mockResolvedValue('cards');
     mockSaveJournalLayoutPreference.mockResolvedValue(undefined);
   });
@@ -68,6 +69,36 @@ describe('useJournalLayoutPreference', () => {
     expect(result.current.preference).toBe('compact');
     expect(mockSaveJournalLayoutPreference).toHaveBeenCalledWith('compact');
     expect(mockTrackProductEvent).not.toHaveBeenCalled();
+  });
+
+  // The quick-settings drawer opens over the journal without blurring it: the journal's own
+  // instance must take the drawer's choice, not wait for its next focus.
+  it('hands a saved layout to every mounted instance, and to later mounts', async () => {
+    const journal = renderHook(() => useJournalLayoutPreference());
+    const drawer = renderHook(() => useJournalLayoutPreference());
+    await waitFor(() => expect(journal.result.current.loaded).toBe(true));
+    await waitFor(() => expect(drawer.result.current.loaded).toBe(true));
+
+    await act(async () => { await drawer.result.current.setPreference('compact'); });
+
+    expect(journal.result.current.preference).toBe('compact');
+    mockGetJournalLayoutPreference.mockImplementation(() => new Promise(() => {}));
+    const later = renderHook(() => useJournalLayoutPreference());
+    expect(later.result.current.preference).toBe('compact');
+    expect(later.result.current.loaded).toBe(true);
+  });
+
+  it('keeps other instances unchanged when persistence fails', async () => {
+    mockSaveJournalLayoutPreference.mockRejectedValueOnce(new Error('storage unavailable'));
+    const journal = renderHook(() => useJournalLayoutPreference());
+    const drawer = renderHook(() => useJournalLayoutPreference());
+    await waitFor(() => expect(drawer.result.current.loaded).toBe(true));
+
+    await act(async () => {
+      await expect(drawer.result.current.setPreference('compact')).rejects.toThrow('storage unavailable');
+    });
+
+    expect(journal.result.current.preference).toBe('cards');
   });
 
   it('does not emit analytics when persistence fails', async () => {
