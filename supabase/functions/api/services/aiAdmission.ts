@@ -1,5 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { corsHeaders } from '../lib/constants.ts';
+import { jsonResponse } from '../lib/http.ts';
 import { claimGuestQaPaidCall } from '../lib/guestQa.ts';
 import { sha256Hex } from '../lib/sha256.ts';
 import type { ApiContext } from '../types.ts';
@@ -127,18 +127,21 @@ export const resolveSynchronousAiAdmissionPolicy = (
 
 export const hashAiActor = (actorKey: string): Promise<string> => sha256Hex(actorKey);
 
-const jsonResponse = (body: Record<string, unknown>, status: number, retryAfter?: number) =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(retryAfter ? { 'Retry-After': String(retryAfter) } : {}),
-      ...corsHeaders,
-    },
-  });
-
 const unavailable = () =>
   jsonResponse({ error: 'AI service is temporarily unavailable', code: 'AI_ADMISSION_UNAVAILABLE' }, 503);
+
+function dailyLimitResponse(dailyLimit: number | null, seconds?: number): Response {
+  // The budget covers the current hour and the 24 preceding hours.
+  const maxSeconds = 25 * 60 * 60;
+  const retryAfter = seconds !== undefined && Number.isFinite(seconds)
+    ? Math.min(maxSeconds, Math.max(1, Math.ceil(seconds)))
+    : maxSeconds;
+  return jsonResponse(
+    { error: 'Daily AI limit reached', code: 'AI_DAILY_LIMIT', dailyLimit, retryAfter },
+    429,
+    { 'Retry-After': String(retryAfter) }
+  );
+}
 
 const normalizeTier = (tier: unknown): 'free' | 'plus' =>
   tier === 'plus' || tier === 'premium' ? 'plus' : 'free';
@@ -221,9 +224,7 @@ export const admitSynchronousAiRequest = async (
   if (typeof claim.allowed !== 'boolean') return unavailable();
   if (claim.allowed !== true) {
     if (claim.code === 'AI_DAILY_LIMIT') {
-      const retryAfter = Number.isFinite(claim.retry_after_seconds)
-        ? Math.min(90000, Math.max(1, Math.ceil(claim.retry_after_seconds ?? 1))) : 90000;
-      return jsonResponse({ error: 'Daily AI limit reached', code: 'AI_DAILY_LIMIT', dailyLimit: policy.dailyLimit, retryAfter }, 429, retryAfter);
+      return dailyLimitResponse(policy.dailyLimit, claim.retry_after_seconds);
     }
     const retryAfter = Number.isFinite(claim.retry_after_seconds)
       ? Math.max(1, Math.floor(claim.retry_after_seconds ?? 1))
@@ -236,7 +237,7 @@ export const admitSynchronousAiRequest = async (
         retryAfter,
       },
       globalBlocked ? 503 : 429,
-      retryAfter
+      { 'Retry-After': String(retryAfter) }
     );
   }
 
@@ -256,20 +257,7 @@ export const admitSynchronousAiRequest = async (
       return unavailable();
     }
     if (!daily.allowed) {
-      // The window is the current hour and the 24 before it: at most 25 hours.
-      const retryAfter = Number.isFinite(daily.retry_after_seconds)
-        ? Math.min(90000, Math.max(1, Math.ceil(daily.retry_after_seconds ?? 1)))
-        : 90000;
-      return jsonResponse(
-        {
-          error: 'Daily AI limit reached',
-          code: 'AI_DAILY_LIMIT',
-          dailyLimit: policy.dailyLimit,
-          retryAfter,
-        },
-        429,
-        retryAfter
-      );
+      return dailyLimitResponse(policy.dailyLimit, daily.retry_after_seconds);
     }
   }
 

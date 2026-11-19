@@ -1,3 +1,5 @@
+import { timingSafeEqual } from '../../_shared/timingSafeEqual.ts';
+
 const encoder = new TextEncoder();
 const TOKEN_TTL_MS = 15 * 60 * 1000;
 
@@ -24,15 +26,6 @@ const base64UrlDecode = (input: string): Uint8Array => {
   const padded = input.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(input.length / 4) * 4, '=');
   const raw = atob(padded);
   return Uint8Array.from(raw, (character) => character.charCodeAt(0));
-};
-
-const timingSafeEqual = (a: string, b: string): boolean => {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let index = 0; index < a.length; index += 1) {
-    result |= a.charCodeAt(index) ^ b.charCodeAt(index);
-  }
-  return result === 0;
 };
 
 const getSigningSecret = (): string => {

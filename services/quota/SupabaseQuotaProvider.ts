@@ -1,4 +1,4 @@
-import { QUOTAS, QUOTA_CONFIG, type UserTier } from '@/constants/limits';
+import { QUOTAS, type UserTier } from '@/constants/limits';
 import { getDreamAnalysisState, getUserChatMessageCount } from '@/lib/dreamUsage';
 import { getMonthlyQuotaPeriod } from '@/lib/quotaReset';
 import { supabase } from '@/lib/supabase';
@@ -32,7 +32,7 @@ type QuotaSnapshotPayload = {
  */
 export class SupabaseQuotaProvider implements QuotaProvider {
   private cache: Map<string, CacheEntry<any>> = new Map();
-  private readonly CACHE_TTL = 30000; // 30 seconds
+  private readonly CACHE_TTL = 30_000;
 
   private async resolveDream(target: QuotaDreamTarget | undefined, user: User) {
     if (!target) return undefined;
@@ -129,7 +129,7 @@ export class SupabaseQuotaProvider implements QuotaProvider {
 
 
   private getFallbackMonthlyLimits(tier: UserTier): TierMonthlyLimits {
-    const config = QUOTA_CONFIG[tier]?.monthly ?? QUOTA_CONFIG.free.monthly;
+    const config = QUOTAS[tier] ?? QUOTAS.free;
     return {
       analysis: config.analysis,
       exploration: config.exploration,
@@ -180,18 +180,9 @@ export class SupabaseQuotaProvider implements QuotaProvider {
     });
   }
 
-  /**
-   * Safe fallback when a quota count query fails.
-   * Fail closed for limited tiers to avoid quota bypass if the events table is missing.
-   */
-  private getErrorFallback(tier: UserTier, quotaType: 'analysis' | 'exploration'): number {
-    const limit = QUOTAS[tier][quotaType];
-    return limit === null ? 0 : limit;
-  }
-
+  // If a count fails, a metered tier must not gain additional actions.
   private getMonthlyErrorFallback(tier: UserTier, quotaType: 'analysis' | 'exploration'): number {
-    const limit = QUOTA_CONFIG[tier].monthly[quotaType];
-    return limit === null ? 0 : limit;
+    return QUOTAS[tier][quotaType] ?? 0;
   }
 
   /**

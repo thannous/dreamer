@@ -1,3 +1,5 @@
+import { timingSafeEqual } from '../../_shared/timingSafeEqual.ts';
+
 const encoder = new TextEncoder();
 
 type GuestTokenPayload = {
@@ -30,15 +32,6 @@ const base64UrlDecode = (input: string): Uint8Array => {
   const padded = input.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(input.length / 4) * 4, '=');
   const raw = atob(padded);
   return Uint8Array.from(raw, (c) => c.charCodeAt(0));
-};
-
-const timingSafeEqual = (a: string, b: string): boolean => {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
 };
 
 const getGuestSessionSecret = (): string => {

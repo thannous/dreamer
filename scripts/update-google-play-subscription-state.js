@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
+const { parseSnapshotArgs, readSnapshotInput, parseSnapshotJson, requireSnapshotDate, writeSnapshot } = require('./lib/qa-snapshot');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/google-play-subscription-state.local.json');
@@ -16,44 +16,12 @@ const EXPECTED = {
 };
 
 function parseArgs(argv) {
-  const options = {
-    file: process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH
-      ? path.resolve(ROOT, process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH)
-      : DEFAULT_TARGET,
-    checkedAt: new Date().toISOString(),
+  return parseSnapshotArgs(argv, {
+    file: process.env.GOOGLE_PLAY_SUBSCRIPTION_STATE_PATH || DEFAULT_TARGET,
     source: 'Google Play Developer API subscriptions.get',
-  };
-
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (arg === '--input') {
-      options.input = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--file') {
-      options.file = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--checked-at') {
-      options.checkedAt = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--source') {
-      options.source = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--help' || arg === '-h') {
-      printHelp();
-      process.exit(0);
-    }
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return options;
+  }, printHelp, {
+    '--input': 'input',
+  });
 }
 
 function printHelp() {
@@ -68,24 +36,6 @@ Options:
   --checked-at <iso>   Override timestamp. Defaults to now.
   --source <label>     Snapshot source label.
 `.trim());
-}
-
-function readInput(options, stdin = process.stdin) {
-  if (options.input) {
-    return fs.readFileSync(options.input, 'utf8');
-  }
-  if (stdin.isTTY) {
-    throw new Error('Missing --input. You can also pipe Google Play subscriptions.get JSON through stdin.');
-  }
-  return fs.readFileSync(0, 'utf8');
-}
-
-function parseJson(raw) {
-  try {
-    return JSON.parse(raw);
-  } catch (error) {
-    throw new Error(`Google Play input must be valid JSON: ${error instanceof Error ? error.message : error}`);
-  }
 }
 
 function getRegionConfig(plan, regionCode) {
@@ -126,11 +76,9 @@ function findBasePlan(snapshot, basePlanId) {
 }
 
 function normalizeSnapshot(input, options) {
-  if (Number.isNaN(Date.parse(options.checkedAt))) {
-    throw new Error('--checked-at must be a valid date.');
-  }
+  requireSnapshotDate(options.checkedAt);
 
-  const snapshot = parseJson(input);
+  const snapshot = parseSnapshotJson(input, 'Google Play');
   if (snapshot.packageName !== EXPECTED.packageName) {
     throw new Error(`Expected packageName ${EXPECTED.packageName}, got ${snapshot.packageName ?? 'missing'}.`);
   }
@@ -155,14 +103,9 @@ function normalizeSnapshot(input, options) {
   };
 }
 
-function writeJson(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-}
-
 function updateGooglePlaySubscriptionState(options, input) {
   const document = normalizeSnapshot(input, options);
-  writeJson(options.file, document);
+  writeSnapshot(options.file, document);
   return document;
 }
 
@@ -195,7 +138,7 @@ function getAnnualStatus(document) {
 if (require.main === module) {
   try {
     const options = parseArgs(process.argv.slice(2));
-    const document = updateGooglePlaySubscriptionState(options, readInput(options));
+    const document = updateGooglePlaySubscriptionState(options, readSnapshotInput(options, 'Google Play subscriptions.get JSON'));
     const monthly = getMonthlyStatus(document);
     const annual = getAnnualStatus(document);
     console.log(`Updated ${path.relative(ROOT, options.file)}`);

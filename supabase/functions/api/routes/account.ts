@@ -7,7 +7,7 @@ import {
   readAppleAuthConfig,
   revokeAppleTokens,
 } from '../lib/appleTokenRevoke.ts';
-import { corsHeaders } from '../lib/constants.ts';
+import { jsonResponse } from '../lib/http.ts';
 import type { ApiContext } from '../types.ts';
 
 const STORAGE_LIST_PAGE_SIZE = 100;
@@ -15,16 +15,8 @@ const STORAGE_LIST_MAX_PAGES = 100;
 // Storage policies accept any path under `<userId>/`, so nested folders are walked.
 const STORAGE_MAX_FOLDER_DEPTH = 8;
 
-function jsonResponse(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
-  });
-}
-
 type StorageEntry = { id: string | null; name: string };
 
-// Injectable for tests; the default builds the real service-role client.
 type AdminClientFactory = (url: string, serviceRoleKey: string) => any;
 type AppleRevokeFn = typeof revokeAppleTokens;
 type AppleCodeExchangeFn = (authorizationCode: string) => Promise<{ refreshToken: string; subject: string }>;

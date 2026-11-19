@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useJournalLayoutPreference } from '@/hooks/useJournalLayoutPreference';
@@ -11,6 +11,7 @@ import type {
   LanguagePreference,
   ThemePreference,
 } from '@/lib/types';
+import { OfflineModelCheckContext } from '@/context/OfflineModelCheckContext';
 import { ensureOfflineSttModel } from '@/services/nativeSpeechRecognition';
 
 export type SettingsPreferenceOption<T extends string> = {
@@ -90,6 +91,7 @@ export function useThemeSettingsPreference(): SettingsPreferenceController<Theme
 
 export function useLanguageSettingsPreference(): SettingsPreferenceController<LanguagePreference> {
   const { loaded, preference, setPreference, systemLanguage } = useLanguage();
+  const checkOfflineModel = useContext(OfflineModelCheckContext);
   const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
   const [offlineModelCheckedFor, setOfflineModelCheckedFor] = useState<LanguagePreference>();
@@ -121,7 +123,7 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
         preference: value,
         systemLanguage,
         setPreference,
-        ensureOfflineModel: ensureOfflineSttModel,
+        ensureOfflineModel: checkOfflineModel ?? ensureOfflineSttModel,
         onOfflineModelPendingChange: (pending) => {
           if (!pending && offlineModelCheck.current === check) setOfflineModelCheckedFor(value);
         },
@@ -135,7 +137,7 @@ export function useLanguageSettingsPreference(): SettingsPreferenceController<La
       },
       finally: () => { setSaving(false); },
     });
-  }, [setPreference, systemLanguage]);
+  }, [checkOfflineModel, setPreference, systemLanguage]);
 
   return {
     title: t('settings.language.title'),

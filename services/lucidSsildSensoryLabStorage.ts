@@ -1,32 +1,18 @@
-import { createKeyedSerialLock } from '@/lib/serialLock';
-import {
-  getLucidKeyValueStorage,
-  isLucidNativeKeyValueStorage,
-  type LucidKeyValueStorage,
-} from '@/services/lucidKeyValueStorage';
-
 import {
   LUCID_SSILD_SENSORY_LAB_VERSION,
   isLucidSsildSensoryLabSession,
   parseLucidSsildSensoryLabSession,
   type LucidSsildSensoryLabSession,
 } from '@/lib/lucid/ssildSensoryLab';
+import { getLucidKeyValueStorage, type LucidKeyValueStorage } from '@/services/lucidKeyValueStorage';
 import {
-  isLucidTrainerEncryptedValueError,
-  isLucidTrainerStorageCapacityError,
-  protectLucidTrainerStoredValue,
-  revealLucidTrainerStoredValue,
-} from '@/services/lucidTrainerSecureStorage';
+  createLucidPracticeStore,
+  hasPracticeEnvelopeKeys,
+  type LucidPracticeStorageErrorReason,
+} from '@/services/lucidPracticeStore';
 
-const STORAGE_NAMESPACE = 'noctalia_lucid_ssild_sensory_lab';
-const STATE_KEY_VERSION = 'state_v1';
-export const LUCID_SSILD_SENSORY_LAB_STORE_VERSION = 1 as const;
+export const LUCID_SSILD_SENSORY_LAB_STORE_VERSION = 1 as const satisfies typeof LUCID_SSILD_SENSORY_LAB_VERSION;
 const ENVELOPE_KEYS = ['version', 'userScope', 'currentSession'] as const;
-const EXPORT_KEYS = ['version', 'userScope', 'currentSession'] as const;
-const MAX_SCOPE_LENGTH = 256;
-const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
-
-type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidSsildSensoryLabStoredEnvelope = {
   version: typeof LUCID_SSILD_SENSORY_LAB_STORE_VERSION;
@@ -34,20 +20,8 @@ export type LucidSsildSensoryLabStoredEnvelope = {
   currentSession: LucidSsildSensoryLabSession | null;
 };
 
-export type LucidSsildSensoryLabExport = {
-  version: typeof LUCID_SSILD_SENSORY_LAB_STORE_VERSION;
-  userScope: string;
-  currentSession: LucidSsildSensoryLabSession | null;
-};
-
-export const LUCID_SSILD_SENSORY_LAB_STORAGE_ERROR_REASONS = [
-  'invalid_scope',
-  'invalid_metadata',
-  'persistence_failed',
-  'storage_full',
-] as const;
-export type LucidSsildSensoryLabStorageErrorReason =
-  (typeof LUCID_SSILD_SENSORY_LAB_STORAGE_ERROR_REASONS)[number];
+export type LucidSsildSensoryLabExport = LucidSsildSensoryLabStoredEnvelope;
+export type LucidSsildSensoryLabStorageErrorReason = LucidPracticeStorageErrorReason;
 
 export class LucidSsildSensoryLabStorageError extends Error {
   readonly reason: LucidSsildSensoryLabStorageErrorReason;
@@ -59,63 +33,20 @@ export class LucidSsildSensoryLabStorageError extends Error {
   }
 }
 
-const { run: withScopeLock, countKeys: countScopeLocks } = createKeyedSerialLock();
+const store = createLucidPracticeStore({
+  namespace: 'noctalia_lucid_ssild_sensory_lab',
+  suffix: 'state_v1',
+  practice: 'SSILD sensory lab',
+  storageLabel: 'SSILD sensory-lab',
+  ErrorType: LucidSsildSensoryLabStorageError,
+  version: LUCID_SSILD_SENSORY_LAB_STORE_VERSION,
+  keys: ENVELOPE_KEYS,
+  parse: parseEnvelope,
+  empty: emptyEnvelope,
+});
 
-function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return isLucidNativeKeyValueStorage(storage);
-}
-
-function isUserScope(value: unknown): value is string {
-  return (
-    typeof value === 'string' &&
-    value.trim() === value &&
-    value.length > 0 &&
-    value.length <= MAX_SCOPE_LENGTH &&
-    !CONTROL_CHARS.test(value) &&
-    (value === 'guest' || /^user:[A-Za-z0-9._:-]+$/.test(value))
-  );
-}
-
-function assertScope(userScope: string): string {
-  if (!isUserScope(userScope)) {
-    throw new LucidSsildSensoryLabStorageError(
-      'invalid_scope',
-      'SSILD sensory lab user scope is invalid'
-    );
-  }
-  return userScope;
-}
-
-function persistenceError(error: unknown): LucidSsildSensoryLabStorageError {
-  if (error instanceof LucidSsildSensoryLabStorageError) return error;
-  if (isLucidTrainerStorageCapacityError(error)) {
-    return new LucidSsildSensoryLabStorageError('storage_full', 'Local storage is full');
-  }
-  const message = error instanceof Error ? error.message : String(error ?? '');
-  const text = message.toLowerCase();
-  if (text.includes('enospc') || text.includes('no space') || text.includes('quota')) {
-    return new LucidSsildSensoryLabStorageError('storage_full', 'Local storage is full');
-  }
-  return new LucidSsildSensoryLabStorageError(
-    'persistence_failed',
-    'Local SSILD sensory-lab persistence failed'
-  );
-}
-
-export function getLucidSsildSensoryLabStorageKey(userScope: string): string {
-  return `${STORAGE_NAMESPACE}:${encodeURIComponent(assertScope(userScope))}:${STATE_KEY_VERSION}`;
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-  const prototype = Object.getPrototypeOf(value);
-  return prototype === Object.prototype || prototype === null;
-}
-
-function hasExactKeys(value: object, allowed: readonly string[]): boolean {
-  const keys = Object.keys(value);
-  return keys.length === allowed.length && keys.every((key) => allowed.includes(key));
-}
+export const getLucidSsildSensoryLabStorageKey = store.storageKey;
+export const countLucidSsildSensoryLabScopeLocksForTests = store.countScopeLocks;
 
 function cloneSession(session: LucidSsildSensoryLabSession): LucidSsildSensoryLabSession {
   const parsed = parseLucidSsildSensoryLabSession(session);
@@ -138,7 +69,7 @@ function parseEnvelope(
   value: unknown,
   userScope: string
 ): LucidSsildSensoryLabStoredEnvelope | null {
-  if (!isPlainObject(value) || !hasExactKeys(value, ENVELOPE_KEYS)) return null;
+  if (!hasPracticeEnvelopeKeys(value, ENVELOPE_KEYS)) return null;
   if (value.version !== LUCID_SSILD_SENSORY_LAB_STORE_VERSION) return null;
   if (value.userScope !== userScope) return null;
   const currentSession = parseCurrentSession(value.currentSession);
@@ -168,96 +99,18 @@ function cloneEnvelope(
   };
 }
 
-async function readPlaintext(key: string, storage: AsyncKeyValueStorage): Promise<string | null> {
-  try {
-    const value = await storage.getItem(key);
-    if (!value) return null;
-    if (!usesNativeStorage(storage)) return value;
-    try {
-      return await revealLucidTrainerStoredValue(key, value);
-    } catch (error) {
-      if (isLucidTrainerEncryptedValueError(error)) {
-        await storage.removeItem(key).catch(() => undefined);
-        return null;
-      }
-      throw persistenceError(error);
-    }
-  } catch (error) {
-    if (error instanceof LucidSsildSensoryLabStorageError) throw error;
-    throw persistenceError(error);
-  }
-}
-
-async function writePlaintext(
-  key: string,
-  value: string,
-  storage: AsyncKeyValueStorage
-): Promise<void> {
-  try {
-    const protectedValue = usesNativeStorage(storage)
-      ? await protectLucidTrainerStoredValue(key, value)
-      : value;
-    await storage.setItem(key, protectedValue);
-  } catch (error) {
-    throw persistenceError(error);
-  }
-}
-
-export function countLucidSsildSensoryLabScopeLocksForTests(): number {
-  return countScopeLocks();
-}
-
-async function loadEnvelope(
-  userScope: string,
-  storage: AsyncKeyValueStorage
-): Promise<LucidSsildSensoryLabStoredEnvelope> {
-  const key = getLucidSsildSensoryLabStorageKey(userScope);
-  const plaintext = await readPlaintext(key, storage);
-  if (!plaintext) return emptyEnvelope(userScope);
-  try {
-    const parsed = parseEnvelope(JSON.parse(plaintext) as unknown, userScope);
-    if (parsed) return parsed;
-  } catch (error) {
-    if (error instanceof LucidSsildSensoryLabStorageError) throw error;
-  }
-  try {
-    await storage.removeItem(key);
-  } catch (error) {
-    throw persistenceError(error);
-  }
-  return emptyEnvelope(userScope);
-}
-
-async function saveEnvelope(
-  envelope: LucidSsildSensoryLabStoredEnvelope,
-  storage: AsyncKeyValueStorage
-): Promise<void> {
-  const unique = parseEnvelope(envelope, envelope.userScope);
-  if (!unique) {
-    throw new LucidSsildSensoryLabStorageError(
-      'invalid_metadata',
-      'Invalid local SSILD sensory-lab envelope'
-    );
-  }
-  await writePlaintext(
-    getLucidSsildSensoryLabStorageKey(envelope.userScope),
-    JSON.stringify(unique),
-    storage
-  );
-}
-
 export async function loadLucidSsildSensoryLabState(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabStoredEnvelope> {
-  return withScopeLock(assertScope(userScope), async () => {
-    return cloneEnvelope(await loadEnvelope(userScope, storage));
+  return store.run(userScope, storage, async (transaction) => {
+    return cloneEnvelope(await transaction.load());
   });
 }
 
 export async function loadLucidSsildSensoryLabCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession | null> {
   const state = await loadLucidSsildSensoryLabState(userScope, storage);
   return state.currentSession;
@@ -266,9 +119,9 @@ export async function loadLucidSsildSensoryLabCurrentSession(
 export async function saveLucidSsildSensoryLabCurrentSession(
   userScope: string,
   session: LucidSsildSensoryLabSession,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession> {
-  return withScopeLock(assertScope(userScope), async () => {
+  return store.run(userScope, storage, async (transaction) => {
     if (!isLucidSsildSensoryLabSession(session)) {
       throw new LucidSsildSensoryLabStorageError(
         'invalid_metadata',
@@ -276,14 +129,11 @@ export async function saveLucidSsildSensoryLabCurrentSession(
       );
     }
     const nextSession = cloneSession(session);
-    await saveEnvelope(
-      {
-        version: LUCID_SSILD_SENSORY_LAB_STORE_VERSION,
-        userScope,
-        currentSession: nextSession,
-      },
-      storage
-    );
+    await transaction.save({
+      version: LUCID_SSILD_SENSORY_LAB_STORE_VERSION,
+      userScope,
+      currentSession: nextSession,
+    });
     return cloneSession(nextSession);
   });
 }
@@ -293,13 +143,13 @@ export async function updateLucidSsildSensoryLabCurrentSession(
   updater: (
     current: LucidSsildSensoryLabSession | null
   ) => LucidSsildSensoryLabSession | null | Promise<LucidSsildSensoryLabSession | null>,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession | null> {
-  return withScopeLock(assertScope(userScope), async () => {
-    const current = (await loadEnvelope(userScope, storage)).currentSession;
+  return store.run(userScope, storage, async (transaction) => {
+    const current = (await transaction.load()).currentSession;
     const updated = await updater(current ? cloneSession(current) : null);
     if (updated === null) {
-      await saveEnvelope(emptyEnvelope(userScope), storage);
+      await transaction.save(emptyEnvelope(userScope));
       return null;
     }
     if (!isLucidSsildSensoryLabSession(updated)) {
@@ -309,81 +159,29 @@ export async function updateLucidSsildSensoryLabCurrentSession(
       );
     }
     const nextSession = cloneSession(updated);
-    await saveEnvelope(
-      {
-        version: LUCID_SSILD_SENSORY_LAB_STORE_VERSION,
-        userScope,
-        currentSession: nextSession,
-      },
-      storage
-    );
+    await transaction.save({
+      version: LUCID_SSILD_SENSORY_LAB_STORE_VERSION,
+      userScope,
+      currentSession: nextSession,
+    });
     return cloneSession(nextSession);
   });
 }
 
 export async function clearLucidSsildSensoryLabCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
-  return withScopeLock(assertScope(userScope), async () => {
-    try {
-      await storage.removeItem(getLucidSsildSensoryLabStorageKey(userScope));
-    } catch (error) {
-      throw persistenceError(error);
-    }
-  });
+  return store.run(userScope, storage, ({ clear }) => clear());
 }
 
-export async function exportLucidSsildSensoryLabState(
-  userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
-): Promise<LucidSsildSensoryLabExport> {
-  const state = await loadLucidSsildSensoryLabState(userScope, storage);
-  return {
-    version: LUCID_SSILD_SENSORY_LAB_STORE_VERSION,
-    userScope,
-    currentSession: state.currentSession,
-  };
-}
+export const exportLucidSsildSensoryLabState = loadLucidSsildSensoryLabState;
 
 export async function importLucidSsildSensoryLabState(
   userScope: string,
   payload: unknown,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidSsildSensoryLabSession | null> {
-  return withScopeLock(assertScope(userScope), async () => {
-    if (!isPlainObject(payload) || !hasExactKeys(payload, EXPORT_KEYS)) {
-      throw new LucidSsildSensoryLabStorageError(
-        'invalid_metadata',
-        'SSILD sensory lab import payload is invalid'
-      );
-    }
-    if (payload.version !== LUCID_SSILD_SENSORY_LAB_STORE_VERSION) {
-      throw new LucidSsildSensoryLabStorageError(
-        'invalid_metadata',
-        'SSILD sensory lab import version is unknown'
-      );
-    }
-    if (payload.userScope !== userScope) {
-      throw new LucidSsildSensoryLabStorageError(
-        'invalid_metadata',
-        'SSILD sensory lab import scope does not match'
-      );
-    }
-    const envelope = parseEnvelope(payload, userScope);
-    if (!envelope) {
-      throw new LucidSsildSensoryLabStorageError(
-        'invalid_metadata',
-        'SSILD sensory lab import payload is invalid'
-      );
-    }
-    await saveEnvelope(envelope, storage);
-    return envelope.currentSession ? cloneSession(envelope.currentSession) : null;
-  });
-}
-
-export function assertLucidSsildSensoryLabStoreContract(): void {
-  if (LUCID_SSILD_SENSORY_LAB_STORE_VERSION !== LUCID_SSILD_SENSORY_LAB_VERSION) {
-    throw new Error('SSILD sensory lab store version must stay aligned with the domain');
-  }
+  const envelope = await store.importEnvelope(userScope, payload, storage);
+  return envelope.currentSession;
 }

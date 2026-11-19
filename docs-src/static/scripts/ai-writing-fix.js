@@ -19,6 +19,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { classifyPageType, escapeRegExp, findBalancedTagBlock, indexOfTagOpen, listWritingPages } = require('./ai-writing-pages');
 
 const DOCS_ROOT = path.join(__dirname, '..');
 const LEXICON_PATH = path.join(DOCS_ROOT, 'data', 'ai-writing-lexicons.json');
@@ -58,131 +59,10 @@ function readJsonOrExit(jsonPath) {
   return JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 }
 
-function escapeRegExp(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
 function looksLikeBlogIndex(html, filePath) {
   const rel = path.relative(DOCS_ROOT, filePath).replace(/\\/g, '/');
   if (rel.endsWith('/blog/index.html')) return true;
   return /<html[^>]*class=["'][^"']*\bblog-index\b/i.test(html);
-}
-
-function extractJsonLdBlocks(html) {
-  const blocks = [];
-  const re = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-  for (const m of html.matchAll(re)) blocks.push(m[1]);
-  return blocks;
-}
-
-function flattenJsonLd(value, out) {
-  if (!value) return;
-  if (Array.isArray(value)) {
-    for (const v of value) flattenJsonLd(v, out);
-    return;
-  }
-  if (typeof value !== 'object') return;
-  out.push(value);
-  if (value['@graph']) flattenJsonLd(value['@graph'], out);
-}
-
-function getJsonLdTypes(html) {
-  const types = new Set();
-  for (const raw of extractJsonLdBlocks(html)) {
-    const trimmed = (raw || '').trim();
-    if (!trimmed) continue;
-    let parsed;
-    try {
-      parsed = JSON.parse(trimmed);
-    } catch {
-      continue;
-    }
-    const objects = [];
-    flattenJsonLd(parsed, objects);
-    for (const obj of objects) {
-      const t = obj['@type'];
-      if (!t) continue;
-      if (Array.isArray(t)) for (const x of t) types.add(String(x));
-      else types.add(String(t));
-    }
-  }
-  return types;
-}
-
-function classifyPageType({ filePath, html }) {
-  const rel = path.relative(DOCS_ROOT, filePath).replace(/\\/g, '/');
-  const types = getJsonLdTypes(html);
-  if (types.has('BlogPosting')) return 'blog';
-  if (types.has('ItemList')) return 'category';
-  if (types.has('DefinedTerm')) return 'symbol';
-  if (rel.includes('/blog/')) return 'blog';
-  if (
-    rel.includes('/symbols/') ||
-    rel.includes('/symboles/') ||
-    rel.includes('/simbolos/') ||
-    rel.includes('/traumsymbole/') ||
-    rel.includes('/simboli/')
-  )
-    return 'symbol';
-  return 'page';
-}
-
-function indexOfTagOpen(html, tagName, fromIndex) {
-  const needle = `<${tagName}`;
-  let idx = html.indexOf(needle, fromIndex);
-  while (idx !== -1) {
-    const next = html[idx + needle.length];
-    if (!next || /\s|>/.test(next)) return idx;
-    idx = html.indexOf(needle, idx + 1);
-  }
-  return -1;
-}
-
-function indexOfTagClose(html, tagName, fromIndex) {
-  const needle = `</${tagName}`;
-  let idx = html.indexOf(needle, fromIndex);
-  while (idx !== -1) {
-    const next = html[idx + needle.length];
-    if (!next || /\s|>/.test(next)) return idx;
-    idx = html.indexOf(needle, idx + 1);
-  }
-  return -1;
-}
-
-function findBalancedTagBlock(html, openStartIndex, tagName) {
-  const openEnd = html.indexOf('>', openStartIndex);
-  if (openEnd === -1) return null;
-
-  let depth = 1;
-  let scan = openEnd + 1;
-
-  while (scan < html.length) {
-    const nextOpen = indexOfTagOpen(html, tagName, scan);
-    const nextClose = indexOfTagClose(html, tagName, scan);
-    if (nextClose === -1) return null;
-
-    if (nextOpen !== -1 && nextOpen < nextClose) {
-      depth += 1;
-      scan = nextOpen + 1;
-      continue;
-    }
-
-    depth -= 1;
-    const closeEnd = html.indexOf('>', nextClose);
-    if (closeEnd === -1) return null;
-    scan = closeEnd + 1;
-
-    if (depth === 0) {
-      return {
-        start: openStartIndex,
-        end: closeEnd + 1,
-        innerStart: openEnd + 1,
-        innerEnd: nextClose
-      };
-    }
-  }
-
-  return null;
 }
 
 function findMainBlock(html) {
@@ -353,7 +233,7 @@ function removeFillers(text, fillers, stats) {
   return out;
 }
 
-function transformContentHtml(mainHtml, lang, lexicon) {
+function transformContentHtml(mainHtml, lexicon) {
   const stats = {
     emDashRemoved: 0,
     connectorsChanged: 0,
@@ -449,50 +329,6 @@ function transformContentHtml(mainHtml, lang, lexicon) {
   return { html: out, stats };
 }
 
-function detectLangFromPath(filePath) {
-  const rel = path.relative(DOCS_ROOT, filePath);
-  const first = rel.split(path.sep)[0];
-  return first || null;
-}
-
-function listTargets() {
-  const languages = fs
-    .readdirSync(DOCS_ROOT, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name)
-    .filter((name) => /^[a-z]{2}$/.test(name));
-  const filteredLangs = LANG_FILTER ? languages.filter((l) => LANG_FILTER.includes(l)) : languages;
-
-  const targets = [];
-
-  if (SCOPE === 'all' || SCOPE === 'blog') {
-    for (const lang of filteredLangs) {
-      const dir = path.join(DOCS_ROOT, lang, 'blog');
-      if (!fs.existsSync(dir)) continue;
-      for (const f of fs.readdirSync(dir)) {
-        if (!f.endsWith('.html')) continue;
-        targets.push(path.join(dir, f));
-      }
-    }
-  }
-
-  if (SCOPE === 'all' || SCOPE === 'symbols') {
-    const symbolsFolders = { en: 'symbols', fr: 'symboles', es: 'simbolos', de: 'traumsymbole', it: 'simboli' };
-    for (const lang of filteredLangs) {
-      const folder = symbolsFolders[lang];
-      if (!folder) continue;
-      const dir = path.join(DOCS_ROOT, lang, folder);
-      if (!fs.existsSync(dir)) continue;
-      for (const f of fs.readdirSync(dir)) {
-        if (!f.endsWith('.html')) continue;
-        targets.push(path.join(dir, f));
-      }
-    }
-  }
-
-  return targets;
-}
-
 function findLatestAuditReportJson() {
   if (!fs.existsSync(REPORTS_DIR)) return null;
   const files = fs.readdirSync(REPORTS_DIR).filter((f) => /^ai-writing-audit-.*\.json$/.test(f));
@@ -522,7 +358,7 @@ function main() {
 
   let candidates = FILES
     ? FILES.map((p) => (path.isAbsolute(p) ? p : path.join(DOCS_ROOT, p)))
-    : listTargets();
+    : listWritingPages(DOCS_ROOT, SCOPE, LANG_FILTER).map(target => target.file);
 
   candidates = candidates.filter((p) => fs.existsSync(p));
 
@@ -546,7 +382,8 @@ function main() {
   for (const filePath of candidates) {
     if (LIMIT !== null && processed >= LIMIT) break;
 
-    const lang = detectLangFromPath(filePath);
+    const relativePath = path.relative(DOCS_ROOT, filePath);
+    const lang = relativePath.split(path.sep)[0];
     const lex = langs[lang];
     if (!lex) continue;
 
@@ -554,14 +391,14 @@ function main() {
 
     if (!INCLUDE_INDEX && looksLikeBlogIndex(html, filePath)) continue;
 
-    const rel = path.relative(DOCS_ROOT, filePath).replace(/\\/g, '/');
+    const rel = relativePath.split(path.sep).join('/');
     if (ONLY_BELOW !== null) {
       const score = scoreIndex ? scoreIndex.get(rel) : null;
       if (score === undefined || score === null) continue;
       if (!(score < ONLY_BELOW)) continue;
     }
 
-    const pageType = classifyPageType({ filePath, html });
+    const pageType = classifyPageType(relativePath, html);
     if (SCOPE === 'blog' && pageType !== 'blog') continue;
     if (SCOPE === 'symbols' && !(pageType === 'symbol' || pageType === 'category')) continue;
 
@@ -569,7 +406,7 @@ function main() {
     if (!mainBlock) continue;
 
     const mainHtml = html.slice(mainBlock.start, mainBlock.end);
-    const { html: fixedMainHtml, stats } = transformContentHtml(mainHtml, lang, lex);
+    const { html: fixedMainHtml, stats } = transformContentHtml(mainHtml, lex);
 
     if (fixedMainHtml === mainHtml) continue;
 

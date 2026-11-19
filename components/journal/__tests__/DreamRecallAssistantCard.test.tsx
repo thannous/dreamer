@@ -890,6 +890,13 @@ describe('DreamRecallAssistantCard', () => {
   });
 
   describe('dictation', () => {
+    async function waitForRecordingControl() {
+      await waitFor(() => {
+        const stop = screen.getByRole<HTMLButtonElement>('button', { name: 'dream_recall.session.voice_stop' });
+        expect(stop.disabled).toBe(false);
+      });
+    }
+
     it('shows the mic only for an active question, not offer, paused, or completed', () => {
       renderCard();
       expect(screen.queryByTestId(TID.Button.DreamRecallMic)).toBeNull();
@@ -946,9 +953,7 @@ describe('DreamRecallAssistantCard', () => {
         target: { value: 'Rain on the glass' },
       });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
 
       await act(async () => {
         mockRecordingSessionOptions.onPartialTranscript?.('by the canal', {
@@ -972,9 +977,7 @@ describe('DreamRecallAssistantCard', () => {
         target: { value: 'Rain on the glass' },
       });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
 
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
       await waitFor(() => {
@@ -1018,9 +1021,7 @@ describe('DreamRecallAssistantCard', () => {
         target: { value: 'Rain on the glass' },
       });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
 
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallSubmit));
       expect(mockSubmitAnswer).not.toHaveBeenCalled();
@@ -1054,9 +1055,7 @@ describe('DreamRecallAssistantCard', () => {
 
       renderActiveQuestion();
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
 
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallSkip));
       await waitFor(() => {
@@ -1154,9 +1153,7 @@ describe('DreamRecallAssistantCard', () => {
         target: { value: 'Rain on the glass' },
       });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
 
       await waitFor(() => {
@@ -1171,9 +1168,7 @@ describe('DreamRecallAssistantCard', () => {
         target: { value: 'Rain on the glass' },
       });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
 
       resetHook({
         state: sessionState('active', [
@@ -1224,9 +1219,7 @@ describe('DreamRecallAssistantCard', () => {
         target: { value: 'Rain on the glass' },
       });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
 
       await act(async () => {
         mockAppStateListener?.('background');
@@ -1246,9 +1239,7 @@ describe('DreamRecallAssistantCard', () => {
         target: { value: 'Rain on the glass' },
       });
       fireEvent.click(screen.getByTestId(TID.Button.DreamRecallMic));
-      await waitFor(() => {
-        expect(mockStartRecording).toHaveBeenCalled();
-      });
+      await waitForRecordingControl();
 
       await act(async () => {
         mockRecordingSessionOptions.onPartialTranscript?.('Rain on the glass by the canal', {

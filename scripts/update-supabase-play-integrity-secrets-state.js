@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
+const { parseSnapshotArgs, requireSnapshotDate, writeSnapshot } = require('./lib/qa-snapshot');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/supabase-play-integrity-secrets-state.local.json');
@@ -23,66 +23,22 @@ const REQUIRED_SECRETS = {
 };
 
 function parseArgs(argv) {
-  const options = {
-    file: process.env.SUPABASE_PLAY_INTEGRITY_SECRETS_STATE_PATH
-      ? path.resolve(ROOT, process.env.SUPABASE_PLAY_INTEGRITY_SECRETS_STATE_PATH)
-      : DEFAULT_TARGET,
-    checkedAt: new Date().toISOString(),
+  const fields = {
+    '--project-ref': 'projectRef',
+  };
+  for (const key of Object.keys(REQUIRED_SECRETS)) {
+    fields[`--${key}`] = (options, value) => {
+      (options.secrets[key] ??= {}).status = value;
+    };
+    fields[`--${key}-value`] = (options, value) => {
+      (options.secrets[key] ??= {}).value = value;
+    };
+  }
+  return parseSnapshotArgs(argv, {
+    file: process.env.SUPABASE_PLAY_INTEGRITY_SECRETS_STATE_PATH || DEFAULT_TARGET,
     source: 'Supabase dashboard or CLI secrets read-only check',
     secrets: {},
-  };
-
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (arg === '--file') {
-      options.file = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--checked-at') {
-      options.checkedAt = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--source') {
-      options.source = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--project-ref') {
-      options.projectRef = argv[i + 1];
-      i += 1;
-      continue;
-    }
-
-    const secretName = Object.keys(REQUIRED_SECRETS).find((name) => arg === `--${name}`);
-    if (secretName) {
-      options.secrets[secretName] = {
-        ...(options.secrets[secretName] ?? {}),
-        status: argv[i + 1],
-      };
-      i += 1;
-      continue;
-    }
-
-    const valueName = Object.keys(REQUIRED_SECRETS).find((name) => arg === `--${name}-value`);
-    if (valueName) {
-      options.secrets[valueName] = {
-        ...(options.secrets[valueName] ?? {}),
-        value: argv[i + 1],
-      };
-      i += 1;
-      continue;
-    }
-
-    if (arg === '--help' || arg === '-h') {
-      printHelp();
-      process.exit(0);
-    }
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return options;
+  }, printHelp, fields);
 }
 
 function printHelp() {
@@ -118,9 +74,7 @@ function normalizeStatus(value) {
 }
 
 function normalizeSnapshot(options) {
-  if (Number.isNaN(Date.parse(options.checkedAt))) {
-    throw new Error('--checked-at must be a valid date.');
-  }
+  requireSnapshotDate(options.checkedAt);
   const secrets = {};
   for (const [name, config] of Object.entries(REQUIRED_SECRETS)) {
     const input = options.secrets[name] ?? {};
@@ -164,14 +118,9 @@ function isSupabasePlayIntegritySecretsReady(snapshot) {
   return getSupabasePlayIntegritySecretIssues(snapshot).length === 0;
 }
 
-function writeJson(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-}
-
 function updateSupabasePlayIntegritySecretsState(options) {
   const document = normalizeSnapshot(options);
-  writeJson(options.file, document);
+  writeSnapshot(options.file, document);
   return document;
 }
 

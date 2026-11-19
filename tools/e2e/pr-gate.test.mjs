@@ -101,7 +101,7 @@ test('a native-only diff skips instead of failing', () => {
 });
 
 test('a change to the stack every journey runs on starts the smoke set, docs and unrelated tooling do not', () => {
-  for (const file of ['package-lock.json', 'patches/expo+58.0.23.patch', 'app.json', 'tools/e2e/package.json',
+  for (const file of ['.nvmrc', 'package-lock.json', 'patches/expo+58.0.23.patch', 'app.json', 'tools/e2e/package.json',
     'tools/e2e/e2e.config.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/traced-parity-test.ts']) {
     assert.deepEqual(decideSmoke([file]).products, ['dreamer'], file);
   }

@@ -3,6 +3,17 @@
  * Uses in-memory storage and can optionally preload predefined dreams
  */
 
+import { DEFAULT_DAILY_REMINDER_SETTINGS } from '@/lib/dreamerNotifications';
+import {
+  DEFAULT_JOURNAL_LAYOUT_PREFERENCE,
+  DEFAULT_LANGUAGE_PREFERENCE,
+  DEFAULT_THEME_PREFERENCE,
+  GUEST_RECORDING_DRAFT_KEY,
+  isJournalLayoutPreference,
+  recordingDraftKey,
+  scopedStorageKey,
+  storageKeys,
+} from '@/services/storageSchema';
 import type {
   DreamAnalysis,
   DreamListReadResult,
@@ -24,40 +35,11 @@ import { isMockDogfoodPersistenceEnabled, isMockModeEnabled } from '@/lib/env';
 import { reportSyncQueueClearedWithPending } from '@/lib/syncObservability';
 import { getPredefinedDreamsWithTimestamps } from '@/mock-data/predefinedDreams';
 
-// In-memory storage
 const mockStorage: Record<string, string> = {};
 
-// Flag to track if we've pre-loaded dreams
 let dreamsPreloaded = false;
 let shouldPreloadDreams = false;
 
-const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
-const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
-const IMAGE_JOBS_KEY = 'gemini_dream_journal_pending_image_jobs';
-
-const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
-  weekdayEnabled: false,
-  weekdayTime: '07:00',
-  weekendEnabled: false,
-  weekendTime: '10:00',
-};
-
-const DEFAULT_THEME_PREFERENCE: ThemePreference = 'dynamic';
-
-const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
-const DEFAULT_JOURNAL_LAYOUT_PREFERENCE: JournalLayoutPreference = 'cards';
-const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
-const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
-const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
-const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
-const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
-const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
-const LAST_SEEN_RELEASE_NOTES_VERSION_KEY = 'gemini_dream_journal_last_seen_release_notes_version';
-const ONBOARDING_STATE_KEY = 'gemini_dream_journal_onboarding_state_v2';
-const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_claimed_by_v2';
-const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
-const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
-const GUEST_DREAM_MIGRATION_OWNER_KEY = 'gemini_dream_journal_guest_migration_owner_v1';
 const MOCK_DOGFOOD_STORAGE_PREFIX = 'noctalia_mock_dogfood_v1:';
 
 // Dogfood persistence is opt-in and namespaced away from real account data.
@@ -75,18 +57,11 @@ async function setMockItem(key: string, value: string): Promise<void> {
   mockStorage[key] = value;
 }
 
-const scopedStorageKey = (baseKey: string, userScope?: string | null): string =>
-  userScope ? `${baseKey}:${userScope}` : baseKey;
-
-function isJournalLayoutPreference(value: unknown): value is JournalLayoutPreference {
-  return value === 'cards' || value === 'compact';
-}
-
 export function setPreloadDreamsEnabled(enabled: boolean): void {
   shouldPreloadDreams = enabled;
   if (!enabled) {
     dreamsPreloaded = false;
-    delete mockStorage['gemini_dream_journal_dreams'];
+    delete mockStorage[storageKeys.dreams];
   }
   console.log('[MOCK STORAGE] Dream preloading', enabled ? 'enabled' : 'disabled');
 }
@@ -107,7 +82,7 @@ function ensureDreamsPreloaded(): void {
 
   console.log('[MOCK STORAGE] Pre-loading predefined dreams...');
   const predefinedDreams = getPredefinedDreamsWithTimestamps();
-  mockStorage['gemini_dream_journal_dreams'] = JSON.stringify(predefinedDreams);
+  mockStorage[storageKeys.dreams] = JSON.stringify(predefinedDreams);
   dreamsPreloaded = true;
   console.log(`[MOCK STORAGE] Loaded ${predefinedDreams.length} predefined dreams`);
 }
@@ -121,7 +96,7 @@ export async function getSavedDreams(): Promise<DreamListReadResult> {
   ensureDreamsPreloaded();
 
   try {
-    const savedDreams = await getMockItem('gemini_dream_journal_dreams');
+    const savedDreams = await getMockItem(storageKeys.dreams);
     if (savedDreams !== null) {
       const dreams = JSON.parse(savedDreams) as DreamAnalysis[];
       const sorted = dreams.sort((a, b) => b.id - a.id);
@@ -135,13 +110,10 @@ export async function getSavedDreams(): Promise<DreamListReadResult> {
   }
 }
 
-/**
- * Mock save dreams
- */
 export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   console.log(`[MOCK STORAGE] saveDreams called with ${dreams.length} dreams`);
   try {
-    await setMockItem('gemini_dream_journal_dreams', JSON.stringify(dreams));
+    await setMockItem(storageKeys.dreams, JSON.stringify(dreams));
     console.log('[MOCK STORAGE] Dreams saved successfully');
   } catch {
     console.error('[MOCK STORAGE] Failed to save dreams');
@@ -149,20 +121,10 @@ export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
   }
 }
 
-const MOCK_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
-const MOCK_GUEST_DRAFT_KEY = `${MOCK_TRANSCRIPT_KEY}:guest`;
-
-// Guest and account drafts have explicit namespaces; old unowned values stay unread.
-const mockTranscriptKey = (scope: RecordingDraftScope): string =>
-  scope === 'guest' ? MOCK_GUEST_DRAFT_KEY : `${MOCK_TRANSCRIPT_KEY}:${scope}`;
-
-/**
- * Mock get saved transcript
- */
 export async function getSavedTranscript(scope: RecordingDraftScope): Promise<string> {
   console.log('[MOCK STORAGE] getSavedTranscript called');
   try {
-    return await getMockItem(mockTranscriptKey(scope)) ?? '';
+    return await getMockItem(recordingDraftKey(scope)) ?? '';
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to retrieve transcript:', error);
     return '';
@@ -170,22 +132,19 @@ export async function getSavedTranscript(scope: RecordingDraftScope): Promise<st
 }
 
 export async function getRecordingDraft(scope: RecordingDraftScope): Promise<RecordingDraftReadResult> {
-  const value = await getMockItem(mockTranscriptKey(scope));
+  const value = await getMockItem(recordingDraftKey(scope));
   if (value) return { status: 'loaded', value };
-  const guestValue = scope === 'guest' ? null : await getMockItem(MOCK_GUEST_DRAFT_KEY);
+  const guestValue = scope === 'guest' ? null : await getMockItem(GUEST_RECORDING_DRAFT_KEY);
   if (!guestValue) return { status: 'absent' };
   // A guest draft follows the account that signs in, as in the real service.
-  await setMockItem(mockTranscriptKey(scope), guestValue);
-  await setMockItem(MOCK_GUEST_DRAFT_KEY, '');
+  await setMockItem(recordingDraftKey(scope), guestValue);
+  await setMockItem(GUEST_RECORDING_DRAFT_KEY, '');
   return { status: 'loaded', value: guestValue };
 }
 
-/**
- * Mock save transcript
- */
 export async function saveTranscript(transcript: string, scope: RecordingDraftScope): Promise<void> {
   console.log('[MOCK STORAGE] saveTranscript called with:', transcript.slice(0, 50) + '...');
-  const key = mockTranscriptKey(scope);
+  const key = recordingDraftKey(scope);
   try {
     await setMockItem(key, transcript);
     if (!transcript) delete mockStorage[key];
@@ -196,26 +155,20 @@ export async function saveTranscript(transcript: string, scope: RecordingDraftSc
   }
 }
 
-/**
- * Mock clear saved transcript
- */
 export async function clearSavedTranscript(scope: RecordingDraftScope): Promise<void> {
   console.log('[MOCK STORAGE] clearSavedTranscript called');
   try {
-    delete mockStorage[mockTranscriptKey(scope)];
+    delete mockStorage[recordingDraftKey(scope)];
     console.log('[MOCK STORAGE] Transcript cleared');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to clear transcript:', error);
   }
 }
 
-/**
- * Mock get notification settings
- */
 export async function getNotificationSettings(): Promise<NotificationSettings> {
   console.log('[MOCK STORAGE] getNotificationSettings called');
   try {
-    const savedSettings = mockStorage['gemini_dream_journal_notification_settings'];
+    const savedSettings = mockStorage[storageKeys.notificationSettings];
     if (savedSettings) {
       const settings = JSON.parse(savedSettings) as NotificationSettings;
       console.log('[MOCK STORAGE] Returning saved notification settings');
@@ -225,16 +178,13 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
     console.error('[MOCK STORAGE] Failed to retrieve notification settings:', error);
   }
   console.log('[MOCK STORAGE] Returning default notification settings');
-  return DEFAULT_NOTIFICATION_SETTINGS;
+  return { ...DEFAULT_DAILY_REMINDER_SETTINGS };
 }
 
-/**
- * Mock save notification settings
- */
 export async function saveNotificationSettings(settings: NotificationSettings): Promise<void> {
   console.log('[MOCK STORAGE] saveNotificationSettings called:', settings);
   try {
-    mockStorage['gemini_dream_journal_notification_settings'] = JSON.stringify(settings);
+    mockStorage[storageKeys.notificationSettings] = JSON.stringify(settings);
     console.log('[MOCK STORAGE] Notification settings saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save notification settings:', error);
@@ -242,13 +192,10 @@ export async function saveNotificationSettings(settings: NotificationSettings): 
   }
 }
 
-/**
- * Mock get theme preference
- */
 export async function getThemePreference(): Promise<ThemePreference> {
   console.log('[MOCK STORAGE] getThemePreference called');
   try {
-    const savedPreference = await getMockItem('gemini_dream_journal_theme_preference');
+    const savedPreference = await getMockItem(storageKeys.themePreference);
     if (savedPreference) {
       const preference = JSON.parse(savedPreference) as ThemePreference;
       console.log('[MOCK STORAGE] Returning saved theme preference:', preference);
@@ -261,13 +208,10 @@ export async function getThemePreference(): Promise<ThemePreference> {
   return DEFAULT_THEME_PREFERENCE;
 }
 
-/**
- * Mock save theme preference
- */
 export async function saveThemePreference(preference: ThemePreference): Promise<void> {
   console.log('[MOCK STORAGE] saveThemePreference called:', preference);
   try {
-    await setMockItem('gemini_dream_journal_theme_preference', JSON.stringify(preference));
+    await setMockItem(storageKeys.themePreference, JSON.stringify(preference));
     console.log('[MOCK STORAGE] Theme preference saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save theme preference:', error);
@@ -275,13 +219,10 @@ export async function saveThemePreference(preference: ThemePreference): Promise<
   }
 }
 
-/**
- * Mock get language preference
- */
 export async function getLanguagePreference(): Promise<LanguagePreference> {
   console.log('[MOCK STORAGE] getLanguagePreference called');
   try {
-    const savedPreference = await getMockItem('gemini_dream_journal_language_preference');
+    const savedPreference = await getMockItem(storageKeys.languagePreference);
     if (savedPreference) {
       const preference = JSON.parse(savedPreference) as LanguagePreference;
       console.log('[MOCK STORAGE] Returning saved language preference:', preference);
@@ -294,13 +235,10 @@ export async function getLanguagePreference(): Promise<LanguagePreference> {
   return DEFAULT_LANGUAGE_PREFERENCE;
 }
 
-/**
- * Mock save language preference
- */
 export async function saveLanguagePreference(preference: LanguagePreference): Promise<void> {
   console.log('[MOCK STORAGE] saveLanguagePreference called:', preference);
   try {
-    await setMockItem('gemini_dream_journal_language_preference', JSON.stringify(preference));
+    await setMockItem(storageKeys.languagePreference, JSON.stringify(preference));
     console.log('[MOCK STORAGE] Language preference saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save language preference:', error);
@@ -311,7 +249,7 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
 export async function getJournalLayoutPreference(): Promise<JournalLayoutPreference> {
   console.log('[MOCK STORAGE] getJournalLayoutPreference called');
   try {
-    const savedPreference = mockStorage[JOURNAL_LAYOUT_PREFERENCE_KEY];
+    const savedPreference = mockStorage[storageKeys.journalLayoutPreference];
     if (savedPreference) {
       const preference = JSON.parse(savedPreference) as unknown;
       if (isJournalLayoutPreference(preference)) {
@@ -329,7 +267,7 @@ export async function getJournalLayoutPreference(): Promise<JournalLayoutPrefere
 export async function saveJournalLayoutPreference(preference: JournalLayoutPreference): Promise<void> {
   console.log('[MOCK STORAGE] saveJournalLayoutPreference called:', preference);
   try {
-    mockStorage[JOURNAL_LAYOUT_PREFERENCE_KEY] = JSON.stringify(preference);
+    mockStorage[storageKeys.journalLayoutPreference] = JSON.stringify(preference);
     console.log('[MOCK STORAGE] Journal layout preference saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save journal layout preference:', error);
@@ -342,10 +280,10 @@ export async function getRecordingInputModePreference(
 ): Promise<RecordingInputModePreference | null> {
   console.log('[MOCK STORAGE] getRecordingInputModePreference called');
   try {
-    const scopedKey = scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope);
+    const scopedKey = scopedStorageKey(storageKeys.recordingInputModePreference, actorScope);
     const savedPreference =
       (await getMockItem(scopedKey)) ??
-      (actorScope === 'guest' ? await getMockItem(RECORDING_INPUT_MODE_PREFERENCE_KEY) : undefined);
+      (actorScope === 'guest' ? await getMockItem(storageKeys.recordingInputModePreference) : undefined);
     if (savedPreference) {
       const parsed = JSON.parse(savedPreference);
       if (parsed === 'text' || parsed === 'voice') {
@@ -364,19 +302,17 @@ export async function saveRecordingInputModePreference(
 ): Promise<void> {
   console.log('[MOCK STORAGE] saveRecordingInputModePreference called:', preference);
   try {
-    await setMockItem(scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope), JSON.stringify(preference));
+    await setMockItem(scopedStorageKey(storageKeys.recordingInputModePreference, actorScope), JSON.stringify(preference));
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save recording input mode preference:', error);
     throw new Error('Failed to save recording input mode preference');
   }
 }
 
-const REMINDER_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_reminder_prompt_dismissed';
-
 export async function getReminderPromptDismissed(): Promise<boolean> {
   console.log('[MOCK STORAGE] getReminderPromptDismissed called');
   try {
-    const savedPreference = mockStorage[REMINDER_PROMPT_DISMISSED_KEY];
+    const savedPreference = mockStorage[storageKeys.reminderPromptDismissed];
     if (savedPreference) {
       return JSON.parse(savedPreference) === true;
     }
@@ -389,19 +325,17 @@ export async function getReminderPromptDismissed(): Promise<boolean> {
 export async function saveReminderPromptDismissed(dismissed: boolean): Promise<void> {
   console.log('[MOCK STORAGE] saveReminderPromptDismissed called:', dismissed);
   try {
-    mockStorage[REMINDER_PROMPT_DISMISSED_KEY] = JSON.stringify(dismissed);
+    mockStorage[storageKeys.reminderPromptDismissed] = JSON.stringify(dismissed);
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save reminder prompt state:', error);
     throw new Error('Failed to save reminder prompt state');
   }
 }
 
-const STALE_ANALYSIS_BANNER_DISMISSED_KEY = 'gemini_dream_journal_stale_analysis_banner_dismissed';
-
 export async function getStaleAnalysisBannerDismissed(): Promise<boolean> {
   console.log('[MOCK STORAGE] getStaleAnalysisBannerDismissed called');
   try {
-    const savedPreference = mockStorage[STALE_ANALYSIS_BANNER_DISMISSED_KEY];
+    const savedPreference = mockStorage[storageKeys.staleAnalysisBannerDismissed];
     if (savedPreference) {
       return JSON.parse(savedPreference) === true;
     }
@@ -414,7 +348,7 @@ export async function getStaleAnalysisBannerDismissed(): Promise<boolean> {
 export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Promise<void> {
   console.log('[MOCK STORAGE] saveStaleAnalysisBannerDismissed called:', dismissed);
   try {
-    mockStorage[STALE_ANALYSIS_BANNER_DISMISSED_KEY] = JSON.stringify(dismissed);
+    mockStorage[storageKeys.staleAnalysisBannerDismissed] = JSON.stringify(dismissed);
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save stale analysis banner state:', error);
     throw new Error('Failed to save stale analysis banner state');
@@ -424,7 +358,7 @@ export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Prom
 export async function getRecordingVoiceHintCompleted(actorScope?: string | null): Promise<boolean> {
   console.log('[MOCK STORAGE] getRecordingVoiceHintCompleted called');
   try {
-    const savedFlag = mockStorage[scopedStorageKey(RECORDING_VOICE_HINT_COMPLETED_KEY, actorScope)];
+    const savedFlag = mockStorage[scopedStorageKey(storageKeys.recordingVoiceHintCompleted, actorScope)];
     if (savedFlag) {
       return JSON.parse(savedFlag) === true;
     }
@@ -440,7 +374,7 @@ export async function saveRecordingVoiceHintCompleted(
 ): Promise<void> {
   console.log('[MOCK STORAGE] saveRecordingVoiceHintCompleted called:', completed);
   try {
-    mockStorage[scopedStorageKey(RECORDING_VOICE_HINT_COMPLETED_KEY, actorScope)] =
+    mockStorage[scopedStorageKey(storageKeys.recordingVoiceHintCompleted, actorScope)] =
       JSON.stringify(completed);
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save recording voice hint flag:', error);
@@ -451,7 +385,7 @@ export async function saveRecordingVoiceHintCompleted(
 export async function getRitualPreference(): Promise<string | null> {
   console.log('[MOCK STORAGE] getRitualPreference called');
   try {
-    const savedPreference = mockStorage[RITUAL_PREFERENCE_KEY];
+    const savedPreference = mockStorage[storageKeys.ritualPreference];
     if (savedPreference) {
       const preference = JSON.parse(savedPreference) as string;
       console.log('[MOCK STORAGE] Returning saved ritual preference:', preference);
@@ -467,7 +401,7 @@ export async function getRitualPreference(): Promise<string | null> {
 export async function saveRitualPreference(preference: string): Promise<void> {
   console.log('[MOCK STORAGE] saveRitualPreference called:', preference);
   try {
-    mockStorage[RITUAL_PREFERENCE_KEY] = JSON.stringify(preference);
+    mockStorage[storageKeys.ritualPreference] = JSON.stringify(preference);
     console.log('[MOCK STORAGE] Ritual preference saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save ritual preference:', error);
@@ -478,7 +412,7 @@ export async function saveRitualPreference(preference: string): Promise<void> {
 export async function getRitualStepProgress(): Promise<RitualStepProgress | null> {
   console.log('[MOCK STORAGE] getRitualStepProgress called');
   try {
-    const savedProgress = mockStorage[RITUAL_PROGRESS_KEY];
+    const savedProgress = mockStorage[storageKeys.ritualProgress];
     if (savedProgress) {
       const parsed = JSON.parse(savedProgress) as RitualStepProgress;
       console.log('[MOCK STORAGE] Returning ritual step progress');
@@ -494,7 +428,7 @@ export async function getRitualStepProgress(): Promise<RitualStepProgress | null
 export async function saveRitualStepProgress(progress: RitualStepProgress): Promise<void> {
   console.log('[MOCK STORAGE] saveRitualStepProgress called');
   try {
-    mockStorage[RITUAL_PROGRESS_KEY] = JSON.stringify(progress);
+    mockStorage[storageKeys.ritualProgress] = JSON.stringify(progress);
     console.log('[MOCK STORAGE] Ritual step progress saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save ritual step progress:', error);
@@ -505,7 +439,7 @@ export async function saveRitualStepProgress(progress: RitualStepProgress): Prom
 export async function getFirstLaunchCompleted(): Promise<boolean> {
   console.log('[MOCK STORAGE] getFirstLaunchCompleted called');
   try {
-    const savedFlag = await getMockItem(FIRST_LAUNCH_COMPLETED_KEY);
+    const savedFlag = await getMockItem(storageKeys.firstLaunchCompleted);
     if (savedFlag) {
       const completed = JSON.parse(savedFlag) as boolean;
       console.log('[MOCK STORAGE] Returning first launch flag:', completed);
@@ -521,7 +455,7 @@ export async function getFirstLaunchCompleted(): Promise<boolean> {
 export async function saveFirstLaunchCompleted(completed: boolean): Promise<void> {
   console.log('[MOCK STORAGE] saveFirstLaunchCompleted called:', completed);
   try {
-    await setMockItem(FIRST_LAUNCH_COMPLETED_KEY, JSON.stringify(completed));
+    await setMockItem(storageKeys.firstLaunchCompleted, JSON.stringify(completed));
     console.log('[MOCK STORAGE] First launch flag saved');
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save first launch flag:', error);
@@ -530,7 +464,7 @@ export async function saveFirstLaunchCompleted(completed: boolean): Promise<void
 }
 
 export async function getLastSeenReleaseNotesVersion(): Promise<string | null> {
-  const savedVersion = mockStorage[LAST_SEEN_RELEASE_NOTES_VERSION_KEY];
+  const savedVersion = mockStorage[storageKeys.lastSeenReleaseNotesVersion];
   if (!savedVersion) return null;
   try {
     const parsed = JSON.parse(savedVersion) as unknown;
@@ -541,11 +475,11 @@ export async function getLastSeenReleaseNotesVersion(): Promise<string | null> {
 }
 
 export async function saveLastSeenReleaseNotesVersion(version: string): Promise<void> {
-  mockStorage[LAST_SEEN_RELEASE_NOTES_VERSION_KEY] = JSON.stringify(version);
+  mockStorage[storageKeys.lastSeenReleaseNotesVersion] = JSON.stringify(version);
 }
 
 export async function getOnboardingStateSnapshot(actorScope: string): Promise<string | null> {
-  return getMockItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope));
+  return getMockItem(scopedStorageKey(storageKeys.onboardingState, actorScope));
 }
 
 /**
@@ -575,11 +509,11 @@ export async function saveOnboardingStateSnapshot(
   serializedState: string
 ): Promise<void> {
   if (refusesOnboardingSave(serializedState)) throw new Error('Mock storage refused the onboarding write');
-  await setMockItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope), serializedState);
+  await setMockItem(scopedStorageKey(storageKeys.onboardingState, actorScope), serializedState);
 }
 
 export async function getOnboardingGuestClaimedBy(): Promise<string | null> {
-  const saved = await getMockItem(ONBOARDING_GUEST_CLAIMED_BY_KEY);
+  const saved = await getMockItem(storageKeys.onboardingGuestClaimedBy);
   if (!saved) return null;
   try {
     const parsed = JSON.parse(saved) as unknown;
@@ -590,11 +524,11 @@ export async function getOnboardingGuestClaimedBy(): Promise<string | null> {
 }
 
 export async function saveOnboardingGuestClaimedBy(userId: string): Promise<void> {
-  await setMockItem(ONBOARDING_GUEST_CLAIMED_BY_KEY, JSON.stringify(userId));
+  await setMockItem(storageKeys.onboardingGuestClaimedBy, JSON.stringify(userId));
 }
 
 export async function getPendingRecordingNotification(): Promise<'/recording' | null> {
-  const serialized = mockStorage[PENDING_RECORDING_NOTIFICATION_KEY];
+  const serialized = mockStorage[storageKeys.pendingRecordingNotification];
   if (!serialized) return null;
   try {
     const parsed = JSON.parse(serialized) as unknown;
@@ -614,43 +548,43 @@ export async function getPendingRecordingNotification(): Promise<'/recording' | 
 }
 
 export async function savePendingRecordingNotification(url: '/recording'): Promise<void> {
-  mockStorage[PENDING_RECORDING_NOTIFICATION_KEY] = JSON.stringify({
+  mockStorage[storageKeys.pendingRecordingNotification] = JSON.stringify({
     url,
     queuedAt: Date.now(),
   });
 }
 
 export async function clearPendingRecordingNotification(): Promise<void> {
-  delete mockStorage[PENDING_RECORDING_NOTIFICATION_KEY];
+  delete mockStorage[storageKeys.pendingRecordingNotification];
 }
 
 export async function getPendingAuthReturn(): Promise<string | null> {
-  return mockStorage.gemini_dream_journal_auth_return_v1 ?? null;
+  return mockStorage[storageKeys.authReturn] ?? null;
 }
 
 export async function savePendingAuthReturn(serialized: string): Promise<void> {
-  mockStorage.gemini_dream_journal_auth_return_v1 = serialized;
+  mockStorage[storageKeys.authReturn] = serialized;
 }
 
 export async function getDreamsMigrationSynced(userId: string): Promise<boolean> {
   if (!userId) return false;
-  const key = `${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`;
+  const key = `${storageKeys.dreamsMigrationSyncedPrefix}${userId}`;
   return mockStorage[key] === 'true';
 }
 
 export async function setDreamsMigrationSynced(userId: string, synced: boolean): Promise<void> {
   if (!userId) return;
-  const key = `${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`;
+  const key = `${storageKeys.dreamsMigrationSyncedPrefix}${userId}`;
   mockStorage[key] = synced ? 'true' : 'false';
 }
 
 export async function getGuestDreamMigrationOwner(): Promise<GuestDreamMigrationOwner | null> {
-  const raw = mockStorage[GUEST_DREAM_MIGRATION_OWNER_KEY];
+  const raw = mockStorage[storageKeys.guestDreamMigrationOwner];
   return raw ? JSON.parse(raw) as GuestDreamMigrationOwner : null;
 }
 
 export async function setGuestDreamMigrationOwner(owner: GuestDreamMigrationOwner | null): Promise<void> {
-  mockStorage[GUEST_DREAM_MIGRATION_OWNER_KEY] = owner ? JSON.stringify(owner) : '';
+  mockStorage[storageKeys.guestDreamMigrationOwner] = owner ? JSON.stringify(owner) : '';
 }
 
 export async function getCachedRemoteDreams(
@@ -658,7 +592,7 @@ export async function getCachedRemoteDreams(
 ): Promise<DreamListReadResult> {
   console.log('[MOCK STORAGE] getCachedRemoteDreams called');
   try {
-    const scopedKey = scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope);
+    const scopedKey = scopedStorageKey(storageKeys.remoteDreamsCache, userScope);
     const cached = mockStorage[scopedKey];
     if (cached !== undefined) {
       const parsed = JSON.parse(cached) as unknown;
@@ -679,9 +613,9 @@ export async function saveCachedRemoteDreams(
 ): Promise<void> {
   console.log('[MOCK STORAGE] saveCachedRemoteDreams called with', dreams.length, 'dreams');
   try {
-    mockStorage[scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)] = JSON.stringify(dreams);
+    mockStorage[scopedStorageKey(storageKeys.remoteDreamsCache, userScope)] = JSON.stringify(dreams);
     if (userScope) {
-      delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
+      delete mockStorage[storageKeys.remoteDreamsCache];
     }
   } catch {
     console.error('[MOCK STORAGE] Failed to cache remote dreams');
@@ -692,12 +626,12 @@ export async function saveCachedRemoteDreams(
 export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
   try {
     const scopedMutations = parsePendingDreamMutationsPayload(
-      mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)],
+      mockStorage[scopedStorageKey(storageKeys.dreamMutations, userScope)],
       userScope
     );
     const legacyMutations =
       userScope != null
-        ? parsePendingDreamMutationsPayload(mockStorage[DREAM_MUTATIONS_KEY], userScope)
+        ? parsePendingDreamMutationsPayload(mockStorage[storageKeys.dreamMutations], userScope)
         : [];
     const deduped = new Map<string, DreamMutation>();
     for (const mutation of scopedMutations) {
@@ -717,18 +651,18 @@ export async function clearRemoteDreamStorage(userScope?: string | null): Promis
     console.error('[MOCK STORAGE] Failed to inspect pending mutations before clearing');
   }
 
-  delete mockStorage[scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)];
-  delete mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)];
+  delete mockStorage[scopedStorageKey(storageKeys.remoteDreamsCache, userScope)];
+  delete mockStorage[scopedStorageKey(storageKeys.dreamMutations, userScope)];
   if (userScope) {
-    delete mockStorage[REMOTE_DREAMS_CACHE_KEY];
-    delete mockStorage[DREAM_MUTATIONS_KEY];
+    delete mockStorage[storageKeys.remoteDreamsCache];
+    delete mockStorage[storageKeys.dreamMutations];
   }
 }
 
 export async function getPendingDreamMutations(userScope?: string | null): Promise<DreamMutation[]> {
   console.log('[MOCK STORAGE] getPendingDreamMutations called');
   try {
-    const scopedKey = scopedStorageKey(DREAM_MUTATIONS_KEY, userScope);
+    const scopedKey = scopedStorageKey(storageKeys.dreamMutations, userScope);
     return parsePendingDreamMutationsPayload(mockStorage[scopedKey], userScope);
   } catch {
     console.error('[MOCK STORAGE] Failed to read pending dream mutations');
@@ -748,9 +682,9 @@ export async function savePendingDreamMutations(
         ? mutation
         : migrateLegacyDreamMutation(mutation as unknown as Record<string, unknown>, effectiveUserScope) ?? mutation
     );
-    mockStorage[scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)] = JSON.stringify(normalized);
+    mockStorage[scopedStorageKey(storageKeys.dreamMutations, userScope)] = JSON.stringify(normalized);
     if (userScope) {
-      delete mockStorage[DREAM_MUTATIONS_KEY];
+      delete mockStorage[storageKeys.dreamMutations];
     }
   } catch {
     console.error('[MOCK STORAGE] Failed to save pending dream mutations');
@@ -761,7 +695,7 @@ export async function savePendingDreamMutations(
 export async function getPendingImageJobs(): Promise<PendingImageJob[]> {
   console.log('[MOCK STORAGE] getPendingImageJobs called');
   try {
-    const pending = mockStorage[IMAGE_JOBS_KEY];
+    const pending = mockStorage[storageKeys.imageJobs];
     if (pending) {
       return JSON.parse(pending) as PendingImageJob[];
     }
@@ -774,7 +708,7 @@ export async function getPendingImageJobs(): Promise<PendingImageJob[]> {
 export async function savePendingImageJobs(jobs: PendingImageJob[]): Promise<void> {
   console.log('[MOCK STORAGE] savePendingImageJobs called with', jobs.length, 'jobs');
   try {
-    mockStorage[IMAGE_JOBS_KEY] = JSON.stringify(jobs);
+    mockStorage[storageKeys.imageJobs] = JSON.stringify(jobs);
   } catch (error) {
     console.error('[MOCK STORAGE] Failed to save pending image jobs:', error);
     throw new Error('Failed to save pending image jobs');

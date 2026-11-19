@@ -79,7 +79,7 @@ function renderMobileMenuPanel(context) {
   const { entry, lang, locale, locales } = context;
   const links = primaryNavLinks(context);
   const downloadLabel = downloadAppLabel(lang);
-  const webAppHref = getWebAppUrl(lang, { medium: 'nav' });
+  const webAppHref = getWebAppUrl({ medium: 'nav' });
   const linkClass = 'block px-4 py-3 text-sm text-purple-100/80 hover:text-white hover:bg-white/5 transition-colors';
 
   const navLinks = links
@@ -120,7 +120,7 @@ function renderNavigation(context) {
   const isBlogPremium = meta.layout === 'blogIndex' && String(meta.mainClass || '').includes('blog-premium');
   const downloadLabel = downloadAppLabel(lang);
   const storeHref = getAndroidStoreUrl(lang);
-  const webAppHref = getWebAppUrl(lang, { medium: 'nav' });
+  const webAppHref = getWebAppUrl({ medium: 'nav' });
   const languageLabel = languageSwitcherLabel(lang);
   const menuLabel = mobileMenuLabel(lang);
 

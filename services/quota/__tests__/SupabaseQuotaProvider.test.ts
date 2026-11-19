@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-import { QUOTA_CONFIG } from '../../../constants/limits';
 import { supabase } from '../../../lib/supabase';
 import type { DreamAnalysis, DreamListReadResult } from '../../../lib/types';
 import { SupabaseQuotaProvider } from '../SupabaseQuotaProvider';
@@ -82,7 +81,6 @@ describe('SupabaseQuotaProvider', () => {
 
   describe('private method testing via public interface', () => {
     it('given user when getting used analysis count then queries Supabase correctly', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
       const mockBuilder: any = {
@@ -92,11 +90,7 @@ describe('SupabaseQuotaProvider', () => {
         error: null,
       };
       mockSupabase.supabase.from = jest.fn().mockReturnValue(mockBuilder);
-
-      // When
       const count = await provider.getUsedAnalysisCount(user);
-
-      // Then
       expect(count).toBe(5);
       expect(mockBuilder.select).toHaveBeenCalledWith('id', { count: 'exact', head: true });
       expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
@@ -104,7 +98,6 @@ describe('SupabaseQuotaProvider', () => {
     });
 
     it('given user when getting used exploration count then queries Supabase correctly', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
       const mockBuilder: any = {
@@ -114,11 +107,7 @@ describe('SupabaseQuotaProvider', () => {
         error: null,
       };
       mockSupabase.supabase.from = jest.fn().mockReturnValue(mockBuilder);
-
-      // When
       const count = await provider.getUsedExplorationCount(user);
-
-      // Then
       expect(count).toBe(3);
       expect(mockBuilder.select).toHaveBeenCalledWith('id', { count: 'exact', head: true });
       expect(mockBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
@@ -126,7 +115,6 @@ describe('SupabaseQuotaProvider', () => {
     });
 
     it('given user when getting used messages count then queries Supabase correctly', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const dream = {
         id: 123,
@@ -134,16 +122,11 @@ describe('SupabaseQuotaProvider', () => {
       };
       const mockStorage = jest.requireMock('../../storageService') as any;
       mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([dream]));
-
-      // When
       const count = await provider.getUsedMessagesCount({ dreamId: 123 }, user);
-
-      // Then
       expect(count).toBe(10);
     });
 
     it('given Supabase error when counting analyses then handles error gracefully', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
       const mockBuilder = {
@@ -153,17 +136,12 @@ describe('SupabaseQuotaProvider', () => {
         error: { message: 'Column does not exist' },
       };
       mockSupabase.supabase.from = jest.fn().mockReturnValue(mockBuilder);
-
-      // When
       const count = await provider.getUsedAnalysisCount(user);
-
-      // Then
       // On error, return 0 as safe fallback (higher-level methods handle tier-specific fallback)
       expect(count).toBe(0);
     });
 
     it('given Supabase error when counting explorations then returns tier limit', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
       const mockBuilder = {
@@ -174,11 +152,7 @@ describe('SupabaseQuotaProvider', () => {
         error: { message: 'Database error' },
       };
       mockSupabase.supabase.from = jest.fn().mockReturnValue(mockBuilder);
-
-      // When
       const count = await provider.getUsedExplorationCount(user);
-
-      // Then
       // On error, return 0 as safe fallback (higher-level methods handle tier-specific fallback)
       expect(count).toBe(0);
     });
@@ -186,7 +160,6 @@ describe('SupabaseQuotaProvider', () => {
 
   describe('monthly quota counting', () => {
     it('given user when getting monthly analysis count then queries with date range', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
@@ -207,11 +180,7 @@ describe('SupabaseQuotaProvider', () => {
         error: null,
       };
       mockSupabase.supabase.from = jest.fn((table: string) => (table === 'quota_usage' ? eventsBuilder : dreamsBuilder));
-
-      // When
       const count = await p.getMonthlyAnalysisCount(user);
-
-      // Then
       expect(count).toBe(2);
       expect(eventsBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
       expect(eventsBuilder.eq).toHaveBeenCalledWith('quota_type', 'analysis');
@@ -224,7 +193,6 @@ describe('SupabaseQuotaProvider', () => {
     });
 
     it('given user when getting monthly exploration count then queries with date range', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
@@ -246,11 +214,7 @@ describe('SupabaseQuotaProvider', () => {
         error: null,
       };
       mockSupabase.supabase.from = jest.fn((table: string) => (table === 'quota_usage' ? eventsBuilder : dreamsBuilder));
-
-      // When
       const count = await p.getMonthlyExplorationCount(user);
-
-      // Then
       expect(count).toBe(1);
       expect(eventsBuilder.eq).toHaveBeenCalledWith('user_id', 'test-user');
       expect(eventsBuilder.eq).toHaveBeenCalledWith('quota_type', 'exploration');
@@ -263,7 +227,6 @@ describe('SupabaseQuotaProvider', () => {
     });
 
     it('given Supabase error when counting monthly analyses then returns monthly limit', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
@@ -276,16 +239,11 @@ describe('SupabaseQuotaProvider', () => {
         error: { message: 'Database error' },
       };
       mockSupabase.supabase.from = jest.fn().mockReturnValue(mockBuilder);
-
-      // When
       const count = await p.getMonthlyAnalysisCount(user);
-
-      // Then
-      expect(count).toBe(QUOTA_CONFIG.free.monthly.analysis);
+      expect(count).toBe(3);
     });
 
     it('given Supabase error when counting monthly explorations then returns monthly limit', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockSupabase = jest.requireMock('../../../lib/supabase') as any;
@@ -298,28 +256,19 @@ describe('SupabaseQuotaProvider', () => {
         error: { message: 'Database error' },
       };
       mockSupabase.supabase.from = jest.fn().mockReturnValue(mockBuilder);
-
-      // When
       const count = await p.getMonthlyExplorationCount(user);
-
-      // Then
       expect(count).toBe(0);
     });
   });
 
   describe('cache key generation', () => {
     it('given user and prefix when generating monthly cache key then includes month and user ID', async () => {
-      // Given
       const user = { id: 'test-user' } as any;
       const p = provider as any;
       const mockDate = new Date('2024-01-15T12:00:00Z');
       jest.useFakeTimers();
       jest.setSystemTime(mockDate);
-
-      // When
       const cacheKey = p.getMonthlyCacheKey('test_prefix', user);
-
-      // Then
       expect(cacheKey).toBe('test_prefix_test-user_2024-1');
       jest.useRealTimers();
     });
@@ -327,269 +276,115 @@ describe('SupabaseQuotaProvider', () => {
 
   describe('dream resolution and validation', () => {
     it('given dream ID when resolving dream then retrieves from storage', async () => {
-      // Given
       const dreamId = 123;
       const mockDream = { id: 123, title: 'Test Dream' };
       const mockStorage = jest.requireMock('../../storageService') as any;
       mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([mockDream]));
-
-      // When
       const dream = await (provider as any).resolveDream({ dreamId }, freeUser);
-
-      // Then
       expect(dream).toEqual(mockDream);
       expect(mockStorage.getCachedRemoteDreams).toHaveBeenCalled();
     });
 
     it('given non-existent dream ID when resolving then returns null', async () => {
-      // Given
       const dreamId = 999;
       const mockStorage = jest.requireMock('../../storageService') as any;
       mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([{ id: 123 }]));
-
-      // When
       const dream = await (provider as any).resolveDream({ dreamId }, freeUser);
-
-      // Then
       expect(dream).toBeUndefined();
     });
   });
 
   describe('quota validation methods', () => {
     it('given guest user when checking analysis then denies (handled by guest provider elsewhere)', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(1);
-
-      // When
       const canAnalyze = await provider.canAnalyzeDream(guestUser);
-
-      // Then
       expect(canAnalyze).toBe(false);
     });
 
     it('given guest user beyond limits when checking analysis then denies', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(3);
-
-      // When
       const canAnalyze = await provider.canAnalyzeDream(guestUser);
-
-      // Then
       expect(canAnalyze).toBe(false);
     });
 
     it('given plus user when checking analysis then always allows', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
-
-      // When
       const canAnalyze = await provider.canAnalyzeDream(plusUser, 'plus');
-
-      // Then
       expect(canAnalyze).toBe(true);
     });
 
     it('given guest user when checking exploration then allows within guest limits', async () => {
-      // Given
       const p = provider as any;
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(1);
-
-      // When
       const canExplore = await provider.canExploreDream({ dreamId: 123 }, guestUser);
-
-      // Then
       expect(canExplore).toBe(false);
     });
 
     it('given guest user beyond limits when checking exploration then denies', async () => {
-      // Given
       const p = provider as any;
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(3);
-
-      // When
       const canExplore = await provider.canExploreDream({ dreamId: 123 }, guestUser);
-
-      // Then
       expect(canExplore).toBe(false);
     });
 
     it('given plus user when checking exploration then always allows', async () => {
-      // Given
       const p = provider as any;
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(100);
-
-      // When
       const canExplore = await provider.canExploreDream({ dreamId: 123 }, plusUser, 'plus');
-
-      // Then
       expect(canExplore).toBe(true);
     });
   });
 
-  describe('comprehensive quota status', () => {
-    it('given free tier when getting status then shows monthly limits', async () => {
-      // Given
-      const p = provider as any;
-      p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(1);
-      p.getMonthlyExplorationCount = jest.fn().mockResolvedValue(0);
-      p.getUsedMessagesCount = jest.fn().mockResolvedValue(2);
-      p.canAnalyzeDream = jest.fn().mockResolvedValue(true);
-      p.canExploreDream = jest.fn().mockResolvedValue(true);
+  it('reuses usage until invalidation or expiry, keeping a separate count for each account', async () => {
+    mockBuilder.count = 1;
+    const other = { ...freeUser, id: 'other-user' };
+    await expect(provider.getUsedAnalysisCount(freeUser)).resolves.toBe(1);
+    mockBuilder.count = 2;
+    await expect(provider.getUsedAnalysisCount(freeUser)).resolves.toBe(1);
+    await expect(provider.getUsedAnalysisCount(other)).resolves.toBe(2);
+    provider.invalidate();
+    await expect(provider.getUsedAnalysisCount(freeUser)).resolves.toBe(2);
 
-      // When
-      const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
-
-      // Then
-      expect(status.tier).toBe('free');
-      expect(status.usage.analysis.limit).toBe(3);
-      expect(status.usage.analysis.used).toBe(1);
-      expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.exploration.used).toBe(0);
-      expect(status.usage.messages.limit).toBe(10);
-      expect(status.usage.messages.used).toBe(2);
-      expect(status.canAnalyze).toBe(true);
-      expect(status.canExplore).toBe(true);
-      expect(status.canGenerateImage).toBe(false);
-      expect(status.usage.image).toEqual({ used: 0, limit: 0, remaining: 0 });
-    });
-
-    it('given plus tier when getting status then shows unlimited interpretations and the chat safety limit', async () => {
-      // Given
-      const p = provider as any;
-      p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
-      p.getUsedExplorationCount = jest.fn().mockResolvedValue(50);
-      p.getUsedMessagesCount = jest.fn().mockResolvedValue(20);
-
-      // When
-      const status = await provider.getQuotaStatus(plusUser, 'plus', { dreamId: 1 });
-
-      // Then
-      expect(status.tier).toBe('plus');
-      expect(status.usage.analysis.limit).toBeNull();
-      expect(status.usage.exploration.limit).toBeNull();
-      expect(status.usage.messages.limit).toBe(100);
-      expect(status.canAnalyze).toBe(true);
-      expect(status.canExplore).toBe(true);
-      expect(status.canGenerateImage).toBe(true);
-      expect(status.usage.image?.limit).toBeNull();
-    });
-
-    it('given limits exceeded when getting status then includes reasons', async () => {
-      // Given
-      const p = provider as any;
-      p.getUsedAnalysisCount = jest.fn().mockResolvedValue(10);
-      p.getUsedExplorationCount = jest.fn().mockResolvedValue(5);
-      p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(3);
-      p.getMonthlyExplorationCount = jest.fn().mockResolvedValue(2);
-      p.getUsedMessagesCount = jest.fn().mockResolvedValue(0);
-      p.canAnalyzeDream = jest.fn().mockResolvedValue(false);
-      p.canExploreDream = jest.fn().mockResolvedValue(false);
-
-      // When
-      const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
-
-      // Then
-      expect(status.canAnalyze).toBe(false);
-      expect(status.canExplore).toBe(false);
-      expect(status.reasons).toBeDefined();
-      expect(status.reasons!.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('caching behavior', () => {
-    it('given cached data when invalidating then clears cache', () => {
-      // Given
-      const p = provider as any;
-      p.cache.set('test', { value: 'test', expiresAt: Date.now() + 1000 });
-      expect(p.cache.size).toBe(1);
-
-      // When
-      provider.invalidate();
-
-      // Then
-      expect(p.cache.size).toBe(0);
-    });
-  });
-
-  describe('caching behavior', () => {
-    it('given cache key when getting or caching then stores with TTL', async () => {
-      // Given
-      const p = provider as any;
-      const computeFn = jest.fn().mockResolvedValue('computed-value');
-
-      // When
-      const result1 = await p.getOrCache('test-key', computeFn);
-      const result2 = await p.getOrCache('test-key', computeFn);
-
-      // Then
-      expect(result1).toBe('computed-value');
-      expect(result2).toBe('computed-value');
-      expect(computeFn).toHaveBeenCalledTimes(1); // Only called once due to cache
-    });
-
-    it('given expired cache when getting or caching then recomputes', async () => {
-      // Given
-      const p = provider as any;
-      const computeFn = jest.fn().mockResolvedValue('computed-value');
-      
-      // Mock expired cache
-      p.cache.set('test-key', { value: 'old-value', expiresAt: Date.now() - 1000 });
-
-      // When
-      const result = await p.getOrCache('test-key', computeFn);
-
-      // Then
-      expect(result).toBe('computed-value');
-      expect(computeFn).toHaveBeenCalledTimes(1);
-    });
+    jest.useFakeTimers();
+    try {
+      jest.setSystemTime(Date.now() + 31_000);
+      mockBuilder.count = 3;
+      await expect(provider.getUsedAnalysisCount(freeUser)).resolves.toBe(3);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   describe('dream resolution', () => {
     it('given dream target when resolving then returns dream directly', async () => {
-      // Given
       const dream = { id: 123, title: 'Test Dream' };
       const target = { dream };
       const p = provider as any;
-
-      // When
       const result = await p.resolveDream(target, freeUser);
-
-      // Then
       expect(result).toBe(dream);
     });
 
     it('given dream ID when resolving then returns undefined if no dream found', async () => {
-      // Given
       const target = { dreamId: 123 };
       const mockStorage = jest.requireMock('../../storageService') as any;
       mockStorage.getCachedRemoteDreams = jest.fn().mockResolvedValue(loadedDreams([]));
       const p = provider as any;
-
-      // When
       const result = await p.resolveDream(target, freeUser);
-
-      // Then
       expect(result).toBeUndefined();
     });
 
     it('given no target when resolving then returns undefined', async () => {
-      // Given
       const p = provider as any;
-
-      // When
       const result = await p.resolveDream(undefined);
-
-      // Then
       expect(result).toBeUndefined();
     });
   });
 
   describe('free tier monthly analysis quotas', () => {
     it('given custom DB quota limits when checking analysis then uses DB limit', async () => {
-      // Given
       const p = provider as any;
       // quota_limits for free: analysis limit = 1
       mockBuilder.data = [
@@ -600,143 +395,89 @@ describe('SupabaseQuotaProvider', () => {
       mockBuilder.error = null;
 
       p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(1);
-
-      // When
       const result = await provider.canAnalyzeDream(freeUser);
-
-      // Then
       expect(result).toBe(false);
     });
 
     it('given analyses within limits when checking then allows analysis', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(4);
       p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(0);
-
-      // When
       const result = await provider.canAnalyzeDream(freeUser);
-
-      // Then
       expect(result).toBe(true);
     });
 
     it('given analyses at limit when checking then denies analysis', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(10);
       p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(3);
-
-      // When
       const result = await provider.canAnalyzeDream(freeUser);
-
-      // Then
       expect(result).toBe(false);
     });
   });
 
   describe('free tier monthly exploration quotas', () => {
     it('given explorations within limits when checking then allows exploration', async () => {
-      // Given
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(undefined);
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(1);
       p.getMonthlyExplorationCount = jest.fn().mockResolvedValue(0);
-
-      // When
       const result = await provider.canExploreDream({ dreamId: 1 }, freeUser);
-
-      // Then
       expect(result).toBe(true);
     });
 
     it('given legacy explorations at the old limit when checking then still allows exploration', async () => {
-      // Given
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(undefined);
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(5);
       p.getMonthlyExplorationCount = jest.fn().mockResolvedValue(2);
-
-      // When
       const result = await provider.canExploreDream({ dreamId: 1 }, freeUser);
-
-      // Then
       expect(result).toBe(true);
     });
 
     it('given already explored dream when checking then always allows exploration', async () => {
-      // Given
       const exploredDream = { id: 42, explorationStartedAt: Date.now() };
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(exploredDream);
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(100);
-
-      // When
       const result = await provider.canExploreDream({ dreamId: exploredDream.id }, freeUser);
-
-      // Then
       expect(result).toBe(true);
     });
   });
 
   describe('plus tier unlimited access', () => {
     it('given plus user when checking analysis then always allows', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(1000);
-
-      // When
       const result = await provider.canAnalyzeDream(plusUser, 'plus');
-
-      // Then
       expect(result).toBe(true);
     });
 
     it('given plus user when checking exploration then always allows', async () => {
-      // Given
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(undefined);
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(1000);
-
-      // When
       const result = await provider.canExploreDream({ dreamId: 1 }, plusUser, 'plus');
-
-      // Then
       expect(result).toBe(true);
     });
   });
 
   describe('guest user restrictions', () => {
     it('given guest user when checking analysis then denies', async () => {
-      // Given
       // Guest user is null
-
-      // When
       const result = await provider.canAnalyzeDream(guestUser);
-
-      // Then
       expect(result).toBe(false);
     });
 
     it('given guest user when checking exploration then denies', async () => {
-      // Given
       // Guest user is null
-
-      // When
       const result = await provider.canExploreDream({ dreamId: 1 }, guestUser);
-
-      // Then
       expect(result).toBe(false);
     });
 
     it('given guest user when getting quota status then returns guest status', async () => {
-      // Given
       // Guest user is null
-
-      // When
       const status = await provider.getQuotaStatus(guestUser, 'guest');
-
-      // Then
       expect(status.tier).toBe('guest');
       expect(status.canAnalyze).toBe(false);
       expect(status.canExplore).toBe(false);
@@ -745,7 +486,6 @@ describe('SupabaseQuotaProvider', () => {
 
   describe('chat message limits', () => {
     it('given messages within limit when checking then allows sending', async () => {
-      // Given
       const dream: DreamAnalysis = {
         id: 123,
         transcript: 'Test dream',
@@ -762,16 +502,11 @@ describe('SupabaseQuotaProvider', () => {
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(dream);
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(2);
-
-      // When
       const result = await provider.canSendChatMessage({ dream }, freeUser);
-
-      // Then
       expect(result).toBe(true);
     });
 
     it('given messages at limit when checking then denies sending', async () => {
-      // Given
       const dream: DreamAnalysis = {
         id: 123,
         transcript: 'Test dream',
@@ -785,40 +520,26 @@ describe('SupabaseQuotaProvider', () => {
       const p = provider as any;
       p.resolveDream = jest.fn().mockResolvedValue(dream);
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(20);
-
-      // When
       const result = await provider.canSendChatMessage({ dream }, freeUser);
-
-      // Then
       expect(result).toBe(false);
     });
 
     it('given no user when checking messages then denies', async () => {
-      // Given
       // No user provided
-
-      // When
       const result = await provider.canSendChatMessage({ dreamId: 1 }, guestUser);
-
-      // Then
       expect(result).toBe(false);
     });
   });
 
   describe('comprehensive quota status', () => {
     it('given free tier when getting status then shows monthly limits', async () => {
-      // Given
       const p = provider as any;
       p.getMonthlyAnalysisCount = jest.fn().mockResolvedValue(1);
       p.getMonthlyExplorationCount = jest.fn().mockResolvedValue(0);
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(2);
       p.canAnalyzeDream = jest.fn().mockResolvedValue(true);
       p.canExploreDream = jest.fn().mockResolvedValue(true);
-
-      // When
       const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
-
-      // Then
       expect(status.tier).toBe('free');
       expect(status.usage.analysis.limit).toBe(3);
       expect(status.usage.analysis.used).toBe(1);
@@ -833,16 +554,11 @@ describe('SupabaseQuotaProvider', () => {
     });
 
     it('given plus tier when getting status then shows unlimited interpretations and the chat safety limit', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(100);
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(50);
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(20);
-
-      // When
       const status = await provider.getQuotaStatus(plusUser, 'plus', { dreamId: 1 });
-
-      // Then
       expect(status.tier).toBe('plus');
       expect(status.usage.analysis.limit).toBeNull();
       expect(status.usage.exploration.limit).toBeNull();
@@ -854,7 +570,6 @@ describe('SupabaseQuotaProvider', () => {
     });
 
     it('given limits exceeded when getting status then includes reasons', async () => {
-      // Given
       const p = provider as any;
       p.getUsedAnalysisCount = jest.fn().mockResolvedValue(10);
       p.getUsedExplorationCount = jest.fn().mockResolvedValue(5);
@@ -863,11 +578,7 @@ describe('SupabaseQuotaProvider', () => {
       p.getUsedMessagesCount = jest.fn().mockResolvedValue(0);
       p.canAnalyzeDream = jest.fn().mockResolvedValue(false);
       p.canExploreDream = jest.fn().mockResolvedValue(false);
-
-      // When
       const status = await provider.getQuotaStatus(freeUser, 'free', { dreamId: 1 });
-
-      // Then
       expect(status.canAnalyze).toBe(false);
       expect(status.canExplore).toBe(false);
       expect(status.reasons).toBeDefined();

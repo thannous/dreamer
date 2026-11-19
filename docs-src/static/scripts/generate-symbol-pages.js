@@ -21,8 +21,9 @@ const fs = require('fs');
 const { conversionLinkAttributes } = require('../../scripts/lib/docs-components/conversion-link');
 const path = require('path');
 const { createRenderContext } = require('../../scripts/lib/docs-components/context');
-const { getAndroidStoreUrl, getCollectionLanguages, getLanguageTag, getWebAppUrl, loadLocales, siteConfig } = require('../../scripts/lib/docs-site-config');
-const { aliasWebLocales, catalogKey } = require('../../scripts/lib/symbol-locales');
+const { getAndroidStoreUrl, getCollectionLanguages, getLanguageTag, getStaticPagePath, getWebAppUrl, loadLocales, siteConfig } = require('../../scripts/lib/docs-site-config');
+const { createBlogTitleLookup } = require('../../scripts/lib/blog-title-lookup');
+const { aliasWebLocales } = require('../../scripts/lib/symbol-locales');
 const { renderFooter: renderSharedFooter } = require('../../scripts/lib/docs-components/footer');
 const { renderNavigation } = require('../../scripts/lib/docs-components/navigation');
 const { renderSharedComponentStyles } = require('../../scripts/lib/docs-components/styles');
@@ -60,7 +61,8 @@ const DOCS_ASSET_VERSION = readDocsAssetVersionOrExit();
 const ROOT_DIR = path.join(__dirname, '..', '..');
 const DOCS_SRC_DIR = path.join(ROOT_DIR, 'docs-src');
 const ROOT_DATA_DIR = path.join(ROOT_DIR, 'data');
-const SITE_MANIFEST_PATH = path.join(ROOT_DATA_DIR, 'site-manifest.json');
+const SITE_MANIFEST = JSON.parse(fs.readFileSync(path.join(ROOT_DATA_DIR, 'site-manifest.json'), 'utf8'));
+const getBlogTitleBySlug = createBlogTitleLookup(SITE_MANIFEST);
 const DEFAULT_SOCIAL_IMAGE = 'https://noctalia.app/img/og/noctalia-dreamscape-v2-1200x630.jpg';
 const SYMBOL_IMAGE_REGISTRY = loadSymbolImageRegistry();
 
@@ -122,10 +124,6 @@ function readCatalogModifiedDate(fallbackDate) {
   }
 }
 
-function finalizeGeneratedHtml(html) {
-  return inlineLucideIcons(html);
-}
-
 function normalizeIsoDate(value) {
   if (typeof value !== 'string') return null;
   const match = value.trim().match(/^(\d{4}-\d{2}-\d{2})(?:$|[T\s])/);
@@ -154,7 +152,7 @@ function writeGeneratedHtml(filepath, html, options = {}) {
     preserveDateOnlyChanges = true,
     preserveExistingModifiedDate = false,
   } = options;
-  let nextHtml = finalizeGeneratedHtml(html);
+  let nextHtml = inlineLucideIcons(html);
 
   if (!fs.existsSync(filepath)) {
     fs.writeFileSync(filepath, nextHtml, 'utf8');
@@ -302,44 +300,11 @@ function hasExplicitSymbolModifiedDate(symbol, lang) {
   return Boolean(normalizeIsoDate(symbol?.[lang]?.modifiedAt) || normalizeIsoDate(symbol?.modifiedAt));
 }
 
-function loadSharedSiteConfig() {
-  const configPath = path.join(DOCS_SRC_DIR, 'config', 'site.config.json');
-  if (!fs.existsSync(configPath)) {
-    return { seoLinking: { featuredBlogEntries: [], featuredGuideEntries: [], featuredSymbols: [] } };
-  }
-
-  return JSON.parse(fs.readFileSync(configPath, 'utf8'));
-}
-
-function stripSiteSuffix(title) {
-  return String(title || '').replace(/\s*\|\s*Noctalia\s*$/i, '').trim();
-}
-
-function parseSourceDocument(raw) {
-  const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-  if (!match) return { meta: {}, body: raw };
-  return {
-    meta: JSON.parse(match[1]),
-    body: match[2]
-  };
-}
-
-const SHARED_SITE_CONFIG = loadSharedSiteConfig();
-// Shared UI strings (docs-src/locales) for the web-app CTA rendered on every
-// symbol, category and curated-guide page.
 const SHARED_LOCALES = loadLocales();
 
 function getSymbolCtaUrl(lang) {
-  const paths = {
-    en: '/en/ai-dream-interpretation-app',
-    fr: '/fr/application-interpretation-reves-ia',
-    es: '/es/app-interpretacion-suenos-ia',
-    de: '/de/ki-traumdeutung-app',
-    it: '/it/app-interpretazione-sogni-ai',
-    'pt-br': '/pt-br/app-interpretacao-de-sonhos-ia',
-  };
-
-  return paths[lang] || paths.en;
+  return getStaticPagePath('page.ai-dream-interpretation-app', lang)
+    || getStaticPagePath('page.ai-dream-interpretation-app', siteConfig.defaultLanguage);
 }
 
 const SYMBOL_CONVERSION_COPY = {
@@ -357,7 +322,7 @@ const SYMBOL_CONVERSION_COPY = {
 function renderSymbolConversionActions(lang, content, pagePath = '') {
   const copy = SYMBOL_CONVERSION_COPY[lang] || SYMBOL_CONVERSION_COPY.en;
   const sharedLocale = SHARED_LOCALES[lang] || SHARED_LOCALES.en;
-  const webAppHref = getWebAppUrl(lang, { medium: 'symbol_page', content });
+  const webAppHref = getWebAppUrl({ medium: 'symbol_page', content });
   return `<div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3">
                     <a${conversionLinkAttributes(pagePath, 'final', 'web')} href="${webAppHref}" class="symbol-webapp-cta inline-flex items-center justify-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" rel="noopener">
                         ${escapeHtml(sharedLocale.webAppCta)} <i data-lucide="arrow-right" class="w-5 h-5"></i>
@@ -370,39 +335,6 @@ function renderSymbolConversionActions(lang, content, pagePath = '') {
                     </a>
                 </div>
                 <p${lang === 'en' && content === 'guide-dream-locations' ? ' data-web-app-cta' : ''} class="symbol-webapp-note text-xs mt-3 max-w-lg mx-auto">${escapeHtml(sharedLocale.webAppNote)}</p>`;
-}
-
-function loadSiteManifest() {
-  return JSON.parse(fs.readFileSync(SITE_MANIFEST_PATH, 'utf8'));
-}
-
-// Localized blog slug → article title (minus the "| Noctalia" suffix), so
-// related-article links can name their destination.
-const BLOG_TITLES_BY_LANG = new Map();
-function getBlogTitleBySlug(lang, slug) {
-  if (!BLOG_TITLES_BY_LANG.has(lang)) {
-    const map = new Map();
-    const entries = loadSiteManifest().collections?.blog?.entries || {};
-    for (const [id, entry] of Object.entries(entries)) {
-      const localeSlug = entry.locales?.[lang]?.slug;
-      if (!localeSlug) continue;
-      const filePath = path.join(DOCS_SRC_DIR, 'content', 'blog', id, `${lang}.md`);
-      if (!fs.existsSync(filePath)) continue;
-      const raw = fs.readFileSync(filePath, 'utf8');
-      const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-      if (!match) continue;
-      try {
-        const title = String(JSON.parse(match[1])?.title || '')
-          .replace(/\s*[|\-–—]\s*Noctalia\s*$/i, '')
-          .trim();
-        if (title) map.set(localeSlug, title);
-      } catch {
-        // Unreadable frontmatter: links fall back to the generic label.
-      }
-    }
-    BLOG_TITLES_BY_LANG.set(lang, map);
-  }
-  return BLOG_TITLES_BY_LANG.get(lang).get(String(slug || '').split('#')[0]) || null;
 }
 
 function getRelatedGuidePage(symbol) {
@@ -419,7 +351,7 @@ function createGeneratedShellContext(lang, currentPaths, activeNav = 'dictionary
   );
 
   return createRenderContext({
-    manifest: loadSiteManifest(),
+    manifest: SITE_MANIFEST,
     entryId: 'page.home',
     meta: {
       lang,
@@ -432,22 +364,6 @@ function createGeneratedShellContext(lang, currentPaths, activeNav = 'dictionary
     },
   });
 }
-
-function renderPseoNav(lang, currentPaths, activeNav = 'dictionary') {
-  return renderNavigation(createGeneratedShellContext(lang, currentPaths, activeNav));
-}
-
-function renderPseoFooter(lang, currentPaths, activeNav = 'dictionary') {
-  return renderSharedFooter(createGeneratedShellContext(lang, currentPaths, activeNav));
-}
-
-const GUIDES_HUB_LABELS = {
-  en: 'Dream Guides',
-  fr: 'Guides des rêves',
-  es: 'Guías de sueños',
-  de: 'Traumratgeber',
-  it: 'Guide ai sogni'
-};
 
 const CURATION_META_TITLE_OVERRIDES = {
   'most-common-dream-symbols': {
@@ -493,22 +409,6 @@ const CURATION_META_TITLE_OVERRIDES = {
   }
 };
 
-const DICTIONARY_NAV_LABELS = {
-  en: 'Dream Dictionary',
-  fr: 'Dictionnaire des rêves',
-  es: 'Diccionario de sueños',
-  de: 'Traumlexikon',
-  it: 'Dizionario dei sogni'
-};
-
-const POPULAR_SYMBOLS_LABELS = {
-  en: 'Popular Symbols',
-  fr: 'Symboles populaires',
-  es: 'Símbolos populares',
-  de: 'Beliebte Symbole',
-  it: 'Simboli popolari'
-};
-
 function loadOptionalCurationPages() {
   const curationPath = path.join(CONFIG.dataDir, 'curation-pages.json');
   if (!fs.existsSync(curationPath)) return [];
@@ -518,7 +418,6 @@ function loadOptionalCurationPages() {
 
 const OPTIONAL_CURATION_PAGES = loadOptionalCurationPages();
 
-// Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {
   const [key, value] = arg.replace('--', '').split('=');
   acc[key] = value || true;
@@ -528,7 +427,6 @@ if (args.lang && !CONFIG.languages.includes(args.lang)) {
   throw new Error(`Unsupported --lang: ${args.lang}. Expected ${CONFIG.languages.join(', ')}.`);
 }
 
-// Load data files
 function loadData() {
   const symbolsPath = path.join(CONFIG.dataDir, CONFIG.symbolsFile);
   const i18nPath = path.join(CONFIG.dataDir, CONFIG.i18nFile);
@@ -573,22 +471,6 @@ function aliasCurationPage(page) {
   return page;
 }
 
-// Get category name for a symbol
-function getCategoryName(symbol, i18n, lang) {
-  const categories = {
-    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura', 'pt-br': 'Natureza' },
-    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali', 'pt-br': 'Animais' },
-    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo', 'pt-br': 'Corpo' },
-    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi', 'pt-br': 'Lugares' },
-    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti', 'pt-br': 'Objetos' },
-    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni', 'pt-br': 'Ações' },
-    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone', 'pt-br': 'Pessoas' },
-    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste', 'pt-br': 'Celeste' }
-  };
-  return categories[symbol.category]?.[lang] || symbol.category;
-}
-
-// Generate meta title
 function generateMetaTitle(symbol, i18n, lang) {
   const template = i18n[lang].meta_title_template;
   const name = symbol[lang].seoTitle || symbol[lang].name;
@@ -614,7 +496,6 @@ function truncateMetaDescription(text, maxLength = 160, minLength = 110) {
   return truncatedForEllipsis + ellipsis;
 }
 
-// Generate meta description
 function generateMetaDescription(symbol, i18n, lang) {
   const template = i18n[lang].meta_description_template;
   const name = symbol[lang].name;
@@ -625,7 +506,6 @@ function generateMetaDescription(symbol, i18n, lang) {
   return truncateMetaDescription(description);
 }
 
-// Generate hreflang URLs
 function generateHreflangUrls(symbol) {
   const urls = {};
   for (const l of CONFIG.languages) {
@@ -737,132 +617,6 @@ function renderJsonLd(data, indent = 4) {
     `<script type="application/ld+json">\n${safeJsonStringifyForHtml(data)}\n</script>`,
     indent
   );
-}
-
-function loadFeaturedBlogLinks() {
-  const manifestPath = path.join(ROOT_DATA_DIR, 'content-manifest.json');
-  if (!fs.existsSync(manifestPath)) return {};
-
-  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  const entries = manifest?.collections?.blog?.entries || {};
-  const linksByLang = {};
-
-  for (const lang of CONFIG.languages) {
-    linksByLang[lang] = [];
-
-    for (const entryId of SHARED_SITE_CONFIG.seoLinking?.featuredBlogEntries || []) {
-      const entry = entries[entryId];
-      if (!entry?.locales?.[lang]) continue;
-
-      const sourcePath = path.join(DOCS_SRC_DIR, 'content', 'blog', entryId, `${lang}.md`);
-      if (!fs.existsSync(sourcePath)) continue;
-
-      const { meta } = parseSourceDocument(fs.readFileSync(sourcePath, 'utf8'));
-      if (!meta?.title) continue;
-
-      linksByLang[lang].push({
-        href: entry.locales[lang].path,
-        label: stripSiteSuffix(meta.title)
-      });
-    }
-  }
-
-  return linksByLang;
-}
-
-const FEATURED_BLOG_LINKS = loadFeaturedBlogLinks();
-
-function getFeaturedGuideLinks(lang, curationPages) {
-  return (SHARED_SITE_CONFIG.seoLinking?.featuredGuideEntries || [])
-    .map((entryId) => entryId.replace(/^guide\./, ''))
-    .map((pageId) => curationPages.find((page) => page.id === pageId))
-    .filter(Boolean)
-    .map((page) => ({
-      href: `/${lang}/guides/${page.slugs[lang]}`,
-      label: page[lang].title
-    }));
-}
-
-function getPopularSymbolLinks(lang, allSymbols) {
-  return (SHARED_SITE_CONFIG.seoLinking?.featuredSymbols || [])
-    .map((symbolId) => allSymbols.find((symbol) => symbol.id === symbolId))
-    .filter(Boolean)
-    .map((symbol) => ({
-      href: `/${lang}/${CONFIG.symbolsPath[lang]}/${symbol[lang].slug}`,
-      label: symbol[lang].name
-    }));
-}
-
-function renderFooterLinkList(links, { highlightFirst = false } = {}) {
-  return links
-    .map((link, index) => {
-      const className = highlightFirst && index === 0
-        ? 'text-dream-salmon'
-        : 'hover:text-dream-salmon transition-colors';
-      return `<li><a href="${link.href}" class="${className}">${escapeHtml(link.label)}</a></li>`;
-    })
-    .join('');
-}
-
-function renderPseoNavLinks(lang, t) {
-  return `
-                <a href="/${lang}/#${t.nav_how_it_works_anchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${t.nav_how_it_works}</a>
-                <a href="/${lang}/#${t.nav_features_anchor}" class="hidden lg:inline-flex hover:text-white transition-colors">${t.nav_features}</a>
-                <a href="/${lang}/blog/" class="hidden sm:inline-flex hover:text-white transition-colors">${t.nav_resources}</a>
-                <a href="/${lang}/guides/${t.dictionary_slug}" class="hidden sm:inline-flex text-dream-salmon transition-colors">${DICTIONARY_NAV_LABELS[lang]}</a>`;
-}
-
-function renderLegacyPseoFooter(lang, t, allSymbols, curationPages = OPTIONAL_CURATION_PAGES) {
-  const resourcesLinks = [
-    { href: `/${lang}/blog/`, label: t.nav_resources },
-    ...(FEATURED_BLOG_LINKS[lang] || [])
-  ];
-  const guideLinks = [
-    { href: `/${lang}/guides/${t.dictionary_slug}`, label: DICTIONARY_NAV_LABELS[lang] },
-    { href: `/${lang}/guides/`, label: GUIDES_HUB_LABELS[lang] },
-    ...getFeaturedGuideLinks(lang, curationPages)
-  ];
-  const symbolLinks = getPopularSymbolLinks(lang, allSymbols);
-
-  return `    <footer class="pb-10 pt-20 border-t border-white/5 px-6 bg-[#05020a]">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-10 mb-16">
-            <div class="xl:col-span-2">
-                <a href="${localizedHomePath(lang)}" class="flex items-center gap-2 mb-4">
-                    <i data-lucide="moon" class="w-6 h-6 text-dream-salmon"></i>
-                    <h4 class="font-serif text-2xl text-dream-cream">Noctalia</h4>
-                </a>
-                <p class="text-sm text-gray-500 max-w-xs mb-6">${t.footer_tagline}</p>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${t.nav_resources}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(resourcesLinks, { highlightFirst: true })}
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${DICTIONARY_NAV_LABELS[lang]}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(guideLinks, { highlightFirst: true })}
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${POPULAR_SYMBOLS_LABELS[lang]}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">${renderFooterLinkList(symbolLinks)}
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-bold mb-4 text-white">${t.footer_legal}</h5>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><a href="/${lang}/${t.about_slug}" class="hover:text-dream-salmon transition-colors">${t.about}</a></li>
-                    <li><a href="/${lang}/${t.legal_slug}" class="hover:text-dream-salmon transition-colors">${t.legal_notice}</a></li>
-                    <li><a href="/${lang}/${t.privacy_slug}" class="hover:text-dream-salmon transition-colors">${t.privacy}</a></li>
-                    <li><a href="/${lang}/${t.terms_slug}" class="hover:text-dream-salmon transition-colors">${t.terms}</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="text-center pt-8 border-t border-white/5 text-[10px] text-gray-600 flex flex-col md:flex-row justify-between items-center">
-            <span>&copy; 2026 TiMax. Noctalia is published by TiMax.</span>
-            <span class="mt-2 md:mt-0 flex gap-2 items-center">${t.footer_made_with} <i data-lucide="heart" class="w-3 h-3 text-dream-salmon fill-current"></i> ${t.footer_for_dreamers}</span>
-        </div>
-    </footer>`;
 }
 
 // The tiger's own living-painting files, in the V4 folder: its portrait painting and the two
@@ -1030,7 +784,7 @@ function renderTigerAtlasActions(lang, content, pagePath, placement) {
   const copy = SYMBOL_CONVERSION_COPY[lang] || SYMBOL_CONVERSION_COPY.en;
   const sharedLocale = SHARED_LOCALES[lang] || SHARED_LOCALES.en;
   return `<div class="atlas-actions">
-                            <a${conversionLinkAttributes(pagePath, placement, 'web')} href="${getWebAppUrl(lang, { medium: 'symbol_page', content })}" class="symbol-webapp-cta atlas-primary" rel="noopener"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(sharedLocale.webAppCta)}</a>
+                            <a${conversionLinkAttributes(pagePath, placement, 'web')} href="${getWebAppUrl({ medium: 'symbol_page', content })}" class="symbol-webapp-cta atlas-primary" rel="noopener"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(sharedLocale.webAppCta)}</a>
                             <a${conversionLinkAttributes(pagePath, placement, 'play')} href="${getAndroidStoreUrl(lang)}" class="atlas-primary" rel="nofollow noopener noreferrer" target="_blank"><i data-lucide="arrow-up-right" class="w-5 h-5"></i>${escapeHtml(copy.store)}</a>
                             <a href="${getSymbolCtaUrl(lang)}" class="atlas-secondary"><i data-lucide="arrow-right" class="w-4 h-4"></i>${escapeHtml(copy.details)}</a>
                         </div>
@@ -1765,8 +1519,7 @@ function atlasLocaleFor(symbolId, lang) {
 // The same article for a symbol without a pack in that language: the language's copy (index label,
 // detailed reading, app kicker, anchors), no scenes, caveat or side illustration.
 function atlasTextFor(symbolId, lang) {
-  const { scenes, ...copy } = SYMBOL_ATLAS_LOCALES.copy[lang];
-  return { lang, ...copy, name: `Symbol ${symbolId}`, scenes: null, caveat: null, decorHtml: () => '' };
+  return { lang, ...SYMBOL_ATLAS_LOCALES.copy[lang], name: `Symbol ${symbolId}`, scenes: null, caveat: null, decorHtml: () => '' };
 }
 
 // The asset contract: per allowlisted symbol id, all eight of hero (landscape), portrait,
@@ -1936,7 +1689,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const documentMetaDescription = truncateMetaDescription(
     symbolData.documentMetaDescription || sharedMetaDescription
   );
-  const categoryName = getCategoryName(symbol, i18n, lang);
+  const categoryName = t.category_names?.[symbol.category] || symbol.category;
   const relatedSymbols = getRelatedSymbols(symbol, allSymbols, lang);
   const extendedContent = getExtendedContent(symbol.id, extended, lang);
 
@@ -2062,7 +1815,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   // Its browser button follows the sitewide pause of the browser journal, like the other ones.
   const softCtaActions = () => `<div class="atlas-actions">
                             <a${conversionLinkAttributes(conversionPath, 'inline', 'play')} href="${escapeHtml(softCta.href)}" class="atlas-primary"><i data-lucide="arrow-right" class="w-5 h-5"></i>${escapeHtml(softCta.button || t.cta_button)}</a>${softCta.webButton ? `
-                            <a${conversionLinkAttributes(conversionPath, 'inline', 'web')} href="${escapeHtml(getWebAppUrl(lang, { medium: 'symbol_page', content: symbol.id }))}" class="symbol-webapp-cta atlas-secondary" rel="noopener"><i data-lucide="arrow-up-right" class="w-4 h-4"></i>${escapeHtml(softCta.webButton)}</a>` : ''}
+                            <a${conversionLinkAttributes(conversionPath, 'inline', 'web')} href="${escapeHtml(getWebAppUrl({ medium: 'symbol_page', content: symbol.id }))}" class="symbol-webapp-cta atlas-secondary" rel="noopener"><i data-lucide="arrow-up-right" class="w-4 h-4"></i>${escapeHtml(softCta.webButton)}</a>` : ''}
                         </div>`;
   const visibleHeadline = `${t.h1_prefix} ${symbolData.name}`.trim();
   const sheetLabels = getSymbolSheetLabels(lang);
@@ -2154,26 +1907,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
     }))
   } : null;
 
-  // Language dropdown items
-  const langItems = {
-    en: { flag: '🇺🇸', name: 'English' },
-    fr: { flag: '🇫🇷', name: 'Français' },
-    es: { flag: '🇪🇸', name: 'Español' },
-    de: { flag: '🇩🇪', name: 'Deutsch' },
-    it: { flag: '🇮🇹', name: 'Italiano' }
-  };
 
-  const langDropdownHtml = Object.keys(langItems).map(l => {
-    const isActive = l === lang;
-    const targetSlug = symbol[l]?.slug || symbolData.slug;
-    const activeClass = isActive ? 'text-dream-salmon bg-dream-salmon/10' : 'text-purple-100/80 hover:text-white hover:bg-white/5';
-    return `
-                        <a href="/${l}/${CONFIG.symbolsPath[l]}/${targetSlug}" hreflang="${l}" class="flex items-center gap-3 px-4 py-2 text-sm ${activeClass} transition-colors" role="menuitem">
-                            <span class="w-5 text-center">${langItems[l].flag}</span> ${langItems[l].name}
-                        </a>`;
-  }).join('\n');
-
-  // Generate hreflang links
   const hreflangLinks = CONFIG.languages
     .filter(l => hreflang[l])
     .map(l => `    <link rel="alternate" hreflang="${getLanguageTag(l)}" href="${hreflang[l]}">`)
@@ -2181,6 +1915,7 @@ function generatePage(symbol, allSymbols, i18n, extended, lang) {
   const currentPaths = Object.fromEntries(
     CONFIG.languages.map(l => [l, `/${l}/${CONFIG.symbolsPath[l]}/${symbol[l]?.slug || symbolData.slug}`])
   );
+  const shellContext = createGeneratedShellContext(lang, currentPaths);
   const atlasArticleHtml = renderAtlasArticle({
     lang, t, symbolData, sheetLabels,
     interpretationHtml: hasInterpretation ? fullInterpretation : '',
@@ -2721,7 +2456,7 @@ ${faqPageJsonLd ? `    <!-- Schema.org FAQPage -->\n${renderJsonLd(faqPageJsonLd
     <div class="aurora-bg"></div>
 
     <!-- Navbar -->
-${renderPseoNav(lang, currentPaths, 'dictionary')}
+${renderNavigation(shellContext)}
 
     <main class="symbol-page-main pb-20">
             <!-- Header -->
@@ -2758,7 +2493,7 @@ ${heroPictureHtml}
         ${atlasArticleHtml}
     </main>
 
-${renderPseoFooter(lang, currentPaths, 'dictionary')}
+${renderSharedFooter(shellContext)}
 
     <script src="/js/site-shell.js?v=${CONFIG.cssVersion}" defer></script>
     <script>
@@ -2850,12 +2585,10 @@ ${renderPseoFooter(lang, currentPaths, 'dictionary')}
 function main() {
   console.log('🌙 Dream Symbol Pages Generator\n');
 
-  // Load data
   const { symbols, i18n, extended } = loadData();
   console.log(`📚 Loaded ${symbols.symbols.length} symbols`);
   console.log(`🌍 Languages: ${CONFIG.languages.join(', ')}`);
 
-  // Filter by priority if specified
   let symbolsToGenerate = symbols.symbols;
   if (args.priority) {
     const priority = parseInt(args.priority);
@@ -2874,25 +2607,21 @@ function main() {
     console.log(`🔎 Filtered to ids: ${ids.join(', ')} (${symbolsToGenerate.length} symbols)`);
   }
 
-  // Filter by language if specified
   let languages = CONFIG.languages;
   if (args.lang) {
     languages = [args.lang];
     console.log(`🌍 Filtered to language: ${args.lang}`);
   }
 
-  // Calculate total pages
   const totalPages = symbolsToGenerate.length * languages.length;
   console.log(`\n📄 Generating ${totalPages} pages...\n`);
 
   let generated = 0;
   let errors = 0;
 
-  // Generate pages
   for (const lang of languages) {
     const langDir = path.join(CONFIG.outputDir, lang, CONFIG.symbolsPath[lang]);
 
-    // Create directory if not dry run
     if (!args['dry-run']) {
       fs.mkdirSync(langDir, { recursive: true });
     }
@@ -2951,22 +2680,6 @@ function main() {
 // CATEGORY PAGES GENERATION
 // =====================================================
 
-// Get category name for a given category ID
-function getCategoryNameById(categoryId, lang) {
-  const categories = {
-    nature: { en: 'Nature', fr: 'Nature', es: 'Naturaleza', de: 'Natur', it: 'Natura', 'pt-br': 'Natureza' },
-    animals: { en: 'Animals', fr: 'Animaux', es: 'Animales', de: 'Tiere', it: 'Animali', 'pt-br': 'Animais' },
-    body: { en: 'Body', fr: 'Corps', es: 'Cuerpo', de: 'Körper', it: 'Corpo', 'pt-br': 'Corpo' },
-    places: { en: 'Places', fr: 'Lieux', es: 'Lugares', de: 'Orte', it: 'Luoghi', 'pt-br': 'Lugares' },
-    objects: { en: 'Objects', fr: 'Objets', es: 'Objetos', de: 'Objekte', it: 'Oggetti', 'pt-br': 'Objetos' },
-    actions: { en: 'Actions', fr: 'Actions', es: 'Acciones', de: 'Handlungen', it: 'Azioni', 'pt-br': 'Ações' },
-    people: { en: 'People', fr: 'Personnes', es: 'Personas', de: 'Menschen', it: 'Persone', 'pt-br': 'Pessoas' },
-    celestial: { en: 'Celestial', fr: 'Céleste', es: 'Celestial', de: 'Himmlisch', it: 'Celeste', 'pt-br': 'Celeste' }
-  };
-  return categories[categoryId]?.[lang] || categoryId;
-}
-
-// Generate category hreflang URLs
 function generateCategoryHreflangUrls(categoryId, i18n) {
   const urls = {};
   for (const l of CONFIG.languages) {
@@ -2977,17 +2690,15 @@ function generateCategoryHreflangUrls(categoryId, i18n) {
   return urls;
 }
 
-// Generate category meta title
 function generateCategoryMetaTitle(categoryId, i18n, lang) {
   const template = i18n[lang].category_meta_title_template;
-  const categoryName = getCategoryNameById(categoryId, lang);
+  const categoryName = i18n[lang].category_names?.[categoryId] || categoryId;
   return template.replace(/{category}/g, categoryName);
 }
 
-// Generate category meta description
 function generateCategoryMetaDescription(categoryId, i18n, lang) {
   const template = i18n[lang].category_meta_description_template;
-  const categoryName = getCategoryNameById(categoryId, lang);
+  const categoryName = i18n[lang].category_names?.[categoryId] || categoryId;
   const description = template
     .replace(/{category}/g, categoryName)
     .replace(/{category_lower}/g, categoryName.toLowerCase());
@@ -2998,12 +2709,11 @@ function getCurationMetaTitle(page, lang) {
   return CURATION_META_TITLE_OVERRIDES[page.id]?.[lang] || page[lang].metaTitle || page[lang].title;
 }
 
-// Generate category page HTML
-function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCategories, i18n, lang, curationPages) {
+function generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang, curationPages) {
   const t = i18n[lang];
   const homePath = localizedHomePath(lang);
   const homeUrl = localizedHomeUrl(lang);
-  const categoryName = getCategoryNameById(categoryId, lang);
+  const categoryName = i18n[lang].category_names?.[categoryId] || categoryId;
   const categorySchemaName = t.category_h1_template.replace(/{category}/g, categoryName);
   const categorySlug = t.category_slugs[categoryId];
   const hreflang = generateCategoryHreflangUrls(categoryId, i18n);
@@ -3078,41 +2788,22 @@ function generateCategoryPage(categoryId, symbolsInCategory, allSymbols, allCate
                 </div>
             </section>`;
 
-  // Language dropdown items
-  const langItems = {
-    en: { flag: '🇺🇸', name: 'English' },
-    fr: { flag: '🇫🇷', name: 'Français' },
-    es: { flag: '🇪🇸', name: 'Español' },
-    de: { flag: '🇩🇪', name: 'Deutsch' },
-    it: { flag: '🇮🇹', name: 'Italiano' }
-  };
-
-  const langDropdownHtml = Object.keys(langItems).map(l => {
-    const isActive = l === lang;
-    const targetSlug = i18n[l].category_slugs[categoryId];
-    const activeClass = isActive ? 'text-dream-salmon bg-dream-salmon/10' : 'text-purple-100/80 hover:text-white hover:bg-white/5';
-    return `
-                        <a href="/${l}/${CONFIG.symbolsPath[l]}/${targetSlug}" hreflang="${l}" class="flex items-center gap-3 px-4 py-2 text-sm ${activeClass} transition-colors" role="menuitem">
-                            <span class="w-5 text-center">${langItems[l].flag}</span> ${langItems[l].name}
-                        </a>`;
-  }).join('\n');
   const currentPaths = Object.fromEntries(
     CONFIG.languages.map(l => [l, `/${l}/${CONFIG.symbolsPath[l]}/${i18n[l].category_slugs[categoryId]}`])
   );
+  const shellContext = createGeneratedShellContext(lang, currentPaths);
 
-  // Generate symbols grid HTML
   const symbolsHtml = symbolsInCategory.map(s => `
                     <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${s[lang].slug}" class="symbol-index-card">
                         <h2>${escapeHtml(s[lang].name)}</h2>
                         <p>${escapeHtml(s[lang].shortDescription)}</p>
                     </a>`).join('\n');
 
-  // Generate other categories HTML
   const otherCategoriesHtml = allCategories
     .filter(c => c.id !== categoryId)
     .map(c => `
                     <a href="/${lang}/${CONFIG.symbolsPath[lang]}/${i18n[lang].category_slugs[c.id]}" class="category-chip symbol-chip">
-                        ${getCategoryNameById(c.id, lang)}<span class="category-chip-count">${c.count}</span>
+                        ${t.category_names?.[c.id] || c.id}<span class="category-chip-count">${c.count}</span>
                     </a>`).join('\n');
 
   // Generate related guides HTML (from curation pages)
@@ -3508,7 +3199,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
     <div class="aurora-bg"></div>
 
     <!-- Navbar -->
-${renderPseoNav(lang, currentPaths, 'dictionary')}
+${renderNavigation(shellContext)}
 
     <main class="pt-32 pb-20 px-4">
         <div class="max-w-5xl mx-auto">
@@ -3581,7 +3272,7 @@ ${relatedGuidesHtml}
         </div>
     </main>
 
-${renderPseoFooter(lang, currentPaths, 'dictionary')}
+${renderSharedFooter(shellContext)}
 
     <script src="/js/site-shell.js?v=${CONFIG.cssVersion}" defer></script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
@@ -3622,11 +3313,9 @@ function generateCategoryPages(symbols, i18n, languages) {
   let generated = 0;
   let errors = 0;
 
-  // Generate pages
   for (const lang of languages) {
     const langDir = path.join(CONFIG.outputDir, lang, CONFIG.symbolsPath[lang]);
 
-    // Create directory if not dry run
     if (!args['dry-run']) {
       fs.mkdirSync(langDir, { recursive: true });
     }
@@ -3645,7 +3334,7 @@ function generateCategoryPages(symbols, i18n, languages) {
       const filepath = path.join(langDir, filename);
 
       try {
-        const html = generateCategoryPage(categoryId, symbolsInCategory, symbols.symbols, allCategories, i18n, lang, curationPages);
+        const html = generateCategoryPage(categoryId, symbolsInCategory, allCategories, i18n, lang, curationPages);
 
         if (args['dry-run']) {
           console.log(`  [DRY RUN] Would create: ${filepath}`);
@@ -3745,30 +3434,12 @@ function generateCurationPage(page, allSymbols, i18n, lang) {
     throw new Error(`Curation "${page.id}" references unknown symbols: ${missing.join(', ')}`);
   }
 
-  // Language dropdown
-  const langItems = {
-    en: { flag: '🇺🇸', name: 'English' },
-    fr: { flag: '🇫🇷', name: 'Français' },
-    es: { flag: '🇪🇸', name: 'Español' },
-    de: { flag: '🇩🇪', name: 'Deutsch' },
-    it: { flag: '🇮🇹', name: 'Italiano' }
-  };
-
-  const langDropdownHtml = Object.keys(langItems).map(l => {
-    const isActive = l === lang;
-    const targetSlug = page.slugs[l];
-    const activeClass = isActive ? 'text-dream-salmon bg-dream-salmon/10' : 'text-purple-100/80 hover:text-white hover:bg-white/5';
-    return `
-                        <a href="/${l}/guides/${targetSlug}" hreflang="${l}" class="flex items-center gap-3 px-4 py-2 text-sm ${activeClass} transition-colors" role="menuitem">
-                            <span class="w-5 text-center">${langItems[l].flag}</span> ${langItems[l].name}
-                        </a>`;
-  }).join('\n');
   const currentPaths = Object.fromEntries(
     CONFIG.languages.map(l => [l, `/${l}/guides/${page.slugs[l]}`])
   );
+  const shellContext = createGeneratedShellContext(lang, currentPaths);
 
-  // Generate symbol cards
-  const symbolCardsHtml = resolvedSymbols.map((s, i) => {
+  const symbolCardsHtml = resolvedSymbols.map(s => {
     const symbolData = s[lang];
     if (!symbolData) return '';
     const symbolHref = `/${lang}/${CONFIG.symbolsPath[lang]}/${symbolData.slug}`;
@@ -4132,7 +3803,7 @@ ${renderJsonLd(breadcrumbListJsonLd)}
     <div class="aurora-bg"></div>
 
     <!-- Navbar -->
-${renderPseoNav(lang, currentPaths, 'dictionary')}
+${renderNavigation(shellContext)}
 
     <main class="pt-32 pb-20 px-4">
         <div class="max-w-5xl mx-auto">
@@ -4207,7 +3878,7 @@ ${renderPseoHeroIllustration(pageIllustration)}
         </div>
     </main>
 
-${renderPseoFooter(lang, currentPaths, 'dictionary')}
+${renderSharedFooter(shellContext)}
 
     <script src="/js/site-shell.js?v=${CONFIG.cssVersion}" defer></script>
     <script src="/js/language-dropdown.js?v=${CONFIG.cssVersion}" defer></script>
@@ -4280,9 +3951,8 @@ const CATEGORY_TO_CURATION = {
   celestial: ['positive-dream-symbols', 'death-transformation-dreams']
 };
 
-// Run
 if (args.curation) {
-  // Generate only curation pages
+
   const { symbols, i18n } = loadData();
   let languages = CONFIG.languages;
   if (args.lang) {
@@ -4290,7 +3960,7 @@ if (args.curation) {
   }
   generateCurationPages(symbols, i18n, languages);
 } else if (args.categories) {
-  // Generate only category pages
+
   const { symbols, i18n } = loadData();
   let languages = CONFIG.languages;
   if (args.lang) {

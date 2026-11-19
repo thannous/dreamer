@@ -50,7 +50,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FadeInStaggered } from './FadeInStaggered';
-import { MarkdownText } from './MarkdownText';
+import { MarkdownText } from '@/components/ui/MarkdownText';
 import { ScrollToBottomButton } from './ScrollToBottomButton';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { TypeScale } from '@/constants/typeScale';

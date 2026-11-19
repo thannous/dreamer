@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
+const { parseSnapshotArgs, requireSnapshotDate, writeSnapshot } = require('./lib/qa-snapshot');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/google-oauth-android-client-state.local.json');
@@ -17,59 +17,15 @@ function normalizeSha1(value) {
 }
 
 function parseArgs(argv) {
-  const options = {
-    file: process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH
-      ? path.resolve(ROOT, process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH)
-      : DEFAULT_TARGET,
-    checkedAt: new Date().toISOString(),
+  return parseSnapshotArgs(argv, {
+    file: process.env.GOOGLE_OAUTH_ANDROID_CLIENT_STATE_PATH || DEFAULT_TARGET,
     source: 'Google Cloud Console Auth Platform client read-only check',
-  };
-
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (arg === '--client-id') {
-      options.clientId = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--name') {
-      options.name = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--package-name') {
-      options.packageName = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--sha1') {
-      options.sha1 = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--file') {
-      options.file = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--checked-at') {
-      options.checkedAt = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--source') {
-      options.source = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--help' || arg === '-h') {
-      printHelp();
-      process.exit(0);
-    }
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return options;
+  }, printHelp, {
+    '--client-id': 'clientId',
+    '--name': 'name',
+    '--package-name': 'packageName',
+    '--sha1': 'sha1',
+  });
 }
 
 function printHelp() {
@@ -93,9 +49,7 @@ Options:
 }
 
 function normalizeSnapshot(options) {
-  if (Number.isNaN(Date.parse(options.checkedAt))) {
-    throw new Error('--checked-at must be a valid date.');
-  }
+  requireSnapshotDate(options.checkedAt);
   if (options.clientId !== EXPECTED.clientId) {
     throw new Error(`Expected client ID ${EXPECTED.clientId}, got ${options.clientId || 'missing'}.`);
   }
@@ -117,14 +71,9 @@ function normalizeSnapshot(options) {
   };
 }
 
-function writeJson(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-}
-
 function updateGoogleOAuthAndroidClientState(options) {
   const document = normalizeSnapshot(options);
-  writeJson(options.file, document);
+  writeSnapshot(options.file, document);
   return document;
 }
 

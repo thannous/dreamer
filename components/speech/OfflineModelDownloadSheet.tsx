@@ -12,7 +12,6 @@ type OfflineModelDownloadSheetProps = {
   visible: boolean;
   onClose: () => void;
   locale: string;
-  onDownloadComplete: (success: boolean) => void;
 };
 
 const log = createScopedLogger('[OfflineModelDownloadSheet]');
@@ -21,7 +20,6 @@ export function OfflineModelDownloadSheet({
   visible,
   onClose,
   locale,
-  onDownloadComplete,
 }: OfflineModelDownloadSheetProps) {
   const { t } = useTranslation();
   const { colors, mode } = useTheme();
@@ -46,23 +44,20 @@ export function OfflineModelDownloadSheet({
         success: downloadSuccess,
       });
 
-      onDownloadComplete(downloadSuccess);
       onClose();
     }, {
       catch: (error) => {
         log.warn('offline model download failed', { locale, error });
-        onDownloadComplete(false);
         onClose();
       },
       finally: () => setIsDownloading(false),
     });
-  }, [locale, onDownloadComplete, onClose]);
+  }, [locale, onClose]);
 
   const handleCancel = useCallback(() => {
     log.debug('offline model download cancelled by user', { locale });
-    onDownloadComplete(false);
     onClose();
-  }, [locale, onDownloadComplete, onClose]);
+  }, [locale, onClose]);
 
   return (
     <StandardBottomSheet

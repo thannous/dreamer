@@ -59,7 +59,6 @@ jest.mock('@/components/StartupSplashScreen', () => ({ __esModule: true, default
 jest.mock('@/components/ErrorBoundary', () => ({ ErrorBoundary: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
-jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
 jest.mock('@/components/releases/WhatsNewModal', () => ({ WhatsNewModalHost: () => null }));
 jest.mock('@/components/VercelAnalytics', () => ({ VercelAnalytics: () => null }));
 jest.mock('@/components/VercelSpeedInsights', () => ({ VercelSpeedInsights: () => null }));

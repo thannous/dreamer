@@ -377,41 +377,15 @@ export async function getSpeechLocaleAvailability(languageCode: string): Promise
   }
 }
 
-export type OfflineModelPromptHandler = {
-  show: (locale: string) => Promise<void>;
-  isVisible: boolean;
-};
-
-let offlineModelPromptHandler: OfflineModelPromptHandler | null = null;
-
-/**
- * Register the offline model prompt handler (wired once from a persistent UI host)
- * This allows services to trigger the UI without circular dependencies
- *
- * Returns a cleanup that restores the previous handler (to avoid unmounting screens
- * clearing a global handler registered elsewhere).
- */
-export function registerOfflineModelPromptHandler(handler: OfflineModelPromptHandler | null): () => void {
-  const previousHandler = offlineModelPromptHandler;
-  offlineModelPromptHandler = handler;
-
-  let cleanedUp = false;
-  return () => {
-    if (cleanedUp) return;
-    cleanedUp = true;
-
-    if (offlineModelPromptHandler === handler) {
-      offlineModelPromptHandler = previousHandler;
-    }
-  };
-}
-
 /**
  * Ensure offline STT model is available and trigger download if needed (Android 13+).
  * Returns true if the model is already installed or download was successful.
  * Returns false if offline recognition is not supported or download was cancelled.
  */
-export async function ensureOfflineSttModel(locale: string): Promise<boolean> {
+export async function ensureOfflineSttModel(
+  locale: string,
+  showDownloadPrompt?: (locale: string) => Promise<void>
+): Promise<boolean> {
   // iOS and web don't support offline packs
   if (Platform.OS !== 'android') {
     if (__DEV__) {
@@ -447,10 +421,8 @@ export async function ensureOfflineSttModel(locale: string): Promise<boolean> {
       return true;
     }
 
-    // Model is missing - delegate to UI handler if available
-    if (offlineModelPromptHandler) {
-      await offlineModelPromptHandler.show(locale);
-      // After prompt, check again if model was installed
+    if (showDownloadPrompt) {
+      await showDownloadPrompt(locale);
       const supported2 = await speechModule.getSupportedLocales?.({
         androidRecognitionServicePackage: 'com.google.android.as',
       });
@@ -458,9 +430,8 @@ export async function ensureOfflineSttModel(locale: string): Promise<boolean> {
       return installedLocales2.includes(locale);
     }
 
-    // Fallback: no UI handler registered (shouldn't happen in production)
     if (__DEV__) {
-      console.warn('[nativeSpeech] no offline model prompt handler registered');
+      console.warn('[nativeSpeech] no offline model prompt available');
     }
     return false;
   } catch (error) {

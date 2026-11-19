@@ -7,7 +7,6 @@ import {
   getSpeechLocaleAvailability,
   HANDS_FREE_EMPTY_RESTART_LIMIT,
   mergeFinalChunk,
-  registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
   shouldRestartHandsFreeSpeech,
   startNativeSpeechSession,
@@ -165,7 +164,6 @@ describe('native speech module integration', () => {
     Platform.OS = 'web';
     delete (Platform as any).Version;
     __setCachedSpeechModuleForTests(undefined);
-    registerOfflineModelPromptHandler(null);
     jest.restoreAllMocks();
   });
 
@@ -261,30 +259,20 @@ describe('native speech module integration', () => {
 
     __setCachedSpeechModuleForTests(speechModule);
 
-    let resolvePrompt: (() => void) | undefined;
-    const promptHandler = {
-      show: jest.fn(
-        () => new Promise<void>((resolve) => {
-          resolvePrompt = resolve;
-        })
-      ),
-      isVisible: false,
-    };
-    registerOfflineModelPromptHandler(promptHandler);
+    let started!: () => void;
+    const opened = new Promise<void>((resolve) => { started = resolve; });
+    let close!: () => void;
+    const dismissed = new Promise<void>((resolve) => { close = resolve; });
+    const show = jest.fn(() => {
+      started();
+      return dismissed;
+    });
+    const resultPromise = ensureOfflineSttModel('en-US', show);
+    await opened;
 
-    const resultPromise = ensureOfflineSttModel('en-US');
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(promptHandler.show).toHaveBeenCalledWith('en-US');
+    expect(show).toHaveBeenCalledWith('en-US');
     expect(getSupportedLocales).toHaveBeenCalledTimes(1);
-
-    const stateBeforePromptCloses = await Promise.race([
-      resultPromise.then(() => 'resolved'),
-      Promise.resolve('pending'),
-    ]);
-    expect(stateBeforePromptCloses).toBe('pending');
-
-    resolvePrompt?.();
+    close();
 
     await expect(resultPromise).resolves.toBe(true);
     expect(getSupportedLocales).toHaveBeenCalledTimes(2);

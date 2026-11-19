@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
+const { parseSnapshotArgs, readSnapshotInput, parseSnapshotJson, requireSnapshotDate, writeSnapshot } = require('./lib/qa-snapshot');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/google-cloud-project-state.local.json');
@@ -12,44 +12,12 @@ const EXPECTED = {
 };
 
 function parseArgs(argv) {
-  const options = {
-    file: process.env.GOOGLE_CLOUD_PROJECT_STATE_PATH
-      ? path.resolve(ROOT, process.env.GOOGLE_CLOUD_PROJECT_STATE_PATH)
-      : DEFAULT_TARGET,
-    checkedAt: new Date().toISOString(),
+  return parseSnapshotArgs(argv, {
+    file: process.env.GOOGLE_CLOUD_PROJECT_STATE_PATH || DEFAULT_TARGET,
     source: 'gcloud projects list',
-  };
-
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (arg === '--input') {
-      options.input = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--file') {
-      options.file = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--checked-at') {
-      options.checkedAt = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--source') {
-      options.source = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--help' || arg === '-h') {
-      printHelp();
-      process.exit(0);
-    }
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return options;
+  }, printHelp, {
+    '--input': 'input',
+  });
 }
 
 function printHelp() {
@@ -66,30 +34,10 @@ Options:
 `.trim());
 }
 
-function readInput(options, stdin = process.stdin) {
-  if (options.input) {
-    return fs.readFileSync(options.input, 'utf8');
-  }
-  if (stdin.isTTY) {
-    throw new Error('Missing --input. You can also pipe gcloud projects list JSON through stdin.');
-  }
-  return fs.readFileSync(0, 'utf8');
-}
-
-function parseJson(raw) {
-  try {
-    return JSON.parse(raw);
-  } catch (error) {
-    throw new Error(`Google Cloud project input must be valid JSON: ${error instanceof Error ? error.message : error}`);
-  }
-}
-
 function normalizeSnapshot(input, options) {
-  if (Number.isNaN(Date.parse(options.checkedAt))) {
-    throw new Error('--checked-at must be a valid date.');
-  }
+  requireSnapshotDate(options.checkedAt);
 
-  const projects = parseJson(input);
+  const projects = parseSnapshotJson(input, 'Google Cloud project');
   if (!Array.isArray(projects)) {
     throw new Error('Google Cloud project input must be a JSON array from gcloud projects list.');
   }
@@ -115,14 +63,9 @@ function normalizeSnapshot(input, options) {
   };
 }
 
-function writeJson(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-}
-
 function updateGoogleCloudProjectState(options, input) {
   const document = normalizeSnapshot(input, options);
-  writeJson(options.file, document);
+  writeSnapshot(options.file, document);
   return document;
 }
 
@@ -137,7 +80,7 @@ function isProjectSnapshotReady(snapshot) {
 if (require.main === module) {
   try {
     const options = parseArgs(process.argv.slice(2));
-    const document = updateGoogleCloudProjectState(options, readInput(options));
+    const document = updateGoogleCloudProjectState(options, readSnapshotInput(options, 'gcloud projects list JSON'));
     console.log(`Updated ${path.relative(ROOT, options.file)}`);
     console.log(`${document.project_number}: ${document.project_id}/${document.lifecycle_state}`);
   } catch (error) {

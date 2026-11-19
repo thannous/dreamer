@@ -16,7 +16,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createCampaignStorage } from './campaign-storage.mjs';
 
 const require = createRequire(import.meta.url);
-const NODE = 'v24.22.1';
+const NODE = 'v' + readFileSync(new URL('../.nvmrc', import.meta.url), 'utf8').trim();
 export const SUITES = {
   production: { label: 'Configuration production', profile: 'production-apk',
     covers: 'le build tel que publié (configuration de eas.json `production`, OTA coupée) : ouverture, accueil, réglages, langue et thème, menu, offre Plus, liens des widgets, son de sommeil qui continue en arrière-plan, Sign in with Apple proposé (iPhone)' },
