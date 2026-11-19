@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
@@ -38,6 +38,8 @@ interface JournalCompactRowProps {
 const THUMBNAIL_IMAGE_STYLE = { width: '100%', height: '100%' } as const;
 const THUMBNAIL_PLACEHOLDER = { blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' };
 const FAVORITE_HIT_SLOP = 6;
+// Native Text lays out the whole string behind numberOfLines: two lines never need more.
+const EXCERPT_LENGTH = 280;
 
 /** Tag colours have to resolve to a literal class so Uniwind can see them. */
 const THEME_PILL_CLASS: Record<string, string> = {
@@ -93,30 +95,53 @@ export const JournalCompactRow = memo(function JournalCompactRow({
   const accessScope = media.accessScope ?? null;
   const thumbnailCacheKey = getDreamThumbnailCacheKey(media);
   const failureKey = thumbnailCacheKey ?? thumbnailUri;
-  // A recycled row gets its own failure state: the attempt names the dream and its source.
+  // A recycled row gets its own fallback: the attempt names the dream and its account.
   const attemptIdentity = JSON.stringify([accessScope, getDreamIdentityKey(dream), imageVersion]);
-  const [fallback, setFallback] = useState<{ identity: string; full: boolean; failed: boolean } | null>(null);
+  const [fallback, setFallback] = useState<{ identity: string; full: boolean; failedUri: string | null } | null>(null);
   const attempt = fallback?.identity === attemptIdentity ? fallback : null;
-  const preferFullImage = attempt?.full || (Boolean(thumbnailUri) && thumbnailFailures.has(accessScope, failureKey));
+  const preferFullImage = Boolean(attempt?.full) || (Boolean(thumbnailUri) && thumbnailFailures.has(accessScope, failureKey));
+  // A thumbnail-only resolution leaves the original unresolved: ask for it whenever the row
+  // falls back, including a row mounted after another one recorded the thumbnail's failure.
+  useEffect(() => {
+    if (preferFullImage) loadOriginal();
+  }, [loadOriginal, preferFullImage]);
   const imageUri = preferFullImage ? fullImageUri : (thumbnailUri || fullImageUri);
   const imageCacheKey = preferFullImage ? media.imageCacheKey : thumbnailCacheKey;
   const imageSource = useMemo(() => (imageUri ? { uri: imageUri, cacheKey: imageCacheKey } : null), [imageCacheKey, imageUri]);
-  const hasImage = Boolean(imageSource) && !attempt?.failed;
+  // A failure belongs to the source that failed: a refreshed or retried link loads again.
+  const hasImage = Boolean(imageSource) && attempt?.failedUri !== imageUri;
   const imageConfig = useMemo(() => getImageConfig('thumbnail'), []);
 
   const handleImageError = useCallback(() => {
     if (!preferFullImage && thumbnailUri && thumbnailUri !== fullImageUri) {
       thumbnailFailures.record(accessScope, failureKey);
     }
-    if (!preferFullImage && (fullImageUri || dream.imageUrl?.trim())) {
-      loadOriginal();
-      setFallback({ identity: attemptIdentity, full: true, failed: false });
+    if (!preferFullImage && imageUri !== fullImageUri && (fullImageUri || dream.imageUrl?.trim())) {
+      setFallback({ identity: attemptIdentity, full: true, failedUri: null });
     } else {
-      setFallback({ identity: attemptIdentity, full: true, failed: true });
+      setFallback({ identity: attemptIdentity, full: preferFullImage, failedUri: imageUri });
     }
-  }, [accessScope, attemptIdentity, dream.imageUrl, failureKey, fullImageUri, loadOriginal, preferFullImage, thumbnailUri]);
+  }, [accessScope, attemptIdentity, dream.imageUrl, failureKey, fullImageUri, imageUri, preferFullImage, thumbnailUri]);
+
+  // As on the cards, the thumbnail is tried once more after the failure cache forgets it.
+  const retriedIdentity = useRef<string | null>(null);
+  useEffect(() => {
+    if (!attempt || retriedIdentity.current === attemptIdentity) return;
+    const timer = setTimeout(() => {
+      retriedIdentity.current = attemptIdentity;
+      thumbnailFailures.remove(accessScope, failureKey);
+      setFallback(null);
+    }, thumbnailFailures.ttlMs);
+    return () => clearTimeout(timer);
+  }, [accessScope, attempt, attemptIdentity, failureKey]);
 
   const handlePress = useCallback(() => onPress(dream), [dream, onPress]);
+  const excerpt = useMemo(() => {
+    const text = dream.transcript || dream.shareableQuote || '';
+    return text.length > EXCERPT_LENGTH
+      ? `${text.slice(0, EXCERPT_LENGTH).replace(/[\uD800-\uDBFF]$/u, '')}…`
+      : text;
+  }, [dream.shareableQuote, dream.transcript]);
 
   const themeLabel = useMemo(() => getDreamThemeLabel(dream.theme, t) ?? dream.theme, [dream.theme, t]);
   const isFavorite = Boolean(dream.isFavorite);
@@ -155,8 +180,8 @@ export const JournalCompactRow = memo(function JournalCompactRow({
   return (
     <View>
       {sectionLabel ? (
-        <View className="flex-row items-center gap-2 pb-2 pt-5" accessibilityRole="header">
-          <Text className="font-sans-bold text-[12px] uppercase text-champagne-on">{sectionLabel}</Text>
+        <View className="flex-row items-center gap-2 pb-2 pt-5">
+          <Text accessibilityRole="header" className="font-sans-bold text-[12px] uppercase text-champagne-on">{sectionLabel}</Text>
           <View className="h-px flex-1 bg-line opacity-[0.78]" />
         </View>
       ) : null}
@@ -198,7 +223,7 @@ export const JournalCompactRow = memo(function JournalCompactRow({
               {dream.title}
             </Text>
             <Text className="font-sans text-[13px] leading-[18px] text-ivory-muted" numberOfLines={2}>
-              {dream.transcript || dream.shareableQuote}
+              {excerpt}
             </Text>
             <View className="mt-1 flex-row flex-wrap items-center gap-x-2 gap-y-1">
               <Text className="font-sans text-[12px] leading-4 text-ivory-faint" numberOfLines={1}>{dateLabel}</Text>
