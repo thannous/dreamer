@@ -121,7 +121,9 @@ test('SDK collection keeps unfiltered journeys and refuses a focused test in the
   const project = mkdtempSync(join(tmpdir(), 'noctalia-e2e-selection-'));
   t.after(() => rmSync(project, { recursive: true, force: true }));
   const modules = fileURLToPath(new URL('./node_modules/', import.meta.url));
-  symlinkSync(modules, join(project, 'node_modules'), 'dir');
+  symlinkSync(modules, join(project, 'node_modules'), 'junction');
+  const sdk = join(modules, 'e2e');
+  const { bin } = JSON.parse(readFileSync(join(sdk, 'package.json'), 'utf8'));
   writeFileSync(join(project, 'e2e.config.ts'), `
     import { web } from '@e2e-dev/web';
     import { writeFileSync } from 'node:fs';
@@ -134,7 +136,7 @@ test('SDK collection keeps unfiltered journeys and refuses a focused test in the
   const fixture = join(project, 'selection.e2e.ts');
   const source = "import { test } from '@e2e-dev/web';\ntest('normal', async () => {});\n";
   writeFileSync(fixture, source);
-  const collect = () => spawnSync(join(modules, '.bin/e2e'), ['list', '--reporter', 'json'], {
+  const collect = () => spawnSync(process.execPath, [join(sdk, bin.e2e), 'list', '--reporter', 'json'], {
     cwd: project, encoding: 'utf8', env: qualifyingSdkEnvironment({ ...process.env, CI: 'false' }),
   });
   const normal = collect();
