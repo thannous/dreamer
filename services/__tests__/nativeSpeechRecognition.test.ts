@@ -479,7 +479,12 @@ describe('native speech module integration', () => {
     await expect(nextSession!.stop()).resolves.toMatchObject({ transcript: 'hello' });
   });
 
-  it('notifies the caller when recognition ends without an explicit stop', async () => {
+  const androidTerminalEvents = [
+    { event: 'end', payload: undefined },
+    { event: 'error', payload: { error: 'client', message: 'Other client side errors.' } },
+  ] as const;
+
+  it.each(androidTerminalEvents)('preserves partial speech and notifies the caller once after Android $event', async ({ event, payload }: typeof androidTerminalEvents[number]) => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 36;
@@ -511,17 +516,22 @@ describe('native speech module integration', () => {
     listeners.get('start')?.();
     expect(onListeningChange).toHaveBeenLastCalledWith(true);
 
-    listeners.get('end')?.();
+    listeners.get('result')?.({ results: [{ transcript: 'remember the garden' }], isFinal: false });
+    listeners.get(event)?.(payload);
+    expect(onEnd).toHaveBeenCalledTimes(1);
     expect(onListeningChange).toHaveBeenLastCalledWith(false);
     listeners.get('start')?.();
     expect(onListeningChange).toHaveBeenLastCalledWith(false);
 
-    expect(onEnd).toHaveBeenCalledTimes(1);
-    await session!.stop();
+    listeners.get('end')?.();
+    const result = await session!.stop();
+    expect(result.transcript).toBe('remember the garden');
+    expect(result.errorCode).toBeUndefined();
+    expect(result.error).toBeUndefined();
     expect(onEnd).toHaveBeenCalledTimes(1);
   });
 
-  it('does not report an explicit stop as an unexpected native end', async () => {
+  it.each(androidTerminalEvents)('preserves final speech without triggering a restart when explicit stop emits Android $event', async ({ event, payload }: typeof androidTerminalEvents[number]) => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 36;
@@ -535,7 +545,7 @@ describe('native speech module integration', () => {
       getStateAsync: async () => 'inactive',
       start: jest.fn(),
       stop: jest.fn(() => {
-        listeners.get('end')?.();
+        listeners.get(event)?.(payload);
       }),
       abort: jest.fn(),
       addListener: jest.fn((event: string, cb: (payload?: any) => void) => {
@@ -549,8 +559,12 @@ describe('native speech module integration', () => {
     const onEnd = jest.fn();
     const session = await startNativeSpeechSession('en-US', { onEnd });
 
-    await session!.stop();
+    listeners.get('result')?.({ results: [{ transcript: 'beside the lake' }], isFinal: true });
+    const result = await session!.stop();
 
+    expect(result.transcript).toBe('beside the lake');
+    expect(result.errorCode).toBeUndefined();
+    expect(result.error).toBeUndefined();
     expect(onEnd).not.toHaveBeenCalled();
   });
 
