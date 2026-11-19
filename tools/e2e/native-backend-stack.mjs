@@ -58,7 +58,7 @@ export async function startNativeBackendStack({ output, port = 31283, functionsO
     const cliVersion = command(['--version']);
     const version = /^(\d+)\.(\d+)\.(\d+)/.exec(cliVersion);
     if (!version || Number(version[1]) < 2 || (Number(version[1]) === 2 && Number(version[2]) < 119))
-      throw new Error('Native backend requires Supabase CLI 2.119.0 or later in the installed v2 series.');
+      throw new Error('Native backend requires Supabase CLI 2.119.0 or later.');
     mkdirSync(cliEnv.SUPABASE_HOME, { recursive: true, mode: 0o700 });
     const target = join(workdir, 'supabase');
     mkdirSync(target, { mode: 0o700 });

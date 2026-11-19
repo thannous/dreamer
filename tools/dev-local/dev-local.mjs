@@ -156,7 +156,7 @@ async function main() {
   const status = normalizeStackStatus(JSON.parse(supabase(['stack', 'start', '--workdir', workdir,
     '--runtime', 'native', '--exclude', 'realtime,functions,studio,mail,analytics,pooler', '--eager', '--output-format', 'json'])));
   // A resumed stack keeps its data; migrations added since then are applied now.
-  supabase(['migration', 'up', '--workdir', workdir, '--db-url', status.DB_URL, '--include-all']);
+  supabase(['migration', 'up', '--workdir', workdir, '--include-all']);
   const safety = JSON.parse(supabase(['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
     'select count(*) as active_jobs from cron.job where active', '--output-format', 'json']));
   if (Number(safety.rows?.[0]?.active_jobs) !== 0) throw new Error('Local scheduled jobs must stay inactive.');

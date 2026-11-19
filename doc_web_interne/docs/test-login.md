@@ -246,27 +246,27 @@ See the click-level list below; production auth settings never change.
    compute credits or the spend cap
    ([Manage Branching usage](https://supabase.com/docs/guides/platform/manage-your-usage/branching)).
 2. Create the persistent branch `e2e` without data:
-   CLI (recommended): `supabase branches create e2e --persistent --project-ref usuyppgsmmowzizhaoqj`
+   CLI (recommended): `supabase branches create e2e --persistent --remote=usuyppgsmmowzizhaoqj`
    (no `--with-data`). Dashboard alternative (public alpha): user menu (top right)
    > Branching via dashboard > Enable feature; top bar branch selector > Create
    branch `e2e`, Include data left off; then make it persistent with
-   `supabase branches update e2e --persistent --project-ref usuyppgsmmowzizhaoqj`
+   `supabase branches update e2e --persistent --remote=usuyppgsmmowzizhaoqj`
    (the parent project, as no project is linked yet; the dashboard "Switch to
    persistent" item may only appear for Git-linked branches).
 3. Migrations: a new branch is a clone of the production schema built from the
    production migration history ("Pull - Retrieves database migrations from your
-   main project"). Check it: `supabase link --project-ref <e2e-branch-ref>`, then
-   `supabase migration list --linked` must show every file of `supabase/migrations`
-   on both sides; apply any missing one with `supabase db push` (still linked to
-   the branch). Re-link production afterwards if you use the link elsewhere.
-4. Ref and keys: `supabase branches list --project-ref usuyppgsmmowzizhaoqj` (column `BRANCH PROJECT ID`) or the
+   main project"). Compare both sides with
+   `supabase migration list --remote=<e2e-branch-ref>`. If the branch needs
+   migrations, inspect `supabase db push --dry-run --remote=<e2e-branch-ref>`
+   before applying them to that same branch with `supabase db push --remote=<e2e-branch-ref>`.
+4. Ref and keys: `supabase branches list --remote=usuyppgsmmowzizhaoqj` (column `BRANCH PROJECT ID`) or the
    dashboard with `e2e` selected; URL `https://<e2e-branch-ref>.supabase.co`;
    keys under Settings > API Keys with `e2e` selected, or
-   `supabase projects api-keys --project-ref <e2e-branch-ref>` (a branch has its
+   `supabase projects api-keys --remote=<e2e-branch-ref>` (a branch has its
    own keys).
 4b. Edge Functions, only for journeys that call them: deploy this checkout's
    functions to the branch, never to production:
-   `supabase functions deploy --project-ref <e2e-branch-ref>` (with any branch
+   `supabase functions deploy --remote=<e2e-branch-ref>` (with any branch
    function secret other than `REVENUECAT_*`), then check the versions under Edge
    Functions with `e2e` selected. Auth and database journeys do not need it.
 5. Auth on the branch (`e2e` selected): Authentication > Sign In / Providers >
@@ -279,7 +279,7 @@ See the click-level list below; production auth settings never change.
    `e2e` selected, SQL editor: `select cron.unschedule('revenuecat_reconcile_daily');`.
    The job only calls out when the vault holds `revenuecat_reconcile_secret`; never
    add it, nor any `REVENUECAT_*` function secret, to the branch
-   (`supabase secrets list --project-ref <e2e-branch-ref>` shows none).
+   (`supabase secrets list --remote=<e2e-branch-ref>` shows none).
 7. No production data: with `e2e` selected, Authentication > Users is empty and
    Table Editor > `dreams` has no rows before the first seed.
 8. Review PR: add `<e2e-branch-ref>` to `scripts/test-supabase-targets.json`.
