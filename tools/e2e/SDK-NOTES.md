@@ -3,6 +3,26 @@
 What each TesterArmy SDK version changed for this harness, newest first. The versions
 the harness runs today, and how to adopt a new one, are in the [README](README.md).
 
+## 0.24.0
+
+- The runner now resolves extended fixtures on demand. Dreamer’s parity tests
+  register the network guard and the standard journey opening as automatic fixtures.
+  The opening declares its dependency on the guard, so the browser is isolated
+  before navigation. Backend API journeys retain their automatic guarded browser
+  context. Page access and the three disposable accounts are acquired by the tests
+  and fixtures that name them.
+- Web and mobile journey callbacks declare the fixtures they use. Lucid’s weekly
+  review uses `test.each` for control and sleep debt. The rows preserve their
+  individual titles and assertions in collection, traces and retries.
+- The runner extracts the engine contract into `@e2e-dev/core`. The supported web
+  and mobile adapters, decision filter, browser matcher and device driver move
+  together as listed in the [tool guide](README.md#locked-versions).
+- `e2e mcp` serves live inspection. The upstream `run_tests` MCP tool was removed.
+  Recorded journeys continue to use `run.mjs`. The SDK also adds `toHaveRole`,
+  worker fixtures and a standalone engine API.
+
+[Official 0.24.0 release notes](https://github.com/e2e-inc/e2e/releases/tag/e2e%400.24.0)
+
 ## 0.23.1
 
 Adopted together with web 0.16.0, mobile 0.12.7, decision 0.3.3, agent-device 0.21.37

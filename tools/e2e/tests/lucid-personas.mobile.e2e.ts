@@ -2,9 +2,9 @@ import { test } from '@e2e-dev/mobile';
 import { expect } from 'e2e';
 import { activateLucid, captureWrittenDream } from '../lucid-native-fixtures';
 
-test('Lucid beginner discovers SSILD and pauses the practice', { agent: 'beginner', tags: ['personas', 'persona-beginner'], timeout: 300_000 }, async fixtures => {
+test('Lucid beginner discovers SSILD and pauses the practice', { agent: 'beginner', tags: ['personas', 'persona-beginner'], timeout: 300_000 }, async ({ app, screen, device, platform, agent }) => {
+  const fixtures = { app, screen, device, platform, agent };
   await activateLucid(fixtures);
-  const { agent, app, screen } = fixtures;
   await agent.act("Ouvrir les programmes d’entraînement.");
   await expect(screen.getByTestId('lucid-programs', { visible: true })).toBeVisible();
   await agent.act('Faire apparaître entièrement le bouton « Ouvrir le laboratoire sensoriel SSILD » (en anglais « Open SSILD sensory lab ») dans cette liste, en faisant défiler, sans encore l’ouvrir.');
@@ -18,9 +18,9 @@ test('Lucid beginner discovers SSILD and pauses the practice', { agent: 'beginne
   await app.screenshot('persona-lucid-beginner-pause');
 });
 
-test('Lucid journal reader retrieves a saved morning capture', { agent: 'journal', tags: ['personas', 'persona-journal'], timeout: 300_000 }, async fixtures => {
+test('Lucid journal reader retrieves a saved morning capture', { agent: 'journal', tags: ['personas', 'persona-journal'], timeout: 300_000 }, async ({ app, screen, device, platform, agent }) => {
+  const fixtures = { app, screen, device, platform, agent };
   await activateLucid(fixtures);
-  const { app, screen, agent } = fixtures;
   const note = 'Un jardin calme et une porte lumineuse, fixture locale.';
   await captureWrittenDream(fixtures, note);
   await app.restart();

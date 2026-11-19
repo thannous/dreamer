@@ -3,6 +3,23 @@
 Owner: this E2E work package. Scope: the journal app, real local Supabase Auth,
 Postgres and PostgREST. No production writes, AI calls or payments.
 
+## Supabase CLI compatibility
+
+The local runners use CLI 2.121.0. Before adopting 3.2.0, run
+`supabase config validate` with the candidate against a copy of the repository
+configuration. Version 3.2.0 rejects `[inbucket]`. Renaming that section to
+`[local_smtp]` in the copy passes validation, with deprecation warnings for
+`auth.email.enable_signup` and `auth.sms.enable_signup`.
+
+The backend test runner, the device proxy and local development scripts use
+`stack start --runtime native`, `status --env`, `db query` and scoped stack
+cleanup. Local development also calls `migration up`. These command groups
+exist in 3.2.0, but its `--db-url` compatibility flag emits a deprecation
+warning. Before changing the pin, exercise migrations, status JSON, queries and
+cleanup on an owned disposable stack. Keep the explicit loopback checks.
+For hosted procedures, v3 defaults eligible commands to the local stack and
+asks for confirmation before remote writes. [Upstream migration guide](https://supabase.com/docs/guides/local-development/cli/migrating-to-v3).
+
 ## Run
 
 Use Node from `mise.toml`, locked dependencies and TesterArmy Chromium (`npm run test:testerarmy:browsers`). The runner owns a disposable stack on the pinned Supabase CLI 2.121.0

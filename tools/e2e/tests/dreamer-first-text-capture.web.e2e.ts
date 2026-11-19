@@ -75,8 +75,8 @@ async function readStory({ browser, screen }: Fixtures) {
   await markObservation(browser, 'both-paragraphs-readable');
 }
 
-test('first French text capture opens directly, saves on one press and can be read again after declining AI', options, async fixtures => {
-  const { app, screen, browser } = fixtures;
+test('first French text capture opens directly, saves on one press and can be read again after declining AI', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   const editor = await firstEditor(fixtures);
   await editor.fill(story);
   const save = screen.getByRole('button', 'Ajouter au journal', { exact: true, visible: true });
@@ -107,8 +107,8 @@ test('first French text capture opens directly, saves on one press and can be re
   expect(reopened[0]).toMatchObject({ transcript: story, clientRequestId: records[0].clientRequestId });
 });
 
-test('first French text capture recovers the last paragraph across an immediate reload and a failed save', options, async fixtures => {
-  const { app, browser, screen } = fixtures;
+test('first French text capture recovers the last paragraph across an immediate reload and a failed save', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await browser.setViewport({ width: 320, height: 568 });
   const editor = await firstEditor(fixtures);
   await editor.fill(paragraphs[0]);

@@ -100,7 +100,7 @@ export async function localJournal(page: Page, accountId: string) {
 }
 
 const contextTest = base.extend<{ context: BrowserContext }>({
-  context: async ({ app, browser }, provide) => {
+  context: [async ({ app, browser }, provide) => {
     await browser.route('**/*', async route => {
       const requestUrl = new URL(route.request.url);
       if (requestUrl.origin === 'http://127.0.0.1:8085' ||
@@ -112,7 +112,7 @@ const contextTest = base.extend<{ context: BrowserContext }>({
     const context = surfaceOf(webEngine)!.context() as unknown as BrowserContext;
     try { await provide(context); }
     finally { await app.screenshot('backend-outcome'); }
-  },
+  }, { auto: true }],
 });
 // API security assertions share the guarded app lifecycle without provisioning
 // the three journal accounts used only by browser journeys.

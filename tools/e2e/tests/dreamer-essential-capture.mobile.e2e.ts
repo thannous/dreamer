@@ -31,8 +31,8 @@ test('Dreamer native first capture survives a mode switch and restart with exact
   platforms: ['ios', 'android'],
   tags: ['native-essential-capture', 'native-real-backend'],
   timeout: 300_000,
-}, async fixtures => {
-  const { app, screen, device, backend, platform } = fixtures;
+}, async ({ app, screen, device, platform, backend }) => {
+  const fixtures = { app, screen, device, platform };
   void backend; // Acquire the guarded local-backend fixture and its owned app state.
   await app.open();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -99,8 +99,8 @@ test('Dreamer native capture reviews its original story and saves an added detai
   platforms: ['ios', 'android'],
   tags: ['native-essential-capture', 'native-real-backend'],
   timeout: 300_000,
-}, async fixtures => {
-  const { app, screen, device, backend, platform } = fixtures;
+}, async ({ app, screen, device, platform, backend }) => {
+  const fixtures = { app, screen, device, platform };
   void backend;
   await app.open();
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible();
@@ -196,8 +196,8 @@ test('Dreamer native drafts stay private across guest and account switches and r
   platforms: ['ios', 'android'],
   tags: ['native-essential-capture', 'native-real-backend'],
   timeout: 360_000,
-}, async fixtures => {
-  const { app, screen, backend } = fixtures;
+}, async ({ app, screen, device, platform, backend }) => {
+  const fixtures = { app, screen, device, platform };
   void backend;
   await app.open();
   const editor = screen.getByTestId('input.dreamTranscript', { visible: true });

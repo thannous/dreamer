@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { PERSONA_ACT_MODEL, PERSONA_ASSERT_MODEL, personaModels, personaEnvironment } from './persona-models.mjs';
@@ -105,30 +107,46 @@ test('the zone filter stays inactive unless --changed-since supplied changes', (
   assert.match(source, /if \(!filterIsActive\(context\)\) return \{ exclude: \{\} \}/);
 });
 
-test('a full campaign does not pass --changed-since, and e2e 0.23 skips filters without it', async () => {
+test('full campaigns leave change-based selection off', async () => {
   const { default: config } = await import(new URL('../../verify-local.config.mjs', import.meta.url).href);
   for (const name of ['testerarmy-dreamer', 'testerarmy-lucid', 'testerarmy-meditation', 'testerarmy-site', 'bugbash-repros']) {
     const check = config.checks.find(entry => entry.name === name);
     assert.equal(check.command.includes('--changed-since'), false, name);
   }
-  const runner = readFileSync(new URL('./node_modules/e2e/dist/run/runner.js', import.meta.url), 'utf8');
-  const at = runner.indexOf('changedSince === undefined');
-  assert.ok(at > 0, 'e2e 0.23 listSelection short-circuits when --changed-since is absent');
-  const slice = runner.slice(at, at + 280);
-  assert.match(slice, /changedSince === undefined\s*\?\s*first/);
-  assert.match(slice, /filterSelection/);
   const gate = readFileSync(new URL('./run.mjs', import.meta.url), 'utf8');
   assert.match(gate, /args\[index\] === '--changed-since'/);
 });
 
-test('a leftover test.only fails the gate\'s e2e 0.23 selection instead of narrowing it', async () => {
-  const { isCiMode } = await import('./node_modules/e2e/dist/config/resolve.js');
-  const { select } = await import('./node_modules/e2e/dist/collect/select.js');
-  // A caller that turned CI off still hands the SDK child CI mode.
-  const ci = isCiMode(qualifyingSdkEnvironment({ CI: 'false' }));
-  assert.equal(ci, true);
-  const leftover = { tests: [{ id: 'leftover-only', mode: 'only', selected: true }] };
-  assert.throws(() => select(leftover, { ci, targets: [] }), { code: 'ONLY_IN_CI' });
+test('SDK collection keeps unfiltered journeys and refuses a focused test in the PR environment', t => {
+  const project = mkdtempSync(join(tmpdir(), 'noctalia-e2e-selection-'));
+  t.after(() => rmSync(project, { recursive: true, force: true }));
+  const modules = fileURLToPath(new URL('./node_modules/', import.meta.url));
+  symlinkSync(modules, join(project, 'node_modules'), 'junction');
+  const sdk = join(modules, 'e2e');
+  const { bin } = JSON.parse(readFileSync(join(sdk, 'package.json'), 'utf8'));
+  writeFileSync(join(project, 'e2e.config.ts'), `
+    import { web } from '@e2e-dev/web';
+    import { writeFileSync } from 'node:fs';
+    export default {
+      tests: '*.e2e.ts',
+      targets: [{ name: 'web', engine: web(), app: { url: 'http://localhost:1' } }],
+      filters: [{ name: 'probe', filter() { writeFileSync('filter-called', 'yes'); return { exclude: {} }; } }],
+    };
+  `);
+  const fixture = join(project, 'selection.e2e.ts');
+  const source = "import { test } from '@e2e-dev/web';\ntest('normal', async () => {});\n";
+  writeFileSync(fixture, source);
+  const collect = () => spawnSync(process.execPath, [join(sdk, bin.e2e), 'list', '--reporter', 'json'], {
+    cwd: project, encoding: 'utf8', env: qualifyingSdkEnvironment({ ...process.env, CI: 'false' }),
+  });
+  const normal = collect();
+  assert.equal(normal.status, 0, normal.stderr);
+  assert.deepEqual(JSON.parse(normal.stdout).pairs.map(pair => pair.title), ['normal']);
+  assert.equal(existsSync(join(project, 'filter-called')), false);
+  writeFileSync(fixture, source + "test.only('focused', async () => {});\n");
+  const focused = collect();
+  assert.notEqual(focused.status, 0);
+  assert.match(focused.stderr, /ONLY_IN_CI/);
 });
 
 test('the decision model only takes back parcours the zones left out as untouched', () => {
@@ -206,9 +224,9 @@ test('the zone filter keeps the zones when the model is off or cannot answer', a
   }
 });
 
-test('persona models stay the Terra act tier and the Sol judge', () => {
-  assert.equal(PERSONA_ACT_MODEL, 'gpt-6.1-terra');
-  assert.equal(PERSONA_ASSERT_MODEL, 'gpt-6.1-sol');
+test('persona actions and judgments default to the qualified Sol model', () => {
+  assert.equal(PERSONA_ACT_MODEL, 'gpt-6.2-sol');
+  assert.equal(PERSONA_ASSERT_MODEL, 'gpt-6.2-sol');
   const source = readFileSync(new URL('./dreamer-personas.ts', import.meta.url), 'utf8');
   assert.match(source, /const judge =/);
   assert.match(source, /PERSONA_ACT_MODEL/);

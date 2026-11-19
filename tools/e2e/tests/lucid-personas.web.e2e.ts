@@ -2,9 +2,9 @@ import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
 import { completeOnboarding } from '../lucid-web-fixtures';
 
-test('Lucid beginner discovers SSILD and pauses the practice', { agent: 'beginner', tags: ['personas', 'persona-beginner'] }, async fixtures => {
+test('Lucid beginner discovers SSILD and pauses the practice', { agent: 'beginner', tags: ['personas', 'persona-beginner'] }, async ({ app, screen, browser, agent }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { agent, app, screen } = fixtures;
   await agent.act("Ouvrir les programmes d’entraînement.");
   await expect(screen.getByTestId('lucid-programs', { visible: true })).toBeVisible();
   await agent.act('Faire apparaître entièrement le bouton « Ouvrir le laboratoire sensoriel SSILD » (en anglais « Open SSILD sensory lab ») dans cette liste, en faisant défiler, sans encore l’ouvrir.');
@@ -18,9 +18,9 @@ test('Lucid beginner discovers SSILD and pauses the practice', { agent: 'beginne
   await app.screenshot('persona-lucid-beginner-pause');
 });
 
-test('Lucid journal reader retrieves a saved morning capture', { agent: 'journal', tags: ['personas', 'persona-journal'] }, async fixtures => {
+test('Lucid journal reader retrieves a saved morning capture', { agent: 'journal', tags: ['personas', 'persona-journal'] }, async ({ app, screen, browser, agent }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, agent } = fixtures;
   const note = 'Un jardin calme et une porte lumineuse, fixture locale.';
   await app.open('/lucid/morning');
   await screen.getByTestId('lucid-morning-write', { visible: true }).tap();
@@ -36,7 +36,7 @@ test('Lucid journal reader retrieves a saved morning capture', { agent: 'journal
   await agent.act('Ouvrir le journal des rêves.');
   await expect(screen.getByTestId('lucid-journal', { visible: true })).toBeVisible();
   await agent.act('Ouvrir le rêve qui contient {fragment}.', { params: { fragment: 'une porte lumineuse' } });
-  await expect.poll(() => fixtures.browser.url()).toMatch(/\/lucid\/observation\?id=/);
+  await expect.poll(() => browser.url()).toMatch(/\/lucid\/observation\?id=/);
   await expect(screen.getByTestId('lucid-journal', { visible: true })).toHaveCount(0);
   await expect(screen.getByText(note, { exact: true, visible: true }).last()).toBeVisible();
   await app.screenshot('persona-lucid-retrieved-capture');

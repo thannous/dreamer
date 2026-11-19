@@ -2,8 +2,8 @@ import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
 import { completeOnboarding, openLucid } from '../lucid-web-fixtures';
 
-test('Lucid recovers a blocked ambience with a playable retry and no unhandled rejection', async fixtures => {
-  const { app, screen, browser } = fixtures;
+test('Lucid recovers a blocked ambience with a playable retry and no unhandled rejection', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
   await browser.addInitScript(() => {
     const observed = window as Window & { __lucidAudioErrors?: string[] };
