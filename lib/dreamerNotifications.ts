@@ -56,11 +56,15 @@ export const WEEKLY_RECAP_TIME = '10:00';
 export const WEEKDAY_WEEKDAYS: readonly number[] = [2, 3, 4, 5, 6];
 export const WEEKEND_WEEKDAYS: readonly number[] = [1, 7];
 
-export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+export const DEFAULT_DAILY_REMINDER_SETTINGS = {
   weekdayEnabled: false,
   weekdayTime: '07:00',
   weekendEnabled: false,
   weekendTime: '10:00',
+};
+
+export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+  ...DEFAULT_DAILY_REMINDER_SETTINGS,
   weeklyRecapEnabled: false,
   streakRiskEnabled: false,
   inactivityNudgeEnabled: false,

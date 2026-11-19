@@ -10,6 +10,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { withXcodeProject } = require('expo/config-plugins');
 
+const { addKnownRegions, pbxValue, resourcesPhaseOf, unquote } = require('./xcodeProjectResources');
+
 const TARGET_NAME = 'ExpoWidgetsTarget';
 const STRINGS_FILE = 'Localizable.strings';
 
@@ -21,15 +23,6 @@ function stringsFileContent(translations) {
   return `${Object.entries(translations)
     .map(([english, translated]) => `"${stringsLiteral(english)}" = "${stringsLiteral(translated)}";`)
     .join('\n')}\n`;
-}
-
-// pbxproj quotes a region such as "pt-BR".
-function pbxValue(value) {
-  return /^[A-Za-z0-9_.]+$/.test(value) ? value : `"${value}"`;
-}
-
-function unquote(value) {
-  return typeof value === 'string' ? value.replace(/^"(.*)"$/, '$1') : value;
 }
 
 function variantGroupIn(project, group) {
@@ -75,15 +68,6 @@ function addLanguageFile(project, variant, language) {
   variant.children.push({ value: key, comment: language });
 }
 
-function resourcesPhaseOf(project, targetKey) {
-  const target = project.pbxNativeTargetSection()[targetKey];
-  const phases = project.hash.project.objects.PBXResourcesBuildPhase ?? {};
-  const listed = target.buildPhases.find(({ value }) => phases[value]);
-  if (listed) return phases[listed.value];
-  project.addBuildPhase([], 'PBXResourcesBuildPhase', 'Resources', targetKey);
-  return project.hash.project.objects.PBXResourcesBuildPhase[target.buildPhases.at(-1).value];
-}
-
 function linkToTarget(project, targetKey, variantKey) {
   const phase = resourcesPhaseOf(project, targetKey);
   const buildFiles = section(project, 'PBXBuildFile');
@@ -92,16 +76,6 @@ function linkToTarget(project, targetKey, variantKey) {
   buildFiles[key] = { isa: 'PBXBuildFile', fileRef: variantKey, fileRef_comment: STRINGS_FILE };
   buildFiles[`${key}_comment`] = `${STRINGS_FILE} in Resources`;
   phase.files.push({ value: key, comment: `${STRINGS_FILE} in Resources` });
-}
-
-function addKnownRegions(project, languages) {
-  const { firstProject } = project.getFirstProject();
-  const regions = firstProject.knownRegions ?? [];
-  for (const language of languages) {
-    const value = pbxValue(language);
-    if (!regions.includes(value) && !regions.includes(language)) regions.push(value);
-  }
-  firstProject.knownRegions = regions;
 }
 
 /**
@@ -148,5 +122,3 @@ const withWidgetGalleryStrings = (config, translations = {}) =>
 
 module.exports = withWidgetGalleryStrings;
 module.exports.applyWidgetGalleryStrings = applyWidgetGalleryStrings;
-module.exports.stringsFileContent = stringsFileContent;
-module.exports.resourcesPhaseOf = resourcesPhaseOf;

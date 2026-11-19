@@ -48,22 +48,22 @@ describe('partial-coverage language configuration (pt-br)', () => {
   it('builds the web app CTA on dream.noctalia.app with stable, encoded UTM attribution only', () => {
     expect(siteConfig.storeLinks.webAppBase).toBe('https://dream.noctalia.app/');
 
-    expect(getWebAppUrl('fr', { medium: 'nav' })).toBe(
+    expect(getWebAppUrl({ medium: 'nav' })).toBe(
       'https://dream.noctalia.app/?utm_source=noctalia.app&utm_medium=nav&utm_campaign=web_app'
     );
-    expect(getWebAppUrl('pt-br', { medium: 'footer' })).toBe(
+    expect(getWebAppUrl({ medium: 'footer' })).toBe(
       'https://dream.noctalia.app/?utm_source=noctalia.app&utm_medium=footer&utm_campaign=web_app'
     );
-    expect(getWebAppUrl('en', { medium: 'symbol_page', content: 'being-chased' })).toBe(
+    expect(getWebAppUrl({ medium: 'symbol_page', content: 'being-chased' })).toBe(
       'https://dream.noctalia.app/?utm_source=noctalia.app&utm_medium=symbol_page&utm_campaign=web_app&utm_content=being-chased'
     );
     // Content ids are URL-encoded and the language never leaks into the query.
-    expect(getWebAppUrl('de', { medium: 'blog', content: 'a b&c/é' })).toBe(
+    expect(getWebAppUrl({ medium: 'blog', content: 'a b&c/é' })).toBe(
       'https://dream.noctalia.app/?utm_source=noctalia.app&utm_medium=blog&utm_campaign=web_app&utm_content=a+b%26c%2F%C3%A9'
     );
-    expect(getWebAppUrl('de', { medium: 'blog', content: 'x' })).not.toMatch(/[?&](hl|lang)=/);
+    expect(getWebAppUrl({ medium: 'blog', content: 'x' })).not.toMatch(/[?&](hl|lang)=/);
     // Every surface must declare its medium so clicks stay attributable.
-    expect(() => getWebAppUrl('en')).toThrow(/medium/);
+    expect(() => getWebAppUrl()).toThrow(/medium/);
   });
 
   it('resolves /pt-br/ URLs only for pages that declare a pt-br slug', () => {
@@ -236,7 +236,7 @@ describe('navigation and footer visibility for partial coverage', () => {
 
   it('adds the web app CTA next to the Play CTA in the desktop nav and the mobile menu', () => {
     const { renderNavigation } = require('./lib/docs-components/navigation');
-    const webAppHref = getWebAppUrl('pt-br', { medium: 'nav' });
+    const webAppHref = getWebAppUrl({ medium: 'nav' });
     const html = renderNavigation(makeContext('page.home', 'pt-br', 'landing'));
 
     // Desktop action + mobile menu entry, both keeping the Play link untouched.
@@ -313,7 +313,7 @@ describe('navigation and footer visibility for partial coverage', () => {
     const { renderFooter } = require('./lib/docs-components/footer');
     for (const lang of siteConfig.languages) {
       const html = renderFooter(makeContext('page.home', lang, 'landing'));
-      const webAppHref = getWebAppUrl(lang, { medium: 'footer' });
+      const webAppHref = getWebAppUrl({ medium: 'footer' });
       const anchors = html.match(/<a [^>]*dream\.noctalia\.app[^>]*>/g) || [];
       expect(anchors).toHaveLength(1);
       expect(anchors[0]).toContain(`href="${webAppHref}"`);

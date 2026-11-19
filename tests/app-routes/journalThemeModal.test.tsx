@@ -438,15 +438,12 @@ describe('Journal advanced filter sheet', () => {
   it('[E] Given a theme is selected When selecting it again Then it clears the selection', () => {
     render(<JournalListScreen />);
 
-    // Given
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     fireEvent.click(screen.getByText('Mystique'));
 
-    // When
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     fireEvent.click(screen.getByText('Mystique'));
 
-    // Then
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
   });

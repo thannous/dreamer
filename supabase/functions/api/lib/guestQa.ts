@@ -1,6 +1,6 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
-import { corsHeaders } from './constants.ts';
+import { jsonResponse } from './http.ts';
 
 type AdminClient = {
   rpc: (
@@ -24,20 +24,6 @@ type GuestQaPaidCallClaim = {
   limit?: number;
   duplicate?: boolean;
 };
-
-const jsonResponse = (
-  body: Record<string, unknown>,
-  status: number,
-  retryAfter?: number
-): Response =>
-  new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(retryAfter ? { 'Retry-After': String(retryAfter) } : {}),
-      ...corsHeaders,
-    },
-  });
 
 export const isGuestQaQuotaSubject = (value: string | null): value is string =>
   typeof value === 'string'
@@ -121,6 +107,6 @@ export async function claimGuestQaPaidCall(options: {
       ...(retryAfter ? { retryAfter } : {}),
     },
     expired ? 401 : 429,
-    retryAfter
+    retryAfter ? { 'Retry-After': String(retryAfter) } : undefined
   );
 }

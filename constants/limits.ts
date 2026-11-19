@@ -1,7 +1,6 @@
-/**
- * User tier types for quota management
- */
-export type UserTier = 'guest' | 'free' | 'plus';
+import type { SubscriptionTier } from '@/lib/types';
+
+export type UserTier = SubscriptionTier;
 
 /** Lifetime local recording allowance before an account is required. */
 export const GUEST_DREAM_RECORDING_LIMIT = 5;
@@ -38,14 +37,6 @@ export interface TierQuotas {
   image: number | null;
 }
 
-export interface TierQuotaConfig {
-  initial: TierQuotas;
-  monthly: TierQuotas;
-}
-
-/**
- * Quota configuration by tier
- */
 export const QUOTAS: Record<UserTier, TierQuotas> = {
   guest: {
     analysis: 2,
@@ -64,20 +55,5 @@ export const QUOTAS: Record<UserTier, TierQuotas> = {
     exploration: null,
     messagesPerDream: 100,
     image: null,
-  },
-};
-
-export const QUOTA_CONFIG: Record<UserTier, TierQuotaConfig> = {
-  guest: {
-    initial: QUOTAS.guest,
-    monthly: QUOTAS.guest,
-  },
-  free: {
-    initial: QUOTAS.free,
-    monthly: QUOTAS.free,
-  },
-  plus: {
-    initial: QUOTAS.plus,
-    monthly: QUOTAS.plus,
   },
 };

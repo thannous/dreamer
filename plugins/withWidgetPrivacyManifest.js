@@ -9,7 +9,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { withXcodeProject } = require('expo/config-plugins');
 
-const { resourcesPhaseOf } = require('./withWidgetGalleryStrings');
+const { resourcesPhaseOf } = require('./xcodeProjectResources');
 
 const TARGET_NAME = 'ExpoWidgetsTarget';
 const FILE_NAME = 'PrivacyInfo.xcprivacy';

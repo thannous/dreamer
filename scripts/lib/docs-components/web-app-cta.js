@@ -22,7 +22,7 @@ function blogArticleContentId(pageId) {
 
 function renderBlogWebAppCta({ lang, locale, pageId, pagePath = '' }) {
   assertLocaleLabels(locale, lang);
-  const webAppHref = getWebAppUrl(lang, { medium: 'blog', content: blogArticleContentId(pageId) });
+  const webAppHref = getWebAppUrl({ medium: 'blog', content: blogArticleContentId(pageId) });
   const storeHref = getAndroidStoreUrl(lang);
 
   return [

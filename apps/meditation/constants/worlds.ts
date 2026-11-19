@@ -2,18 +2,13 @@ import type { ImageSource } from 'expo-image';
 
 import type { BreathingPatternId } from '@/content/breathing';
 import { Atmosphere, NightTheme, PaperTheme } from '@/constants/theme';
+import { isPurchasableWorldId } from '@/constants/worldProducts';
 import { WORLD_SALES_ENABLED } from '@/constants/worldSales';
 import type { CategorySlug, SessionId } from '@/lib/types';
 
 type ImageSourcePropType = number | ImageSource;
 
-export type WorldId =
-  | 'constellation'
-  | 'dawn'
-  | 'forest'
-  | 'tide'
-  | 'sanctuary'
-  | 'cloud';
+export type WorldId = (typeof WORLD_IDS)[number];
 
 export type WorldMotion = 'orbit' | 'rise' | 'canopy' | 'drift' | 'pulse' | 'float';
 
@@ -104,15 +99,21 @@ export const WORLD_IDS = [
   'tide',
   'sanctuary',
   'cloud',
-] as const satisfies readonly WorldId[];
+] as const;
+
+function worldIdentity<Id extends WorldId>(id: Id) {
+  return {
+    id,
+    access: WORLD_SALES_ENABLED && isPurchasableWorldId(id) ? 'purchase' : 'free',
+    nameKey: `world.${id}.name`,
+    descriptionKey: `world.${id}.description`,
+  } as const;
+}
 
 export const WORLD_BY_ID = {
   constellation: {
-    id: 'constellation',
-    access: 'free',
+    ...worldIdentity('constellation'),
     appearance: 'dark',
-    nameKey: 'world.constellation.name',
-    descriptionKey: 'world.constellation.description',
     personality: {
       role: 'dream-entry',
       primaryCategory: 'dream-prep',
@@ -140,11 +141,8 @@ export const WORLD_BY_ID = {
     },
   },
   dawn: {
-    id: 'dawn',
-    access: 'free',
+    ...worldIdentity('dawn'),
     appearance: 'light',
-    nameKey: 'world.dawn.name',
-    descriptionKey: 'world.dawn.description',
     personality: {
       role: 'morning-intention',
       primaryCategory: 'gratitude',
@@ -172,11 +170,8 @@ export const WORLD_BY_ID = {
     },
   },
   forest: {
-    id: 'forest',
-    access: 'free',
+    ...worldIdentity('forest'),
     appearance: 'dark',
-    nameKey: 'world.forest.name',
-    descriptionKey: 'world.forest.description',
     personality: {
       role: 'grounding',
       primaryCategory: 'anxiety',
@@ -204,11 +199,8 @@ export const WORLD_BY_ID = {
     },
   },
   tide: {
-    id: 'tide',
-    access: WORLD_SALES_ENABLED ? 'purchase' : 'free',
+    ...worldIdentity('tide'),
     appearance: 'dark',
-    nameKey: 'world.tide.name',
-    descriptionKey: 'world.tide.description',
     personality: {
       role: 'decompression',
       primaryCategory: 'stress',
@@ -236,11 +228,8 @@ export const WORLD_BY_ID = {
     },
   },
   sanctuary: {
-    id: 'sanctuary',
-    access: WORLD_SALES_ENABLED ? 'purchase' : 'free',
+    ...worldIdentity('sanctuary'),
     appearance: 'dark',
-    nameKey: 'world.sanctuary.name',
-    descriptionKey: 'world.sanctuary.description',
     personality: {
       role: 'night-refuge',
       primaryCategory: 'sleep',
@@ -268,11 +257,8 @@ export const WORLD_BY_ID = {
     },
   },
   cloud: {
-    id: 'cloud',
-    access: WORLD_SALES_ENABLED ? 'purchase' : 'free',
+    ...worldIdentity('cloud'),
     appearance: 'light',
-    nameKey: 'world.cloud.name',
-    descriptionKey: 'world.cloud.description',
     personality: {
       role: 'mental-clarity',
       primaryCategory: 'focus',

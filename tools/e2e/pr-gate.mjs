@@ -18,7 +18,7 @@ import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { SDK_PINS } from './qualification.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const PINNED_NODE = 'v24.22.1';
+const PINNED_NODE = 'v' + readFileSync(new URL('../../.nvmrc', import.meta.url), 'utf8').trim();
 
 /** The web product whose campaign holds a changed journey file, if any. A release-only file (UNZONED) has none. */
 export function changedJourneyProduct(file) {

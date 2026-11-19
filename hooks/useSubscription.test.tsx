@@ -351,14 +351,11 @@ describe('useSubscription', () => {
     });
 
     it('given unauthenticated user when using subscription then requires auth', async () => {
-      // Given
       mockCurrentUser = null;
       const { result } = renderSubscriptionHook();
 
-      // When
       // Hook renders automatically
 
-      // Then
       expect(result.current.requiresAuth).toBe(true);
       expect(result.current.status).toBeNull();
       expect(result.current.packages).toHaveLength(0);
@@ -380,7 +377,6 @@ describe('useSubscription', () => {
     });
 
     it('given unauthenticated user when purchasing then rejects with auth error', async () => {
-      // Given
       mockCurrentUser = null;
       const { result } = renderSubscriptionHook();
 
@@ -389,7 +385,6 @@ describe('useSubscription', () => {
     });
 
     it('given unauthenticated user when restoring then rejects with auth error', async () => {
-      // Given
       mockCurrentUser = null;
       const { result } = renderSubscriptionHook();
 
@@ -407,13 +402,10 @@ describe('useSubscription', () => {
 
   describe('initialization and loading', () => {
     it('given authenticated user when initializing then loads subscription data', async () => {
-      // Given
       const { result } = renderSubscriptionHook({ loadPackages: true });
 
-      // When
       await act(async () => {});
 
-      // Then
       await waitFor(() => {
         expect(result.current.packages).toHaveLength(1);
       });
@@ -423,30 +415,24 @@ describe('useSubscription', () => {
     });
 
     it('given authenticated user when initializing without packages then skips package loading', async () => {
-      // Given
       const { loadSubscriptionPackages } = require('../services/subscriptionService');
       const { result } = renderSubscriptionHook();
 
-      // When
       await act(async () => {});
 
-      // Then
       expect(result.current.loading).toBe(false);
       expect(result.current.packages).toHaveLength(0);
       expect(jest.mocked(loadSubscriptionPackages)).not.toHaveBeenCalled();
     });
 
     it('given authenticated user when initializing then handles errors gracefully', async () => {
-      // Given
       const { initializeSubscription } = require('../services/subscriptionService');
       jest.mocked(initializeSubscription).mockRejectedValue(new Error('Purchases not initialized'));
       
       const { result } = renderSubscriptionHook();
 
-      // When
       await act(async () => {});
 
-      // Then
       expect(result.current.loading).toBe(false);
       expect(result.current.error?.message).toBe('subscription.error.not_initialized');
     });
@@ -476,16 +462,13 @@ describe('useSubscription', () => {
     });
 
     it('given authenticated user when purchasing successfully then upgrades subscription', async () => {
-      // Given
       const { result } = renderSubscriptionHook();
       await act(async () => {});
 
-      // When
       await act(async () => {
         await result.current.purchase('mock_monthly');
       });
 
-      // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
       expect(mockSetUserTierLocally).toHaveBeenCalledWith(expect.objectContaining({ tier: 'plus' }), { userId: 'user-1', generation: mockGeneration });
@@ -567,7 +550,6 @@ describe('useSubscription', () => {
     });
 
     it('given authenticated user when purchasing fails then sets error and throws', async () => {
-      // Given
       const { purchaseSubscriptionPackage } = require('../services/subscriptionService');
       jest.mocked(purchaseSubscriptionPackage).mockRejectedValue(new Error('Purchase failed'));
       
@@ -583,18 +565,15 @@ describe('useSubscription', () => {
     });
 
     it('given authenticated user when purchasing with initialization error then formats error message', async () => {
-      // Given
       const { purchaseSubscriptionPackage } = require('../services/subscriptionService');
       jest.mocked(purchaseSubscriptionPackage).mockRejectedValue(new Error('Purchases not initialized'));
       
       const { result } = renderSubscriptionHook();
 
-      // When
       await act(async () => {
         await result.current.purchase('mock_monthly').catch(() => {});
       });
 
-      // Then
       expect(result.current.error?.message).toBe('subscription.error.not_initialized');
     });
   });
@@ -632,17 +611,14 @@ describe('useSubscription', () => {
     });
 
     it('given authenticated user when restoring successfully then updates subscription', async () => {
-      // Given
       const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
       const { result } = renderSubscriptionHook();
       await act(async () => {});
 
-      // When
       await act(async () => {
         await result.current.restore();
       });
 
-      // Then
       expect(result.current.isActive).toBe(true);
       expect(result.current.processing).toBe(false);
       expect(restoreSubscriptionPurchases).toHaveBeenCalledTimes(1);
@@ -676,7 +652,6 @@ describe('useSubscription', () => {
     });
 
     it('given authenticated user when restoring fails then sets error and throws', async () => {
-      // Given
       const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
       jest.mocked(restoreSubscriptionPurchases).mockRejectedValue(new Error('Restore failed'));
       
@@ -732,18 +707,15 @@ describe('useSubscription', () => {
     });
 
     it('given authenticated user when restoring with initialization error then formats error message', async () => {
-      // Given
       const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
       jest.mocked(restoreSubscriptionPurchases).mockRejectedValue(new Error('Purchases not initialized'));
       
       const { result } = renderSubscriptionHook();
 
-      // When
       await act(async () => {
         await result.current.restore().catch(() => {});
       });
 
-      // Then
       expect(result.current.error?.message).toBe('subscription.error.not_initialized');
     });
   });
@@ -861,16 +833,13 @@ describe('useSubscription', () => {
 
   describe('error handling and formatting', () => {
     it('given unknown error when formatting then returns generic error message', async () => {
-      // Given
       const { result } = renderSubscriptionHook();
 
-      // When
       await act(async () => {
         // Test basic error handling by triggering a purchase error
         await result.current.purchase('mock_monthly').catch(() => {});
       });
 
-      // Then
       // Basic error handling test - just ensure no unhandled errors
       expect(result.current.processing).toBe(false);
     });

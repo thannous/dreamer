@@ -1,14 +1,7 @@
 import { createAnalyticsGuestToken } from '../lib/analyticsGuestToken.ts';
-import { corsHeaders } from '../lib/constants.ts';
+import { jsonResponse } from '../lib/http.ts';
 import { verifyGuestToken } from '../lib/guestToken.ts';
 import { verifyAndroidIntegrity } from '../lib/playIntegrity.ts';
-
-function jsonResponse(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
-  });
-}
 
 export async function handleAnalyticsGuestSession(req: Request): Promise<Response> {
   try {

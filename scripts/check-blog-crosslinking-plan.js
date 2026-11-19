@@ -17,95 +17,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const { indexDocsFiles, isSkippableUrl, resolveLinkTarget, stripQueryAndHash } = require('./lib/docs-link-targets');
 const { JSDOM } = require('jsdom');
 
 function parseArg(prefix) {
   const arg = process.argv.find((a) => a.startsWith(prefix));
   return arg ? arg.slice(prefix.length) : null;
-}
-
-function toPosix(p) {
-  return p.split(path.sep).join('/');
-}
-
-function walkFiles(dirAbs, { ignoreDirs } = {}) {
-  const results = [];
-  const stack = [dirAbs];
-  while (stack.length) {
-    const current = stack.pop();
-    const entries = fs.readdirSync(current, { withFileTypes: true });
-    for (const entry of entries) {
-      const full = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        if (ignoreDirs && ignoreDirs.has(entry.name)) continue;
-        stack.push(full);
-        continue;
-      }
-      if (entry.isFile()) results.push(full);
-    }
-  }
-  return results;
-}
-
-function stripQueryAndHash(raw) {
-  const hashIndex = raw.indexOf('#');
-  const queryIndex = raw.indexOf('?');
-  const cut = Math.min(
-    hashIndex === -1 ? raw.length : hashIndex,
-    queryIndex === -1 ? raw.length : queryIndex
-  );
-  return raw.slice(0, cut);
-}
-
-function isSkippableUrl(raw) {
-  const trimmed = String(raw || '').trim();
-  if (!trimmed) return true;
-  if (trimmed.includes('{{') || trimmed.includes('}}')) return true;
-  const lower = trimmed.toLowerCase();
-  if (lower.startsWith('mailto:')) return true;
-  if (lower.startsWith('tel:')) return true;
-  if (lower.startsWith('sms:')) return true;
-  if (lower.startsWith('javascript:')) return true;
-  if (lower.startsWith('data:')) return true;
-  return false;
-}
-
-function normalizeInternalPath(posixPath) {
-  const cleaned = String(posixPath || '').replace(/\0/g, '');
-  const normalized = path.posix.normalize(cleaned);
-  if (normalized === '.') return '';
-  return normalized;
-}
-
-function hasExtension(posixPath) {
-  const base = path.posix.basename(posixPath);
-  return base.includes('.') && !base.startsWith('.');
-}
-
-function resolvePrettyUrlToFile(relativeFilesSet, urlPathPosix) {
-  const urlPath = normalizeInternalPath(urlPathPosix);
-  const withoutLeading = urlPath.replace(/^\/+/, '');
-
-  if (!withoutLeading || withoutLeading === '') {
-    return relativeFilesSet.has('index.html') ? 'index.html' : null;
-  }
-
-  if (urlPath.endsWith('/')) {
-    const candidate = `${withoutLeading}index.html`;
-    return relativeFilesSet.has(candidate) ? candidate : null;
-  }
-
-  if (hasExtension(urlPath)) {
-    return relativeFilesSet.has(withoutLeading) ? withoutLeading : null;
-  }
-
-  const htmlCandidate = `${withoutLeading}.html`;
-  if (relativeFilesSet.has(htmlCandidate)) return htmlCandidate;
-
-  const indexCandidate = `${withoutLeading}/index.html`;
-  if (relativeFilesSet.has(indexCandidate)) return indexCandidate;
-
-  return null;
 }
 
 function classifyInternalLikeHref(raw) {
@@ -263,10 +180,7 @@ function main() {
     process.exit(2);
   }
 
-  const ignoreDirs = new Set(['node_modules', '.git', 'templates']);
-  const allFilesAbs = walkFiles(docsDirAbs, { ignoreDirs });
-  const relativeFiles = allFilesAbs.map((abs) => toPosix(path.relative(docsDirAbs, abs)));
-  const relativeFilesSet = new Set(relativeFiles);
+  const relativeFilesSet = indexDocsFiles(docsDirAbs);
 
   const errors = [];
   const warnings = [];
@@ -351,13 +265,12 @@ function main() {
       // Tier 1 (contextual) sanity: at least one *relative* symbol link outside the Related Symbols block.
       if (p.kind === 'p1' || p.kind === 'p2') {
         const relativePrefix = cfg.allowedSymbolHrefPrefixes.find((pfx) => pfx.startsWith('../'));
-        const { links } = extractLinksFromHtml(rawWithoutRelated);
+        const { dom, links } = extractLinksFromHtml(rawWithoutRelated);
         const hasRelativeSymbol = links.some((l) => relativePrefix && l.href.startsWith(relativePrefix));
         hasContextualRelativeSymbolLink = Boolean(hasRelativeSymbol);
         if (!hasRelativeSymbol) push('warn', `[${lang}] No contextual *relative* symbol links found in ${fileRel}`);
 
         // Optional signal: if a `.prose` container exists, prefer at least 1 symbol link inside it.
-        const { dom } = extractLinksFromHtml(rawWithoutRelated);
         const prose = dom.window.document.querySelector('.prose');
         if (prose) {
           const proseLinks = [...prose.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter(Boolean);
@@ -381,7 +294,6 @@ function main() {
 
       // Ensure that any symbol links we add resolve to an actual symbol file (avoid typos).
       const { links } = extractLinksFromHtml(raw);
-      const pageDirPosix = path.posix.dirname(toPosix(fileRel));
 
       for (const l of links) {
         const classified = classifyInternalLikeHref(l.href);
@@ -391,10 +303,7 @@ function main() {
         const isSymbol = cfg.allowedSymbolHrefPrefixes.some((pre) => classified.path.startsWith(pre));
         if (!isSymbol) continue;
 
-        const isRootRelative = classified.path.startsWith('/');
-        const base = isRootRelative ? '' : pageDirPosix === '.' ? '' : `${pageDirPosix}/`;
-        const combined = normalizeInternalPath(isRootRelative ? classified.path : `${base}${classified.path}`);
-        const targetRel = resolvePrettyUrlToFile(relativeFilesSet, combined);
+        const { resolvedPath: combined, file: targetRel } = resolveLinkTarget(relativeFilesSet, fileRel, classified.path);
         if (!targetRel) {
           push('error', `[${lang}] Broken symbol link in ${fileRel}: href="${l.href}" (resolved ${combined})`);
           continue;

@@ -25,7 +25,7 @@ import { GuideReadingHost } from '@/components/guides/GuideReadingHost';
 import { HomeWidgetsHost } from '@/components/widgets/HomeWidgetsHost';
 import { NotificationDreamImportHost } from '@/components/reminders/NotificationDreamImportHost';
 import { AiConsentModalHost } from '@/components/privacy/AiConsentModal';
-import { OfflineModelPromptHost } from '@/components/speech/OfflineModelPromptHost';
+import { OfflineModelPromptProvider } from '@/components/speech/OfflineModelPromptProvider';
 import { WhatsNewModalHost } from '@/components/releases/WhatsNewModal';
 import { VercelAnalytics } from '@/components/VercelAnalytics';
 import { VercelSpeedInsights } from '@/components/VercelSpeedInsights';
@@ -829,6 +829,7 @@ const RootNavigator = memo(function RootNavigator({
               one native transition avoids scheduling transition work for a
               surface that is immediately detached; later navigation keeps the
               normal platform animation. */}
+          <OfflineModelPromptProvider>
           <QuickSettingsProvider>
           <DesktopShell>
           <Stack
@@ -873,7 +874,8 @@ const RootNavigator = memo(function RootNavigator({
           </Stack>
           </DesktopShell>
           </QuickSettingsProvider>
-          <AiConsentModalHost /><OfflineModelPromptHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator />
+          </OfflineModelPromptProvider>
+          <AiConsentModalHost /><EngagementRemindersHost /><HomeWidgetsHost /><NotificationDreamImportHost /><BadgeLedgerHost /><GuideReadingHost /><AnalysisFlightIndicator />
           <VercelAnalytics />
           <VercelSpeedInsights />
         </JournalRuntime>

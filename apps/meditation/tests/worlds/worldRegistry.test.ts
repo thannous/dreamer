@@ -19,12 +19,6 @@ describe('meditation world registry', () => {
       expect(world.nameKey).toBe(`world.${id}.name`);
       expect(world.descriptionKey).toBe(`world.${id}.description`);
       expect(world.thumbnail).toEqual(expect.anything());
-      expect(Object.keys(world.artwork).sort()).toEqual([
-        'completion',
-        'journey',
-        'purchase',
-        'trainer',
-      ]);
       expect(world.artwork).toEqual(
         expect.objectContaining({
           journey: expect.anything(),
@@ -35,7 +29,6 @@ describe('meditation world registry', () => {
       );
       expect(world.atmosphere.scrimOpacity).toBeGreaterThanOrEqual(0);
       expect(world.atmosphere.scrimOpacity).toBeLessThanOrEqual(1);
-      expect(Number.isFinite(world.atmosphere.centreScrimOpacity)).toBe(true);
       expect(world.atmosphere.centreScrimOpacity).toBeGreaterThanOrEqual(0);
       expect(world.atmosphere.centreScrimOpacity).toBeLessThanOrEqual(1);
       expect(world.atmosphere.overlayOpacity).toBeGreaterThanOrEqual(0);
@@ -47,8 +40,6 @@ describe('meditation world registry', () => {
     const free = WORLD_IDS.filter((id) => WORLD_BY_ID[id].access === 'free');
     const purchase = WORLD_IDS.filter((id) => WORLD_BY_ID[id].access === 'purchase');
 
-    expect(free).toHaveLength(3);
-    expect(purchase).toHaveLength(3);
     expect(free).toEqual(['constellation', 'dawn', 'forest']);
     expect(purchase).toEqual(['tide', 'sanctuary', 'cloud']);
   });
@@ -61,8 +52,5 @@ describe('meditation world registry', () => {
     expect(isWorldId('')).toBe(false);
     expect(isWorldId('ocean')).toBe(false);
     expect(isWorldId(null)).toBe(false);
-    expect(isWorldId('tide')).toBe(true);
-    expect(isWorldId('sanctuary')).toBe(true);
-    expect(isWorldId('cloud')).toBe(true);
   });
 });

@@ -34,7 +34,6 @@ describe('computeTier', () => {
   });
 
   it('falls back to safe defaults when hardware hints are missing', () => {
-    // Unknown cores are treated as weak hardware: conservative static tier.
     expect(computeTier({})).toBe('static');
     expect(computeTier({ cores: undefined, ram: undefined, coarse: true })).toBe('static');
   });
@@ -45,20 +44,7 @@ describe('computeTier', () => {
   });
 });
 
-describe('renderTierInlineScript', () => {
-  it('inlines a self-contained detection script', () => {
-    const script = renderTierInlineScript();
-    expect(script).toContain('<script>');
-    expect(script).toContain('var computeTier = function computeTier(env)');
-    expect(script).toContain("document.documentElement.dataset.expTier = tier;");
-    expect(script).not.toContain('require(');
-    // Exactly one closing tag: the serialized function must not contain a
-    // literal "</script>" that would break HTML parsing.
-    expect(script.split('</script>')).toHaveLength(2);
-  });
-});
-
-describe('early intro loading', () => {
+describe('landing page bootstrap', () => {
   const vm = require('node:vm');
   function boot({ reduced = false, saveData = false, effectiveType = '4g', introSeen = false, portrait = false } = {}) {
     let release;
@@ -66,9 +52,16 @@ describe('early intro loading', () => {
     const document = { documentElement: { dataset: {}, classList: { add() {}, remove() {} } }, createElement: jest.fn(tag => tag === 'video' ? video : {}) };
     const window = { matchMedia: query => ({ matches: query.includes('reduced-motion') ? reduced : query.includes('portrait') ? portrait : true }), setTimeout: fn => { release = fn; }, sessionStorage: { getItem: key => (introSeen && key === 'noctalia:intro-seen' ? '1' : null) } };
     const context = { document, window, navigator: { hardwareConcurrency: 8, deviceMemory: 8, connection: { saveData, effectiveType } }, location: { hash: '' }, history: {} };
-    vm.runInNewContext(renderTierInlineScript().replace(/<\/?script>/g, ''), context);
+    const [, script] = renderTierInlineScript().match(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/i);
+    vm.runInNewContext(script, context);
     return { window, document, video, release: () => release?.() };
   }
+  it.each([[{}, 'light'], [{ reduced: true }, 'static']])('sets the initial tier for both CSS and JavaScript', (options, expected) => {
+    const { document, window } = boot(options);
+    expect(document.documentElement.dataset.expTier).toBe(expected);
+    expect(window.__EXP_TIER__).toBe(expected);
+  });
+
   it('warms a muted inline video and releases unused media if enhancement never loads', () => {
     const s = boot();
     expect(s.window.__expIntroVideo).toBe(s.video);

@@ -7,7 +7,6 @@ import {
   getSpeechLocaleAvailability,
   HANDS_FREE_EMPTY_RESTART_LIMIT,
   mergeFinalChunk,
-  registerOfflineModelPromptHandler,
   resolveDeviceSpeechCapability,
   shouldRestartHandsFreeSpeech,
   startNativeSpeechSession,
@@ -165,7 +164,6 @@ describe('native speech module integration', () => {
     Platform.OS = 'web';
     delete (Platform as any).Version;
     __setCachedSpeechModuleForTests(undefined);
-    registerOfflineModelPromptHandler(null);
     jest.restoreAllMocks();
   });
 
@@ -261,30 +259,20 @@ describe('native speech module integration', () => {
 
     __setCachedSpeechModuleForTests(speechModule);
 
-    let resolvePrompt: (() => void) | undefined;
-    const promptHandler = {
-      show: jest.fn(
-        () => new Promise<void>((resolve) => {
-          resolvePrompt = resolve;
-        })
-      ),
-      isVisible: false,
-    };
-    registerOfflineModelPromptHandler(promptHandler);
+    let started!: () => void;
+    const opened = new Promise<void>((resolve) => { started = resolve; });
+    let close!: () => void;
+    const dismissed = new Promise<void>((resolve) => { close = resolve; });
+    const show = jest.fn(() => {
+      started();
+      return dismissed;
+    });
+    const resultPromise = ensureOfflineSttModel('en-US', show);
+    await opened;
 
-    const resultPromise = ensureOfflineSttModel('en-US');
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(promptHandler.show).toHaveBeenCalledWith('en-US');
+    expect(show).toHaveBeenCalledWith('en-US');
     expect(getSupportedLocales).toHaveBeenCalledTimes(1);
-
-    const stateBeforePromptCloses = await Promise.race([
-      resultPromise.then(() => 'resolved'),
-      Promise.resolve('pending'),
-    ]);
-    expect(stateBeforePromptCloses).toBe('pending');
-
-    resolvePrompt?.();
+    close();
 
     await expect(resultPromise).resolves.toBe(true);
     expect(getSupportedLocales).toHaveBeenCalledTimes(2);
@@ -386,35 +374,48 @@ describe('native speech module integration', () => {
     }
   });
 
-  it('removes every listener when starting recognition throws', async () => {
+  it.each(['subscribe', 'start'] as const)('releases partial subscriptions and allows retry after native %s failure', async (failure: 'subscribe' | 'start') => {
     const { Platform } = require('react-native');
-    Platform.OS = 'ios';
-    (Platform as any).Version = 17;
-
-    const removeListeners = Array.from({ length: 4 }, () => jest.fn());
-    let listenerIndex = 0;
-    const start = jest.fn(() => {
-      throw new Error('Speech start failed');
-    });
+    Platform.OS = 'android';
+    Platform.Version = 34;
+    let failing = true;
+    const active = new Map<string, (event?: any) => void>();
+    const attemptedRemovals: string[] = [];
     const speechModule = {
       isRecognitionAvailable: () => true,
       requestPermissionsAsync: async () => ({ granted: true }),
-      supportsOnDeviceRecognition: () => false,
-      supportsRecording: () => false,
       getStateAsync: async () => 'inactive',
-      start,
-      addListener: jest.fn((_event: string, _cb: (payload?: any) => void) => ({
-        remove: removeListeners[listenerIndex++],
-      })),
-    } as any;
+      start: jest.fn(() => {
+        if (failing && failure === 'start') throw new Error('Cannot start recognition');
+      }),
+      abort: jest.fn(),
+      addListener(event: string, cb: (payload?: any) => void) {
+        if (failing && failure === 'subscribe' && event === 'audioend') throw new Error('Cannot subscribe');
+        active.set(event, cb);
+        return { remove() {
+          attemptedRemovals.push(event);
+          if (failing && event === 'result') throw new Error('Cannot detach from emitter');
+          active.delete(event);
+        } };
+      },
+    };
+    __setCachedSpeechModuleForTests(speechModule as any);
 
-    __setCachedSpeechModuleForTests(speechModule);
+    const onPartial = jest.fn();
+    await expect(startNativeSpeechSession('en-US', { onPartial })).resolves.toBeNull();
+    expect(speechModule.start).toHaveBeenCalledTimes(failure === 'start' ? 1 : 0);
+    expect(attemptedRemovals).toContain('result');
+    expect([...active.keys()]).toEqual(['result']);
+    active.get('result')?.({ results: [{ transcript: 'late result' }], isFinal: false });
+    expect(onPartial).not.toHaveBeenCalled();
 
-    await expect(startNativeSpeechSession('en-US')).resolves.toBeNull();
-
-    expect(start).toHaveBeenCalledTimes(1);
-    expect(speechModule.addListener).toHaveBeenCalledWith('start', expect.any(Function));
-    removeListeners.forEach((remove) => expect(remove).toHaveBeenCalledTimes(1));
+    failing = false;
+    const next = await startNativeSpeechSession('en-US', { onPartial });
+    expect(next).not.toBeNull();
+    active.get('result')?.({ results: [{ transcript: 'next recording' }], isFinal: false });
+    expect(onPartial).toHaveBeenCalledWith('next recording');
+    next!.abort();
+    expect(active.size).toBe(0);
   });
 
   it('publishes only changed previews while preserving final results across sessions', async () => {
@@ -478,7 +479,12 @@ describe('native speech module integration', () => {
     await expect(nextSession!.stop()).resolves.toMatchObject({ transcript: 'hello' });
   });
 
-  it('notifies the caller when recognition ends without an explicit stop', async () => {
+  const androidTerminalEvents = [
+    { event: 'end', payload: undefined },
+    { event: 'error', payload: { error: 'client', message: 'Other client side errors.' } },
+  ] as const;
+
+  it.each(androidTerminalEvents)('preserves partial speech and notifies the caller once after Android $event', async ({ event, payload }: typeof androidTerminalEvents[number]) => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 36;
@@ -510,17 +516,22 @@ describe('native speech module integration', () => {
     listeners.get('start')?.();
     expect(onListeningChange).toHaveBeenLastCalledWith(true);
 
-    listeners.get('end')?.();
+    listeners.get('result')?.({ results: [{ transcript: 'remember the garden' }], isFinal: false });
+    listeners.get(event)?.(payload);
+    expect(onEnd).toHaveBeenCalledTimes(1);
     expect(onListeningChange).toHaveBeenLastCalledWith(false);
     listeners.get('start')?.();
     expect(onListeningChange).toHaveBeenLastCalledWith(false);
 
-    expect(onEnd).toHaveBeenCalledTimes(1);
-    await session!.stop();
+    listeners.get('end')?.();
+    const result = await session!.stop();
+    expect(result.transcript).toBe('remember the garden');
+    expect(result.errorCode).toBeUndefined();
+    expect(result.error).toBeUndefined();
     expect(onEnd).toHaveBeenCalledTimes(1);
   });
 
-  it('does not report an explicit stop as an unexpected native end', async () => {
+  it.each(androidTerminalEvents)('preserves final speech without triggering a restart when explicit stop emits Android $event', async ({ event, payload }: typeof androidTerminalEvents[number]) => {
     const { Platform } = require('react-native');
     Platform.OS = 'android';
     (Platform as any).Version = 36;
@@ -534,7 +545,7 @@ describe('native speech module integration', () => {
       getStateAsync: async () => 'inactive',
       start: jest.fn(),
       stop: jest.fn(() => {
-        listeners.get('end')?.();
+        listeners.get(event)?.(payload);
       }),
       abort: jest.fn(),
       addListener: jest.fn((event: string, cb: (payload?: any) => void) => {
@@ -548,8 +559,12 @@ describe('native speech module integration', () => {
     const onEnd = jest.fn();
     const session = await startNativeSpeechSession('en-US', { onEnd });
 
-    await session!.stop();
+    listeners.get('result')?.({ results: [{ transcript: 'beside the lake' }], isFinal: true });
+    const result = await session!.stop();
 
+    expect(result.transcript).toBe('beside the lake');
+    expect(result.errorCode).toBeUndefined();
+    expect(result.error).toBeUndefined();
     expect(onEnd).not.toHaveBeenCalled();
   });
 

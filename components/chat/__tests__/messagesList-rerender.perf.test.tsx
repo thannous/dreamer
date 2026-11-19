@@ -146,7 +146,7 @@ vi.mock('../ScrollToBottomButton', () => ({
   ScrollToBottomButton: () => null,
 }));
 
-vi.mock('../MarkdownText', () => ({
+vi.mock('@/components/ui/MarkdownText', () => ({
   MarkdownText: ({ children }: { children: string }) => <>{children}</>,
 }));
 

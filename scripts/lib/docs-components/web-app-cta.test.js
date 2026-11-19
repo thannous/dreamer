@@ -18,7 +18,7 @@ describe('blog web app CTA module', () => {
       pageId: 'blog.snake-dreams-meaning',
     });
 
-    const webAppHref = getWebAppUrl('fr', { medium: 'blog', content: 'snake-dreams-meaning' });
+    const webAppHref = getWebAppUrl({ medium: 'blog', content: 'snake-dreams-meaning' });
     expect(webAppHref).toBe(
       'https://dream.noctalia.app/?utm_source=noctalia.app&utm_medium=blog&utm_campaign=web_app&utm_content=snake-dreams-meaning'
     );
@@ -82,7 +82,7 @@ describe('blog web app CTA module', () => {
         pageId: 'blog.dream-journal-guide',
       });
       expect(html).toContain(`>${locales[lang].webAppCta.replace(/'/g, '&#39;')} <`);
-      expect(html).toContain(getWebAppUrl(lang, { medium: 'blog', content: 'dream-journal-guide' }));
+      expect(html).toContain(getWebAppUrl({ medium: 'blog', content: 'dream-journal-guide' }));
       expect(html).toContain(siteConfig.storeLinks.androidBase);
     }
   });

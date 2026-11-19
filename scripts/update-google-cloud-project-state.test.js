@@ -54,6 +54,23 @@ describe('Google Cloud project state updater', () => {
     expect(written.project_id).toBe(EXPECTED.projectId);
   });
 
+  it('keeps an open reader on the complete old snapshot while replacing it', () => {
+    const file = tmpFile();
+    const options = { file, checkedAt: '2026-05-14T12:00:00Z', source: 'first check' };
+    updateGoogleCloudProjectState(options, JSON.stringify(gcloudProjects()));
+    const reader = fs.openSync(file, 'r');
+    try {
+      updateGoogleCloudProjectState({ ...options, source: 'second check' }, JSON.stringify(gcloudProjects()));
+      expect(JSON.parse(fs.readFileSync(reader, 'utf8')).source).toBe('first check');
+      expect(JSON.parse(fs.readFileSync(file, 'utf8')).source).toBe('second check');
+      expect(() => updateGoogleCloudProjectState(options, '{')).toThrow(/valid JSON/);
+      expect(JSON.parse(fs.readFileSync(file, 'utf8')).source).toBe('second check');
+    } finally {
+      fs.closeSync(reader);
+      fs.rmSync(path.dirname(file), { recursive: true, force: true });
+    }
+  });
+
   it('rejects unexpected project ids', () => {
     expect(() =>
       normalizeSnapshot(JSON.stringify(gcloudProjects({ projectId: 'other-project' })), {

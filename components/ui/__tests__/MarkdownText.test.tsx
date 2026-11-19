@@ -2,7 +2,7 @@ import React from 'react';
 import { act, render } from '@testing-library/react-native-legacy';
 import { Linking, Platform } from 'react-native';
 import { EnrichedMarkdownText } from 'react-native-enriched-markdown';
-import { MarkdownText } from '../MarkdownText';
+import { MarkdownText } from '@/components/ui/MarkdownText';
 
 jest.mock('react-native-enriched-markdown', () => {
   const mock = require('react-native-enriched-markdown/jest');

@@ -6,6 +6,9 @@
  * other non-app paths match nothing here.
  */
 
+import { SMOKE_STACK } from '../../verify-local.config.mjs';
+export { SMOKE_STACK };
+
 export const SMOKE_TAG = 'smoke';
 export const BUGBASH_TAG = 'bugbash';
 /** Why the zones leave out a parcours: the only reason the decision model may overturn. */
@@ -60,6 +63,7 @@ export const ZONES = [
       'components/speech/',
       'components/chat/',
       'hooks/useCaptureConversation.ts',
+      'hooks/useDictationAvailability.ts',
       'hooks/useCaptureReviewPreparation.ts',
       'hooks/useRecordingSession.ts',
       'hooks/useRecordingDraftPersistence.ts',
@@ -95,6 +99,7 @@ export const ZONES = [
       'hooks/useRecordingDraftScope.ts',
       'services/storageService.ts',
       'services/storageServiceReal.ts',
+      'services/storageSchema.ts',
       'services/journalRepository.ts',
       'services/journalRecordStore.ts',
     ],
@@ -195,6 +200,7 @@ export const ZONES = [
     id: 'reflexion', tags: ['zone-reflexion'], product: 'dreamer', platform: 'web',
     sources: [
       'app/dream-chat/', 'app/dream-categories/', 'components/chat/',
+      'components/ui/MarkdownText.tsx', 'hooks/useDictationAvailability.ts',
       'context/ChatContext.tsx', 'hooks/useDreamChatSend.ts', 'hooks/useChat',
       'services/dreamChatSend.ts', 'lib/chat/',
       // The reading modal opens only from the reflection screen (app/dream-categories/[id].tsx).
@@ -334,20 +340,6 @@ export const UNZONED = Object.freeze({
 export function isUnitTestPath(file) {
   return file.includes('__tests__/') || /\.test\.[^/]+$/.test(file) || file.endsWith('.snap');
 }
-
-/**
- * What every web journey runs on: the app's dependencies and build config, and
- * the e2e runner with its shared helpers. A change here starts the smoke
- * journeys (about 25 s), the cheapest proof that the stack still drives the app.
- */
-export const SMOKE_STACK = Object.freeze([
-  'package.json', 'package-lock.json', 'patches/', 'app.json', 'app.config.ts', 'metro.config.js', 'babel.config.js',
-  // The mock web app every Dreamer journey starts (npm run start:mock).
-  '.env.mock', 'scripts/expo-safe-runner.js', 'global.css', 'mock-data/',
-  'tools/e2e/package.json', 'tools/e2e/package-lock.json', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs',
-  'tools/e2e/qualification.mjs', 'tools/e2e/web-ports.mjs', 'tools/e2e/web-engine.ts', 'tools/e2e/preload-web-matchers.mjs',
-  'tools/e2e/traced-parity-test.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-fixtures.ts',
-]);
 
 /** @param {string} file */
 export function isSmokeStackPath(file) {

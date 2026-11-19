@@ -50,7 +50,7 @@ describe('monetization service selection', () => {
     setEnv('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', undefined);
     jest.resetModules();
 
-    const { subscriptions, worlds, subscriptionMock } = loadServices();
+    const { subscriptions, subscriptionMock, purchases } = loadServices();
     subscriptionMock.__reset();
 
     const offers = await subscriptions.listOffers();
@@ -62,12 +62,7 @@ describe('monetization service selection', () => {
     await expect(subscriptions.purchase(offers[0])).resolves.toBe('plus');
     await expect(subscriptions.currentTier()).resolves.toBe('plus');
 
-    const worldOffers = await worlds.listOffers();
-    expect(worldOffers.map((offer) => offer.worldId)).toEqual(['tide', 'sanctuary', 'cloud']);
-    await expect(worlds.currentOwnership()).resolves.toEqual([]);
-    await expect(worlds.purchase(worldOffers[0])).resolves.toEqual(['tide']);
-    expect(Purchases.getOfferings).not.toHaveBeenCalled();
-    expect(Purchases.getProducts).not.toHaveBeenCalled();
+    expect(purchases.getOfferings).not.toHaveBeenCalled();
   });
 
   it('never initialises RevenueCat for world purchases in mock mode, even with a Test Store key', async () => {
@@ -105,7 +100,7 @@ describe('monetization service selection', () => {
     expect(purchases.isConfigured).not.toHaveBeenCalled();
   });
 
-  it('initialises RevenueCat for world purchases when mock mode is off and a key is present', async () => {
+  it('matches native store products and purchases to their worlds', async () => {
     setEnv('EXPO_PUBLIC_MOCK_MODE', 'false');
     setEnv('EXPO_PUBLIC_REVENUECAT_IOS_KEY', 'appl_live_key');
     setEnv('EXPO_PUBLIC_REVENUECAT_ANDROID_KEY', 'goog_live_key');
@@ -120,6 +115,24 @@ describe('monetization service selection', () => {
     expect(purchases.configure).toHaveBeenCalledWith({
       apiKey: expect.stringMatching(/^(appl|goog)_live_key$/),
     });
+
+    const product = { identifier: 'noctalia.meditation.world.cloud', priceString: '€1.99' };
+    const unrelated = { identifier: 'other.app.product', priceString: '€9.99' };
+    const getProducts: jest.Mock = purchases.getProducts as jest.Mock;
+    getProducts.mockResolvedValue([unrelated, product]);
+    const offers = await worlds.listOffers();
+    expect(offers).toEqual([{ worldId: 'cloud', priceLabel: '€1.99', raw: product }]);
+    expect(purchases.getProducts).toHaveBeenCalledWith([
+      'noctalia.meditation.world.tide',
+      'noctalia.meditation.world.sanctuary',
+      'noctalia.meditation.world.cloud',
+    ], 'NON_SUBSCRIPTION');
+    const purchaseStoreProduct: jest.Mock = purchases.purchaseStoreProduct as jest.Mock;
+    purchaseStoreProduct.mockResolvedValue({
+      customerInfo: { allPurchasedProductIdentifiers: [product.identifier, unrelated.identifier] },
+    });
+    await expect(worlds.purchase(offers[0])).resolves.toEqual(['cloud']);
+    expect(purchases.purchaseStoreProduct).toHaveBeenCalledWith(product);
   });
 
   it('keeps the real store fail-closed and reports unknown rights without a RevenueCat key', async () => {

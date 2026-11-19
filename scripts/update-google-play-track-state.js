@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { parseSnapshotArgs, readSnapshotInput, parseSnapshotJson, requireSnapshotDate, writeSnapshot } = require('./lib/qa-snapshot');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/google-play-track-state.local.json');
@@ -50,68 +51,24 @@ const EXPECTED = {
 };
 
 function parseArgs(argv) {
-  const options = {
-    file: process.env.GOOGLE_PLAY_TRACK_STATE_PATH
-      ? path.resolve(ROOT, process.env.GOOGLE_PLAY_TRACK_STATE_PATH)
-      : DEFAULT_TARGET,
-    checkedAt: new Date().toISOString(),
+  return parseSnapshotArgs(argv, {
+    file: process.env.GOOGLE_PLAY_TRACK_STATE_PATH || DEFAULT_TARGET,
     source: 'Google Play Developer API edits.tracks.get',
     packageName: EXPECTED.packageName,
     track: EXPECTED.track,
     expectedVersionCode: EXPECTED.versionCode,
     expectedStatus: EXPECTED.status,
-  };
-
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (arg === '--input') {
-      options.input = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--file') {
-      options.file = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--checked-at') {
-      options.checkedAt = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--source') {
-      options.source = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--package-name') {
-      options.packageName = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--track') {
-      options.track = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--expected-version-code') {
-      options.expectedVersionCode = String(argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--expected-status') {
-      options.expectedStatus = String(argv[i + 1] ?? '').toLowerCase();
-      i += 1;
-      continue;
-    }
-    if (arg === '--help' || arg === '-h') {
-      printHelp();
-      process.exit(0);
-    }
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return options;
+  }, printHelp, {
+    '--input': 'input',
+    '--package-name': 'packageName',
+    '--track': 'track',
+    '--expected-version-code': (options, value) => {
+      options.expectedVersionCode = String(value ?? '');
+    },
+    '--expected-status': (options, value) => {
+      options.expectedStatus = String(value ?? '').toLowerCase();
+    },
+  });
 }
 
 function printHelp() {
@@ -133,24 +90,6 @@ Options:
 `.trim());
 }
 
-function readInput(options, stdin = process.stdin) {
-  if (options.input) {
-    return fs.readFileSync(options.input, 'utf8');
-  }
-  if (stdin.isTTY) {
-    throw new Error('Missing --input. You can also pipe Google Play edits.tracks.get JSON through stdin.');
-  }
-  return fs.readFileSync(0, 'utf8');
-}
-
-function parseJson(raw) {
-  try {
-    return JSON.parse(raw);
-  } catch (error) {
-    throw new Error(`Google Play track input must be valid JSON: ${error instanceof Error ? error.message : error}`);
-  }
-}
-
 function normalizeVersionCodes(release) {
   return (release?.versionCodes ?? release?.version_codes ?? [])
     .map((versionCode) => String(versionCode).trim())
@@ -166,14 +105,12 @@ function normalizeRelease(release) {
 }
 
 function normalizeSnapshot(input, options) {
-  if (Number.isNaN(Date.parse(options.checkedAt))) {
-    throw new Error('--checked-at must be a valid date.');
-  }
+  requireSnapshotDate(options.checkedAt);
   if (!/^[1-9]\d*$/.test(String(options.expectedVersionCode || ''))) {
     throw new Error('--expected-version-code must be a positive integer.');
   }
 
-  const snapshot = parseJson(input);
+  const snapshot = parseSnapshotJson(input, 'Google Play track');
   if (snapshot.track !== options.track) {
     throw new Error(`Expected track ${options.track}, got ${snapshot.track ?? 'missing'}.`);
   }
@@ -212,21 +149,16 @@ function getTrackStatus(document, expectedVersionCode = document?.expected_versi
   };
 }
 
-function writeJson(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-}
-
 function updateGooglePlayTrackState(options, input) {
   const document = normalizeSnapshot(input, options);
-  writeJson(options.file, document);
+  writeSnapshot(options.file, document);
   return document;
 }
 
 if (require.main === module) {
   try {
     const options = parseArgs(process.argv.slice(2));
-    const document = updateGooglePlayTrackState(options, readInput(options));
+    const document = updateGooglePlayTrackState(options, readSnapshotInput(options, 'Google Play edits.tracks.get JSON'));
     const status = getTrackStatus(document);
     console.log(`Updated ${path.relative(ROOT, options.file)}`);
     console.log(`${status.summary}; expected status ${document.expected_status}`);

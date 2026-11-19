@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, jest } from '@jest/globals';
 
-import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
+import { OfflineModelDownloadSheet } from '../OfflineModelDownloadSheet';
 import { loadTranslations } from '@/lib/i18n';
 
 let mockLanguage = 'en';
@@ -28,7 +28,7 @@ describe('OfflineModelDownloadSheet', () => {
   it.each(['de', 'en', 'es', 'fr', 'it', 'pt'])('gives the pack size with one approximation sign in %s', async (language: string) => {
     await loadTranslations(language);
     mockLanguage = language;
-    render(<OfflineModelDownloadSheet visible onClose={jest.fn()} locale="en-US" onDownloadComplete={jest.fn()} />);
+    render(<OfflineModelDownloadSheet visible onClose={jest.fn()} locale="en-US" />);
     const subtitle = screen.getByTestId('subtitle').textContent ?? '';
     expect(subtitle).toContain('(~45 MB)');
     expect(subtitle).not.toContain('~~');
@@ -44,7 +44,7 @@ describe('OfflineModelDownloadSheet', () => {
   ])('names the language in %s rather than the %s code', async (language: string, locale: string, named: string) => {
     await loadTranslations(language);
     mockLanguage = language;
-    render(<OfflineModelDownloadSheet visible onClose={jest.fn()} locale={locale} onDownloadComplete={jest.fn()} />);
+    render(<OfflineModelDownloadSheet visible onClose={jest.fn()} locale={locale} />);
     const subtitle = screen.getByTestId('subtitle').textContent ?? '';
     expect(subtitle).toContain(named);
     expect(subtitle).not.toContain(locale);

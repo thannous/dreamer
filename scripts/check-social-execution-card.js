@@ -2,10 +2,9 @@
 'use strict';
 /* global __dirname */
 
-const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
-const { execFileSync } = require('node:child_process');
+const { sha256File, probeMedia } = require('./lib/social-media-file');
 
 const ROOT = path.resolve(__dirname, '..');
 const EXECUTION_DIR = path.join(
@@ -92,20 +91,6 @@ function validateCaption(caption, slot) {
   if (/[^\x00-\x7F]/.test(caption)) {
     throw new Error(`Créneau ${slot}: la légende doit rester en ASCII anglais.`);
   }
-}
-
-function sha256File(filePath) {
-  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
-}
-
-function probeMedia(filePath) {
-  const output = execFileSync('ffprobe', [
-    '-v', 'error',
-    '-show_entries', 'stream=codec_type,codec_name,width,height,r_frame_rate',
-    '-of', 'json',
-    filePath,
-  ], { encoding: 'utf8' });
-  return JSON.parse(output).streams || [];
 }
 
 function validateMedia(streams, slot) {

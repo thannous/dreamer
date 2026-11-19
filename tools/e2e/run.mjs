@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { availableParallelism, homedir, tmpdir } from 'node:os';
 import { delimiter, join, resolve, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SDK_PINS, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, qualifyingSdkEnvironment, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, failureDigest, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
+import { inspectInstalledSdk, digest, trackedDiffSha256, sourceSnapshot, compareSnapshots, verifyReport, aggregateReports, writeOnce, preserveStatus, qualifyingSdkEnvironment, directoryFiles, hashFiles, createAttemptOutput, verifyEvidenceFiles, verifyNativeCleanup, campaignFailureRecord, failureDigest, startSdkProgress, startHostStallMonitor, HOST_STALL_MS } from './qualification.mjs';
 import { normalizeAvdName, appInputs, nativeInputs, binaryInputs, releaseMetadata, verifyLocalBackendBinaryConfig, validateReleaseReceipt, verifyInstalledRelease, runWithInstallDiagnostics, validateBuildCommand, archiveReleaseBinary, agentSession, simulatorIdentity } from './native-release.mjs';
 import { dreamerCampaignContexts } from './campaign-contexts.mjs';
 import { personaContracts } from './persona-contract.mjs';
@@ -114,7 +114,8 @@ function cliEnvironment() {
 // Object spreading loses process.env's case-insensitive lookup on Windows.
 const pathKey = Object.keys(env).find(key => key.toUpperCase() === 'PATH') ?? 'PATH';
 env[pathKey] = [dirname(process.execPath), env[pathKey]].join(delimiter);
-if (process.version !== 'v24.22.1') throw new Error('PINNED_NODE_RUNTIME');
+const pinnedNode = 'v' + readFileSync(new URL('../../.nvmrc', import.meta.url), 'utf8').trim();
+if (process.version !== pinnedNode) throw new Error('PINNED_NODE_RUNTIME');
 const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT ?? (process.platform === 'darwin' ? join(homedir(), 'Library/Android/sdk') : undefined);
 if (sdk && existsSync(sdk)) {
   env.ANDROID_HOME = env.ANDROID_SDK_ROOT = sdk;
@@ -122,10 +123,9 @@ if (sdk && existsSync(sdk)) {
 }
 if (command === 'doctor' && platform !== 'web' && !env.E2E_DEVICE)
   throw new Error('Doctor checks the named device: set E2E_DEVICE to a booted simulator or emulator.');
-// Every pin is read from its install, so a new SDK_PINS entry is checked and recorded too.
 function installedPins() {
-  const pins = Object.fromEntries(Object.keys(SDK_PINS).map(name => [name, JSON.parse(readFileSync(join(cwd, 'node_modules', name, 'package.json'), 'utf8')).version]));
-  if (Object.entries(SDK_PINS).some(([name, version]) => pins[name] !== version)) throw new Error('INSTALLED_SDK_PINS');
+  const { pins, matches } = inspectInstalledSdk(cwd);
+  if (!matches) throw new Error('INSTALLED_SDK_PINS');
   return pins;
 }
 // A doctor that says "ready" must mean a run would not refuse the install.
@@ -168,7 +168,7 @@ function changedFilesSince(ref) {
   return [...new Set(listed.split('\0').filter(file => file !== '' && !file.endsWith('/')))];
 }
 function webInputIdentity() {
-  const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'companion-personas.ts', 'persona-contract.mjs', 'lucid-web-fixtures.ts', 'lucid-native-fixtures.ts', 'native-links.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'decision-verdict.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
+  const sourceFiles = ['e2e.config.ts', 'e2e.bugbash.config.ts', 'dreamer-personas.ts', 'companion-personas.ts', 'persona-contract.mjs', 'lucid-web-fixtures.ts', 'lucid-native-fixtures.ts', 'native-links.ts', 'persona-models.mjs', 'zone-filter.ts', 'zones.mjs', 'decision-verdict.mjs', 'pr-gate.mjs', 'web-engine.ts', 'web-parity-fixtures.ts', 'web-fixtures.ts', 'backend-fixtures.ts', 'branch-target.ts', 'full-campaign.mjs', 'campaign-contexts.mjs', '../../.nvmrc', '../../verify-local.config.mjs', 'preload-web-matchers.mjs', 'run.mjs', 'journeys.ts', 'package.json', 'package-lock.json', 'tsconfig.json',
     'traced-parity-test.ts', 'web-journeys.ts', 'web-ports.mjs', 'app-media-fixtures.ts', 'backend-recovery-fixtures.ts', 'managed-app.ts', 'qualification.mjs',
     ...readdirSync(join(cwd, 'tests')).filter(name => name.endsWith('.web.e2e.ts')).map(name => `tests/${name}`),
   ].sort();

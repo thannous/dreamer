@@ -1,11 +1,6 @@
 import { describe, expect, it, jest } from '@jest/globals';
 
 import { updateLanguagePreference } from '../languagePreference';
-import { getTranscriptionLocale } from '../locale';
-
-jest.mock('../locale', () => ({
-  getTranscriptionLocale: jest.fn((language: string) => `locale-${language}`),
-}));
 
 describe('updateLanguagePreference', () => {
   it('uses system language for auto preference and requests offline model for that locale', async () => {
@@ -19,10 +14,9 @@ describe('updateLanguagePreference', () => {
       ensureOfflineModel,
     });
 
-    expect(getTranscriptionLocale).toHaveBeenCalledWith('es');
-    expect(ensureOfflineModel).toHaveBeenCalledWith('locale-es');
+    expect(ensureOfflineModel).toHaveBeenCalledWith('es-ES');
     expect(setPreference).toHaveBeenCalledWith('auto');
-    expect(result).toEqual({ effectiveLanguage: 'es', locale: 'locale-es' });
+    expect(result).toEqual({ effectiveLanguage: 'es', locale: 'es-ES' });
   });
 
   it('swallows offline model errors while still saving preference', async () => {
@@ -36,7 +30,6 @@ describe('updateLanguagePreference', () => {
       ensureOfflineModel,
     });
 
-    expect(getTranscriptionLocale).toHaveBeenCalledWith('fr');
     expect(setPreference).toHaveBeenCalledWith('fr');
   });
 
