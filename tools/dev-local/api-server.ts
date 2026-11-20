@@ -7,11 +7,13 @@
  * route table. Model calls get fixed answers (deterministic-ai.ts); every other
  * external destination is refused. Guest sessions keep the real flow with
  * local verifiers: App Attest in its development environment for this team's
- * builds, any Play Integrity token, any Turnstile token. Store sync reports the
+ * builds, any Play Integrity token, any Turnstile token, and the iOS Simulator
+ * (which has no App Attest) without a proof (simulatorGuest.ts). Store sync reports the
  * stored entitlement instead of calling RevenueCat.
  */
 import { parseDevLocalManifest } from './manifest.mts';
 import { answerProviderRequest } from './deterministic-ai.ts';
+import { withSimulatorGuestSessions } from './simulatorGuest.ts';
 
 const manifestPath = Deno.env.get('DEV_LOCAL_MANIFEST');
 if (!manifestPath) throw new Error('DEV_LOCAL_MANIFEST is required; start with node tools/dev-local/dev-local.mjs');
@@ -60,7 +62,9 @@ const localGuest = {
 };
 type Handler = Parameters<typeof createApiHandler>[0]['routes'] extends Map<string, infer H> ? H : never;
 const routes = new Map<string, Handler>(apiRoutes);
-routes.set('POST /guest/session', async (ctx) => handleGuestSession(ctx.req, localGuest));
+const simulatorAppId = `${manifest.iosAppAttest.teamId}.${manifest.iosAppAttest.bundleIds[0]}`;
+const guestSession = withSimulatorGuestSessions(simulatorAppId, (req) => handleGuestSession(req, localGuest));
+routes.set('POST /guest/session', async (ctx) => guestSession(ctx.req));
 // Store sync needs RevenueCat. Locally the stored entitlement is the truth: report it
 // unchanged, so the Plus account stays Plus and the app gets no server error.
 const { createClient } = await import('jsr:@supabase/supabase-js@2');

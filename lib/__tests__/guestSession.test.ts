@@ -5,7 +5,12 @@ type PlatformName = 'android' | 'ios' | 'web';
 let mockTurnstileSiteKey: string | null = null;
 const mockGetTurnstileToken = jest.fn(async (): Promise<string | null> => null);
 
-const loadGuestSessionModule = (platform: PlatformName) => {
+type LoadOptions = { appAttestSupported?: boolean; apiBaseUrl?: string };
+
+const loadGuestSessionModule = (
+  platform: PlatformName,
+  { appAttestSupported = true, apiBaseUrl = 'https://example.com' }: LoadOptions = {}
+) => {
   jest.resetModules();
 
   jest.doMock('@/lib/turnstileWeb', () => ({
@@ -17,7 +22,7 @@ const loadGuestSessionModule = (platform: PlatformName) => {
     Platform: { OS: platform },
   }));
   jest.doMock('@expo/app-integrity', () => ({
-    isSupported: true,
+    isSupported: appAttestSupported,
     generateKeyAsync: jest.fn(async () => 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA='),
     attestKeyAsync: jest.fn(async () => 'apple-attestation'),
     generateAssertionAsync: jest.fn(async () => 'apple-assertion'),
@@ -28,7 +33,7 @@ const loadGuestSessionModule = (platform: PlatformName) => {
     fetchJSON: jest.fn(),
   }));
   jest.doMock('@/lib/config', () => ({
-    getApiBaseUrl: () => 'https://example.com',
+    getApiBaseUrl: () => apiBaseUrl,
   }));
   jest.doMock('@/lib/deviceFingerprint', () => ({
     getDeviceFingerprint: jest.fn().mockResolvedValue('fingerprint'),
@@ -200,6 +205,53 @@ describe('guestSession bootstrap state', () => {
         },
       })
     );
+  });
+
+  describe('iOS Simulator (no App Attest)', () => {
+    const LOCAL_API = 'http://192.168.1.9:31300/functions/v1/api';
+    const globals = globalThis as { __DEV__?: boolean };
+    const previousDev = globals.__DEV__;
+    afterEach(() => { globals.__DEV__ = previousDev; });
+
+    it('asks the local development backend for a Simulator guest session without a proof', async () => {
+      globals.__DEV__ = true;
+      const guestSession = loadGuestSessionModule('ios', { appAttestSupported: false, apiBaseUrl: LOCAL_API });
+      const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+      require('expo-secure-store').getItemAsync.mockResolvedValue(null);
+      fetchJSON.mockResolvedValueOnce({
+        token: 'simulator-guest-token',
+        expiresAt: new Date(Date.now() + 60_000).toISOString(),
+      });
+
+      await expect(guestSession.initGuestSession()).resolves.toBe(true);
+      await expect(guestSession.getGuestHeaders({ requireSession: true })).resolves.toEqual({
+        'x-guest-token': 'simulator-guest-token',
+        'x-guest-fingerprint': 'fingerprint',
+        'x-guest-platform': 'ios',
+      });
+      expect(fetchJSON).toHaveBeenCalledTimes(1);
+      expect(fetchJSON).toHaveBeenCalledWith(`${LOCAL_API}/guest/session`, expect.objectContaining({
+        method: 'POST',
+        body: { fingerprint: 'fingerprint', platform: 'ios', localSimulator: true },
+      }));
+      expect(require('@expo/app-integrity').generateKeyAsync).not.toHaveBeenCalled();
+      expect(guestSession.getGuestBootstrapState().status).toBe('ready');
+    });
+
+    it.each([
+      ['a release build on the local backend', false, LOCAL_API],
+      ['a development build on the hosted API', true, 'https://abc.functions.supabase.co/api'],
+    ])('stays without a guest session in %s', async (_case, dev, apiBaseUrl) => {
+      globals.__DEV__ = dev;
+      const guestSession = loadGuestSessionModule('ios', { appAttestSupported: false, apiBaseUrl });
+      const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
+      require('expo-secure-store').getItemAsync.mockResolvedValue(null);
+
+      await expect(guestSession.initGuestSession()).resolves.toBe(false);
+      expect(guestSession.getGuestBootstrapState().status).toBe('degraded');
+      await expect(guestSession.getGuestHeaders({ requireSession: true })).rejects.toThrow();
+      expect(fetchJSON).not.toHaveBeenCalled();
+    });
   });
 
   it('attests an iOS key before requesting a guest session', async () => {

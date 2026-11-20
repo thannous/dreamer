@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * `node tools/dev-local/check.mjs`: proves a running dev-local backend through the
- * app's real HTTP interface. A web guest gets a session and a capture question;
+ * app's real HTTP interface. A web guest and an iOS Simulator guest get a session
+ * and a capture question;
  * the free and Plus accounts sign in, read their quota and get a question too.
  * It reads only the local manifest and never reaches production.
  */
@@ -62,6 +63,30 @@ await step('guest capture question (capture-recall)', async () => {
 await step('guest capture formatting', async () => {
   const answer = await call('/functions/v1/capture-recall/format-recall', { body: dream, headers: guestHeaders });
   if (typeof answer.transcript !== 'string' || !answer.transcript) throw new Error(JSON.stringify(answer));
+});
+// The Simulator has no App Attest: a development build asks this backend for a session without a proof.
+const simulatorFingerprint = randomBytes(32).toString('hex');
+let simulatorHeaders;
+await step('iOS Simulator guest session (no App Attest)', async () => {
+  const session = await call('/functions/v1/api/guest/session', {
+    body: { fingerprint: simulatorFingerprint, platform: 'ios', localSimulator: true },
+  });
+  if (!session.token) throw new Error('no token');
+  simulatorHeaders = { 'x-guest-token': session.token, 'x-guest-fingerprint': simulatorFingerprint, 'x-guest-platform': 'ios' };
+  return `expires ${session.expiresAt}`;
+});
+await step('Simulator guest capture question', async () => {
+  const answer = await call('/functions/v1/capture-recall/recall-question', { body: dream, headers: simulatorHeaders });
+  if (!isQuestion(answer)) throw new Error(JSON.stringify(answer));
+});
+await step('an iOS guest without App Attest or the Simulator field is refused', async () => {
+  try {
+    await call('/functions/v1/api/guest/session', { body: { fingerprint: simulatorFingerprint, platform: 'ios' } });
+  } catch (error) {
+    if (/ 40[01] /.test(error.message)) return 'refused as in production';
+    throw error;
+  }
+  throw new Error('accepted without a proof');
 });
 await step('a guest without a session is refused', async () => {
   try {

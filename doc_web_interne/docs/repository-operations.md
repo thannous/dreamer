@@ -62,8 +62,11 @@ the port). The private `dream-images` bucket is created at start. Data lives in 
   `reflection:eval:*` evaluations.
 - **Guests** keep the real session flow with local verifiers, only in this never-deployed server:
   App Attest in its development environment for this team's builds (physical iPhone Debug
-  builds; the Simulator has no App Attest), any Play Integrity token on Android, and
-  Cloudflare's always-pass Turnstile test keys on the web. The server refuses to start unless its
+  builds), any Play Integrity token on Android, and Cloudflare's always-pass Turnstile test
+  keys on the web. The iOS Simulator has no App Attest: a development build there sends
+  `localSimulator: true` without a proof (`lib/guestSession.ts`), and only this server answers
+  it with a Dreamer iOS guest token (`tools/dev-local/simulatorGuest.ts`). The hosted API still
+  refuses an iOS session without App Attest, and a release build never sends the field. The server refuses to start unless its
   backend is an identified native stack on loopback and its public origin a private HTTP address.
 - The app keeps a separate guest session, App Attest key and refusal pause per plain-HTTP API
   (`backendStorageKey` in `lib/guestSession.ts`), so switching between production and the local

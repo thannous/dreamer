@@ -306,7 +306,7 @@ const EDGE_CHECKS = [
   // The local development backend imports these routes; its guards and fixed answers are tested with them.
   'cd ../..',
   'deno check --no-config tools/dev-local/api-server.ts',
-  'deno test --no-config --allow-read tools/dev-local',
+  'deno test --no-config --allow-read --allow-env=GUEST_SESSION_SECRET tools/dev-local',
 ].join(' && ');
 // installHere: what these probes look for is an install any development
 // machine can do. A failing probe means "install it", so --external is refused
