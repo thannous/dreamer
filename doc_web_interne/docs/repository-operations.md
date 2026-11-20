@@ -74,7 +74,15 @@ the port). The private `dream-images` bucket is created at start. Data lives in 
   journal is empty, `POST /dev-local/guest-reset` makes the server forget that device only
   (`public.dev_local_reset_guest`, from `tools/dev-local/guest-reset.sql`, installed at each start
   and never a migration), the device clears its guest counters, session and onboarding, and the
-  welcome reopens. Accounts and their data are kept. `check.mjs` proves it.
+  welcome reopens with a new guest session. Accounts and their data are kept. `check.mjs` proves
+  it on the API.
+- **The guest journey in the app**: `node tools/dev-local/guest-journey.mjs` (Playwright, a new
+  browser profile per run, so a new guest device) plays a guest on the web app served by Metro
+  with `--profile outputs/dev-local/expo.env start --web`: session and quota from this server,
+  first dream read at once, second read on request, third kept with an account offered, « Nouvel
+  invité » refused while dreams remain, then accepted, and the new guest's first dream read
+  again. Screenshots go to `outputs/dev-local/guest-journey/`; `--url` and `--headed` are
+  options. The tools/e2e journeys play guests on the mock; this one is the real server path.
 - The app keeps a separate guest session, App Attest key and refusal pause per plain-HTTP API
   (`backendStorageKey` in `lib/guestSession.ts`), so switching between production and the local
   backend carries neither server's state to the other. Production key names are unchanged.

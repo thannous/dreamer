@@ -10,7 +10,16 @@ jest.mock('@/lib/config', () => ({ getApiBaseUrl: () => mockApiBaseUrl }));
 jest.mock('@/lib/env', () => ({ isMockModeEnabled: () => mockMockMode }));
 jest.mock('@/lib/http', () => ({ fetchJSON: (...args: unknown[]) => mockFetchJSON(...args) }));
 jest.mock('@/lib/guestSession', () => ({
-  getGuestHeaders: async () => ({ 'x-guest-token': 't', 'x-guest-fingerprint': 'f', 'x-guest-platform': 'ios' }),
+  getGuestHeaders: async () => {
+    calls.push('guest session');
+    return { 'x-guest-token': 't', 'x-guest-fingerprint': 'f', 'x-guest-platform': 'ios' };
+  },
+}));
+jest.mock('@/services/quotaService', () => ({
+  quotaService: {
+    invalidateAll: () => { calls.push('quota caches emptied'); },
+    invalidate: (user: unknown) => { calls.push(`guest quota refetched (${String(user)})`); },
+  },
 }));
 jest.mock('@/lib/guestQaLocalState', () => ({
   assertGuestQaLocalStateReady: async () => {
@@ -38,7 +47,12 @@ describe('« Nouvel invité » on the local development backend', () => {
 
   it('checks the journal, resets the device on the server, then on the phone', async () => {
     await load().startNewLocalGuest();
-    expect(calls).toEqual(['journal checked', 'server reset', 'device reset']);
+    // The spent quota is not kept in a cache, and the new guest opens its session before
+    // its quota is fetched, as on a first launch.
+    expect(calls).toEqual([
+      'journal checked', 'guest session', 'server reset', 'device reset', 'quota caches emptied',
+      'guest session', 'guest quota refetched (null)',
+    ]);
     expect(mockFetchJSON).toHaveBeenCalledWith(
       'http://192.168.1.9:31300/functions/v1/api/dev-local/guest-reset',
       expect.objectContaining({

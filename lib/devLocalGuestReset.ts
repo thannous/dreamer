@@ -4,6 +4,7 @@ import { assertGuestQaLocalStateReady, prepareGuestQaLocalState } from '@/lib/gu
 import { getGuestHeaders } from '@/lib/guestSession';
 import { fetchJSON } from '@/lib/http';
 import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
+import { quotaService } from '@/services/quotaService';
 
 /**
  * « Nouvel invité » on the local development backend: the server forgets what
@@ -24,4 +25,10 @@ export async function startNewLocalGuest(): Promise<void> {
     ...NETWORK_REQUEST_POLICIES.guestQaCommand,
   });
   await prepareGuestQaLocalState();
+  // Still a guest, so no sign-in change empties the quota caches: drop the spent status.
+  quotaService.invalidateAll();
+  // The new guest opens its session now, as a first launch does: until then its quota
+  // would read as unavailable. Then every quota reader fetches the new guest's.
+  await getGuestHeaders({ requireSession: true });
+  quotaService.invalidate(null);
 }
