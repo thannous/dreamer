@@ -241,7 +241,7 @@ describe('guestSession bootstrap state', () => {
     it.each([
       ['a release build on the local backend', false, LOCAL_API],
       ['a development build on the hosted API', true, 'https://abc.functions.supabase.co/api'],
-    ])('stays without a guest session in %s', async (_case, dev, apiBaseUrl) => {
+    ])('stays without a guest session in %s', async (_case: string, dev: boolean, apiBaseUrl: string) => {
       globals.__DEV__ = dev;
       const guestSession = loadGuestSessionModule('ios', { appAttestSupported: false, apiBaseUrl });
       const { fetchJSON } = require('@/lib/http') as { fetchJSON: jest.Mock };
