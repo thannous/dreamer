@@ -264,15 +264,14 @@ function chunkKey(baseKey: string, header: SecureStoreChunkHeader, index: number
   return `${baseKey}.__chunk_${header.id}_${index}`;
 }
 
-async function cleanupChunkedValue(baseKey: string, header?: SecureStoreChunkHeader | null): Promise<void> {
-  const resolvedHeader = header ?? parseChunkHeader(await SecureStore.getItemAsync(baseKey));
-  if (!resolvedHeader) {
+async function cleanupChunkedValue(baseKey: string, header: SecureStoreChunkHeader | null): Promise<void> {
+  if (!header) {
     return;
   }
 
   await Promise.all(
-    Array.from({ length: resolvedHeader.count }, (_, idx) =>
-      SecureStore.deleteItemAsync(chunkKey(baseKey, resolvedHeader, idx))
+    Array.from({ length: header.count }, (_, idx) =>
+      SecureStore.deleteItemAsync(chunkKey(baseKey, header, idx))
     )
   );
 }
@@ -304,8 +303,8 @@ const ExpoSecureStoreAdapter = {
 
     // Most values are small enough to store directly.
     if (value.length <= SECURESTORE_SAFE_CHUNK_SIZE) {
-      await cleanupChunkedValue(key, existingHeader);
-      return SecureStore.setItemAsync(key, value);
+      await SecureStore.setItemAsync(key, value);
+      return cleanupChunkedValue(key, existingHeader);
     }
 
     // Chunk large values to avoid SecureStore's ~2KB limit (warns today, may throw in future SDKs).
@@ -322,8 +321,9 @@ const ExpoSecureStoreAdapter = {
     await cleanupChunkedValue(key, existingHeader);
   },
   removeItem: async (key: string) => {
-    await cleanupChunkedValue(key);
+    const previous = parseChunkHeader(await SecureStore.getItemAsync(key));
     await SecureStore.deleteItemAsync(key);
+    await cleanupChunkedValue(key, previous);
   },
 };
 

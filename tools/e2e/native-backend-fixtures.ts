@@ -244,7 +244,9 @@ export async function nativeCapture(screen: TestFixtures['screen']) {
   await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toBeVisible();
 }
 
-export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | 'other' = 'owner') {
+type NativeAccount = 'owner' | 'other';
+
+export async function nativeSignInToCapture(fixtures: NativeFixtures, account: NativeAccount) {
   const { screen, device, platform } = fixtures;
   const login = credentials.user(account === 'owner' ? 'nativeOwner' : 'nativeOther');
   await nativeSettings(screen);
@@ -258,11 +260,20 @@ export async function nativeLogin(fixtures: NativeFixtures, account: 'owner' | '
   await device.dismissKeyboard();
   await nativeTap(screen, 'btn.auth.signIn');
   await nativeRecordingAfterAuth(screen, platform);
+}
+
+export async function expectNativeAccount(screen: TestFixtures['screen'], account: NativeAccount) {
+  const login = credentials.user(account === 'owner' ? 'nativeOwner' : 'nativeOther');
   await nativeSettings(screen);
   const email = screen.getByTestId('text.auth.email', { visible: true });
   await screen.scrollUntilVisible(email, { direction: 'up' });
   await expect(email).toContainText(login.username);
   await expect(screen.getByTestId('screen.subscription.qaLab')).toHaveCount(0);
+}
+
+export async function nativeLogin(fixtures: NativeFixtures, account: NativeAccount = 'owner') {
+  await nativeSignInToCapture(fixtures, account);
+  await expectNativeAccount(fixtures.screen, account);
 }
 
 export async function nativeSignOut(fixtures: NativeFixtures) {

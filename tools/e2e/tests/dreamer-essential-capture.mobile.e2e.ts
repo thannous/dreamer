@@ -3,7 +3,8 @@ import {
   test,
   nativeCapture,
   nativeDismissCaptureKeyboard,
-  nativeLogin,
+  expectNativeAccount,
+  nativeSignInToCapture,
   nativeSignOut,
   nativeJournal,
   nativeTap,
@@ -208,32 +209,37 @@ test('Dreamer native drafts stay private across guest and account switches and r
   await editor.fill(guestStory);
   await nativeDismissCaptureKeyboard(fixtures);
 
-  await nativeLogin(fixtures, 'owner');
+  // Verify each account in Settings on the way out, keeping Capture open while checking its draft.
+  await nativeSignInToCapture(fixtures, 'owner');
   await nativeCapture(screen);
   await expect(editor).toHaveValue(guestStory);
   await editor.fill(ownerStory);
   await nativeDismissCaptureKeyboard(fixtures);
+  await expectNativeAccount(screen, 'owner');
   await nativeSignOut(fixtures);
   await nativeCapture(screen);
   await expect(editor).toHaveValue('');
 
-  await nativeLogin(fixtures, 'other');
+  await nativeSignInToCapture(fixtures, 'other');
   await nativeCapture(screen);
   await expect(editor).toHaveValue('');
   await editor.fill(otherStory);
   await nativeDismissCaptureKeyboard(fixtures);
+  await expectNativeAccount(screen, 'other');
   await nativeSignOut(fixtures);
 
-  await nativeLogin(fixtures, 'owner');
+  await nativeSignInToCapture(fixtures, 'owner');
   await nativeCapture(screen);
   await expect(editor).toHaveValue(ownerStory);
   await app.restart();
   await expect(editor).toHaveValue(ownerStory);
   await nativeDismissCaptureKeyboard(fixtures, { afterFill: false });
+  await expectNativeAccount(screen, 'owner');
   await nativeSignOut(fixtures);
 
-  await nativeLogin(fixtures, 'other');
+  await nativeSignInToCapture(fixtures, 'other');
   await nativeCapture(screen);
   await expect(editor).toHaveValue(otherStory);
   await app.screenshot('native-draft-account-isolation');
+  await expectNativeAccount(screen, 'other');
 });
