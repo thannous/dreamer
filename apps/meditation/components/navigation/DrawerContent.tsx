@@ -26,7 +26,8 @@ const LINKS = [
   { href: '/favorites', icon: 'bookmark.fill', label: 'favorites.title' },
   { href: '/settings', icon: 'gear', label: 'settings.title' },
   { href: '/settings/help', icon: 'questionmark.circle', label: 'settings.help' },
-  { href: '/settings/legal', icon: 'lock.shield', label: 'settings.legal' },
+  // A document, not a lock: the page holds the terms and the privacy notice.
+  { href: '/settings/legal', icon: 'doc.text', label: 'settings.legal' },
 ] as const;
 
 function DrawerLink({
@@ -117,9 +118,11 @@ export function DrawerContent({ navigation, state }: DrawerContentComponentProps
 }
 
 const styles = StyleSheet.create({
+  // The link is a row: its 48 pt height is centred by `items-center`.
+  // `justifyContent: 'center'` here centred each row's content sideways
+  // instead, so the four icons never shared a column.
   link: {
     minHeight: 48,
     minWidth: 48,
-    justifyContent: 'center',
   },
 });

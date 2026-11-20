@@ -89,8 +89,11 @@ export default function SessionDetail() {
       : (entry?.completedCount ?? 0) > 0
         ? t('session.replay')
         : t('session.play');
-  const accessLabel =
-    included || !subscriptionsEnabled || !session.isPremium
+  // No access word while subscriptions are off: every session is open, so
+  // « Free » above the title would head the page with its least useful fact.
+  const accessLabel = !subscriptionsEnabled
+    ? null
+    : included || !session.isPremium
       ? t('common.free')
       : t('common.plus');
 
@@ -108,9 +111,11 @@ export default function SessionDetail() {
         contentContainerClassName="gap-6 px-gutter pb-8 pt-4"
         showsVerticalScrollIndicator={false}>
         <View className="gap-2 pt-3">
-          <Text variant="overline" testID="session.access">
-            {accessLabel}
-          </Text>
+          {accessLabel ? (
+            <Text variant="overline" testID="session.access">
+              {accessLabel}
+            </Text>
+          ) : null}
           {showsQuota ? (
             <View className="gap-1" testID="session.quota">
               <Text variant="caption" tone="muted">

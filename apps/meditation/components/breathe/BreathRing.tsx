@@ -21,7 +21,11 @@ type Props = {
  * thread with no per-frame React work.
  */
 export function BreathRing({ scale, accent, size }: Props) {
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
+  // Pattern accents are night blues. On a light world that blue turned the
+  // halo into a grey disc over the dawn; there the halo takes the world's own
+  // accent and stays in its palette.
+  const haloColor = mode === 'light' ? colors.accent : accent[0];
 
   const ringStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.get() }],
@@ -43,7 +47,7 @@ export function BreathRing({ scale, accent, size }: Props) {
             width: size,
             height: size,
             borderRadius: size / 2,
-            backgroundColor: accent[0],
+            backgroundColor: haloColor,
           },
         ]}
       />

@@ -45,8 +45,11 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
   );
   const unlockedPremium = session.isPremium && isPlus;
   const premiumLocked = session.isPremium && subscriptionsEnabled && !unlockedPremium;
-  const accessLabel =
-    session.isPremium && subscriptionsEnabled
+  // With subscriptions off nothing is sold as Plus, so « Free » on every card
+  // says nothing: the badge only appears when it tells two kinds apart.
+  const accessLabel = !subscriptionsEnabled
+    ? null
+    : session.isPremium
       ? unlockedPremium
         ? t('paywall.active.title')
         : t('common.plus')
@@ -65,11 +68,11 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
 
   const open = () => router.push(`/session/${session.id}`);
 
-  const accessBadge = (
+  const accessBadge = accessLabel ? (
     <Text variant="overline" testID={testID ? `${testID}.access` : undefined}>
       {accessLabel}
     </Text>
-  );
+  ) : null;
 
   const practiceLine = (
     <View className="mt-1 gap-0.5" testID={testID ? `${testID}.practice` : undefined}>
@@ -142,21 +145,23 @@ export function SessionCard({ session, variant = 'row', appearance, testID }: Pr
         />
       ) : null}
       <View className="min-w-0 flex-1">
-        <Text variant="h3" testID={testID ? `${testID}.title` : undefined}>
+        {/* A list row names the session, its length and its method. The three
+            benefits stay in the accessible name and on the session page: six
+            lines per card made the catalogue a wall of text. */}
+        <Text variant="h2" testID={testID ? `${testID}.title` : undefined}>
           {title}
         </Text>
         <Text variant="bodySm" tone={appearance ? 'default' : undefined} className="mt-1">
           {durationMeta}
         </Text>
         {practiceLine}
-        {benefitList}
         {savedLabel ? (
           <Text variant="caption" className="mt-1" testID={testID ? `${testID}.saved` : undefined}>
             {savedLabel}
           </Text>
         ) : null}
       </View>
-      <View className="ml-2 max-w-[30%] items-end">{accessBadge}</View>
+      {accessBadge ? <View className="ml-2 max-w-[30%] items-end">{accessBadge}</View> : null}
     </>
   );
 

@@ -1,14 +1,15 @@
 import { useIsFocused, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, View, useWindowDimensions } from 'react-native';
+import { Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 
 import { DailyRitualShelf } from '@/components/journey/DailyRitualShelf';
 import { UpcomingJourneyRail } from '@/components/journey/UpcomingJourneyRail';
 import { WeeklyJourney } from '@/components/journey/WeeklyJourney';
 import { ARTWORK_TEXT_HALO, WorldJourneyPicker } from '@/components/journey/WorldJourneyPicker';
 import { WorldPreviewShelf } from '@/components/journey/WorldPreviewShelf';
-import { Button, Card, Eyebrow, Tag, Text } from '@/components/ui';
+import { Button, Card, Eyebrow, IconSymbol, Tag, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
+import { Themes } from '@/constants/theme';
 import { DEFAULT_WORLD_ID, WORLD_BY_ID, WORLD_IDS, type WorldId } from '@/constants/worlds';
 import { useTranslation } from '@/context/LanguageContext';
 import { useLibrary } from '@/context/LibraryContext';
@@ -31,6 +32,8 @@ import {
 
 const WORLDS = WORLD_IDS.map((worldId) => WORLD_BY_ID[worldId]);
 const SHORT_VIEWPORT_HEIGHT = 700;
+export const WORLD_INDEX_TOGGLE_TEST_ID = 'home.world-switcher.toggle';
+const WORLD_INDEX_TOGGLE_SLOP = { left: 6, right: 12 } as const;
 
 export default function HomeTab() {
   const router = useRouter();
@@ -82,6 +85,10 @@ export default function HomeTab() {
   const worldName = t(world.nameKey);
   const [worldRecoveryBusy, setWorldRecoveryBusy] = useState(false);
   const [worldRecoveryMessage, setWorldRecoveryMessage] = useState<TranslationKey | null>(null);
+  // The six world names stay folded behind one row. Open, they took three
+  // rows of the hero and pushed « Begin » under the tab bar on a short phone;
+  // the index is for comparing worlds, not for every visit.
+  const [worldIndexOpen, setWorldIndexOpen] = useState(false);
 
   useEffect(() => {
     if (
@@ -99,6 +106,16 @@ export default function HomeTab() {
       setPreviewWorld(null);
     }
   }, [focused, previewWorldId, setPreviewWorld]);
+
+  // It stays open while the listener compares worlds and folds once they
+  // leave the home, so the next visit starts on today's practice again.
+  // Adjusted while rendering rather than in an effect: the fold belongs to
+  // the same render that learns the home lost focus.
+  const [wasFocused, setWasFocused] = useState(focused);
+  if (wasFocused !== focused) {
+    setWasFocused(focused);
+    if (!focused) setWorldIndexOpen(false);
+  }
 
   // The recommendation stays stable for the whole visit. Use the local day:
   // a late-night ritual must belong to the evening the listener is living.
@@ -267,7 +284,7 @@ export default function HomeTab() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         <View
-          style={{ minHeight: Math.round(height * (compactViewport ? 0.42 : 0.52)) }}
+          style={{ minHeight: Math.round(height * (compactViewport ? 0.32 : 0.38)) }}
           className={compactViewport ? 'justify-between gap-4' : 'justify-between gap-6'}
           testID="home.world.hero">
           <Eyebrow className="pr-12">{t(greetingKey(hour))}</Eyebrow>
@@ -291,19 +308,44 @@ export default function HomeTab() {
             {world.access === 'purchase' && activeWorldAccess === 'owned' ? (
               <Tag label={t('world.purchase.owned')} testID="home.world.owned" />
             ) : null}
-            <WorldJourneyPicker
-              worlds={WORLDS}
-              selectedWorldId={selectedWorldId}
-              previewedWorldId={previewWorldId}
-              onSelect={handleSelectWorld}
-              isWorldOwned={isWorldOwned}
-              worldAccess={resolveWorldAccess}
-              offersStatus={offersStatus}
-              priceForWorld={(nextWorldId) => offerForWorld(nextWorldId)?.priceLabel}
-              appearance={world.appearance}
-              accessibilityLabel={t('home.journey.worldLabel')}
-              testID="home.world-switcher"
-            />
+            <View>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('home.world.change')}
+                accessibilityState={{ expanded: worldIndexOpen }}
+                hitSlop={WORLD_INDEX_TOGGLE_SLOP}
+                onPress={() => setWorldIndexOpen((open) => !open)}
+                className="min-h-12 flex-row items-center gap-1.5 self-start active:opacity-70"
+                testID={WORLD_INDEX_TOGGLE_TEST_ID}>
+                <Text
+                  variant="label"
+                  tone="default"
+                  className="underline"
+                  style={world.appearance === 'dark' ? ARTWORK_TEXT_HALO : undefined}>
+                  {t('home.world.change')}
+                </Text>
+                <IconSymbol
+                  name={worldIndexOpen ? 'chevron.up' : 'chevron.down'}
+                  size={18}
+                  color={Themes[world.appearance].textPrimary}
+                />
+              </Pressable>
+              {worldIndexOpen ? (
+                <WorldJourneyPicker
+                  worlds={WORLDS}
+                  selectedWorldId={selectedWorldId}
+                  previewedWorldId={previewWorldId}
+                  onSelect={handleSelectWorld}
+                  isWorldOwned={isWorldOwned}
+                  worldAccess={resolveWorldAccess}
+                  offersStatus={offersStatus}
+                  priceForWorld={(nextWorldId) => offerForWorld(nextWorldId)?.priceLabel}
+                  appearance={world.appearance}
+                  accessibilityLabel={t('home.journey.worldLabel')}
+                  testID="home.world-switcher"
+                />
+              ) : null}
+            </View>
           </View>
         </View>
 
@@ -417,9 +459,13 @@ export default function HomeTab() {
           )}
         </View>
 
-        <View className={compactViewport ? 'mt-4' : 'mt-6'} testID="home.journey.week">
+        {/* On its own surface: straight on the artwork, the day letters and
+            the heading fell to about 3:1 wherever the image was bright. */}
+        <Card
+          className={compactViewport ? 'mt-4' : 'mt-6'}
+          testID="home.journey.week">
           <WeeklyJourney practiceLog={practiceLog} today={today} />
-        </View>
+        </Card>
 
         {!worldLocked && !worldAccessUnknown ? (
           <View className={compactViewport ? 'mt-4' : 'mt-5'}>

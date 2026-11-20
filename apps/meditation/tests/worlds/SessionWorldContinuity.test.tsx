@@ -570,8 +570,11 @@ describe('world continuity from journey into practice', () => {
 
     render(<SessionDetail />);
 
-    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
-    expect(screen.getByTestId('session.access')).not.toHaveTextContent('Plus');
+    // Nor a « Free » overline: with subscriptions off it headed every session
+    // page with a word that told nothing apart.
+    expect(screen.queryByTestId('session.access')).toBeNull();
+    expect(screen.queryByText('Free')).toBeNull();
+    expect(screen.queryByText('Plus')).toBeNull();
     expect(screen.queryByText('Noctalia Plus')).toBeNull();
     expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
   });
@@ -585,7 +588,7 @@ describe('world continuity from journey into practice', () => {
 
     render(<SessionDetail />);
 
-    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.queryByTestId('session.access')).toBeNull();
     expect(screen.queryByText('Plus')).toBeNull();
     expect(screen.queryByText('Noctalia Plus')).toBeNull();
     expect(screen.queryByTestId('session.quota')).toBeNull();
@@ -604,7 +607,7 @@ describe('world continuity from journey into practice', () => {
 
     render(<SessionDetail />);
 
-    expect(screen.getByTestId('session.access')).toHaveTextContent('Free');
+    expect(screen.queryByTestId('session.access')).toBeNull();
     expect(screen.queryByTestId('session.quota')).toBeNull();
     expect(screen.queryByTestId('session.quota-alternative')).toBeNull();
     expect(screen.getByTestId(TID.Button.SessionPlay)).toHaveTextContent('Play');
@@ -654,17 +657,17 @@ describe('world continuity from journey into practice', () => {
     expect(screen.queryByTestId('session.quota')).toBeNull();
   });
 
-  it('lets compact session cards expose all three benefits without clipping', () => {
+  // Was « expose all three benefits without clipping » as three printed lines.
+  // The compact card now prints title, length and method; the benefits are
+  // read out in its accessible name and printed on the session page.
+  it('keeps a compact session card to title, length and method, with the benefits read out', () => {
     render(<SessionCard session={SESSION_BY_ID['sleep-descent']} testID="continuity.session.free" />);
 
     expect(screen.getByTestId('continuity.session.free.access')).toHaveTextContent('Free');
     expect(screen.getByTestId('continuity.session.free.access')).not.toHaveTextContent('Plus');
-    expect(screen.getByTestId('continuity.session.free.benefit.1')).toHaveTextContent('A long, slow exhale');
-    expect(screen.getByTestId('continuity.session.free.benefit.2')).toHaveTextContent('Prepares for sleep');
-    expect(screen.getByTestId('continuity.session.free.benefit.3')).toHaveTextContent('Done lying down');
-    expect(screen.getByTestId('continuity.session.free.benefit.1').props.numberOfLines).toBeUndefined();
-    expect(screen.getByTestId('continuity.session.free.benefit.2').props.numberOfLines).toBeUndefined();
-    expect(screen.getByTestId('continuity.session.free.benefit.3').props.numberOfLines).toBeUndefined();
+    expect(screen.queryByTestId('continuity.session.free.benefit.1')).toBeNull();
+    expect(screen.queryByText('A long, slow exhale')).toBeNull();
+    expect(screen.getByTestId('continuity.session.free.method')).toBeTruthy();
     expect(screen.getByTestId('continuity.session.free.title').props.numberOfLines).toBeUndefined();
     expect(screen.getByRole('button').props.accessibilityLabel).toEqual(
       expect.stringContaining('A long, slow exhale. Prepares for sleep. Done lying down. Free')
@@ -676,9 +679,6 @@ describe('world continuity from journey into practice', () => {
 
     expect(screen.getByTestId('continuity.session.plus.access')).toHaveTextContent('Plus');
     expect(screen.getByTestId('continuity.session.plus.access')).not.toHaveTextContent('Free');
-    expect(screen.getByTestId('continuity.session.plus.benefit.1')).toHaveTextContent('Releases tension');
-    expect(screen.getByTestId('continuity.session.plus.benefit.2')).toHaveTextContent('Anchors attention');
-    expect(screen.getByTestId('continuity.session.plus.benefit.3')).toHaveTextContent('A long practice');
     expect(screen.getByRole('button').props.accessibilityLabel).toEqual(
       expect.stringContaining('Releases tension. Anchors attention. A long practice. Plus')
     );

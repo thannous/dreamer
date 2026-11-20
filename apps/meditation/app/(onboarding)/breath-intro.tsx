@@ -42,7 +42,7 @@ export default function BreathIntroStep() {
             <IconSymbol
               name={soundEnabled ? 'speaker.wave.2.fill' : 'speaker.slash.fill'}
               color={NightTheme.accent}
-              size={42}
+              size={26}
             />
             <Text variant="bodySm" className="text-center">
               {t(
@@ -55,7 +55,9 @@ export default function BreathIntroStep() {
         </View>
 
         <View className="gap-5">
-          <Text variant="quote">{t('welcome.subtitle')}</Text>
+          {/* The screen's own instruction; the welcome sentence was already
+              read on the previous screen. */}
+          <Text variant="quote">{t('onboarding.breathIntro.subtitle')}</Text>
           <Button
             testID={TID.Button.OnboardingContinue}
             label={t('common.continue')}
