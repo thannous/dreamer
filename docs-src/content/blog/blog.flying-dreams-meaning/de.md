@@ -219,21 +219,7 @@
 <p>
                     Ein einzelner Eintrag beweist nichts. Zusammenhänge werden erst sichtbar, wenn du dieselben Punkte über mehrere Nächte festhältst, auch in Nächten ohne Flug.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Den Flug festhalten, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Erzähl Noctalia deinen Traum nach dem Aufwachen einfach laut. Er wird transkribiert und in deinem Tagebuch gespeichert, sodass du deine Flugträume später nebeneinander lesen kannst.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-                                Noctalia kostenlos ausprobieren <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="emotions">Freude, Angst, Frust: was das Gefühl verändert</h2>
 <p>
                     Zwei Menschen können im Traum über dieselbe Stadt fliegen und mit gegensätzlichen Eindrücken aufwachen. Das Gefühl steht dem Wachleben oft näher als die Kulisse.
@@ -293,9 +279,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Bewahre deine Flugträume in Noctalia auf, zusammen mit dem, was du gefühlt hast. Wenn du sie nebeneinander liest, siehst du, wann sie wiederkehren und was sie begleitet.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=bedeutung-von-fliegenden-traeumen-was-es-bedeutet-_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- Symbol Guide CTA -->
 <aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
@@ -383,13 +370,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Träume vom Fallen: mögliche Bedeutungen</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-von-schlangen-wovor-ihr-unterbewusstsein-sie-wirklich-warnt">
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Träume von Schlangen vorsichtig einordnen</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlangenträume: was Biss, Verfolgung oder Häutung bedeuten können</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -405,17 +392,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume beobachten und einordnen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann</h3>
 <p class="text-sm text-gray-400">So vergleichst du wiederkehrende Szenen und Gefühle, ohne eine feste Botschaft vorauszusetzen.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt</h3>
 <p class="text-sm text-gray-400">Mögliche Zusammenhänge von Zahnverlust, Körpergefühl und aktuellem Stress im persönlichen Kontext.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretation</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Träume vom Fallen: mögliche Bedeutungen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann</h3>
 <p class="text-sm text-gray-400">Was Gefühl, Aufprall und Kontrollverlust in einem Falltraum zur Einordnung beitragen.</p>
 </a>
 </div>

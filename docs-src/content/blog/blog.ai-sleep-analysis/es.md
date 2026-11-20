@@ -181,20 +181,7 @@ Una noche en una unidad del sueño: electrodos en la cabeza, una pinza en el ded
                 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Guarda lo que ningún sensor registra</h4>
-<p class="text-sm text-gray-400 mb-4">Ningún laboratorio capta la historia de tu sueño. En Noctalia, cuéntala en voz alta o escríbela al despertar: se transcribe y se guarda en tu diario, y puedes releer tus sueños uno al lado del otro.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
-                                Probar el diario de sueños por voz <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="ai-dream-analysis">¿Qué puede hacer la IA con tus relatos de sueños?</h2>
@@ -250,9 +237,10 @@ Una noche en una unidad del sueño: electrodos en la cabeza, una pinza en el ded
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia guarda la parte de la noche que solo tú recuerdas. Anota tu sueño por voz o por escrito, obtén su transcripción y relee tus entradas para ver qué se repite.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=ia-analisis-sueno-suenos_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -330,13 +318,13 @@ Una noche en una unidad del sueño: electrodos en la cabeza, una pinza en el ded
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Día del sueño, medio ambiente y sueños</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Día del Sueño 2026: cómo tu dormitorio influye en tus sueños</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="controlar-suenos-resolucion-problemas">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Controlar los sueños para resolver problemas</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Controlar tus sueños para resolver problemas: lo que muestra de verdad el estudio de Northwestern</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -352,17 +340,17 @@ Una noche en una unidad del sueño: electrodos en la cabeza, una pinza en el ded
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">El sueño REM y los sueños</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños: qué pasa de verdad en tu cerebro por la noche</h3>
 <p class="text-sm text-gray-400">Comprender el papel del sueño REM en la formación de los sueños y la consolidación de la memoria.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="por-que-sonamos-ciencia">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Por qué soñamos: lo que dice la ciencia</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué soñamos? Lo que la ciencia sabe y lo que todavía no</h3>
 <p class="text-sm text-gray-400">Las teorías científicas actuales sobre la función de los sueños y su papel en nuestra supervivencia.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-salud-mental">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y salud mental</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y salud mental: lo que tus noches pueden decir de ti, y lo que no</h3>
 <p class="text-sm text-gray-400">Cómo los sueños reflejan e influyen en tu bienestar psicológico.</p>
 </a>
 </div>
@@ -372,6 +360,6 @@ Una noche en una unidad del sueño: electrodos en la cabeza, una pinza en el ded
 <!-- Health Disclaimer (E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

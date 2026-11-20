@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { assertBackendTarget, normalizeStackStatus, prepareLocalMigrations } = require('./backend-e2e-local.cjs');
+const { assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations } = require('./backend-e2e-local.cjs');
 
 const local = () => ({
   API_URL: 'http://127.0.0.1:20710', DB_URL: 'postgresql://postgres:postgres@127.0.0.1:32102/postgres',
@@ -23,6 +23,20 @@ test('hosted, ambiguous and unidentified targets fail before any privileged clie
   assert.throws(() => assertBackendTarget({ ...local(), LOCAL_E2E_STACK: { id: 'unknown', runtime: 'native' } }));
   assert.throws(() => assertBackendTarget({ ...local(), SERVICE_ROLE_KEY: '' }));
   assert.throws(() => assertBackendTarget({ ...local(), DB_URL: 'postgresql://postgres:postgres@example.test:32102/postgres' }));
+});
+
+test('cron safety requires exactly one verified zero count in either CLI output format', () => {
+  for (const count of [0, '0']) {
+    const rows = [{ active_jobs: count }];
+    assertNoActiveCronJobs(rows);
+    assertNoActiveCronJobs({ rows });
+  }
+  for (const rows of [[], [{}], [{ active_jobs: 1 }], [{ active_jobs: null }], [{ active_jobs: false }],
+    [{ active_jobs: 0 }, { active_jobs: 1 }]]) {
+    assert.throws(() => assertNoActiveCronJobs(rows));
+    assert.throws(() => assertNoActiveCronJobs({ rows }));
+  }
+  assert.throws(() => assertNoActiveCronJobs({}));
 });
 
 test('a runtime exposing a non-loopback service cannot qualify as a local-only stack', () => {
@@ -89,7 +103,7 @@ async function runnerFixture(args, qualifyStatus = 0, startStatus = 0) {
         }),
       };
       if (name === './lib/backend-e2e-local.cjs') return {
-        assertBackendTarget, normalizeStackStatus,
+        assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus,
         prepareLocalMigrations: () => ({ neutralizedUrls: 1, disabledSchedules: 1 }),
       };
       return require(name);

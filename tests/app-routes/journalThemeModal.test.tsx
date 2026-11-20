@@ -74,8 +74,15 @@ jest.doMock('@/hooks/useClearWebFocus', () => ({
 jest.doMock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
     formatShortDate: () => '2024-01-01',
+    formatDate: () => 'January 2024',
   }),
 }));
+
+jest.doMock('@/hooks/useJournalLayoutPreference', () => ({
+  useJournalLayoutPreference: () => ({ loaded: true, preference: 'cards', setPreference: jest.fn() }),
+}));
+
+jest.doMock('@/components/journal/JournalCompactRow', () => ({ JournalCompactRow: () => null }));
 
 jest.doMock('@/constants/theme', () => ({
   Fonts: {

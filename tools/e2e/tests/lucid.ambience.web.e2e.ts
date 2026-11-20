@@ -5,8 +5,8 @@ import { completeOnboarding, openLucid } from '../lucid-web-fixtures';
 const RAIN_URL = 'https://noctalia.app/audio/sleep/rain-v2.m4a';
 const LOCAL_RAIN = { path: '../../assets/lucid/audio/lucid_cue_rain_very_low.wav', contentType: 'audio/wav' };
 
-test('Lucid keeps both French ambience controls inside the Night card on an iPhone-width screen', async fixtures => {
-  const { app, screen, browser } = fixtures;
+test('Lucid keeps both French ambience controls inside the Night card on an iPhone-width screen', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
   await browser.route(RAIN_URL, route => route.fulfill(LOCAL_RAIN));
   // iPhone 17 width, where the dogfooding overflow appeared; it stays above the
@@ -40,8 +40,8 @@ test('Lucid keeps both French ambience controls inside the Night card on an iPho
   await expect(play).toContainText('Lancer l’ambiance');
 });
 
-test('Lucid recovers a blocked ambience with a playable retry and no unhandled rejection', async fixtures => {
-  const { app, screen, browser } = fixtures;
+test('Lucid recovers a blocked ambience with a playable retry and no unhandled rejection', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
   await browser.addInitScript(() => {
     const observed = window as Window & { __lucidAudioErrors?: string[] };

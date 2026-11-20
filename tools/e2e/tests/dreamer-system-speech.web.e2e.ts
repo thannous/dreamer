@@ -59,8 +59,8 @@ async function prepareCapture(
   await expect(screen.getByTestId('screen.recording')).toBeVisible();
 }
 
-test('system speech adds to the draft without a Noctalia audio upload', options, async fixtures => {
-  const { browser, screen } = fixtures;
+test('system speech adds to the draft without a Noctalia audio upload', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await prepareCapture(fixtures, true);
   const editor = screen.getByTestId('input.dreamTranscript');
   await editor.fill('A quiet harbor.');
@@ -82,8 +82,8 @@ test('system speech adds to the draft without a Noctalia audio upload', options,
     (window as unknown as { speechTest: { uploads: number } }).speechTest.uploads)).toBe(0);
 });
 
-test('without system speech the draft remains editable and no audio is uploaded', options, async fixtures => {
-  const { browser, screen } = fixtures;
+test('without system speech the draft remains editable and no audio is uploaded', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await prepareCapture(fixtures, false);
   const editor = screen.getByTestId('input.dreamTranscript');
   await editor.fill('A quiet harbor.');

@@ -97,25 +97,27 @@ async function billingPlus({ app, screen }: NativeBackgroundFixtures, label: str
   await expect(quota).toHaveText(/^(?:Included analyses: )?Unlimited$/);
 }
 
-test('Dreamer native billing purchase activates Plus', nativeBillingOptions, async (fixtures) => {
+test('Dreamer native billing purchase activates Plus', nativeBillingOptions, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await billingFree(fixtures);
-  await billingOffer(fixtures.screen);
-  await billingTap(fixtures.screen, 'btn.paywall.purchase');
+  await billingOffer(screen);
+  await billingTap(screen, 'btn.paywall.purchase');
   await billingPlus(fixtures, 'native-purchase');
   await billingCounts(fixtures, '1', '0');
 });
 
-test('Dreamer native billing restore activates an existing receipt without purchase', nativeBillingOptions, async (fixtures) => {
+test('Dreamer native billing restore activates an existing receipt without purchase', nativeBillingOptions, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await billingFree(fixtures);
-  await billingTap(fixtures.screen, 'btn.subscription.qa.scenario.restore_available');
-  await billingOffer(fixtures.screen);
-  await billingTap(fixtures.screen, 'btn.paywall.restore');
+  await billingTap(screen, 'btn.subscription.qa.scenario.restore_available');
+  await billingOffer(screen);
+  await billingTap(screen, 'btn.paywall.restore');
   await billingPlus(fixtures, 'native-restore');
   await billingCounts(fixtures, '0', '1');
 });
 
-test('Dreamer native billing empty restore keeps Free and reports no subscription', nativeBillingOptions, async (fixtures) => {
-  const { app, screen } = fixtures;
+test('Dreamer native billing empty restore keeps Free and reports no subscription', nativeBillingOptions, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await billingFree(fixtures);
   await billingOffer(screen);
   await billingTap(screen, 'btn.paywall.restore');
@@ -124,7 +126,7 @@ test('Dreamer native billing empty restore keeps Free and reports no subscriptio
   await expect(info.getByText(/No active subscription/, { visible: true })).toBeVisible();
   await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
   await app.screenshot('native-restore-empty');
-  await billingClose(screen, fixtures.platform === 'android');
+  await billingClose(screen, platform === 'android');
   const quota = screen.getByTestId('quota.analysisValue', { visible: true });
   await screen.scrollUntilVisible(quota, { direction: 'up' });
   await expect(quota).toHaveText(/^(?:Included analyses: )?3 \/ 3$/);
@@ -132,8 +134,8 @@ test('Dreamer native billing empty restore keeps Free and reports no subscriptio
 });
 
 for (const action of ['purchase', 'restore'] as const) {
-  test(`Dreamer native billing delayed ${action} is confirmed without a retry or a second Store operation`, nativeBillingOptions, async (fixtures) => {
-    const { app, screen } = fixtures;
+  test(`Dreamer native billing delayed ${action} is confirmed without a retry or a second Store operation`, nativeBillingOptions, async ({ app, screen, device, platform }) => {
+    const fixtures = { app, screen, device, platform };
     await billingFree(fixtures);
     if (action === 'restore') await billingTap(screen, 'btn.subscription.qa.scenario.restore_available');
     await billingTap(screen, 'btn.subscription.qa.delayActivation');
@@ -158,8 +160,8 @@ for (const action of ['purchase', 'restore'] as const) {
 }
 
 for (const profile of ['existing', 'new'] as const) {
-  test(`Dreamer native billing guest returns after ${profile} sign in and foreground does not reopen the offer`, nativeBillingOptions, async (fixtures) => {
-    const { app, screen, device } = fixtures;
+  test(`Dreamer native billing guest returns after ${profile} sign in and foreground does not reopen the offer`, nativeBillingOptions, async ({ app, screen, device, platform }) => {
+    const fixtures = { app, screen, device, platform };
     await billingGuest(fixtures);
     await screen.getByTestId('btn.header.home.settings', { visible: true }).tap();
     await billingTap(screen, 'quick-settings.plus');
@@ -185,10 +187,10 @@ for (const profile of ['existing', 'new'] as const) {
     await device.openApp('com.tanuki75.noctalia');
     // RootLayoutNav's default foreground destination is Capture. Android
     // dispatches that lifecycle transition; iOS stayed Home until iOS 27.2 dispatched it too.
-    const resumedScreen = fixtures.platform === 'android' ? 'screen.recording' : /^screen\.(home|recording)$/;
+    const resumedScreen = platform === 'android' ? 'screen.recording' : /^screen\.(home|recording)$/;
     await expect(screen.getByTestId(resumedScreen, { visible: true })).toBeVisible();
     await expect(screen.getByTestId('screen.paywall', { visible: true })).toHaveCount(0);
-    await app.screenshot(`native-${profile}-foreground-${fixtures.platform === 'android' ? 'capture' : 'home'}`);
+    await app.screenshot(`native-${profile}-foreground-${platform === 'android' ? 'capture' : 'home'}`);
     await billingSettings(screen);
     const quota = await billingQuota(fixtures);
     await expect(quota).toHaveText(profile === 'existing'
@@ -200,8 +202,8 @@ for (const profile of ['existing', 'new'] as const) {
 // Guidelines 3.1.1 and 3.1.2: price and period, renewal terms, Terms and Privacy, and Restore.
 test('Dreamer native offer shows renewal terms, legal links and restore before purchase', {
   ...nativeBillingOptions, tags: [...nativeBillingOptions.tags, 'native-paywall-compliance'],
-}, async (fixtures) => {
-  const { app, screen, device, platform } = fixtures;
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await billingFree(fixtures);
   await billingOffer(screen);
   // Mock Store prices (services/mocks/subscriptionServiceMock.ts). On iOS the billed amount is

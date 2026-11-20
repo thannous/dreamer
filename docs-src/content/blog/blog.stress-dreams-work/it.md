@@ -150,9 +150,10 @@ Una riunione inizia senza di te, una scadenza si avvicina o la posta in arrivo n
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Conserva una traccia dei tuoi sogni</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Noctalia permette di registrare i sogni e rileggerli. Il diario è un supporto alla riflessione, non una garanzia di dormire meglio. Se l’attività ti pesa, puoi interromperla.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-t_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -211,13 +212,13 @@ Una riunione inizia senza di te, una scadenza si avvicina o la posta in arrivo n
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">La storia dell'interpretazione dei sogni: dai templi antichi alla scienza moderna</div>
       </div>
     </a>
     <a href="sogni-e-creativita" class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div class="text-right">
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sogni e creatività: come il cervello addormentato risolve i problemi</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sogni e creatività: come il cervello addormentato aiuta a risolvere i problemi</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -234,12 +235,12 @@ Una riunione inizia senza di te, una scadenza si avvicina o la posta in arrivo n
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Significato dei sogni ricorrenti: comprendere i loro messaggi nascosti</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare</h3>
             <p class="text-sm text-gray-400">Scopri perché certi sogni continuano a tornare e cosa il tuo subconscio sta cercando di dirti.</p>
         </a>
         <a href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: come il tuo sonno rivela la tua mente</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: cosa possono dire di te le tue notti, e cosa no</h3>
             <p class="text-sm text-gray-400">Scopri la connessione tra sogni e salute mentale, incluso come ansia, depressione e trauma influenzano i sogni.</p>
         </a>
         <a href="incubi-cause-significato-e-come-fermarli" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">

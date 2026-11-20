@@ -30,25 +30,26 @@ async function prepareBackgrounds({ app, screen, platform }: NativeBackgroundFix
 test('Dreamer native contextual backgrounds pilot captures both appearances', {
   tags: ['contextual-backgrounds'], timeout: 240_000,
   skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires the owned synthetic Release profile.' : false,
-}, async (fixtures) => {
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   for (const mode of ['light', 'dark'] as const) {
     await prepareBackgrounds(fixtures, mode);
-    await fixtures.screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
-    await expect(fixtures.screen.getByTestId('input.dreamTranscript', { visible: true })).toBeVisible();
-    await fixtures.app.screenshot(`native-pilot-capture-${mode}`);
-    await fixtures.screen.getByTestId('tab.home', { visible: true }).tap();
-    await expect(fixtures.screen.getByTestId('screen.home', { visible: true })).toBeVisible();
-    await fixtures.app.screenshot(`native-pilot-home-${mode}`);
+    await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
+    await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toBeVisible();
+    await app.screenshot(`native-pilot-capture-${mode}`);
+    await screen.getByTestId('tab.home', { visible: true }).tap();
+    await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+    await app.screenshot(`native-pilot-home-${mode}`);
     // Enter through the visible app action: an external URL can engage the
     // first-capture onboarding intent, which this synthetic guest has not completed.
-    const sleepEntry = fixtures.screen.getByTestId('btn.home.sleepSounds', { visible: true });
-    await fixtures.screen.scrollUntilVisible(sleepEntry);
+    const sleepEntry = screen.getByTestId('btn.home.sleepSounds', { visible: true });
+    await screen.scrollUntilVisible(sleepEntry);
     await sleepEntry.tap();
-    await expect(fixtures.screen.getByTestId('screen.sleepSounds', { visible: true })).toBeVisible();
-    await fixtures.app.screenshot(`native-pilot-sleep-${mode}`);
-    await fixtures.screen.getByTestId('sleep-sounds-back', { visible: true }).tap();
-    await expect(fixtures.screen.getByTestId('screen.home', { visible: true })).toBeVisible();
-    await fixtures.app.screenshot(`native-pilot-restored-bars-${mode}`);
+    await expect(screen.getByTestId('screen.sleepSounds', { visible: true })).toBeVisible();
+    await app.screenshot(`native-pilot-sleep-${mode}`);
+    await screen.getByTestId('sleep-sounds-back', { visible: true }).tap();
+    await expect(screen.getByTestId('screen.home', { visible: true })).toBeVisible();
+    await app.screenshot(`native-pilot-restored-bars-${mode}`);
   }
 });
 
@@ -56,8 +57,8 @@ for (const mode of ['light', 'dark'] as const) {
   test(`Dreamer native contextual backgrounds matrix in ${mode}`, {
     tags: ['contextual-backgrounds'], timeout: 600_000,
     skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires the owned synthetic Release profile.' : false,
-  }, async (fixtures) => {
-    const { app, screen } = fixtures;
+  }, async ({ app, screen, device, platform }) => {
+    const fixtures = { app, screen, device, platform };
     await prepareBackgrounds(fixtures, mode);
     await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
     await expect(screen.getByTestId('input.dreamTranscript', { visible: true })).toBeVisible();
@@ -113,8 +114,8 @@ for (const mode of ['light', 'dark'] as const) {
     const title = frenchShowcase ? 'Je volais au-dessus des nuages' : 'The Infinite Library';
     const search = screen.getByTestId('input.searchDreams', { visible: true });
     await search.fill(title);
-    if (fixtures.platform === 'ios') await search.press('Enter');
-    else await fixtures.device.dismissKeyboard();
+    if (platform === 'ios') await search.press('Enter');
+    else await device.dismissKeyboard();
     await expect(search).toHaveValue(title);
     const library = screen.getByTestId(/^dream\.item\./, { visible: true }).filter({
       hasText: title,
@@ -125,7 +126,7 @@ for (const mode of ['light', 'dark'] as const) {
     await expect(screen.getByTestId('screen.dreamCategories', { visible: true })).toBeVisible();
     await app.screenshot(`native-reflection-${mode}`);
     await screen.getByTestId('btn.dreamCategory.symbols', { visible: true }).tap();
-    await acceptAiConsent(screen, fixtures.platform);
+    await acceptAiConsent(screen, platform);
     // Native first-use consent (iOS) precedes the composer. An initial conversation
     // has no synthesis yet; that action is outside this background inspection.
     await expect(screen.getByTestId('chat.input.message', { visible: true })).toBeEnabled();

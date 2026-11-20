@@ -162,20 +162,7 @@ Ce que le laboratoire apporte, ce n'est pas un miracle mais une méthode : comp
 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Notez le rêve avant que le problème ne vous rattrape</h4>
-<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou tapez-le dès le réveil. Il est transcrit et enregistré dans votre journal : vous pouvez relire plusieurs nuits côte à côte et voir si votre problème y revient.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
-Voir comment fonctionne le journal vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="practice">Comment essayer chez soi</h2>
@@ -236,9 +223,10 @@ La science du rêve passe de « que rêvons-nous ? » à « peut-on orienter
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Gardez vos rêves dans Noctalia, à la voix ou par écrit, avec ce que vous avez ressenti. Les relire côte à côte montre si un problème revient, et comment il évolue.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=controler-reves-resolution-problemes_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -316,13 +304,13 @@ Une version simplifiée, oui : écrivez votre question avant de dormir, associe
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-<div class="font-serif text-lg text-dream-cream mt-1">IA et analyse du sommeil : comment l'intelligence artificielle décrypte vos rêves</div>
+<div class="font-serif text-lg text-dream-cream mt-1">L'IA qui analyse votre sommeil : ce que SleepFM sait faire, et ses limites</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="heure-ete-sommeil-reves">
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Heure d'été et sommeil : comment le changement d'heure perturbe vos rêves</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Changement d'heure et sommeil : ce que l'heure d'été fait à vos nuits et à vos rêves</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -338,17 +326,17 @@ Une version simplifiée, oui : écrivez votre question avant de dormir, associe
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guide-reve-lucide-debutant">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Guide du rêve lucide pour débutants</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Rêve lucide : tests de réalité pour débuter</h3>
 <p class="text-sm text-gray-400">Apprenez à prendre conscience dans vos rêves et à les diriger avec des techniques éprouvées.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="reves-et-creativite">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et créativité : comment votre cerveau endormi résout des problèmes</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Rêves et créativité : comment le cerveau endormi aide à résoudre des problèmes</h3>
 <p class="text-sm text-gray-400">Ce que la recherche dit des rêves et de la résolution de problèmes, et comment noter une idée avant qu'elle s'efface.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guide-incubation-reves">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Guide de l'incubation de rêves : programmer ses rêves</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Incubation de rêves : la méthode, ses limites et une routine pour ce soir</h3>
 <p class="text-sm text-gray-400">Techniques pratiques pour orienter le contenu de vos rêves vers un sujet ou un problème spécifique.</p>
 </a>
 </div>

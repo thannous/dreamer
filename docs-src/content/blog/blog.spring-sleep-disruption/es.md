@@ -178,20 +178,7 @@
                 </p>
 </div>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Anota el sueño antes de que la luz lo borre</h4>
-<p class="text-sm text-gray-400 mb-4">En Noctalia, cuentas tu sueño en voz alta nada más despertar. Se transcribe y se guarda en tu diario, y puedes añadir una línea sobre cómo dormiste.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
-                                Ver cómo funciona el diario por voz <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <div class="prose max-w-none text-gray-300">
 <h2 id="adaptation">Qué ayuda durante la transición</h2>
@@ -250,9 +237,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Anota cada sueño por voz o por escrito nada más despertar, con una nota sobre tu noche. En Noctalia puedes releerlos juntos y ver qué se repite a medida que avanza la estación.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=alteracion-sueno-primavera-suenos_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -330,13 +318,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Art&iacute;culo anterior</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Deuda de sue&ntilde;o: c&oacute;mo la privaci&oacute;n cr&oacute;nica afecta tu salud y tus sue&ntilde;os</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Deuda de sueño y privación crónica: cómo afectan a tu salud y a tus sueños</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-salud-prioridad">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Siguiente art&iacute;culo</span>
-<div class="font-serif text-lg text-dream-cream mt-1">El sue&ntilde;o, tu principal palanca de salud</div>
+<div class="font-serif text-lg text-dream-cream mt-1">¿Es el sueño tu principal palanca de salud? Lo que muestra el estudio de la OHSU</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -352,17 +340,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="horario-verano-sueno-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salud</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Cambio de hora y sue&ntilde;o: c&oacute;mo el horario de verano altera tus sue&ntilde;os</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cambio de hora y sueño: lo que el horario de verano hace con tus noches y tus sueños</h3>
 <p class="text-sm text-gray-400">C&oacute;mo la transici&oacute;n al horario de verano afecta tu ritmo circadiano y tus patrones on&iacute;ricos.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="deuda-sueno-salud-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salud</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Deuda de sue&ntilde;o y privaci&oacute;n cr&oacute;nica: c&oacute;mo afectan tu salud y tus sue&ntilde;os</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Deuda de sueño y privación crónica: cómo afectan a tu salud y a tus sueños</h3>
 <p class="text-sm text-gray-400">Qu&eacute; es la deuda de sue&ntilde;o, c&oacute;mo se acumula y estrategias para recuperar un descanso reparador.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="como-recordar-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Gu&iacute;a</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">C&oacute;mo recordar tus sue&ntilde;os</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas prácticas</h3>
 <p class="text-sm text-gray-400">T&eacute;cnicas pr&aacute;cticas respaldadas por la ciencia para mejorar tu recuerdo on&iacute;rico.</p>
 </a>
 </div>
@@ -373,6 +361,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional de la salud cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional de la salud cualificado.
 </p>
 </aside>

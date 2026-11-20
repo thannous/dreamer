@@ -94,7 +94,8 @@
 <div>
 <h3 class="font-serif text-lg text-dream-cream mb-2">Note how the night felt, not only the plot</h3>
 <p class="text-sm text-gray-400 mb-4">In Noctalia, tell your dream out loud as soon as you wake up: it is transcribed and saved in your journal. Add a word on how vivid it was and how rested you feel, then read your nights side by side.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<a class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full text-sm font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=vivid-dreams-restful-sleep_en" rel="nofollow noopener noreferrer" target="_blank">Get Noctalia on Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<p class="text-xs text-purple-300/70 mt-3">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </div>
 </div>
 </aside>
@@ -139,9 +140,9 @@
 <section aria-label="Read next" class="mt-12" data-blog-related="">
 <header class="mb-6"><h2 class="font-serif text-2xl text-dream-cream mb-2">Read next</h2><p class="text-sm text-purple-300/60">More resources on dreams and sleep science</p></header>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams"><span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span><h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams</h3><p class="text-sm text-gray-400">Understand the stage where many vivid dreams unfold.</p></a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dream-journal-guide"><span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span><h3 class="font-serif text-lg text-dream-cream mb-2">Dream journal guide</h3><p class="text-sm text-gray-400">Build a morning routine that captures fragile dream details.</p></a>
-<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-not-random-ai-study"><span class="text-xs text-dream-salmon uppercase mb-2 block">News</span><h3 class="font-serif text-lg text-dream-cream mb-2">Your dreams are not random</h3><p class="text-sm text-gray-400">A new AI study shows how dreams remix waking life.</p></a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams"><span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span><h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams: what really happens in your brain at night</h3><p class="text-sm text-gray-400">Understand the stage where many vivid dreams unfold.</p></a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dream-journal-guide"><span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span><h3 class="font-serif text-lg text-dream-cream mb-2">Dream journal: a simple method to start tonight</h3><p class="text-sm text-gray-400">Build a morning routine that captures fragile dream details.</p></a>
+<a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dreams-not-random-ai-study"><span class="text-xs text-dream-salmon uppercase mb-2 block">News</span><h3 class="font-serif text-lg text-dream-cream mb-2">Your dreams are not random: what a 2026 AI study actually found</h3><p class="text-sm text-gray-400">A new AI study shows how dreams remix waking life.</p></a>
 </div>
 </section>
 </article>

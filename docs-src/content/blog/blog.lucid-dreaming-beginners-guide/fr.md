@@ -134,7 +134,10 @@
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Commencez votre voyage onirique</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
-                    Noctalia facilite la tenue de votre <a class="text-dream-salmon hover:underline" href="guide-journal-reves">journal de rêves</a> - la fondation essentielle du rêve lucide. Capturez vos rêves à la voix et laissez l'Noctalia identifier vos dream signs.
+                    Noctalia facilite la tenue de votre <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=guide-reve-lucide-debutant_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p> - la fondation essentielle du rêve lucide. Capturez vos rêves à la voix et laissez l'Noctalia identifier vos dream signs.
                 </p>
 <a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
                     Découvrir Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
@@ -196,7 +199,7 @@
                                                                 <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Rêver de perdre ses dents : signification et interprétation</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -213,12 +216,12 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="comment-se-souvenir-de-ses-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves : 10 techniques efficaces</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Comment se souvenir de ses rêves au réveil : 10 techniques simples</h3>
                         <p class="text-sm text-gray-400">Une routine pour noter les fragments au réveil, sans garantie de résultat.</p>
                     </a>
                     <a href="pourquoi-oublie-reves-reveil" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Pourquoi oublie-t-on ses rêves au réveil ? Ce que dit la science</h3>
                         <p class="text-sm text-gray-400">Découvrez les recherches et les questions ouvertes sur le rappel des rêves.</p>
                     </a>
                     <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">

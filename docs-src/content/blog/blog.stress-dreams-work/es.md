@@ -148,9 +148,10 @@ Una reunión empieza sin ti, se acerca una entrega o la bandeja de entrada nunca
 </div>
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Conserva un registro de tus sueños</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Noctalia permite registrar tus sueños y volver a leerlos. El diario es un apoyo para reflexionar, no una garantía de dormir mejor. Si la actividad te genera malestar, puedes interrumpirla.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Comienza tu diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=suenos-estres-trabajo_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -209,13 +210,13 @@ Una reunión empieza sin ti, se acerca una entrega o la bandeja de entrada nunca
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-<div class="font-serif text-lg text-dream-cream mt-1">La Historia de la Interpretación de Sueños: De los Templos Antiguos a la Ciencia Moderna</div>
+<div class="font-serif text-lg text-dream-cream mt-1">La historia de la interpretación de los sueños: de los templos antiguos a la ciencia moderna</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-y-creatividad">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sueños y creatividad: cómo tu cerebro dormido resuelve problemas</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Sueños y creatividad: cómo el cerebro dormido ayuda a resolver problemas</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -231,17 +232,17 @@ Una reunión empieza sin ti, se acerca una entrega o la bandeja de entrada nunca
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="significado-suenos-recurrentes">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: comprender sus mensajes ocultos</h3>
-<p class="text-sm text-gray-400">Explora por qué ciertos sueños siguen regresando y qué intenta decirte tu subconsciente.</p>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: por qué se repite el mismo sueño y qué puede ayudar</h3>
+<p class="text-sm text-gray-400">Por qué vuelve el mismo sueño, qué puede reflejar y cómo hacer que cambie.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-salud-mental">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueños y salud mental: lo que tus noches pueden decir de ti, y lo que no</h3>
 <p class="text-sm text-gray-400">Descubre la conexión entre los sueños y la salud mental, incluyendo cómo la ansiedad, la depresión y el trauma afectan tus sueños.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guia-pesadillas">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Pesadillas: Causas, Significado y Cómo Detenerlas</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué tengo pesadillas? Causas y soluciones</h3>
 <p class="text-sm text-gray-400">Comprende por qué ocurren las pesadillas y aprende técnicas probadas para reducir su frecuencia.</p>
 </a>
 </div>
@@ -251,6 +252,6 @@ Una reunión empieza sin ti, se acerca una entrega o la bandeja de entrada nunca
 <!-- Health Disclaimer (E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

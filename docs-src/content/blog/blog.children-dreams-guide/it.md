@@ -257,20 +257,7 @@
                     Molti bambini piccoli amano un rituale della buonanotte: un acchiappasogni costruito insieme, una torcia accanto al letto, una frase detta ogni sera («La mia camera è un posto sicuro»). Scegline uno che dia un senso di controllo senza confermare che il mostro esiste. Uno «spray anti-mostri» tranquillizza alcuni bambini e ne convince altri che ci sia davvero qualcosa da combattere.
                 </p>
 
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Conserva i sogni che tuo figlio vuole condividere</h4>
-<p class="text-sm text-gray-400 mb-4">Quando tuo figlio ha voglia di raccontare un sogno, registralo a voce in Noctalia al mattino. Viene trascritto e salvato nel tuo <a class="text-dream-salmon hover:underline" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">diario dei sogni</a>, e puoi illustrarlo per guardarlo insieme. Annota solo ciò che tuo figlio accetta di condividere.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 
 <h2 id="journaling-for-kids">I bambini possono tenere un diario dei sogni?</h2>
 <p>
@@ -322,9 +309,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Con Noctalia racconti un sogno a voce appena sveglio. Viene trascritto e salvato nel tuo diario, e puoi rileggere i sogni uno accanto all'altro per vedere che cosa ritorna. Un diario non sostituisce il parere del medico.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=guida-sogni-bambini_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -406,13 +394,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sogni d'ansia: cosa significano e come fermarli</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Sogni d'ansia: perché li fai e cosa aiuta davvero</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="giornata-sonno-ambiente-sogni">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Giornata del Sonno 2026: come il tuo ambiente trasforma i tuoi sogni</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Giornata del Sonno 2026: come la tua camera influisce sui tuoi sogni</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -433,12 +421,12 @@
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Perché sogniamo? La scienza dietro le tue avventure notturne</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Perché sogniamo? Cosa sa la scienza e cosa ancora non sa</h3>
 <p class="text-sm text-gray-400">Cosa ha misurato la ricerca su memoria, emozioni e simulazione delle minacce nei sogni, e cosa resta un'ipotesi.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: cosa succede davvero nel tuo cervello di notte</h3>
 <p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 </div>

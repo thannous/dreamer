@@ -55,7 +55,7 @@
 <span class="text-sm text-purple-300/60">6 minuti di lettura</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Ondata di calore, sonno e sogni: perché le notti calde cambiano ciò che ricordi</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">Sono le quattro, il lenzuolo è appiccicoso e il ventilatore smuove solo aria tiepida. Stavi correndo in una stazione, in ritardo per qualcosa, e la scena si è interrotta di colpo. Durante un'ondata di calore molte persone si svegliano con più frammenti di sogno del solito. Il caldo non scrive i tuoi sogni: cambia soprattutto quante volte ti svegli, e quindi cosa riesci a trattenere.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed">La finestra è spalancata, ma l'aria della notte non si muove quasi. Giri il cuscino dal lato più fresco, ti riassopisci e riemergi una terza volta prima dell'alba con mezza conversazione ancora in testa. Durante un'ondata di calore molte persone si svegliano con più frammenti di sogno del solito. Il caldo non scrive i tuoi sogni: cambia soprattutto quante volte ti svegli, e quindi cosa riesci a trattenere.</p>
 </header>
 <figure class="mb-10 overflow-hidden rounded-2xl border border-white/10 bg-dream-purple/20">
 <img alt="Camera calda di notte con frammenti di sogni sopra il letto" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="1200">
@@ -94,7 +94,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Ferma il sogno prima che la mattina lo cancelli</h2>
 <p>Racconta a voce il sogno e la notte, oppure scrivili. Noctalia li trascrive e li conserva nel tuo diario: potrai rileggere fianco a fianco i sogni delle notti di caldo e vedere cosa ritorna quando le notti rinfrescano.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/it/diario-dei-sogni-vocale">Registra a voce il prossimo sogno</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=ondata-calore-sonno-sogni_it" rel="nofollow noopener noreferrer" target="_blank">Scarica Noctalia su Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </div>
 <h2>Domande frequenti</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Perché mi sembra di sognare di più quando fa caldo?</summary><p class="mt-3">Probabilmente non sogni di più. Ti svegli più spesso, e ogni risveglio può catturare un sogno in corso: così al mattino ti restano più frammenti.</p></details>

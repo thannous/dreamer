@@ -22,7 +22,7 @@ The complete command builds the site, runs Dreamer with English/French/German
 and feature sheets enabled plus English with sheets disabled, verifies their
 coverage union, runs Lucid, Meditation and the site, executes the four Dreamer
 personas through the saved ChatGPT Pro login, and qualifies the real local backend.
-Act defaults to `gpt-6.1-terra` and assert to `gpt-6.1-sol`
+Act and assert both default to `gpt-6.2-sol`
 (`tools/e2e/persona-models.mjs`). `E2E_PERSONA_MODEL` overrides act.
 There is no API-key or paid-gateway fallback.
 

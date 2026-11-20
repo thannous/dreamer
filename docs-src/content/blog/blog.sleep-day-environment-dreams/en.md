@@ -204,9 +204,8 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Note the night along with the dream</h4>
 <p class="text-sm text-gray-400 mb-4">In Noctalia, you can record your dream by voice as soon as you wake up, then add a line about the night: heat, noise, light. Reading your entries side by side shows whether some dreams come back after certain nights.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/en/voice-dream-journal">
-                                Try the voice dream journal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full text-sm font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sleep-day-environment-dreams_en" rel="nofollow noopener noreferrer" target="_blank">Get Noctalia on Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<p class="text-xs text-purple-300/70 mt-3">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </div>
 </div>
 </aside>
@@ -348,13 +347,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Children's Dreams: What Kids Dream About and How to Help</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Children's dreams: what kids dream about and how to help</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="ai-sleep-analysis-dreams">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">AI and Sleep Analysis: How Technology Decodes Your Dreams</div>
+<div class="font-serif text-lg text-dream-cream mt-1">The AI that reads your sleep: what Stanford's SleepFM can and cannot do</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -370,17 +369,17 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams: Understanding Your Brain's Nightly Reset</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams: what really happens in your brain at night</h3>
 <p class="text-sm text-gray-400">When REM sleep happens in the night, why its dreams feel so vivid, and what cuts it short.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="why-we-forget-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Why do we forget our dreams? The science behind dream amnesia</h3>
 <p class="text-sm text-gray-400">Practical, science-backed techniques to improve your dream recall starting tonight.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="stop-nightmares-guide">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: Causes, Meaning, and How to Stop Them</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Nightmares: causes, meaning and how to stop them</h3>
 <p class="text-sm text-gray-400">Understand why nightmares happen and learn proven techniques to reduce their frequency.</p>
 </a>
 </div>

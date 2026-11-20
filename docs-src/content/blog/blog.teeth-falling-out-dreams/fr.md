@@ -236,21 +236,7 @@ Parfois, l'explication la plus simple est la bonne : une dent sensible, une mâ
 <p>
 Une seule entrée ne prouve rien. En notant les mêmes rubriques sur plusieurs nuits, vous verrez si la piste du corps, celle de la pression ou une autre se confirme.
 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Notez votre rêve avant qu'il ne s'efface</h4>
-<p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute ou par écrit dès le réveil. Il est transcrit et rangé dans votre journal, et vous pouvez relire vos rêves de dents côte à côte pour voir ce qui revient.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="psychologie">Ce que dit la recherche, et ce qu'en disaient Freud et Jung</h2>
 <p>
 Deux registres se mélangent souvent sur ce sujet : ce qui a été mesuré, et les grilles de lecture historiques. Mieux vaut les séparer.
@@ -330,9 +316,10 @@ Si ces rêves, ou des cauchemars en général, reviennent plusieurs fois par sem
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Gardez vos rêves de dents dans Noctalia, avec ce que vous avez ressenti et ce que vous viviez. En les relisant ensemble, vous verrez quand ils reviennent et ce qui les accompagne.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=reves-dents-qui-tombent_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- Symbol Guide CTA -->
 <aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
@@ -418,13 +405,13 @@ Le plus souvent, non. S'il revient plusieurs fois par semaine, abîme votre somm
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Guide du rêve lucide pour débutants : prenez le contrôle de vos nuits</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêve lucide : tests de réalité pour débuter</div>
       </div>
     </a>
     <a href="reves-de-chute" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de chute : pourquoi rêvez-vous de tomber ?</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêves de chute : pourquoi on rêve de tomber, et ce que cela peut signifier</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -441,17 +428,17 @@ Le plus souvent, non. S'il revient plusieurs fois par semaine, abîme votre somm
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="signification-reves-recurrents" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Signification des rêves récurrents : comprendre leurs messages</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves récurrents : causes possibles et pistes utiles</h3>
             <p class="text-sm text-gray-400">Pourquoi le même rêve revient, quoi noter d'une nuit à l'autre et quand des cauchemars répétés justifient un avis médical.</p>
         </a>
         <a href="reves-de-chute" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi rêvez-vous de tomber ?</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi on rêve de tomber, et ce que cela peut signifier</h3>
             <p class="text-sm text-gray-400">Pourquoi on rêve de tomber, de la secousse hypnique à l'endormissement aux longues chutes, et quoi noter au réveil.</p>
         </a>
         <a href="reves-de-voler" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de voler : ce que ça signifie</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de voler : scénarios, émotions et signification</h3>
             <p class="text-sm text-gray-400">Ce que peuvent suggérer un vol sans effort, un décollage raté ou une fuite dans les airs, et quoi noter au réveil.</p>
         </a>
   </div>

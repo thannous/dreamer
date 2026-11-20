@@ -105,6 +105,19 @@
 <h2 class="font-serif text-2xl text-dream-cream mb-4">E se siete voi a sognare il rientro?</h2>
 <p class="text-purple-100/80 leading-relaxed">Anche i genitori non sono risparmiati: ritardo, cancello chiuso, la vecchia scuola ritrovata. Se le vostre notti riprendono gli scenari scolastici in agosto, il nostro articolo su <a class="text-dream-salmon hover:underline" href="sognare-tornare-scuola">sognare di tornare a scuola</a> analizza questi scenari dal lato adulto — transizione, valutazione e stress da rientro.</p>
 </section>
+
+<!-- CTA Section -->
+<aside class="glass-panel rounded-3xl p-8 md:p-10 my-12 text-center border border-dream-salmon/20">
+<div class="w-16 h-16 bg-dream-salmon/10 rounded-full flex items-center justify-center mx-auto mb-6">
+<i class="w-8 h-8 text-dream-salmon" data-lucide="moon"></i>
+</div>
+<h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Annota i tuoi sogni nei giorni del rientro</h3>
+<p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Quando il ritorno a scuola scombussola il sonno di tutta la casa, Noctalia aiuta gli adulti a dettare i propri sogni al risveglio e notare cosa ritorna.</p>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=incubi-rientro-scolastico-bambini_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
+</aside>
 <section class="glass-panel rounded-2xl p-6 my-10 border border-white/10">
 <h2 class="font-serif text-2xl text-dream-cream mb-4">FAQ</h2>
 <div class="grid gap-4">

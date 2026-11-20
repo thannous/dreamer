@@ -406,8 +406,8 @@ test('Dreamer release guest reads its first dream and asks one question that sur
   platforms: ['ios', 'android'], tags: ['native-core-loop'], timeout: 300_000,
   // The reading and the chat come from the mock services; any other build would call the real AI.
   skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires the owned mock Release: its AI is simulated.' : false,
-}, async (fixtures) => {
-  const { app, screen, device, platform } = fixtures;
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await onboardToCapture(fixtures);
   await screen.getByTestId('btn.recording.inputMode.text', { visible: true }).tap();
   const story = 'Core loop fixture: a silver train crossing a frozen lake at dawn.';
@@ -475,8 +475,8 @@ test('Dreamer release every destination opens in system dark mode', {
   platforms: ['ios', 'android'], tags: ['native-release-tour'], timeout: 360_000,
   skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires the owned mock Release and its seeded test profile.'
     : FLEET_PHONE ? PHONE_SETTINGS_SKIP : false,
-}, async (fixtures) => {
-  const { app, screen, device, platform } = fixtures;
+}, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   // Each destination shows its own screen, never the error card a throwing screen leaves.
   const shown = async (id: string, label: string) => {
     await expect(screen.getByTestId(id, { visible: true })).toBeVisible();

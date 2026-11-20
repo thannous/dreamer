@@ -225,20 +225,7 @@
 <li><strong>Offene Frage:</strong> „Vermisse ich ihn oder diese Zeit meines Lebens? Kommt der Traum auch bei anderen Abschieden wieder?“</li>
 </ul>
 <p>Ein einzelner Eintrag beweist nichts. Wenn du dieselben Angaben über mehrere Wochen notierst, siehst du, ob der Ex rund um bestimmte Daten, Orte oder Stimmungen auftaucht und ob sich das Gefühl verändert.</p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Halte den Traum fest, bevor er verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">Erzähl Noctalia deinen Traum nach dem Aufwachen laut oder tipp ihn ein. Er wird transkribiert und mit deinem Gefühl im Tagebuch gespeichert, sodass du deine Ex-Träume nebeneinander lesen kannst.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-                                Noctalia kostenlos testen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="psychology">Was die Forschung über Ex-Träume sagt</h2>
 <p>
                     Nur wenige Studien befassen sich direkt mit diesem Thema. Die aufschlussreichste ist eine Tagebuchstudie von Michael Schredl und Lara Wood (2021), die 1.612 Traumberichte von 425 Studierenden ausgewertet haben. Ein Ex kam in rund 5 % der Berichte vor (77 Träume), deutlich seltener als der aktuelle Partner.
@@ -320,9 +307,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Halte deine Ex-Träume in Noctalia fest, zusammen mit deinem Gefühl. Wenn du sie nebeneinander liest, siehst du, wann sie wiederkehren und was sie begleitet.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=traeume-ueber-deinen-ex-was-sie-wirklich-bedeuten_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -353,13 +341,13 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Wasserträume: Bedeutung von Ertrinkungs-, Ozean- und Überschwemmungsträumen</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Wasser- und Überschwemmungsträume: was sie bedeuten können, Detail für Detail</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="schwangerschaftstraeume-was-sie-bedeuten-auch-wenn-sie-nicht-schwanger-sind" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Schwangerschaftsträume: Was sie bedeuten (auch wenn du nicht schwanger bist)</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Schwangerschaftsträume: was sie bedeuten können, auch wenn du nicht schwanger bist</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -375,17 +363,17 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="wiederkehrende-traeume-bedeuten-ihre-verborgenen-botschaften-verstehen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: ihre verborgenen Botschaften verstehen</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Wiederkehrende Träume: warum derselbe Traum zurückkommt und was helfen kann</h3>
                         <p class="text-sm text-gray-400">Warum derselbe Traum wiederkehrt, was du zwischen den Episoden notieren kannst und wann wiederholte Albträume ärztlich abgeklärt werden sollten.</p>
                     </a>
                     <a href="traeume-von-ausfallenden-zaehnen-bedeutung-und-interpretation" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: Bedeutung und Interpretation</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Träume von ausfallenden Zähnen: 7 mögliche Bedeutungen und was die Forschung sagt</h3>
                         <p class="text-sm text-gray-400">Sieben mögliche Lesarten von Träumen über ausfallende Zähne, vom verspannten Kiefer bis zur Angst vor Blamage, und die Varianten, auf die du achten kannst.</p>
                     </a>
                     <a href="bedeutung-von-fallenden-traeumen-warum-sie-vom-fallen-traeumen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Deutung</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Fallende Träume: Warum du vom Fallen träumst</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Träume vom Fallen: warum man vom Fallen träumt und was es bedeuten kann</h3>
                         <p class="text-sm text-gray-400">Warum wir vom Fallen träumen, vom Zucken beim Einschlafen bis zum langen Sturz, und was du nach dem Aufwachen notieren kannst.</p>
                     </a>
               </div>

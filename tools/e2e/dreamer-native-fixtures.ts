@@ -3,7 +3,7 @@ import { expect, type TestFixtures } from 'e2e';
 import { tapWhenStill } from './native-settle';
 import { openApp } from './test-support/open-app';
 
-export type NativeBackgroundFixtures = TestFixtures & { device: Device };
+export type NativeBackgroundFixtures = Omit<TestFixtures, 'agent'> & { device: Device };
 
 // A fleet phone is someone's device and its release only uninstalls apps: a journey that
 // changes a device-wide setting (airplane mode, appearance, orientation) runs on emulators and

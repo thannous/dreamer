@@ -198,21 +198,7 @@ Im Halbschlaf zu schreiben ist mühsam, und manchmal ist der Stift unauffindbar.
 <p>
 Genau dafür ist Noctalia gedacht: Du erzählst der App deinen Traum direkt nach dem Aufwachen, und sie schreibt ihn als Text in dein Tagebuch. So funktioniert das <a class="text-dream-salmon hover:underline" href="/de/traumtagebuch-spracheingabe">Traumtagebuch mit Spracheingabe</a>.
 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Aussprechen, bevor es verblasst</h4>
-<p class="text-sm text-gray-400 mb-4">In Noctalia erzählst du deinen Traum laut, die Augen noch halb geschlossen. Er wird transkribiert und in deinem Tagebuch gespeichert, bereit zum Nachlesen, wenn du richtig wach bist.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/traumtagebuch-spracheingabe">
-Traumtagebuch mit Spracheingabe ansehen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="technique-7">7. Eine ruhige Minute vor dem Schlafen</h2>
 <p>
 Wenn du gern zur Ruhe kommst, nimm dir im Bett eine Minute, atme normal und lass Gedanken vorbeiziehen. Leg zum Schluss Tagebuch oder Handy so hin, dass deine Hand es findet. Das entspannt; dass es die Erinnerung verbessert, ist nicht belegt. Wird es zur Pflicht, lass es weg.
@@ -272,9 +258,10 @@ Entscheidend ist die Regelmäßigkeit. Notiere auch das kleinste Bruchstück, un
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Mit Noctalia sprichst oder tippst du deinen Traum gleich nach dem Aufwachen. Er wird transkribiert und gespeichert, und mit der Zeit liest du deine Träume nebeneinander und siehst, was wiederkehrt.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=so-erinnern-sie-sich-an-ihre-traeume-10-effektive-_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -362,7 +349,7 @@ Schreib „heute keine Traumerinnerung“ und wie du dich fühlst, dann starte i
     <a href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -379,17 +366,17 @@ Schreib „heute keine Traumerinnerung“ und wie du dich fühlst, dann starte i
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="trauminkubation-wie-sie-heute-abend-genau-das-traeumen-was-sie-wollen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du heute Abend genau das träumst, was du willst</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst</h3>
             <p class="text-sm text-gray-400">Eine Methode in sechs Schritten, um vor dem Schlafen eine Frage zu wählen und morgens festzuhalten, was zurückkommt, mit Forschungsstand und Grenzen.</p>
         </a>
         <a href="albtraeume-ursachen-bedeutung-und-wie-man-sie-stoppen-kann" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen, Bedeutung und wie man sie stoppt</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Albträume: Ursachen und was dagegen helfen kann</h3>
             <p class="text-sm text-gray-400">Warum haben wir Albträume? Erfahre die Ursachen schlechter Träume, ihre Bedeutung und bewährte Techniken, um Albträume zu reduzieren und besser zu schlafen.</p>
         </a>
         <a href="schlaflaehmung-erklaert-warum-sie-sich-nicht-bewegen-koennen-und-wie-sie-sie-stoppen-koennen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Ratgeber</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Schlaflähmung erklärt: Warum du dich nicht bewegen kannst und wie du sie stoppst</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Schlaflähmung: warum du dich nicht bewegen kannst und wie du sie beendest</h3>
             <p class="text-sm text-gray-400">Vollständiger Ratgeber zum Verständnis der Schlaflähmung. Erfahre, was sie verursacht, warum Halluzinationen auftreten und bewährte Techniken zur Vorbeugung.</p>
         </a>
   </div>

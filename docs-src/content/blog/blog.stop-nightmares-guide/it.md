@@ -225,20 +225,7 @@
 <p>
                     Sognare di morire, una catastrofe o di perdere una persona vicina spaventa, ma <strong>non annuncia nulla</strong>. Questi sogni compaiono spesso in periodi di cambiamento, di malattia di qualcuno vicino o di lutto.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Annota l'incubo prima che svanisca</h4>
-<p class="text-sm text-gray-400 mb-4">Su Noctalia, racconta il tuo incubo a voce appena sveglio. Viene trascritto e salvato nel tuo diario, così puoi rileggere i tuoi incubi uno accanto all'altro e vedere quando tornano.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="stop">Come fermare gli incubi, o averne meno</h2>
 <p>
                     Nessun metodo garantisce una notte senza brutti sogni. Ecco i passi con le basi più solide, a partire dal più studiato.
@@ -341,9 +328,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Conserva i tuoi incubi su Noctalia, con ciò che hai provato e come hai dormito. Rileggendoli uno accanto all'altro vedrai quando tornano e se si diradano quando cambi qualcosa.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=incubi-cause-significato-e-come-fermarli_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -394,13 +382,13 @@
                                                                   <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sogni di gravidanza: cosa significano (anche se non sei incinta)</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Sogni di gravidanza: cosa possono significare, anche se non sei incinta</div>
                                                                   </div>
                                                                 </a>
                                                                 <a href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                                                                   <div>
                                                                     <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Paralisi del sonno: perché non puoi muoverti e come fermarla</div>
+                                                                    <div class="font-serif text-lg text-dream-cream mt-1">Paralisi del sonno: perché non riesci a muoverti e come uscirne</div>
                                                                   </div>
                                                                   <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
                                                                 </a>
@@ -416,17 +404,17 @@
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="come-ricordare-i-tuoi-sogni-10-tecniche-efficaci" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche efficaci</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Come ricordare i tuoi sogni: 10 tecniche pratiche</h3>
                         <p class="text-sm text-gray-400">Dieci abitudini semplici per trattenere più frammenti al risveglio, dal risveglio graduale alla nota presa prima di alzarti.</p>
                     </a>
                     <a href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Incubazione dei sogni: come sognare esattamente ciò che desideri stasera</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti</h3>
                         <p class="text-sm text-gray-400">Impara l'antica arte dell'incubazione dei sogni per risolvere problemi, stimolare la creatività ed esplorare argomenti specifici nei tuoi sogni.</p>
                     </a>
                     <a href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
                         <span class="text-xs text-dream-salmon uppercase mb-2 block">Guida</span>
-                        <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisi del sonno: perché non puoi muoverti e come fermarla</h3>
+                        <h3 class="font-serif text-lg text-dream-cream mb-2">Paralisi del sonno: perché non riesci a muoverti e come uscirne</h3>
                         <p class="text-sm text-gray-400">Perché a volte ci si sveglia senza riuscire a muoversi e con una presenza nella stanza, come superare un episodio e quando consultare un medico.</p>
                     </a>
               </div>

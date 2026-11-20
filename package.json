@@ -1,7 +1,7 @@
 {
   "name": "noctalia",
   "main": "index.ts",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "engines": {
     "node": ">=24.22.1 <25"
   },
@@ -329,7 +329,7 @@
     "react-test-renderer": "19.3.0",
     "sharp": "0.35.5",
     "stream-json": "file:tools/stream-json",
-    "supabase": "2.121.0",
+    "supabase": "3.2.0",
     "typescript": "~6.0.3",
     "vercel": "62.2.0",
     "vitest": "4.1.12",

@@ -4,8 +4,8 @@ import { expect } from 'e2e';
 import { activateLucid, captureWrittenDream } from '../lucid-native-fixtures';
 
 for (const lab of ['stabilization', 'ssild']) {
-  test(`Lucid release resumes a paused ${lab} practice after process restart`, { tags: ['recovery', 'practice'] }, async fixtures => {
-    const { app, screen } = fixtures;
+  test(`Lucid release resumes a paused ${lab} practice after process restart`, { tags: ['recovery', 'practice'] }, async ({ app, screen, device, platform }) => {
+    const fixtures = { app, screen, device, platform };
     await activateLucid(fixtures);
     const link = `noctalia-lucid:///lucid/${lab}-lab`;
     await openNativeLink(fixtures, link);
@@ -26,8 +26,8 @@ for (const lab of ['stabilization', 'ssild']) {
   });
 }
 
-test('Lucid release counts a completed practice once across two restarts', { tags: ['practice', 'persistence'] }, async fixtures => {
-  const { app, screen } = fixtures;
+test('Lucid release counts a completed practice once across two restarts', { tags: ['practice', 'persistence'] }, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await activateLucid(fixtures);
   await openNativeLink(fixtures, 'noctalia-lucid:///lucid/stabilization-lab');
   const primary = screen.getByTestId('lucid-stabilization-lab-primary', { visible: true });
@@ -59,13 +59,14 @@ test('Lucid release counts a completed practice once across two restarts', { tag
   await app.screenshot('lucid-native-completion-once');
 });
 
-test('Lucid release refuses a beginner wake-back-to-bed session even through a deep link', { tags: ['safeguards'] }, async fixtures => {
+test('Lucid release refuses a beginner wake-back-to-bed session even through a deep link', { tags: ['safeguards'] }, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await activateLucid(fixtures);
   await openNativeLink(fixtures, 'noctalia-lucid:///lucid/session/wbtb/1');
-  await expect(fixtures.screen.getByText(/^(Séance indisponible|Session unavailable)$/, { visible: true }).first()).toBeVisible();
-  await fixtures.app.restart();
-  await expect(fixtures.screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
-  await fixtures.app.screenshot('lucid-native-sleep-safeguard');
+  await expect(screen.getByText(/^(Séance indisponible|Session unavailable)$/, { visible: true }).first()).toBeVisible();
+  await app.restart();
+  await expect(screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
+  await app.screenshot('lucid-native-sleep-safeguard');
 });
 
 test('Lucid release requires both intention and experience', async ({ app, screen }) => {
@@ -82,8 +83,8 @@ test('Lucid release requires both intention and experience', async ({ app, scree
   await app.screenshot('release-onboarding-gate');
 });
 
-test('Lucid release completes its local plan, persists activation and opens the main tabs', async fixtures => {
-  const { app, screen } = fixtures;
+test('Lucid release completes its local plan, persists activation and opens the main tabs', async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await activateLucid(fixtures);
   await app.restart();
   await expect(screen.getByTestId('lucid-today', { visible: true })).toBeVisible();
@@ -99,8 +100,8 @@ test('Lucid release completes its local plan, persists activation and opens the 
   await app.screenshot('release-lucid-activated-tabs');
 });
 
-test('Lucid release keeps a written morning capture after restart and lists it in Journal', { tags: ['persistence'] }, async fixtures => {
-  const { app, screen } = fixtures;
+test('Lucid release keeps a written morning capture after restart and lists it in Journal', { tags: ['persistence'] }, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   const note = 'Fixture Lucid : un jardin calme et une porte lumineuse.';
   await activateLucid(fixtures);
   await captureWrittenDream(fixtures, note);
@@ -112,8 +113,8 @@ test('Lucid release keeps a written morning capture after restart and lists it i
   await app.screenshot('release-lucid-capture-persisted');
 });
 
-test('Lucid release deletes all its local data and starts again at onboarding', { tags: ['persistence'] }, async fixtures => {
-  const { app, screen, platform } = fixtures;
+test('Lucid release deletes all its local data and starts again at onboarding', { tags: ['persistence'] }, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await activateLucid(fixtures);
   await captureWrittenDream(fixtures, 'Fixture Lucid : une donnée à effacer.');
   await screen.getByTestId('lucid-tab-journal', { visible: true }).tap();
@@ -150,8 +151,8 @@ test('Lucid release deletes all its local data and starts again at onboarding', 
 
 // Native bar pixels cannot be qualified by the browser. Capture the art overlay,
 // scrolled page and a different tab after the overlay's focus entry is released.
-test('Lucid release keeps system bars legible over art and restores them after navigation', { tags: ['system-bars'] }, async fixtures => {
-  const { app, screen } = fixtures;
+test('Lucid release keeps system bars legible over art and restores them after navigation', { tags: ['system-bars'] }, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await activateLucid(fixtures);
   await app.screenshot('lucid-system-bars-art');
   await screen.getByTestId('lucid-tab-settings', { visible: true }).tap();

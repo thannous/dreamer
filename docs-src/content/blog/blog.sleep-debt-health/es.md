@@ -217,9 +217,10 @@ Los sueños no son una medida médica. Pero un <a class="text-dream-salmon hover
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Anota tus sueños en Noctalia cada mañana, por voz o por escrito, con una palabra sobre cómo dormiste. Al releer tus semanas una junto a otra, verás cuándo aparecen los sueños vívidos y qué vino antes.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=deuda-sueno-salud-suenos_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -300,13 +301,13 @@ Si duermes suficientes horas y aun así te levantas agotado, si alguien nota ron
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Art&iacute;culo anterior</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Cambio de hora y sue&ntilde;o: c&oacute;mo el horario de verano altera tus sue&ntilde;os</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Cambio de hora y sueño: lo que el horario de verano hace con tus noches y tus sueños</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="alteracion-sueno-primavera-suenos">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Siguiente art&iacute;culo</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Alteraci&oacute;n del sue&ntilde;o en primavera: c&oacute;mo los d&iacute;as m&aacute;s largos cambian tu descanso y tus sue&ntilde;os</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Alteración del sueño en primavera: cómo los días más largos cambian tu descanso y tus sueños</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -322,12 +323,12 @@ Si duermes suficientes horas y aun así te levantas agotado, si alguien nota ron
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia del sue&ntilde;o</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sue&ntilde;o REM y sue&ntilde;os: entendiendo el reinicio nocturno de tu cerebro</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños: qué pasa de verdad en tu cerebro por la noche</h3>
 <p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="horario-verano-sueno-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salud</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Cambio de hora y sue&ntilde;o: c&oacute;mo el horario de verano altera tus sue&ntilde;os</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cambio de hora y sueño: lo que el horario de verano hace con tus noches y tus sueños</h3>
 <p class="text-sm text-gray-400">C&oacute;mo la transici&oacute;n al horario de verano afecta tu ritmo circadiano y tus patrones on&iacute;ricos.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/es/blog/">

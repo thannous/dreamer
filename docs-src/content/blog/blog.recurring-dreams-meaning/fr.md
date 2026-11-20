@@ -292,21 +292,7 @@
 <p>
                     Comparez une association personnelle avec une explication plus littérale tirée du quotidien. Si aucune ne convient, laissez la question ouverte.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Comparez vos rêves récurrents avec Noctalia</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia vous aide à conserver les motifs, les émotions et les changements entre les épisodes.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-                                Découvrir Noctalia <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="arreter">Ce qui peut aider face aux cauchemars récurrents</h2>
 <p>
                     Ces approches concernent surtout les cauchemars récurrents, et aucune ne garantit l’arrêt du rêve :
@@ -377,9 +363,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia rassemble les motifs, les émotions et les changements afin de comparer les épisodes sans leur attribuer automatiquement un sens fixe.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Découvrir Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=signification-reves-recurrents_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -416,7 +403,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article précédent</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Pourquoi oublie-t-on ses rêves au réveil ? Les explications scientifiques</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Pourquoi oublie-t-on ses rêves au réveil ? Ce que dit la science</div>
       </div>
     </a>
     <a href="guide-reve-lucide-debutant" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -439,18 +426,18 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="reves-dents-qui-tombent" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de perdre ses dents : signification et interprétation</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de dents qui tombent : 7 pistes pour comprendre ce rêve</h3>
             <p class="text-sm text-gray-400">Pourquoi rêvez-vous de perdre vos dents ? Découvrez les 7 interprétations les plus courantes.</p>
         </a>
         <a href="reves-de-chute" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi rêvez-vous de tomber ?</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de chute : pourquoi on rêve de tomber, et ce que cela peut signifier</h3>
             <p class="text-sm text-gray-400">Pourquoi rêvez-vous de tomber dans le vide ? Découvrez la signification psychologique.</p>
         </a>
         <a href="reves-de-voler" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interprétation</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêves de voler : ce que ça signifie</h3>
-            <p class="text-sm text-gray-400">Pourquoi rêvez-vous de voler ? Découvrez ce que les rêves de vol révèlent sur la liberté et l'ambition.</p>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Rêver de voler : scénarios, émotions et signification</h3>
+            <p class="text-sm text-gray-400">Voler sans effort, ne pas réussir à décoller ou avoir peur de tomber : explorez les scénarios et vos émotions, en distinguant vol et rêve lucide.</p>
         </a>
   </div>
 </section>

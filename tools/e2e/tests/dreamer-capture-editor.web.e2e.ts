@@ -61,8 +61,8 @@ function editorStyle(browser: Browser, property: 'backgroundColor' | 'color') {
   }, property);
 }
 
-test('capture gives the story room, respects explicit and automatic themes, and saves the exact draft', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('capture gives the story room, respects explicit and automatic themes, and saves the exact draft', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await startFrenchCapture(fixtures);
   const editor = screen.getByTestId('input.dreamTranscript');
   const save = screen.getByTestId('btn.saveDream');
@@ -107,8 +107,8 @@ test('capture gives the story room, respects explicit and automatic themes, and 
   await app.screenshot('capture-saved');
 });
 
-test('capture keeps long and fragmentary stories editable with a reachable save action in short windows', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('capture keeps long and fragmentary stories editable with a reachable save action in short windows', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await startFrenchCapture(fixtures);
   const editor = screen.getByTestId('input.dreamTranscript');
   const save = screen.getByTestId('btn.saveDream');
@@ -130,8 +130,8 @@ test('capture keeps long and fragmentary stories editable with a reachable save 
   await expect(save).toBeDisabled();
 });
 
-test('capture stops a dream at 20,000 characters and its count shows the maximum only near it', options, async fixtures => {
-  const { screen, app } = fixtures;
+test('capture stops a dream at 20,000 characters and its count shows the maximum only near it', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await startFrenchCapture(fixtures);
   const editor = screen.getByTestId('input.dreamTranscript');
   const counter = screen.getByTestId('component.recording.draftProgress.count');

@@ -30,7 +30,7 @@
   "preloadImage": "",
   "jsonLd": [
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Blog\",\n  \"name\": \"Risorse Noctalia\",\n  \"description\": \"Articoli e guide su sogni, interpretazione e sogni lucidi\",\n  \"url\": \"https://noctalia.app/it/blog/\",\n  \"inLanguage\": \"it\",\n  \"publisher\": {\n    \"@type\": \"Organization\",\n    \"name\": \"Noctalia\",\n    \"logo\": {\n      \"@type\": \"ImageObject\",\n      \"url\": \"https://noctalia.app/logo/logo_noctalia.png\"\n    }\n  }\n}",
-    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"numberOfItems\": 50,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"url\": \"https://noctalia.app/it/blog/sognare-esame-significato\",\n      \"name\": \"Sognare un esame: significato se non hai studiato, passi o fallisci\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"url\": \"https://noctalia.app/it/blog/come-ricordare-i-tuoi-sogni-10-tecniche-efficaci\",\n      \"name\": \"Come ricordare i tuoi sogni: 10 tecniche pratiche\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"url\": \"https://noctalia.app/it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica\",\n      \"name\": \"Perché dimentichiamo i nostri sogni? La scienza dietro l'amnesia onirica\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti\",\n      \"name\": \"Sogni ricorrenti: possibili cause e cosa può aiutare\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"url\": \"https://noctalia.app/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti\",\n      \"name\": \"Guida ai sogni lucidi per principianti: prendi il controllo delle tue notti\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"url\": \"https://noctalia.app/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne\",\n      \"name\": \"Diario dei sogni: metodo semplice per iniziare stasera\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"url\": \"https://noctalia.app/it/blog/falso-risveglio-sogno\",\n      \"name\": \"Falso risveglio: sognare di essersi già svegliati\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"url\": \"https://noctalia.app/it/blog/sognare-tornare-scuola\",\n      \"name\": \"Sognare di tornare a scuola: vecchia scuola, primo giorno e stress da rientro\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"url\": \"https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini\",\n      \"name\": \"Incubi da rientro a scuola nei bambini: stress, sonno e routine della sera\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"url\": \"https://noctalia.app/it/blog/sogni-climatici-eco-ansia\",\n      \"name\": \"Sogni climatici: quando l'eco-ansia entra nelle tue notti\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"url\": \"https://noctalia.app/it/blog/ondata-calore-sonno-sogni\",\n      \"name\": \"Ondata di calore, sonno e sogni: perché le notti calde disturbano il ricordo\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 12,\n      \"url\": \"https://noctalia.app/it/blog/vacanze-sonno-sogni\",\n      \"name\": \"Vacanze, sonno e sogni: perché dormire altrove cambia le notti\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 13,\n      \"url\": \"https://noctalia.app/it/blog/rumore-notturno-sonno-sogni\",\n      \"name\": \"Rumore notturno, sonno e sogni: perché una notte rumorosa resta in memoria\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 14,\n      \"url\": \"https://noctalia.app/it/blog/risveglio-notturno-ricordo-sogni\",\n      \"name\": \"Risveglio notturno e ricordo dei sogni: trasformare una pausa in memoria utile\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 15,\n      \"url\": \"https://noctalia.app/it/blog/incubi-caldo-stress\",\n      \"name\": \"Caldo, stress e incubi: perché possono sembrare più intensi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 16,\n      \"url\": \"https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026\",\n      \"name\": \"I sogni regolano le emozioni? Cosa mostra davvero uno studio del 2026\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 17,\n      \"url\": \"https://noctalia.app/it/blog/privacy-ia-diario-sogni\",\n      \"name\": \"Privacy, IA e diario dei sogni: domande prima di scrivere\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 18,\n      \"url\": \"https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici\",\n      \"name\": \"Sognare da svegli: gli stati onirici non appartengono solo al sonno\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 19,\n      \"url\": \"https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius\",\n      \"name\": \"Quando i sogni sembrano troppo reali: che cosa propone il modello MÖBIUS\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 20,\n      \"url\": \"https://noctalia.app/it/blog/sogni-non-casuali-studio-ia\",\n      \"name\": \"I sogni non sono casuali: cosa rivela uno studio IA del 2026\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 21,\n      \"url\": \"https://noctalia.app/it/blog/sogni-vividi-sonno-riparatore\",\n      \"name\": \"Sogni vividi e sonno riparatore: cosa mostra lo studio PLOS Biology\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 22,\n      \"url\": \"https://noctalia.app/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione\",\n      \"name\": \"Sogni che cadono i denti: significato e interpretazione\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 23,\n      \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere\",\n      \"name\": \"Significato dei sogni che cadono: perché sogni di cadere\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 24,\n      \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\",\n      \"name\": \"Significato dei sogni in volo: cosa significa volare nei tuoi sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 25,\n      \"url\": \"https://noctalia.app/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo\",\n      \"name\": \"Sognare serpenti: significato, comportamento e contesto\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 26,\n      \"url\": \"https://noctalia.app/it/blog/incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera\",\n      \"name\": \"Incubazione dei sogni: come sognare esattamente ciò che vuoi stasera\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 27,\n      \"url\": \"https://noctalia.app/it/blog/i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi\",\n      \"name\": \"I sogni possono predire il futuro? La sorprendente scienza dei sogni precognitivi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 28,\n      \"url\": \"https://noctalia.app/it/blog/sogni-inseguiti-significato-e-interpretazione\",\n      \"name\": \"Sogni inseguiti: significato e interpretazione\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 29,\n      \"url\": \"https://noctalia.app/it/blog/sogni-sulla-morte-significato-e-interpretazione\",\n      \"name\": \"Sogni sulla morte: significato e interpretazione\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 30,\n      \"url\": \"https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione\",\n      \"name\": \"Sognare acqua e alluvioni: significato in base ai dettagli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 31,\n      \"url\": \"https://noctalia.app/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente\",\n      \"name\": \"Sogni sul tuo ex: cosa significano veramente\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 32,\n      \"url\": \"https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta\",\n      \"name\": \"Sogni di gravidanza: cosa significano (anche se non sei incinta)\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 33,\n      \"url\": \"https://noctalia.app/it/blog/incubi-cause-significato-e-come-fermarli\",\n      \"name\": \"Incubi: cause, significato e come fermarli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 34,\n      \"url\": \"https://noctalia.app/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla\",\n      \"name\": \"Spiegazione della paralisi del sonno: perché non puoi muoverti e come fermarla\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 35,\n      \"url\": \"https://noctalia.app/it/blog/sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente\",\n      \"name\": \"Sogni e salute mentale: come il sonno rivela la tua mente\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 36,\n      \"url\": \"https://noctalia.app/it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne\",\n      \"name\": \"Perché sogniamo? La scienza dietro le tue avventure notturne\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 37,\n      \"url\": \"https://noctalia.app/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello\",\n      \"name\": \"Sonno REM e sogni: comprendere il ripristino notturno del cervello\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 38,\n      \"url\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\",\n      \"name\": \"La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 39,\n      \"url\": \"https://noctalia.app/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno\",\n      \"name\": \"Sogni stressanti sul lavoro: perché il tuo lavoro ti segue nel sonno\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 40,\n      \"url\": \"https://noctalia.app/it/blog/sogni-e-creativita\",\n      \"name\": \"Sogni e creatività: come il cervello addormentato risolve i problemi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 41,\n      \"url\": \"https://noctalia.app/it/blog/sogni-ansia-significato\",\n      \"name\": \"Sogni d'ansia: perché li fai e come fermarli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 42,\n      \"url\": \"https://noctalia.app/it/blog/guida-sogni-bambini\",\n      \"name\": \"Sogni dei bambini: di cosa sognano e come aiutarli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 43,\n      \"url\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\",\n      \"name\": \"Giornata del Sonno 2026: come il tuo ambiente trasforma i tuoi sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 44,\n      \"url\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\",\n      \"name\": \"L'IA che analizza il tuo sonno: la rivoluzione SleepFM di Stanford\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 45,\n      \"url\": \"https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi\",\n      \"name\": \"Controllare i sogni per risolvere problemi: lo studio che cambia tutto\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 46,\n      \"url\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\",\n      \"name\": \"Ora legale e sonno: come il cambio dell'ora altera i tuoi sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 47,\n      \"url\": \"https://noctalia.app/it/blog/debito-sonno-salute-sogni\",\n      \"name\": \"Debito di sonno e privazione cronica: come influiscono sulla salute e sui sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 48,\n      \"url\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\",\n      \"name\": \"Disturbo del sonno in primavera: come le giornate più lunghe alterano il sonno e i sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 49,\n      \"url\": \"https://noctalia.app/it/blog/sonno-salute-priorita\",\n      \"name\": \"Il sonno come leva di salute numero uno: lo studio OHSU che cambia tutto\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 50,\n      \"url\": \"https://noctalia.app/it/blog/tracker-sonno-wearable-sogni\",\n      \"name\": \"Tracker del sonno wearable e sogni: cosa misurano e cosa sfugge loro\"\n    }\n  ]\n}",
+    "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"ItemList\",\n  \"numberOfItems\": 50,\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"url\": \"https://noctalia.app/it/blog/sognare-esame-significato\",\n      \"name\": \"Sognare un esame: significato se non hai studiato, passi o fallisci\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"url\": \"https://noctalia.app/it/blog/come-ricordare-i-tuoi-sogni-10-tecniche-efficaci\",\n      \"name\": \"Come ricordare i tuoi sogni: 10 tecniche pratiche\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 3,\n      \"url\": \"https://noctalia.app/it/blog/perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica\",\n      \"name\": \"Perché dimentichiamo i nostri sogni? La scienza dietro l'amnesia onirica\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 4,\n      \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti\",\n      \"name\": \"Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 5,\n      \"url\": \"https://noctalia.app/it/blog/guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti\",\n      \"name\": \"Sogni lucidi per principianti: diario, controlli di realtà e tecnica MILD\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 6,\n      \"url\": \"https://noctalia.app/it/blog/dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne\",\n      \"name\": \"Diario dei sogni: metodo semplice per iniziare stasera\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 7,\n      \"url\": \"https://noctalia.app/it/blog/falso-risveglio-sogno\",\n      \"name\": \"Falso risveglio: sognare di essersi già svegliati\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 8,\n      \"url\": \"https://noctalia.app/it/blog/sognare-tornare-scuola\",\n      \"name\": \"Sognare di tornare a scuola: vecchia scuola, primo giorno e stress da rientro\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 9,\n      \"url\": \"https://noctalia.app/it/blog/incubi-rientro-scolastico-bambini\",\n      \"name\": \"Incubi da rientro a scuola nei bambini: stress, sonno e routine della sera\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 10,\n      \"url\": \"https://noctalia.app/it/blog/sogni-climatici-eco-ansia\",\n      \"name\": \"Sogni climatici: quando l'eco-ansia entra nelle tue notti\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 11,\n      \"url\": \"https://noctalia.app/it/blog/ondata-calore-sonno-sogni\",\n      \"name\": \"Ondata di calore, sonno e sogni: perché le notti calde cambiano ciò che ricordi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 12,\n      \"url\": \"https://noctalia.app/it/blog/vacanze-sonno-sogni\",\n      \"name\": \"Vacanze, sonno e sogni: perché le tue notti cambiano lontano da casa\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 13,\n      \"url\": \"https://noctalia.app/it/blog/rumore-notturno-sonno-sogni\",\n      \"name\": \"Rumore notturno, sonno e sogni: perché una notte rumorosa resta in memoria\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 14,\n      \"url\": \"https://noctalia.app/it/blog/risveglio-notturno-ricordo-sogni\",\n      \"name\": \"Risveglio notturno e ricordo dei sogni: come salvare il sogno e riaddormentarti\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 15,\n      \"url\": \"https://noctalia.app/it/blog/incubi-caldo-stress\",\n      \"name\": \"Caldo, stress e incubi: perché nelle notti afose sembrano più intensi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 16,\n      \"url\": \"https://noctalia.app/it/blog/sogni-regolazione-emozioni-studio-2026\",\n      \"name\": \"I sogni regolano le emozioni? Cosa mostra davvero uno studio del 2026\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 17,\n      \"url\": \"https://noctalia.app/it/blog/privacy-ia-diario-sogni\",\n      \"name\": \"Privacy, IA e diario dei sogni: cosa controllare prima di scrivere\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 18,\n      \"url\": \"https://noctalia.app/it/blog/sognare-da-svegli-stati-onirici\",\n      \"name\": \"Sognare da svegli: gli stati onirici non appartengono solo al sonno\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 19,\n      \"url\": \"https://noctalia.app/it/blog/sogni-troppo-reali-modello-mobius\",\n      \"name\": \"Quando i sogni sembrano troppo reali: che cosa propone il modello MÖBIUS\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 20,\n      \"url\": \"https://noctalia.app/it/blog/sogni-non-casuali-studio-ia\",\n      \"name\": \"I sogni non sono casuali: cosa ha trovato davvero uno studio IA del 2026\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 21,\n      \"url\": \"https://noctalia.app/it/blog/sogni-vividi-sonno-riparatore\",\n      \"name\": \"Sogni vividi e sonno riparatore: cosa mostra lo studio PLOS Biology\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 22,\n      \"url\": \"https://noctalia.app/it/blog/sogni-di-denti-che-cadono-significato-e-interpretazione\",\n      \"name\": \"Sognare denti che cadono o si sgretolano: scenari e ricerca\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 23,\n      \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-che-cadono-perche-sogni-di-cadere\",\n      \"name\": \"Sognare di cadere: significato, scenari e risvegli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 24,\n      \"url\": \"https://noctalia.app/it/blog/significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni\",\n      \"name\": \"Sognare di volare: il significato dipende da come volavi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 25,\n      \"url\": \"https://noctalia.app/it/blog/sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo\",\n      \"name\": \"Sognare serpenti: significato, comportamento e contesto\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 26,\n      \"url\": \"https://noctalia.app/it/blog/incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera\",\n      \"name\": \"Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 27,\n      \"url\": \"https://noctalia.app/it/blog/i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi\",\n      \"name\": \"I sogni possono predire il futuro? La sorprendente scienza dei sogni precognitivi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 28,\n      \"url\": \"https://noctalia.app/it/blog/sogni-inseguiti-significato-e-interpretazione\",\n      \"name\": \"Sognare di essere inseguiti: perché è un sogno così frequente e cosa può significare\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 29,\n      \"url\": \"https://noctalia.app/it/blog/sogni-sulla-morte-significato-e-interpretazione\",\n      \"name\": \"Sogni sulla morte: significato e cosa non annunciano\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 30,\n      \"url\": \"https://noctalia.app/it/blog/sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione\",\n      \"name\": \"Sognare acqua e alluvioni: significato in base ai dettagli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 31,\n      \"url\": \"https://noctalia.app/it/blog/sogni-sul-tuo-ex-cosa-significano-veramente\",\n      \"name\": \"Sognare il tuo ex: cosa può significare e cosa non dimostra\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 32,\n      \"url\": \"https://noctalia.app/it/blog/sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta\",\n      \"name\": \"Sogni di gravidanza: cosa possono significare, anche se non sei incinta\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 33,\n      \"url\": \"https://noctalia.app/it/blog/incubi-cause-significato-e-come-fermarli\",\n      \"name\": \"Incubi: cause, significato e come fermarli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 34,\n      \"url\": \"https://noctalia.app/it/blog/la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla\",\n      \"name\": \"Paralisi del sonno: perché non riesci a muoverti e come uscirne\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 35,\n      \"url\": \"https://noctalia.app/it/blog/sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente\",\n      \"name\": \"Sogni e salute mentale: cosa possono dire di te le tue notti, e cosa no\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 36,\n      \"url\": \"https://noctalia.app/it/blog/perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne\",\n      \"name\": \"Perché sogniamo? Cosa sa la scienza e cosa ancora non sa\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 37,\n      \"url\": \"https://noctalia.app/it/blog/sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello\",\n      \"name\": \"Sonno REM e sogni: cosa succede davvero nel tuo cervello di notte\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 38,\n      \"url\": \"https://noctalia.app/it/blog/la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna\",\n      \"name\": \"La storia dell'interpretazione dei sogni: dai templi antichi alla scienza moderna\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 39,\n      \"url\": \"https://noctalia.app/it/blog/sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno\",\n      \"name\": \"Sogni stressanti sul lavoro: perché il tuo lavoro ti segue nel sonno\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 40,\n      \"url\": \"https://noctalia.app/it/blog/sogni-e-creativita\",\n      \"name\": \"Sogni e creatività: come il cervello addormentato aiuta a risolvere i problemi\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 41,\n      \"url\": \"https://noctalia.app/it/blog/sogni-ansia-significato\",\n      \"name\": \"Sogni d'ansia: perché li fai e cosa aiuta davvero\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 42,\n      \"url\": \"https://noctalia.app/it/blog/guida-sogni-bambini\",\n      \"name\": \"Sogni dei bambini: di cosa sognano e come aiutarli\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 43,\n      \"url\": \"https://noctalia.app/it/blog/giornata-sonno-ambiente-sogni\",\n      \"name\": \"Giornata del Sonno 2026: come la tua camera influisce sui tuoi sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 44,\n      \"url\": \"https://noctalia.app/it/blog/ia-analisi-sonno-sogni\",\n      \"name\": \"L'IA che analizza il tuo sonno: che cosa sa fare SleepFM di Stanford, e i suoi limiti\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 45,\n      \"url\": \"https://noctalia.app/it/blog/controllare-sogni-risoluzione-problemi\",\n      \"name\": \"Controllare i sogni per risolvere problemi: cosa mostra davvero lo studio di Northwestern\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 46,\n      \"url\": \"https://noctalia.app/it/blog/ora-legale-sonno-sogni\",\n      \"name\": \"Ora legale e sonno: cosa fa il cambio dell'ora alle tue notti e ai tuoi sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 47,\n      \"url\": \"https://noctalia.app/it/blog/debito-sonno-salute-sogni\",\n      \"name\": \"Debito di sonno e privazione cronica: come influiscono sulla salute e sui sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 48,\n      \"url\": \"https://noctalia.app/it/blog/disturbo-sonno-primavera-sogni\",\n      \"name\": \"Disturbo del sonno in primavera: come le giornate più lunghe cambiano il riposo e i sogni\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 49,\n      \"url\": \"https://noctalia.app/it/blog/sonno-salute-priorita\",\n      \"name\": \"Il sonno è la tua prima leva di salute? Cosa mostra davvero lo studio OHSU\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 50,\n      \"url\": \"https://noctalia.app/it/blog/tracker-sonno-wearable-sogni\",\n      \"name\": \"Tracker del sonno wearable e sogni: cosa misurano e cosa sfugge loro\"\n    }\n  ]\n}",
     "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"BreadcrumbList\",\n  \"itemListElement\": [\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 1,\n      \"name\": \"Home\",\n      \"item\": \"https://noctalia.app/it/\"\n    },\n    {\n      \"@type\": \"ListItem\",\n      \"position\": 2,\n      \"name\": \"Risorse\",\n      \"item\": \"https://noctalia.app/it/blog/\"\n    }\n  ]\n}"
   ],
   "activeNav": "resources"
@@ -212,7 +212,7 @@
 <!-- Articles Grid -->
 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="articles-grid" id="articlesGrid">
 <!-- Article - blog.false-awakening-dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="7" data-title="Falso risveglio: sognare di essersi svegliati">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="7" data-title="Falso risveglio: sognare di essersi già svegliati">
 <a class="block" href="falso-risveglio-sogno">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Luce morbida del sonno REM intorno a una persona addormentata, come un sogno che sembra un risveglio" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="800">
@@ -223,7 +223,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guida</span>
 <span class="text-xs text-purple-300/60">7 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Falso risveglio: sognare di essersi svegliati</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Falso risveglio: sognare di essersi già svegliati
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Riconoscere un falso risveglio, distinguerlo dalla paralisi del sonno e annotare ciò che è successo.</p>
 </div>
 </a>
@@ -240,7 +242,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interpretazione</span>
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Sognare di tornare a scuola: vecchia scuola, primo giorno e stress da rientro</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Sognare di tornare a scuola: vecchia scuola, primo giorno e stress da rientro
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Vecchia scuola, primo giorno, ritardo: cosa raccontano questi sogni da rientro delle tue transizioni.</p>
 </div>
 </a>
@@ -257,14 +261,16 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Guida</span>
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Incubi da rientro a scuola nei bambini: stress, sonno e routine della sera</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Incubi da rientro a scuola nei bambini: stress, sonno e routine della sera
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Perché il rientro scatena incubi nei bambini e la routine della sera che calma.</p>
 </div>
 </a>
 </article>
 
 <!-- Article - Climate Dreams Eco Anxiety -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Sogni climatici: quando l'eco-ansia entra di notte">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Sogni climatici: quando l&#x27;eco-ansia entra nelle tue notti">
 <a class="block" href="sogni-climatici-eco-ansia">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Persona addormentata con un sogno di onda, fiamme e nuvola di pioggia sopra il letto" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/climate-dreams-eco-anxiety.webp" srcset="../../img/blog/climate-dreams-eco-anxiety-480w.webp 480w ../../img/blog/climate-dreams-eco-anxiety-800w.webp 800w ../../img/blog/climate-dreams-eco-anxiety-1200w.webp 1200w" width="800">
@@ -275,13 +281,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Stagione</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Sogni climatici: quando l'eco-ansia entra di notte</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Sogni climatici: quando l'eco-ansia entra nelle tue notti
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Perché alluvioni, incendi e tempeste attraversano i tuoi sogni e come annotarli senza alimentarli.</p>
 </div>
 </a>
 </article>
 <!-- Article - Ondata Calore Sonno Sogni -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Perché il caldo fa sembrare i sogni più vividi">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Ondata di calore, sonno e sogni: perché le notti calde cambiano ciò che ricordi">
 <a class="block" href="ondata-calore-sonno-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Camera calda di notte con frammenti di sogni sopra il letto" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="800">
@@ -292,13 +300,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Stagione</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Perché il caldo fa sembrare i sogni più vividi</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Ondata di calore, sonno e sogni: perché le notti calde cambiano ciò che ricordi
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Perché le notti calde frammentano il sonno e cambiano il modo in cui ricordi i sogni.</p>
 </div>
 </a>
 </article>
 <!-- Article - Vacanze Sonno Sogni -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Vacanze, sonno e sogni: dormire meglio altrove">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Vacanze, sonno e sogni: perché le tue notti cambiano lontano da casa">
 <a class="block" href="vacanze-sonno-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Camera da letto tranquilla in viaggio con luce morbida e diario dei sogni" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-day-environment-dreams.webp" srcset="../../img/blog/sleep-day-environment-dreams-480w.webp 480w, ../../img/blog/sleep-day-environment-dreams-800w.webp 800w, ../../img/blog/sleep-day-environment-dreams-1200w.webp 1200w" width="800">
@@ -309,13 +319,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Stagione</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Vacanze, sonno e sogni: dormire meglio altrove</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Vacanze, sonno e sogni: perché le tue notti cambiano lontano da casa
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Perché letto nuovo, caldo e orari spostati rendono i sogni più memorabili.</p>
 </div>
 </a>
 </article>
 <!-- Article - Rumore Notturno Sonno Sogni -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Rumore notturno, sonno e sogni">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Rumore notturno, sonno e sogni: perché una notte rumorosa resta in memoria">
 <a class="block" href="rumore-notturno-sonno-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Camera notturna con rumore lontano e diario dei sogni accanto al letto" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-day-environment-dreams.webp" srcset="../../img/blog/sleep-day-environment-dreams-480w.webp 480w, ../../img/blog/sleep-day-environment-dreams-800w.webp 800w, ../../img/blog/sleep-day-environment-dreams-1200w.webp 1200w" width="800">
@@ -326,13 +338,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Stagione</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Rumore notturno, sonno e sogni</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Rumore notturno, sonno e sogni: perché una notte rumorosa resta in memoria
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Rumore di strada, vicini, hotel o climatizzatore: come i microrisvegli cambiano il ricordo dei sogni e cosa annotare al mattino.</p>
 </div>
 </a>
 </article>
 <!-- Article - Risveglio Notturno Ricordo Sogni -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Risveglio notturno e ricordo dei sogni">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Risveglio notturno e ricordo dei sogni: come salvare il sogno e riaddormentarti">
 <a class="block" href="risveglio-notturno-ricordo-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Diario dei sogni illuminato vicino al letto dopo un risveglio notturno" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -343,13 +357,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Scienza</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Risveglio notturno e ricordo dei sogni</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Risveglio notturno e ricordo dei sogni: come salvare il sogno e riaddormentarti
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Perché svegliarsi di notte può migliorare il ricordo dei sogni, cosa annotare nei primi 90 secondi e quando dare priorità al sonno.</p>
 </div>
 </a>
 </article>
 <!-- Article - Incubi Caldo Stress -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Caldo, stress e incubi: cosa fare per dormire">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="Caldo, stress e incubi: perché nelle notti afose sembrano più intensi">
 <a class="block" href="incubi-caldo-stress">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Persona sveglia in una camera calda dopo un sogno angosciante" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="800">
@@ -360,13 +376,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Stagione</span>
 <span class="text-xs text-purple-300/60">7 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Caldo, stress e incubi: cosa fare per dormire</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Caldo, stress e incubi: perché nelle notti afose sembrano più intensi
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Perché una notte calda o tesa rende un incubo più presente e cosa aiuta senza sovrainterpretarlo.</p>
 </div>
 </a>
 </article>
 <!-- Article - Studio Sogni Regolazione Emozioni -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="I sogni regolano le emozioni? Cosa mostra uno studio del 2026">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="I sogni regolano le emozioni? Cosa mostra davvero uno studio del 2026">
 <a class="block" href="sogni-regolazione-emozioni-studio-2026">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Frammenti di sogno che passano dalla paura alla calma prima del mattino" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -377,13 +395,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Scienza</span>
 <span class="text-xs text-purple-300/60">7 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">I sogni regolano le emozioni? Studio 2026</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                I sogni regolano le emozioni? Cosa mostra davvero uno studio del 2026
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">La paura onirica non ha predetto sollievo immediato. Lo studio di 4.715 giorni mostra un rapporto più complesso con l'umore.</p>
 </div>
 </a>
 </article>
 <!-- Article - Privacy IA Diario Sogni -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Privacy, IA e diario dei sogni: domande prima di scrivere">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Privacy, IA e diario dei sogni: cosa controllare prima di scrivere">
 <a class="block" href="privacy-ia-diario-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Frammenti di memoria onirica protetti in una luce notturna" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="eager" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -394,7 +414,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">IA</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Privacy, IA e diario dei sogni</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Privacy, IA e diario dei sogni: cosa controllare prima di scrivere
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Cosa controllare prima di affidare sogni intimi a un diario con IA.</p>
 </div>
 </a>
@@ -411,13 +433,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Sognare da svegli: gli stati onirici non appartengono solo al sonno</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Sognare da svegli: gli stati onirici non appartengono solo al sonno
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Uno studio di Cell Reports mostra che stati simili al sogno possono emergere durante la veglia.</p>
 </div>
 </a>
 </article>
 <!-- Article - Dreams Feel Real Mobius Model -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Sogni troppo reali: che cosa propone il modello MÖBIUS">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Quando i sogni sembrano troppo reali: che cosa propone il modello MÖBIUS">
 <a class="block" href="sogni-troppo-reali-modello-mobius">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Persona addormentata circondata da luce onirica e onde del sonno REM" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="800">
@@ -428,13 +452,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Sogni troppo reali: che cosa propone il modello MÖBIUS</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Quando i sogni sembrano troppo reali: che cosa propone il modello MÖBIUS
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Un modello di Communications Biology esplora perché alcuni sogni sembrano ricordi reali.</p>
 </div>
 </a>
 </article>
 <!-- Article - Sogni Non Casuali IA -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="I sogni non sono casuali: cosa rivela uno studio IA del 2026">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="I sogni non sono casuali: cosa ha trovato davvero uno studio IA del 2026">
 <a class="block" href="sogni-non-casuali-studio-ia">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Frammenti di memoria onirica che formano un motivo luminoso nella notte" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-memory-hero.webp" srcset="../../img/blog/dream-memory-hero-480w.webp 480w, ../../img/blog/dream-memory-hero-800w.webp 800w, ../../img/blog/dream-memory-hero-1200w.webp 1200w" width="800">
@@ -445,7 +471,9 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">I sogni non sono casuali: cosa rivela uno studio IA del 2026</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                I sogni non sono casuali: cosa ha trovato davvero uno studio IA del 2026
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Un nuovo studio mostra come i sogni trasformano vita quotidiana, personalità e contesto emotivo.</p>
 </div>
 </a>
@@ -462,13 +490,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Science</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Sogni vividi e sonno riparatore: cosa mostra lo studio PLOS Biology</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Sogni vividi e sonno riparatore: cosa mostra lo studio PLOS Biology
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Una ricerca recente suggerisce che i sogni immersivi possono rendere il sonno più profondo.</p>
 </div>
 </a>
 </article>
 <!-- Article - Exam Dreams Seasonal -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Sognare un esame: passare, fallire o non aver studiato">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="5" data-title="Sognare un esame: significato se non hai studiato, passi o fallisci">
 <a class="block" href="sognare-esame-significato">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sognare un esame: passare, fallire o non aver studiato" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="800">
@@ -479,13 +509,15 @@
 <span class="text-xs font-mono text-dream-salmon border border-dream-salmon/30 rounded-full px-2 py-1 uppercase">Interpretazione</span>
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
-<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">Sognare un esame: passare, fallire o non aver studiato</h2>
+<h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
+                                Sognare un esame: significato se non hai studiato, passi o fallisci
+                            </h2>
 <p class="text-sm text-gray-400 line-clamp-2">Una guida stagionale per capire sogni d’esame e paura del giudizio.</p>
 </div>
 </a>
 </article>
 <!-- Article - Why We Forget Dreams (NEW) -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Perché dimentichiamo i sogni? La scienza dietro l'amnesia onirica">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Perché dimentichiamo i nostri sogni? La scienza dietro l&#x27;amnesia onirica">
 <a class="block" href="perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Why we forget our dreams" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/why-we-forget-dreams.webp" srcset="../../img/blog/why-we-forget-dreams-480w.webp 480w, ../../img/blog/why-we-forget-dreams-800w.webp 800w, ../../img/blog/why-we-forget-dreams-1200w.webp 1200w" width="800">
@@ -497,7 +529,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Perché dimentichiamo i nostri sogni?
+                                Perché dimentichiamo i nostri sogni? La scienza dietro l'amnesia onirica
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché i sogni svaniscono pochi minuti dopo il risveglio, che ruolo hanno il sonno REM e la memoria, e abitudini semplici per ricordarne di più.
@@ -506,7 +538,7 @@
 </a>
 </article>
 <!-- Article 2 - Recurring Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Significato dei sogni ricorrenti: comprendere i loro messaggi">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare">
 <a class="block" href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Dream symbols" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/recurring-dreams-meaning.webp" srcset="../../img/blog/recurring-dreams-meaning-480w.webp 480w, ../../img/blog/recurring-dreams-meaning-800w.webp 800w, ../../img/blog/recurring-dreams-meaning-1200w.webp 1200w" width="800">
@@ -517,7 +549,7 @@
 <span class="text-xs text-purple-300/60">3 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Significato dei sogni ricorrenti: comprendere i loro messaggi
+                                Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché lo stesso sogno ritorna, cosa annotare tra un episodio e l'altro e quando gli incubi ripetuti meritano un parere medico.
@@ -526,7 +558,7 @@
 </a>
 </article>
 <!-- Article 3 - Lucid Dreaming -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="lucid-dreams" data-reading-time="4" data-title="Sogni lucidi per principianti: prendi il controllo delle tue notti">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="lucid-dreams" data-reading-time="4" data-title="Sogni lucidi per principianti: diario, controlli di realtà e tecnica MILD">
 <a class="block" href="guida-ai-sogni-lucidi-per-principianti-prendi-il-controllo-delle-tue-notti">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Lucid dreaming" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/lucid-dreaming-beginners-guide.webp" srcset="../../img/blog/lucid-dreaming-beginners-guide-480w.webp 480w, ../../img/blog/lucid-dreaming-beginners-guide-800w.webp 800w, ../../img/blog/lucid-dreaming-beginners-guide-1200w.webp 1200w" width="800">
@@ -537,7 +569,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni lucidi per principianti: prendi il controllo delle tue notti
+                                Sogni lucidi per principianti: diario, controlli di realtà e tecnica MILD
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Come iniziare con i sogni lucidi tra diario dei sogni, segni onirici, controlli di realtà e tecnica MILD, senza perdere sonno.
@@ -546,7 +578,7 @@
 </a>
 </article>
 <!-- Article 4 - Teeth Falling Out Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sogni di denti che cadono: significato e interpretazione">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sognare denti che cadono o si sgretolano: scenari e ricerca">
 <a class="block" href="sogni-di-denti-che-cadono-significato-e-interpretazione">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Teeth falling out dreams" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/teeth-falling-out-dreams.webp" srcset="../../img/blog/teeth-falling-out-dreams-480w.webp 480w, ../../img/blog/teeth-falling-out-dreams-800w.webp 800w, ../../img/blog/teeth-falling-out-dreams-1200w.webp 1200w" width="800">
@@ -557,7 +589,7 @@
 <span class="text-xs text-purple-300/60">3 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni di denti che cadono: significato e interpretazione
+                                Sognare denti che cadono o si sgretolano: scenari e ricerca
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Denti che cadono, si muovono o si sgretolano in sogno, con gli scenari da confrontare, le emozioni in gioco e cosa dice la ricerca.
@@ -566,7 +598,7 @@
 </a>
 </article>
 <!-- Article 5 - Falling Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sogni di cadere: perché sogni di cadere nel vuoto">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sognare di cadere: significato, scenari e risvegli">
 <a class="block" href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Falling dreams" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/falling-dreams-meaning.webp" srcset="../../img/blog/falling-dreams-meaning-480w.webp 480w, ../../img/blog/falling-dreams-meaning-800w.webp 800w, ../../img/blog/falling-dreams-meaning-1200w.webp 1200w" width="800">
@@ -577,7 +609,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni di cadere: perché sogni di cadere nel vuoto
+                                Sognare di cadere: significato, scenari e risvegli
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché si sogna di cadere, dalla scossa ipnica all'addormentamento alle cadute lunghe, e cosa annotare al risveglio.
@@ -586,7 +618,7 @@
 </a>
 </article>
 <!-- Article 6 - Flying Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sogni di volare: cosa significa volare nei tuoi sogni">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sognare di volare: il significato dipende da come volavi">
 <a class="block" href="significato-dei-sogni-in-volo-cosa-significa-volare-nei-tuoi-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Flying dreams" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/flying-dreams-meaning.webp" srcset="../../img/blog/flying-dreams-meaning-480w.webp 480w, ../../img/blog/flying-dreams-meaning-800w.webp 800w, ../../img/blog/flying-dreams-meaning-1200w.webp 1200w" width="800">
@@ -597,7 +629,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni di volare: cosa significa volare nei tuoi sogni
+                                Sognare di volare: il significato dipende da come volavi
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa possono suggerire il volo senza sforzo, il decollo che non riesce o la fuga in volo, e cosa annotare al risveglio.
@@ -646,7 +678,7 @@
 </a>
 </article>
 <!-- Article 9 - Dream Incubation -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="3" data-title="Incubazione dei sogni: come sognare esattamente ciò che desideri stasera">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="3" data-title="Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti">
 <a class="block" href="incubazione-dei-sogni-come-sognare-esattamente-cio-che-desideri-stasera">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Dream incubation technique" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-incubation-guide.webp" srcset="../../img/blog/dream-incubation-guide-480w.webp 480w, ../../img/blog/dream-incubation-guide-800w.webp 800w, ../../img/blog/dream-incubation-guide-1200w.webp 1200w" width="800">
@@ -657,7 +689,7 @@
 <span class="text-xs text-purple-300/60">3 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Incubazione dei sogni: come sognare esattamente ciò che desideri stasera
+                                Incubazione dei sogni: come scegliere di cosa sognare stasera, e cosa aspettarti
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Un metodo in sei passi per scegliere una domanda prima di dormire e annotare ciò che torna al risveglio, con cosa dice la ricerca e i suoi limiti.
@@ -666,7 +698,7 @@
 </a>
 </article>
 <!-- Article 10 - Precognitive Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="4" data-title="I sogni possono predire il futuro? La scienza dei sogni precognitivi">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="4" data-title="I sogni possono predire il futuro? La sorprendente scienza dei sogni precognitivi">
 <a class="block" href="i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Precognitive dreams science" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/precognitive-dreams-science.webp" srcset="../../img/blog/precognitive-dreams-science-480w.webp 480w, ../../img/blog/precognitive-dreams-science-800w.webp 800w, ../../img/blog/precognitive-dreams-science-1200w.webp 1200w" width="800">
@@ -677,7 +709,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                I sogni possono predire il futuro? La scienza dei sogni precognitivi
+                                I sogni possono predire il futuro? La sorprendente scienza dei sogni precognitivi
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa dicono gli studi controllati sui sogni che sembrano predire il futuro, e come il caso e i bias della memoria spiegano molti episodi.
@@ -686,7 +718,7 @@
 </a>
 </article>
 <!-- Article 11 - Being Chased Dreams: Meaning and Interpretation -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sogni di essere inseguiti: significato e interpretazione">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sognare di essere inseguiti: perché è un sogno così frequente e cosa può significare">
 <a class="block" href="sogni-inseguiti-significato-e-interpretazione">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Dark corridor illustrating the feeling of being chased in a dream" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/being-chased-dreams.webp" srcset="../../img/blog/being-chased-dreams-480w.webp 480w, ../../img/blog/being-chased-dreams-800w.webp 800w, ../../img/blog/being-chased-dreams-1200w.webp 1200w" width="800">
@@ -697,7 +729,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni di essere inseguiti: significato e interpretazione
+                                Sognare di essere inseguiti: perché è un sogno così frequente e cosa può significare
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché i sogni di inseguimento sono così comuni, cosa possono dire l'inseguitore e il finale della scena, e cosa fare quando tornano.
@@ -706,7 +738,7 @@
 </a>
 </article>
 <!-- Article 12 - Dreams About Death: Meaning and Interpretation -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sogni sulla morte: significato e interpretazione">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="4" data-title="Sogni sulla morte: significato e cosa non annunciano">
 <a class="block" href="sogni-sulla-morte-significato-e-interpretazione">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Foggy forest representing transformation and the symbolic meaning of death" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/death-dreams-meaning.webp" srcset="../../img/blog/death-dreams-meaning-480w.webp 480w, ../../img/blog/death-dreams-meaning-800w.webp 800w, ../../img/blog/death-dreams-meaning-1200w.webp 1200w" width="800">
@@ -717,7 +749,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni sulla morte: significato e interpretazione
+                                Sogni sulla morte: significato e cosa non annunciano
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Sogni sulla propria morte, su quella di una persona cara o su chi non c'è più, letti attraverso ricordi, paura e lutto e non come presagi.
@@ -726,7 +758,7 @@
 </a>
 </article>
 <!-- Article 13 - Water Dreams: Meaning of Drowning, Ocean, and Flood Dreams -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sogni d'acqua: significato dei sogni di annegamento, oceano e inondazione">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sognare acqua e alluvioni: significato in base ai dettagli">
 <a class="block" href="sogni-acquatici-significato-dei-sogni-di-annegamento-oceano-e-inondazione">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Vast ocean surface representing the depths of the emotional subconscious" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/water-dreams-meaning.webp" srcset="../../img/blog/water-dreams-meaning-480w.webp 480w, ../../img/blog/water-dreams-meaning-800w.webp 800w, ../../img/blog/water-dreams-meaning-1200w.webp 1200w" width="800">
@@ -737,7 +769,7 @@
 <span class="text-xs text-purple-300/60">3 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni d'acqua: significato dei sogni di annegamento, oceano e inondazione
+                                Sognare acqua e alluvioni: significato in base ai dettagli
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa possono evocare un'alluvione, l'acqua che sale, una casa allagata o l'acqua limpida o torbida, e quali dettagli annotare al risveglio.
@@ -746,7 +778,7 @@
 </a>
 </article>
 <!-- Article 14 - Dreams About Your Ex: What They Really Mean -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sogni sul tuo ex: cosa significano veramente">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sognare il tuo ex: cosa può significare e cosa non dimostra">
 <a class="block" href="sogni-sul-tuo-ex-cosa-significano-veramente">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Reflective silhouette symbolizing memories of past relationships" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-about-ex.webp" srcset="../../img/blog/dreams-about-ex-480w.webp 480w, ../../img/blog/dreams-about-ex-800w.webp 800w, ../../img/blog/dreams-about-ex-1200w.webp 1200w" width="800">
@@ -757,7 +789,7 @@
 <span class="text-xs text-purple-300/60">3 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni sul tuo ex: cosa significano veramente
+                                Sognare il tuo ex: cosa può significare e cosa non dimostra
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa possono riflettere i sogni di riconciliazione, di litigio o dell'ex con una nuova persona, senza dare per scontato che tu voglia tornare insieme.
@@ -766,7 +798,7 @@
 </a>
 </article>
 <!-- Article 15 - Pregnancy Dreams: What They Mean (Even If You're Not Pregnant) -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sogni di gravidanza: cosa significano (anche se non sei incinta)">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="interpretation" data-reading-time="3" data-title="Sogni di gravidanza: cosa possono significare, anche se non sei incinta">
 <a class="block" href="sogni-di-gravidanza-cosa-significano-anche-se-non-sei-incinta">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Soft light and symbols representing growth and new beginnings" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/pregnancy-dreams-meaning.webp" srcset="../../img/blog/pregnancy-dreams-meaning-480w.webp 480w, ../../img/blog/pregnancy-dreams-meaning-800w.webp 800w, ../../img/blog/pregnancy-dreams-meaning-1200w.webp 1200w" width="800">
@@ -777,7 +809,7 @@
 <span class="text-xs text-purple-300/60">3 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni di gravidanza: cosa significano (anche se non sei incinta)
+                                Sogni di gravidanza: cosa possono significare, anche se non sei incinta
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa può significare sognare di essere incinta, di partorire o che un'altra persona aspetti un bambino, cosa dice la ricerca e cosa annotare.
@@ -806,7 +838,7 @@
 </a>
 </article>
 <!-- Article 17 - Sleep Paralysis Explained: Why You Can't Move and How to Stop It -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Paralisi del sonno: perché non puoi muoverti e come fermarla">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Paralisi del sonno: perché non riesci a muoverti e come uscirne">
 <a class="block" href="la-paralisi-del-sonno-spiegata-perche-non-puoi-muoverti-e-come-fermarla">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Deep purple and blue atmosphere depicting the state of sleep paralysis" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-paralysis-guide.webp" srcset="../../img/blog/sleep-paralysis-guide-480w.webp 480w, ../../img/blog/sleep-paralysis-guide-800w.webp 800w, ../../img/blog/sleep-paralysis-guide-1200w.webp 1200w" width="800">
@@ -817,7 +849,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Paralisi del sonno: perché non puoi muoverti e come fermarla
+                                Paralisi del sonno: perché non riesci a muoverti e come uscirne
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché a volte ci si sveglia senza riuscire a muoversi e con una presenza nella stanza, come superare un episodio e quando consultare un medico.
@@ -826,7 +858,7 @@
 </a>
 </article>
 <!-- Article 18 - Dream Journaling: The Complete Guide to Recording Your Night Adventures -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Diario dei sogni: la guida completa per registrare le tue avventure notturne">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="4" data-title="Diario dei sogni: metodo semplice per iniziare stasera">
 <a class="block" href="dream-journaling-la-guida-completa-per-registrare-le-tue-avventure-notturne">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Open dream journal with a pen on a wooden bedside table" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-journal-guide.webp" srcset="../../img/blog/dream-journal-guide-480w.webp 480w, ../../img/blog/dream-journal-guide-800w.webp 800w, ../../img/blog/dream-journal-guide-1200w.webp 1200w" width="800">
@@ -837,7 +869,7 @@
 <span class="text-xs text-purple-300/60">4 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Diario dei sogni: la guida completa per registrare le tue avventure notturne
+                                Diario dei sogni: metodo semplice per iniziare stasera
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa scrivere nel diario dei sogni al risveglio, con un modello in 60 secondi, un esempio di annotazione e abitudini per ricordare più sogni.
@@ -846,7 +878,7 @@
 </a>
 </article>
 <!-- Article 19 - Dreams and Mental Health: How Your Sleep Reveals Your Mind -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Sogni e salute mentale: come il tuo sonno rivela la tua mente">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Sogni e salute mentale: cosa possono dire di te le tue notti, e cosa no">
 <a class="block" href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Person in peaceful contemplation of their inner mental landscape" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-mental-health.webp" srcset="../../img/blog/dreams-mental-health-480w.webp 480w, ../../img/blog/dreams-mental-health-800w.webp 800w, ../../img/blog/dreams-mental-health-1200w.webp 1200w" width="800">
@@ -857,7 +889,7 @@
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni e salute mentale: come il tuo sonno rivela la tua mente
+                                Sogni e salute mentale: cosa possono dire di te le tue notti, e cosa no
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Come ansia, depressione, stress e trauma compaiono nei sogni, e quando gli incubi frequenti meritano di essere affrontati con un professionista.
@@ -866,7 +898,7 @@
 </a>
 </article>
 <!-- Article 20 - Why Do We Dream? The Science Behind Your Nightly Adventures -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Perché sogniamo? La scienza dietro le tue avventure notturne">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Perché sogniamo? Cosa sa la scienza e cosa ancora non sa">
 <a class="block" href="perche-sogniamo-la-scienza-dietro-le-tue-avventure-notturne">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Glowing neural connections inside a human brain silhouette" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/why-we-dream-science.webp" srcset="../../img/blog/why-we-dream-science-480w.webp 480w, ../../img/blog/why-we-dream-science-800w.webp 800w, ../../img/blog/why-we-dream-science-1200w.webp 1200w" width="800">
@@ -877,7 +909,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Perché sogniamo? La scienza dietro le tue avventure notturne
+                                Perché sogniamo? Cosa sa la scienza e cosa ancora non sa
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa ha misurato la ricerca su memoria, emozioni e simulazione delle minacce nei sogni, e cosa resta un'ipotesi.
@@ -886,7 +918,7 @@
 </a>
 </article>
 <!-- Article 21 - REM Sleep and Dreams: Understanding Your Brain's Nightly Reset -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Sonno REM e sogni: comprendere il ripristino notturno del cervello">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Sonno REM e sogni: cosa succede davvero nel tuo cervello di notte">
 <a class="block" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Visual representation of REM sleep brain activity and eye movement" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/rem-sleep-dreams.webp" srcset="../../img/blog/rem-sleep-dreams-480w.webp 480w, ../../img/blog/rem-sleep-dreams-800w.webp 800w, ../../img/blog/rem-sleep-dreams-1200w.webp 1200w" width="800">
@@ -897,7 +929,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sonno REM e sogni: comprendere il ripristino notturno del cervello
+                                Sonno REM e sogni: cosa succede davvero nel tuo cervello di notte
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.
@@ -906,7 +938,7 @@
 </a>
 </article>
 <!-- Article 22 - The History of Dream Interpretation: From Ancient Temples to Modern Science -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="7" data-title="La storia dell&#x27;interpretazione dei sogni: dai templi antichi alla scienza moderna">
 <a class="block" href="la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Ancient temple under a starry sky representing dream history" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-interpretation-history.webp" srcset="../../img/blog/dream-interpretation-history-480w.webp 480w, ../../img/blog/dream-interpretation-history-800w.webp 800w, ../../img/blog/dream-interpretation-history-1200w.webp 1200w" width="800">
@@ -917,7 +949,7 @@
 <span class="text-xs text-purple-300/60">7 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna
+                                La storia dell'interpretazione dei sogni: dai templi antichi alla scienza moderna
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Come sono stati letti i sogni nel tempo, dai presagi mesopotamici e da un manuale egizio ad Aristotele, Freud, Jung e ai laboratori del sonno.
@@ -947,7 +979,7 @@
 </a>
 </article>
 <!-- Article 24 - Sogni e creatività -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Sogni e creatività: come il cervello addormentato risolve i problemi">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Sogni e creatività: come il cervello addormentato aiuta a risolvere i problemi">
 <a class="block" href="sogni-e-creativita">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sogni e creatività" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dreams-and-creativity.webp" srcset="../../img/blog/dreams-and-creativity-480w.webp 480w, ../../img/blog/dreams-and-creativity-800w.webp 800w, ../../img/blog/dreams-and-creativity-1200w.webp 1200w" width="800">
@@ -959,7 +991,7 @@
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni e creatività: come il cervello addormentato risolve i problemi
+                                Sogni e creatività: come il cervello addormentato aiuta a risolvere i problemi
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa dice la ricerca sul sonno a proposito di sogni e soluzione dei problemi, e come annotare un'idea prima che svanisca.
@@ -968,7 +1000,7 @@
 </a>
 </article>
 <!-- Article 25 - Sogni d'ansia -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Sogni d'ansia: perché li fai e come fermarli">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="guide" data-reading-time="5" data-title="Sogni d&#x27;ansia: perché li fai e cosa aiuta davvero">
 <a class="block" href="sogni-ansia-significato">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Sogni d'ansia significato" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/anxiety-dreams-meaning.webp" srcset="../../img/blog/anxiety-dreams-meaning-480w.webp 480w, ../../img/blog/anxiety-dreams-meaning-800w.webp 800w, ../../img/blog/anxiety-dreams-meaning-1200w.webp 1200w" width="800">
@@ -980,7 +1012,7 @@
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sogni d'ansia: perché li fai e come fermarli
+                                Sogni d'ansia: perché li fai e cosa aiuta davvero
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché le preoccupazioni ti seguono nel sonno, cosa possono riflettere ritardi, esami e smarrimenti, e cosa fare per dormire più sereno.
@@ -1010,7 +1042,7 @@
 </a>
 </article>
 <!-- Article 27 - Giornata del Sonno e ambiente -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Giornata del Sonno 2026: come il tuo ambiente trasforma i tuoi sogni">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Giornata del Sonno 2026: come la tua camera influisce sui tuoi sogni">
 <a class="block" href="giornata-sonno-ambiente-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Camera da letto tranquilla che illustra l'ambiente ideale per il sonno" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-day-environment-dreams.webp" srcset="../../img/blog/sleep-day-environment-dreams-480w.webp 480w, ../../img/blog/sleep-day-environment-dreams-800w.webp 800w, ../../img/blog/sleep-day-environment-dreams-1200w.webp 1200w" width="800">
@@ -1022,7 +1054,7 @@
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Giornata del Sonno 2026: ambiente e sogni
+                                Giornata del Sonno 2026: come la tua camera influisce sui tuoi sogni
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Come luce, rumore e temperatura della camera influiscono sul sonno e sui sogni, e cosa puoi regolare stasera.
@@ -1031,7 +1063,7 @@
 </a>
 </article>
 <!-- Article 28 - IA e analisi del sonno -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="L'IA che analizza il tuo sonno: la rivoluzione SleepFM di Stanford">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="L&#x27;IA che analizza il tuo sonno: che cosa sa fare SleepFM di Stanford, e i suoi limiti">
 <a class="block" href="ia-analisi-sonno-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Segnali cerebrali analizzati dall'intelligenza artificiale" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/ai-sleep-analysis-dreams.webp" srcset="../../img/blog/ai-sleep-analysis-dreams-480w.webp 480w, ../../img/blog/ai-sleep-analysis-dreams-800w.webp 800w, ../../img/blog/ai-sleep-analysis-dreams-1200w.webp 1200w" width="800">
@@ -1043,7 +1075,7 @@
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                L'IA che analizza il tuo sonno: SleepFM di Stanford
+                                L'IA che analizza il tuo sonno: che cosa sa fare SleepFM di Stanford, e i suoi limiti
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Stanford pubblica SleepFM, un'IA capace di predire Parkinson e tumori da una sola notte di sonno.
@@ -1052,7 +1084,7 @@
 </a>
 </article>
 <!-- Article 29 - Controllare i sogni -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Controllare i sogni per risolvere problemi: lo studio che cambia tutto">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="5" data-title="Controllare i sogni per risolvere problemi: cosa mostra davvero lo studio di Northwestern">
 <a class="block" href="controllare-sogni-risoluzione-problemi">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Cervello che risolve puzzle durante il sonno" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/dream-control-problem-solving.webp" srcset="../../img/blog/dream-control-problem-solving-480w.webp 480w, ../../img/blog/dream-control-problem-solving-800w.webp 800w, ../../img/blog/dream-control-problem-solving-1200w.webp 1200w" width="800">
@@ -1064,7 +1096,7 @@
 <span class="text-xs text-purple-300/60">5 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Controllare i sogni per risolvere problemi
+                                Controllare i sogni per risolvere problemi: cosa mostra davvero lo studio di Northwestern
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Lo studio Northwestern 2026 mostra che la TMR può orientare i tuoi sogni verso problemi specifici, raddoppiando il tasso di risoluzione.
@@ -1073,7 +1105,7 @@
 </a>
 </article>
 <!-- Article 30 - Ora legale e sonno -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Ora legale e sonno: come il cambio dell'ora altera i tuoi sogni">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Ora legale e sonno: cosa fa il cambio dell&#x27;ora alle tue notti e ai tuoi sogni">
 <a class="block" href="ora-legale-sonno-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Orologio circondato da cicli di sonno alterati e simboli onirici" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/daylight-saving-time-sleep-dreams.webp" srcset="../../img/blog/daylight-saving-time-sleep-dreams-480w.webp 480w, ../../img/blog/daylight-saving-time-sleep-dreams-800w.webp 800w, ../../img/blog/daylight-saving-time-sleep-dreams-1200w.webp 1200w" width="800">
@@ -1085,7 +1117,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Ora legale e sonno
+                                Ora legale e sonno: cosa fa il cambio dell'ora alle tue notti e ai tuoi sogni
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché il passaggio all'ora legale pesa di più, cosa succede al sonno REM e ai sogni, e come adattarsi in pochi giorni.
@@ -1094,7 +1126,7 @@
 </a>
 </article>
 <!-- Article 31 - Debito di sonno -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Debito di sonno: il costo nascosto della privazione cronica">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Debito di sonno e privazione cronica: come influiscono sulla salute e sui sogni">
 <a class="block" href="debito-sonno-salute-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Figura esausta circondata da simboli di debito di sonno accumulato" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-debt-health-dreams.webp" srcset="../../img/blog/sleep-debt-health-dreams-480w.webp 480w, ../../img/blog/sleep-debt-health-dreams-800w.webp 800w, ../../img/blog/sleep-debt-health-dreams-1200w.webp 1200w" width="800">
@@ -1106,7 +1138,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Debito di sonno: il costo nascosto della privazione cronica
+                                Debito di sonno e privazione cronica: come influiscono sulla salute e sui sogni
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa fa il debito di sonno alla salute e ai sogni, perché dormire di più nel weekend non basta e come recuperare davvero.
@@ -1115,7 +1147,7 @@
 </a>
 </article>
 <!-- Article 32 - Sonno in primavera -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Sonno in primavera: l'effetto delle giornate pi&ugrave; lunghe">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Disturbo del sonno in primavera: come le giornate più lunghe cambiano il riposo e i sogni">
 <a class="block" href="disturbo-sonno-primavera-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Paesaggio primaverile onirico con onde luminose circadiane alterate" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/spring-sleep-disruption-dreams.webp" srcset="../../img/blog/spring-sleep-disruption-dreams-480w.webp 480w, ../../img/blog/spring-sleep-disruption-dreams-800w.webp 800w, ../../img/blog/spring-sleep-disruption-dreams-1200w.webp 1200w" width="800">
@@ -1127,7 +1159,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Sonno in primavera: l'effetto delle giornate pi&ugrave; lunghe
+                                Disturbo del sonno in primavera: come le giornate più lunghe cambiano il riposo e i sogni
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Perché le sere chiare ritardano il sonno e l'alba ti sveglia presto, come cambia il ricordo dei sogni e cosa puoi fare.
@@ -1136,7 +1168,7 @@
 </a>
 </article>
 <!-- Article 33 - Il sonno come leva di salute -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Il sonno come leva di salute n. 1">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Il sonno è la tua prima leva di salute? Cosa mostra davvero lo studio OHSU">
 <a class="block" href="sonno-salute-priorita">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Silhouette umana con cervello luminoso circondata da indicatori di salute" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/sleep-health-priority.webp" srcset="../../img/blog/sleep-health-priority-480w.webp 480w, ../../img/blog/sleep-health-priority-800w.webp 800w, ../../img/blog/sleep-health-priority-1200w.webp 1200w" width="800">
@@ -1148,7 +1180,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Il sonno come leva di salute n. 1
+                                Il sonno è la tua prima leva di salute? Cosa mostra davvero lo studio OHSU
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa ha trovato uno studio OHSU confrontando il dormire poco con alimentazione ed esercizio rispetto all'aspettativa di vita, e i limiti di questo legame.
@@ -1157,7 +1189,7 @@
 </a>
 </article>
 <!-- Article 34 - Tracker del sonno wearable -->
-<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Tracker del sonno wearable e sogni">
+<article class="article-card glass-panel rounded-2xl overflow-hidden group" data-category="science" data-reading-time="6" data-title="Tracker del sonno wearable e sogni: cosa misurano e cosa sfugge loro">
 <a class="block" href="tracker-sonno-wearable-sogni">
 <div class="aspect-video overflow-hidden bg-dream-purple/30">
 <img alt="Polso con smartwatch che mostra dati del sonno e frammenti di sogni eterei" class="article-image w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500" height="450" loading="lazy" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" src="../../img/blog/wearable-sleep-trackers-dreams.webp" srcset="../../img/blog/wearable-sleep-trackers-dreams-480w.webp 480w, ../../img/blog/wearable-sleep-trackers-dreams-800w.webp 800w, ../../img/blog/wearable-sleep-trackers-dreams-1200w.webp 1200w" width="800">
@@ -1169,7 +1201,7 @@
 <span class="text-xs text-purple-300/60">6 min di lettura</span>
 </div>
 <h2 class="font-serif text-xl md:text-2xl mb-3 text-dream-cream group-hover:text-white transition-colors">
-                                Tracker del sonno wearable e sogni
+                                Tracker del sonno wearable e sogni: cosa misurano e cosa sfugge loro
                             </h2>
 <p class="text-sm text-gray-400 line-clamp-2">
                                 Cosa misurano davvero smartwatch e anelli di notte, quanto fidarsi del punteggio e perché nessun sensore registra ciò che hai sognato.

@@ -71,7 +71,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Save the dream without fully waking up</h2>
 <p>In Noctalia, say your dream out loud when you wake: it is transcribed and saved in your journal. Add the noise and the time, then read your noisy nights side by side.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/en/voice-dream-journal">Record your dream by voice</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=night-noise-sleep-dreams_en" rel="nofollow noopener noreferrer" target="_blank">Get Noctalia on Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </div>
 <h2>Frequently asked questions</h2>
 <h3>Can noise get into a dream?</h3>

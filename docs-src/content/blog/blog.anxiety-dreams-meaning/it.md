@@ -278,20 +278,7 @@
 <p>
                     La terapia di ripetizione immaginativa (IRT), descritta in dettaglio da Barry Krakow e Antonio Zadra, prevede tre passi: scrivere il sogno ricorrente, cambiarne lo svolgimento in una versione meno minacciosa e ripassare mentalmente la nuova versione per qualche minuto al giorno, da sveglio. È stata studiata soprattutto per gli incubi ricorrenti, e l'American Academy of Sleep Medicine la include tra i trattamenti che si possono usare per il disturbo da incubi. Se il sogno è legato a un trauma, praticala con un professionista.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Annota il sogno prima che svanisca</h4>
-<p class="text-sm text-gray-400 mb-4">Con Noctalia racconti il sogno a voce appena sveglio. Viene trascritto e salvato nel tuo diario, così puoi rileggere i tuoi sogni d'ansia uno accanto all'altro e notare cosa ritorna.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="seek-help">Quando chiedere aiuto a un professionista</h2>
 <p>
                     La maggior parte dei sogni d'ansia non richiede cure. Vale la pena parlarne con un medico quando iniziano a pesare sul sonno o sulle giornate.
@@ -322,9 +309,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Conserva i tuoi sogni d'ansia in Noctalia, insieme a quello che hai provato e a cosa succedeva quella settimana. Riletti insieme, mostrano quando tornano e cosa li accompagna.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sogni-ansia-significato_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -416,7 +404,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sogni e creatività</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sogni e creatività: come il cervello addormentato aiuta a risolvere i problemi</div>
       </div>
     </a>
     <a href="guida-sogni-bambini" class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -443,7 +431,7 @@
         </a>
         <a href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: come il tuo sonno rivela la tua mente</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: cosa possono dire di te le tue notti, e cosa no</h3>
             <p class="text-sm text-gray-400">Come ansia, depressione, stress e trauma compaiono nei sogni, e quando gli incubi frequenti meritano di essere affrontati con un professionista.</p>
         </a>
         <a href="sogni-stressanti-sul-lavoro-perche-il-tuo-lavoro-ti-segue-nel-sonno" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
