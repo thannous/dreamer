@@ -14,7 +14,8 @@ import { resetGuestDreamRecordingAllowanceForDev } from '@/services/quota/GuestD
 const newGuestFailure = (error: unknown): string => {
   if ((error as { code?: unknown } | null)?.code === 'QA_LOCAL_DREAMS_PENDING') {
     const count = Number((error as { pendingDreamCount?: unknown }).pendingDreamCount);
-    return `Supprime d’abord ${Number.isFinite(count) ? count : 'les'} rêve${count > 1 ? 's' : ''} invité${count > 1 ? 's' : ''} du journal : aucun rêve n’est effacé pour toi.`;
+    const dreams = count === 1 ? 'le rêve invité' : Number.isFinite(count) ? `les ${count} rêves invités` : 'les rêves invités';
+    return `Supprime d’abord ${dreams} du journal : « Nouvel invité » n’efface aucun rêve.`;
   }
   return 'Nouvel invité impossible : vérifie que le backend local tourne et que l’appareil le joint.';
 };
