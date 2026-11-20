@@ -15,6 +15,7 @@ declare
   v_chat_claims integer;
   v_rate_buckets integer;
   v_admissions integer;
+  v_jobs integer;
 begin
   if nullif(btrim(p_fingerprint), '') is null then
     raise exception 'p_fingerprint is required';
@@ -31,12 +32,16 @@ begin
   get diagnostics v_rate_buckets = row_count;
   delete from private.ai_analysis_admissions where actor_hash = v_actor_hash;
   get diagnostics v_admissions = row_count;
+  -- Image (and analysis) job admission counts this guest's recent jobs, finished ones included.
+  delete from public.ai_jobs where user_id is null and guest_fingerprint = btrim(p_fingerprint);
+  get diagnostics v_jobs = row_count;
   return jsonb_build_object(
     'guestUsage', v_usage,
     'analysisClaims', v_analysis_claims,
     'chatClaims', v_chat_claims,
     'rateLimitBuckets', v_rate_buckets,
-    'analysisAdmissions', v_admissions
+    'analysisAdmissions', v_admissions,
+    'aiJobs', v_jobs
   );
 end;
 $$;

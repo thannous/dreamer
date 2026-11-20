@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import { GUEST_DREAM_RECORDING_LIMIT } from '@/constants/limits';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
+import { useOptionalOnboarding } from '@/context/OnboardingContext';
 import { useTheme } from '@/context/ThemeContext';
 import { attempt } from '@/lib/attempt';
 import { isLocalDevelopmentBackend } from '@/lib/devLocalBackend';
@@ -23,6 +24,7 @@ const newGuestFailure = (error: unknown): string => {
 export function GuestRecordingQaReset() {
   const enabled = typeof __DEV__ !== 'undefined' && __DEV__;
   const { user } = useAuth();
+  const onboarding = useOptionalOnboarding();
   const { colors, mode } = useTheme();
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const [working, setWorking] = useState(false);
@@ -49,12 +51,15 @@ export function GuestRecordingQaReset() {
     setMessage(null);
     try {
       await startNewLocalGuest();
+      // The welcome must start from the reset state: the mounted onboarding still holds the
+      // previous guest's (a Skip would be ignored as already done, and not saved).
+      await onboarding?.reload();
       router.replace('/onboarding');
     } catch (error) {
       setMessage(newGuestFailure(error));
       setWorking(false);
     }
-  }, [localBackend, user, working]);
+  }, [localBackend, onboarding, user, working]);
 
   if (!enabled || user) return null;
 

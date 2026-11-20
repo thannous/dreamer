@@ -27,7 +27,9 @@ const mockUseAuth = jest.fn();
 const mockUseSubscription = jest.fn();
 const mockResetGuestRecordingAllowance = jest.fn(async () => 1);
 let mockLocalBackend = false;
-const mockStartNewLocalGuest = jest.fn(async () => undefined);
+const calls: string[] = [];
+const mockStartNewLocalGuest = jest.fn(async () => { calls.push('new guest'); });
+const mockReloadOnboarding = jest.fn(async () => { calls.push('onboarding reloaded'); });
 let mockWindowWidth = 390;
 let mockPlatformOS = 'web';
 
@@ -280,6 +282,9 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
 jest.doMock('@/lib/devLocalBackend', () => ({
   isLocalDevelopmentBackend: () => mockLocalBackend,
 }));
+jest.doMock('@/context/OnboardingContext', () => ({
+  useOptionalOnboarding: () => ({ reload: mockReloadOnboarding }),
+}));
 jest.doMock('@/lib/devLocalGuestReset', () => ({
   startNewLocalGuest: () => mockStartNewLocalGuest(),
 }));
@@ -354,10 +359,13 @@ describe('Settings screen', () => {
     mockUseSubscription.mockReturnValue({ isActive: false, loading: false, status: null });
 
     try {
+      calls.length = 0;
+      mockReplace.mockImplementation(() => { calls.push('welcome'); });
       render(<SettingsScreen />);
       fireEvent.click(screen.getByTestId('guest-local-new-guest-button'));
-      await waitFor(() => expect(mockStartNewLocalGuest).toHaveBeenCalledTimes(1));
       await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/onboarding'));
+      // The welcome starts from the reset onboarding, not the previous guest's.
+      expect(calls).toEqual(['new guest', 'onboarding reloaded', 'welcome']);
     } finally {
       mockLocalBackend = false;
     }

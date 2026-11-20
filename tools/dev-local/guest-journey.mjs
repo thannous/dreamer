@@ -221,6 +221,14 @@ try {
     if (count('analyzeDream') !== 3) throw new Error(`${count('analyzeDream')} analyses answered`);
     await page.screenshot({ path: join(shots, '3-new-guest-read.png') });
   });
+
+  await step('the new guest\'s welcome stays done after a reload', async () => {
+    // The welcome skipped after « Nouvel invité » is saved, as on a first launch.
+    await openJournal();
+    if (await visible('btn.onboarding.intro.next').isVisible().catch(() => false)) {
+      throw new Error('the welcome opened again');
+    }
+  });
 } finally {
   await browser.close();
 }

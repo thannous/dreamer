@@ -106,6 +106,10 @@ const analyze = (n) => call('/functions/v1/api/analyzeDream', {
   headers: resetHeaders,
   body: { transcript: `${dream.transcript} Nuit ${n} : la lampe changeait de couleur.`, lang: 'fr', analysisRequestId: crypto.randomUUID() },
 });
+const illustrate = (n) => call('/functions/v1/api/image-jobs', {
+  headers: resetHeaders,
+  body: { transcript: `${dream.transcript} Illustration ${n}.`, clientRequestId: crypto.randomUUID() },
+});
 await step('guest uses its 2 analyses, the third is refused', async () => {
   const session = await call('/functions/v1/api/guest/session', {
     body: { fingerprint: resetFingerprint, platform: 'web', turnstileToken: 'XXXX.DUMMY.TOKEN.XXXX' },
@@ -121,10 +125,23 @@ await step('guest uses its 2 analyses, the third is refused', async () => {
   }
   throw new Error('a third guest analysis was accepted');
 });
-await step('« Nouvel invité » resets that device, and it can analyse again', async () => {
+await step('guest uses its 2 illustrations, the third is refused', async () => {
+  await illustrate(1);
+  await illustrate(2);
+  try {
+    await illustrate(3);
+  } catch (error) {
+    if (/ 4\d\d /.test(error.message)) return error.message.split(' ').slice(0, 2).join(' ');
+    throw error;
+  }
+  throw new Error('a third guest illustration was accepted');
+});
+await step('« Nouvel invité » resets that device, and it can analyse and illustrate again', async () => {
   const result = await call('/functions/v1/api/dev-local/guest-reset', { body: {}, headers: resetHeaders });
   if (result.reset !== true || !(result.forgotten?.guestUsage >= 1)) throw new Error(JSON.stringify(result));
   await analyze(4);
+  // Image admission also counts the guest's recent jobs: the reset forgets them too.
+  await illustrate(4);
   return JSON.stringify(result.forgotten);
 });
 
