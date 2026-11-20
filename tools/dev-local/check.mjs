@@ -2,7 +2,8 @@
 /**
  * `node tools/dev-local/check.mjs`: proves a running dev-local backend through the
  * app's real HTTP interface. A web guest and an iOS Simulator guest get a session
- * and a capture question;
+ * and a capture question, a guest device is refused its third analysis until
+ * « Nouvel invité » resets it;
  * the free and Plus accounts sign in, read their quota and get a question too.
  * It reads only the local manifest and never reaches production.
  */
@@ -96,6 +97,35 @@ await step('a guest without a session is refused', async () => {
     throw error;
   }
   throw new Error('accepted without a guest session');
+});
+
+// « Nouvel invité »: a guest device that used its analyses starts again after the local reset.
+const resetFingerprint = randomBytes(32).toString('hex');
+let resetHeaders;
+const analyze = (n) => call('/functions/v1/api/analyzeDream', {
+  headers: resetHeaders,
+  body: { transcript: `${dream.transcript} Nuit ${n} : la lampe changeait de couleur.`, lang: 'fr', analysisRequestId: crypto.randomUUID() },
+});
+await step('guest uses its 2 analyses, the third is refused', async () => {
+  const session = await call('/functions/v1/api/guest/session', {
+    body: { fingerprint: resetFingerprint, platform: 'web', turnstileToken: 'XXXX.DUMMY.TOKEN.XXXX' },
+  });
+  resetHeaders = { 'x-guest-token': session.token, 'x-guest-fingerprint': resetFingerprint, 'x-guest-platform': 'web' };
+  await analyze(1);
+  await analyze(2);
+  try {
+    await analyze(3);
+  } catch (error) {
+    if (/ 4\d\d /.test(error.message)) return error.message.split(' ').slice(0, 2).join(' ');
+    throw error;
+  }
+  throw new Error('a third guest analysis was accepted');
+});
+await step('« Nouvel invité » resets that device, and it can analyse again', async () => {
+  const result = await call('/functions/v1/api/dev-local/guest-reset', { body: {}, headers: resetHeaders });
+  if (result.reset !== true || !(result.forgotten?.guestUsage >= 1)) throw new Error(JSON.stringify(result));
+  await analyze(4);
+  return JSON.stringify(result.forgotten);
 });
 
 for (const kind of ['free', 'plus']) {

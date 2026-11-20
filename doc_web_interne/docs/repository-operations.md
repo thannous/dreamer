@@ -68,6 +68,13 @@ the port). The private `dream-images` bucket is created at start. Data lives in 
   it with a Dreamer iOS guest token (`tools/dev-local/simulatorGuest.ts`). The hosted API still
   refuses an iOS session without App Attest, and a release build never sends the field. The server refuses to start unless its
   backend is an identified native stack on loopback and its public origin a private HTTP address.
+- **A new guest** without `--reset`: a guest device keeps its usage (2 analyses, exchanges,
+  illustrations, the rolling AI windows). In a development build on this backend, signed out,
+  Settings shows « Nouvel invité » (`components/dev/GuestRecordingQaReset.tsx`): once the guest
+  journal is empty, `POST /dev-local/guest-reset` makes the server forget that device only
+  (`public.dev_local_reset_guest`, from `tools/dev-local/guest-reset.sql`, installed at each start
+  and never a migration), the device clears its guest counters, session and onboarding, and the
+  welcome reopens. Accounts and their data are kept. `check.mjs` proves it.
 - The app keeps a separate guest session, App Attest key and refusal pause per plain-HTTP API
   (`backendStorageKey` in `lib/guestSession.ts`), so switching between production and the local
   backend carries neither server's state to the other. Production key names are unchanged.

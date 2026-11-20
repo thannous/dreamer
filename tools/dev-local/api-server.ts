@@ -14,6 +14,7 @@
 import { parseDevLocalManifest } from './manifest.mts';
 import { answerProviderRequest } from './deterministic-ai.ts';
 import { withSimulatorGuestSessions } from './simulatorGuest.ts';
+import { createGuestResetHandler } from './guestReset.ts';
 
 const manifestPath = Deno.env.get('DEV_LOCAL_MANIFEST');
 if (!manifestPath) throw new Error('DEV_LOCAL_MANIFEST is required; start with node tools/dev-local/dev-local.mjs');
@@ -84,6 +85,14 @@ const storedSubscription: Handler = async (ctx) => {
 };
 routes.set('POST /subscription/refresh', storedSubscription);
 routes.set('POST /subscription/sync', storedSubscription);
+// « Nouvel invité » in a development build: forget this guest device's usage, locally only.
+const resetLocalGuest = async (fingerprint: string) => {
+  const admin = createClient(publicOrigin, manifest.status.SERVICE_ROLE_KEY, { auth: { persistSession: false } });
+  const { data, error } = await admin.rpc('dev_local_reset_guest', { p_fingerprint: fingerprint });
+  if (error) throw new Error(`Local guest reset failed: ${error.code ?? error.message}`);
+  return data;
+};
+routes.set('POST /dev-local/guest-reset', createGuestResetHandler(resetLocalGuest));
 const api = createApiHandler({ routes });
 const captureRecall = createApiHandler({ routes: new Map<string, Handler>([
   ['POST /recall-question', handleRecallQuestion], ['POST /format-recall', handleFormatRecall],

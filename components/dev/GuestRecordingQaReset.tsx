@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -6,7 +7,17 @@ import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { attempt } from '@/lib/attempt';
+import { isLocalDevelopmentBackend } from '@/lib/devLocalBackend';
+import { startNewLocalGuest } from '@/lib/devLocalGuestReset';
 import { resetGuestDreamRecordingAllowanceForDev } from '@/services/quota/GuestDreamCounter';
+
+const newGuestFailure = (error: unknown): string => {
+  if ((error as { code?: unknown } | null)?.code === 'QA_LOCAL_DREAMS_PENDING') {
+    const count = Number((error as { pendingDreamCount?: unknown }).pendingDreamCount);
+    return `Supprime d’abord ${Number.isFinite(count) ? count : 'les'} rêve${count > 1 ? 's' : ''} invité${count > 1 ? 's' : ''} du journal : aucun rêve n’est effacé pour toi.`;
+  }
+  return 'Nouvel invité impossible : vérifie que le backend local tourne et que l’appareil le joint.';
+};
 
 export function GuestRecordingQaReset() {
   const enabled = typeof __DEV__ !== 'undefined' && __DEV__;
@@ -15,6 +26,7 @@ export function GuestRecordingQaReset() {
   const noctalia = useMemo(() => getNoctaliaDesignTokens(colors, mode), [colors, mode]);
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const localBackend = enabled && isLocalDevelopmentBackend();
 
   const reset = useCallback(async () => {
     if (!enabled || user || working) return;
@@ -29,6 +41,19 @@ export function GuestRecordingQaReset() {
       finally: () => { setWorking(false); },
     });
   }, [enabled, user, working]);
+
+  const startNewGuest = useCallback(async () => {
+    if (!localBackend || user || working) return;
+    setWorking(true);
+    setMessage(null);
+    try {
+      await startNewLocalGuest();
+      router.replace('/onboarding');
+    } catch (error) {
+      setMessage(newGuestFailure(error));
+      setWorking(false);
+    }
+  }, [localBackend, user, working]);
 
   if (!enabled || user) return null;
 
@@ -60,6 +85,26 @@ export function GuestRecordingQaReset() {
           Réinitialiser les places invitées
         </Text>
       </Pressable>
+      {localBackend ? (
+        <>
+          <Text style={[styles.body, { color: noctalia.text.secondary }]}>
+            Backend local : le serveur oublie ce que cet appareil a utilisé comme invité (analyses, échanges, illustrations), puis l’accueil se rouvre comme au premier lancement.
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            disabled={working}
+            onPress={() => void startNewGuest()}
+            style={({ pressed }) => [
+              styles.button,
+              { borderColor: noctalia.surface.borderStrong },
+              (pressed || working) && styles.pressed,
+            ]}
+            testID="guest-local-new-guest-button"
+          >
+            <Text style={[styles.buttonLabel, { color: noctalia.text.primary }]}>Nouvel invité</Text>
+          </Pressable>
+        </>
+      ) : null}
       {message ? (
         <Text style={[styles.result, { color: noctalia.text.secondary }]} testID="guest-recording-qa-reset-result">
           {message}
