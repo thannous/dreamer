@@ -5,6 +5,7 @@ import {
   countLucidPracticeDays,
   countLucidRecallDays,
   getDeterministicLucidCoaching,
+  getLucidCalendarDaysWindow,
   getLucidProgressTrend,
   isLucidTrainingAttempt,
   summarizeLucidProgress,
@@ -374,10 +375,12 @@ describe('lucid progress', () => {
     ).toBe(2);
   });
 
-  it('counts day totals over the 7 calendar days of a rolling 7-day window', () => {
+  it('builds 7-day summaries over the last 7 calendar days, today included', () => {
     // Saturday 21 November 2026, 14:00 in Paris (UTC+1).
     const now = Date.UTC(2026, 10, 21, 13, 0);
-    const window = { startAt: now + 1 - 7 * DAY, endAt: now + 1 };
+    const window = getLucidCalendarDaysWindow(now, 'Europe/Paris');
+    // Local midnight on Sunday 15 November; a rolling 168 hours would reach back to the 14th.
+    expect(window).toEqual({ startAt: Date.UTC(2026, 10, 14, 23, 0), endAt: now + 1 });
     // Every evening at 20:00 Paris from 14 to 20 November, plus this morning at 10:00.
     const realityChecks = [
       ...Array.from({ length: 7 }, (_, index) => ({ occurredAt: Date.UTC(2026, 10, 14 + index, 19, 0) })),
@@ -386,25 +389,14 @@ describe('lucid progress', () => {
     expect(
       countLucidPracticeDays({ progress: [], realityChecks, window, timeZone: 'Europe/Paris' })
     ).toBe(7);
-    // A session on 14 November falls 7 calendar days back: outside the window.
     expect(
       countLucidPracticeDays({ progress: [{ practiceDates: ['2026-11-14', '2026-11-15'] }], window, timeZone: 'Europe/Paris' })
     ).toBe(1);
-    const recalls = [14, 15, 21].map((day) => record({
-      id: `recall-${day}`,
-      occurredAt: Date.UTC(2026, 10, day, 6, 0),
-      captureMode: 'write',
-      recallText: 'A remembered dream.',
-      technique: null,
-      result: null,
-      recallLevel: null,
-    }));
-    expect(countLucidRecallDays(recalls, window, 'Europe/Paris')).toBe(2);
 
-    // Across the spring DST change (28 March 2027) the 168 hours ending on 1 April
-    // at 00:30 touch 9 Paris dates (24 March 23:30 to 1 April 00:30); 7 calendar days count.
+    // Across the spring DST change (28 March 2027), the window still starts at local midnight.
     const dstNow = Date.UTC(2027, 2, 31, 22, 30);
-    const dstWindow = { startAt: dstNow + 1 - 7 * DAY, endAt: dstNow + 1 };
+    const dstWindow = getLucidCalendarDaysWindow(dstNow, 'Europe/Paris');
+    expect(dstWindow.startAt).toBe(Date.UTC(2027, 2, 25, 23, 0));
     const nightly = [
       { occurredAt: Date.UTC(2027, 2, 24, 22, 45) },
       ...Array.from({ length: 7 }, (_, index) => ({ occurredAt: Date.UTC(2027, 2, 25 + index, 18, 0) })),
@@ -415,6 +407,31 @@ describe('lucid progress', () => {
     expect(
       countLucidPracticeDays({ progress: [], realityChecks: nightly, window: dstWindow, timeZone: 'Europe/Paris' })
     ).toBe(7);
+    // Saturday 7 November 23:30 PST after the fall-back change: from 1 November 00:00 PDT.
+    expect(getLucidCalendarDaysWindow(Date.UTC(2026, 10, 8, 7, 30), 'America/Los_Angeles').startAt)
+      .toBe(Date.UTC(2026, 10, 1, 7, 0));
+  });
+
+  it('keeps lucid dreams and recall days of one weekly review on the same calendar days', () => {
+    // Saturday 21 November 2026, 06:30 in Paris: the review covers 15 to 21 November.
+    const now = Date.UTC(2026, 10, 21, 5, 30);
+    const window = getLucidCalendarDaysWindow(now, 'Europe/Paris');
+    const lucidOn = (day: number) => record({
+      id: `lucid-${day}`,
+      occurredAt: Date.UTC(2026, 10, day, 6, 0),
+      captureMode: 'write',
+      recallText: 'I knew I was dreaming.',
+      result: 'lucid',
+    });
+    // The 14th is inside the last 168 hours but outside the 7 calendar days.
+    const experiments = [lucidOn(14), lucidOn(16)];
+    const review = buildLucidWeeklyReview(experiments, window);
+
+    expect(review.current.lucidDreams).toBe(1);
+    expect(countLucidRecallDays(experiments, review.currentWindow, 'Europe/Paris')).toBe(1);
+    expect(
+      countLucidPracticeDays({ progress: [], experiments, window: review.currentWindow, timeZone: 'Europe/Paris' })
+    ).toBe(1);
   });
 
   it('counts a dream marked lucid without a technique as lucid and keeps the success rate per attempt', () => {

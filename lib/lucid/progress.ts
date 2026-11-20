@@ -253,37 +253,43 @@ export function getLucidProgressDateKey(timestamp: number, timeZone?: string): s
     ?? getLucidLocalDateKey(timestamp);
 }
 
+/** First instant, before `before`, whose date key reaches `dateKey`. */
+function findLucidDateKeyStart(
+  dateKey: string,
+  before: number,
+  spanDays: number,
+  timeZone?: string
+): number {
+  // Date keys never decrease with time: a binary search finds local midnight in
+  // any time zone, DST changes included, without offset arithmetic.
+  let low = before - (spanDays + 2) * DAY_MS;
+  let high = before;
+  while (high - low > 1) {
+    const middle = low + Math.floor((high - low) / 2);
+    if (getLucidProgressDateKey(middle, timeZone) >= dateKey) high = middle;
+    else low = middle;
+  }
+  return high;
+}
+
 /**
- * Calendar days a rolling window stands for: a 7-day window ending now covers
- * today and the 6 days before it. The raw instants of a 168-hour window touch
- * 8 date keys (9 across a DST change), so day counts use these bounds instead.
+ * The last `days` calendar days, today included, in the user's time zone: from
+ * local midnight `days - 1` days ago until now. A rolling 168-hour window touches
+ * 8 dates (9 across a DST change), so 7-day summaries and their day counts use
+ * this window.
  */
-export function getLucidCalendarWindowDateKeys(
-  window: LucidProgressWindow,
-  timeZone?: string
-): { startDateKey: string; endDateKey: string } {
-  assertProgressWindow(window, 'Progress window');
-  const endDateKey = getLucidProgressDateKey(window.endAt - 1, timeZone);
-  const spanDays = Math.max(1, Math.round((window.endAt - window.startAt) / DAY_MS));
-  const startDateKey = shiftLucidDateKey(endDateKey, -(spanDays - 1))
-    ?? getLucidProgressDateKey(window.startAt, timeZone);
-  return { startDateKey, endDateKey };
-}
-
-function createDateKeyFilter(window: LucidProgressWindow | undefined, timeZone?: string) {
-  if (!window) return () => true;
-  const { startDateKey, endDateKey } = getLucidCalendarWindowDateKeys(window, timeZone);
-  return (dateKey: string) => dateKey >= startDateKey && dateKey <= endDateKey;
-}
-
-/** Date key of a timestamped item, or null when it is invalid or after the window. */
-function getWindowItemDateKey(
-  occurredAt: number,
-  window: LucidProgressWindow | undefined,
-  timeZone?: string
-): string | null {
-  if (!Number.isFinite(occurredAt) || (window && occurredAt >= window.endAt)) return null;
-  return getLucidProgressDateKey(occurredAt, timeZone);
+export function getLucidCalendarDaysWindow(
+  now: number,
+  timeZone?: string,
+  days = 7
+): LucidProgressWindow {
+  if (!Number.isFinite(now) || !Number.isInteger(days) || days < 1) {
+    throw new RangeError('Calendar window needs a finite time and a whole number of days.');
+  }
+  const endAt = now + 1;
+  const todayKey = getLucidProgressDateKey(now, timeZone);
+  const startDateKey = shiftLucidDateKey(todayKey, -(days - 1)) ?? todayKey;
+  return { startAt: findLucidDateKeyStart(startDateKey, endAt, days, timeZone), endAt };
 }
 
 export function countLucidRecallDays(
@@ -291,13 +297,13 @@ export function countLucidRecallDays(
   window?: LucidProgressWindow,
   timeZone?: string
 ): number {
-  const inWindow = createDateKeyFilter(window, timeZone);
+  const relevantExperiments = getExperimentsInWindow(experiments, window);
   const days = new Set<string>();
-  for (const experiment of experiments) {
+  for (const experiment of relevantExperiments) {
     const outcome = adaptLucidOutcome(experiment);
-    if (outcome !== 'lucid' && outcome !== 'remembered') continue;
-    const dateKey = getWindowItemDateKey(experiment.occurredAt, window, timeZone);
-    if (dateKey && inWindow(dateKey)) days.add(dateKey);
+    if (outcome === 'lucid' || outcome === 'remembered') {
+      days.add(getLucidProgressDateKey(experiment.occurredAt, timeZone));
+    }
   }
   return days.size;
 }
@@ -310,24 +316,30 @@ export function countLucidPracticeDays(input: {
   timeZone?: string;
 }): number {
   const { progress, realityChecks = [], experiments = [], window, timeZone } = input;
-  const inWindow = createDateKeyFilter(window, timeZone);
+  if (window) assertProgressWindow(window, 'Progress window');
+  const startDateKey = window ? getLucidProgressDateKey(window.startAt, timeZone) : null;
+  const endDateKey = window ? getLucidProgressDateKey(window.endAt - 1, timeZone) : null;
   const days = new Set<string>();
 
   for (const item of progress) {
     for (const dateKey of item.practiceDates) {
-      if (inWindow(dateKey)) days.add(dateKey);
+      if (!startDateKey || !endDateKey || (dateKey >= startDateKey && dateKey <= endDateKey)) {
+        days.add(dateKey);
+      }
     }
   }
 
   for (const check of realityChecks) {
-    const dateKey = getWindowItemDateKey(check.occurredAt, window, timeZone);
-    if (dateKey && inWindow(dateKey)) days.add(dateKey);
+    if (!Number.isFinite(check.occurredAt)) continue;
+    if (!window || (check.occurredAt >= window.startAt && check.occurredAt < window.endAt)) {
+      days.add(getLucidProgressDateKey(check.occurredAt, timeZone));
+    }
   }
 
-  for (const experiment of experiments) {
-    if (!isLucidTrainingAttempt(experiment)) continue;
-    const dateKey = getWindowItemDateKey(experiment.occurredAt, window, timeZone);
-    if (dateKey && inWindow(dateKey)) days.add(dateKey);
+  for (const experiment of getExperimentsInWindow(experiments, window)) {
+    if (isLucidTrainingAttempt(experiment)) {
+      days.add(getLucidProgressDateKey(experiment.occurredAt, timeZone));
+    }
   }
 
   return days.size;

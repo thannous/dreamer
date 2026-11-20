@@ -30,8 +30,7 @@ import type { LucidGuidanceFocus } from '@/lib/lucid/personalization';
 import {
   buildLucidWeeklyReview,
   countLucidPracticeDays,
-  getLucidCalendarWindowDateKeys,
-  getLucidProgressDateKey,
+  getLucidCalendarDaysWindow,
 } from '@/lib/lucid/progress';
 import type { LucidExperiment, LucidLocale, LucidTechnique } from '@/lib/lucid/model';
 
@@ -428,20 +427,22 @@ export default function LucidProgressScreen() {
     experience: state!.onboarding.experience,
   });
   const now = useLucidNow();
-  const review = useMemo(() => {
-    const endAt = now + 1;
-    return buildLucidWeeklyReview(state!.experiments, { startAt: endAt - 7 * 86400000, endAt });
-  }, [now, state]);
   const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
-  // The card counts the last 7 calendar days (today included), like its day total.
-  const recentRealityChecks = useMemo(() => {
-    const { startDateKey, endDateKey } = getLucidCalendarWindowDateKeys(review.currentWindow, timeZone);
-    return (state!.realityChecks ?? []).filter((check) => {
-      if (!Number.isFinite(check.occurredAt) || check.occurredAt >= review.currentWindow.endAt) return false;
-      const dateKey = getLucidProgressDateKey(check.occurredAt, timeZone);
-      return dateKey >= startDateKey && dateKey <= endDateKey;
-    });
-  }, [review.currentWindow, state, timeZone]);
+  // The 7 calendar days, today included, behind every 7-day figure on this screen.
+  const review = useMemo(
+    () => buildLucidWeeklyReview(state!.experiments, getLucidCalendarDaysWindow(now, timeZone)),
+    [now, state, timeZone]
+  );
+  const recentRealityChecks = useMemo(
+    () =>
+      (state!.realityChecks ?? []).filter(
+        (check) =>
+          Number.isFinite(check.occurredAt) &&
+          check.occurredAt >= review.currentWindow.startAt &&
+          check.occurredAt < review.currentWindow.endAt
+      ),
+    [review.currentWindow.endAt, review.currentWindow.startAt, state]
+  );
   const recentRealityCheckDays = useMemo(
     () =>
       countLucidPracticeDays({

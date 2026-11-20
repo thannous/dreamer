@@ -7,12 +7,12 @@ import { getLucidPalette, LucidRadius, LucidSpace, LucidType } from '@/constants
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
-import { getLucidLocalDateKey } from '@/lib/lucid/calendar';
-import { getLucidDateKeyInTimeZone } from '@/lib/lucid/morningCapture';
 import {
   buildLucidWeeklyReview,
   countLucidPracticeDays,
   countLucidRecallDays,
+  getLucidCalendarDaysWindow,
+  getLucidProgressDateKey,
 } from '@/lib/lucid/progress';
 import { closeLucidRoute, LUCID_HOME_HREF } from '@/lib/lucid/routes';
 
@@ -29,18 +29,20 @@ export default function LucidWeeklyScreen() {
   const { state, content, saveWeeklyReview } = useLucidTrainer(); const copy = COPY[content.locale];
   const [notes, setNotes] = useState(''); const [saving, setSaving] = useState(false); const [step, setStep] = useState(0);
   const now = useLucidNow(); const { fontScale, width } = useWindowDimensions(); const compact = width < 380 || fontScale >= 1.3;
-  const review = useMemo(() => { const endAt = now + 1; return buildLucidWeeklyReview(state!.experiments, { startAt: endAt - 7 * 86400000, endAt }); }, [now, state]);
   const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
-  const dateKey = (timeZone ? getLucidDateKeyInTimeZone(review.currentWindow.startAt, timeZone) : null)
-    ?? getLucidLocalDateKey(review.currentWindow.startAt);
-  const practiceDays = Math.min(7, countLucidPracticeDays({
-    progress: state!.progress,
-    realityChecks: state!.realityChecks,
-    experiments: state!.experiments,
-    window: review.currentWindow,
-    timeZone,
-  }));
-  const recallDays = Math.min(7, countLucidRecallDays(state!.experiments, review.currentWindow, timeZone));
+  // One window of 7 calendar days, today included, for every figure the review saves.
+  const review = useMemo(() => buildLucidWeeklyReview(state!.experiments, getLucidCalendarDaysWindow(now, timeZone)), [now, state, timeZone]);
+  const dateKey = getLucidProgressDateKey(review.currentWindow.startAt, timeZone);
+  const { practiceDays, recallDays } = useMemo(() => ({
+    practiceDays: countLucidPracticeDays({
+      progress: state!.progress,
+      realityChecks: state!.realityChecks,
+      experiments: state!.experiments,
+      window: review.currentWindow,
+      timeZone,
+    }),
+    recallDays: countLucidRecallDays(state!.experiments, review.currentWindow, timeZone),
+  }), [review.currentWindow, state, timeZone]);
   const close = () => closeLucidRoute(router, LUCID_HOME_HREF);
   const goBack = () => step === 0 ? close() : setStep((value) => value - 1);
   const save = async () => { setSaving(true); try { await saveWeeklyReview({ weekStart: dateKey, practiceDays, recallDays, lucidDreams: review.current.lucidDreams, recommendedTechnique: review.coaching.technique, notes: notes.trim() || undefined }); Alert.alert(copy.saved, content.weeklyReview.coachingNote, [{ text: content.chrome.common.done, onPress: close }]); } finally { setSaving(false); } };
