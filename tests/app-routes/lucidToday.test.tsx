@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { Platform } from 'react-native';
 
 const mockPush = jest.fn();
 let mockProgress: {
@@ -22,6 +23,7 @@ let mockExperiments: {
   sleepQuality?: number | null;
   factors?: string[];
   cueOutcome?: 'not_heard' | 'heard_in_dream' | 'heard_woke' | 'indeterminate' | null;
+  voiceCapture?: 'stub' | 'permission_denied' | 'unavailable' | 'local_note';
 }[] = [];
 let mockOnboarding: {
   goal: 'improve_recall' | 'first_lucid_dream' | 'more_frequent_lucidity' | 'stabilize_lucidity';
@@ -450,6 +452,9 @@ describe('Lucid Trainer today screen', () => {
   it('shows today counts on morning capture and reality-check shortcuts', () => {
     mockExperiments = [
       { id: 'today-1', occurredAt: mockNow - 3_600_000, updatedAt: mockNow - 3_600_000, captureMode: 'write', recallText: 'A clock without hands.' },
+      // The morning flow saves a spoken dream with only its linked recording.
+      { id: 'today-voice', occurredAt: mockNow - 2_400_000, updatedAt: mockNow - 2_400_000, captureMode: 'speak', voiceCapture: 'local_note', result: null, cueOutcome: 'not_heard' },
+      { id: 'today-nothing', occurredAt: mockNow - 1_200_000, updatedAt: mockNow - 1_200_000, captureMode: 'nothing_for_now', result: null, cueOutcome: 'not_heard' },
       { id: 'yesterday', occurredAt: mockNow - 86_400_000, updatedAt: mockNow - 86_400_000, captureMode: 'write', recallText: 'Old dream' },
     ];
     mockRealityChecks = [
@@ -459,21 +464,37 @@ describe('Lucid Trainer today screen', () => {
 
     render(<LucidTodayScreen />);
 
-    expect(screen.getByTestId('lucid-today-morning-count').textContent).toBe('1 aujourd’hui');
+    expect(screen.getByTestId('lucid-today-morning-count').textContent).toBe('2 aujourd’hui');
     expect(screen.getByTestId('lucid-today-reality-count').textContent).toBe('2 aujourd’hui');
   });
 
   it('surfaces a calm reminders opt-in card when training notifications are off and opens Permissions', () => {
+    const platform = Platform.OS;
+    Platform.OS = 'ios';
+    try {
+      mockPreferences = { notificationsEnabled: false, timeZone: 'UTC' };
+      render(<LucidTodayScreen />);
+
+      expect(screen.getByTestId('lucid-today-reminders')).not.toBeNull();
+      // The card promises training reminders, not daytime-only ones: WBTB adds a night alert.
+      expect(screen.getByTestId('lucid-today-reminders').textContent).not.toMatch(/journée/);
+      fireEvent.click(screen.getByTestId('lucid-today-reminders-enable'));
+      expect(mockPush).toHaveBeenCalledWith('/lucid/permissions');
+
+      cleanup();
+      mockPreferences = { notificationsEnabled: true, timeZone: 'UTC' };
+      render(<LucidTodayScreen />);
+      expect(screen.queryByTestId('lucid-today-reminders')).toBeNull();
+    } finally {
+      Platform.OS = platform;
+    }
+  });
+
+  it('does not offer reminders on web, where Lucid cannot schedule them', () => {
     mockPreferences = { notificationsEnabled: false, timeZone: 'UTC' };
     render(<LucidTodayScreen />);
 
-    expect(screen.getByTestId('lucid-today-reminders')).not.toBeNull();
-    fireEvent.click(screen.getByTestId('lucid-today-reminders-enable'));
-    expect(mockPush).toHaveBeenCalledWith('/lucid/permissions');
-
-    cleanup();
-    mockPreferences = { notificationsEnabled: true, timeZone: 'UTC' };
-    render(<LucidTodayScreen />);
+    expect(Platform.OS).toBe('web');
     expect(screen.queryByTestId('lucid-today-reminders')).toBeNull();
   });
 });

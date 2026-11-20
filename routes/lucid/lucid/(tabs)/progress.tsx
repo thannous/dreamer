@@ -27,7 +27,12 @@ import { useLucidNow } from '@/hooks/useLucidNow';
 import { useLucidStabilizationLab } from '@/hooks/useLucidStabilizationLab';
 import { getLucidGuidanceProfile } from '@/lib/lucid/personalization';
 import type { LucidGuidanceFocus } from '@/lib/lucid/personalization';
-import { buildLucidWeeklyReview, countLucidPracticeDays } from '@/lib/lucid/progress';
+import {
+  buildLucidWeeklyReview,
+  countLucidPracticeDays,
+  getLucidCalendarWindowDateKeys,
+  getLucidProgressDateKey,
+} from '@/lib/lucid/progress';
 import type { LucidExperiment, LucidLocale, LucidTechnique } from '@/lib/lucid/model';
 
 const PROGRESS_CONSTELLATION = require('../../../../assets/images/lucid/progress-constellation.webp');
@@ -428,16 +433,15 @@ export default function LucidProgressScreen() {
     return buildLucidWeeklyReview(state!.experiments, { startAt: endAt - 7 * 86400000, endAt });
   }, [now, state]);
   const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
-  const recentRealityChecks = useMemo(
-    () =>
-      (state!.realityChecks ?? []).filter(
-        (check) =>
-          Number.isFinite(check.occurredAt) &&
-          check.occurredAt >= review.currentWindow.startAt &&
-          check.occurredAt < review.currentWindow.endAt
-      ),
-    [review.currentWindow.endAt, review.currentWindow.startAt, state]
-  );
+  // The card counts the last 7 calendar days (today included), like its day total.
+  const recentRealityChecks = useMemo(() => {
+    const { startDateKey, endDateKey } = getLucidCalendarWindowDateKeys(review.currentWindow, timeZone);
+    return (state!.realityChecks ?? []).filter((check) => {
+      if (!Number.isFinite(check.occurredAt) || check.occurredAt >= review.currentWindow.endAt) return false;
+      const dateKey = getLucidProgressDateKey(check.occurredAt, timeZone);
+      return dateKey >= startDateKey && dateKey <= endDateKey;
+    });
+  }, [review.currentWindow, state, timeZone]);
   const recentRealityCheckDays = useMemo(
     () =>
       countLucidPracticeDays({

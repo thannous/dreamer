@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LUCID_HERO_DARK_SHARE, LUCID_TAB_BAR_INSET, LucidScreen } from '@/components/lucid/LucidUI';
@@ -305,31 +305,31 @@ const TODAY_EXTRA: Record<LucidLocale, {
   en: {
     todayCount: (count) => `${count} today`,
     remindersTitle: 'Training reminders are off',
-    remindersBody: 'Lucid never enables notifications without asking. Turn on gentle daytime reminders whenever you want.',
+    remindersBody: 'Lucid never enables notifications without asking. Turn on gentle training reminders whenever you want.',
     remindersAction: 'Enable reminders',
   },
   fr: {
     todayCount: (count) => `${count} aujourd’hui`,
     remindersTitle: 'Rappels d’entraînement désactivés',
-    remindersBody: 'Lucid n’active aucune notification sans votre accord. Activez des rappels doux en journée quand vous le souhaitez.',
+    remindersBody: 'Lucid n’active aucune notification sans votre accord. Activez des rappels d’entraînement doux quand vous le souhaitez.',
     remindersAction: 'Activer les rappels',
   },
   es: {
     todayCount: (count) => `${count} hoy`,
     remindersTitle: 'Recordatorios desactivados',
-    remindersBody: 'Lucid nunca activa notificaciones sin preguntar. Activa recordatorios suaves de día cuando quieras.',
+    remindersBody: 'Lucid nunca activa notificaciones sin preguntar. Activa recordatorios de entrenamiento suaves cuando quieras.',
     remindersAction: 'Activar recordatorios',
   },
   de: {
     todayCount: (count) => `${count} heute`,
     remindersTitle: 'Trainingserinnerungen sind aus',
-    remindersBody: 'Lucid aktiviert Mitteilungen nie ungefragt. Schalte sanfte Tageserinnerungen ein, wann immer du möchtest.',
+    remindersBody: 'Lucid aktiviert Mitteilungen nie ungefragt. Schalte sanfte Trainingserinnerungen ein, wann immer du möchtest.',
     remindersAction: 'Erinnerungen aktivieren',
   },
   it: {
     todayCount: (count) => `${count} oggi`,
     remindersTitle: 'Promemoria disattivati',
-    remindersBody: 'Lucid non attiva mai le notifiche senza chiedere. Attiva promemoria delicati durante il giorno quando vuoi.',
+    remindersBody: 'Lucid non attiva mai le notifiche senza chiedere. Attiva promemoria di allenamento delicati quando vuoi.',
     remindersAction: 'Attiva i promemoria',
   },
 };
@@ -555,12 +555,15 @@ export default function LucidTodayScreen() {
       Number.isFinite(item.occurredAt) &&
       toDateKey(item.occurredAt) === todayKey &&
       item.captureMode !== 'nothing_for_now' &&
-      Boolean(item.recallText?.trim() || item.result)
+      // A spoken capture may be saved with only its linked local recording.
+      Boolean(item.recallText?.trim() || item.result || item.voiceCapture === 'local_note')
   ).length;
   const realityChecksTodayCount = (state!.realityChecks ?? []).filter(
     (item) => Number.isFinite(item.occurredAt) && toDateKey(item.occurredAt) === todayKey
   ).length;
+  // Reminders are scheduled natively only: web cannot honour this card's action.
   const showRemindersOptIn =
+    Platform.OS !== 'web' &&
     state?.preferences?.notificationsEnabled === false &&
     state?.onboarding?.notificationsPermission !== 'denied';
   const contextActions: ContextAction[] = [

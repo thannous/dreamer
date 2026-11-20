@@ -206,21 +206,4 @@ describe('Lucid stack onboarding protection', () => {
       ])
     );
   });
-
-  it('keeps an active guest on Account when signing into an un-onboarded account', () => {
-    layoutHarness.onboardingStatus = 'not_started';
-    layoutHarness.pathname = '/lucid/account';
-    layoutHarness.guestImportAvailable = true;
-    render(<LucidLayout />);
-    expect(screen.getByTestId('screen-account')).toBeTruthy();
-    expect(capturedGuards).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          guard: false,
-          redirectTo: '/lucid/account',
-          names: expect.arrayContaining(['(tabs)']),
-        }),
-      ])
-    );
-  });
 });

@@ -33,7 +33,7 @@ export function getLucidDateKeyInTimeZone(
   }
 }
 
-function shiftLucidDateKey(dateKey: string, days: number): string | null {
+export function shiftLucidDateKey(dateKey: string, days: number): string | null {
   if (!isLucidDateKey(dateKey) || !Number.isInteger(days)) return null;
   const [year, month, day] = dateKey.split('-').map(Number);
   const shifted = new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10);

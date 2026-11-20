@@ -374,6 +374,89 @@ describe('lucid progress', () => {
     ).toBe(2);
   });
 
+  it('counts day totals over the 7 calendar days of a rolling 7-day window', () => {
+    // Saturday 21 November 2026, 14:00 in Paris (UTC+1).
+    const now = Date.UTC(2026, 10, 21, 13, 0);
+    const window = { startAt: now + 1 - 7 * DAY, endAt: now + 1 };
+    // Every evening at 20:00 Paris from 14 to 20 November, plus this morning at 10:00.
+    const realityChecks = [
+      ...Array.from({ length: 7 }, (_, index) => ({ occurredAt: Date.UTC(2026, 10, 14 + index, 19, 0) })),
+      { occurredAt: Date.UTC(2026, 10, 21, 9, 0) },
+    ];
+    expect(
+      countLucidPracticeDays({ progress: [], realityChecks, window, timeZone: 'Europe/Paris' })
+    ).toBe(7);
+    // A session on 14 November falls 7 calendar days back: outside the window.
+    expect(
+      countLucidPracticeDays({ progress: [{ practiceDates: ['2026-11-14', '2026-11-15'] }], window, timeZone: 'Europe/Paris' })
+    ).toBe(1);
+    const recalls = [14, 15, 21].map((day) => record({
+      id: `recall-${day}`,
+      occurredAt: Date.UTC(2026, 10, day, 6, 0),
+      captureMode: 'write',
+      recallText: 'A remembered dream.',
+      technique: null,
+      result: null,
+      recallLevel: null,
+    }));
+    expect(countLucidRecallDays(recalls, window, 'Europe/Paris')).toBe(2);
+
+    // Across the spring DST change (28 March 2027) the 168 hours ending on 1 April
+    // at 00:30 touch 9 Paris dates (24 March 23:30 to 1 April 00:30); 7 calendar days count.
+    const dstNow = Date.UTC(2027, 2, 31, 22, 30);
+    const dstWindow = { startAt: dstNow + 1 - 7 * DAY, endAt: dstNow + 1 };
+    const nightly = [
+      { occurredAt: Date.UTC(2027, 2, 24, 22, 45) },
+      ...Array.from({ length: 7 }, (_, index) => ({ occurredAt: Date.UTC(2027, 2, 25 + index, 18, 0) })),
+      { occurredAt: Date.UTC(2027, 2, 31, 22, 15) },
+      // Later than now: not counted.
+      { occurredAt: Date.UTC(2027, 3, 1, 9, 0) },
+    ];
+    expect(
+      countLucidPracticeDays({ progress: [], realityChecks: nightly, window: dstWindow, timeZone: 'Europe/Paris' })
+    ).toBe(7);
+  });
+
+  it('counts a dream marked lucid without a technique as lucid and keeps the success rate per attempt', () => {
+    const lucidWithoutTechnique = record({
+      id: 'lucid-free',
+      occurredAt: DAY,
+      captureMode: 'write',
+      recallText: 'I knew I was dreaming.',
+      technique: null,
+      result: 'lucid',
+    });
+    const failedAttempt = record({ id: 'attempt', occurredAt: 2 * DAY, technique: 'mild', result: 'none' });
+
+    expect(summarizeLucidProgress([lucidWithoutTechnique, failedAttempt])).toMatchObject({
+      attempts: 1,
+      lucidDreams: 1,
+      recalledDreams: 2,
+      successRate: 0,
+    });
+  });
+
+  it('counts a spoken capture saved with only its local recording as a remembered dream', () => {
+    const voiceOnly = record({
+      id: 'voice',
+      occurredAt: Date.UTC(2026, 7, 24, 7, 0),
+      captureMode: 'speak',
+      voiceCapture: 'local_note',
+      cueOutcome: 'not_heard',
+      technique: null,
+      preparationMinutes: null,
+      result: null,
+      lucidityLevel: null,
+      recallLevel: null,
+      sleepQuality: null,
+    });
+    const window = { startAt: Date.UTC(2026, 7, 20, 0, 0), endAt: Date.UTC(2026, 7, 27, 0, 0) };
+
+    expect(adaptLucidExperimentForProgress(voiceOnly).outcome).toBe('remembered');
+    expect(summarizeLucidProgress([voiceOnly], window)).toMatchObject({ recalledDreams: 1, recallRate: 1 });
+    expect(countLucidRecallDays([voiceOnly], window, 'UTC')).toBe(1);
+  });
+
   it('rejects invalid or overlapping review windows', () => {
     expect(() =>
       buildLucidWeeklyReview([], { startAt: DAY, endAt: DAY })
