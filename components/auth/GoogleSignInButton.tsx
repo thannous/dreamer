@@ -9,7 +9,11 @@ import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
-import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
+import {
+  clearStayOnSettingsIntent,
+  requestStayOnSettingsIntent,
+  type AuthReturnDestination,
+} from '@/lib/navigationIntents';
 import { createScopedLogger } from '@/lib/logger';
 import { TID } from '@/lib/testIDs';
 import { IoniconGlyph } from '@/components/ui/IoniconGlyph';
@@ -30,7 +34,7 @@ function getErrorMessage(error: unknown): string | undefined {
 export default function GoogleSignInButton({
   returnTo = '/settings',
 }: {
-  returnTo?: '/settings' | '/lucid/(tabs)/settings';
+  returnTo?: AuthReturnDestination | null;
 }) {
   const [loading, setLoading] = useState(false);
   const { colors, mode } = useTheme();
@@ -43,14 +47,18 @@ export default function GoogleSignInButton({
     await attempt(async () => {
       if (Platform.OS === 'web') {
         log.debug('Platform is Web, using OAuth popup');
-        requestStayOnSettingsIntent({ persist: true, destination: returnTo });
+        if (returnTo) {
+          requestStayOnSettingsIntent({ persist: true, destination: returnTo });
+        }
         await signInWithGoogleWeb();
         // Supabase handles redirect/popup; session will be captured via onAuthChange
         return;
       }
 
       log.debug('Platform is Native, using Google Sign-In');
-      requestStayOnSettingsIntent({ destination: returnTo });
+      if (returnTo) {
+        requestStayOnSettingsIntent({ destination: returnTo });
+      }
       await signInWithGoogle();
       log.debug('Sign-in successful');
       // Navigation is handled by auth state listener in settings screen

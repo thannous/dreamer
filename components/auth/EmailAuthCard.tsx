@@ -45,6 +45,7 @@ import type { MockProfile } from '@/lib/auth';
 import {
   clearStayOnSettingsIntent,
   requestStayOnSettingsIntent,
+  type AuthReturnDestination,
 } from '@/lib/navigationIntents';
 import { isSupabaseConfigured } from '@/lib/supabase';
 import { isMockModeEnabled as isMockModeEnabledEnv } from '@/lib/env';
@@ -90,7 +91,7 @@ const isUnverifiedEmailError = (error: unknown): error is AuthApiError => {
 type Props = {
   isCompact?: boolean;
   presentation?: 'card' | 'embedded';
-  returnTo?: '/settings' | '/lucid/(tabs)/settings';
+  returnTo?: AuthReturnDestination | null;
   showGoogleSignIn?: boolean;
   initialAccountSheetOpen?: boolean;
   initialMode?: 'signin' | 'signup';
@@ -191,7 +192,9 @@ export const EmailAuthCard: React.FC<Props> = ({
   }, []);
 
   const requestAuthReturn = useCallback(() => {
-    requestStayOnSettingsIntent({ destination: returnTo });
+    if (returnTo) {
+      requestStayOnSettingsIntent({ destination: returnTo });
+    }
   }, [returnTo]);
 
   const clearPendingVerification = useCallback(() => {

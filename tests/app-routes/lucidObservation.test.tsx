@@ -28,6 +28,7 @@ jest.mock('@/components/lucid/LucidUI', () => ({
 afterEach(() => { cleanup(); mockObservations = projectLucidObservations(mockExperiments, new Set(['morning'])); mockId = lucidObservationSourceId('morning', 100); jest.clearAllMocks(); });
 it('retrieves the complete local capture and keeps voice access inside Lucid', () => {
   render(<LucidObservationScreen />);
+  expect(screen.getByRole('heading', { name: 'Morning observation' })).toBeTruthy();
   expect(screen.getByText((_, element) => element?.textContent === mockText.trim() + '\n\nMy own association')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Open local voice notes' }));
   expect(mockPush).toHaveBeenCalledWith('/lucid/morning-voice');

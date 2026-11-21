@@ -88,8 +88,14 @@ export function normalizeLucidPathname(pathname: string | null | undefined): str
   return trimmed;
 }
 
+export const LUCID_ACCOUNT_HREF = '/lucid/account' as const;
+
 export function isLucidOnboardingPath(pathname: string | null | undefined): boolean {
   return normalizeLucidPathname(pathname) === LUCID_ONBOARDING_HREF;
+}
+
+export function isLucidAccountPath(pathname: string | null | undefined): boolean {
+  return normalizeLucidPathname(pathname) === LUCID_ACCOUNT_HREF;
 }
 
 export function isLucidHomePath(pathname: string | null | undefined): boolean {
@@ -121,6 +127,7 @@ export function resolveLucidOnboardingGate(input: {
   if (input.loading || !input.onboardingStatus) return null;
   const complete = input.onboardingStatus === 'completed';
   const inOnboarding = isLucidOnboardingPath(input.pathname);
-  if (!complete && !inOnboarding) return LUCID_ONBOARDING_HREF;
+  const inAccount = isLucidAccountPath(input.pathname);
+  if (!complete && !inOnboarding && !inAccount) return LUCID_ONBOARDING_HREF;
   return null;
 }

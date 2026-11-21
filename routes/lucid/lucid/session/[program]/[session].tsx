@@ -404,6 +404,13 @@ export function getLucidGuidedPhaseMotion(reduceMotion: boolean): CSSStyle {
   };
 }
 
+function excerptStartsWithTitle(title: string, excerpt: string): boolean {
+  const cleanTitle = title.replace(/[\u2026.]+$/u, '').replace(/\s+/g, ' ').trim().toLowerCase();
+  if (!cleanTitle) return true;
+  const cleanExcerpt = excerpt.replace(/\s+/g, ' ').trim().toLowerCase();
+  return cleanExcerpt.startsWith(cleanTitle);
+}
+
 function guidedPhaseBody(
   copy: GuidedCopy,
   phaseId: LucidGuidedRitualPhaseId,
@@ -420,7 +427,11 @@ function guidedPhaseBody(
 
   const intention = `${copy.intentionStart} ${source.signLabel}, ${copy.intentionEnd}`;
   if (phaseId === 'mild_recall') {
-    return `${source.dreamTitle || copy.mildDream}. ${source.dreamExcerpt}`;
+    if (!source.dreamExcerpt) return source.dreamTitle || copy.mildDream;
+    if (source.dreamTitle && !excerptStartsWithTitle(source.dreamTitle, source.dreamExcerpt)) {
+      return `${source.dreamTitle}. ${source.dreamExcerpt}`;
+    }
+    return source.dreamExcerpt;
   }
   if (phaseId === 'mild_recognize') {
     return `${base} ${copy.confirmedSign}: ${source.signLabel}.`;

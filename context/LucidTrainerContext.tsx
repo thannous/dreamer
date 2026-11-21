@@ -393,6 +393,14 @@ function completeProgramSessionMutation(params: {
 }
 
 export function LucidTrainerProvider({ children }: { children: ReactNode }) {
+  const existing = useContext(LucidTrainerContext);
+  if (existing) {
+    return <>{children}</>;
+  }
+  return <LucidTrainerProviderInner>{children}</LucidTrainerProviderInner>;
+}
+
+function LucidTrainerProviderInner({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const userId = user?.id;
   const userScope = toAccountScope(userId);

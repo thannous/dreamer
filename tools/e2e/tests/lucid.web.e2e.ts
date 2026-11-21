@@ -90,3 +90,21 @@ test('Lucid completes a stabilization practice once and preserves its progress a
   await expect(screen.getByTestId('lucid-progress-stabilization-completions').getByText('1', { exact: true })).toHaveCount(1);
   await app.screenshot('completed-practice-survives-two-restarts');
 });
+
+test('Lucid keeps a guest on Account after signing in and offers to import the guest training', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
+  await completeOnboarding(fixtures);
+  await openLucid(app, browser, '/lucid/account?ambience=dark');
+  await expect(screen.getByTestId('lucid-import-guest', { visible: true })).toHaveCount(0);
+  await screen.getByTestId('settings-account-open-signin', { visible: true }).tap();
+  await screen.getByTestId('input.auth.email', { visible: true }).fill('lucid.guest@dreamer.app');
+  await screen.getByTestId('input.auth.password', { visible: true }).fill('Lucid-guest-1');
+  await screen.getByTestId('btn.auth.signIn', { visible: true }).tap();
+  // The new account has no Lucid onboarding: the guest must stay on Account, where the
+  // import of the training kept on this device is offered, instead of restarting onboarding.
+  await expect(screen.getByTestId('lucid-import-guest', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('lucid-account', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('lucid-onboarding', { visible: true })).toHaveCount(0);
+  expect(new URL(await browser.url()).pathname).toBe('/lucid/account');
+  await app.screenshot('lucid-account-guest-import-after-sign-in');
+});

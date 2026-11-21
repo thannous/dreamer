@@ -1,9 +1,13 @@
+import { getLucidLocalDateKey } from './calendar';
 import {
   LUCID_TECHNIQUES,
   type LucidExperiment,
   type LucidPersonalFactor,
+  type LucidProgramProgress,
+  type LucidRealityCheck,
   type LucidTechnique,
 } from './model';
+import { getLucidDateKeyInTimeZone, shiftLucidDateKey } from './morningCapture';
 import { isLucidRecentSleepDegraded } from './personalization';
 
 export { LUCID_TECHNIQUES } from './model';
@@ -114,6 +118,7 @@ const SCORE_MIN = 0;
 const SCORE_MAX = 5;
 const DEFAULT_MINIMUM_METHOD_ATTEMPTS = 3;
 const TREND_THRESHOLD = 0.1;
+const DAY_MS = 24 * 60 * 60 * 1000;
 const SLEEP_RISK_FACTORS = new Set<LucidFactor>(['interrupted_sleep', 'low_sleep']);
 const PERSONAL_FACTOR_MAP: Readonly<Record<LucidPersonalFactor, LucidFactor>> = {
   stress: 'stress',
@@ -188,6 +193,10 @@ function adaptLucidOutcome(experiment: LucidExperiment): LucidOutcome | null {
     return 'remembered';
   }
   if (experiment.recallText?.trim()) return 'remembered';
+  // A spoken capture can be saved with only its local recording: the dream was remembered.
+  if (experiment.captureMode === 'speak' && experiment.voiceCapture === 'local_note') {
+    return 'remembered';
+  }
   if (experiment.result === 'none' && typeof experiment.recallLevel === 'number') {
     return 'no_recall';
   }
@@ -239,6 +248,103 @@ function getExperimentsInWindow(
   return experiments.filter((experiment) => isExperimentInWindow(experiment, window));
 }
 
+export function getLucidProgressDateKey(timestamp: number, timeZone?: string): string {
+  return (timeZone ? getLucidDateKeyInTimeZone(timestamp, timeZone) : null)
+    ?? getLucidLocalDateKey(timestamp);
+}
+
+/** First instant, before `before`, whose date key reaches `dateKey`. */
+function findLucidDateKeyStart(
+  dateKey: string,
+  before: number,
+  spanDays: number,
+  timeZone?: string
+): number {
+  // Date keys never decrease with time: a binary search finds local midnight in
+  // any time zone, DST changes included, without offset arithmetic.
+  let low = before - (spanDays + 2) * DAY_MS;
+  let high = before;
+  while (high - low > 1) {
+    const middle = low + Math.floor((high - low) / 2);
+    if (getLucidProgressDateKey(middle, timeZone) >= dateKey) high = middle;
+    else low = middle;
+  }
+  return high;
+}
+
+/**
+ * The last `days` calendar days, today included, in the user's time zone: from
+ * local midnight `days - 1` days ago until now. A rolling 168-hour window touches
+ * 8 dates (9 across a DST change), so 7-day summaries and their day counts use
+ * this window.
+ */
+export function getLucidCalendarDaysWindow(
+  now: number,
+  timeZone?: string,
+  days = 7
+): LucidProgressWindow {
+  if (!Number.isFinite(now) || !Number.isInteger(days) || days < 1) {
+    throw new RangeError('Calendar window needs a finite time and a whole number of days.');
+  }
+  const endAt = now + 1;
+  const todayKey = getLucidProgressDateKey(now, timeZone);
+  const startDateKey = shiftLucidDateKey(todayKey, -(days - 1)) ?? todayKey;
+  return { startAt: findLucidDateKeyStart(startDateKey, endAt, days, timeZone), endAt };
+}
+
+export function countLucidRecallDays(
+  experiments: readonly LucidExperiment[],
+  window?: LucidProgressWindow,
+  timeZone?: string
+): number {
+  const relevantExperiments = getExperimentsInWindow(experiments, window);
+  const days = new Set<string>();
+  for (const experiment of relevantExperiments) {
+    const outcome = adaptLucidOutcome(experiment);
+    if (outcome === 'lucid' || outcome === 'remembered') {
+      days.add(getLucidProgressDateKey(experiment.occurredAt, timeZone));
+    }
+  }
+  return days.size;
+}
+
+export function countLucidPracticeDays(input: {
+  progress: readonly Pick<LucidProgramProgress, 'practiceDates'>[];
+  realityChecks?: readonly Pick<LucidRealityCheck, 'occurredAt'>[];
+  experiments?: readonly LucidExperiment[];
+  window?: LucidProgressWindow;
+  timeZone?: string;
+}): number {
+  const { progress, realityChecks = [], experiments = [], window, timeZone } = input;
+  if (window) assertProgressWindow(window, 'Progress window');
+  const startDateKey = window ? getLucidProgressDateKey(window.startAt, timeZone) : null;
+  const endDateKey = window ? getLucidProgressDateKey(window.endAt - 1, timeZone) : null;
+  const days = new Set<string>();
+
+  for (const item of progress) {
+    for (const dateKey of item.practiceDates) {
+      if (!startDateKey || !endDateKey || (dateKey >= startDateKey && dateKey <= endDateKey)) {
+        days.add(dateKey);
+      }
+    }
+  }
+
+  for (const check of realityChecks) {
+    if (!Number.isFinite(check.occurredAt)) continue;
+    if (!window || (check.occurredAt >= window.startAt && check.occurredAt < window.endAt)) {
+      days.add(getLucidProgressDateKey(check.occurredAt, timeZone));
+    }
+  }
+
+  for (const experiment of getExperimentsInWindow(experiments, window)) {
+    if (isLucidTrainingAttempt(experiment)) {
+      days.add(getLucidProgressDateKey(experiment.occurredAt, timeZone));
+    }
+  }
+
+  return days.size;
+}
+
 export function summarizeLucidProgress(
   experiments: readonly LucidExperiment[],
   window?: LucidProgressWindow
@@ -246,7 +352,9 @@ export function summarizeLucidProgress(
   const relevantExperiments = getExperimentsInWindow(experiments, window);
   let attempts = 0;
   let lucidDreams = 0;
+  let lucidAttempts = 0;
   let recalledDreams = 0;
+  let recallObserved = 0;
   let preparedAttempts = 0;
   let preparationObserved = 0;
   const lucidityScores: number[] = [];
@@ -257,12 +365,18 @@ export function summarizeLucidProgress(
   for (const experiment of relevantExperiments) {
     const record = adaptLucidExperimentForProgress(experiment);
     const attempt = isLucidTrainingAttempt(experiment);
-    if (attempt) {
-      attempts += 1;
-      if (record.outcome === 'lucid') lucidDreams += 1;
+    if (record.outcome !== null) {
+      recallObserved += 1;
       if (record.outcome === 'lucid' || record.outcome === 'remembered') {
         recalledDreams += 1;
       }
+      // Every dream marked lucid counts, with or without a chosen technique.
+      if (record.outcome === 'lucid') lucidDreams += 1;
+    }
+    if (attempt) {
+      attempts += 1;
+      // The success rate compares techniques, so it stays limited to attempts.
+      if (record.outcome === 'lucid') lucidAttempts += 1;
       if (record.preparationMinutes != null) {
         preparationObserved += 1;
         if (record.preparationMinutes > 0) preparedAttempts += 1;
@@ -296,8 +410,8 @@ export function summarizeLucidProgress(
     lucidDreams,
     recalledDreams,
     preparedAttempts,
-    successRate: getRate(lucidDreams, attempts),
-    recallRate: getRate(recalledDreams, attempts),
+    successRate: getRate(lucidAttempts, attempts),
+    recallRate: getRate(recalledDreams, recallObserved),
     preparationRate: getRate(preparedAttempts, preparationObserved),
     averageLucidity: getAverage(lucidityScores),
     averageRecall: getAverage(recallScores),
@@ -492,4 +606,18 @@ export function buildLucidWeeklyReview(
     comparison,
     coaching,
   };
+}
+
+/**
+ * Weekly review of the last 7 calendar days, today included, compared with the
+ * 7 calendar days before them, both from local midnight in the user's time zone.
+ */
+export function buildLucidCalendarWeeklyReview(
+  experiments: readonly LucidExperiment[],
+  now: number,
+  timeZone?: string
+): LucidWeeklyProgressReview {
+  const currentWindow = getLucidCalendarDaysWindow(now, timeZone);
+  const previousWindow = getLucidCalendarDaysWindow(currentWindow.startAt - 1, timeZone);
+  return buildLucidWeeklyReview(experiments, currentWindow, previousWindow);
 }

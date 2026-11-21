@@ -69,4 +69,12 @@ describe('autonomous Lucid observations', () => {
   it('keeps audio-only captures retrievable and omits genuinely empty check-ins', () => {
     expect(projectLucidObservations([{ ...observation('voice', 100, ''), voiceCapture: 'local_note' }, observation('empty', 101, '')], new Set(['voice'])).map(item => item.id)).toEqual([lucidObservationSourceId('voice', 100)]);
   });
+  it('truncates long observation titles at a word boundary with an ellipsis', () => {
+    const longText = 'Je marche dans une gare ancienne avec une immense horloge sans aiguilles ni chiffres au-dessus du quai principal.';
+    const [source] = projectLucidObservations([observation('clock', 200, longText)]);
+    expect(source.title.length).toBeLessThanOrEqual(80);
+    expect(source.title.endsWith('\u2026')).toBe(true);
+    expect(source.title).not.toMatch(/sans a\u2026?$/);
+    expect(source.title).toContain('horloge');
+  });
 });

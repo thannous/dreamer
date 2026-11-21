@@ -15,6 +15,15 @@ const COPY = {
   it: { title: 'Osservazione mattutina', missing: 'Questa osservazione non è disponibile in questo account.', voice: 'Apri le note vocali locali' },
 } as const;
 
+function formatObservationDate(occurredAt: number, locale: string): string | undefined {
+  if (!Number.isFinite(occurredAt)) return undefined;
+  try {
+    return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(occurredAt));
+  } catch {
+    return undefined;
+  }
+}
+
 export default function LucidObservationScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { observations, content, loading } = useLucidTrainer();
@@ -22,7 +31,8 @@ export default function LucidObservationScreen() {
   const palette = getLucidPalette(colors, mode);
   const copy = COPY[content.locale];
   const observation = observations.find(item => item.id === id);
-  return <LucidScreen title={observation?.title || copy.title}
+  const eyebrow = observation ? formatObservationDate(observation.occurredAt, content.locale) : undefined;
+  return <LucidScreen eyebrow={eyebrow} title={copy.title}
     trailing={<LucidIconAction icon="close" label={content.chrome.common.back} onPress={() => closeLucidRoute(router, '/lucid/(tabs)/journal')} />}>
     {observation ? <LucidCard style={styles.card}>
       <Text selectable style={[styles.body, { color: palette.text }]}>{observation.transcript}</Text>
