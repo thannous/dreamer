@@ -1,15 +1,17 @@
-import { Image, Rectangle, Text, VStack, ZStack } from '@expo/ui/swift-ui';
+import { HStack, Image, Rectangle, Text, VStack, ZStack } from '@expo/ui/swift-ui';
 import {
   accessibilityLabel,
   aspectRatio,
   clipped,
   containerBackground,
+  cornerRadius,
   font,
   foregroundStyle,
   frame,
   lineLimit,
   padding,
   resizable,
+  widgetAccentedRenderingMode,
   widgetURL,
 } from '@expo/ui/swift-ui/modifiers';
 import { createWidget, type WidgetEnvironment } from 'expo-widgets';
@@ -66,16 +68,55 @@ const LastDreamWidget = (props: LastDreamWidgetProps, environment: WidgetEnviron
     );
   }
 
-  // The title keeps the illustration's fixed contrast: a near-opaque band of the theme's
-  // own ground fading up into the painting, whatever the painting's light.
   const ink = dark ? '#FFF9EF' : '#382D35';
-  const veil = dark ? ['rgba(3, 4, 13, 0)', 'rgba(3, 4, 13, 0.86)'] : ['rgba(245, 234, 219, 0)', 'rgba(245, 234, 219, 0.92)'];
+  const accented = environment.widgetRenderingMode === 'accented';
+  const textStyle = accented ? [] : [foregroundStyle(ink)];
   const medium = environment.widgetFamily === 'systemMedium';
   // The small widget takes the short date, and an anniversary's words may wrap there.
   const above = props.eyebrow ?? (medium ? props.date : props.shortDate ?? props.date);
+  const named = accessibilityLabel([props.eyebrow, props.title, props.date].filter(Boolean).join(', '));
+  const caption = (
+    <VStack
+      alignment="leading"
+      spacing={2}
+      modifiers={[accented ? frame({ maxWidth: Infinity, alignment: 'leading' }) : padding({ horizontal: 14, bottom: 12 })]}
+    >
+      {above ? (
+        <Text modifiers={[font({ size: 11, weight: 'medium' }), ...textStyle, lineLimit(medium ? 1 : 2)]}>{above}</Text>
+      ) : null}
+      <Text modifiers={[font({ size: medium ? 18 : 15, weight: 'semibold', design: 'serif' }), ...textStyle, lineLimit(2)]}>
+        {props.title}
+      </Text>
+    </VStack>
+  );
+
+  // Clear and tinted Home Screens turn an opaque image white. Keep the artwork in colour
+  // and set the caption outside it so WidgetKit can style the text against its glass surface.
+  if (accented) {
+    const Stack = medium ? HStack : VStack;
+    return (
+      <Stack spacing={8} modifiers={[open, fill, padding({ all: 10 }), containerBackground('transparent', 'widget'), named]}>
+        <Image
+          uiImage={props.image}
+          modifiers={[
+            resizable(),
+            aspectRatio({ contentMode: 'fill' }),
+            medium ? frame({ width: 86, height: 94 }) : frame({ maxWidth: Infinity, minHeight: 52, maxHeight: 52 }),
+            clipped(),
+            cornerRadius(8),
+            widgetAccentedRenderingMode('fullColor'),
+          ]}
+        />
+        {caption}
+      </Stack>
+    );
+  }
+
+  // A gradient behind the title keeps it legible on light and dark paintings.
+  const veil = dark ? ['rgba(3, 4, 13, 0)', 'rgba(3, 4, 13, 0.86)'] : ['rgba(245, 234, 219, 0)', 'rgba(245, 234, 219, 0.92)'];
 
   return (
-    <ZStack alignment="bottomLeading" modifiers={[open, fill, containerBackground(ground, 'widget'), accessibilityLabel([props.eyebrow, props.title, props.date].filter(Boolean).join(', '))]}>
+    <ZStack alignment="bottomLeading" modifiers={[open, fill, containerBackground(ground, 'widget'), named]}>
       <Image uiImage={props.image} modifiers={[resizable(), aspectRatio({ contentMode: 'fill' }), fill, clipped()]} />
       <Rectangle
         modifiers={[
@@ -83,14 +124,7 @@ const LastDreamWidget = (props: LastDreamWidgetProps, environment: WidgetEnviron
           foregroundStyle({ type: 'linearGradient', colors: veil, startPoint: { x: 0.5, y: 0.35 }, endPoint: { x: 0.5, y: 1 } }),
         ]}
       />
-      <VStack alignment="leading" spacing={2} modifiers={[padding({ horizontal: 14, bottom: 12 })]}>
-        {above ? (
-          <Text modifiers={[font({ size: 11, weight: 'medium' }), foregroundStyle(ink), lineLimit(medium ? 1 : 2)]}>{above}</Text>
-        ) : null}
-        <Text modifiers={[font({ size: medium ? 18 : 15, weight: 'semibold', design: 'serif' }), foregroundStyle(ink), lineLimit(2)]}>
-          {props.title}
-        </Text>
-      </VStack>
+      {caption}
     </ZStack>
   );
 };
