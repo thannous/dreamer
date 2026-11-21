@@ -47,6 +47,19 @@ Deno.test('/guest/session refuses iOS fingerprint without App Attest proof', asy
   assertEquals(response.status, 503); // Missing server configuration fails closed.
 });
 
+// The local development backend answers this field for the Simulator
+// (tools/dev-local/simulatorGuest.ts); the hosted route must not.
+Deno.test('/guest/session ignores the local Simulator field and still requires App Attest', async () => {
+  await withAppAttestConfig(async () => {
+    const response = await requestGuestSession({
+      fingerprint: 'a'.repeat(64),
+      platform: 'ios',
+      localSimulator: true,
+    });
+    assertEquals(response.status, 401);
+  });
+});
+
 async function withAppAttestConfig<T>(run: () => Promise<T>): Promise<T> {
   const config = {
     IOS_APP_ATTEST_TEAM_ID: 'ABCDEFGHIJ',

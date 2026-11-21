@@ -51,6 +51,16 @@ export const backendStorageKey = (base: string, apiBaseUrl = getApiBaseUrl()): s
   for (const char of apiBaseUrl) hash = ((hash * 33) ^ char.charCodeAt(0)) >>> 0;
   return `${base}.local-${hash.toString(36)}`;
 };
+/**
+ * The iOS Simulator has no App Attest. A development build on the local
+ * backend (tools/dev-local, plain HTTP) asks that server for a Simulator guest
+ * session instead. Only the never-deployed local server grants it: the hosted
+ * API refuses an iOS session without an App Attest proof.
+ */
+const usesLocalSimulatorGuest = (): boolean =>
+  Platform.OS === 'ios' && !AppIntegrity.isSupported &&
+  typeof __DEV__ !== 'undefined' && __DEV__ &&
+  getApiBaseUrl().startsWith('http://');
 const APP_ATTEST_PAUSE_MIN_MS = 60 * 60_000;
 const APP_ATTEST_PAUSE_MAX_MS = 24 * 60 * 60_000;
 // The server accepts its signed challenge for three minutes. Leave time for
@@ -146,7 +156,7 @@ const isProviderInvalidError = (error: unknown): boolean => {
 
 export async function initGuestSession(): Promise<boolean> {
   if (Platform.OS === 'ios') {
-    if (!AppIntegrity.isSupported) {
+    if (!AppIntegrity.isSupported && !usesLocalSimulatorGuest()) {
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
       return false;
     }
@@ -355,6 +365,7 @@ const fetchGuestSession = async (
     challengeId?: string;
     attestationObject?: string;
     assertionObject?: string;
+    localSimulator?: true;
   } = {
     fingerprint,
     platform: Platform.OS,
@@ -410,7 +421,9 @@ const fetchGuestSession = async (
     }
   }
 
-  if (Platform.OS === 'ios') {
+  if (usesLocalSimulatorGuest()) {
+    body.localSimulator = true;
+  } else if (Platform.OS === 'ios') {
     if (!AppIntegrity.isSupported) {
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
       return null;

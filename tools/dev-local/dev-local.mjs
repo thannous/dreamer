@@ -141,6 +141,16 @@ async function ensureAccounts(status) {
   return secrets.accounts;
 }
 
+/** Local-only SQL behind « Nouvel invité » (guest-reset.sql); `db query` takes one command per call. */
+function installGuestReset() {
+  const source = readFileSync(join(root, 'tools/dev-local/guest-reset.sql'), 'utf8');
+  for (const [index, statement] of source.split(/^-- statement$/m).entries()) {
+    const file = join(dataDir, `guest-reset-${index}.sql`);
+    writePrivate(file, statement);
+    try { supabase(['db', 'query', '--workdir', workdir, '--file', file]); } finally { rmSync(file, { force: true }); }
+  }
+}
+
 async function main() {
   mkdirSync(dataDir, { recursive: true, mode: 0o700 });
   if (options.reset) {
@@ -160,6 +170,7 @@ async function main() {
   const safety = JSON.parse(supabase(['db', 'query', '--workdir', workdir,
     'select count(*) as active_jobs from cron.job where active', '--output-format', 'json']));
   assertNoActiveCronJobs(safety);
+  installGuestReset();
   const accounts = await ensureAccounts(status);
   const secrets = readJson(secretsFile, {});
   secrets.guestSessionSecret ??= randomBytes(32).toString('hex');
