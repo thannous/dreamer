@@ -103,6 +103,11 @@ async function main() {
       { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }));
       assertNoActiveCronJobs(safety);
       installGuestReset();
+      // The fixtures start their local APIs with --cached-only: fill Deno's cache first, so a
+      // fresh machine runs the suite without a prior Deno check.
+      for (const api of ['tools/e2e/test-support/native-recovery-api.ts', 'tools/dev-local/api-server.ts']) {
+        command('deno', ['cache', '--no-config', api], { env: process.env });
+      }
       const url = assertBackendTarget(status);
       const profile = path.join(workdir, 'expo.env');
       const publicEnv = {

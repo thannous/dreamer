@@ -145,6 +145,16 @@ test('without --runtime the runner owns a native stack, never a container runtim
   assert.deepEqual(result.leftovers, []);
 });
 
+test('the local APIs are cached before the browser journeys start them cached-only', async () => {
+  const result = await runnerFixture([]);
+  assert.equal(result.failure, undefined);
+  const cached = result.calls.filter(({ binary, argv }) => binary === 'deno' && argv[0] === 'cache');
+  assert.deepEqual(cached.map(({ argv }) => argv.at(-1)),
+    ['tools/e2e/test-support/native-recovery-api.ts', 'tools/dev-local/api-server.ts']);
+  const browser = result.calls.findIndex(({ argv }) => argv[0] === 'tools/e2e/run.mjs');
+  assert.ok(cached.every(call => result.calls.indexOf(call) < browser));
+});
+
 test('the guest reset SQL is installed one statement at a time before the browser journeys', async () => {
   const result = await runnerFixture([]);
   assert.equal(result.failure, undefined);

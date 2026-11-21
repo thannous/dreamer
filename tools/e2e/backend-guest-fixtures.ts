@@ -8,7 +8,7 @@ import { test as base, repoRoot, backendOrigin, restrictNetwork } from './backen
 
 export { expect, journal, admin } from './backend-fixtures';
 
-export type GuestApiCall = { route: string; status: number };
+export type GuestApiCall = { route: string; status: number; body?: Promise<unknown> };
 export type GuestApi = {
   /** The API answers this page received, in order, for the guest routes. */
   calls: GuestApiCall[];
@@ -82,7 +82,10 @@ export const test = base.extend<{ guestApi: GuestApi }>({
     const calls: GuestApiCall[] = [];
     page.on('response', response => {
       const match = GUEST_ROUTE.exec(new URL(response.url()).pathname);
-      if (match && response.request().method() === 'POST') calls.push({ route: match[1], status: response.status() });
+      if (!match || response.request().method() !== 'POST') return;
+      // The server's quota answers are kept: a journey reads what the server said, not only that it answered.
+      calls.push({ route: match[1], status: response.status(),
+        ...(match[1] === 'quota/status' ? { body: response.json().catch(() => null) } : {}) });
     });
     const pattern = /\/functions\/v1\/[^?]*(?:\?.*)?$/;
     let unrouting = false;

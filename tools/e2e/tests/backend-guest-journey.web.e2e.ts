@@ -31,18 +31,15 @@ async function saveDream(page: Page, story: string, { read = false } = {}) {
   await page.getByTestId('btn.saveDream').click();
   const card = page.getByTestId('component.transcriptCard').filter({ visible: true });
   const readNow = page.getByTestId('btn.dreamCaptureSeal.readNow').filter({ visible: true });
-  const open = page.getByTestId('btn.dreamCaptureSeal.openDream').filter({ visible: true });
   let asked = false;
-  // The seal asks its question once its animation pauses; only after that is it opened by hand.
-  const openAfter = Date.now() + 10_000;
+  // The seal opens the dream by itself; it is never opened by hand here, so a stalled
+  // hand-off fails the journey. It only pauses to ask about the reading.
   await expect.poll(async () => {
     await answerConsent(page);
     if (await readNow.count()) {
       asked = true;
       await page.getByTestId(read ? 'btn.dreamCaptureSeal.readNow' : 'btn.dreamCaptureSeal.readLater')
         .filter({ visible: true }).click({ timeout: 2_000 }).catch(() => undefined);
-    } else if (Date.now() > openAfter && await open.count()) {
-      await open.click({ timeout: 2_000 }).catch(() => undefined);
     }
     return card.count();
   }, { timeout: 60_000, intervals: [250] }).toBeGreaterThan(0);
@@ -91,13 +88,19 @@ test('a guest gets its first dream read at once, its second on request, then an 
   await expectReading(page);
   expect(guestApi.count('analyzeDream')).toBe(2);
 
-  // The server refuses a third free analysis: the dream is kept and an account is offered.
+  // The server's quota now says both free analyses are used, and the app asks for no third:
+  // the dream is kept and an account is offered.
+  await expect.poll(async () => {
+    const quota = guestApi.calls.filter(call => call.route === 'quota/status' && call.status === 200).at(-1);
+    const usage = (await quota?.body as { usage?: { analysis?: { used?: number; limit?: number } } } | null)?.usage?.analysis;
+    return usage && `${usage.used}/${usage.limit}`;
+  }, { timeout: 30_000 }).toBe('2/2');
   await newDream(page);
   await saveDream(page, stories[2]);
   await expect(page.getByText('Your included analyses are used up. A free account unlocks new analyses.', { exact: true })
     .filter({ visible: true })).toBeVisible({ timeout: 60_000 });
   await expect(page.getByTestId('btn.dream.primaryCta').filter({ visible: true })).toContainText('Create account');
-  expect(guestApi.count('analyzeDream')).toBe(2);
+  expect(guestApi.calls.filter(call => call.route === 'analyzeDream')).toHaveLength(2);
 });
 
 test('« Nouvel invité » waits for an empty guest journal, then the device reads its first dream at once again', {
