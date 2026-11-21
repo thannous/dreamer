@@ -69,6 +69,17 @@ the local URL and public anon key. Startup output containing privileged keys is
 captured, and browser requests allow only the app, local Auth and local Data API.
 AI functions, analytics, OAuth providers and billing are blocked.
 
+Guest journeys are the exception for the API. `tools/e2e/backend-guest-fixtures.ts`
+starts `tools/dev-local/api-server.ts` (the never-deployed server of `dev:local`: the
+real route table, its local guest verifiers and fixed AI answers) on a loopback port
+for the run's stack, sends the page's `/functions/v1/` calls to it and answers
+Cloudflare's widget script with a stub, so the profile's always-pass Turnstile test
+site key yields a token offline. The runner installs `tools/dev-local/guest-reset.sql`
+(never a migration) for « Nouvel invité ». `backend-guest-journey.web.e2e.ts` plays a
+guest's first dream read at once, the second on request, the account offered for the
+third, then « Nouvel invité »: refused while a guest dream remains, then the device's
+first dream read at once again and the welcome kept after a reload.
+
 Every run owns its stack. The former supplied-VM mode (`--prepare-only` and
 `--status-file`, API pinned on 56321) ran the CLI's default container stack inside
 a VM; it was removed with Docker, and both options are refused before any process
