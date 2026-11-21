@@ -27,11 +27,7 @@ import { useLucidNow } from '@/hooks/useLucidNow';
 import { useLucidStabilizationLab } from '@/hooks/useLucidStabilizationLab';
 import { getLucidGuidanceProfile } from '@/lib/lucid/personalization';
 import type { LucidGuidanceFocus } from '@/lib/lucid/personalization';
-import {
-  buildLucidWeeklyReview,
-  countLucidPracticeDays,
-  getLucidCalendarDaysWindow,
-} from '@/lib/lucid/progress';
+import { buildLucidCalendarWeeklyReview, countLucidPracticeDays } from '@/lib/lucid/progress';
 import type { LucidExperiment, LucidLocale, LucidTechnique } from '@/lib/lucid/model';
 
 const PROGRESS_CONSTELLATION = require('../../../../assets/images/lucid/progress-constellation.webp');
@@ -430,7 +426,7 @@ export default function LucidProgressScreen() {
   const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
   // The 7 calendar days, today included, behind every 7-day figure on this screen.
   const review = useMemo(
-    () => buildLucidWeeklyReview(state!.experiments, getLucidCalendarDaysWindow(now, timeZone)),
+    () => buildLucidCalendarWeeklyReview(state!.experiments, now, timeZone),
     [now, state, timeZone]
   );
   const recentRealityChecks = useMemo(

@@ -607,3 +607,17 @@ export function buildLucidWeeklyReview(
     coaching,
   };
 }
+
+/**
+ * Weekly review of the last 7 calendar days, today included, compared with the
+ * 7 calendar days before them, both from local midnight in the user's time zone.
+ */
+export function buildLucidCalendarWeeklyReview(
+  experiments: readonly LucidExperiment[],
+  now: number,
+  timeZone?: string
+): LucidWeeklyProgressReview {
+  const currentWindow = getLucidCalendarDaysWindow(now, timeZone);
+  const previousWindow = getLucidCalendarDaysWindow(currentWindow.startAt - 1, timeZone);
+  return buildLucidWeeklyReview(experiments, currentWindow, previousWindow);
+}

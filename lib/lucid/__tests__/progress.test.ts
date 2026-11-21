@@ -1,5 +1,6 @@
 import {
   adaptLucidExperimentForProgress,
+  buildLucidCalendarWeeklyReview,
   buildLucidWeeklyReview,
   compareLucidMethods,
   countLucidPracticeDays,
@@ -432,6 +433,26 @@ describe('lucid progress', () => {
     expect(
       countLucidPracticeDays({ progress: [], experiments, window: review.currentWindow, timeZone: 'Europe/Paris' })
     ).toBe(1);
+  });
+
+  it('compares the weekly review with the 7 full calendar days before it', () => {
+    // Saturday 21 November 2026, 09:00 in Paris.
+    const now = Date.UTC(2026, 10, 21, 8, 0);
+    const morning = (day: number, result: LucidExperiment['result']) =>
+      record({ id: `attempt-${day}`, occurredAt: Date.UTC(2026, 10, day, 6, 0), result });
+    // Two failed attempts on the mornings of 8 and 9 November, two lucid ones on 16 and 17.
+    const experiments = [morning(8, 'none'), morning(9, 'none'), morning(16, 'lucid'), morning(17, 'lucid')];
+
+    const review = buildLucidCalendarWeeklyReview(experiments, now, 'Europe/Paris');
+
+    // 8 to 14 November in Paris: a window ending at 09:00 thirteen days back would miss the 8th.
+    expect(review.previousWindow).toEqual({
+      startAt: Date.UTC(2026, 10, 7, 23, 0),
+      endAt: Date.UTC(2026, 10, 14, 23, 0),
+    });
+    expect(review.previous.attempts).toBe(2);
+    expect(review.current.attempts).toBe(2);
+    expect(review.trend.direction).toBe('improving');
   });
 
   it('counts a dream marked lucid without a technique as lucid and keeps the success rate per attempt', () => {

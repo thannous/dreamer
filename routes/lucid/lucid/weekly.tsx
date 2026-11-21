@@ -8,10 +8,9 @@ import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
 import {
-  buildLucidWeeklyReview,
+  buildLucidCalendarWeeklyReview,
   countLucidPracticeDays,
   countLucidRecallDays,
-  getLucidCalendarDaysWindow,
   getLucidProgressDateKey,
 } from '@/lib/lucid/progress';
 import { closeLucidRoute, LUCID_HOME_HREF } from '@/lib/lucid/routes';
@@ -31,7 +30,7 @@ export default function LucidWeeklyScreen() {
   const now = useLucidNow(); const { fontScale, width } = useWindowDimensions(); const compact = width < 380 || fontScale >= 1.3;
   const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
   // One window of 7 calendar days, today included, for every figure the review saves.
-  const review = useMemo(() => buildLucidWeeklyReview(state!.experiments, getLucidCalendarDaysWindow(now, timeZone)), [now, state, timeZone]);
+  const review = useMemo(() => buildLucidCalendarWeeklyReview(state!.experiments, now, timeZone), [now, state, timeZone]);
   const dateKey = getLucidProgressDateKey(review.currentWindow.startAt, timeZone);
   const { practiceDays, recallDays } = useMemo(() => ({
     practiceDays: countLucidPracticeDays({
