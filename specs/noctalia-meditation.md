@@ -1,14 +1,14 @@
 # Noctalia Meditation — Spécification produit & technique
 
-**Version :** 1.0 · **Date :** 2026-08-19 · **Statut :** prêt à implémenter
-**Source de vérité :** code de `apps/meditation/` ; revue de cadrage au commit `795878a76`, le 7 septembre 2026. Le template Zen est une origine historique, pas un contrat de parité.
+**Version :** 1.0 · **Statut :** implémentation locale ; qualification native et stores à compléter
+**Source de vérité :** code de `apps/meditation/`. Le template Zen est une origine historique, pas un contrat de parité.
 **Objectif :** préparer le repos par une pratique simple et une écoute fiable, dans une application autonome. Voir le [contrat de marque](noctalia-brand-contract.md) (TI-558) pour la matrice des capacités et niveaux de preuve. Les inventaires historiques ci-dessous ne prouvent pas une publication native.
 
 ---
 
 ## 1. Contexte
 
-Noctalia est aujourd'hui une application de journal de rêves (Expo SDK 57 / Supabase / RevenueCat, 6 langues). `Noctalia Meditation` est une **seconde application mobile de la marque**, autonome (bundle id, store listing, build et cycle de release distincts), qui partage l'identité visuelle, le ton et le positionnement éditorial. **Aucun compte, aucun backend applicatif en v1** (cf. §10).
+Noctalia est aujourd'hui une application de journal de rêves (Expo SDK 58 / Supabase / RevenueCat, 6 langues). `Noctalia Meditation` est une **seconde application mobile de la marque**, autonome (bundle id, store listing, build et cycle de release distincts), qui partage l'identité visuelle, le ton et le positionnement éditorial. **Aucun compte, aucun backend applicatif en v1** (cf. §10).
 
 Positionnement : Noctalia (rêve, nuit, interprétation) → Noctalia Meditation (préparation au sommeil, respiration, méditation guidée). Le pont produit est explicite : *on médite le soir, on rêve la nuit, on journalise au matin*.
 
@@ -24,41 +24,39 @@ L'accueil personnalisé, les univers et la progression existants répondent à c
 
 | Élément | Version | Note |
 |---|---|---|
-| Expo SDK | `~57.0.12` | Expo Router, New Architecture activée |
-| React Native | `0.86.2` | |
-| React | `19.2.3` | |
+| Expo SDK | `~58.0.26` | Expo Router, New Architecture activée |
+| React Native | `0.88.1` | |
+| React | `19.3.0` | |
 | TypeScript | `~6.0.3` | mode `strict` |
-| Uniwind | `^1.11.0` | **nouveauté vs Noctalia** : styling utility-first, `className` (cf. ADR-001) |
-| Tailwind CSS | `^4.3.x` | requis par Uniwind, configuration CSS-first |
-| Expo Router | `~57.0.12` | routing par fichiers |
-| react-native-reanimated | `4.5.1` | animations respiration + player |
-| react-native-gesture-handler | `~2.32.0` | |
-| react-native-safe-area-context | `~5.7.0` | |
-| react-native-screens | `~4.26.0` | |
-| expo-audio | `~57.0.3` | lecture des sessions + boucles ambiantes |
-| expo-video | `~57.0.x` | **à ajouter** — fonds vidéo (feature « Video backgrounds ») |
-| expo-linear-gradient | `~57.0.1` | |
-| expo-blur | `~57.0.2` | surfaces verre |
-| expo-image | `~57.0.2` | artworks, avec cache disque |
-| react-native-svg | `15.15.4` | fond atmosphérique, anneaux de respiration |
-| expo-haptics | `~57.0.1` | retours de respiration |
-| expo-font | `~57.0.0` + `@expo-google-fonts/{fraunces,outfit,lora}` | |
-| expo-localization | `~57.0.1` | détection de langue |
+| Uniwind | `^1.13.2` | styling utility-first, CSS-first (cf. ADR-001) |
+| Tailwind CSS | `^4.1.0` | requis par Uniwind, configuration CSS-first |
+| Expo Router | `~58.0.32` | routing par fichiers |
+| react-native-reanimated | `4.7.1` | animations respiration + player |
+| react-native-gesture-handler | `~3.3.0` | |
+| react-native-safe-area-context | `~5.11.1` | |
+| react-native-screens | `~4.30.1` | |
+| expo-audio | `~58.0.11` | lecture des sessions + boucles ambiantes |
+| expo-video | `~58.0.13` | fonds vidéo embarqués |
+| expo-linear-gradient | `~58.0.3` | |
+| expo-blur | `~58.0.5` | surfaces verre |
+| expo-image | `~58.0.18` | artworks, avec cache disque |
+| react-native-svg | `15.16.0` | fond atmosphérique, anneaux de respiration |
+| expo-haptics | `~58.0.7` | retours de respiration |
+| expo-font | `~58.0.9` + `@expo-google-fonts/{fraunces,outfit,lora}` | |
+| expo-localization | `~58.0.5` | détection de langue |
 | @react-native-async-storage/async-storage | `2.2.0` | persistance locale |
-| expo-file-system | `~57.0.x` | cache disque des pistes distantes |
-| expo-notifications | `~57.0.10` | rappel de pratique quotidien |
-| expo-image-picker | `~57.0.9` | photo de profil |
-| expo-apple-authentication | `~57.0.1` | Sign in with Apple |
-| react-native-purchases | `^9.6.7` | RevenueCat (paywall) |
-| @shopify/flash-list | `2.0.2` | listes de sessions |
-| Jest + jest-expo | aligné SDK 57 | tests unitaires |
-| TesterArmy (`tools/e2e/`) | `e2e` 0.21.0 | E2E web et natif (Android, iOS Simulator) |
+| expo-file-system | `~58.0.14` | fichiers locaux ; aucun cache audio distant |
+| expo-notifications | `~58.1.9` | rappel de pratique quotidien |
+| expo-image-picker | `~58.0.10` | photo de profil |
+| react-native-purchases | `^10.7.1` | RevenueCat, achats uniques d’univers (ventes désactivées, cf. §11) |
+| Jest + jest-expo | Jest `^30.2.0` / jest-expo `~58.0.15` | tests unitaires |
+| TesterArmy (`tools/e2e/`) | `e2e` 0.24.0, web 0.16.1, mobile 0.12.8 | E2E web et natif (Android, iOS Simulator) |
 
 Plateformes : **iOS et Android**. Web non ciblé en v1 (le bundle doit néanmoins builder sans erreur).
 
 ### 2.1 Différence majeure avec le repo Noctalia actuel
 
-Noctalia utilise `StyleSheet` + `constants/journalTheme.ts` + `constants/noctaliaDesign.ts`. **Noctalia Meditation utilise Uniwind** : les mêmes tokens sont exposés en CSS-first dans `global.css` (cf. §5.5), sans `tailwind.config.js` ni `babel.config.js`. Aucun `StyleSheet.create` sauf cas justifié (animations Reanimated, styles calculés dynamiquement).
+Les apps partagent `constants/noctaliaPalette.ts`. **Noctalia Meditation utilise Uniwind** : les mêmes tokens sont exposés en CSS-first dans `global.css` (cf. §5.5), sans `tailwind.config.js` ni `babel.config.js`. Aucun `StyleSheet.create` sauf cas justifié (animations Reanimated, styles calculés dynamiquement).
 
 ---
 
@@ -80,11 +78,11 @@ apps/meditation/
 │   │   ├── goals.tsx
 │   │   ├── experience.tsx
 │   │   ├── intention.tsx
+│   │   ├── breath-intro.tsx
 │   │   └── reminder.tsx
 │   ├── (auth)/
 │   │   ├── sign-in.tsx
-│   │   ├── email.tsx
-│   │   └── callback.tsx
+│   │   └── email.tsx
 │   ├── (drawer)/                     # tiroir latéral englobant les onglets
 │   │   ├── _layout.tsx
 │   │   └── (tabs)/
@@ -99,7 +97,10 @@ apps/meditation/
 │   ├── category/[slug].tsx
 │   ├── favorites.tsx
 │   ├── session-complete.tsx          # modal de fin de session
-│   ├── paywall.tsx                   # modal
+│   ├── world/[id].tsx                # aperçu et flux d’achat conservé
+│   ├── journey.tsx                   # parcours éditorial
+│   ├── history.tsx                   # historique local
+│   ├── paywall.tsx                   # redirection vers l’accueil (cf. §11)
 │   └── settings/
 │       ├── index.tsx
 │       ├── account.tsx
@@ -117,7 +118,7 @@ apps/meditation/
 │   ├── profile/                      # StatTile, StreakCalendar, AvatarPicker
 │   └── paywall/                      # PlanCard, BenefitRow, RestoreLink
 ├── constants/
-│   ├── theme.ts                      # tokens Noctalia (source de vérité, copiés depuis dreamer)
+│   ├── theme.ts                      # tokens dérivés de constants/noctaliaPalette.ts à la racine
 │   ├── typography.ts
 │   └── motion.ts                     # durées/courbes d'animation
 ├── content/
@@ -136,12 +137,11 @@ apps/meditation/
 │   ├── audio/sessions/               # pistes .m4a
 │   ├── audio/ambience/               # boucles d'ambiance
 │   ├── video/                        # fonds vidéo (mp4, H.264, muet)
-│   ├── images/artwork/               # visuels de sessions
-│   └── fonts/
+│   ├── session-artwork/              # séances et catégories, clair/sombre
+│   └── worlds/                       # visuels d’univers
 ├── tests/
-├── tailwind.config.js
 ├── global.css
-├── app.json / app.config.ts
+├── app.json
 ├── AGENTS.md                         # règles agents
 └── package.json
 ```
@@ -150,31 +150,31 @@ apps/meditation/
 
 ## 4. Inventaire historique des écrans
 
-Cette correspondance décrit le découpage initial. Les routes actuelles de `apps/meditation/app/` et les gardes de `lib/env.ts` font foi : les comptes et abonnements sont désactivés par défaut, les univers achetables suivent leur parcours propre. Le tableau ne constitue pas une exigence de parité ni une offre commerciale active.
+Cette correspondance décrit le découpage initial. Les routes actuelles de `apps/meditation/app/` et les gardes de `lib/env.ts` font foi : les comptes et abonnements sont désactivés par défaut, l’accès aux univers suit le drapeau de vente (§11). Le tableau ne constitue pas une exigence de parité ni une offre commerciale active.
 
-La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 écrans uniques documentés**, complétés par les écrans de support (légal, fin de session, rappels) qui portent le total aux « 20+ screens » annoncés. Correspondance 1:1 ci-dessous — **24 routes** au total.
+La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 écrans uniques documentés**, complétés par les écrans de support (légal, fin de session, rappels) qui portent le total aux « 20+ screens » annoncés. Correspondance 1:1 ci-dessous — **24 entrées historiques**, pas un décompte des routes actuelles.
 
 | # | Écran Zen | Route Noctalia Meditation | Contenu |
 |---|---|---|---|
-| 1 | Welcome — *find your inner calm* | `/welcome` | Fond vidéo/atmosphère, logo Noctalia, baseline, CTA « Commencer » + « J'ai déjà un compte » |
+| 1 | Welcome — *find your inner calm* | `/welcome` | Fond vidéo/atmosphère, logo Noctalia, baseline, CTA « Commencer » ; pas de connexion avec les comptes désactivés |
 | 2 | Onboarding — motivations | `/(onboarding)/goals` | Multi-sélection : Mieux dormir · Réduire le stress · Me concentrer · Gérer l'anxiété · Cultiver la gratitude · Préparer mes rêves |
 | 3 | Onboarding — niveau | `/(onboarding)/experience` | Choix unique : Débutant · Occasionnel · Régulier |
 | 4 | Onboarding — intention quotidienne | `/(onboarding)/intention` | Durée cible/jour : 5 · 10 · 15 · 20 min |
-| 5 | *(ajout Noctalia, remplace rien)* rappel | `/(onboarding)/reminder` | Opt-in notification + heure. **Note :** si l'on veut rester strictement à 23 écrans, cette étape est fusionnée dans l'écran 4. Recommandation : la garder séparée (cf. §20 Q1) |
+| 5 | *(ajout Noctalia, remplace rien)* rappel | `/(onboarding)/reminder` | Étape dédiée : opt-in notification + heure, distincte de l’intention et de l’introduction au souffle |
 | 6 | Sign in (Apple / Google / email) | `/(auth)/sign-in` | Construit mais **désactivé en v1.0** par `EXPO_PUBLIC_ACCOUNTS_ENABLED=false` (cf. §10) |
 | 7 | Saisie email | `/(auth)/email` | Idem : construit, inaccessible dans les builds store v1.0 |
-| 8 | Home — parcours immersif | `/(drawer)/(tabs)/index` | Salutation contextuelle, progression hebdomadaire, carrousel de 6 mondes (3 gratuits / 3 Plus), pratique recommandée et rail « À suivre » |
+| 8 | Home — parcours immersif | `/(drawer)/(tabs)/index` | Salutation contextuelle, progression hebdomadaire, index dépliable de 6 univers gratuits au lancement, pratique recommandée et rail « À suivre » |
 | 9 | Breathe — patterns | `/(drawer)/(tabs)/breathe` | 4 cartes : Apaisant · Carré · 4-7-8 · Cohérence cardiaque |
 | 10 | Search — catégories + bibliothèque | `/(drawer)/(tabs)/search` | Champ de recherche, grille de catégories, liste complète filtrable (durée, thème) |
 | 11 | Profile — statistiques | `/(drawer)/(tabs)/profile` | Série en cours / record, sessions, minutes totales, calendrier de pratique, accès Favoris & Réglages |
-| 12 | Session detail | `/session/[id]` | Artwork, titre, durée, univers sonore, description, liste de bénéfices, CTA lecture, favori, badge Plus |
+| 12 | Session detail | `/session/[id]` | Artwork, titre, durée, univers sonore, description, liste de bénéfices, CTA lecture gratuit, favori |
 | 13 | Full-screen player | `/player/[id]` | Artwork dégradé animé, scrubber, ±15 s, play/pause, vitesse, minuteur de fondu, AirPlay/Cast (iOS), fond vidéo optionnel |
 | 14 | Breathing exercise animé | `/breathe/[pattern]` | Anneau respiratoire animé, phase (Inspire/Retiens/Expire/Pause), compte à rebours, haptique, ambiance sonore |
 | 15 | Category — ex. Sommeil | `/category/[slug]` | En-tête illustré + liste des sessions de la catégorie |
 | 16 | Favorites | `/favorites` | Sessions sauvegardées, état vide soigné |
-| 17 | Paywall « Zen Plus » → **Noctalia Plus** | `/paywall` | Annuel (mis en avant, économie %) / Mensuel, liste de bénéfices, essai, restaurer, CGU/Confidentialité |
+| 17 | Accès aux univers | `/world/[id]` | Aperçu gratuit ; flux d’achat unique conservé (§11). `/paywall` redirige vers l’accueil |
 | 18 | Settings + univers | `/settings` | Univers actif (retour au sélecteur de l'accueil), notifications, langue, compte, aide, légal, version |
-| 19 | Profile settings + photo | `/settings/account` | Avatar (`expo-image-picker`), prénom, email, plan, déconnexion, suppression de compte |
+| 19 | Profile settings + photo | `/settings/account` | Avatar (`expo-image-picker`), prénom, objectifs, effacement des données locales |
 | 20 | Language selection | `/settings/language` | en · fr · es · de · it · pt |
 | 21 | Help & FAQ | `/settings/help` | Accordéons FAQ + contact |
 | 22 | *(support)* Légal | `/settings/legal` | CGU, confidentialité, licences |
@@ -188,10 +188,10 @@ La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 �
 **`/(drawer)/(tabs)/index` — Accueil**
 - En-tête : salutation dépendant de l'heure (« Bonsoir » après 18 h) et description du monde actif.
 - Progression hebdomadaire placée avant le choix du parcours.
-- Carrousel horizontal manuel de six mondes immersifs : **Constellation**, **Aube intérieure** et **Forêt intérieure** sont gratuits ; **Marée profonde**, **Sanctuaire lunaire** et **Temple des nuages** demandent Noctalia Plus.
-- La carte sélectionnée s'agrandit et porte le CTA de la pratique. Un monde Plus reste prévisualisable par tous ; pour une personne non abonnée, son CTA devient « Déverrouiller ce monde » et ouvre le paywall.
+- Index de six univers, replié par défaut : **Constellation**, **Aube intérieure**, **Forêt intérieure**, **Marée profonde**, **Sanctuaire lunaire** et **Temple des nuages**. Tous sont gratuits dans la configuration actuelle (§11).
+- La pratique recommandée reste prioritaire ; « Changer d’univers » déplie l’index. L’aperçu `/world/[id]` permet de découvrir l’univers et de poursuivre la pratique.
 - Aucun autoplay. Le changement de monde produit uniquement un retour de sélection bref, respecte Réduire les animations et conserve le souffle global comme signature.
-- Le badge Premium décrit l'accès au **monde**, jamais le statut de la séance recommandée.
+- Un éventuel verrou commercial concerne uniquement l’**univers**, jamais la séance, le rythme, le minuteur ou l’audio.
 - Rail « À suivre » séparé : il contient les prochaines séances, pas les mondes.
 
 **`/player/[id]` — Lecteur**
@@ -211,7 +211,7 @@ La galerie de Zen compte 23 captures, dont 4 variantes en thème sombre : **19 �
 
 ## 5. Design system Noctalia
 
-Source de vérité : `constants/journalTheme.ts` et `constants/noctaliaDesign.ts` du repo `dreamer`. Les valeurs sont **copiées telles quelles** (pas de dépendance croisée entre les deux dépôts en v1).
+Source de vérité partagée : `constants/noctaliaPalette.ts` à la racine ; tokens dérivés dans `apps/meditation/global.css` et `apps/meditation/constants/theme.ts`.
 
 ### 5.1 Palette — thème sombre (par défaut)
 
@@ -347,52 +347,45 @@ frost aplatit la hiérarchie qu'il devrait créer). Partout ailleurs : `Card`.
 ## 6. Modèles de données
 
 ```ts
-// content/types
+// Extraits simplifiés : lib/types.ts, content/breathing.ts,
+// context/SettingsContext.tsx et lib/streak.ts
 export type SessionCategorySlug =
   | 'sleep' | 'stress' | 'focus' | 'anxiety' | 'gratitude' | 'dream-prep';
 
 export type MeditationSession = {
   id: string;
-  slug: string;
-  titleKey: string;            // clé i18n
-  descriptionKey: string;
   categorySlug: SessionCategorySlug;
   durationSec: number;
-  artwork: ImageSource;
-  videoBackground?: VideoSource;
-  benefitKeys: string[];       // 3 à 5 puces
-  isPremium: boolean;
-  accent: [string, string];    // dégradé d'artwork
+  benefitCount: 3;            // clés session.<id>.benefit.<index>
+  isPremium: boolean;         // métadonnée conservée, aucun verrou de séance en v1
+  accent: readonly [string, string];
 };
 
 export type BreathingPatternId = 'calm' | 'box' | 'four-seven-eight' | 'coherent';
 export type BreathingPattern = {
   id: BreathingPatternId;
-  nameKey: string; descriptionKey: string;
   phases: { type: 'inhale' | 'hold' | 'exhale' | 'rest'; seconds: number }[];
   defaultDurationMin: 1 | 3 | 5 | 10;
-  accent: [string, string];
+  accent: readonly [string, string];
 };
 
 // état utilisateur (local)
-export type UserProfile = {
-  displayName?: string; avatarUri?: string;
-  goals: SessionGoal[]; experience: 'beginner' | 'occasional' | 'regular';
-  dailyIntentionMin: 5 | 10 | 15 | 20;
+export type LocalProfile = {
+  displayName: string; avatarUri: string | null;
 };
 export type PracticeEntry = { dateISO: string; sessionId?: string; patternId?: BreathingPatternId; seconds: number };
-export type Streak = { current: number; longest: number; lastPracticeISO?: string };
+export type Streak = { current: number; longest: number; practisedToday: boolean };
 export type Progress = Record<string /* sessionId */, { positionSec: number; completedCount: number; lastPlayedISO: string }>;
 ```
 
-Clés AsyncStorage (préfixe `@noctalia-med/`) : `profile`, `onboarding`, `favorites`, `progress`, `practice-log`, `streak`, `theme`, `language`, `reminders`, `player-prefs`.
+Clés AsyncStorage (préfixe `@noctalia-med/`) : `profile`, `onboarding`, `favorites`, `progress`, `practice-log`, `streak`, `theme`, `language`, `world`, `purchased-worlds`, `reminders`, `player-prefs`. Titres et descriptions des séances : clés `session.<id>.*` ; aucun fichier audio propre à une séance dans le catalogue.
 
 ---
 
 ## 7. Contenu v1
 
 - **6 catégories** : Sommeil, Stress, Concentration, Anxiété, Gratitude, Préparation au rêve (la dernière est le pont éditorial avec Noctalia).
-- **24 sessions** (4 par catégorie), durées 3 / 5 / 10 / 20 min. **8 gratuites** (au moins une par catégorie sauf « Préparation au rêve »), 16 réservées à Noctalia Plus.
+- **24 sessions gratuites** (4 par catégorie), durées 5 / 10 / 15 / 20 min. Les métadonnées `isPremium` du catalogue ne restreignent pas l’accès actuel : aucune séance, aucun rythme ni minuteur payant.
 - **6 personnalités sonores**, une par univers, composées localement à partir de pluie, océan, bruit brun et d'un signal de premier souffle. Aucune parole en v1.
 - **4 patterns de respiration** :
   | Pattern | Cycle |
@@ -413,27 +406,27 @@ Le catalogue est **statique et typé** (`content/sessions.ts`) en v1 — comme Z
 
 - `services/audioService.ts` encapsule `expo-audio` ; interface unique consommée par `PlayerProvider`.
 - Un lecteur de parcours calé sur la durée de séance + une texture secondaire optionnelle selon l'univers.
-- Mode audio : `playsInSilentMode: true`, `shouldPlayInBackground: true`, ducking désactivé.
+- Mode audio : `playsInSilentMode: true`, `shouldPlayInBackground: true`, `interruptionMode: 'doNotMix'`.
 - iOS : `UIBackgroundModes: ["audio"]`. Android : service de premier plan + notification média.
-- Reprise : la position est écrite toutes les 5 s et à chaque pause dans `progress`.
+- Reprise : la position native est synchronisée et persistée dans `progress`, notamment à la pause, au saut et au passage en arrière-plan (`PlayerContext`).
 - Mini-player : composant persistant rendu dans `(drawer)/(tabs)/_layout.tsx`, masqué sur `/player/[id]`.
 - **Mode mock applicatif** (`EXPO_PUBLIC_MOCK_MODE=true`) : les achats et données sont simulés, mais les sons locaux restent réels pour les revues produit. `EXPO_PUBLIC_MOCK_AUDIO=true` est le seul opt-in qui simule la progression sans fichier audio.
 
 ### 8.2 Budget audio local
 
-Référence mesurée sur les boucles Noctalia existantes : 1,5 Mo pour 5 min, soit ~40 kbps / **0,3 Mo par minute** :
+Inventaire des fichiers de `apps/meditation/assets/audio/` (octets, hors compression store) :
 
 | Poste | Volume |
 |---|---|
-| 3 boucles locales × 5 min | **4,5 Mo** |
-| Signal bref de premier souffle | < 0,1 Mo |
-| **Total audio v1 embarqué** | **< 5 Mo** |
+| `ambience/rain.m4a`, `ocean.m4a`, `brown-noise.m4a` — 3 × 5 min | 1 569 673 + 1 581 095 + 1 580 572 |
+| `ui/first-breath.m4a` — signal bref | 91 514 |
+| **Total audio v1 embarqué : 4 fichiers** | **4 822 854 octets (≈ 4,82 Mo)** |
 
 Les boucles sont embarquées : l'expérience reste instantanée et hors ligne, sans dépendre d'un catalogue de paroles distant.
 
 ### 8.3 Distribution retenue
 
-- **Tout l'audio v1 est embarqué** : trois boucles de cinq minutes et un signal bref. Le parcours reste instantané et hors ligne.
+- **Tout l'audio v1 est gratuit et embarqué** : trois boucles de cinq minutes et un signal bref. Le parcours reste instantané et hors ligne.
 - Le lecteur répète la boucle native autant de fois que nécessaire tout en exposant la durée réelle de la séance (5, 10, 15 ou 20 min) à la progression et à l'accessibilité.
 - Les six univers se différencient par la matière, la superposition, le niveau et un léger changement de vitesse ; aucun fichier parlé, bucket distant ou cache média n'est requis.
 - **Objectif de taille** : téléchargement store ≤ 60 Mo iOS et ≤ 50 Mo Android.
@@ -444,7 +437,7 @@ Les boucles sont embarquées : l'expérience reste instantanée et hors ligne, s
 
 `hooks/useBreathEngine.ts` : machine à états dérivée de `BreathingPattern.phases`, pilotée par `withTiming` sur une `SharedValue` (`scale` 0,55 → 1,0), boucle jusqu'à expiration du timer global.
 - Rendu de l'anneau en `react-native-svg` + `useAnimatedProps` (pas de re-render JS par frame).
-- Haptique : `Haptics.impactAsync(Light)` à chaque transition, coupée si l'utilisateur l'a désactivée ou si la réduction de mouvement système est active.
+- Haptique : signatures de phase via `lib/breathGuidance.ts`, désactivables par l’utilisateur. Réduire les animations fige l’anneau mais conserve le guidage vibratoire.
 - `prefers-reduced-motion` : remplacer l'anneau animé par une jauge linéaire + compte à rebours.
 - Une session de respiration terminée alimente le journal de pratique et la série, comme une session guidée.
 
@@ -479,11 +472,14 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 
 ## 11. Accès commercial actuel
 
-- `areSubscriptionsEnabled()` (`apps/meditation/lib/env.ts`) est faux par défaut. `SubscriptionContext` accorde alors gratuitement les anciennes capacités Plus et n'initialise pas le flux d'abonnement ; `/paywall` revient à l'accueil.
-- Les achats uniques d'univers utilisent `WorldPurchaseContext` et leur propre service RevenueCat. Ils restent distincts d'un abonnement et des droits Journal/Lucid. Ne pas promettre un prix, un essai ou une restauration réussie sans preuve du store concerné.
-- TI-516 sépare offres et droits : une offre indisponible n'efface pas un droit connu, et un droit encore inconnu n'est pas un refus. Le démarrage général ne doit pas attendre le catalogue commercial.
-- Les anciennes offres mensuelles/annuelles, quotas et chaînes « Plus » sont des branches historiques désactivées, pas une décision de relance. Réactiver les abonnements ou partager un accès entre produits exige une décision commerciale et une qualification distinctes.
-- Les modes de test établissent une preuve locale ; ils n'attestent ni achat réel ni disponibilité en magasin.
+- **Seul modèle commercial retenu : l’achat unique d’univers.** Aucune séance, aucun rythme, aucun minuteur ni fichier audio n’est payant.
+- **État livré : les ventes d’univers sont désactivées**, via `WORLD_SALES_ENABLED = false` dans `constants/worldSales.ts`. `constants/worlds.ts` expose les six univers en accès `free` ; `WorldPurchaseContext` n’initialise pas le SDK magasin au démarrage. Ne pas présenter trois univers comme déjà en vente.
+- Le flux conservé prévoit trois produits non récurrents (`constants/worldProducts.ts`) : **Marée profonde** (`tide`, `noctalia.meditation.world.tide`), **Sanctuaire lunaire** (`sanctuary`, `noctalia.meditation.world.sanctuary`) et **Temple des nuages** (`cloud`, `noctalia.meditation.world.cloud`). Constellation, Aube intérieure et Forêt intérieure restent gratuits si les ventes sont activées.
+- `services/worldPurchaseServiceReal.ts` demande les produits RevenueCat `NON_SUBSCRIPTION` et leur prix localisé ; `/world/[id]` appelle `purchaseWorld`, puis poursuit dans l’univers débloqué. Les droits proviennent de `allPurchasedProductIdentifiers`, pas d’un abonnement.
+- « Restaurer » appelle `restoreWorlds` → `restorePurchases` et recalcule les univers possédés ; une restauration vide ou en erreur affiche un message sans inventer de droit. Le bouton commercial n’est affiché que pour un univers d’accès `purchase`. Achat, déblocage et restauration réels restent à qualifier sur chaque store.
+- Offres et droits se chargent séparément : une offre indisponible n’efface pas un droit connu ; un droit inconnu n’est pas un refus. Le démarrage général n’attend pas le catalogue commercial. Les tests simulent aussi l’activation des ventes.
+- Le code d’abonnement est historique et désactivé : `EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED=false` par défaut (`lib/env.ts`). `SubscriptionContext` accorde gratuitement les anciennes capacités « Plus », sans initialiser l’abonnement ; `/paywall` redirige vers l’accueil. Il n’y a ni offre Noctalia Plus, ni formule mensuelle/annuelle, ni paywall de séance, rythme ou minuteur dans le périmètre actuel.
+- Les modes de test n’attestent ni achat réel ni disponibilité en magasin.
 
 ---
 
@@ -493,7 +489,7 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 - `lib/i18n/{en,fr,es,de,it,pt}.ts`, clés plates (`player.controls.play`), hook `useTranslation()`.
 - Langue détectée via `expo-localization`, surchargeable dans `/settings/language`, persistée.
 - Le contenu du catalogue référence des **clés**, jamais du texte en dur — y compris les titres et bénéfices des sessions.
-- Les fichiers audio des sessions sont en anglais en v1 ; l'UI est localisée. Un champ `audioLocales: AppLanguage[]` est prévu dans le modèle pour la v2.
+- L’audio est non verbal et commun aux six langues ; l’interface et les textes du catalogue sont localisés.
 
 ---
 
@@ -510,7 +506,7 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 
 ## 14. Performance
 
-- Listes en `FlashList` (catalogue, recherche, favoris).
+- Recherche et favoris utilisent actuellement `ScrollView` ; le catalogue reste local et limité à 24 séances.
 - `expo-image` avec `cachePolicy="memory-disk"` et `placeholder` blurhash.
 - Aucune animation pilotée par le thread JS : Reanimated worklets uniquement.
 - Fonds vidéo : ≤ 6 Mo, 1080×1920, H.264, 8–12 s en boucle, chargés en différé et suspendus quand l'écran perd le focus.
@@ -522,10 +518,12 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 
 | Niveau | Outil | Périmètre minimal |
 |---|---|---|
-| Unitaire | Jest + jest-expo + `@testing-library/react-native` | `useBreathEngine` (durées de phases), `useStreak` (bascule de jour, fuseau, rupture), sélection de la session du jour, gating premium, formatage des durées |
-| Composant | RNTL | `PlayerControls`, `SessionCard`, `PlanCard`, états vides |
-| E2E | TesterArmy (`tools/e2e/tests/meditation.mobile.e2e.ts`, `meditation.web.e2e.ts`) | natif : onboarding persistant et onglets, respiration démarrage/pause/reprise/sortie, changement de langue immédiat et après redémarrage, lecture d'une session embarquée avec saut de 15 s et reprise. Paywall, bascule de thème et série incrémentée n'ont pas de parcours E2E |
+| Unitaire | Jest + jest-expo + `@testing-library/react-native` | `useBreathEngine` (durées de phases), `useStreak` (bascule de jour, fuseau, rupture), sélection de la session du jour, accès gratuit et droits d’univers, formatage des durées |
+| Composant | RNTL | lecture et reprise (`PlayerContext.test.tsx`), cartes de pratique, écrans d’univers, états vides et erreurs de persistance |
+| E2E | TesterArmy (`tools/e2e/tests/meditation*.e2e.ts`) | natif : onboarding/onglets, favoris ajoutés et retirés après redémarrage, respiration démarrage/pause/reprise/sortie, langue persistée, lecture embarquée, saut de 15 s/reprise, arrière-plan, fin et historique/série uniques, effacement local. Web : navigation compacte avec mouvement réduit, parcours éditorial/historique/réglages, favoris persistés, étape suivante, reprise et fin sans doublon. Personas web/natif : recherche/enregistrement et exercice de respiration. Aucun achat ou restauration store réel couvert |
 | Statique | `tsc --noEmit` (TS 6, strict), ESLint (config Expo) | zéro erreur, zéro warning sur `scripts` |
+
+Guides : https://docs.expo.dev/guides/using-e2e/ et [tools/e2e/README.md](../tools/e2e/README.md). Pins du manifeste et du lockfile : `e2e` 0.24.0 (stable), `@e2e-dev/web` 0.16.1, `@e2e-dev/mobile` 0.12.8 ; ne pas confondre avec la nightly 0.25. Depuis `apps/meditation` : `npm run test:testerarmy` (web), `npm run test:testerarmy:mobile -- android|ios` (Release installé, cible dédiée identifiée via `E2E_DEVICE`, reçu `E2E_RELEASE_RECEIPT=<build>/release.json`). Depuis `tools/e2e`, rédaction : `E2E_TELEMETRY_DISABLED=1 DO_NOT_TRACK=1 npx e2e run --watch`. La présence des parcours ne prouve pas leur exécution sur appareil.
 
 `testID` ajoutés uniquement là où l'automatisation en a besoin, centralisés dans `lib/testIDs.ts` (convention Noctalia).
 
@@ -537,9 +535,9 @@ Le jour venu, la marche est courte : Supabase est déjà en place pour Noctalia,
 |---|---|---|
 | Boucles d'ambiance | 3 | `.m4a` ~40 kbps, 5 min, boucle sans couture (réutilisables depuis `assets/audio/sleep/` de Noctalia) |
 | Signal de premier souffle | 1 | `.m4a` bref, doux, jamais bouclé |
-| ~~Artworks de sessions~~ | — | **Supprimé en L2** : l'artwork est peint depuis la paire d'accent de la catégorie (`SessionArtwork`) plus le grain. 24 bitmaps représentaient un poids réel pour ce que la palette exprime déjà, et le dégradé reste dans la marque par construction. |
-| Fonds vidéo | ✅ 4 | Générés puis réencodés en 720×1278, muets, **696 Ko au total** — des dégradés flous se compressent énormément et le 1080p ne portait aucune information de plus. Placés par `Screen`, sous l'atmosphère. |
-| Icône d'app + splash | ✅ | Croissant champagne dans un anneau fin, généré par `scripts/generate-brand-assets.py` — rendu analytique, aucune dépendance graphique. Sept fichiers, 115 Ko. Splash décliné : ambre profond sur papier (4,1:1), champagne sur encre (9,2:1). |
+| Artworks de sessions | ✅ 60 | `assets/session-artwork/` : 24 séances + 6 catégories, chacune en variantes sombre et claire (`light/`). |
+| Fonds vidéo | ✅ 4 | Générés puis réencodés en 720×1278, muets, **586 590 octets au total** — des dégradés flous se compressent énormément et le 1080p ne portait aucune information de plus. Placés par `Screen`, sous l'atmosphère. |
+| Icône d'app + splash | ✅ | Croissant champagne dans un anneau fin, généré par `scripts/generate-brand-assets.py` — rendu analytique, aucune dépendance graphique. Sept fichiers, 117 515 octets (hors grain). Splash décliné : ambre profond sur papier (4,1:1), champagne sur encre (9,2:1). |
 | Illustrations d'états vides | ✅ 4 | Traits champagne dans le langage de l'atmosphère (`EmptyIllustration`) : signet vide, loupe sur ciel vide, pastilles de calendrier creuses, croissant dans une orbite rompue. Chacune montre une absence, jamais un échec. |
 | Icônes | ✅ | `IconSymbol` repris de l'app journal : SF Symbols sur iOS, MaterialIcons ailleurs. Aucun jeu maison. |
 
@@ -556,9 +554,8 @@ Les visuels peuvent être générés (pipeline Higgsfield déjà en place côté
   "scheme": "noctaliameditation",
   "ios":     { "bundleIdentifier": "com.noctalia.meditation", "infoPlist": { "UIBackgroundModes": ["audio"] } },
   "android": { "package": "com.noctalia.meditation",
-               "permissions": ["FOREGROUND_SERVICE", "FOREGROUND_SERVICE_MEDIA_PLAYBACK", "POST_NOTIFICATIONS"] },
-  "userInterfaceStyle": "automatic",
-  "newArchEnabled": true
+               "permissions": ["FOREGROUND_SERVICE", "FOREGROUND_SERVICE_MEDIA_PLAYBACK", "POST_NOTIFICATIONS", "com.android.vending.BILLING"] },
+  "userInterfaceStyle": "automatic"
 }
 ```
 
@@ -574,23 +571,23 @@ Deep links croisés : `noctalia://recording` depuis `/session-complete` (« Note
 
 | Lot | Contenu | Sortie |
 |---|---|---|
-| **L0 — Fondations** | Scaffold Expo 57 + NativeWind v4 + Tailwind mappé sur les tokens Noctalia, polices, `ThemeProvider`, `NightBackground`, kit UI (Button, Card, GlassCard, Chip, Sheet) | Écran de démo qui prouve clair/sombre |
-| **L1 — Parcours d'entrée** | Welcome, 4 étapes d'onboarding, écrans d'auth derrière `ACCOUNTS_ENABLED`, routeur de démarrage, **plomberie i18n (en/fr)** | Écrans 1–7 |
+| **L0 — Fondations** | Expo 58 + Uniwind + Tailwind v4 mappé sur les tokens Noctalia, polices, `ThemeProvider`, `NightBackground`, kit UI (Button, Card, GlassCard, Chip, Sheet) | Écran de démo qui prouve clair/sombre |
+| **L1 — Parcours d'entrée** | Welcome, 4 étapes d'onboarding, écrans d'auth derrière `ACCOUNTS_ENABLED`, routeur de démarrage, introduction au souffle, **i18n en 6 langues** | Écrans 1–7 |
 | **L2 — Bibliothèque** | Catalogue statique (24 séances, 6 catégories, 6 univers), barre d'onglets, Accueil, Recherche, Catégorie, Détail de séance, Favoris | Écrans 8, 10, 12, 15, 16 |
 | **L3 — Lecture** | `audioService` (+ mock audio explicite), `PlayerProvider`, lecteur plein écran, personnalité sonore de l'univers, coupure du son, silence progressif, mini-lecteur, minuteur de fondu, fin de séance | Écrans 13, 23 |
 | **L4 — Respiration** | `useBreathEngine` (horloge unique, phases pures), liste des 4 rythmes, exercice animé, repli `prefers-reduced-motion`, journal de pratique | Écrans 9, 14 |
 | **L5 — Profil & séries** | Journal de pratique, séries, statistiques, calendrier | Écran 11 |
 | **L6 — Réglages** | Réglages, profil local + photo, langue, rappels planifiés (`notificationService` + mock), aide/FAQ, légal | Écrans 18–22, 24 |
-| **L7 — Monétisation** | RevenueCat (+ magasin simulé), règles d'accès pures, paywall contextuel, gating sur trois points de déclenchement | Écran 17 |
-| **L8 — Finition** | ✅ 4 locales · ✅ accessibilité · ✅ flux Maestro (écrits, non exécutés ; retirés le 2026-10-14) · ✅ icône et splash · ✅ icônes et états vides · ✅ fonds vidéo · ⬜ préparation stores | Release candidate |
+| **L7 — Monétisation** | Achats uniques d’univers RevenueCat (+ magasin simulé), déblocage et restauration conservés ; ventes désactivées au lancement (§11) | `/world/[id]` |
+| **L8 — Finition** | 6 langues · accessibilité et parcours TesterArmy (couverture et limites §15/§21) · ✅ icône et splash · ✅ icônes et états vides · ✅ fonds vidéo · ⬜ préparation stores | Release candidate |
 
 ---
 
 ## 19. Hors périmètre v1
 
 - **Comptes utilisateur, backend applicatif et synchronisation multi-appareils** (cf. §10) ; Zen n'en a pas non plus.
-- Abonnement partagé entre les deux apps Noctalia, et achat multiplateforme iOS ↔ Android.
-- Téléchargement hors-ligne explicite « à la demande » (le cache CDN couvre l'usage courant ; bouton dédié prévu v1.2).
+- Tout abonnement, propre à Meditation ou partagé entre apps ; achat multiplateforme iOS ↔ Android. Seuls les achats uniques d’univers relèvent du modèle commercial (§11).
+- Audio distant, CDN, cache de téléchargement et audio payant : toutes les ambiances et séances utilisent les fichiers locaux embarqués gratuits.
 - Programmes/parcours multi-jours, défis, social, partage.
 - Apple Watch / widgets / Live Activities.
 - Voix humaines ou guidage parlé, quelle que soit la langue. Cette capacité est reportée à une feature dédiée après la v1.
@@ -600,27 +597,31 @@ Deep links croisés : `noctalia://recording` depuis `/session-complete` (« Note
 
 ## 20. Questions ouvertes (arbitrage nécessaire)
 
-1. **Étape « rappel » dans l'onboarding** : étape dédiée (recommandé, meilleure opt-in) ou fusionnée dans l'écran « intention » pour coller exactement aux 4 étapes de Zen ?
-2. **Abonnement** : abonnement propre à Meditation (retenu par défaut, seule option sans compte) ou, plus tard, Noctalia Plus unique couvrant les deux apps ? À rouvrir seulement si les comptes arrivent.
+1. **Étape « rappel » dans l’onboarding** : étape dédiée implémentée dans `app/(onboarding)/reminder.tsx`, distincte de l’intention et de l’introduction au souffle ; pas d’arbitrage de parité à rouvrir.
+2. **Activation des achats uniques d’univers** : modèle retenu (§11), mais ventes désactivées dans le code livré ; leur activation et qualification store restent à décider. Aucun abonnement à arbitrer pour la v1.
 3. ~~**Dépôt**~~ — **tranché le 2026-08-19 : monorepo.** L'app vit dans `apps/meditation/` du dépôt `dreamer` (cf. §3).
 4. ~~**Voix**~~ — **tranché pour la v1 : aucune voix humaine ou synthétique.** Une feature future devra faire l'objet d'un choix produit distinct et rester optionnelle.
-5. **Hébergement des pistes** : bucket Cloudflare R2 (retenu, cohérent avec le site) ou embarquer davantage de sessions au prix d'un bundle plus lourd ?
+5. **Distribution audio** : tranchée — fichiers locaux embarqués et gratuits ; aucun hébergement distant ni cache à choisir.
 6. ~~**NativeWind v4 ou Uniwind**~~ — **tranché le 2026-08-19 : Uniwind** (cf. [ADR-001](adr-001-nativewind-vs-uniwind.md)). Le §2 est mis à jour en conséquence.
 
 ---
 
 ## 21. Critères d'acceptation de la v1
 
-- [ ] Les 24 routes existent et sont atteignables ; aucune route morte.
-- [ ] Chaque écran est correct en clair **et** en sombre, avec l'atmosphère Noctalia.
-- [ ] Zéro couleur en dur hors `tailwind.config.js` / `constants/theme.ts`.
-- [x] Zéro chaîne de caractères en dur : tout passe par i18n, dans les 6 langues. *(L8 : 375 clés × 6 langues, interface et catalogue. Trois tests verrouillent la parité — couverture complète des clés, absence d'anglais résiduel, conservation des placeholders. Allemand vérifié à l'écran.)*
-- [ ] Lecture audio continue écran verrouillé sur iOS et Android, reprise à la position exacte.
-- [x] Les 4 patterns de respiration respectent leurs durées de phase à ±100 ms sur 5 minutes. *(Vérifié en L4 : exact par construction — les phases dérivent d'une horloge unique, pas d'une chaîne de minuteurs. Mesuré à l'écran : expiration 7,99 s / inspiration 4,02 s.)*
-- [x] La série s'incrémente une fois par jour civil local et se rompt après un jour manqué. *(Vérifié en L5 : logique pure dans `lib/streak.ts`, 21 tests dont les deux moitiés du critère, puis contrôlé à l'écran — série 3, record 4, 7 pratiques, 63 min, calendrier aligné.)*
-- [~] Le paywall s'ouvre sur chaque point de déclenchement listé et « Restaurer » fonctionne. *(L7 : règles couvertes par 17 tests ; séance premium et rythme premium vérifiés à l'écran, achat et déblocage compris, sur le magasin simulé. Le minuteur > 15 min est câblé mais pas cliqué. « Restaurer » face à un vrai store reste à valider sur appareil.)*
-- [ ] Aucun appel réseau au premier lancement : onboarding et première session jouables en mode avion.
-- [ ] Téléchargement store ≤ 60 Mo (iOS) / ≤ 50 Mo (Android) ; une session distante déjà écoutée se relit hors ligne.
-- [ ] Aucune référence à un compte ou à un backend applicatif dans le code livré (`ACCOUNTS_ENABLED=false` → `/(auth)/*` injoignable).
-- [ ] `tsc --noEmit` et `eslint` passent sans erreur.
-- [~] Le parcours E2E « onboarding → session → fin » passe sur émulateur Android. *(L8 : six flux Maestro écrits et ancrés sur 37 testID, **jamais exécutés** sur cette machine, puis retirés le 2026-10-14 avec Maestro. Remplacés par `tools/e2e/tests/meditation.mobile.e2e.ts` (`npm run test:testerarmy:mobile -- meditation android`) : onboarding et lecture d'une session embarquée ; la fin de session et la série incrémentée n'y sont pas vérifiées.)*
+Les chemins de tests ci-dessous sont relatifs à `apps/meditation/`, sauf les parcours `tools/e2e/` relatifs à la racine. `[~]` indique une couverture partielle ou une qualification manquante ; aucun résultat appareil/store n’est déduit du code.
+
+- [~] Les routes actives existent et sont atteignables ; aucune route morte. *`app/` inclut aussi `journey`, `history`, `world/[id]` et `(onboarding)/breath-intro` ; `tests/startup/StartupRoute.test.tsx` et `tools/e2e/tests/meditation.web.e2e.ts` couvrent l’entrée et des destinations principales, pas un audit exhaustif des routes et gardes.*
+- [~] Chaque écran est correct en clair **et** en sombre, avec l’atmosphère Noctalia. *`tests/worlds/WorldScene.test.tsx`, `tests/worlds/useChromeTheme.test.tsx` et `tests/a11y/EssentialTextReflow.test.tsx` couvrent des contrats ciblés ; inspection visuelle de tous les écrans dans les deux apparences non établie ici.*
+- [~] Zéro couleur en dur hors tokens autorisés. *Sources : `global.css`, `constants/theme.ts`, palette racine `constants/noctaliaPalette.ts` ; contrôle disponible : `npm run brand:check`. Audit exhaustif des valeurs hors tokens non exécuté ici.*
+- [x] Zéro chaîne d’interface en dur : tout passe par i18n, dans les 6 langues. *Preuve historique L8 : interface et catalogue localisés, allemand vérifié à l’écran. Inventaire actuel : 597 clés par langue (465 d’interface + 132 de contenu), et non 375. `tests/lib/i18n.test.ts` vérifie la parité des clés et des placeholders ; suite ciblée passée. Cette preuve historique ne constitue pas une nouvelle inspection exhaustive des écrans actuels.*
+- [~] Lecture audio continue écran verrouillé sur iOS et Android, reprise à la position exacte. *`app.json` et `services/audioServiceReal.ts` configurent l’arrière-plan ; `tests/services/audioServiceReal.test.ts` couvre la position native. `tools/e2e/tests/meditation.mobile.e2e.ts` vérifie arrière-plan et reprise, mais ne verrouille pas l’écran ; qualification réelle sur les deux OS à produire.*
+- [x] Les 4 patterns de respiration respectent leurs durées de phase à ±100 ms sur 5 minutes. *Preuve historique L4 : mesuré à l’écran, expiration 7,99 s / inspiration 4,02 s. `tests/lib/breathing.test.ts` vérifie les bornes exactes après cinq minutes pour les quatre rythmes (suite ciblée passée) ; `tests/hooks/useBreathEngine.test.ts` couvre pause/reprise et fin. Les mesures historiques ne constituent pas une nouvelle qualification de rendu sur appareil.*
+- [x] La série s’incrémente une fois par jour civil local et se rompt après un jour manqué. *`lib/streak.ts` et `tests/lib/streak.test.ts` couvrent ces cas ; Jest ciblé : 6 suites et 87 tests passés (commande ci-dessous). L’unicité après fin et redémarrages est aussi une assertion des parcours web et mobile, sans résultat natif revendiqué ici.*
+- [~] Achat unique d’univers → déblocage → restauration. *`tests/context/WorldPurchaseContext.test.tsx`, `tests/context/WorldPurchaseContextReliability.test.tsx` et `tests/worlds/WorldPurchaseScreen.test.tsx` couvrent magasin simulé, droits/offres, restauration et erreurs avec ventes activées dans les tests. `tests/worlds/WorldFreeLaunch.test.tsx` vérifie les six univers gratuits et l’absence d’initialisation magasin dans la configuration livrée. Achat/restauration réels non qualifiés.*
+- [~] Aucun appel réseau au premier lancement : onboarding et première session jouables en mode avion. *Catalogue et audio locaux (`content/sessions.ts`, `content/worldSounds.ts`), SDK commercial non initialisé selon `tests/worlds/WorldFreeLaunch.test.tsx` ; aucune capture réseau ni exécution en mode avion fournie ici.*
+- [ ] Téléchargement store ≤ 60 Mo (iOS) / ≤ 50 Mo (Android) ; toutes les séances se lisent hors ligne dès l’installation. *Quatre fichiers audio embarqués, 4 822 854 octets (§8), mais aucun poids de téléchargement store ni parcours hors ligne sur build installé vérifié ici.*
+- [~] Aucun compte ni backend applicatif actif dans la v1 livrée (`ACCOUNTS_ENABLED=false` → `/(auth)/*` injoignable). *`lib/env.ts` et `app/(auth)/_layout.tsx` gardent les écrans ; du code d’auth désactivé subsiste, sans preuve de suppression du bundle.*
+- [x] `tsc --noEmit` et `eslint` passent sans erreur. *Exécutés séquentiellement depuis `apps/meditation` sur le code du commit `49fa2cb8047e603d194873d4115778a82e659848`, avec uniquement cette spécification modifiée : `~/.local/bin/mise exec -- npm run typecheck`, puis `~/.local/bin/mise exec -- npm run lint` ; deux sorties 0, contrat de tokens : 55 comparaisons validées.*
+- [~] Le parcours E2E « onboarding → session → fin » passe sur émulateur Android. *`tools/e2e/tests/meditation.mobile.e2e.ts` contient lecture embarquée, arrière-plan, fin et historique/série sans doublon ; commande depuis `apps/meditation` : `E2E_DEVICE=<émulateur-dédié> E2E_RELEASE_RECEIPT=<build>/release.json npm run test:testerarmy:mobile -- android`. Aucun résultat d’exécution Android établi ici.*
+
+Vérification Jest ciblée depuis `apps/meditation` : `~/.local/bin/mise exec -- npx jest --runInBand tests/lib/breathing.test.ts tests/lib/streak.test.ts tests/lib/i18n.test.ts tests/worlds/WorldFreeLaunch.test.tsx tests/context/WorldPurchaseContext.test.tsx tests/context/WorldPurchaseContextReliability.test.tsx`.
