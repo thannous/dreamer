@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { TrainerControls } from '@/components/trainer/TrainerControls';
 import { TrainerFocus } from '@/components/trainer/TrainerFocus';
-import { PracticeProgress } from '@/components/journey/PracticeProgress';
 import { BackLink, Text } from '@/components/ui';
 import { WorldScene } from '@/components/worlds/WorldScene';
 import {
@@ -260,6 +259,7 @@ export default function BreatheExercise() {
   const controls = (
     <TrainerControls
       actionLabel={actionLabel}
+      actionQuiet={live}
       appearance={world.appearance}
       compact={compact}
       durationLabel={t('breathe.duration')}
@@ -301,9 +301,12 @@ export default function BreatheExercise() {
   return (
     <WorldScene world={world} artwork="trainer" scrimStrength={1.1} breathMotion={false}>
       <View className="flex-1 overflow-hidden">
+        {/* « Back » until the first breath, then the exercise is what stops:
+            the player's « stop playback » named something this screen never
+            plays. */}
         <BackLink
           testID={TID.Button.BreatheClose}
-          label={t('player.close')}
+          label={t(started && !engine.finished ? 'breathe.stop' : 'common.back')}
           fallbackHref="/(drawer)/(tabs)"
           className="px-gutter pt-2"
         />
@@ -316,15 +319,15 @@ export default function BreatheExercise() {
           bounces={false}
           keyboardShouldPersistTaps="handled">
           <View className={`px-gutter ${compact ? '' : 'gap-4'}`}>
+            {/* No three-stage marks here: an exercise opened from the Breathe
+                tab has no « prepare » before it and no « return » after it, so
+                « 2/3 » counted steps that do not exist. */}
             {compact ? null : (
-              <>
-                <PracticeProgress world={world} stage="practice" labels={false} className="pt-1" />
-                <View className="items-center gap-1 pt-1">
-                  <Text variant="overline">
-                    {t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}
-                  </Text>
-                </View>
-              </>
+              <View className="items-center gap-1 pt-1">
+                <Text variant="overline">
+                  {t(`breathe.pattern.${pattern.id}.name` as TranslationKey)}
+                </Text>
+              </View>
             )}
             {focus}
           </View>

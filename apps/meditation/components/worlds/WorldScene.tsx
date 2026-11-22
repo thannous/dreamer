@@ -20,7 +20,7 @@ import { withUniwind } from 'uniwind';
 import { GrainOverlay } from '@/components/atmosphere/GrainOverlay';
 import { ImmersiveScene } from '@/components/immersive';
 import { BreathAmplitude, Curve, Duration } from '@/constants/motion';
-import { Atmosphere, NightTheme, PaperTheme, Themes } from '@/constants/theme';
+import { Atmosphere, NightTheme, PaperTheme, Radius, Themes } from '@/constants/theme';
 import type { MeditationWorld, WorldMotion } from '@/constants/worlds';
 import { useBreath } from '@/context/BreathContext';
 import { ThemeScope } from '@/context/ThemeContext';
@@ -138,9 +138,13 @@ export function WorldPurchaseReadableBlock({
       className={className}
       style={{
         backgroundColor: worldPurchaseBackingFill(appearance),
-        borderRadius: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
+        // The fill stays as strong as purchase copy needs; the shape is the
+        // one every other card of the app has, rim included.
+        borderColor: Themes[appearance].divider,
+        borderRadius: Radius.xl,
+        borderWidth: StyleSheet.hairlineWidth,
+        paddingHorizontal: 20,
+        paddingVertical: 16,
       }}>
       {children}
     </View>

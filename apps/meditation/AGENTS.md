@@ -75,7 +75,9 @@ et gates du dépôt parent ; un plan ou smoke ne remplace pas TesterArmy.
    aussi `useTheme()`.
    Les pages annexes (réglages, enregistrées, accès) utilisent `WorldPage` :
    elles suivent l'univers sélectionné comme les onglets. Dans les réglages,
-   « Univers » ouvre le sélecteur de l'accueil ; ne pas réintroduire une bascule
+   « Univers » ramène à l'accueil, où la ligne « Changer d'univers » déplie
+   l'index des six univers (replié par défaut pour laisser la séance du jour
+   au-dessus de la barre d'onglets) ; ne pas réintroduire une bascule
    clair/sombre indépendante qui créerait une rupture dans ce parcours.
 7. **Le souffle est unique.** Une seule animation pour toute l'app, dans
    `BreathProvider`. Une surface qui respire lit `useBreath()` — elle ne démarre

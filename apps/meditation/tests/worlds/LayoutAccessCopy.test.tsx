@@ -271,7 +271,8 @@ describe('TI-391 access, sound and settings copy', () => {
     );
 
     const bodyLabel = screen.getByRole('button').props.accessibilityLabel as string;
-    expect(bodyLabel).toContain('Free');
+    // No access word at all while nothing is sold as Plus (it used to say « Free »).
+    expect(bodyLabel).not.toContain('Free');
     expect(bodyLabel).toContain('Saved');
     expect(bodyLabel).not.toContain('Plus is still required');
   });

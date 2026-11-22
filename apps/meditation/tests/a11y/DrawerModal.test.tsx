@@ -176,5 +176,4 @@ describe('drawer modal accessibility', () => {
     expect(mockCloseDrawer).toHaveBeenCalledTimes(1);
     expect(mockPush).toHaveBeenCalledWith('/favorites');
   });
-
 });

@@ -60,14 +60,25 @@ function UpcomingCard({
   const milestone = t(milestoneKey);
   const showsPlus =
     (subscriptionsEnabled ?? true) && session.isPremium && !isSessionIncluded?.(session.id);
-  const accessLabel = showsPlus ? t('common.plus') : t('common.free');
+  // Same rule as the ritual shelf: without subscriptions there is no Plus to
+  // tell apart, so the card carries no access word at all.
+  const accessLabel = !(subscriptionsEnabled ?? true)
+    ? null
+    : showsPlus
+      ? t('common.plus')
+      : t('common.free');
   const quotaBlocked =
     (subscriptionsEnabled ?? true) &&
     accessGate?.allowed === false &&
     accessGate.reason === 'monthly-quota';
-  const meta = quotaBlocked
-    ? `${minutes} · ${category} · ${accessLabel} · ${t('paywall.remaining.none')}`
-    : `${minutes} · ${category} · ${accessLabel}`;
+  const meta = [
+    minutes,
+    category,
+    accessLabel,
+    quotaBlocked ? t('paywall.remaining.none') : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
   return (
     <AnimatedPressable
@@ -86,7 +97,7 @@ function UpcomingCard({
           testID={`home.journey.upcoming-glass.${session.id}`}>
           <Text variant="overline">{milestone}</Text>
           <Text
-            variant="h3"
+            variant="h2"
             className="mt-2"
             testID={testID ? `${testID}.title` : undefined}>
             {title}
@@ -96,12 +107,16 @@ function UpcomingCard({
             <Text variant="caption" tone="muted">
               {minutes}
             </Text>
-            <Text variant="caption" tone="accent">
+            {/* Muted like the duration: the accent tone made a plain fact
+                read as a link. */}
+            <Text variant="caption" tone="muted">
               {category}
             </Text>
-            <Text variant="overline" testID={testID ? `${testID}.access` : undefined}>
-              {accessLabel}
-            </Text>
+            {accessLabel ? (
+              <Text variant="overline" testID={testID ? `${testID}.access` : undefined}>
+                {accessLabel}
+              </Text>
+            ) : null}
             {quotaBlocked ? (
               <Text variant="overline">{t('paywall.remaining.none')}</Text>
             ) : null}
@@ -156,7 +171,9 @@ export function UpcomingJourneyRail({
 
   return (
     <View className="gap-3" testID={testID} onLayout={(event) => setTrackWidth(event.nativeEvent.layout.width)}>
-      <Text variant="overline">{t('home.journey.upNext')}</Text>
+      {/* Full text tone: this heading sits straight on the artwork, where the
+          accent tone fell to about 2:1 on the light worlds. */}
+      <Text variant="overline" tone="default">{t('home.journey.upNext')}</Text>
       {screenReader ? (
         <View className="gap-3">{cards}</View>
       ) : (

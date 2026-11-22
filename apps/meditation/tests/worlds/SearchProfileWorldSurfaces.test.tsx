@@ -121,15 +121,17 @@ describe('Search and Profile world surfaces', () => {
     );
   });
 
-  it('distinguishes free Search cards from Plus category rows by all three benefits', async () => {
+  // Was « … by all three benefits » printed on every card. A list row now
+  // shows title, length and method only: the three benefits made each card six
+  // lines tall. They stay in the accessible name and on the session page.
+  it('distinguishes free Search cards from Plus category rows, with the benefits in the accessible name', async () => {
     await renderInWorld('search', 'constellation');
 
     const prefix = TID.Option.SearchSleepDescent;
     expect(screen.getByTestId(`${prefix}.title`).props.numberOfLines).toBeUndefined();
-    expect(screen.getByTestId(`${prefix}.benefit.1`)).toHaveTextContent('A long, slow exhale');
-    expect(screen.getByTestId(`${prefix}.benefit.1`).props.numberOfLines).toBeUndefined();
-    expect(screen.getByTestId(`${prefix}.benefit.2`)).toHaveTextContent('Prepares for sleep');
-    expect(screen.getByTestId(`${prefix}.benefit.3`)).toHaveTextContent('Done lying down');
+    expect(screen.getByTestId(`${prefix}.method`)).toBeTruthy();
+    expect(screen.queryByTestId(`${prefix}.benefit.1`)).toBeNull();
+    expect(screen.queryByText('A long, slow exhale')).toBeNull();
     expect(screen.getByTestId(`${prefix}.access`)).toHaveTextContent('Free');
     expect(screen.getByTestId(`${prefix}.access`)).not.toHaveTextContent('Plus');
     expect(screen.getByTestId(prefix).props.accessibilityLabel).toEqual(
@@ -137,7 +139,7 @@ describe('Search and Profile world surfaces', () => {
     );
   });
 
-  it('marks a saved Plus category row as Plus and saved, with three readable benefits', async () => {
+  it('marks a saved Plus category row as Plus and saved, with three benefits read out', async () => {
     mockLibraryState = { favorites: ['sleep-body-scan'], practiceLog: [] };
 
     await renderInWorld('category', 'constellation');
@@ -147,16 +149,7 @@ describe('Search and Profile world surfaces', () => {
     expect(screen.getByTestId('category.session.sleep-body-scan.saved')).toHaveTextContent(
       'Saved, but Plus is still required'
     );
-    expect(screen.getByTestId('category.session.sleep-body-scan.benefit.1')).toHaveTextContent(
-      'Releases tension'
-    );
-    expect(screen.getByTestId('category.session.sleep-body-scan.benefit.2')).toHaveTextContent(
-      'Anchors attention'
-    );
-    expect(screen.getByTestId('category.session.sleep-body-scan.benefit.3')).toHaveTextContent(
-      'A long practice'
-    );
-    expect(screen.getByTestId('category.session.sleep-body-scan.benefit.1').props.numberOfLines).toBeUndefined();
+    expect(screen.queryByTestId('category.session.sleep-body-scan.benefit.1')).toBeNull();
     expect(screen.getByTestId('category.session.sleep-body-scan').props.accessibilityLabel).toEqual(
       expect.stringContaining('Releases tension. Anchors attention. A long practice. Plus')
     );

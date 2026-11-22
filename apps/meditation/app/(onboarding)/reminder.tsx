@@ -130,7 +130,7 @@ export default function ReminderStep() {
       <Screen variant="subtle">
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.atmosphereVeil]} />
         <View testID={TID.Screen.OnboardingReminder} className="flex-1">
-          <View className="flex-row items-center justify-between px-7 pb-2 pt-2">
+          <View className="flex-row items-center justify-between px-gutter pb-2 pt-2">
             <BackLink
               label={t('common.back')}
               fallbackHref="/intention"
@@ -144,7 +144,7 @@ export default function ReminderStep() {
             contentContainerClassName="pb-2 pt-5"
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <View className="gap-3 px-7">
+            <View className="gap-3 px-gutter">
               <Text variant="h1">{t('onboarding.reminder.title')}</Text>
               <Rule className="self-start" />
               <Text variant="bodySm">{t('onboarding.reminder.subtitle')}</Text>

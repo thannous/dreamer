@@ -64,6 +64,7 @@ const MAPPING: Partial<Record<SFSymbolName, MaterialIconName>> = {
   'questionmark.circle': 'help-outline',
   'lock.fill': 'lock',
   'lock.shield': 'enhanced-encryption',
+  'doc.text': 'description',
   photo: 'photo',
   trash: 'delete',
   'moon.stars.fill': 'nights-stay',

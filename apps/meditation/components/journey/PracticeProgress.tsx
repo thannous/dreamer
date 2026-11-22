@@ -123,7 +123,10 @@ export function PracticeProgress({ world, stage, labels = true, className }: Pro
                 />
               </View>
               {stackLabels || !labels ? null : (
-                <Text variant="step" tone={currentStage ? 'default' : 'muted'}>
+                // Full text tone for every stage: these 12 pt names sit on the
+                // artwork, where the muted tone fell to about 3:1. The filled
+                // circle already says which one is current.
+                <Text variant="step" tone="default">
                   {t(`practice.stage.${item}` as TranslationKey)}
                 </Text>
               )}

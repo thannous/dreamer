@@ -14,6 +14,9 @@ type DurationOption = {
 
 type Props = {
   actionLabel: string;
+  /** While the breath runs, « Pause » steps back to an outline so the ring
+   * keeps the eye; the filled button returns whenever there is a decision. */
+  actionQuiet?: boolean;
   appearance: ThemeMode;
   compact: boolean;
   durationLabel: string;
@@ -43,6 +46,7 @@ type Props = {
 /** The trainer's sole glass surface: setup and transport share one shelf. */
 export function TrainerControls({
   actionLabel,
+  actionQuiet = false,
   appearance,
   compact,
   durationLabel,
@@ -135,12 +139,19 @@ export function TrainerControls({
           <Button
             testID={testID}
             label={actionLabel}
+            variant={actionQuiet ? 'secondary' : 'primary'}
             onPress={onAction}
           />
 
           <View className="flex-row flex-wrap items-center gap-2">
             {assistance.map((item) => (
-              <AssistanceSwitch key={item.testID} {...item} color={colors.accentText} />
+              <AssistanceSwitch
+                key={item.testID}
+                {...item}
+                color={colors.accentText}
+                mutedColor={colors.textSecondary}
+                onColor={colors.textOnAccent}
+              />
             ))}
           </View>
         </View>
@@ -155,7 +166,9 @@ function AssistanceSwitch({
   iconOff,
   iconOn,
   label,
+  mutedColor,
   name,
+  onColor,
   onToggle,
   testID,
 }: {
@@ -164,10 +177,15 @@ function AssistanceSwitch({
   iconOff: React.ComponentProps<typeof IconSymbol>['name'];
   iconOn: React.ComponentProps<typeof IconSymbol>['name'];
   label: string;
+  mutedColor: string;
   name: string;
+  onColor: string;
   onToggle: () => void;
   testID: string;
 }) {
+  // Both states are drawn: an outlined pill with a check when on, a quieter
+  // pill with an empty mark when off. A lone trailing check left the « off »
+  // options looking like plain labels.
   return (
     <Pressable
       testID={testID}
@@ -176,10 +194,20 @@ function AssistanceSwitch({
       accessibilityState={{ checked: enabled }}
       hitSlop={8}
       onPress={onToggle}
-      className="min-h-12 shrink-0 flex-row items-center justify-center gap-2 rounded-full px-3 py-2 active:opacity-70">
-      <IconSymbol name={enabled ? iconOn : iconOff} color={color} size={22} />
-      <Text variant="caption">{name}</Text>
-      {enabled ? <IconSymbol name="checkmark" color={color} size={16} /> : null}
+      className={`min-h-12 shrink-0 flex-row items-center justify-center gap-2 rounded-full border px-3 py-2 active:opacity-70 ${
+        enabled ? 'border-champagne-text' : 'border-hairline'
+      }`}>
+      <IconSymbol name={enabled ? iconOn : iconOff} color={enabled ? color : mutedColor} size={20} />
+      <Text variant="caption" tone={enabled ? 'default' : 'muted'}>
+        {name}
+      </Text>
+      <View
+        testID={`${testID}.state`}
+        className={`h-4 w-4 items-center justify-center rounded-full border ${
+          enabled ? 'border-champagne bg-champagne' : 'border-ivory-muted'
+        }`}>
+        {enabled ? <IconSymbol name="checkmark" color={onColor} size={11} /> : null}
+      </View>
     </Pressable>
   );
 }
