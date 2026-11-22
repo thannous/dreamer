@@ -58,7 +58,14 @@
 <li><strong>Publicité :</strong> ni revente de données ni ciblage publicitaire, écrit noir sur blanc.</li>
 </ul>
 <h2>Ce que répond Noctalia</h2>
-<p>Notre <a class="text-dream-salmon hover:underline" href="/fr/politique-confidentialite">politique de confidentialité</a> l'indique : la dictée utilise la reconnaissance vocale de l'appareil ou du navigateur, qui peut traiter la voix localement ou la transmettre à son fournisseur. Certaines versions de l'application peuvent aussi envoyer temporairement l'audio à Google Cloud Speech-to-Text via Noctalia. Le texte des rêves part chez Anthropic (Claude) pour l'analyse et la discussion, et chez Google (Gemini) pour les images et, si nécessaire, préparer leurs instructions à partir du rêve, avec l'entraînement des modèles généraux désactivé quand le service le permet. L'analyse, la discussion et les images n'ont lieu qu'après votre accord dans l'application. Le journal est hébergé dans l'UE. Pas de revente, pas de publicité ciblée. La <a class="text-dream-salmon hover:underline" href="/fr/suppression-compte">suppression du compte</a> se fait dans les Paramètres ; les données sont en général effacées sous 30 jours.</p>
+<p>Voici ce qu'indique notre <a class="text-dream-salmon hover:underline" href="/fr/politique-confidentialite">politique de confidentialité</a>, point par point :</p>
+<ul>
+<li><strong>Audio :</strong> la dictée utilise la reconnaissance vocale de l'appareil ou du navigateur, qui peut traiter la voix localement ou la transmettre à son fournisseur. Certaines versions de l'application peuvent aussi envoyer temporairement l'audio à Google Cloud Speech-to-Text via Noctalia.</li>
+<li><strong>Fournisseurs d'IA :</strong> le texte des rêves part chez Anthropic (Claude) pour l'analyse et la discussion, et chez Google (Gemini) pour les images et, si nécessaire, préparer leurs instructions à partir du rêve. L'analyse, la discussion et les images n'ont lieu qu'après votre accord dans l'application.</li>
+<li><strong>Entraînement :</strong> l'entraînement des modèles généraux est désactivé quand le service le permet.</li>
+<li><strong>Suppression :</strong> la <a class="text-dream-salmon hover:underline" href="/fr/suppression-compte">suppression du compte</a> se fait dans les Paramètres ; les données sont en général effacées sous 30 jours.</li>
+<li><strong>Publicité et hébergement :</strong> le journal est hébergé dans l'UE, sans revente de données ni publicité ciblée.</li>
+</ul>
 <h2>Ce que change l'AI Act</h2>
 <p>Le règlement européen sur l'IA, adopté en 2024, s'applique par étapes depuis 2025. Un journal de rêves ne figure pas parmi ses usages à haut risque. Si vous dialoguez avec une IA, vous devez en être informé. Un badge « conforme à l'AI Act » dit donc peu de chose de vos notes : l'accès et la suppression relèvent du RGPD.</p>
 <h2>Une bonne analyse doit rester réversible</h2>
@@ -66,7 +73,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Dites votre rêve, gardez le texte</h2>
 <p>Dans Noctalia, racontez votre rêve à voix haute au réveil. Il est transcrit dans votre journal ; l'enregistrement n'est pas conservé. Relisez ensuite vos rêves côte à côte.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/fr/journal-de-reves-vocal">Essayer le journal de rêves vocal</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=confidentialite-ia-journal-reves_fr" rel="nofollow noopener noreferrer" target="_blank">Télécharger Noctalia sur Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </div>
 </section>
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">

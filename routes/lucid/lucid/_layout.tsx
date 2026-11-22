@@ -1,15 +1,29 @@
-import { Stack, useGlobalSearchParams } from 'expo-router';
+import { Stack, useGlobalSearchParams, usePathname } from 'expo-router';
 import React, { useMemo } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
 
 import { LucidSpace, LucidType, getLucidPalette } from '@/constants/lucidTheme';
+import {
+  LucidArtStatusBarProvider,
+  useLucidArtStatusBarActive,
+} from '@/components/lucid/LucidArtStatusBar';
 import { LucidButton } from '@/components/lucid/LucidUI';
 import { LucidTrainerProvider, useLucidTrainer } from '@/context/LucidTrainerContext';
 import { ThemeAmbienceScope, useTheme } from '@/context/ThemeContext';
 import { useLucidReducedMotion } from '@/hooks/useLucidReducedMotion';
 import { LUCID_HEALTH_IMPORT_ENABLED } from '@/lib/lucid/healthKitSleep';
 import { LUCID_PLUS_SALES_ENABLED } from '@/lib/lucid/plusEntitlements';
+import {
+  isLucidAccountPath,
+  LUCID_ACCOUNT_HREF,
+  LUCID_HOME_HREF,
+  LUCID_ONBOARDING_HREF,
+} from '@/lib/lucid/routes';
 import { isThemeAmbience } from '@/lib/themeAmbience';
+
+export const unstable_settings = {
+  initialRouteName: '(tabs)',
+};
 
 function LucidThemePreview({ children }: React.PropsWithChildren) {
   const params = useGlobalSearchParams<{ ambience?: string | string[] }>();
@@ -31,16 +45,38 @@ function LucidThemePreview({ children }: React.PropsWithChildren) {
 function LucidRouter() {
   const { colors, mode } = useTheme();
   const palette = getLucidPalette(colors, mode);
-  const { state, content, loading, error, reload } = useLucidTrainer();
+  const {
+    state,
+    content,
+    loading,
+    error,
+    reload,
+    guestImportAvailable = false,
+  } = useLucidTrainer();
+  const pathname = usePathname();
   const reduceMotion = useLucidReducedMotion();
+  const artOverStatusBar = useLucidArtStatusBarActive();
   const onboardingComplete = state?.onboarding.status === 'completed';
+  const onAccountRoute = isLucidAccountPath(pathname);
+  // In a native Stack, routes below `account` (like `(tabs)`) remain mounted.
+  // When an active guest signs into a fresh account, `(tabs)` becomes guarded
+  // immediately; redirecting to Account keeps the user on Account so they can
+  // review and import their guest training instead of being sent to Step 1.
+  const incompleteRedirect = onAccountRoute ? LUCID_ACCOUNT_HREF : LUCID_ONBOARDING_HREF;
+  const completeRedirect = onAccountRoute && guestImportAvailable
+    ? LUCID_ACCOUNT_HREF
+    : LUCID_HOME_HREF;
+  const iosStatusBarStyle = mode === 'dark' || artOverStatusBar
+    ? ('light' as const)
+    : ('dark' as const);
   const stackScreenOptions = useMemo(
     () => ({
       headerShown: false,
       contentStyle: { backgroundColor: palette.background },
       animation: reduceMotion ? ('fade' as const) : ('default' as const),
+      ...(Platform.OS === 'ios' ? { statusBarStyle: iosStatusBarStyle } : {}),
     }),
-    [palette.background, reduceMotion]
+    [iosStatusBarStyle, palette.background, reduceMotion]
   );
 
   if (loading || !state) {
@@ -60,10 +96,14 @@ function LucidRouter() {
 
   return (
     <Stack screenOptions={stackScreenOptions}>
-      <Stack.Protected guard={!onboardingComplete}>
+      <Stack.Protected guard={!onboardingComplete} redirectTo={completeRedirect}>
         <Stack.Screen name="onboarding" options={{ gestureEnabled: false }} />
       </Stack.Protected>
-      <Stack.Protected guard={onboardingComplete}>
+      {/* Account stays reachable before and after onboarding so signing in as an
+          active guest keeps the user on Account to review guest import, and
+          returning users can sign in from onboarding. */}
+      <Stack.Screen name="account" />
+      <Stack.Protected guard={onboardingComplete} redirectTo={incompleteRedirect}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="program/[id]" />
         <Stack.Screen name="session/[program]/[session]" />
@@ -83,13 +123,18 @@ function LucidRouter() {
         <Stack.Screen name="data" />
         <Stack.Screen name="help" />
         <Stack.Screen name="about" />
-        <Stack.Screen name="account" />
       </Stack.Protected>
       {/* v1 ships without Plus sales or Apple Health: keep deep links out too. */}
-      <Stack.Protected guard={onboardingComplete && LUCID_HEALTH_IMPORT_ENABLED}>
+      <Stack.Protected
+        guard={onboardingComplete && LUCID_HEALTH_IMPORT_ENABLED}
+        redirectTo={onboardingComplete ? LUCID_HOME_HREF : incompleteRedirect}
+      >
         <Stack.Screen name="sleep-integration" />
       </Stack.Protected>
-      <Stack.Protected guard={onboardingComplete && LUCID_PLUS_SALES_ENABLED}>
+      <Stack.Protected
+        guard={onboardingComplete && LUCID_PLUS_SALES_ENABLED}
+        redirectTo={onboardingComplete ? LUCID_HOME_HREF : incompleteRedirect}
+      >
         <Stack.Screen name="subscription" />
       </Stack.Protected>
     </Stack>
@@ -100,7 +145,9 @@ export default function LucidLayout() {
   return (
     <LucidTrainerProvider>
       <LucidThemePreview>
-        <LucidRouter />
+        <LucidArtStatusBarProvider>
+          <LucidRouter />
+        </LucidArtStatusBarProvider>
       </LucidThemePreview>
     </LucidTrainerProvider>
   );

@@ -26,6 +26,10 @@ let mockCanGoBack = true;
 const mockUseAuth = jest.fn();
 const mockUseSubscription = jest.fn();
 const mockResetGuestRecordingAllowance = jest.fn(async () => 1);
+let mockLocalBackend = false;
+const calls: string[] = [];
+const mockStartNewLocalGuest = jest.fn(async () => { calls.push('new guest'); });
+const mockReloadOnboarding = jest.fn(async () => { calls.push('onboarding reloaded'); });
 let mockWindowWidth = 390;
 let mockPlatformOS = 'web';
 
@@ -275,6 +279,16 @@ jest.doMock('@/components/ui/icon-symbol', () => ({
   IconSymbol: () => <span data-testid="icon-symbol" />,
 }));
 
+jest.doMock('@/lib/devLocalBackend', () => ({
+  isLocalDevelopmentBackend: () => mockLocalBackend,
+}));
+jest.doMock('@/context/OnboardingContext', () => ({
+  useOptionalOnboarding: () => ({ reload: mockReloadOnboarding }),
+}));
+jest.doMock('@/lib/devLocalGuestReset', () => ({
+  startNewLocalGuest: () => mockStartNewLocalGuest(),
+}));
+
 jest.doMock('@/services/quota/GuestDreamCounter', () => ({
   resetGuestDreamRecordingAllowanceForDev: () => mockResetGuestRecordingAllowance(),
 }));
@@ -337,6 +351,37 @@ describe('Settings screen', () => {
     await waitFor(() => expect(screen.getByTestId('guest-recording-qa-reset-result').textContent).toContain('4 rêves'));
   });
 
+  it('offers a new guest on the local backend and reopens the welcome', async () => {
+    restoreDevFlag?.();
+    restoreDevFlag = withDevFlag(true);
+    mockLocalBackend = true;
+    mockUseAuth.mockReturnValue({ user: null });
+    mockUseSubscription.mockReturnValue({ isActive: false, loading: false, status: null });
+
+    try {
+      calls.length = 0;
+      mockReplace.mockImplementation(() => { calls.push('welcome'); });
+      render(<SettingsScreen />);
+      fireEvent.click(screen.getByTestId('guest-local-new-guest-button'));
+      await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/onboarding'));
+      // The welcome starts from the reset onboarding, not the previous guest's.
+      expect(calls).toEqual(['new guest', 'onboarding reloaded', 'welcome']);
+    } finally {
+      mockLocalBackend = false;
+    }
+  });
+
+  it('keeps the new guest button off the hosted backend', () => {
+    restoreDevFlag?.();
+    restoreDevFlag = withDevFlag(true);
+    mockUseAuth.mockReturnValue({ user: null });
+    mockUseSubscription.mockReturnValue({ isActive: false, loading: false, status: null });
+
+    render(<SettingsScreen />);
+    expect(screen.getByTestId('guest-recording-qa-reset')).toBeTruthy();
+    expect(screen.queryByTestId('guest-local-new-guest-button')).toBeNull();
+  });
+
   it('does not offer the guest reset to a signed-in developer', () => {
     restoreDevFlag?.();
     restoreDevFlag = withDevFlag(true);
@@ -348,7 +393,6 @@ describe('Settings screen', () => {
   });
 
   it('[B] Given a free user When rendering Then the compact Plus card opens the paywall', () => {
-    // Given
     capturedSettingsProps = null;
     mockUseAuth.mockReturnValue({ user: null });
     mockUseSubscription.mockReturnValue({
@@ -357,10 +401,8 @@ describe('Settings screen', () => {
       status: null,
     });
 
-    // When
     render(<SettingsScreen />);
 
-    // Then
     expect(screen.getByTestId('settings-plus-card')).toBeTruthy();
     expect(capturedSettingsProps).toMatchObject({
       subscriptionTitle: 'subscription.settings.title.plus',

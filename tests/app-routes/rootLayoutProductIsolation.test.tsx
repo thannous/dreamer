@@ -93,7 +93,7 @@ jest.mock('@/components/reminders/NotificationDreamImportHost', () => ({ Notific
 jest.mock('@/components/widgets/HomeWidgetsHost', () => ({ HomeWidgetsHost: () => <div data-testid="widgets-host" /> }));
 jest.mock('@/services/notificationDreamInbox', () => ({ captureDreamFromNotificationResponse: (...args: unknown[]) => mockCaptureDream(...args), clearDreamCaptureResponse: jest.fn() }));
 jest.mock('@/services/notificationDreamTask', () => ({ registerDreamCaptureBackgroundTask: jest.fn().mockResolvedValue(undefined) }));
-jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
+jest.mock('@/components/speech/OfflineModelPromptProvider', () => ({ OfflineModelPromptProvider: ({ children }: React.PropsWithChildren) => <div data-testid="speech-host">{children}</div> }));
 jest.mock('@/components/releases/WhatsNewModal', () => ({ WhatsNewModalHost: () => null }));
 jest.mock('@/components/settings/QuickSettingsProvider', () => ({ QuickSettingsProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/VercelAnalytics', () => ({ VercelAnalytics: () => null }));

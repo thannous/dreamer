@@ -25,7 +25,7 @@ const {
   scoreDictionarySearchMatch,
 } = require('./lib/guide-dictionary-model');
 const { inlineLucideIcons } = require('./lib/lucide-inline');
-const { readSourceDocument } = require('./lib/docs-source-utils');
+const { createBlogTitleLookup } = require('./lib/blog-title-lookup');
 const {
   getPageImageSet,
   getPageResponsiveImages,
@@ -144,34 +144,7 @@ const SUPPORTED_LANGS = getCollectionLanguages('guides');
 // blog article, rather than linking to one in another language.
 const BLOG_LANGS = new Set(getCollectionLanguages('blog'));
 
-// Localized blog slug → article title (without the "| Noctalia" suffix), so
-// symbol cards can say which related article they link to.
-const BLOG_TITLES_BY_LANG = new Map();
-function getBlogTitleBySlug(lang, slug) {
-  if (!BLOG_TITLES_BY_LANG.has(lang)) {
-    const map = new Map();
-    const entries = SITE_MANIFEST.collections?.blog?.entries || {};
-    for (const [id, entry] of Object.entries(entries)) {
-      const localeSlug = entry.locales?.[lang]?.slug;
-      if (!localeSlug) continue;
-      const filePath = path.join(DOCS_SRC_DIR, 'content', 'blog', id, `${lang}.md`);
-      if (!fs.existsSync(filePath)) continue;
-      try {
-        const { meta } = readSourceDocument(filePath);
-        const title = normalizePageTitle(meta?.title).replace(/\s*[-–—]\s*Noctalia\s*$/i, '').trim();
-        if (title) map.set(localeSlug, title);
-      } catch {
-        // Unreadable entry: the card falls back to the generic label.
-      }
-    }
-    BLOG_TITLES_BY_LANG.set(lang, map);
-  }
-  return BLOG_TITLES_BY_LANG.get(lang).get(slug) || null;
-}
-
-function finalizeGeneratedHtml(html) {
-  return inlineLucideIcons(html);
-}
+const getBlogTitleBySlug = createBlogTitleLookup(SITE_MANIFEST);
 
 function createGuidesShellContext(lang, currentPaths, activeNav) {
   const locales = Object.fromEntries(
@@ -705,14 +678,6 @@ function resolveLocalizedRelatedArticleHref(lang, href) {
   return localizedPath || href;
 }
 
-function renderGuidesNav(lang, t, currentPaths, activeLabel) {
-  return renderNavigation(createGuidesShellContext(lang, currentPaths, activeLabel));
-}
-
-function renderGuidesFooter(lang, t, pages, currentPaths, activeNav = 'guides') {
-  return renderSharedFooter(createGuidesShellContext(lang, currentPaths, activeNav));
-}
-
 function renderGuideHubStyles() {
   return `    <style>
         body { margin: 0; background: #0a0514; color: #f8f5ff; font-family: system-ui, sans-serif; }
@@ -1238,7 +1203,7 @@ function guideHubBlogHref(lang, slugs) {
   return BLOG_LANGS.has(lang) && slugs[lang] ? `/${lang}/blog/${slugs[lang]}` : null;
 }
 
-function resolveGuideHubCardHref(lang, t, pages, card) {
+function resolveGuideHubCardHref(lang, pages, card) {
   if (card.key === 'science') return guideHubBlogHref(lang, GUIDE_HUB_BLOG_SLUGS.sleepScience);
   if (card.key === 'journal') return guideHubBlogHref(lang, GUIDE_HUB_BLOG_SLUGS.journal);
   if (card.key === 'emotions') return guideHubBlogHref(lang, GUIDE_HUB_BLOG_SLUGS.emotions);
@@ -1272,8 +1237,8 @@ function cardBackgroundVariant(src) {
     : src;
 }
 
-function renderHubBentoCard(lang, t, pages, card) {
-  const href = resolveGuideHubCardHref(lang, t, pages, card);
+function renderHubBentoCard(lang, pages, card) {
+  const href = resolveGuideHubCardHref(lang, pages, card);
   if (!href) return null;
   return `                <a href="${href}" class="guides-card" data-tone="${card.tone}" style="--guide-image: url('${guideHubCardImage(card)}')">
                     <span>
@@ -1302,6 +1267,7 @@ function generateHubPage(lang, t, pages, version) {
   const copy = COPY[lang];
   const ui = withSymbolCount(GUIDE_HUB_UI[lang] || GUIDE_HUB_UI.en, readSymbolCatalog().symbols.length);
   const currentPaths = Object.fromEntries(SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/`]));
+  const shellContext = createGuidesShellContext(lang, currentPaths, 'guides');
   const socialTitle = copy.title;
   const socialDescription = copy.desc;
   const pageIllustration = getPageIllustration('guide.index', lang, copy.label);
@@ -1319,7 +1285,7 @@ function generateHubPage(lang, t, pages, version) {
       })
     : '';
   const cards = (GUIDE_HUB_BENTO_COPY[lang] || GUIDE_HUB_BENTO_COPY.en)
-    .map((card) => renderHubBentoCard(lang, t, pages, card))
+    .map((card) => renderHubBentoCard(lang, pages, card))
     .filter(Boolean)
     .join('\n');
   const itemList = {
@@ -1374,7 +1340,7 @@ ${renderJsonLd(breadcrumb)}
 </head>
 <body class="bg-dream-dark text-white antialiased selection:bg-dream-salmon selection:text-dream-dark overflow-x-hidden">
     <div class="guides-page">
-${renderGuidesNav(lang, t, currentPaths, 'guides')}
+${renderNavigation(shellContext)}
     <main class="guides-shell">
         <section class="guides-hero" aria-labelledby="guidesTitle"${pageIllustration ? ' data-image-seo-hero="true"' : ''}>
 ${pageIllustration ? `            <figure class="guides-hero-illustration" data-image-seo-role="editorial" data-image-asset-id="${escapeHtml(pageIllustration.image.assetId)}">
@@ -1425,7 +1391,7 @@ ${cards}
 ${renderGuideDepthSection(lang)}
         </section>
     </main>
-${renderGuidesFooter(lang, t, pages, currentPaths, 'guides')}
+${renderSharedFooter(shellContext)}
     </div>
     <script src="/js/site-shell.js?v=${version}" defer></script>
     <script src="/js/language-dropdown.js?v=${version}" defer></script>
@@ -2908,12 +2874,11 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
   const ogImageHeight = pageImages?.editorial?.height || 675;
   const pageTitle = normalizePageTitle(dc.page_title);
 
-  // ── Build current paths for language switcher ────────────────────────
   const currentPaths = Object.fromEntries(
     SUPPORTED_LANGS.map((candidate) => [candidate, `/${candidate}/guides/${i18n[candidate].dictionary_slug}`])
   );
 
-  // ── Build symbols grouped by first letter ────────────────────────────
+  const shellContext = createGuidesShellContext(lang, currentPaths, 'dictionary');
   const allSymbols = symbolsData.symbols || [];
   const {
     categoryCounts: counts,
@@ -2997,7 +2962,7 @@ ${(rg.steps || []).map((step, index) => `                        <li class="refl
                                     ${escapeHtml(`${uiCopy.relatedGuideLabel} ${relatedGuideTitle}`)}
                                 </a>`;
       } else if (relatedArticle) {
-        const relatedTitle = getBlogTitleBySlug(lang, relatedArticle.split('#')[0]);
+        const relatedTitle = getBlogTitleBySlug(lang, relatedArticle);
         const relatedText = relatedTitle
           ? `${uiCopy.relatedArticleLabel} ${relatedTitle}`
           : (i18n[lang]?.read_article || 'Read article');
@@ -3496,7 +3461,7 @@ ${renderJsonLd(breadcrumb)}
     <div class="aurora-bg"></div>
 
     <!-- Navbar -->
-${renderGuidesNav(lang, t, currentPaths, 'dictionary')}
+${renderNavigation(shellContext)}
 
     <main class="dictionary-main pt-28 pb-20 px-4">
         <div class="dictionary-shell mx-auto">
@@ -3654,7 +3619,7 @@ ${relatedHtml}
     </main>
 
     <!-- Footer -->
-${renderGuidesFooter(lang, t, pages, currentPaths, 'dictionary')}
+${renderSharedFooter(shellContext)}
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -4057,7 +4022,7 @@ function main() {
     const hubResult = materializeGeneratedPage({
       filePath: hubPath,
       renderedHtml: generateHubPage(lang, i18n[lang], pages, version),
-      finalizeHtml: finalizeGeneratedHtml,
+      finalizeHtml: inlineLucideIcons,
       dryRun: DRY_RUN,
     });
     if (hubResult.changed) {
@@ -4068,7 +4033,7 @@ function main() {
     const dictionaryResult = materializeGeneratedPage({
       filePath: dictPath,
       renderedHtml: generateDictionaryPage(lang, i18n[lang]),
-      finalizeHtml: finalizeGeneratedHtml,
+      finalizeHtml: inlineLucideIcons,
       dryRun: DRY_RUN,
     });
     if (dictionaryResult.changed) {

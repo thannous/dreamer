@@ -1,6 +1,6 @@
 const STAY_ON_SETTINGS_KEY = 'dreamer:return_to_settings';
 
-export type AuthReturnDestination = '/settings' | '/lucid/(tabs)/settings';
+export type AuthReturnDestination = '/settings' | '/lucid/(tabs)/settings' | '/lucid/account';
 
 let stayOnSettingsRequested: AuthReturnDestination | null = null;
 
@@ -48,6 +48,7 @@ export function consumeStayOnSettingsDestination(): AuthReturnDestination | null
   if (persisted) {
     storage?.removeItem(STAY_ON_SETTINGS_KEY);
     stayOnSettingsRequested = null;
+    if (persisted === '/lucid/account') return '/lucid/account';
     return persisted === '/lucid/(tabs)/settings'
       ? '/lucid/(tabs)/settings'
       : '/settings';

@@ -220,9 +220,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Erzähl Noctalia jeden Morgen deinen Traum per Sprache oder tippe ihn ein, mit einer Notiz zu deiner Nacht. Alles landet in einem Tagebuch: Wenn du deine Einträge nebeneinander liest, siehst du, was wiederkehrt.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch beginnen <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=schlaf-gesundheit-prioritaet_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -305,13 +306,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Fr&uuml;hling und Schlaf: Wie die saisonale St&ouml;rung deine Tr&auml;ume ver&auml;ndert</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlafstörung im Frühling: Wie längere Tage Schlaf und Träume verändern können</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlaf-tracker-wearables-traeume">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">N&auml;chster Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Schlaf-Tracker und Tr&auml;ume: Was Wearables messen und was ihnen entgeht</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlaf-Tracker und Träume: Was Wearables messen und was ihnen entgeht</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -327,12 +328,12 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlafschuld-gesundheit-traeume">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Gesundheit</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Tr&auml;ume</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Schlafschuld und chronischer Schlafmangel: Auswirkungen auf Gesundheit und Träume</h3>
 <p class="text-sm text-gray-400">Erfahre, was Schlafschuld ist, wie sie sich aufbaut und welche Strategien helfen, erholsamen Schlaf zur&uuml;ckzugewinnen.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Schlafwissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Tr&auml;ume: Den n&auml;chtlichen Reset deines Gehirns verstehen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Träume: Was nachts wirklich in deinem Gehirn passiert</h3>
 <p class="text-sm text-gray-400">Erfahre, wie die REM-Phase deine Tr&auml;ume formt und warum sie f&uuml;r dein Wohlbefinden essentiell ist.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">

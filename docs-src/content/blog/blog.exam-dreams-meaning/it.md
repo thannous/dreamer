@@ -141,9 +141,8 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Annota l’esame prima che svanisca</h4>
 <p class="text-sm text-gray-400 mb-4">Con Noctalia racconti il sogno a voce appena sveglio. Viene trascritto e salvato nel tuo diario, così puoi rileggere i tuoi sogni d’esame uno accanto all’altro e vedere cosa ritorna.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full text-sm font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sognare-esame-significato_it" rel="nofollow noopener noreferrer" target="_blank">Scarica Noctalia su Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<p class="text-xs text-purple-300/70 mt-3">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </div>
 </div>
 </aside>

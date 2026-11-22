@@ -1,40 +1,13 @@
 #!/usr/bin/env node
 
-/**
- * Static server for `docs/` that supports "pretty URLs":
- * - `/fr/mentions-legales` -> `/docs/fr/mentions-legales.html`
- * - `/fr/blog/` -> `/docs/fr/blog/index.html`
- *
- * This mirrors the Netlify `_redirects` behavior in local dev.
- */
-
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { readMedia, publicUrl, assertRemoteReceipt } = require('./lib/site-media');
+const { contentTypeFor, resolveRequestToFile, send } = require('./lib/docs-preview');
 
 const DOCS_DIR = path.join(__dirname, '../docs');
 const DEFAULT_PORT = 8000;
-
-const contentTypes = new Map([
-  ['.html', 'text/html; charset=utf-8'],
-  ['.css', 'text/css; charset=utf-8'],
-  ['.js', 'application/javascript; charset=utf-8'],
-  ['.json', 'application/json; charset=utf-8'],
-  ['.svg', 'image/svg+xml'],
-  ['.avif', 'image/avif'],
-  ['.png', 'image/png'],
-  ['.jpg', 'image/jpeg'],
-  ['.jpeg', 'image/jpeg'],
-  ['.gif', 'image/gif'],
-  ['.ico', 'image/x-icon'],
-  ['.webp', 'image/webp'],
-  ['.woff2', 'font/woff2'],
-  ['.woff', 'font/woff'],
-  ['.ttf', 'font/ttf'],
-  ['.txt', 'text/plain; charset=utf-8'],
-  ['.xml', 'application/xml; charset=utf-8']
-]);
 
 function parsePort() {
   const arg = process.argv.find((a) => a.startsWith('--port='));
@@ -44,67 +17,12 @@ function parsePort() {
   return Number.isFinite(port) && port > 0 ? port : DEFAULT_PORT;
 }
 
-function safeJoin(root, requestPath) {
-  const cleaned = requestPath.replace(/\0/g, '');
-  const normalized = path.posix.normalize(cleaned);
-  const withoutLeadingSlash = normalized.replace(/^\/+/, '');
-  const joined = path.join(root, withoutLeadingSlash);
-  const resolvedRoot = path.resolve(root);
-  const resolved = path.resolve(joined);
-  if (!resolved.startsWith(resolvedRoot)) {
-    return null;
-  }
-  return resolved;
-}
-
-function existsFile(filePath) {
-  try {
-    const stat = fs.statSync(filePath);
-    return stat.isFile();
-  } catch {
-    return false;
-  }
-}
-
-function resolveRequestToFile(urlPath) {
-  const decoded = decodeURIComponent(urlPath);
-  const basePath = decoded.split('?')[0].split('#')[0];
-
-  if (basePath.endsWith('/')) {
-    const indexCandidate = safeJoin(DOCS_DIR, `${basePath}index.html`);
-    if (indexCandidate && existsFile(indexCandidate)) return indexCandidate;
-    return null;
-  }
-
-  // Exact match (assets, etc.)
-  const exactCandidate = safeJoin(DOCS_DIR, basePath);
-  if (exactCandidate && existsFile(exactCandidate)) return exactCandidate;
-
-  // Pretty URL: try `.html`
-  if (!path.posix.basename(basePath).includes('.')) {
-    const htmlCandidate = safeJoin(DOCS_DIR, `${basePath}.html`);
-    if (htmlCandidate && existsFile(htmlCandidate)) return htmlCandidate;
-  }
-
-  // Directory index
-  const dirIndexCandidate = safeJoin(DOCS_DIR, `${basePath}/index.html`);
-  if (dirIndexCandidate && existsFile(dirIndexCandidate)) return dirIndexCandidate;
-
-  return null;
-}
-
-function send(res, statusCode, headers, body) {
-  res.writeHead(statusCode, headers);
-  res.end(body);
-}
-
 function main() {
   const media = readMedia(path.resolve(__dirname, '..'));
   if (media?.config.delivery === 'cdn') assertRemoteReceipt(path.resolve(__dirname, '..'), media);
   const port = parsePort();
   const host = process.argv.find((arg) => arg.startsWith('--host='))?.slice(7) || '127.0.0.1';
-  const notFoundPath = safeJoin(DOCS_DIR, '/404.html');
-  const has404 = Boolean(notFoundPath && existsFile(notFoundPath));
+  const notFoundPath = resolveRequestToFile(DOCS_DIR, '/404.html');
 
   const server = http.createServer((req, res) => {
     const urlPath = req.url || '/';
@@ -113,9 +31,9 @@ function main() {
       return send(res, 302, { Location: publicUrl(media, imagePath), 'Cache-Control': 'no-store' }, '');
     }
 
-    const filePath = resolveRequestToFile(urlPath);
+    const filePath = resolveRequestToFile(DOCS_DIR, urlPath);
     if (!filePath) {
-      if (has404 && notFoundPath) {
+      if (notFoundPath) {
         try {
           const data = fs.readFileSync(notFoundPath);
           return send(
@@ -140,8 +58,7 @@ function main() {
       return send(res, 404, { 'Content-Type': 'text/plain; charset=utf-8' }, 'File not found');
     }
 
-    const ext = path.extname(filePath).toLowerCase();
-    const contentType = contentTypes.get(ext) || 'application/octet-stream';
+    const contentType = contentTypeFor(filePath);
 
     try {
       const data = fs.readFileSync(filePath);

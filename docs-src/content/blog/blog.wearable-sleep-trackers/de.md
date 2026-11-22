@@ -225,9 +225,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Halte deinen Traum in Noctalia direkt nach dem Aufwachen fest, per Sprache oder schriftlich. Er wird transkribiert und gespeichert, und du kannst deine Nächte nebeneinander lesen, um zu sehen, was wiederkehrt.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Mein Traumtagebuch starten <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=schlaf-tracker-wearables-traeume_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -306,7 +307,7 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Schlaf als Gesundheitsfaktor Nr. 1: Die OHSU-Studie, die alles ver&auml;ndert</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-center justify-center gap-2 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">
@@ -325,12 +326,12 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-schlaf-und-traeume-den-naechtlichen-reset-ihres-gehirns-verstehen">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Schlafwissenschaft</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Tr&auml;ume: Den n&auml;chtlichen Reset deines Gehirns verstehen</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM-Schlaf und Träume: Was nachts wirklich in deinem Gehirn passiert</h3>
 <p class="text-sm text-gray-400">Erfahre, wie die REM-Phase deine Tr&auml;ume formt und warum sie f&uuml;r dein Wohlbefinden essentiell ist.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="schlaf-gesundheit-prioritaet">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Gesundheit</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Schlaf als Gesundheitsfaktor Nr. 1: Die OHSU-Studie</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Schlaf als Gesundheitsfaktor Nr. 1? Was die OHSU-Studie wirklich zeigt</h3>
 <p class="text-sm text-gray-400">Eine Studie zeigt: Schlafmangel &uuml;bertrifft mangelnde Bewegung und schlechte Ern&auml;hrung als Risikofaktor f&uuml;r die Lebenserwartung.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/de/blog/">

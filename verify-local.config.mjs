@@ -113,7 +113,7 @@ const LINT_SCRIPTS = [
   'context/DreamsContext.tsx', 'context/ThemeContext.tsx', 'lib/types.ts', 'lib/journalSyncContracts.ts',
   'services/storageService.ts', 'services/supabaseDreamService.ts', 'data/site-manifest.json',
   'supabase/db-contract.manifest.json',
-  'docs-src/config/cloudflare-pages.json', 'plugins/', 'tools/e2e/qualification.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/persona-models.mjs',
+  'docs-src/config/cloudflare-pages.json', 'docs-src/config/site-media.json', 'plugins/', 'tools/e2e/qualification.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/persona-models.mjs',
 ];
 
 // What jest-changed can select tests from: a module or a snapshot under a
@@ -146,8 +146,8 @@ const SITE_SCRIPTS = [
   'validate-i18n-seo',
 ].map((name) => `scripts/${name}.js`);
 const SITE_LIBS = [
-  'ahrefs-analytics', 'alternatives-table', 'article-date-contract', 'atlas-motion',
-  'canonical-organization', 'content-hub-registry', 'docs-check-helpers', 'docs-deploy-staging',
+  'ahrefs-analytics', 'alternatives-table', 'article-date-contract', 'atlas-motion', 'blog-title-lookup',
+  'canonical-organization', 'content-hub-registry', 'docs-check-helpers', 'docs-deploy-staging', 'docs-link-targets',
   'docs-renderer', 'docs-seo-utils', 'docs-site-config', 'docs-source-utils', 'docs-view-transitions',
   'educational-diagram-v2', 'experience-tier', 'generated-page-writer', 'guide-dictionary-model',
   'image-build-cache', 'image-seo-assets', 'landing-stylesheet', 'lucide-inline',
@@ -217,7 +217,7 @@ const EAS_WORKFLOWS = [
   'eas.json',
   'scripts/check-android-release-ref.js',
   'scripts/check-android-release-gates.js',
-  'tools/e2e/qualification.mjs',
+  'tools/e2e/qualification.mjs', 'tools/e2e/package.json',
 ];
 const EAS_WORKFLOW_CONTRACTS = [
   'npm run test:file --',
@@ -306,7 +306,7 @@ const EDGE_CHECKS = [
   // The local development backend imports these routes; its guards and fixed answers are tested with them.
   'cd ../..',
   'deno check --no-config tools/dev-local/api-server.ts',
-  'deno test --no-config --allow-read tools/dev-local',
+  'deno test --no-config --allow-read --allow-env=GUEST_SESSION_SECRET tools/dev-local',
 ].join(' && ');
 // installHere: what these probes look for is an install any development
 // machine can do. A failing probe means "install it", so --external is refused
@@ -328,6 +328,15 @@ const TESTERARMY = {
 // jest-changed runs them (isUnitTestPath in tools/e2e/zones.mjs).
 const UNIT_TESTS = ['!**/__tests__/', '!**/*.test.*', '!**/*.snap'];
 
+// The verifier also uses this config from outside the checkout.
+export const SMOKE_STACK = Object.freeze([
+  '.nvmrc', 'package.json', 'package-lock.json', 'patches/', 'app.json', 'app.config.ts', 'metro.config.js', 'babel.config.js',
+  '.env.mock', 'scripts/expo-safe-runner.js', 'global.css', 'mock-data/',
+  'tools/e2e/package.json', 'tools/e2e/package-lock.json', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs',
+  'tools/e2e/qualification.mjs', 'tools/e2e/web-ports.mjs', 'tools/e2e/web-engine.ts', 'tools/e2e/preload-web-matchers.mjs',
+  'tools/e2e/traced-parity-test.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-fixtures.ts',
+]);
+
 // Dreamer paths that run the tagged smoke journeys. Lucid, Meditation and docs
 // stay out: Lucid and Meditation have their own parcours zones.
 export const SMOKE_WHEN = [
@@ -335,12 +344,7 @@ export const SMOKE_WHEN = [
   '!routes/lucid/', '!components/lucid/', '!services/lucid*', '!apps/meditation/', ...UNIT_TESTS,
   // A changed Dreamer journey: its smoke-tagged tests run only in this check.
   'tools/e2e/tests/dreamer*.web.e2e.ts',
-  // The stack every journey runs on (tools/e2e/zones.mjs SMOKE_STACK).
-  'package.json', 'package-lock.json', 'patches/', 'app.json', 'app.config.ts', 'metro.config.js', 'babel.config.js',
-  '.env.mock', 'scripts/expo-safe-runner.js', 'global.css', 'mock-data/',
-  'tools/e2e/package.json', 'tools/e2e/package-lock.json', 'tools/e2e/e2e.config.ts', 'tools/e2e/run.mjs',
-  'tools/e2e/qualification.mjs', 'tools/e2e/web-ports.mjs', 'tools/e2e/web-engine.ts', 'tools/e2e/preload-web-matchers.mjs',
-  'tools/e2e/traced-parity-test.ts', 'tools/e2e/web-journeys.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-fixtures.ts',
+  ...SMOKE_STACK,
 ];
 
 // App paths plus the gate itself. A docs-only diff matches none of these, so
@@ -572,7 +576,7 @@ export default {
         // The production ref is pinned against app.json.
         'app.json',
         // Reached through the imports of the files above.
-        'supabase/functions/api/lib/constants.ts', 'supabase/functions/api/lib/guestQa.ts', 'supabase/functions/api/lib/sha256.ts', 'supabase/functions/api/types.ts', 'tools/e2e/app-media-fixtures.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-engine.ts', 'tools/e2e/web-fixtures.ts',
+        'supabase/functions/api/lib/constants.ts', 'supabase/functions/api/lib/guestQa.ts', 'supabase/functions/api/lib/http.ts', 'supabase/functions/api/lib/sha256.ts', 'supabase/functions/api/types.ts', 'tools/e2e/app-media-fixtures.ts', 'tools/e2e/web-parity-fixtures.ts', 'tools/e2e/web-engine.ts', 'tools/e2e/web-fixtures.ts',
       ], JEST_SETTINGS),
     },
     // Negative target/scheduler cases cannot safely be exercised by a live browser journey.
@@ -638,7 +642,7 @@ export default {
     {
       name: 'release-simulators', command: 'node --test scripts/release-simulators.test.mjs scripts/campaign-storage.test.mjs',
       parallel: true,
-      ...scoped(['scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs',
+      ...scoped(['tools/e2e/package.json', '.nvmrc', 'scripts/release-simulators.mjs', 'scripts/release-simulators.test.mjs', 'scripts/campaign-storage.mjs', 'scripts/campaign-storage.test.mjs', 'tools/e2e/native-release.mjs', 'tools/e2e/qualification.mjs', 'tools/e2e/persona-models.mjs', 'tools/e2e/web-ports.mjs',
         // Reached through the imports of the files above.
         'scripts/test-auth-setup.mjs', 'scripts/test-supabase-guard.mjs', 'scripts/test-seed-users.mjs', 'tools/e2e/persona-contract.mjs', 'scripts/ios-native-preflight.js', 'scripts/lib/local-workspace.js',
       ]),
@@ -719,7 +723,7 @@ export default {
     // Web only, no Actions. No model unless OPENAI_API_KEY is set: the
     // decision model then judges the parcours the zones leave out (zones.mjs).
     // A diff with no web zone exits 0, or with the key, no Dreamer app path.
-    // A touched zone without Node 24.22.1, tools/e2e/node_modules or Chromium
+    // A touched zone without the Node version in .nvmrc, tools/e2e/node_modules or Chromium
     // fails the probe: the proof is incomplete, not passed. No `targets`:
     // the engine applies targets on release only, which would drop these
     // checks from verify:pr. On a published master the diff is empty.
@@ -737,7 +741,7 @@ export default {
       requires: {
         command: 'node tools/e2e/pr-gate.mjs probe parcours',
         installHere: true,
-        hint: 'a diff that touches a web app zone needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`): install them on this machine and run the journeys here. If this probe fails the proof is incomplete: do not push. A diff with no app zone does not need the browser and the probe passes',
+        hint: 'a diff that touches a web app zone needs the Node version in .nvmrc, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`): install them on this machine and run the journeys here. If this probe fails the proof is incomplete: do not push. A diff with no app zone does not need the browser and the probe passes',
       },
     },
     {
@@ -750,7 +754,7 @@ export default {
       requires: {
         command: 'node tools/e2e/pr-gate.mjs probe smoke',
         installHere: true,
-        hint: 'a Dreamer app diff needs Node 24.22.1, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`): install them on this machine and run the smoke journeys here. If this probe fails the proof is incomplete: do not push. A diff that touches neither Dreamer app paths nor the SMOKE_STACK paths of tools/e2e/zones.mjs (dependencies, build config, the mock web app, the e2e runner and its shared web helpers) does not need the browser and the probe passes',
+        hint: 'a Dreamer app diff needs the Node version in .nvmrc, tools/e2e/node_modules (`npm run test:testerarmy:setup`) and Chromium (`npm run test:testerarmy:browsers`): install them on this machine and run the smoke journeys here. If this probe fails the proof is incomplete: do not push. A diff that touches neither Dreamer app paths nor the SMOKE_STACK paths of tools/e2e/zones.mjs (dependencies, build config, the mock web app, the e2e runner and its shared web helpers) does not need the browser and the probe passes',
       },
     },
 

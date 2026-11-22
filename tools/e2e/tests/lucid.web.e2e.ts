@@ -20,9 +20,9 @@ test('Lucid requires intention and experience before opening sleep settings', as
 // Night and Settings are tabs without a button. Expo Router 58 sent every visit
 // to them back to Today, so the profile button, the Night shortcut and the
 // Night link did nothing.
-test('Lucid opens Night and Settings from Today and from a link', async fixtures => {
+test('Lucid opens Night and Settings from Today and from a link', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, browser } = fixtures;
   await openLucid(app, browser, '/lucid?ambience=dark');
   // Night and Settings take no slot either: the four visible tabs share the bar.
   await expect(screen.getByRole('tab', /.*/, { visible: true })).toHaveCount(4);
@@ -45,9 +45,9 @@ test('Lucid opens Night and Settings from Today and from a link', async fixtures
   await app.screenshot('lucid-night-from-link');
 });
 
-test('Lucid completes a stabilization practice once and preserves its progress after restart', { tags: ['practice', 'persistence'] }, async fixtures => {
+test('Lucid completes a stabilization practice once and preserves its progress after restart', { tags: ['practice', 'persistence'] }, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, browser } = fixtures;
   const revealMetrics = async () => {
     await browser.evaluate(() => {
       const card = document.querySelector('[data-testid="lucid-progress-stabilization"]');
@@ -89,4 +89,22 @@ test('Lucid completes a stabilization practice once and preserves its progress a
   await expect(screen.getByTestId('lucid-progress-stabilization-practices').getByText('1', { exact: true })).toHaveCount(1);
   await expect(screen.getByTestId('lucid-progress-stabilization-completions').getByText('1', { exact: true })).toHaveCount(1);
   await app.screenshot('completed-practice-survives-two-restarts');
+});
+
+test('Lucid keeps a guest on Account after signing in and offers to import the guest training', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
+  await completeOnboarding(fixtures);
+  await openLucid(app, browser, '/lucid/account?ambience=dark');
+  await expect(screen.getByTestId('lucid-import-guest', { visible: true })).toHaveCount(0);
+  await screen.getByTestId('settings-account-open-signin', { visible: true }).tap();
+  await screen.getByTestId('input.auth.email', { visible: true }).fill('lucid.guest@dreamer.app');
+  await screen.getByTestId('input.auth.password', { visible: true }).fill('Lucid-guest-1');
+  await screen.getByTestId('btn.auth.signIn', { visible: true }).tap();
+  // The new account has no Lucid onboarding: the guest must stay on Account, where the
+  // import of the training kept on this device is offered, instead of restarting onboarding.
+  await expect(screen.getByTestId('lucid-import-guest', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('lucid-account', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('lucid-onboarding', { visible: true })).toHaveCount(0);
+  expect(new URL(await browser.url()).pathname).toBe('/lucid/account');
+  await app.screenshot('lucid-account-guest-import-after-sign-in');
 });

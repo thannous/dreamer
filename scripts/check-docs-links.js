@@ -19,6 +19,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { indexDocsFiles, isSkippableUrl, resolveLinkTarget, stripQueryAndHash } = require('./lib/docs-link-targets');
 const { publishedMediaPaths, readMedia, mediaRelativePath } = require('./lib/site-media');
 const { assertDocsBuildReady } = require('./lib/docs-check-helpers');
 
@@ -44,100 +45,16 @@ function parseArg(prefix) {
   return arg ? arg.slice(prefix.length) : null;
 }
 
-function toPosix(p) {
-  return p.split(path.sep).join('/');
-}
-
-function walkFiles(dirAbs, { ignoreDirs } = {}) {
-  const results = [];
-  const stack = [dirAbs];
-  while (stack.length) {
-    const current = stack.pop();
-    const entries = fs.readdirSync(current, { withFileTypes: true });
-    for (const entry of entries) {
-      const full = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        if (ignoreDirs && ignoreDirs.has(entry.name)) continue;
-        stack.push(full);
-        continue;
-      }
-      if (entry.isFile()) results.push(full);
-    }
-  }
-  return results;
-}
-
-function stripQueryAndHash(raw) {
-  const hashIndex = raw.indexOf('#');
-  const queryIndex = raw.indexOf('?');
-  const cut = Math.min(
-    hashIndex === -1 ? raw.length : hashIndex,
-    queryIndex === -1 ? raw.length : queryIndex
-  );
-  return raw.slice(0, cut);
-}
-
 function splitHash(raw) {
   const hashIndex = raw.indexOf('#');
   if (hashIndex === -1) return { withoutHash: raw, hash: '' };
   return { withoutHash: raw.slice(0, hashIndex), hash: raw.slice(hashIndex + 1) };
 }
 
-function isSkippableUrl(raw) {
-  const trimmed = String(raw || '').trim();
-  if (!trimmed) return true;
-  if (trimmed.includes('{{') || trimmed.includes('}}')) return true;
-  const lower = trimmed.toLowerCase();
-  if (lower.startsWith('mailto:')) return true;
-  if (lower.startsWith('tel:')) return true;
-  if (lower.startsWith('sms:')) return true;
-  if (lower.startsWith('javascript:')) return true;
-  if (lower.startsWith('data:')) return true;
-  return false;
-}
-
 function isIgnoredPath(pathname) {
   if (!pathname) return false;
   const normalized = pathname.startsWith('/') ? pathname : `/${pathname}`;
   return IGNORED_PATH_PREFIXES.some((prefix) => normalized.startsWith(prefix));
-}
-
-function hasExtension(posixPath) {
-  const base = path.posix.basename(posixPath);
-  return base.includes('.') && !base.startsWith('.');
-}
-
-function normalizeInternalPath(posixPath) {
-  const cleaned = String(posixPath || '').replace(/\0/g, '');
-  const normalized = path.posix.normalize(cleaned);
-  if (normalized === '.') return '';
-  return normalized;
-}
-
-function resolvePrettyUrlToFile(relativeFilesSet, urlPathPosix) {
-  const urlPath = normalizeInternalPath(urlPathPosix);
-  const withoutLeading = urlPath.replace(/^\/+/, '');
-
-  if (!withoutLeading || withoutLeading === '') {
-    return relativeFilesSet.has('index.html') ? 'index.html' : null;
-  }
-
-  if (urlPath.endsWith('/')) {
-    const candidate = `${withoutLeading}index.html`;
-    return relativeFilesSet.has(candidate) ? candidate : null;
-  }
-
-  if (hasExtension(urlPath)) {
-    return relativeFilesSet.has(withoutLeading) ? withoutLeading : null;
-  }
-
-  const htmlCandidate = `${withoutLeading}.html`;
-  if (relativeFilesSet.has(htmlCandidate)) return htmlCandidate;
-
-  const indexCandidate = `${withoutLeading}/index.html`;
-  if (relativeFilesSet.has(indexCandidate)) return indexCandidate;
-
-  return null;
 }
 
 function isHttpUrl(raw) {
@@ -372,22 +289,18 @@ async function main() {
     process.exit(1);
   }
 
-  const ignoreDirs = new Set(['node_modules', '.git']);
-  if (!includeTemplates) ignoreDirs.add('templates');
   const media = readMedia(path.resolve(__dirname, '..'));
   const externalMedia = publishedMediaPaths(path.resolve(__dirname, '..'), docsDirAbs);
-  const allFilesAbs = walkFiles(docsDirAbs, { ignoreDirs });
-  const relativeFiles = allFilesAbs.map((abs) => toPosix(path.relative(docsDirAbs, abs)));
-  const relativeFilesSet = new Set(relativeFiles);
-  const htmlFiles = relativeFiles.filter((p) => p.toLowerCase().endsWith('.html'));
+  const relativeFilesSet = indexDocsFiles(docsDirAbs, { includeTemplates });
+  const htmlFiles = Array.from(relativeFilesSet).filter((p) => p.toLowerCase().endsWith('.html'));
 
   console.log(`Scanning: ${docsDirAbs}`);
   console.log(`- HTML pages: ${htmlFiles.length}`);
-  console.log(`- Total files: ${relativeFiles.length}`);
+  console.log(`- Total files: ${relativeFilesSet.size}`);
   console.log(`- External check: ${checkExternal ? 'ON' : 'OFF'}`);
   console.log(`- Templates included: ${includeTemplates ? 'YES' : 'NO'}`);
 
-  const anchorsCache = new Map(); // rel html path -> Set(ids)
+  const anchorsCache = new Map();
   const readHtml = (rel) => fs.readFileSync(path.join(docsDirAbs, rel), 'utf8');
   const getAnchorsFor = (rel) => {
     if (!anchorsCache.has(rel)) anchorsCache.set(rel, extractAnchorsFromHtml(readHtml(rel)));
@@ -400,7 +313,6 @@ async function main() {
 
   for (const pageRel of htmlFiles) {
     const content = readHtml(pageRel);
-    const pageDirPosix = path.posix.dirname(toPosix(pageRel));
     const pageAnchors = getAnchorsFor(pageRel);
 
     const extracted = extractLinksFromHtml(content);
@@ -455,12 +367,9 @@ async function main() {
         });
       }
 
-      const isRootRelative = internalPath.startsWith('/');
-      const base = isRootRelative ? '' : pageDirPosix === '.' ? '' : `${pageDirPosix}/`;
-      const combined = normalizeInternalPath(isRootRelative ? internalPath : `${base}${internalPath}`);
+      const { resolvedPath: combined, file: targetFileRel } = resolveLinkTarget(relativeFilesSet, pageRel, internalPath);
 
       if (externalMedia.has(combined.replace(/^\/+/, ''))) continue;
-      const targetFileRel = resolvePrettyUrlToFile(relativeFilesSet, combined);
       if (!targetFileRel) {
         brokenInternal.push({
           type: 'missing-target',

@@ -146,9 +146,8 @@
 <div>
 <h4 class="font-serif text-lg text-dream-cream mb-2">Notez l’examen avant qu’il ne s’efface</h4>
 <p class="text-sm text-gray-400 mb-4">Dans Noctalia, racontez votre rêve à voix haute au réveil. Il est transcrit et rangé dans votre journal : vous pouvez relire vos rêves d’examen côte à côte et repérer ce qui revient.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/">
-Essayer Noctalia gratuitement <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-6 py-3 bg-dream-salmon text-dream-dark rounded-full text-sm font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=rever-examen-signification_fr" rel="nofollow noopener noreferrer" target="_blank">Télécharger Noctalia sur Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a>
+<p class="text-xs text-purple-300/70 mt-3">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </div>
 </div>
 </aside>

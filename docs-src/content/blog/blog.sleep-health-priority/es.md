@@ -220,9 +220,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Cada mañana, cuéntale tu sueño a Noctalia en voz alta o por escrito y añade una nota sobre tu noche. Todo queda en un mismo diario: al releer tus entradas una junto a otra, ves lo que se repite.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Empezar mi diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sueno-salud-prioridad_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -305,13 +306,13 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Art&iacute;culo anterior</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Primavera y sue&ntilde;o: c&oacute;mo la alteraci&oacute;n estacional transforma tus sue&ntilde;os</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Alteración del sueño en primavera: cómo los días más largos cambian tu descanso y tus sueños</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-end gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rastreadores-sueno-wearables-suenos">
 <div class="text-right">
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Siguiente art&iacute;culo</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Rastreadores de sue&ntilde;o wearables y sue&ntilde;os: qu&eacute; miden y qu&eacute; se les escapa</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Rastreadores de sueño wearables y sueños: qué miden y qué se les escapa</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -327,12 +328,12 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="deuda-sueno-salud-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salud</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Deuda de sue&ntilde;o y privaci&oacute;n cr&oacute;nica: c&oacute;mo afectan tu salud y tus sue&ntilde;os</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Deuda de sueño y privación crónica: cómo afectan a tu salud y a tus sueños</h3>
 <p class="text-sm text-gray-400">Qué le hace la deuda de sueño a la salud y a los sueños, por qué dormir más el fin de semana no basta y cómo recuperarte de verdad.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia del sue&ntilde;o</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sue&ntilde;o REM y sue&ntilde;os: entendiendo el reinicio nocturno de tu cerebro</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños: qué pasa de verdad en tu cerebro por la noche</h3>
 <p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/es/blog/">
@@ -348,6 +349,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Disclaimer" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional de la salud cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional de la salud cualificado.
 </p>
 </aside>

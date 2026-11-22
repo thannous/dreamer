@@ -17,6 +17,7 @@ import StartupSplashScreen, {
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
+import { LucidTrainerProvider } from '@/context/LucidTrainerContext';
 import { StartupRouteProvider } from '@/context/StartupRouteContext';
 import { SubscriptionProvider } from '@/context/SubscriptionContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
@@ -132,7 +133,14 @@ function LucidRootNavigation({ nonCriticalStartupEnabled, onStartupCommitted }: 
 
   return <NavigationThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
     <KeyboardProviderComponent>
-      <Stack screenOptions={{ animation: nonCriticalStartupEnabled ? 'default' : 'none' }}>
+      <Stack
+        screenOptions={{
+          animation: nonCriticalStartupEnabled ? 'default' : 'none',
+          ...(Platform.OS === 'ios'
+            ? { statusBarStyle: mode === 'dark' ? 'light' : 'dark' }
+            : {}),
+        }}
+      >
         <Stack.Screen name="lucid" options={{ headerShown: false }} />
         <Stack.Screen name="auth/reset-password" options={{ headerShown: false }} />
         <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
@@ -289,13 +297,14 @@ function LucidRootContent() {
               <AuthProvider>
 
                   <SubscriptionProvider>
-                    <StartupRouteProvider routeCommitted={startupDestinationCommitted}>
-                      <LucidRootNavigation
-                        nonCriticalStartupEnabled={startupDestinationCommitted}
-                        onStartupCommitted={handleStartupCommitted}
-                      />
-                    </StartupRouteProvider>
-
+                    <LucidTrainerProvider>
+                      <StartupRouteProvider routeCommitted={startupDestinationCommitted}>
+                        <LucidRootNavigation
+                          nonCriticalStartupEnabled={startupDestinationCommitted}
+                          onStartupCommitted={handleStartupCommitted}
+                        />
+                      </StartupRouteProvider>
+                    </LucidTrainerProvider>
                   </SubscriptionProvider>
 
               </AuthProvider>

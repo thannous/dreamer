@@ -328,9 +328,6 @@ jest.doMock('@/components/ui/DreamerBackground', () => ({
   DreamerArtworkWindow: () => null, DreamerBackground: () => null,
 }));
 
-jest.doMock('@/components/recording/OfflineModelDownloadSheet', () => ({
-  OfflineModelDownloadSheet: () => null,
-}));
 
 jest.doMock('@/components/recording/RecordingInputModeSelect', () => ({
   RecordingInputModeSelect: ({
@@ -757,7 +754,6 @@ jest.doMock('@/lib/aiConsent', () => ({
 jest.doMock('@/services/nativeSpeechRecognition', () => {
   const actual = jest.requireActual('@/services/nativeSpeechRecognition') as typeof import('@/services/nativeSpeechRecognition');
   return {
-    registerOfflineModelPromptHandler: () => jest.fn(),
     resolveDeviceSpeechCapability: mockResolveDeviceSpeechCapability,
     shouldRestartHandsFreeSpeech: actual.shouldRestartHandsFreeSpeech,
   };

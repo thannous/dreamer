@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const mediaManifest = require('../../docs-src/config/site-media.json');
 const {
   SUPPORTED_LANGS,
   getPageIllustration,
@@ -47,7 +48,8 @@ describe('sitewide page illustrations', () => {
     }
   });
 
-  it('keeps every versioned master and responsive variant available', () => {
+  it('includes every versioned master and responsive variant in the site media release', () => {
+    const mediaPaths = new Set(mediaManifest.files.map(([file]) => file));
     for (const [pageId, stem] of Object.entries(config.families)) {
       const assetId = `sitewide.${pageId}`;
       const asset = registry.assets[assetId];
@@ -58,7 +60,7 @@ describe('sitewide page illustrations', () => {
         formats: ['avif', 'webp'],
       });
       expect(asset.source).toContain(`/${config.release}/masters/${stem}.png`);
-      expect(fs.existsSync(path.join(REPO_ROOT, asset.source))).toBe(true);
+      expect(mediaPaths.has(path.posix.relative('docs-src/static', asset.source))).toBe(true);
 
       for (const [aspect, dimensions] of Object.entries({
         '16x9': { width: 1200, height: 675, widths: [480, 800, 1200] },
@@ -67,13 +69,8 @@ describe('sitewide page illustrations', () => {
         expect(asset.aspects[aspect]).toMatchObject(dimensions);
         for (const width of dimensions.widths) {
           for (const format of asset.formats) {
-            const output = path.join(
-              REPO_ROOT,
-              'docs-src',
-              'static',
-              `${asset.outputStem}-${aspect}-${width}.${format}`
-            );
-            expect(fs.existsSync(output)).toBe(true);
+            const output = `${asset.outputStem.slice(1)}-${aspect}-${width}.${format}`;
+            expect(mediaPaths.has(output)).toBe(true);
           }
         }
       }

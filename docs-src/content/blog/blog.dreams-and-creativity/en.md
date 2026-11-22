@@ -251,9 +251,10 @@ Keep a separate list of images that could be useful, tagged by project. Add one 
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 With Noctalia, tell your dream out loud as soon as you wake. It is transcribed and saved in your journal, where you can reread your dreams side by side and spot the images that keep coming back.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/en/voice-dream-journal">
-Try voice dream journaling <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=dreams-and-creativity_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -338,13 +339,13 @@ No. Repeated alarms fragment sleep, and sleep loss impairs attention, memory and
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Stress Dreams About Work: Why Your Job Follows You to Sleep</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Dreaming About Work Every Night? What Stress Dreams May Reflect</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="anxiety-dreams-meaning">
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Anxiety Dreams: What They Mean and How to Stop Them</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Anxiety dreams: why you have them and what actually helps</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -360,17 +361,17 @@ No. Repeated alarms fragment sleep, and sleep loss impairs attention, memory and
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="dream-incubation-guide">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Dream Incubation: How to Dream Exactly What You Want Tonight</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Dream incubation: how to ask for a dream tonight, and what to expect</h3>
 <p class="text-sm text-gray-400">Learn the ancient and modern techniques of planting specific dreams to solve problems and spark creativity.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="rem-sleep-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">REM Sleep and Dreams: Understanding Your Brain's Nightly Reset</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">REM sleep and dreams: what really happens in your brain at night</h3>
 <p class="text-sm text-gray-400">When REM sleep happens in the night, why its dreams feel so vivid, and what cuts it short.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="why-we-forget-dreams">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">How to Remember Your Dreams: 10 Effective Techniques</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Why do we forget our dreams? The science behind dream amnesia</h3>
 <p class="text-sm text-gray-400">Practical methods to improve dream recall and never lose a creative insight from your sleeping mind again.</p>
 </a>
 </div>

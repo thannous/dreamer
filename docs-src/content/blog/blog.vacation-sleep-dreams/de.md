@@ -68,7 +68,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Sichere den Traum, bevor der Tag beginnt</h2>
 <p>Sprich den Traum nach dem Aufwachen ein oder tipp ihn. Noctalia transkribiert ihn in dein Tagebuch: Zu Hause liest du deine Urlaubsträume nebeneinander und siehst, was wiederkehrt.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/de/traumtagebuch-spracheingabe">Den nächsten Traum einsprechen</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=urlaub-schlaf-traeume_de" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play laden <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </div>
 <h2>Häufige Fragen</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Warum träume ich mehr, wenn ich reise?</summary><p class="mt-3">Vielleicht träumst du nicht mehr. Du wachst wahrscheinlich öfter auf, manchmal direkt nach einem Traum, und behältst ihn so leichter.</p></details>

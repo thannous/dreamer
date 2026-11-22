@@ -3,9 +3,24 @@
 Owner: this E2E work package. Scope: the journal app, real local Supabase Auth,
 Postgres and PostgREST. No production writes, AI calls or payments.
 
+## Supabase CLI compatibility
+
+The repository pins CLI 3.2.0. Run `mise exec -- npm exec -- supabase config validate`
+to check the configuration. It uses `[local_smtp]`. The CLI accepts the existing
+`auth.email.enable_signup` and `auth.sms.enable_signup` settings with deprecation warnings.
+
+The local runners select their validated native stack by its working directory for
+queries and pending migrations. The cron check reads the row array from a terminal
+or the `rows` field in agent mode, and requires exactly one zero count. The security
+advisor uses an explicit loopback PostgreSQL URL from the stack receipt to set
+`sslmode=disable`; CLI 3.2.0 accepts this URL through `--remote=<url>`.
+
+Hosted database procedures must name the intended target with `--remote`; linking a
+project alone leaves database commands local by default. See the [CLI v3 migration guide](https://supabase.com/docs/guides/local-development/cli/migrating-to-v3).
+
 ## Run
 
-Use Node from `mise.toml`, locked dependencies and TesterArmy Chromium (`npm run test:testerarmy:browsers`). The runner owns a disposable stack on the pinned Supabase CLI 2.121.0
+Use Node from `mise.toml`, locked dependencies and TesterArmy Chromium (`npm run test:testerarmy:browsers`). The runner owns a disposable stack on the pinned Supabase CLI
 native runtime. There is no Docker or Podman runtime (founder decision, 2026-10-19):
 
 ```sh
@@ -53,6 +68,17 @@ The service-role key stays in a private temporary JSON file. Expo receives only
 the local URL and public anon key. Startup output containing privileged keys is
 captured, and browser requests allow only the app, local Auth and local Data API.
 AI functions, analytics, OAuth providers and billing are blocked.
+
+Guest journeys are the exception for the API. `tools/e2e/backend-guest-fixtures.ts`
+starts `tools/dev-local/api-server.ts` (the never-deployed server of `dev:local`: the
+real route table, its local guest verifiers and fixed AI answers) on a loopback port
+for the run's stack, sends the page's `/functions/v1/` calls to it and answers
+Cloudflare's widget script with a stub, so the profile's always-pass Turnstile test
+site key yields a token offline. The runner installs `tools/dev-local/guest-reset.sql`
+(never a migration) for « Nouvel invité ». `backend-guest-journey.web.e2e.ts` plays a
+guest's first dream read at once, the second on request, the account offered for the
+third, then « Nouvel invité »: refused while a guest dream remains, then the device's
+first dream read at once again and the welcome kept after a reload.
 
 Every run owns its stack. The former supplied-VM mode (`--prepare-only` and
 `--status-file`, API pinned on 56321) ran the CLI's default container stack inside

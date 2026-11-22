@@ -20,8 +20,8 @@ const nativeRecoveryOptions = {
     ? 'Requires the owned synthetic Release profile.' : false,
 };
 
-test('Dreamer native security recovery rejects a bearer-shaped reset link', nativeRecoveryOptions, async (fixtures) => {
-  const { screen } = fixtures;
+test('Dreamer native security recovery rejects a bearer-shaped reset link', nativeRecoveryOptions, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await openStartedApp(fixtures);
   await openBackgroundRoute(fixtures, 'auth/reset-password?type=recovery&access_token=qa-synthetic&refresh_token=qa-synthetic');
   await expect(screen.getByTestId('screen.auth.resetPassword')).toBeVisible();
@@ -30,8 +30,8 @@ test('Dreamer native security recovery rejects a bearer-shaped reset link', nati
   await expect(screen.getByTestId('input.auth.recoveryEmail')).toBeHidden();
 });
 
-test('Dreamer native security recovery keeps a synthetic token-hash form inert', nativeRecoveryOptions, async (fixtures) => {
-  const { screen } = fixtures;
+test('Dreamer native security recovery keeps a synthetic token-hash form inert', nativeRecoveryOptions, async ({ app, screen, device, platform }) => {
+  const fixtures = { app, screen, device, platform };
   await openStartedApp(fixtures);
   await openBackgroundRoute(fixtures, 'auth/reset-password?type=recovery&token_hash=qa-synthetic-invalid');
   await expect(screen.getByTestId('screen.auth.resetPassword')).toBeVisible();

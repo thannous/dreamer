@@ -1,7 +1,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 import { verifyAnalyticsGuestToken } from '../lib/analyticsGuestToken.ts';
-import { corsHeaders } from '../lib/constants.ts';
+import { jsonResponse } from '../lib/http.ts';
 import type { ApiContext } from '../types.ts';
 
 const MAX_BODY_BYTES = 32 * 1024;
@@ -327,13 +327,6 @@ export function validateProductAnalyticsEvent(
     if (props.stage === 'first' ? days !== 0 : days < 1 || days > 7) return false;
   }
   return true;
-}
-
-function jsonResponse(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
-  });
 }
 
 async function readLimitedJson(req: Request): Promise<unknown | Response> {

@@ -146,7 +146,7 @@ test('Apple provider credentials stay private through Auth, refresh, API storage
     const advisorDbUrl = new URL(status.DB_URL);
     advisorDbUrl.searchParams.set('sslmode', 'disable');
     const advisors = spawnSync(path.join(repoRoot, 'node_modules/.bin/supabase'), [
-      'db', 'advisors', '--db-url', advisorDbUrl.href, '--type', 'security', '--fail-on', 'none', '--output-format', 'json',
+      'db', 'advisors', `--remote=${advisorDbUrl.href}`, '--type', 'security', '--fail-on', 'none', '--output-format', 'json',
     ], { encoding: 'utf8', env: {
       ...Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.startsWith('SUPABASE_'))),
       NODE_ENV: process.env.NODE_ENV,

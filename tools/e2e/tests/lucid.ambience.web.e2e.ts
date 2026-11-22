@@ -2,8 +2,46 @@ import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
 import { completeOnboarding, openLucid } from '../lucid-web-fixtures';
 
-test('Lucid recovers a blocked ambience with a playable retry and no unhandled rejection', async fixtures => {
-  const { app, screen, browser } = fixtures;
+const RAIN_URL = 'https://noctalia.app/audio/sleep/rain-v2.m4a';
+const LOCAL_RAIN = { path: '../../assets/lucid/audio/lucid_cue_rain_very_low.wav', contentType: 'audio/wav' };
+
+test('Lucid keeps both French ambience controls inside the Night card on an iPhone-width screen', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
+  await completeOnboarding(fixtures);
+  await browser.route(RAIN_URL, route => route.fulfill(LOCAL_RAIN));
+  // iPhone 17 width, where the dogfooding overflow appeared; it stays above the
+  // 380 pt Night reflow threshold, so the two controls share one row when they fit.
+  await browser.setViewport({ width: 402, height: 874 });
+  await openLucid(app, browser, '/lucid/night?ambience=dark');
+  await screen.getByTestId('lucid-night-signals-toggle', { visible: true }).tap();
+  const play = screen.getByTestId('lucid-night-ambience-play', { visible: true });
+  const stop = screen.getByTestId('lucid-night-ambience-stop', { visible: true });
+  await expect(play).toBeEnabled({ timeout: 35_000 });
+  await play.tap();
+  // Playing shows the longest French pair: « Mettre l’ambiance en pause » and « Arrêter l’ambiance ».
+  await expect(play).toContainText('Mettre l’ambiance en pause');
+  const controls = await screen.getByTestId('lucid-night-ambience-controls', { visible: true }).boundingBox();
+  const playBox = await play.boundingBox();
+  const stopBox = await stop.boundingBox();
+  const viewportWidth = await browser.evaluate(() => document.documentElement.clientWidth);
+  expect(controls && playBox && stopBox).toBeTruthy();
+  for (const box of [playBox!, stopBox!]) {
+    expect(box.x).toBeGreaterThanOrEqual(controls!.x - 0.5);
+    expect(box.x + box.width).toBeLessThanOrEqual(controls!.x + controls!.width + 0.5);
+    expect(box.x + box.width).toBeLessThanOrEqual(viewportWidth);
+  }
+  const sameRow = Math.abs(playBox!.y - stopBox!.y) < 1;
+  const apart = sameRow
+    ? playBox!.x + playBox!.width <= stopBox!.x + 0.5
+    : playBox!.y + playBox!.height <= stopBox!.y + 0.5;
+  expect(apart).toBe(true);
+  await app.screenshot('lucid-ambience-controls-iphone-width');
+  await stop.tap();
+  await expect(play).toContainText('Lancer l’ambiance');
+});
+
+test('Lucid recovers a blocked ambience with a playable retry and no unhandled rejection', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
   await browser.addInitScript(() => {
     const observed = window as Window & { __lucidAudioErrors?: string[] };

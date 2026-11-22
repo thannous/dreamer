@@ -220,21 +220,7 @@
 <p>
                     Una sola annotazione non dimostra nulla. I legami diventano visibili quando annoti gli stessi elementi per diverse notti, anche quelle in cui non voli.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Annota il volo prima che svanisca</h4>
-<p class="text-sm text-gray-400 mb-4">Con Noctalia racconti il sogno a voce appena sveglio. Viene trascritto e salvato nel tuo diario, così puoi rileggere i tuoi sogni di volo uno accanto all'altro.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/">
-                                Prova Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="emotions">Gioia, paura, frustrazione: cosa cambia l'emozione</h2>
 <p>
                     Due persone possono sorvolare in sogno la stessa città e svegliarsi con impressioni opposte. L'emozione è spesso più vicina alla vita da svegli di quanto lo sia lo scenario.
@@ -294,9 +280,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Conserva i tuoi sogni di volo in Noctalia insieme a quello che hai provato. Rileggendoli insieme vedrai quando ritornano e che cosa li accompagna.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il tuo diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=significato-dei-sogni-in-volo-cosa-significa-volar_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- Symbol Guide CTA -->
 <aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
@@ -384,7 +371,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sogni di cadere: perché sogni di cadere nel vuoto</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sognare di cadere: significato, scenari e risvegli</div>
       </div>
     </a>
     <a href="sogni-sui-serpenti-cio-di-cui-il-tuo-subconscio-ti-sta-davvero-avvertendo" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -407,17 +394,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="significato-dei-sogni-ricorrenti-comprendere-i-loro-messaggi-nascosti" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Significato dei sogni ricorrenti: comprendere i loro messaggi</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni ricorrenti: perché lo stesso sogno ritorna e cosa può aiutare</h3>
             <p class="text-sm text-gray-400">Perché lo stesso sogno ritorna, cosa annotare tra un episodio e l'altro e quando gli incubi ripetuti meritano un parere medico.</p>
         </a>
         <a href="sogni-di-denti-che-cadono-significato-e-interpretazione" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di denti che cadono: significato e interpretazione</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sognare denti che cadono o si sgretolano: scenari e ricerca</h3>
             <p class="text-sm text-gray-400">Denti che cadono, si muovono o si sgretolano in sogno, con gli scenari da confrontare, le emozioni in gioco e cosa dice la ricerca.</p>
         </a>
         <a href="significato-dei-sogni-che-cadono-perche-sogni-di-cadere" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretazione</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni di cadere: perché sogni di cadere nel vuoto</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sognare di cadere: significato, scenari e risvegli</h3>
             <p class="text-sm text-gray-400">Perché si sogna di cadere, dalla scossa ipnica all'addormentamento alle cadute lunghe, e cosa annotare al risveglio.</p>
         </a>
   </div>

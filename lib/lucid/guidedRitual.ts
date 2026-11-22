@@ -1,4 +1,8 @@
-import { lucidSourceTimestamp, type LucidTrainingSource } from './observations';
+import {
+  lucidSourceTimestamp,
+  truncateLucidTextAtWordBoundary,
+  type LucidTrainingSource,
+} from './observations';
 import type { LucidActiveDreamSign } from '@/lib/lucid/dreamSigns';
 import type {
   LucidGuidedRitualMode,
@@ -245,9 +249,7 @@ const MAX_MILD_SOURCE_TITLE_LENGTH = 80;
 const MAX_MILD_SOURCE_EXCERPT_LENGTH = 180;
 
 function boundedVerbatim(value: string, maximum: number): string {
-  const compact = String(value ?? '').replace(/\s+/g, ' ').trim();
-  if (compact.length <= maximum) return compact;
-  return `${compact.slice(0, maximum - 1).trimEnd()}…`;
+  return truncateLucidTextAtWordBoundary(String(value ?? ''), maximum);
 }
 
 export type LucidMildRehearsalSource = Readonly<{

@@ -122,6 +122,21 @@ describe('resolveLucidOnboardingGate', () => {
     ).toBeNull();
   });
 
+  it('allows /lucid/account while onboarding is incomplete so sign-in and guest import remain reachable', () => {
+    expect(
+      resolveLucidOnboardingGate({
+        pathname: '/lucid/account',
+        onboardingStatus: 'not_started',
+      })
+    ).toBeNull();
+    expect(
+      resolveLucidOnboardingGate({
+        pathname: '/lucid/account/',
+        onboardingStatus: 'in_progress',
+      })
+    ).toBeNull();
+  });
+
   it('stays put while state is still loading', () => {
     expect(
       resolveLucidOnboardingGate({

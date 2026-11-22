@@ -4,10 +4,8 @@ import { BOTTOM_NAV_HREFS, NoctaliaBottomNav } from '@/components/navigation/Noc
 import { NoctaliaScreenHeader } from '@/components/NoctaliaScreenHeader';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { NightSkyBand } from '@/components/ui/NightSkyBand';
-import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { RecordingFooter } from '@/components/recording/RecordingFooter';
 import { DictationOffSheet, MicPermissionRationaleSheet } from '@/components/recording/RecordingSheets';
-import { offlineModelPromptHandler } from '@/components/speech/offlineModelPromptHandler';
 import { RecordingInputModeSelect } from '@/components/recording/RecordingInputModeSelect';
 import { CaptureDraftEditor } from '@/components/recording/CaptureDraftEditor';
 import { parseCaptureEditableDraft, serializeCaptureEditableDraft, updateCaptureDraftSection, type CaptureEditableDraft } from '@/lib/captureEditableDraft';
@@ -85,7 +83,7 @@ import {
   type VoiceCaptureFailure,
   type VoiceFallbackReason,
 } from '@/lib/recordingVoiceMode';
-import { canDictate } from '@/lib/speechCapability';
+import { useDictationAvailability } from '@/hooks/useDictationAvailability';
 import { buildJournalDetailHref } from '@/lib/journalSavedConfirmation';
 import { isTranscriptSaveable } from '@/lib/recordingDraftProgress';
 import {
@@ -105,11 +103,7 @@ import type {
   RememberedDreamKind,
 } from '@/lib/types';
 import { playSignature } from '@/services/signatureSounds';
-import {
-  registerOfflineModelPromptHandler,
-  resolveDeviceSpeechCapability,
-  shouldRestartHandsFreeSpeech,
-} from '@/services/nativeSpeechRecognition';
+import { shouldRestartHandsFreeSpeech } from '@/services/nativeSpeechRecognition';
 import {
   getRecordingInputModePreference,
   getRecordingVoiceHintCompleted,
@@ -275,11 +269,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   const hasAutoStoppedRecordingRef = useRef(false);
   const [showMicRationaleSheet, setShowMicRationaleSheet] = useState(false);
   const [showDictationOffSheet, setShowDictationOffSheet] = useState(false);
-  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
-  const [offlineModelLocale, setOfflineModelLocale] = useState('');
-  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
-  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
-  const offlineModelSheetVisibleRef = useRef(false);
   const hasSeenMicRationaleRef = useRef(false);
   const recordingStartedAtRef = useRef<number | null>(null);
   const [voiceFallbackReason, setVoiceFallbackReason] = useState<VoiceFallbackReason>(null);
@@ -352,27 +341,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     });
   }, [onboardingScope]);
 
-  const resolveOfflineModelPrompt = useCallback(() => {
-    const resolve = offlineModelPromptResolveRef.current;
-    offlineModelPromptResolveRef.current = null;
-    offlineModelPromptPromiseRef.current = null;
-    resolve?.();
-  }, []);
-
-  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
-    if (offlineModelPromptPromiseRef.current) {
-      return offlineModelPromptPromiseRef.current;
-    }
-
-    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
-      offlineModelPromptResolveRef.current = () => {
-        resolve();
-      };
-    });
-
-    return offlineModelPromptPromiseRef.current;
-  }, []);
-
   useEffect(() => {
     let isActive = true;
     const scopeChanged = preferenceScopeRef.current !== onboardingScope;
@@ -425,27 +393,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     };
   }, [onboardingScope]);
 
-  const handleOfflineModelPromptShow = useCallback(
-    async (locale: string) => {
-      setOfflineModelLocale(locale);
-      setShowOfflineModelSheet(true);
-      await waitForOfflineModelPromptClose();
-    },
-    [waitForOfflineModelPromptClose]
-  );
-
-  const handleOfflineModelSheetClose = useCallback(() => {
-    setShowOfflineModelSheet(false);
-    setOfflineModelLocale('');
-    resolveOfflineModelPrompt();
-  }, [resolveOfflineModelPrompt]);
-
-  const handleOfflineModelDownloadComplete = useCallback(
-    (_success: boolean) => {
-      handleOfflineModelSheetClose();
-    },
-    [handleOfflineModelSheetClose]
-  );
   const trimmedTranscript = useMemo(() => transcript.trim(), [transcript]);
   const interactionDisabled = isSaveLocked || isFormatting || isLeavingReview || isRestartingCapture || !isHydrated;
   const isCompactLandscape = viewportWidth > viewportHeight && viewportHeight < 600;
@@ -460,45 +407,11 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
   const voicedCaptureRef = useRef(false);
   const transcriptionLocale = useMemo(() => getTranscriptionLocale(language), [language]);
 
-  // Voice uses the device recognizer when available. Otherwise capture remains
-  // available through the text editor.
-  const [isVoiceSupported, setIsVoiceSupported] = useState(true);
-
-  useEffect(() => {
-    // Web resolves speech availability through the Web Speech API instead; the
-    // capability ladder is a native concern.
-    if (Platform.OS === 'web') {
-      return;
-    }
-
-    let isMounted = true;
-
-    resolveDeviceSpeechCapability(transcriptionLocale)
-      .then((capability) => {
-        if (!isMounted) {
-          return;
-        }
-
-        const supported = canDictate(capability);
-        setIsVoiceSupported(supported);
-
-        if (!supported) {
-          setVoiceFallbackReason('voice_unsupported');
-          setInputMode('text');
-        }
-      })
-      .catch(() => {
-        // Probing must never block capture: assume voice works and let the
-        // existing per-attempt fallbacks surface a real failure.
-        if (isMounted) {
-          setIsVoiceSupported(true);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [transcriptionLocale]);
+  const switchToTextWhenVoiceUnavailable = useCallback(() => {
+    setVoiceFallbackReason('voice_unsupported');
+    setInputMode('text');
+  }, []);
+  const isVoiceSupported = useDictationAvailability(transcriptionLocale, switchToTextWhenVoiceUnavailable);
 
   const handleTranscriptChange = useCallback(
     (text: string) => {
@@ -602,23 +515,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     stopRecording: stopSessionRecording,
     forceStopRecording,
   } = recordingSession;
-
-  useEffect(() => {
-    offlineModelSheetVisibleRef.current = showOfflineModelSheet;
-  }, [showOfflineModelSheet]);
-
-  // Register offline model prompt handler
-  useEffect(() => {
-    return registerOfflineModelPromptHandler(
-      offlineModelPromptHandler(offlineModelSheetVisibleRef, handleOfflineModelPromptShow)
-    );
-  }, [handleOfflineModelPromptShow]);
-
-  useEffect(() => {
-    return () => {
-      resolveOfflineModelPrompt();
-    };
-  }, [resolveOfflineModelPrompt]);
 
   useEffect(() => {
     return () => {
@@ -2254,12 +2150,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
         onClose={handleDictationOffClose}
         onUseText={handleDictationOffUseText}
         onRetry={handleDictationOffRetry}
-      />
-      <OfflineModelDownloadSheet
-        visible={showOfflineModelSheet}
-        onClose={handleOfflineModelSheetClose}
-        locale={offlineModelLocale}
-        onDownloadComplete={handleOfflineModelDownloadComplete}
       />
     </>
   );

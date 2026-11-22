@@ -58,7 +58,14 @@
 <li><strong>Werbung:</strong> kein Verkauf von Daten, keine personalisierte Werbung, klar formuliert.</li>
 </ul>
 <h2>Was Noctalia darauf antwortet</h2>
-<p>Laut unserer <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a> nutzt die Diktierfunktion die Spracherkennung des Geräts oder Browsers. Diese kann Sprache lokal verarbeiten oder an ihren Anbieter übertragen. Einige App-Versionen können Audio auch vorübergehend über Noctalia an Google Cloud Speech-to-Text senden. Der Traumtext geht für Analyse und Gespräch an Anthropic (Claude), für Bilder und bei Bedarf zur Vorbereitung ihrer Anweisungen aus dem Traum an Google (Gemini), wobei das Training allgemeiner Modelle deaktiviert ist, soweit der Dienst das erlaubt. Analyse, Gespräch und Bilder erfolgen nur, nachdem du in der App zugestimmt hast. Das Tagebuch liegt in der EU. Kein Datenverkauf, keine personalisierte Werbung. <a class="text-dream-salmon hover:underline" href="/de/konto-loeschen">Dein Konto löschst</a> du in den Einstellungen; die Daten werden in der Regel innerhalb von 30 Tagen entfernt.</p>
+<p>Das steht Punkt für Punkt in unserer <a class="text-dream-salmon hover:underline" href="/de/datenschutz">Datenschutzerklärung</a>:</p>
+<ul>
+<li><strong>Audio:</strong> Die Diktierfunktion nutzt die Spracherkennung des Geräts oder Browsers. Diese kann Sprache lokal verarbeiten oder an ihren Anbieter übertragen. Einige App-Versionen können Audio auch vorübergehend über Noctalia an Google Cloud Speech-to-Text senden.</li>
+<li><strong>KI-Anbieter:</strong> Der Traumtext geht für Analyse und Gespräch an Anthropic (Claude), für Bilder und bei Bedarf zur Vorbereitung ihrer Anweisungen aus dem Traum an Google (Gemini). Analyse, Gespräch und Bilder erfolgen nur, nachdem du in der App zugestimmt hast.</li>
+<li><strong>Training:</strong> Das Training allgemeiner Modelle ist deaktiviert, soweit der Dienst das erlaubt.</li>
+<li><strong>Löschung:</strong> <a class="text-dream-salmon hover:underline" href="/de/konto-loeschen">Dein Konto löschst</a> du in den Einstellungen; die Daten werden in der Regel innerhalb von 30 Tagen entfernt.</li>
+<li><strong>Werbung &amp; Hosting:</strong> Das Tagebuch liegt in der EU; kein Datenverkauf, keine personalisierte Werbung.</li>
+</ul>
 <h2>Was sich durch die EU-KI-Verordnung ändert</h2>
 <p>Die KI-Verordnung wurde 2024 verabschiedet und gilt seit 2025 schrittweise. Ein Traumtagebuch zählt nicht zu ihren Hochrisiko-Anwendungen. Wenn du mit einer KI chattest, musst du darüber informiert werden. Ein Siegel „konform mit der KI-Verordnung“ sagt also wenig über deine Notizen: Auskunft und Löschung regelt die DSGVO.</p>
 <h2>Eine gute Analyse muss korrigierbar bleiben</h2>
@@ -66,7 +73,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Traum erzählen, Text behalten</h2>
 <p>Erzähl deinen Traum in Noctalia nach dem Aufwachen laut. Er wird in dein Tagebuch transkribiert, die Aufnahme wird nicht aufbewahrt. Danach liest du deine Träume nebeneinander.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/de/traumtagebuch-spracheingabe">Traumtagebuch per Sprache testen</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=ki-traumtagebuch-datenschutz_de" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play laden <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </div>
 </section>
 <section class="mt-16 glass-panel rounded-2xl p-6" id="sources">

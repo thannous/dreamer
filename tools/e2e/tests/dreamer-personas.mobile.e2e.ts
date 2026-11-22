@@ -185,8 +185,8 @@ if (process.env.E2E_PERSONAS === '1') {
   }
 
   test('a sleepy journaler keeps the exact dream for later without requesting a reading',
-    { agent: 'morning', tags: ['personas', 'persona-morning', 'capture'] }, async (fixtures) => {
-      const { app, screen, agent } = fixtures;
+    { agent: 'morning', tags: ['personas', 'persona-morning', 'capture'] }, async ({ app, screen, device, platform, agent }) => {
+      const fixtures = { app, screen, device, platform, agent };
       await startProfile(fixtures, 'new');
       const story = 'Personas réveil : je marche sur un pont bleu et une luciole se pose sur ma main.';
       await enterStory(fixtures, story);
@@ -214,8 +214,8 @@ if (process.env.E2E_PERSONAS === '1') {
     });
 
   test('a regular journaler retrieves an older dream and finds it again in favourites',
-    { agent: 'archivist', tags: ['personas', 'persona-archivist', 'journal'] }, async (fixtures) => {
-      const { app, screen, agent } = fixtures;
+    { agent: 'archivist', tags: ['personas', 'persona-archivist', 'journal'] }, async ({ app, screen, device, platform, agent }) => {
+      const fixtures = { app, screen, device, platform, agent };
       await startProfile(fixtures, 'existing');
       await agent.act('Find and open your older dream about a garden floating among the clouds.');
       // iOS AX can echo the title on both a Text and its child. Select the
@@ -239,8 +239,8 @@ if (process.env.E2E_PERSONAS === '1') {
     });
 
   test('a reflective Plus user revisits the same dream conversation without duplicating it',
-    { agent: 'explorer', tags: ['personas', 'persona-explorer', 'reflection'] }, async (fixtures) => {
-      const { app, screen, agent, device, platform } = fixtures;
+    { agent: 'explorer', tags: ['personas', 'persona-explorer', 'reflection'] }, async ({ app, screen, device, platform, agent }) => {
+      const fixtures = { app, screen, device, platform, agent };
       await startProfile(fixtures, 'plus');
       await agent.act('Open a free-form conversation about your older dream titled The Infinite Library.');
       const title = screen.getByText('The Infinite Library', { exact: true, visible: true });
@@ -300,8 +300,8 @@ if (process.env.E2E_PERSONAS === '1') {
     });
 
   test('a free user can decline the Plus offer without losing the saved dream',
-    { agent: 'free', tags: ['personas', 'persona-free', 'quota'] }, async (fixtures) => {
-      const { app, screen, agent, platform } = fixtures;
+    { agent: 'free', tags: ['personas', 'persona-free', 'quota'] }, async ({ app, screen, device, platform, agent }) => {
+      const fixtures = { app, screen, device, platform, agent };
       await startProfile(fixtures, 'existing');
       const story = 'Personas gratuit : un phare turquoise éclaire la mer et je compte les bateaux.';
       await enterStory(fixtures, story);
@@ -331,8 +331,8 @@ if (process.env.E2E_PERSONAS === '1') {
       }
     });
   test('a native guest at the offered chat limit discovers account creation',
-    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-chat'], timeout: 360_000 }, async fixtures => {
-      const { app, screen, agent, device, platform } = fixtures;
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-chat'], timeout: 360_000 }, async ({ app, screen, device, platform, agent }) => {
+      const fixtures = { app, screen, device, platform, agent };
       await startProfile(fixtures);
       await saveGuestDream(fixtures, 'Personas invitée : un verger de verre chante quand le vent passe.', 'first');
       await tap(screen, 'component.dreamDetail.actionCard');
@@ -367,8 +367,8 @@ if (process.env.E2E_PERSONAS === '1') {
     });
 
   test('a native guest out of offered analyses keeps the dream and discovers account creation',
-    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-analyses'], timeout: 360_000 }, async fixtures => {
-      const { app, screen, agent, platform } = fixtures;
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-analyses'], timeout: 360_000 }, async ({ app, screen, device, platform, agent }) => {
+      const fixtures = { app, screen, device, platform, agent };
       await startProfile(fixtures);
       const returnToJournal = async () => {
         if (platform === 'ios') {
@@ -411,8 +411,8 @@ if (process.env.E2E_PERSONAS === '1') {
     });
 
   test('a native guest discovers remembered capture from an empty journal',
-    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-memory'] }, async fixtures => {
-      const { app, screen, agent } = fixtures;
+    { agent: 'guest', tags: ['personas', 'persona-guest', 'persona-guest-memory'] }, async ({ app, screen, device, platform, agent }) => {
+      const fixtures = { app, screen, device, platform, agent };
       await startProfile(fixtures);
       await tap(screen, 'tab.journal');
       await expect(screen.getByTestId(/^dream\.item\./, { visible: true })).toHaveCount(0);

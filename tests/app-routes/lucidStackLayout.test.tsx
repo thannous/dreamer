@@ -7,9 +7,11 @@ const mockReplace = jest.fn();
 const layoutHarness = {
   reduceMotion: false,
   onboardingStatus: 'completed' as 'not_started' | 'in_progress' | 'completed',
+  pathname: '/lucid',
+  guestImportAvailable: false,
 };
 let capturedScreenOptions: { animation?: string } | undefined;
-const capturedGuards: { guard: boolean; names: string[] }[] = [];
+const capturedGuards: { guard: boolean; redirectTo?: unknown; names: string[] }[] = [];
 
 jest.mock('expo-router', () => {
   const React = require('react') as typeof import('react');
@@ -28,9 +30,11 @@ jest.mock('expo-router', () => {
   }
   function MockProtected({
     guard,
+    redirectTo,
     children,
   }: {
     guard: boolean;
+    redirectTo?: unknown;
     children?: React.ReactNode;
   }) {
     const names = React.Children.toArray(children).flatMap((child) => {
@@ -38,7 +42,7 @@ jest.mock('expo-router', () => {
       const name = child.props.name;
       return name ? [name] : [];
     });
-    capturedGuards.push({ guard, names });
+    capturedGuards.push({ guard, redirectTo, names });
     return guard ? <>{children}</> : null;
   }
   Stack.Screen = MockStackScreen;
@@ -47,6 +51,7 @@ jest.mock('expo-router', () => {
     Stack,
     router: { replace: (...args: unknown[]) => mockReplace(...args) },
     useGlobalSearchParams: () => ({}),
+    usePathname: () => layoutHarness.pathname,
   };
 });
 
@@ -84,6 +89,9 @@ jest.mock('@/context/LucidTrainerContext', () => ({
         accessibility: { reduceMotion: false },
       },
     },
+    get guestImportAvailable() {
+      return layoutHarness.guestImportAvailable;
+    },
     content: { chrome: { common: { retry: 'Retry' } } },
     loading: false,
     error: null,
@@ -100,6 +108,8 @@ const { default: LucidLayout } = require('@/routes/lucid/lucid/_layout');
 function resetHarness() {
   layoutHarness.reduceMotion = false;
   layoutHarness.onboardingStatus = 'completed';
+  layoutHarness.pathname = '/lucid';
+  layoutHarness.guestImportAvailable = false;
   capturedScreenOptions = undefined;
   capturedGuards.length = 0;
   mockReplace.mockClear();
@@ -141,6 +151,7 @@ describe('Lucid stack onboarding protection', () => {
     layoutHarness.onboardingStatus = 'not_started';
     render(<LucidLayout />);
     expect(screen.getByTestId('screen-onboarding')).toBeTruthy();
+    expect(screen.getByTestId('screen-account')).toBeTruthy();
     expect(screen.queryByTestId('screen-(tabs)')).toBeNull();
     expect(screen.queryByTestId('screen-dream-atlas')).toBeNull();
     expect(screen.queryByTestId('screen-sleep-integration')).toBeNull();
@@ -149,9 +160,10 @@ describe('Lucid stack onboarding protection', () => {
     expect(screen.queryByTestId('screen-morning-voice')).toBeNull();
     expect(capturedGuards).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ guard: true, names: ['onboarding'] }),
+        expect.objectContaining({ guard: true, redirectTo: '/lucid', names: ['onboarding'] }),
         expect.objectContaining({
           guard: false,
+          redirectTo: '/lucid/onboarding',
           names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
         }),
       ])
@@ -172,9 +184,10 @@ describe('Lucid stack onboarding protection', () => {
     expect(screen.getByTestId('screen-morning-voice')).toBeTruthy();
     expect(capturedGuards).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ guard: false, names: ['onboarding'] }),
+        expect.objectContaining({ guard: false, redirectTo: '/lucid', names: ['onboarding'] }),
         expect.objectContaining({
           guard: true,
+          redirectTo: '/lucid/onboarding',
           names: expect.arrayContaining(['(tabs)', 'dream-atlas', 'dream-rehearsal', 'stabilization-lab', 'ssild-lab', 'morning-voice']),
         }),
       ])
@@ -188,8 +201,8 @@ describe('Lucid stack onboarding protection', () => {
     expect(screen.queryByTestId('screen-sleep-integration')).toBeNull();
     expect(capturedGuards).toEqual(
       expect.arrayContaining([
-        { guard: false, names: ['sleep-integration'] },
-        { guard: false, names: ['subscription'] },
+        { guard: false, redirectTo: '/lucid', names: ['sleep-integration'] },
+        { guard: false, redirectTo: '/lucid', names: ['subscription'] },
       ])
     );
   });

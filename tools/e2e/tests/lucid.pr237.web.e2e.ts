@@ -2,9 +2,9 @@ import { test } from '@e2e-dev/web';
 import { expect } from 'e2e';
 import { completeOnboarding, openLucid, waitForLucidReady } from '../lucid-web-fixtures';
 
-test('PR237 Lucid dark time fields stay readable and the schedule survives reload', async fixtures => {
+test('PR237 Lucid dark time fields stay readable and the schedule survives reload', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures, true);
-  const { app, screen, browser } = fixtures;
   await openLucid(app, browser, '/lucid/settings?ambience=dark');
   await browser.reload();
   await waitForLucidReady(browser);
@@ -13,9 +13,9 @@ test('PR237 Lucid dark time fields stay readable and the schedule survives reloa
   await app.screenshot('persisted-sleep-schedule');
 });
 
-test('PR237 Lucid compact tabs, program safeguards and account validation remain usable', async fixtures => {
+test('PR237 Lucid compact tabs, program safeguards and account validation remain usable', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, browser } = fixtures;
   for (const width of [320, 360, 390]) {
     await browser.setViewport({ width, height: 844 });
     await openLucid(app, browser, '/lucid?ambience=dark');
@@ -68,9 +68,9 @@ test('PR237 Lucid compact tabs, program safeguards and account validation remain
   await screen.getByRole('button', 'Terminé', { visible: true }).tap();
 });
 
-test('PR237 Lucid morning captures persist in Journal and confirmed signs reach Atlas', async fixtures => {
+test('PR237 Lucid morning captures persist in Journal and confirmed signs reach Atlas', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, browser } = fixtures;
   const notes = ['Fixture Lucid : un jardin calme et une porte lumineuse.', 'Fixture Lucid : je traverse le jardin et je remarque la porte lumineuse.'];
   for (const note of notes) {
     await openLucid(app, browser, '/lucid/morning?ambience=light');
@@ -99,9 +99,9 @@ test('PR237 Lucid morning captures persist in Journal and confirmed signs reach 
   await app.screenshot('atlas-confirmed-sign');
 });
 
-test('PR237 Lucid exercises retain their pause after reload and resume; unsold Plus and Health links land home', async fixtures => {
+test('PR237 Lucid exercises retain their pause after reload and resume; unsold Plus and Health links land home', async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await completeOnboarding(fixtures);
-  const { app, screen, browser } = fixtures;
   for (const lab of ['stabilization', 'ssild']) {
     await openLucid(app, browser, `/lucid/${lab}-lab?ambience=dark`);
     const primary = screen.getByTestId(`lucid-${lab}-lab-primary`, { visible: true });

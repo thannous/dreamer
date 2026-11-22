@@ -1,13 +1,14 @@
+import { timingSafeEqual } from '../../_shared/timingSafeEqual.ts';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 import {
-  corsHeaders,
   RECONCILE_DEFAULT_BATCH,
   RECONCILE_DEFAULT_MAX_TOTAL,
   RECONCILE_DEFAULT_MIN_AGE_HOURS,
   RECONCILE_MAX_BATCH,
   RECONCILE_MAX_DURATION_MS,
 } from '../lib/constants.ts';
+import { jsonResponse } from '../lib/http.ts';
 import type { ApiContext } from '../types.ts';
 import {
   fetchRevenueCatCustomer,
@@ -34,25 +35,9 @@ type SubscriptionStateRow = {
 
 const SNAPSHOT_ORDERING_FLOOR_ISO = '1970-01-01T00:00:00.000Z';
 
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i += 1) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
-}
-
 function createAdminClient(supabaseUrl: string, supabaseServiceRoleKey: string) {
   return createClient(supabaseUrl, supabaseServiceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false },
-  });
-}
-
-function jsonResponse(body: unknown, status: number = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
   });
 }
 

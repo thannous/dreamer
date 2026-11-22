@@ -87,6 +87,17 @@ describe('navigation intents', () => {
     expect(sessionStorage.getItem('dreamer:return_to_settings')).toBeNull();
   });
 
+  it('persists and consumes the /lucid/account destination', () => {
+    requestStayOnSettingsIntent({
+      destination: '/lucid/account',
+      persist: true,
+    });
+
+    expect(sessionStorage.getItem('dreamer:return_to_settings')).toBe('/lucid/account');
+    expect(consumeStayOnSettingsDestination()).toBe('/lucid/account');
+    expect(sessionStorage.getItem('dreamer:return_to_settings')).toBeNull();
+  });
+
   it('normalizes an old persisted flag to the legacy settings destination', () => {
     sessionStorage.setItem('dreamer:return_to_settings', '1');
 

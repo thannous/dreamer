@@ -819,7 +819,28 @@ export async function claimLucidTrainerGuestScope(
   const account = await options.storage.loadState(targetUserScope);
   const accountQueue = await options.storage.loadQueue(targetUserScope);
   const guestQueue = await options.storage.loadQueue(guestScope);
-  const merged = mergeLucidTrainerStates(account, guest);
+  // A brand-new account loaded via storage defaults carries `Date.now()`
+  // timestamps that are newer than earlier guest activity. Zero those
+  // synthetic timestamps so explicit guest import preserves the guest's
+  // onboarding and preferences instead of overwriting them with unstarted
+  // English defaults.
+  const accountIsPristine = !hasLucidTrainerStateData(account);
+  // The guest's onboarding wins over an account that has not started one, and a
+  // completed guest onboarding wins over an account draft: after sign-in the
+  // onboarding screen offers the import, so the account may hold a newer draft.
+  const guestOnboardingWins =
+    accountIsPristine ||
+    (account.onboarding.status === 'not_started' && guest.onboarding.status !== 'not_started') ||
+    (account.onboarding.status !== 'completed' && guest.onboarding.status === 'completed');
+  // Preferences the account never changed keep its creation timestamp.
+  const accountPreferencesUntouched =
+    accountIsPristine || account.preferences.updatedAt <= account.createdAt;
+  const mergeBase: LucidTrainerState = {
+    ...account,
+    ...(guestOnboardingWins ? { onboarding: { ...account.onboarding, updatedAt: 0 } } : {}),
+    ...(accountPreferencesUntouched ? { preferences: { ...account.preferences, updatedAt: 0 } } : {}),
+  };
+  const merged = mergeLucidTrainerStates(mergeBase, guest);
   const now = options.now ?? Date.now;
   const idFactory = options.idFactory ?? defaultIdFactory;
   const mergedForAccount: LucidTrainerState = {

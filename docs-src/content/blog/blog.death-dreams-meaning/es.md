@@ -154,7 +154,10 @@ Soñar con la muerte: significado según quién muere
 <aside class="glass-panel rounded-3xl p-8 md:p-10 mt-16 text-center border border-dream-salmon/20">
 <h3 class="font-serif text-2xl md:text-3xl mb-4 text-dream-cream">Guarda el relato a tu ritmo</h3>
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">Anota en Noctalia lo que recuerdas y tus preguntas. Puedes volver al relato sin tratarlo como una predicción.</p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">Empezar un diario de sueños</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=suenos-de-muerte_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -194,13 +197,13 @@ Soñar con la muerte: significado según quién muere
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de Ser Perseguido: Significado e Interpretación</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Soñar que te persiguen: por qué es tan frecuente y qué puede significar</div>
       </div>
     </a>
     <a href="suenos-de-agua" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de Agua: Significado de Sueños de Ahogarse, Oceano e Inundación</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Qué significa soñar con una inundación: agua sucia, casa o mar</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -216,17 +219,17 @@ Soñar con la muerte: significado según quién muere
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Significado de Sueños Recurrentes: Entender sus Mensajes</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: por qué se repite el mismo sueño y qué puede ayudar</h3>
             <p class="text-sm text-gray-400">¿Por qué sigues teniendo el mismo sueño? Compara las escenas y las emociones que se repiten.</p>
         </a>
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se te caen los dientes: 7 pistas para entender este sueño</h3>
             <p class="text-sm text-gray-400">¿Por qué sueñas que pierdes los dientes? Descubre las 7 interpretaciones más comunes.</p>
         </a>
         <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que caes de un lugar alto: por qué ocurre y qué puede significar</h3>
             <p class="text-sm text-gray-400">¿Por qué sueñas con caer al vacío? Descubre el significado psicológico.</p>
         </a>
   </div>
@@ -236,6 +239,6 @@ Soñar con la muerte: significado según quién muere
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

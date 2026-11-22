@@ -1,6 +1,6 @@
 import { MarkdownText } from '@/components/ui/MarkdownText';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { AppState, Platform, Text, TextInput, View, type TextInputInstance } from 'react-native';
+import { AppState, Text, TextInput, View, type TextInputInstance } from 'react-native';
 
 import { PressableScale } from '@/components/motion';
 import { MicButton } from '@/components/recording/MicButton';
@@ -11,10 +11,9 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { DREAM_RECALL_MAX_QUESTIONS } from '@/lib/dreamRecallQuestions';
 import { getTranscriptionLocale } from '@/lib/locale';
 import { attempt, whileHeld } from '@/lib/attempt';
-import { canDictate } from '@/lib/speechCapability';
+import { useDictationAvailability } from '@/hooks/useDictationAvailability';
 import { TID } from '@/lib/testIDs';
 import { combineTranscript } from '@/lib/transcriptMerge';
-import { resolveDeviceSpeechCapability } from '@/services/nativeSpeechRecognition';
 
 export type DreamRecallAssistantCardProps = {
   dreamId: string;
@@ -77,8 +76,6 @@ export function DreamRecallAssistantCard({
   const { t, currentLang } = useTranslation();
   const { colors } = useTheme();
   const [dismissedOffer, setDismissedOffer] = useState(false);
-  const [isVoiceSupported, setIsVoiceSupported] = useState(true);
-  const [voiceSupportLocale, setVoiceSupportLocale] = useState<string | null>(null);
   const [isPreparingRecording, setIsPreparingRecording] = useState(false);
   const [isVoiceTransitioning, setIsVoiceTransitioning] = useState(false);
   const [voiceError, setVoiceError] = useState(false);
@@ -142,33 +139,7 @@ export function DreamRecallAssistantCard({
     [currentLang]
   );
 
-  const voiceSupportedForLocale =
-    Platform.OS === 'web' || voiceSupportLocale === transcriptionLocale
-      ? isVoiceSupported
-      : true;
-
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      return;
-    }
-
-    let isMounted = true;
-    resolveDeviceSpeechCapability(transcriptionLocale)
-      .then((capability) => {
-        if (!isMounted) return;
-        setIsVoiceSupported(canDictate(capability));
-        setVoiceSupportLocale(transcriptionLocale);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setIsVoiceSupported(true);
-        setVoiceSupportLocale(transcriptionLocale);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [transcriptionLocale]);
+  const voiceSupportedForLocale = useDictationAvailability(transcriptionLocale);
 
   const recordingSession = useRecordingSession({
     transcriptionLocale,

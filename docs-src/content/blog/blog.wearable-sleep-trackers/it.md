@@ -225,9 +225,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Annota il sogno in Noctalia appena sveglio, a voce o per iscritto. Viene trascritto e salvato, e puoi rileggere le tue notti una accanto all'altra per vedere cosa ritorna.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=tracker-sonno-wearable-sogni_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -306,7 +307,7 @@
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-left"></i>
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Il sonno come leva di salute numero uno: lo studio OHSU che cambia tutto</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Il sonno è la tua prima leva di salute? Cosa mostra davvero lo studio OHSU</div>
 </div>
 </a>
 <a class="glass-panel rounded-xl p-5 flex items-center justify-center gap-2 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/it/blog/">
@@ -325,12 +326,12 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-rem-e-sogni-comprendere-il-ripristino-notturno-del-cervello">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza del sonno</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: comprendere il ripristino notturno del cervello</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sonno REM e sogni: cosa succede davvero nel tuo cervello di notte</h3>
 <p class="text-sm text-gray-400">In quale momento della notte arriva il sonno REM, perché i suoi sogni sono così vividi e cosa lo accorcia.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sonno-salute-priorita">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Salute</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Il sonno come leva di salute numero uno: lo studio OHSU</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Il sonno è la tua prima leva di salute? Cosa mostra davvero lo studio OHSU</h3>
 <p class="text-sm text-gray-400">Cosa ha trovato uno studio OHSU confrontando il dormire poco con alimentazione ed esercizio rispetto all'aspettativa di vita, e i limiti di questo legame.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="/it/blog/">

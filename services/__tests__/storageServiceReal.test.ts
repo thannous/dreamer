@@ -1106,9 +1106,10 @@ describe('storageServiceReal', () => {
 
       const storage = require('../storageServiceReal');
 
-      // A 100-message Plus conversation is 200 messages with the replies.
-      const chatHistory = Array.from({ length: 210 }, (_, index) => ({
-        role: 'user',
+      const { QUOTAS } = require('@/constants/limits');
+      const retainedEntries = 2 * QUOTAS.plus.messagesPerDream;
+      const chatHistory = Array.from({ length: retainedEntries + 10 }, (_, index) => ({
+        role: index % 2 === 0 ? 'user' : 'model',
         content: `entry-${index}`,
       }));
 
@@ -1131,7 +1132,7 @@ describe('storageServiceReal', () => {
 
       const savedDreams = JSON.parse(localStorage.getItem(DREAMS_STORAGE_KEY) ?? '[]');
       expect(savedDreams).toHaveLength(1);
-      expect(savedDreams[0].chatHistory).toHaveLength(200);
+      expect(savedDreams[0].chatHistory).toHaveLength(retainedEntries);
       expect(savedDreams[0].chatHistory[0].content).toBe('entry-10');
       expect(savedDreams[0].imageUrl).toContain('/tmp/dream-images/42.');
 
@@ -1141,7 +1142,7 @@ describe('storageServiceReal', () => {
 
       const pending = JSON.parse(localStorage.getItem(DREAM_MUTATIONS_KEY) ?? '[]');
       expect(pending).toHaveLength(1);
-      expect(pending[0].dream.chatHistory).toHaveLength(200);
+      expect(pending[0].dream.chatHistory).toHaveLength(retainedEntries);
     } finally {
       (globalThis as any).indexedDB = originalIndexedDB;
     }

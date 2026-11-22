@@ -1,17 +1,4 @@
-/**
- * Floating Composer - v0-style chat input that floats above content
- * Based on patterns from https://vercel.com/blog/how-we-built-the-v0-ios-app
- *
- * Key features:
- * - Absolute positioned, floats above ScrollView content
- * - Height tracked via shared value for contentInset calculation
- * - Keyboard-aware positioning using KeyboardStickyView (when available)
- * - Speech-to-text support with mic button
- */
-
 import { LanguagePackMissingSheet } from '@/components/speech/LanguagePackMissingSheet';
-import { offlineModelPromptHandler } from '@/components/speech/offlineModelPromptHandler';
-import { OfflineModelDownloadSheet } from '@/components/recording/OfflineModelDownloadSheet';
 import { getNoctaliaDesignTokens } from '@/constants/noctaliaDesign';
 import { Fonts } from '@/constants/theme';
 import { useComposerHeightContext, useKeyboardStateContext } from '@/context/ChatContext';
@@ -21,11 +8,7 @@ import { useKeyboardUp } from '@/hooks/useChatList';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useRecordingSession } from '@/hooks/useRecordingSession';
 import { useTranslation } from '@/hooks/useTranslation';
-import { canDictate } from '@/lib/speechCapability';
-import {
-  registerOfflineModelPromptHandler,
-  resolveDeviceSpeechCapability,
-} from '@/services/nativeSpeechRecognition';
+import { useDictationAvailability } from '@/hooks/useDictationAvailability';
 import {
   openGoogleVoiceSettingsBestEffort,
   openSpeechRecognitionLanguageSettings,
@@ -145,11 +128,6 @@ function Root({
     locale: string;
     installedLocales: string[];
   } | null>(null);
-  const [showOfflineModelSheet, setShowOfflineModelSheet] = useState(false);
-  const [offlineModelLocale, setOfflineModelLocale] = useState('');
-  const offlineModelPromptResolveRef = useRef<(() => void) | null>(null);
-  const offlineModelPromptPromiseRef = useRef<Promise<void> | null>(null);
-  const offlineModelSheetVisibleRef = useRef(false);
   const containerRef = useRef<ViewInstance>(null);
   const textInputRef = useRef<TextInputInstance>(null);
   const localHeight = useSharedValue(0);
@@ -168,108 +146,16 @@ function Root({
     void openGoogleVoiceSettingsBestEffort();
   }, [handleLanguagePackMissingClose]);
 
-  // Track composer height for contentInset
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
     const height = event.nativeEvent.layout.height;
     localHeight.set(height);
-    // Update shared context value on UI thread
     runOnUI(() => {
       'worklet';
       composerHeight.set(height);
     })();
   }, [composerHeight, localHeight]);
 
-  const resolveOfflineModelPrompt = useCallback(() => {
-    const resolve = offlineModelPromptResolveRef.current;
-    offlineModelPromptResolveRef.current = null;
-    offlineModelPromptPromiseRef.current = null;
-    resolve?.();
-  }, []);
-
-  const waitForOfflineModelPromptClose = useCallback((): Promise<void> => {
-    if (offlineModelPromptPromiseRef.current) {
-      return offlineModelPromptPromiseRef.current;
-    }
-
-    offlineModelPromptPromiseRef.current = new Promise<void>((resolve) => {
-      offlineModelPromptResolveRef.current = () => {
-        resolve();
-      };
-    });
-
-    return offlineModelPromptPromiseRef.current;
-  }, []);
-
-  const handleOfflineModelPromptShow = useCallback(
-    async (locale: string) => {
-      setOfflineModelLocale(locale);
-      setShowOfflineModelSheet(true);
-      await waitForOfflineModelPromptClose();
-    },
-    [waitForOfflineModelPromptClose]
-  );
-
-  const handleOfflineModelSheetClose = useCallback(() => {
-    setShowOfflineModelSheet(false);
-    setOfflineModelLocale('');
-    resolveOfflineModelPrompt();
-  }, [resolveOfflineModelPrompt]);
-
-  const handleOfflineModelDownloadComplete = useCallback(
-    (_success: boolean) => {
-      handleOfflineModelSheetClose();
-    },
-    [handleOfflineModelSheetClose]
-  );
-
-  useEffect(() => {
-    offlineModelSheetVisibleRef.current = showOfflineModelSheet;
-  }, [showOfflineModelSheet]);
-
-  // Register offline model prompt handler
-  useEffect(() => {
-    return registerOfflineModelPromptHandler(
-      offlineModelPromptHandler(offlineModelSheetVisibleRef, handleOfflineModelPromptShow)
-    );
-  }, [handleOfflineModelPromptShow]);
-
-  useEffect(() => {
-    return () => {
-      resolveOfflineModelPrompt();
-    };
-  }, [resolveOfflineModelPrompt]);
-
-  // Dictation uses the same system-recognizer capability as the recording screen.
-  // If no recognizer is available, the composer remains usable with text.
-  const [isVoiceSupported, setIsVoiceSupported] = useState(true);
-
-  useEffect(() => {
-    // Web resolves speech availability through the Web Speech API instead; the
-    // capability ladder is a native concern.
-    if (Platform.OS === 'web') {
-      return;
-    }
-
-    let isMounted = true;
-
-    resolveDeviceSpeechCapability(transcriptionLocale)
-      .then((capability) => {
-        if (isMounted) {
-          setIsVoiceSupported(canDictate(capability));
-        }
-      })
-      .catch(() => {
-        // Probing must never remove the control: assume voice works and let the
-        // existing per-attempt failure handling surface a real problem.
-        if (isMounted) {
-          setIsVoiceSupported(true);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [transcriptionLocale]);
+  const isVoiceSupported = useDictationAvailability(transcriptionLocale);
 
   const handlePartialTranscript = useCallback((text: string, { baseTranscript }: { baseTranscript: string }) => {
     const base = baseTranscript.trim();
@@ -307,7 +193,6 @@ function Root({
     };
   }, [forceStopRecording, setupAppStateListener]);
 
-  // Speech-to-text handlers
   const startRecording = useCallback(async () => {
     const response = await startSessionRecording(value);
     if (response.success) {
@@ -451,44 +336,26 @@ function Root({
     </Animated.View>
   );
 
-  // Wrap with KeyboardStickyView if available (iOS)
-  if (Platform.OS === 'ios' && KeyboardStickyView) {
-    return (
-      <>
-        <KeyboardStickyView
-          style={styles.stickyWrapper}
-          offset={{ closed: -insets.bottom, opened: -8 }}
-          pointerEvents="box-none"
-        >
-          {composerContent}
-        </KeyboardStickyView>
-        <LanguagePackMissingSheet
-          visible={Boolean(languagePackMissingInfo)}
-          onClose={handleLanguagePackMissingClose}
-          locale={languagePackMissingInfo?.locale ?? transcriptionLocale}
-          installedLocales={languagePackMissingInfo?.installedLocales ?? []}
-          onOpenSettings={handleLanguagePackMissingOpenSettings}
-          onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
-        />
-        <OfflineModelDownloadSheet
-          visible={showOfflineModelSheet}
-          onClose={handleOfflineModelSheetClose}
-          locale={offlineModelLocale}
-          onDownloadComplete={handleOfflineModelDownloadComplete}
-        />
-      </>
-    );
-  }
+  const keyboardWrapper = Platform.OS === 'ios' && KeyboardStickyView ? (
+    <KeyboardStickyView
+      style={styles.stickyWrapper}
+      offset={{ closed: -insets.bottom, opened: -8 }}
+      pointerEvents="box-none"
+    >
+      {composerContent}
+    </KeyboardStickyView>
+  ) : (
+    <Animated.View
+      style={[styles.fallbackWrapper, { paddingBottom: insets.bottom }, animatedWrapperStyle]}
+      pointerEvents="box-none"
+    >
+      {composerContent}
+    </Animated.View>
+  );
 
-  // Fallback for Android or when KeyboardStickyView not available
   return (
     <>
-      <Animated.View
-        style={[styles.fallbackWrapper, { paddingBottom: insets.bottom }, animatedWrapperStyle]}
-        pointerEvents="box-none"
-      >
-        {composerContent}
-      </Animated.View>
+      {keyboardWrapper}
       <LanguagePackMissingSheet
         visible={Boolean(languagePackMissingInfo)}
         onClose={handleLanguagePackMissingClose}
@@ -496,12 +363,6 @@ function Root({
         installedLocales={languagePackMissingInfo?.installedLocales ?? []}
         onOpenSettings={handleLanguagePackMissingOpenSettings}
         onOpenGoogleAppSettings={handleLanguagePackMissingOpenGoogleSettings}
-      />
-      <OfflineModelDownloadSheet
-        visible={showOfflineModelSheet}
-        onClose={handleOfflineModelSheetClose}
-        locale={offlineModelLocale}
-        onDownloadComplete={handleOfflineModelDownloadComplete}
       />
     </>
   );

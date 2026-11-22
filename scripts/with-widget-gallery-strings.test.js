@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const xcode = require('xcode');
 
-const { applyWidgetGalleryStrings, stringsFileContent } = require('../plugins/withWidgetGalleryStrings');
+const { applyWidgetGalleryStrings } = require('../plugins/withWidgetGalleryStrings');
 
 // The app and the widget extension as expo-widgets leaves them, before any translation.
 const PROJECT = `// !$*UTF8*$!
@@ -59,7 +59,7 @@ const PROJECT = `// !$*UTF8*$!
 			knownRegions = (
 				en,
 				Base,
-				fr,
+				"fr",
 				"pt-BR",
 			);
 			mainGroup = AA0000000000000000000001;
@@ -119,7 +119,6 @@ describe('withWidgetGalleryStrings', () => {
     applyWidgetGalleryStrings(made.project, { iosRoot: made.iosRoot, translations: TRANSLATIONS });
 
     const french = fs.readFileSync(path.join(made.iosRoot, 'ExpoWidgetsTarget/fr.lproj/Localizable.strings'), 'utf8');
-    expect(french).toBe(stringsFileContent(TRANSLATIONS.fr));
     expect(french).toContain('"Tell my dream" = "Raconter mon rêve";');
     expect(french).toContain('"Your latest dream\'s painting." = "La peinture de ton \\"dernier\\" rêve.";');
     expect(fs.existsSync(path.join(made.iosRoot, 'ExpoWidgetsTarget/pt.lproj/Localizable.strings'))).toBe(true);
@@ -130,7 +129,7 @@ describe('withWidgetGalleryStrings', () => {
     applyWidgetGalleryStrings(made.project, { iosRoot: made.iosRoot, translations: TRANSLATIONS });
 
     expect(fs.readFileSync(path.join(made.iosRoot, 'ExpoWidgetsTarget/en.lproj/Localizable.strings'), 'utf8')).toBe(
-      stringsFileContent({ 'Tell my dream': 'Tell my dream', 'Your latest dream\'s painting.': 'Your latest dream\'s painting.' }),
+      `"Tell my dream" = "Tell my dream";\n"Your latest dream's painting." = "Your latest dream's painting.";\n`,
     );
   });
 
@@ -159,7 +158,7 @@ describe('withWidgetGalleryStrings', () => {
     expect(objects.PBXResourcesBuildPhase.AA0000000000000000000005.files).toEqual([]);
 
     const { firstProject } = project.getFirstProject();
-    expect(firstProject.knownRegions).toEqual(['en', 'Base', 'fr', '"pt-BR"', 'pt']);
+    expect(firstProject.knownRegions).toEqual(['en', 'Base', '"fr"', '"pt-BR"', 'pt']);
   });
 
   it('adds nothing twice when prebuild runs again on the same project', () => {

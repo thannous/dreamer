@@ -4,15 +4,8 @@ import {
   exchangeAppleAuthorizationCode,
   readAppleAuthConfig,
 } from '../lib/appleTokenRevoke.ts';
-import { corsHeaders } from '../lib/constants.ts';
+import { jsonResponse } from '../lib/http.ts';
 import type { ApiContext } from '../types.ts';
-
-function jsonResponse(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders },
-  });
-}
 
 type Dependencies = {
   createAdminClient?: (url: string, key: string) => any;

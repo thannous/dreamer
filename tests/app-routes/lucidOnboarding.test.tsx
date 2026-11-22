@@ -8,6 +8,8 @@ jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({
 const mockCompleteOnboarding = jest.fn();
 const mockSaveOnboardingDraft = jest.fn();
 const mockReplace = jest.fn();
+const mockPush = jest.fn();
+let mockGuestImportAvailable = false;
 let mockLocale: 'en' | 'fr' | 'es' | 'de' | 'it' = 'en';
 let mockDimensions = { fontScale: 1, height: 850, scale: 2, width: 393 };
 
@@ -97,7 +99,7 @@ jest.mock('@/components/ui/DateTimePicker', () => ({
 }));
 
 jest.mock('expo-router', () => ({
-  router: { replace: mockReplace },
+  router: { replace: mockReplace, push: mockPush },
   useLocalSearchParams: () => ({}),
 }));
 
@@ -177,6 +179,7 @@ jest.mock('@/context/LucidTrainerContext', () => {
       content: getLucidContent(mockLocale),
       completeOnboarding: mockCompleteOnboarding,
       saveOnboardingDraft: mockSaveOnboardingDraft,
+      guestImportAvailable: mockGuestImportAvailable,
     }),
   };
 });
@@ -379,5 +382,19 @@ describe('Lucid Trainer onboarding', () => {
     expect(screen.getByTestId('lucid-onboarding').getAttribute('data-scroll')).toBe('true');
     expect(screen.getByTestId('lucid-onboarding-background-1').getAttribute('data-reduce-motion')).toBe('true');
     expect(screen.getAllByRole('radio').length).toBe(7);
+  });
+
+  it('offers an Account entry on step 1 and surfaces guest import when local guest training exists', () => {
+    mockGuestImportAvailable = true;
+    render(<LucidOnboardingScreen />);
+
+    fireEvent.click(screen.getByTestId('lucid-onboarding-account'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/account');
+
+    expect(screen.getByTestId('lucid-onboarding-guest-import')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('lucid-onboarding-guest-import-action'));
+    expect(mockPush).toHaveBeenCalledTimes(2);
+    expect(mockPush).toHaveBeenLastCalledWith('/lucid/account');
+    mockGuestImportAvailable = false;
   });
 });

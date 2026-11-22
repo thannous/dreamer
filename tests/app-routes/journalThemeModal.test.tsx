@@ -74,8 +74,15 @@ jest.doMock('@/hooks/useClearWebFocus', () => ({
 jest.doMock('@/hooks/useLocaleFormatting', () => ({
   useLocaleFormatting: () => ({
     formatShortDate: () => '2024-01-01',
+    formatDate: () => 'January 2024',
   }),
 }));
+
+jest.doMock('@/hooks/useJournalLayoutPreference', () => ({
+  useJournalLayoutPreference: () => ({ loaded: true, preference: 'cards', setPreference: jest.fn() }),
+}));
+
+jest.doMock('@/components/journal/JournalCompactRow', () => ({ JournalCompactRow: () => null }));
 
 jest.doMock('@/constants/theme', () => ({
   Fonts: {
@@ -438,15 +445,12 @@ describe('Journal advanced filter sheet', () => {
   it('[E] Given a theme is selected When selecting it again Then it clears the selection', () => {
     render(<JournalListScreen />);
 
-    // Given
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     fireEvent.click(screen.getByText('Mystique'));
 
-    // When
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     fireEvent.click(screen.getByText('Mystique'));
 
-    // Then
     fireEvent.click(screen.getByTestId('btn.filterMore'));
     expect(screen.queryAllByTestId('icon-checkmark')).toHaveLength(0);
   });

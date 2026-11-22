@@ -62,9 +62,20 @@ the port). The private `dream-images` bucket is created at start. Data lives in 
   `reflection:eval:*` evaluations.
 - **Guests** keep the real session flow with local verifiers, only in this never-deployed server:
   App Attest in its development environment for this team's builds (physical iPhone Debug
-  builds; the Simulator has no App Attest), any Play Integrity token on Android, and
-  Cloudflare's always-pass Turnstile test keys on the web. The server refuses to start unless its
+  builds), any Play Integrity token on Android, and Cloudflare's always-pass Turnstile test
+  keys on the web. The iOS Simulator has no App Attest: a development build there sends
+  `localSimulator: true` without a proof (`lib/guestSession.ts`), and only this server answers
+  it with a Dreamer iOS guest token (`tools/dev-local/simulatorGuest.ts`). The hosted API still
+  refuses an iOS session without App Attest, and a release build never sends the field. The server refuses to start unless its
   backend is an identified native stack on loopback and its public origin a private HTTP address.
+- **A new guest** without `--reset`: a guest device keeps its usage (2 analyses, exchanges,
+  illustrations, the rolling AI windows). In a development build on this backend, signed out,
+  Settings shows « Nouvel invité » (`components/dev/GuestRecordingQaReset.tsx`): once the guest
+  journal is empty, `POST /dev-local/guest-reset` makes the server forget that device only
+  (`public.dev_local_reset_guest`, from `tools/dev-local/guest-reset.sql`, installed at each start
+  and never a migration), the device clears its guest counters, session and onboarding, and the
+  welcome reopens with a new guest session. Accounts and their data are kept. `check.mjs` proves
+  it on the API.
 - The app keeps a separate guest session, App Attest key and refusal pause per plain-HTTP API
   (`backendStorageKey` in `lib/guestSession.ts`), so switching between production and the local
   backend carries neither server's state to the other. Production key names are unchanged.

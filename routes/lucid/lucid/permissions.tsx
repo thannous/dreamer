@@ -26,9 +26,11 @@ const COPY = {
     subtitle: 'Lucid works without notifications. Audio playback never requires microphone access.',
     notifications: 'Training reminders',
     granted: 'Granted',
+    disabled: 'Off',
     denied: 'Denied',
     unknown: 'Not requested',
     enable: 'Request notification access',
+    turnOn: 'Turn on training reminders',
     settings: 'Open system settings',
     audio: 'Night audio',
     audioBody: 'Uses bundled sounds through the speaker at a user-chosen low volume. No microphone, listening or recording.',
@@ -43,9 +45,11 @@ const COPY = {
     subtitle: 'Lucid fonctionne sans notifications. L’audio ne demande jamais le microphone.',
     notifications: 'Rappels d’entraînement',
     granted: 'Accordée',
+    disabled: 'Désactivé',
     denied: 'Refusée',
     unknown: 'Non demandée',
     enable: 'Demander l’autorisation',
+    turnOn: 'Activer les rappels d’entraînement',
     settings: 'Ouvrir les réglages système',
     audio: 'Audio nocturne',
     audioBody: 'Les sons intégrés sont joués sur le haut-parleur, au volume que vous choisissez. Aucun micro, aucune écoute, aucun enregistrement.',
@@ -60,9 +64,11 @@ const COPY = {
     subtitle: 'Lucid funciona sin notificaciones. El audio nunca necesita micrófono.',
     notifications: 'Recordatorios',
     granted: 'Concedido',
+    disabled: 'Desactivado',
     denied: 'Denegado',
     unknown: 'No solicitado',
     enable: 'Solicitar notificaciones',
+    turnOn: 'Activar recordatorios',
     settings: 'Abrir ajustes del sistema',
     audio: 'Audio nocturno',
     audioBody: 'Usa sonidos incluidos por el altavoz a bajo volumen. Sin micrófono ni grabación.',
@@ -77,9 +83,11 @@ const COPY = {
     subtitle: 'Lucid funktioniert ohne Benachrichtigungen. Audio braucht kein Mikrofon.',
     notifications: 'Trainingserinnerungen',
     granted: 'Erlaubt',
+    disabled: 'Aus',
     denied: 'Abgelehnt',
     unknown: 'Nicht gefragt',
     enable: 'Benachrichtigungen anfragen',
+    turnOn: 'Trainingserinnerungen aktivieren',
     settings: 'Systemeinstellungen öffnen',
     audio: 'Nacht-Audio',
     audioBody: 'Nutzt integrierte Töne leise über den Lautsprecher. Kein Mikrofon und keine Aufnahme.',
@@ -94,9 +102,11 @@ const COPY = {
     subtitle: 'Lucid funziona senza notifiche. L’audio non richiede microfono.',
     notifications: 'Promemoria training',
     granted: 'Concesso',
+    disabled: 'Disattivato',
     denied: 'Negato',
     unknown: 'Non richiesto',
     enable: 'Richiedi notifiche',
+    turnOn: 'Attiva i promemoria',
     settings: 'Apri impostazioni di sistema',
     audio: 'Audio notturno',
     audioBody: 'Usa suoni inclusi dall’altoparlante a basso volume. Nessun microfono o registrazione.',
@@ -114,6 +124,13 @@ export default function LucidPermissionsScreen() {
   const c = COPY[content.locale];
   const [busy, setBusy] = useState(false);
   const permission = state!.onboarding.notificationsPermission;
+  const notificationsEnabled = state!.preferences.notificationsEnabled;
+  const remindersActive = permission === 'granted' && notificationsEnabled;
+  const statusLabel = remindersActive
+    ? c.granted
+    : permission === 'granted'
+      ? c.disabled
+      : c[permission];
 
   const request = async () => {
     setBusy(true);
@@ -150,23 +167,24 @@ export default function LucidPermissionsScreen() {
         />
       }
     >
-      <LucidCard accent={permission === 'granted' ? 'accent' : 'amber'}>
+      <LucidCard accent={remindersActive ? 'accent' : 'amber'}>
         <View style={styles.top}>
-          <LucidIconTile icon="notifications" tone={permission === 'granted' ? 'accent' : 'amber'} size="md" />
+          <LucidIconTile icon="notifications" tone={remindersActive ? 'accent' : 'amber'} size="md" />
           <View style={styles.copy}>
             <Text style={[styles.title, { color: palette.text }]}>{c.notifications}</Text>
             <LucidPill
-              label={c[permission]}
-              tone={permission === 'granted' ? 'accent' : 'amber'}
+              label={statusLabel}
+              tone={remindersActive ? 'accent' : 'amber'}
             />
           </View>
         </View>
-        {permission !== 'granted' ? (
+        {!remindersActive ? (
           <LucidButton
-            label={c.enable}
+            label={permission === 'granted' ? c.turnOn : c.enable}
             icon="notifications"
             loading={busy}
             onPress={() => void request()}
+            testID="lucid-permissions-enable"
           />
         ) : null}
         {permission === 'denied' ? (

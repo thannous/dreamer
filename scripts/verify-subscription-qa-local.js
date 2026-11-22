@@ -13,6 +13,8 @@ const { generateSubscriptionQaReport } = require('./subscription-qa-report');
 const JEST_BIN = path.join('node_modules', 'jest', 'bin', 'jest.js');
 
 const syntaxFiles = [
+  'scripts/lib/qa-snapshot.js',
+  'scripts/lib/replace-file.cjs',
   'scripts/subscription-qa-report.js',
   'scripts/update-subscription-qa-evidence.js',
   'scripts/update-revenuecat-play-store-state.js',

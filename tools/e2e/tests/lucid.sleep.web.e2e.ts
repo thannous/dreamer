@@ -41,55 +41,56 @@ async function openSleepFixture(f: Fixtures, date = testNight) {
   return state;
 }
 
-for (const debt of [false, true]) {
-  test(`Lucid sleep first: ${debt ? 'sleep debt' : 'control'} with zero attempts from morning to weekly review`, sleepTest, async f => {
-    const { app, screen, browser } = f;
-    await openSleepFixture(f);
-    await openLucid(app, browser, '/lucid/morning');
-    await screen.getByTestId('lucid-morning-nothing').tap();
-    await screen.getByRole('radio', /Non entendue/, { visible: true }).tap();
-    await screen.getByTestId('lucid-morning-next').tap();
-    await screen.getByTestId('lucid-morning-details').tap();
-    const note = 'Je me sens anormalement fatigué.';
-    await screen.getByRole('textbox', 'Quelques détails neutres').fill(note);
-    if (debt) await screen.getByRole('checkbox', 'Dette de sommeil').tap();
-    await screen.getByTestId('lucid-morning-details-done').tap();
-    await screen.getByTestId('lucid-morning-save').tap();
-    await expect.poll(async () => (await guestState(browser)).experiments.length).toBe(1);
-    expect((await guestState(browser)).experiments[0]).toMatchObject({
-      notes: note, factors: debt ? ['sleep_debt'] : [], technique: null, result: null,
-    });
-    await openLucid(app, browser, '/lucid');
-    const primary = screen.getByTestId('lucid-today-primary', { visible: true });
-    await expect(primary).toContainText(debt ? 'Revoir la nuit passée' : 'Préparer cette nuit');
-    await primary.tap();
-    await expect(screen.getByTestId(debt ? 'lucid-morning' : 'lucid-night', { visible: true })).toBeVisible();
-    await expect.poll(() => browser.evaluate(() => location.pathname)).toBe(debt ? '/lucid/morning' : '/lucid/night');
-
-    await openLucid(app, browser, '/lucid/weekly');
-    expect((await guestState(browser)).experiments[0].occurredAt)
-      .toBeLessThanOrEqual(await browser.evaluate(() => Date.now()));
-    const weekly = screen.getByTestId('lucid-weekly', { visible: true });
-    await expect(screen.getByTestId('lucid-weekly-next')).toBeEnabled();
-    const advice = await weekly.textContent();
-    await app.screenshot(debt ? 'debt-weekly-focus' : 'control-weekly-focus');
-    await screen.getByTestId('lucid-weekly-next').tap();
-    await expect(screen.getByRole('textbox', 'Qu’est-ce qui a aidé ou perturbé le sommeil ?')).toBeVisible();
-    expect(await browser.evaluate(() => location.pathname)).toBe('/lucid/weekly');
-    expect((await guestState(browser)).progress).toEqual([]);
-    expect(advice).toContain(debt ? 'protéger le sommeil en priorité' : 'MILD');
-
-    await openLucid(app, browser, '/lucid/progress');
-    const progress = screen.getByTestId('lucid-progress', { visible: true });
-    await expect(progress.getByText('Adaptation hors ligne', { exact: true })).toBeVisible();
-    const restAdvice = progress.getByText(/Privilégiez le repos cette nuit/, { visible: true });
-    if (debt) await expect(restAdvice).toBeVisible({ timeout: 3000 });
-    else await expect(restAdvice).toHaveCount(0);
+test.each([
+  { label: 'control', debt: false },
+  { label: 'sleep debt', debt: true },
+])('Lucid sleep first: $label with zero attempts from morning to weekly review', sleepTest, async ({ debt }, { app, screen, browser }) => {
+  const f = { app, screen, browser };
+  await openSleepFixture(f);
+  await openLucid(app, browser, '/lucid/morning');
+  await screen.getByTestId('lucid-morning-nothing').tap();
+  await screen.getByRole('radio', /Non entendue/, { visible: true }).tap();
+  await screen.getByTestId('lucid-morning-next').tap();
+  await screen.getByTestId('lucid-morning-details').tap();
+  const note = 'Je me sens anormalement fatigué.';
+  await screen.getByRole('textbox', 'Quelques détails neutres').fill(note);
+  if (debt) await screen.getByRole('checkbox', 'Dette de sommeil').tap();
+  await screen.getByTestId('lucid-morning-details-done').tap();
+  await screen.getByTestId('lucid-morning-save').tap();
+  await expect.poll(async () => (await guestState(browser)).experiments.length).toBe(1);
+  expect((await guestState(browser)).experiments[0]).toMatchObject({
+    notes: note, factors: debt ? ['sleep_debt'] : [], technique: null, result: null,
   });
-}
+  await openLucid(app, browser, '/lucid');
+  const primary = screen.getByTestId('lucid-today-primary', { visible: true });
+  await expect(primary).toContainText(debt ? 'Revoir la nuit passée' : 'Préparer cette nuit');
+  await primary.tap();
+  await expect(screen.getByTestId(debt ? 'lucid-morning' : 'lucid-night', { visible: true })).toBeVisible();
+  await expect.poll(() => browser.evaluate(() => location.pathname)).toBe(debt ? '/lucid/morning' : '/lucid/night');
 
-test('Lucid sleep first: missed practice dates preserve the next session and its place', sleepTest, async f => {
-  const { app, screen, browser } = f;
+  await openLucid(app, browser, '/lucid/weekly');
+  expect((await guestState(browser)).experiments[0].occurredAt)
+    .toBeLessThanOrEqual(await browser.evaluate(() => Date.now()));
+  const weekly = screen.getByTestId('lucid-weekly', { visible: true });
+  await expect(screen.getByTestId('lucid-weekly-next')).toBeEnabled();
+  const advice = await weekly.textContent();
+  await app.screenshot(debt ? 'debt-weekly-focus' : 'control-weekly-focus');
+  await screen.getByTestId('lucid-weekly-next').tap();
+  await expect(screen.getByRole('textbox', 'Qu’est-ce qui a aidé ou perturbé le sommeil ?')).toBeVisible();
+  expect(await browser.evaluate(() => location.pathname)).toBe('/lucid/weekly');
+  expect((await guestState(browser)).progress).toEqual([]);
+  expect(advice).toContain(debt ? 'protéger le sommeil en priorité' : 'MILD');
+
+  await openLucid(app, browser, '/lucid/progress');
+  const progress = screen.getByTestId('lucid-progress', { visible: true });
+  await expect(progress.getByText('Adaptation hors ligne', { exact: true })).toBeVisible();
+  const restAdvice = progress.getByText(/Privilégiez le repos cette nuit/, { visible: true });
+  if (debt) await expect(restAdvice).toBeVisible({ timeout: 3000 });
+  else await expect(restAdvice).toHaveCount(0);
+});
+
+test('Lucid sleep first: missed practice dates preserve the next session and its place', sleepTest, async ({ app, screen, browser }) => {
+  const f = { app, screen, browser };
   const state = await openSleepFixture(f, '2026-11-03T23:30:00+01:00');
   const startedAt = Date.parse('2026-11-02T20:00:00+01:00');
   state.progress = [{
@@ -124,8 +125,8 @@ test('Lucid sleep first: missed practice dates preserve the next session and its
   });
 });
 
-test('Lucid sleep first: method evidence and weekly trend distinguish zero, two and three attempts', sleepTest, async f => {
-  const { app, screen, browser } = f;
+test('Lucid sleep first: method evidence and weekly trend distinguish zero, two and three attempts', sleepTest, async ({ app, screen, browser }) => {
+  const f = { app, screen, browser };
   const state = await openSleepFixture(f);
   const evidence: string[] = [];
   const expandedHasEarlySignal: boolean[] = [];

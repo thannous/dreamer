@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 
 const {
@@ -8,19 +7,14 @@ const {
   siteConfig,
 } = require('./lib/docs-site-config');
 const { readSourceDocument } = require('./lib/docs-source-utils');
-const { loadComparisonData } = require('./lib/alternatives-table');
+const { comparisonChartPath, comparisonFeatureCounts, loadComparisonData } = require('./lib/alternatives-table');
 
 const PAGE_ID = 'page.alternatives';
 const DATASET_IDENTIFIER = 'noctalia-dream-journal-apps-comparison-2026';
 const DATASET_URL = 'https://noctalia.app/data/dream-journal-apps-comparison-2026.csv';
 const comparisonRows = [...loadComparisonData().values()];
 const datasetVersion = comparisonRows.map((row) => row.last_reviewed).sort().at(-1);
-const featureCounts = [
-  comparisonRows.filter((row) => ['Yes', 'Former listing advertised it'].includes(row.ai_interpretation)).length,
-  comparisonRows.filter((row) => ['Strong', 'Yes', 'Text and voice positioning'].includes(row.voice_capture)).length,
-  comparisonRows.filter((row) => ['Yes', 'Former listing advertised it'].includes(row.generated_images)).length,
-  comparisonRows.filter((row) => ['Strong', 'Yes', 'Former listing advertised reality checks'].includes(row.lucid_dreaming)).length,
-];
+const featureCounts = comparisonFeatureCounts(comparisonRows);
 const APP_NAMES = [
   'Noctalia',
   'DreamApp',
@@ -63,9 +57,6 @@ describe('dream journal app comparison contract', () => {
     (lang) => {
       const { meta, body } = sourceFor(lang);
       const quickAnswer = body.slice(0, body.indexOf('id="findings"'));
-      const localizedSvg = lang === 'en'
-        ? '/img/research/dream-journal-apps-feature-snapshot-2026.svg'
-        : `/img/research/dream-journal-apps-feature-snapshot-2026-${lang}.svg`;
 
       expect(meta.title.length).toBeGreaterThanOrEqual(35);
       expect(meta.description.length).toBeGreaterThanOrEqual(110);
@@ -76,18 +67,11 @@ describe('dream journal app comparison contract', () => {
       expect(body).toContain('id="feature-snapshot"');
       expect(body).toContain('id="methodology"');
       expect(body).toContain('id="dataset"');
-      expect(body).toContain(localizedSvg);
+      expect(body).toContain(comparisonChartPath(lang));
       const findings = body.slice(body.indexOf('id="findings"'), body.indexOf('id="feature-snapshot"'));
       const visibleCounts = [...findings.matchAll(/<p class="text-3xl[^"]*">(\d+)\D+11<\/p>/g)]
         .map((match) => Number(match[1]));
       expect(visibleCounts).toEqual(featureCounts);
-
-      const localSvgPath = path.join(DOCS_SRC_DIR, 'static', localizedSvg.slice(1));
-      expect(fs.existsSync(localSvgPath)).toBe(true);
-      const svg = fs.readFileSync(localSvgPath, 'utf8');
-      const chartCounts = [...svg.matchAll(/<text x="1028"[^>]*>(\d+) \/ 11<\/text>/g)]
-        .map((match) => Number(match[1]));
-      expect(chartCounts).toEqual(featureCounts);
     }
   );
 

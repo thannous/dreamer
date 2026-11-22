@@ -53,7 +53,7 @@ jest.mock('@/lib/moti', () => ({ MotiView: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('../FadeInStaggered', () => ({ FadeInStaggered: ({ children }: any) => <>{children}</> }));
 jest.mock('../ScrollToBottomButton', () => ({ ScrollToBottomButton: () => null }));
-jest.mock('../MarkdownText', () => ({ MarkdownText: ({ children }: any) => <span>{children}</span> }));
+jest.mock('@/components/ui/MarkdownText', () => ({ MarkdownText: ({ children }: any) => <span>{children}</span> }));
 
 const { MessagesList } = require('../MessagesList');
 

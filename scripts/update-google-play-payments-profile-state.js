@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
+const { parseSnapshotArgs, requireSnapshotDate, writeSnapshot } = require('./lib/qa-snapshot');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_TARGET = path.join(ROOT, 'doc_web_interne/docs/google-play-payments-profile-state.local.json');
@@ -39,90 +39,30 @@ function parseNumber(value, label) {
 }
 
 function parseArgs(argv) {
-  const options = {
-    file: process.env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH
-      ? path.resolve(ROOT, process.env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH)
-      : DEFAULT_TARGET,
-    checkedAt: new Date().toISOString(),
+  const fields = {
+    '--account-name': 'accountName',
+    '--developer-name': 'developerName',
+    '--currency': 'currency',
+    '--monthly-payout-threshold': (options, value) => {
+      options.monthlyPayoutThreshold = parseNumber(value, '--monthly-payout-threshold');
+    },
+    '--current-period-earnings': (options, value) => {
+      options.currentPeriodEarnings = parseNumber(value, '--current-period-earnings');
+    },
+  };
+  for (const [key, config] of Object.entries(REQUIREMENTS)) {
+    fields[`--${config.option}`] = (options, value) => {
+      (options.requirements[key] ??= {}).status = value;
+    };
+    fields[`--${config.option}-message`] = (options, value) => {
+      (options.requirements[key] ??= {}).message = value;
+    };
+  }
+  return parseSnapshotArgs(argv, {
+    file: process.env.GOOGLE_PLAY_PAYMENTS_PROFILE_STATE_PATH || DEFAULT_TARGET,
     source: 'Google Play Console payments profile read-only check',
     requirements: {},
-  };
-
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    if (arg === '--file') {
-      options.file = path.resolve(ROOT, argv[i + 1] ?? '');
-      i += 1;
-      continue;
-    }
-    if (arg === '--checked-at') {
-      options.checkedAt = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--source') {
-      options.source = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--account-name') {
-      options.accountName = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--developer-name') {
-      options.developerName = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--currency') {
-      options.currency = argv[i + 1];
-      i += 1;
-      continue;
-    }
-    if (arg === '--monthly-payout-threshold') {
-      options.monthlyPayoutThreshold = parseNumber(argv[i + 1], '--monthly-payout-threshold');
-      i += 1;
-      continue;
-    }
-    if (arg === '--current-period-earnings') {
-      options.currentPeriodEarnings = parseNumber(argv[i + 1], '--current-period-earnings');
-      i += 1;
-      continue;
-    }
-
-    const requirementEntry = Object.entries(REQUIREMENTS).find(([, config]) => arg === `--${config.option}`);
-    if (requirementEntry) {
-      const [key] = requirementEntry;
-      options.requirements[key] = {
-        ...(options.requirements[key] ?? {}),
-        status: argv[i + 1],
-      };
-      i += 1;
-      continue;
-    }
-
-    const messageEntry = Object.entries(REQUIREMENTS).find(
-      ([, config]) => arg === `--${config.option}-message`
-    );
-    if (messageEntry) {
-      const [key] = messageEntry;
-      options.requirements[key] = {
-        ...(options.requirements[key] ?? {}),
-        message: argv[i + 1],
-      };
-      i += 1;
-      continue;
-    }
-
-    if (arg === '--help' || arg === '-h') {
-      printHelp();
-      process.exit(0);
-    }
-    throw new Error(`Unknown argument: ${arg}`);
-  }
-
-  return options;
+  }, printHelp, fields);
 }
 
 function printHelp() {
@@ -168,9 +108,7 @@ function normalizeStatus(value) {
 }
 
 function normalizeSnapshot(options) {
-  if (Number.isNaN(Date.parse(options.checkedAt))) {
-    throw new Error('--checked-at must be a valid date.');
-  }
+  requireSnapshotDate(options.checkedAt);
   const requirements = {};
   for (const [key, config] of Object.entries(REQUIREMENTS)) {
     const input = options.requirements[key] ?? {};
@@ -210,14 +148,9 @@ function isPaymentsProfileReady(snapshot) {
   return getOpenPaymentProfileRequirements(snapshot).length === 0;
 }
 
-function writeJson(filePath, value) {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-}
-
 function updateGooglePlayPaymentsProfileState(options) {
   const document = normalizeSnapshot(options);
-  writeJson(options.file, document);
+  writeSnapshot(options.file, document);
   return document;
 }
 

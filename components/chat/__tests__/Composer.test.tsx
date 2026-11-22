@@ -12,7 +12,6 @@ const mockStopRecording = jest.fn();
 const mockSetupAppStateListener = jest.fn();
 const mockForceStopRecording = jest.fn();
 const mockAppStateCleanup = jest.fn();
-const mockRegisterOfflineModelPromptHandler = jest.fn();
 const mockResolveDeviceSpeechCapability = jest.fn();
 const mockBaseTranscriptRef = { current: '' };
 let mockIsRecording = false;
@@ -112,9 +111,6 @@ jest.mock('@/components/speech/LanguagePackMissingSheet', () => ({
   LanguagePackMissingSheet: () => null,
 }));
 
-jest.mock('@/components/recording/OfflineModelDownloadSheet', () => ({
-  OfflineModelDownloadSheet: () => null,
-}));
 
 jest.mock('@/components/ui/icon-symbol', () => ({
   IconSymbol: ({ name }: { name: string }) => <span data-testid={`icon.${name}`} />,
@@ -194,8 +190,6 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 jest.mock('@/services/nativeSpeechRecognition', () => ({
-  registerOfflineModelPromptHandler: (handler: unknown) =>
-    mockRegisterOfflineModelPromptHandler(handler),
   resolveDeviceSpeechCapability: (locale: string) => mockResolveDeviceSpeechCapability(locale),
 }));
 
@@ -266,7 +260,6 @@ describe('Composer', () => {
     mockStartRecording.mockResolvedValue({ success: true });
     mockStopRecording.mockResolvedValue({});
     mockSetupAppStateListener.mockReturnValue(mockAppStateCleanup);
-    mockRegisterOfflineModelPromptHandler.mockReturnValue(jest.fn());
     mockResolveDeviceSpeechCapability.mockResolvedValue(DICTATING_CAPABILITY);
   });
 

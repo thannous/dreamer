@@ -245,20 +245,7 @@
 <p>
                     Nel 2009 Matthew Walker ed Els van der Helm hanno proposto l'ipotesi di una «terapia notturna»: poiché durante il REM la noradrenalina è molto bassa, il cervello potrebbe riattivare i ricordi emotivi attenuandone la carica. È un'idea influente, ancora in fase di verifica. In pratica, l'emozione con cui ti svegli è spesso più utile da annotare dell'ambientazione del sogno.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="book-open"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Fissa il sogno del mattino prima che svanisca</h4>
-<p class="text-sm text-gray-400 mb-4">I sogni più vividi arrivano spesso nelle ultime fasi REM, poco prima del risveglio. In Noctalia racconta il tuo sogno a voce: viene trascritto e salvato nel tuo diario, pronto da rileggere.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/it/diario-dei-sogni-vocale">
-                                Prova il diario dei sogni vocale <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="optimize">Come proteggere il tuo sonno REM?</h2>
 <p>
                     Non esiste un trucco dimostrato per «potenziare» il REM. Dato che si concentra nella seconda metà della notte, la leva più efficace è semplice: dormire abbastanza, a orari regolari.
@@ -373,9 +360,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Racconta il tuo sogno a Noctalia appena sveglio, a voce o per iscritto. Poi rileggi i tuoi sogni uno accanto all'altro e osserva cosa ritorna da una notte all'altra.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/it/">
-                    Inizia il mio diario dei sogni <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=it&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=sonno-rem-e-sogni-comprendere-il-ripristino-nottur_it" rel="nofollow noopener noreferrer" target="_blank">
+                    Scarica Noctalia su Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponibile su Android (Google Play) · Presto su App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -464,13 +452,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo precedente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Perché sogniamo? La scienza dietro le tue avventure notturne</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Perché sogniamo? Cosa sa la scienza e cosa ancora non sa</div>
       </div>
     </a>
     <a href="la-storia-dell-interpretazione-dei-sogni-dagli-antichi-templi-alla-scienza-moderna" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Articolo successivo</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">La storia dell'interpretazione dei sogni: dagli antichi templi alla scienza moderna</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">La storia dell'interpretazione dei sogni: dai templi antichi alla scienza moderna</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -487,17 +475,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="perche-dimentichiamo-i-nostri-sogni-la-scienza-dietro-l-amnesia-onirica" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i sogni? La scienza dietro l'amnesia onirica</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Perché dimentichiamo i nostri sogni? La scienza dietro l'amnesia onirica</h3>
             <p class="text-sm text-gray-400">Perché i sogni svaniscono pochi minuti dopo il risveglio, che ruolo hanno il sonno REM e la memoria, e abitudini semplici per ricordarne di più.</p>
         </a>
         <a href="i-sogni-possono-predire-il-futuro-la-sorprendente-scienza-dei-sogni-precognitivi" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">I sogni possono predire il futuro? La scienza dei sogni precognitivi</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">I sogni possono predire il futuro? La sorprendente scienza dei sogni precognitivi</h3>
             <p class="text-sm text-gray-400">Cosa dicono gli studi controllati sui sogni che sembrano predire il futuro, e come il caso e i bias della memoria spiegano molti episodi.</p>
         </a>
         <a href="sogni-e-salute-mentale-come-il-tuo-sonno-rivela-la-tua-mente" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Scienza</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: come il tuo sonno rivela la tua mente</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sogni e salute mentale: cosa possono dire di te le tue notti, e cosa no</h3>
             <p class="text-sm text-gray-400">Come ansia, depressione, stress e trauma compaiono nei sogni, e quando gli incubi frequenti meritano di essere affrontati con un professionista.</p>
         </a>
   </div>

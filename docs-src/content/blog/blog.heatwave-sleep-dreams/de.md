@@ -55,7 +55,7 @@
 <span class="text-sm text-purple-300/60">5 Min. Lesezeit</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Hitzewelle, Schlaf und Traumerinnerung: warum heiße Nächte verändern, was du behältst</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">Vier Uhr morgens, das Laken klebt, der Ventilator schiebt nur warme Luft hin und her. Eben bist du noch durch einen Bahnhof gehetzt, zu spät für irgendetwas, dann bricht die Szene ab. Während einer Hitzewelle wachen viele Menschen mit mehr Traumfetzen auf als sonst. Die Hitze schreibt deine Träume nicht; sie verändert vor allem, wie oft du aufwachst, und damit, was du davon erwischst.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed">Das Fenster steht weit offen, doch die Nachtluft regt sich kaum. Du drehst das Kissen auf die kühlere Seite, döst wieder weg und tauchst noch vor dem Morgengrauen zum dritten Mal aus einem halben Gespräch wieder auf. Während einer Hitzewelle wachen viele Menschen mit mehr Traumfetzen auf als sonst. Die Hitze schreibt deine Träume nicht; sie verändert vor allem, wie oft du aufwachst, und damit, was du davon erwischst.</p>
 </header>
 <figure class="mb-10 overflow-hidden rounded-2xl border border-white/10 bg-dream-purple/20">
 <img alt="Heißes Schlafzimmer bei Nacht mit Traumfragmenten über dem Bett" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="1200">
@@ -94,7 +94,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Traum und Nacht festhalten, bevor der Morgen sie löscht</h2>
 <p>Sprich Traum und Nacht laut aus oder tipp sie ein. Noctalia transkribiert sie und legt sie in dein Traumtagebuch: So kannst du deine Hitzeträume nebeneinander lesen und sehen, was wiederkehrt, wenn die Nächte kühler werden.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/de/traumtagebuch-spracheingabe">Nächsten Traum per Sprache festhalten</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=hitzewelle-schlaf-traeume_de" rel="nofollow noopener noreferrer" target="_blank">Noctalia bei Google Play laden <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </div>
 <h2>Häufige Fragen</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Warum habe ich bei Hitze das Gefühl, mehr zu träumen?</summary><p class="mt-3">Wahrscheinlich träumst du nicht mehr. Du wachst öfter auf, und jedes Erwachen kann einen laufenden Traum einfangen, deshalb bleiben morgens mehr Fragmente übrig.</p></details>

@@ -125,7 +125,6 @@ jest.mock('@/services/captureConversation', () => ({
   requestCaptureQuestion: jest.fn(async () => ({ question: 'De quoi te souviens-tu ?', done: false })),
 }));
 jest.mock('@/services/nativeSpeechRecognition', () => ({
-  registerOfflineModelPromptHandler: () => () => {},
   resolveDeviceSpeechCapability: jest.fn(), shouldRestartHandsFreeSpeech: () => false,
 }));
 jest.mock('@/services/storageService', () => ({
@@ -137,7 +136,6 @@ jest.mock('@/services/storageService', () => ({
 jest.mock('@/components/navigation/NoctaliaBottomNav', () => ({ NoctaliaBottomNav: () => null }));
 jest.mock('@/components/ui/icon-symbol', () => ({ IconSymbol: () => null }));
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
-jest.mock('@/components/recording/OfflineModelDownloadSheet', () => ({ OfflineModelDownloadSheet: () => null }));
 jest.mock('@/components/recording/RememberedDreamProfileChips', () => ({ RememberedDreamProfileChips: () => null }));
 jest.mock('@/components/recording/RecordingDraftProgress', () => ({ RecordingDraftProgress: () => null }));
 jest.mock('@/components/Toast', () => ({ Toast: () => null }));

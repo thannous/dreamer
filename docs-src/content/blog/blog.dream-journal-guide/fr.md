@@ -170,20 +170,7 @@
 <p>
                     En vous installant, dites-vous calmement que vous aimeriez vous souvenir d'un rêve demain, et imaginez-vous attraper votre carnet. Cela prend une minute et oriente votre attention vers les rêves au réveil. N'en faites pas un défi : une nuit reposante compte plus qu'une page remplie.
                 </p>
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="mic"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Le dire avant qu'il ne s'efface</h4>
-<p class="text-sm text-gray-400 mb-4">Dans Noctalia, vous racontez votre rêve à voix haute dès le réveil. Il est transcrit et rangé dans votre journal, prêt à être relu une fois bien réveillé.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/fr/journal-de-reves-vocal">
-                                Voir le journal de rêves vocal <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="quoi-noter">Que noter dans une entrée de journal de rêves ?</h2>
 <p>
                     Une entrée utile sépare ce dont vous vous souvenez de ce que vous en pensez. Reprenez toujours les mêmes rubriques : la relecture devient bien plus simple.
@@ -380,9 +367,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Avec Noctalia, racontez ou écrivez votre rêve dès le réveil. Tout reste dans un seul journal : vous relisez vos rêves côte à côte et repérez ce qui revient.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/fr/">
-                    Commencer mon journal de rêves <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=guide-journal-reves_fr" rel="nofollow noopener noreferrer" target="_blank">
+                    Télécharger Noctalia sur Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -477,7 +465,7 @@
     <a href="reves-sante-mentale" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Article suivant</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Rêves et Santé Mentale : Comment Votre Sommeil Révèle Votre Esprit</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Rêves et santé mentale : ce que vos nuits peuvent dire de vous, et ce qu'elles ne disent pas</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -499,12 +487,12 @@
         </a>
         <a href="guide-incubation-reves" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubation des rêves : comment rêver exactement de ce que vous voulez</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubation de rêves : la méthode, ses limites et une routine pour ce soir</h3>
             <p class="text-sm text-gray-400">Une méthode en six étapes pour choisir une question avant de dormir et noter ce qui revient au réveil, avec ce que dit la recherche et ses limites.</p>
         </a>
         <a href="guide-cauchemars" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guide</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Cauchemars : Causes, Signification et Comment les Arrêter</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Cauchemars : causes, signification et comment les arrêter</h3>
             <p class="text-sm text-gray-400">Pourquoi les cauchemars surviennent, ce qu'ils peuvent ou non signifier, et comment la répétition d'imagerie mentale et un sommeil plus régulier aident à les réduire.</p>
         </a>
   </div>

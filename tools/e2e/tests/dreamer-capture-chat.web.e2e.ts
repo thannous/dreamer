@@ -61,8 +61,8 @@ async function finish(screen: Screen) {
 }
 
 
-test('chat keeps chronological replies, edits and pending details through reload, then saves the exact card once into its saved moment', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('chat keeps chronological replies, edits and pending details through reload, then saves the exact card once into its saved moment', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await startChat(fixtures);
   const reply = screen.getByTestId('recording-conversation-answer');
   await reply.fill(story);
@@ -122,8 +122,8 @@ test('chat keeps chronological replies, edits and pending details through reload
   await expect(screen.getByTestId('capture-review-card')).toHaveCount(0);
 });
 
-test('chat finishes automatically and keeps a single card and reply reachable in small windows', options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+test('chat finishes automatically and keeps a single card and reply reachable in small windows', options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
   await startChat(fixtures);
   for (const answer of [story, detail, 'Un grand calme.', 'Je me souviens du silence.']) {
     await send(screen, answer);
@@ -170,8 +170,8 @@ for (const scenario of [
     questions: ['Qu’est-ce qui te revient d’autre ?', 'Il y avait quelqu’un d’autre ?', 'Qu’est-ce que tu revois le mieux ?'],
   },
 ] as const) {
-  test(`chat asks for consent at the first question and keeps a ${scenario.kind} saveable with local recall after declining`, options, async fixtures => {
-  const { screen, browser, app } = fixtures;
+  test(`chat asks for consent at the first question and keeps a ${scenario.kind} saveable with local recall after declining`, options, async ({ app, screen, browser }) => {
+  const fixtures = { app, screen, browser };
     await startChat(fixtures);
     // The historical fixture grants consent in storage. Remove it before this
     // capture's first AI request to exercise the real modal and local questions.

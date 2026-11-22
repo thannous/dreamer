@@ -39,6 +39,14 @@ function normalizeStackStatus(payload) {
   return status;
 }
 
+function assertNoActiveCronJobs(result) {
+  const rows = Array.isArray(result) ? result : result?.rows;
+  const count = rows?.[0]?.active_jobs;
+  if (!Array.isArray(rows) || rows.length !== 1 || (count !== 0 && count !== '0')) {
+    throw new Error('Local stack must report zero active cron jobs');
+  }
+}
+
 function prepareLocalMigrations(source, target) {
   fs.cpSync(source, target, { recursive: true });
   let neutralizedUrls = 0;
@@ -63,4 +71,4 @@ function prepareLocalMigrations(source, target) {
   return { neutralizedUrls, disabledSchedules };
 }
 
-module.exports = { assertBackendTarget, normalizeStackStatus, prepareLocalMigrations };
+module.exports = { assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations };

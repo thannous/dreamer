@@ -2,6 +2,18 @@ import * as FileSystem from 'expo-file-system';
 import * as FileSystemLegacy from 'expo-file-system/legacy';
 import { Platform } from 'react-native';
 
+import { QUOTAS } from '@/constants/limits';
+import { DEFAULT_DAILY_REMINDER_SETTINGS } from '@/lib/dreamerNotifications';
+import {
+  DEFAULT_JOURNAL_LAYOUT_PREFERENCE,
+  DEFAULT_LANGUAGE_PREFERENCE,
+  DEFAULT_THEME_PREFERENCE,
+  GUEST_RECORDING_DRAFT_KEY,
+  isJournalLayoutPreference,
+  recordingDraftKey,
+  scopedStorageKey,
+  storageKeys,
+} from '@/services/storageSchema';
 import { getDreamIdentityKey } from '@/lib/dreamIdentity';
 import { parsePendingDreamMutationsPayload } from '@/lib/dreamMutationPayload';
 import { createJournalRecordStore } from './journalRecordStore';
@@ -25,44 +37,17 @@ import type {
   ThemePreference,
 } from '@/lib/types';
 
-const DREAMS_STORAGE_KEY = 'gemini_dream_journal_dreams';
-const REMOTE_DREAMS_CACHE_KEY = 'gemini_dream_journal_remote_dreams_cache';
-const DREAM_MUTATIONS_KEY = 'gemini_dream_journal_pending_mutations';
-const IMAGE_JOBS_KEY = 'gemini_dream_journal_pending_image_jobs';
-const RECORDING_TRANSCRIPT_KEY = 'gemini_dream_journal_recording_transcript';
-// Unscoped values predate ownership: retain them as recovery data, never attribute them.
-const GUEST_RECORDING_DRAFT_KEY = `${RECORDING_TRANSCRIPT_KEY}:guest`;
-const NOTIFICATION_SETTINGS_KEY = 'gemini_dream_journal_notification_settings';
-const THEME_PREFERENCE_KEY = 'gemini_dream_journal_theme_preference';
-const LANGUAGE_PREFERENCE_KEY = 'gemini_dream_journal_language_preference';
-const JOURNAL_LAYOUT_PREFERENCE_KEY = 'gemini_dream_journal_layout_preference';
-const RECORDING_INPUT_MODE_PREFERENCE_KEY = 'gemini_dream_journal_recording_input_mode_preference';
-const REMINDER_PROMPT_DISMISSED_KEY = 'gemini_dream_journal_reminder_prompt_dismissed';
-const STALE_ANALYSIS_BANNER_DISMISSED_KEY = 'gemini_dream_journal_stale_analysis_banner_dismissed';
-const RECORDING_VOICE_HINT_COMPLETED_KEY = 'gemini_dream_journal_recording_voice_hint_completed_v1';
-const RITUAL_PREFERENCE_KEY = 'gemini_dream_journal_ritual_preference';
-const RITUAL_PROGRESS_KEY = 'gemini_dream_journal_ritual_progress';
-const FIRST_LAUNCH_COMPLETED_KEY = 'gemini_dream_journal_first_launch_completed';
-const LAST_SEEN_RELEASE_NOTES_VERSION_KEY = 'gemini_dream_journal_last_seen_release_notes_version';
-const ONBOARDING_STATE_KEY = 'gemini_dream_journal_onboarding_state_v2';
-const ONBOARDING_GUEST_CLAIMED_BY_KEY = 'gemini_dream_journal_onboarding_guest_claimed_by_v2';
-const PENDING_RECORDING_NOTIFICATION_KEY = 'gemini_dream_journal_pending_recording_notification_v1';
-const DREAMS_MIGRATION_SYNCED_PREFIX = 'gemini_dream_journal_dreams_migration_synced_';
-const GUEST_DREAM_MIGRATION_OWNER_KEY = 'gemini_dream_journal_guest_migration_owner_v1';
-// Every user turn of a 100-message Plus conversation (constants/limits.ts) and its reply.
-const MAX_CHAT_HISTORY_FOR_STORAGE = 200;
+// Each user turn and its reply occupy two entries in the stored chat history.
+const MAX_CHAT_HISTORY_FOR_STORAGE = 2 * (QUOTAS.plus.messagesPerDream ?? Infinity);
 const IMAGE_CACHE_DIR = FileSystemLegacy.cacheDirectory ?? FileSystemLegacy.documentDirectory ?? null;
 // Store large payloads on the filesystem to avoid Android CursorWindow limits in AsyncStorage
 const FILE_STORAGE_DIR = FileSystemLegacy.documentDirectory ?? FileSystemLegacy.cacheDirectory ?? null;
 const FILE_STORAGE_PREFIX = FILE_STORAGE_DIR ? `${FILE_STORAGE_DIR}storage/` : null;
 const FILE_BACKED_KEYS = new Set([
-  DREAMS_STORAGE_KEY,
-  REMOTE_DREAMS_CACHE_KEY,
-  DREAM_MUTATIONS_KEY,
+  storageKeys.dreams,
+  storageKeys.remoteDreamsCache,
+  storageKeys.dreamMutations,
 ]);
-
-const scopedStorageKey = (baseKey: string, userScope?: string | null): string =>
-  userScope ? `${baseKey}:${userScope}` : baseKey;
 
 type StorageLike = {
   getItem(key: string): string | null;
@@ -825,22 +810,6 @@ async function normalizeMutationsForStorage(mutations: DreamMutation[]): Promise
   );
 }
 
-const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
-  weekdayEnabled: false,
-  weekdayTime: '07:00',
-  weekendEnabled: false,
-  weekendTime: '10:00',
-};
-
-const DEFAULT_THEME_PREFERENCE: ThemePreference = 'dynamic';
-
-const DEFAULT_LANGUAGE_PREFERENCE: LanguagePreference = 'auto';
-const DEFAULT_JOURNAL_LAYOUT_PREFERENCE: JournalLayoutPreference = 'cards';
-
-function isJournalLayoutPreference(value: unknown): value is JournalLayoutPreference {
-  return value === 'cards' || value === 'compact';
-}
-
 // Native journal records share one engine/connection. Existing web KV semantics remain.
 const nativeJournalRecords = createJournalRecordStore<DreamAnalysis>({
   database: async () => {
@@ -895,10 +864,10 @@ export async function saveServerDreamCheckpoint(dreams: DreamAnalysis[], userSco
 export async function getSavedDreams(): Promise<DreamListReadResult> {
   try {
     if (Platform.OS !== 'web') {
-      const value = await readNativeDreamRecords(DREAMS_STORAGE_KEY);
+      const value = await readNativeDreamRecords(storageKeys.dreams);
       return value === null ? { status: 'absent' } : { status: 'loaded', value: [...value].sort((a, b) => b.id - a.id) };
     }
-    const savedDreams = await getItem(DREAMS_STORAGE_KEY, { strict: true });
+    const savedDreams = await getItem(storageKeys.dreams, { strict: true });
     if (savedDreams == null) return { status: 'absent' };
     const dreams = JSON.parse(savedDreams) as unknown;
     if (!Array.isArray(dreams)) return { status: 'error' };
@@ -920,8 +889,8 @@ export async function saveDreams(dreams: DreamAnalysis[]): Promise<void> {
     markPerformance('journal.storage_started', { trace, count: dreams.length });
     const normalized = await normalizeDreamsForStorage(dreams);
     markPerformance('journal.storage_normalized', { trace, count: dreams.length });
-    if (Platform.OS !== 'web') await nativeJournalRecords.write(DREAMS_STORAGE_KEY, normalized, () => readLegacyDreamRecords(DREAMS_STORAGE_KEY));
-    else await setItem(DREAMS_STORAGE_KEY, JSON.stringify(normalized), { strict: true });
+    if (Platform.OS !== 'web') await nativeJournalRecords.write(storageKeys.dreams, normalized, () => readLegacyDreamRecords(storageKeys.dreams));
+    else await setItem(storageKeys.dreams, JSON.stringify(normalized), { strict: true });
     markPerformance('journal.storage_committed', { trace, count: dreams.length });
   } catch {
     if (__DEV__) {
@@ -939,11 +908,6 @@ export async function getSavedTranscript(scope: RecordingDraftScope): Promise<st
 
 const loadedRecordingDraft = (value: string | null): RecordingDraftReadResult =>
   value == null ? { status: 'absent' } : { status: 'loaded', value };
-
-// Only a draft written to the explicit guest namespace may follow the next sign-in.
-// The old global key may belong to a different account and is left untouched.
-const recordingDraftKey = (scope: RecordingDraftScope): string =>
-  scope === 'guest' ? GUEST_RECORDING_DRAFT_KEY : scopedStorageKey(RECORDING_TRANSCRIPT_KEY, scope);
 
 type GuestRecordingDraft = RecordingDraftReadResult & { owner?: RecordingDraftScope };
 const GUEST_RECORDING_DRAFT_FORMAT = 'noctalia-recording-draft-v1';
@@ -1183,7 +1147,7 @@ export async function clearSavedTranscript(scope: RecordingDraftScope): Promise<
 
 export async function getNotificationSettings(): Promise<NotificationSettings> {
   try {
-    const savedSettings = await getItem(NOTIFICATION_SETTINGS_KEY);
+    const savedSettings = await getItem(storageKeys.notificationSettings);
     if (savedSettings) {
       const parsed = JSON.parse(savedSettings) as unknown;
 
@@ -1197,9 +1161,9 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
         const oldFormat = parsed as { isEnabled: boolean; weekdayTime?: string; weekendTime?: string };
         const migratedSettings: NotificationSettings = {
           weekdayEnabled: oldFormat.isEnabled,
-          weekdayTime: oldFormat.weekdayTime || '07:00',
+          weekdayTime: oldFormat.weekdayTime || DEFAULT_DAILY_REMINDER_SETTINGS.weekdayTime,
           weekendEnabled: oldFormat.isEnabled,
-          weekendTime: oldFormat.weekendTime || '10:00',
+          weekendTime: oldFormat.weekendTime || DEFAULT_DAILY_REMINDER_SETTINGS.weekendTime,
         };
         // Save migrated settings back to storage
         await saveNotificationSettings(migratedSettings);
@@ -1213,12 +1177,12 @@ export async function getNotificationSettings(): Promise<NotificationSettings> {
       console.error('Failed to retrieve notification settings:', error);
     }
   }
-  return DEFAULT_NOTIFICATION_SETTINGS;
+  return { ...DEFAULT_DAILY_REMINDER_SETTINGS };
 }
 
 export async function saveNotificationSettings(settings: NotificationSettings): Promise<void> {
   try {
-    await setItem(NOTIFICATION_SETTINGS_KEY, JSON.stringify(settings));
+    await setItem(storageKeys.notificationSettings, JSON.stringify(settings));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save notification settings:', error);
@@ -1229,7 +1193,7 @@ export async function saveNotificationSettings(settings: NotificationSettings): 
 
 export async function getThemePreference(): Promise<ThemePreference> {
   try {
-    const savedPreference = await getItem(THEME_PREFERENCE_KEY);
+    const savedPreference = await getItem(storageKeys.themePreference);
     if (savedPreference) {
       return JSON.parse(savedPreference) as ThemePreference;
     }
@@ -1243,7 +1207,7 @@ export async function getThemePreference(): Promise<ThemePreference> {
 
 export async function saveThemePreference(preference: ThemePreference): Promise<void> {
   try {
-    await setItem(THEME_PREFERENCE_KEY, JSON.stringify(preference));
+    await setItem(storageKeys.themePreference, JSON.stringify(preference));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save theme preference:', error);
@@ -1254,7 +1218,7 @@ export async function saveThemePreference(preference: ThemePreference): Promise<
 
 export async function getLanguagePreference(): Promise<LanguagePreference> {
   try {
-    const savedPreference = await getItem(LANGUAGE_PREFERENCE_KEY);
+    const savedPreference = await getItem(storageKeys.languagePreference);
     if (savedPreference) {
       return JSON.parse(savedPreference) as LanguagePreference;
     }
@@ -1268,7 +1232,7 @@ export async function getLanguagePreference(): Promise<LanguagePreference> {
 
 export async function saveLanguagePreference(preference: LanguagePreference): Promise<void> {
   try {
-    await setItem(LANGUAGE_PREFERENCE_KEY, JSON.stringify(preference));
+    await setItem(storageKeys.languagePreference, JSON.stringify(preference));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save language preference:', error);
@@ -1279,7 +1243,7 @@ export async function saveLanguagePreference(preference: LanguagePreference): Pr
 
 export async function getJournalLayoutPreference(): Promise<JournalLayoutPreference> {
   try {
-    const savedPreference = await getItem(JOURNAL_LAYOUT_PREFERENCE_KEY);
+    const savedPreference = await getItem(storageKeys.journalLayoutPreference);
     if (savedPreference) {
       const parsed = JSON.parse(savedPreference) as unknown;
       if (isJournalLayoutPreference(parsed)) {
@@ -1296,7 +1260,7 @@ export async function getJournalLayoutPreference(): Promise<JournalLayoutPrefere
 
 export async function saveJournalLayoutPreference(preference: JournalLayoutPreference): Promise<void> {
   try {
-    await setItem(JOURNAL_LAYOUT_PREFERENCE_KEY, JSON.stringify(preference));
+    await setItem(storageKeys.journalLayoutPreference, JSON.stringify(preference));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save journal layout preference:', error);
@@ -1309,10 +1273,10 @@ export async function getRecordingInputModePreference(
   actorScope?: string | null
 ): Promise<RecordingInputModePreference | null> {
   try {
-    const scopedKey = scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope);
+    const scopedKey = scopedStorageKey(storageKeys.recordingInputModePreference, actorScope);
     const savedPreference =
       (await getItem(scopedKey)) ??
-      (actorScope === 'guest' ? await getItem(RECORDING_INPUT_MODE_PREFERENCE_KEY) : null);
+      (actorScope === 'guest' ? await getItem(storageKeys.recordingInputModePreference) : null);
     if (savedPreference) {
       const parsed = JSON.parse(savedPreference);
       if (parsed === 'text' || parsed === 'voice') {
@@ -1333,7 +1297,7 @@ export async function saveRecordingInputModePreference(
 ): Promise<void> {
   try {
     await setItem(
-      scopedStorageKey(RECORDING_INPUT_MODE_PREFERENCE_KEY, actorScope),
+      scopedStorageKey(storageKeys.recordingInputModePreference, actorScope),
       JSON.stringify(preference)
     );
   } catch (error) {
@@ -1350,7 +1314,7 @@ export async function saveRecordingInputModePreference(
  */
 export async function getReminderPromptDismissed(): Promise<boolean> {
   try {
-    const savedPreference = await getItem(REMINDER_PROMPT_DISMISSED_KEY);
+    const savedPreference = await getItem(storageKeys.reminderPromptDismissed);
     if (savedPreference) {
       return JSON.parse(savedPreference) === true;
     }
@@ -1364,7 +1328,7 @@ export async function getReminderPromptDismissed(): Promise<boolean> {
 
 export async function saveReminderPromptDismissed(dismissed: boolean): Promise<void> {
   try {
-    await setItem(REMINDER_PROMPT_DISMISSED_KEY, JSON.stringify(dismissed));
+    await setItem(storageKeys.reminderPromptDismissed, JSON.stringify(dismissed));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save reminder prompt state:', error);
@@ -1379,7 +1343,7 @@ export async function saveReminderPromptDismissed(dismissed: boolean): Promise<v
  */
 export async function getStaleAnalysisBannerDismissed(): Promise<boolean> {
   try {
-    const savedPreference = await getItem(STALE_ANALYSIS_BANNER_DISMISSED_KEY);
+    const savedPreference = await getItem(storageKeys.staleAnalysisBannerDismissed);
     if (savedPreference) {
       return JSON.parse(savedPreference) === true;
     }
@@ -1393,7 +1357,7 @@ export async function getStaleAnalysisBannerDismissed(): Promise<boolean> {
 
 export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Promise<void> {
   try {
-    await setItem(STALE_ANALYSIS_BANNER_DISMISSED_KEY, JSON.stringify(dismissed));
+    await setItem(storageKeys.staleAnalysisBannerDismissed, JSON.stringify(dismissed));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save stale analysis banner state:', error);
@@ -1404,7 +1368,7 @@ export async function saveStaleAnalysisBannerDismissed(dismissed: boolean): Prom
 
 export async function getRecordingVoiceHintCompleted(actorScope?: string | null): Promise<boolean> {
   try {
-    const savedFlag = await getItem(scopedStorageKey(RECORDING_VOICE_HINT_COMPLETED_KEY, actorScope));
+    const savedFlag = await getItem(scopedStorageKey(storageKeys.recordingVoiceHintCompleted, actorScope));
     if (savedFlag) {
       return JSON.parse(savedFlag) === true;
     }
@@ -1422,7 +1386,7 @@ export async function saveRecordingVoiceHintCompleted(
 ): Promise<void> {
   try {
     await setItem(
-      scopedStorageKey(RECORDING_VOICE_HINT_COMPLETED_KEY, actorScope),
+      scopedStorageKey(storageKeys.recordingVoiceHintCompleted, actorScope),
       JSON.stringify(completed)
     );
   } catch (error) {
@@ -1435,7 +1399,7 @@ export async function saveRecordingVoiceHintCompleted(
 
 export async function getRitualPreference(): Promise<string | null> {
   try {
-    const savedPreference = await getItem(RITUAL_PREFERENCE_KEY);
+    const savedPreference = await getItem(storageKeys.ritualPreference);
     if (savedPreference) {
       return JSON.parse(savedPreference) as string;
     }
@@ -1449,7 +1413,7 @@ export async function getRitualPreference(): Promise<string | null> {
 
 export async function saveRitualPreference(preference: string): Promise<void> {
   try {
-    await setItem(RITUAL_PREFERENCE_KEY, JSON.stringify(preference));
+    await setItem(storageKeys.ritualPreference, JSON.stringify(preference));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save ritual preference:', error);
@@ -1460,7 +1424,7 @@ export async function saveRitualPreference(preference: string): Promise<void> {
 
 export async function getRitualStepProgress(): Promise<RitualStepProgress | null> {
   try {
-    const savedProgress = await getItem(RITUAL_PROGRESS_KEY);
+    const savedProgress = await getItem(storageKeys.ritualProgress);
     if (savedProgress) {
       return JSON.parse(savedProgress) as RitualStepProgress;
     }
@@ -1474,7 +1438,7 @@ export async function getRitualStepProgress(): Promise<RitualStepProgress | null
 
 export async function saveRitualStepProgress(progress: RitualStepProgress): Promise<void> {
   try {
-    await setItem(RITUAL_PROGRESS_KEY, JSON.stringify(progress));
+    await setItem(storageKeys.ritualProgress, JSON.stringify(progress));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save ritual step progress:', error);
@@ -1485,7 +1449,7 @@ export async function saveRitualStepProgress(progress: RitualStepProgress): Prom
 
 export async function getFirstLaunchCompleted(): Promise<boolean> {
   try {
-    const savedFlag = await getItem(FIRST_LAUNCH_COMPLETED_KEY);
+    const savedFlag = await getItem(storageKeys.firstLaunchCompleted);
     if (savedFlag) {
       return JSON.parse(savedFlag) as boolean;
     }
@@ -1499,7 +1463,7 @@ export async function getFirstLaunchCompleted(): Promise<boolean> {
 
 export async function saveFirstLaunchCompleted(completed: boolean): Promise<void> {
   try {
-    await setItem(FIRST_LAUNCH_COMPLETED_KEY, JSON.stringify(completed));
+    await setItem(storageKeys.firstLaunchCompleted, JSON.stringify(completed));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save first launch flag:', error);
@@ -1510,7 +1474,7 @@ export async function saveFirstLaunchCompleted(completed: boolean): Promise<void
 
 export async function getLastSeenReleaseNotesVersion(): Promise<string | null> {
   try {
-    const savedVersion = await getItem(LAST_SEEN_RELEASE_NOTES_VERSION_KEY);
+    const savedVersion = await getItem(storageKeys.lastSeenReleaseNotesVersion);
     if (!savedVersion) return null;
     const parsed = JSON.parse(savedVersion) as unknown;
     return typeof parsed === 'string' && parsed.length > 0 ? parsed : null;
@@ -1524,7 +1488,7 @@ export async function getLastSeenReleaseNotesVersion(): Promise<string | null> {
 
 export async function saveLastSeenReleaseNotesVersion(version: string): Promise<void> {
   try {
-    await setItem(LAST_SEEN_RELEASE_NOTES_VERSION_KEY, JSON.stringify(version));
+    await setItem(storageKeys.lastSeenReleaseNotesVersion, JSON.stringify(version));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save release notes version:', error);
@@ -1540,18 +1504,18 @@ export async function saveLastSeenReleaseNotesVersion(version: string): Promise<
  * real and mock storage follow the exact same state rules.
  */
 export async function getOnboardingStateSnapshot(actorScope: string): Promise<string | null> {
-  return getItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope));
+  return getItem(scopedStorageKey(storageKeys.onboardingState, actorScope));
 }
 
 export async function saveOnboardingStateSnapshot(
   actorScope: string,
   serializedState: string
 ): Promise<void> {
-  await setItem(scopedStorageKey(ONBOARDING_STATE_KEY, actorScope), serializedState);
+  await setItem(scopedStorageKey(storageKeys.onboardingState, actorScope), serializedState);
 }
 
 export async function getOnboardingGuestClaimedBy(): Promise<string | null> {
-  const savedUserId = await getItem(ONBOARDING_GUEST_CLAIMED_BY_KEY);
+  const savedUserId = await getItem(storageKeys.onboardingGuestClaimedBy);
   if (!savedUserId) return null;
 
   try {
@@ -1563,11 +1527,11 @@ export async function getOnboardingGuestClaimedBy(): Promise<string | null> {
 }
 
 export async function saveOnboardingGuestClaimedBy(userId: string): Promise<void> {
-  await setItem(ONBOARDING_GUEST_CLAIMED_BY_KEY, JSON.stringify(userId));
+  await setItem(storageKeys.onboardingGuestClaimedBy, JSON.stringify(userId));
 }
 
 export async function getPendingRecordingNotification(): Promise<'/recording' | null> {
-  const serialized = await getItem(PENDING_RECORDING_NOTIFICATION_KEY);
+  const serialized = await getItem(storageKeys.pendingRecordingNotification);
   if (!serialized) return null;
 
   try {
@@ -1589,27 +1553,27 @@ export async function getPendingRecordingNotification(): Promise<'/recording' | 
 
 export async function savePendingRecordingNotification(url: '/recording'): Promise<void> {
   await setItem(
-    PENDING_RECORDING_NOTIFICATION_KEY,
+    storageKeys.pendingRecordingNotification,
     JSON.stringify({ url, queuedAt: Date.now() })
   );
 }
 
 export async function clearPendingRecordingNotification(): Promise<void> {
-  await removeItem(PENDING_RECORDING_NOTIFICATION_KEY);
+  await removeItem(storageKeys.pendingRecordingNotification);
 }
 
 export async function getPendingAuthReturn(): Promise<string | null> {
-  return getItem('gemini_dream_journal_auth_return_v1', { strict: true });
+  return getItem(storageKeys.authReturn, { strict: true });
 }
 
 export async function savePendingAuthReturn(serialized: string): Promise<void> {
-  await setItem('gemini_dream_journal_auth_return_v1', serialized, { strict: true });
+  await setItem(storageKeys.authReturn, serialized, { strict: true });
 }
 
 export async function getDreamsMigrationSynced(userId: string): Promise<boolean> {
   if (!userId) return false;
   try {
-    return (await getItem(`${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`)) === 'true';
+    return (await getItem(`${storageKeys.dreamsMigrationSyncedPrefix}${userId}`)) === 'true';
   } catch {
     return false;
   }
@@ -1617,12 +1581,12 @@ export async function getDreamsMigrationSynced(userId: string): Promise<boolean>
 
 export async function setDreamsMigrationSynced(userId: string, synced: boolean): Promise<void> {
   if (!userId) return;
-  await setItem(`${DREAMS_MIGRATION_SYNCED_PREFIX}${userId}`, synced ? 'true' : 'false');
+  await setItem(`${storageKeys.dreamsMigrationSyncedPrefix}${userId}`, synced ? 'true' : 'false');
 }
 
 export async function getGuestDreamMigrationOwner(): Promise<GuestDreamMigrationOwner | null> {
   try {
-    const raw = await getItem(GUEST_DREAM_MIGRATION_OWNER_KEY, { strict: true });
+    const raw = await getItem(storageKeys.guestDreamMigrationOwner, { strict: true });
     if (raw == null || raw === '') return null;
     const owner: unknown = JSON.parse(raw);
     if (!owner || typeof owner !== 'object' || !('userId' in owner) ||
@@ -1640,7 +1604,7 @@ export async function getGuestDreamMigrationOwner(): Promise<GuestDreamMigration
 
 export async function setGuestDreamMigrationOwner(owner: GuestDreamMigrationOwner | null): Promise<void> {
   try {
-    await setItem(GUEST_DREAM_MIGRATION_OWNER_KEY, owner ? JSON.stringify(owner) : '', { strict: true });
+    await setItem(storageKeys.guestDreamMigrationOwner, owner ? JSON.stringify(owner) : '', { strict: true });
   } catch {
     if (__DEV__) console.error('Failed to save guest dream migration owner');
     throw new Error('Failed to save guest dream migration owner');
@@ -1677,11 +1641,11 @@ export async function getCachedRemoteDreams(
 ): Promise<DreamListReadResult> {
   try {
     if (Platform.OS !== 'web') {
-      const value = await readNativeDreamRecords(scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope));
+      const value = await readNativeDreamRecords(scopedStorageKey(storageKeys.remoteDreamsCache, userScope));
       return value === null ? { status: 'absent' } : { status: 'loaded', value };
     }
     const cachedDreams = await readScopedJson(
-      REMOTE_DREAMS_CACHE_KEY,
+      storageKeys.remoteDreamsCache,
       userScope,
       { strict: true }
     );
@@ -1705,10 +1669,10 @@ export async function saveCachedRemoteDreams(
     const trace = performanceTraceId();
     markPerformance('journal.storage_started', { trace, count: dreams.length });
     const normalized = await normalizeDreamsForStorage(dreams);
-    const key = scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope);
+    const key = scopedStorageKey(storageKeys.remoteDreamsCache, userScope);
     markPerformance('journal.storage_normalized', { trace, count: dreams.length });
     if (Platform.OS !== 'web') await nativeJournalRecords.write(key, normalized, () => readLegacyDreamRecords(key));
-    else await writeScopedJson(REMOTE_DREAMS_CACHE_KEY, JSON.stringify(normalized), userScope);
+    else await writeScopedJson(storageKeys.remoteDreamsCache, JSON.stringify(normalized), userScope);
     markPerformance('journal.storage_committed', { trace, count: dreams.length });
   } catch (error) {
     if (__DEV__) {
@@ -1729,7 +1693,7 @@ async function getPendingDreamMutationsBeforeClear(userScope?: string | null): P
   }
 
   try {
-    const legacyPayload = await getItem(DREAM_MUTATIONS_KEY);
+    const legacyPayload = await getItem(storageKeys.dreamMutations);
     const legacyMutations = parsePendingDreamMutationsPayload(legacyPayload, userScope);
     if (legacyMutations.length === 0) {
       return scopedMutations;
@@ -1753,7 +1717,7 @@ async function getPendingDreamMutationsBeforeClear(userScope?: string | null): P
 
 export async function clearRemoteDreamStorage(userScope?: string | null): Promise<void> {
   if (Platform.OS !== 'web') {
-    await nativeJournalRecords.clear(scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope));
+    await nativeJournalRecords.clear(scopedStorageKey(storageKeys.remoteDreamsCache, userScope));
     if (userScope) await nativeJournalRecords.clear(`server-checkpoint-v1:${userScope}`);
   } else if (userScope) await removeItem(`server-checkpoint-v1:${userScope}`);
   const pendingMutations = await getPendingDreamMutationsBeforeClear(userScope);
@@ -1766,15 +1730,15 @@ export async function clearRemoteDreamStorage(userScope?: string | null): Promis
   }
 
   await Promise.all([
-    removeItem(scopedStorageKey(REMOTE_DREAMS_CACHE_KEY, userScope)),
-    removeItem(scopedStorageKey(DREAM_MUTATIONS_KEY, userScope)),
-    ...(userScope ? [removeItem(REMOTE_DREAMS_CACHE_KEY), removeItem(DREAM_MUTATIONS_KEY)] : []),
+    removeItem(scopedStorageKey(storageKeys.remoteDreamsCache, userScope)),
+    removeItem(scopedStorageKey(storageKeys.dreamMutations, userScope)),
+    ...(userScope ? [removeItem(storageKeys.remoteDreamsCache), removeItem(storageKeys.dreamMutations)] : []),
   ]);
 }
 
 export async function getPendingDreamMutations(userScope?: string | null): Promise<DreamMutation[]> {
   try {
-    const pending = await readScopedJson(DREAM_MUTATIONS_KEY, userScope, { strict: true });
+    const pending = await readScopedJson(storageKeys.dreamMutations, userScope, { strict: true });
     return parsePendingDreamMutationsPayload(pending, userScope);
   } catch {
     if (__DEV__) {
@@ -1790,7 +1754,7 @@ export async function savePendingDreamMutations(
 ): Promise<void> {
   try {
     const normalized = await normalizeMutationsForStorage(mutations);
-    await writeScopedJson(DREAM_MUTATIONS_KEY, JSON.stringify(normalized), userScope);
+    await writeScopedJson(storageKeys.dreamMutations, JSON.stringify(normalized), userScope);
   } catch {
     if (__DEV__) {
       console.error('Failed to save pending dream mutations');
@@ -1801,7 +1765,7 @@ export async function savePendingDreamMutations(
 
 export async function getPendingImageJobs(): Promise<PendingImageJob[]> {
   try {
-    const pending = await getItem(IMAGE_JOBS_KEY);
+    const pending = await getItem(storageKeys.imageJobs);
     if (pending) {
       return JSON.parse(pending) as PendingImageJob[];
     }
@@ -1815,7 +1779,7 @@ export async function getPendingImageJobs(): Promise<PendingImageJob[]> {
 
 export async function savePendingImageJobs(jobs: PendingImageJob[]): Promise<void> {
   try {
-    await setItem(IMAGE_JOBS_KEY, JSON.stringify(jobs));
+    await setItem(storageKeys.imageJobs, JSON.stringify(jobs));
   } catch (error) {
     if (__DEV__) {
       console.error('Failed to save pending image jobs:', error);

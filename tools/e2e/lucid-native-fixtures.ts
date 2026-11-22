@@ -1,7 +1,7 @@
 import type { Device } from '@e2e-dev/mobile';
 import { expect, type TestFixtures } from 'e2e';
 
-export type LucidNativeFixtures = TestFixtures & { device: Device };
+export type LucidNativeFixtures = Omit<TestFixtures, 'agent'> & { device: Device };
 
 export async function activateLucid({ app, screen, platform }: LucidNativeFixtures) {
   await app.open();

@@ -215,21 +215,7 @@
 <p>
                     Der wissenschaftliche Mainstream betrachtet Präkognition nicht als belegt. Zugleich ist <strong>das subjektive Erlebnis real</strong>: Menschen haben Träume, die später scheinbar zu Ereignissen passen. Offen ist nicht, ob sie dieses Erlebnis hatten, sondern wodurch die wahrgenommene Übereinstimmung entstand.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Dokumentiere scheinbar vorhersagende Träume</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia versieht deine Traumaufzeichnungen mit einem Zeitstempel und erstellt ein nachvollziehbares Protokoll. Wenn ein Traum später prophetisch erscheint, kannst du prüfen, was du tatsächlich vor dem Ereignis notiert hattest.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/de/">
-                                Beginne mit der Aufzeichnung von Träumen <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="explanations">Wissenschaftliche Erklärungen für präkognitive Träume</h2>
 <p>
                     Wenn Träume nicht in die Zukunft sehen, wodurch entsteht dann der überzeugende Eindruck einer Vorhersage? Die Forschung bietet mehrere naheliegende Erklärungsansätze:
@@ -319,9 +305,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Dokumentiere deine Träume mit Noctalias zeitgestempeltem Tagebuch und beobachte Muster über längere Zeit. Wenn ein Traum später scheinbar zu einem Ereignis passt, kannst du ihn mit der ursprünglichen Aufzeichnung vergleichen.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/de/">
-                    Beginne mit deinem Traumtagebuch <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=de&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=koennen-traeume-die-zukunft-vorhersagen-die-ueberr_de" rel="nofollow noopener noreferrer" target="_blank">
+                    Noctalia bei Google Play laden <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Jetzt für Android (Google Play) · Bald im App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -390,13 +377,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Vorheriger Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Trauminkubation: Wie du heute Abend genau das träumst, was du willst</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Trauminkubation: Wie du dir heute Abend einen Traum vornimmst und was du erwarten kannst</div>
       </div>
     </a>
     <a href="traeume-verfolgt-werden-bedeutung-und-interpretation" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Nächster Artikel</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Verfolgungsträume: Bedeutung und Deutung</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Im Traum verfolgt werden: Bedeutung, Flucht und Ausgang</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -413,17 +400,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="warum-vergessen-wir-unsere-traeume-die-wissenschaft-hinter-traumamnesie" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume? Die Wissenschaft hinter Traumamnesie</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum vergessen wir unsere Träume? Was die Wissenschaft über Traumamnesie weiß</h3>
             <p class="text-sm text-gray-400">Entdecke die Gehirnmechanismen und Neurochemie, die erklären, warum wir 95 % unserer Träume beim Aufwachen vergessen.</p>
         </a>
         <a href="traeume-und-psychische-gesundheit-wie-ihr-schlaf-ihren-geist-offenbart" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Wie dein Schlaf deinen Geist offenbart</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Träume und psychische Gesundheit: Was deine Nächte über dich sagen können (und was nicht)</h3>
             <p class="text-sm text-gray-400">Entdecke die tiefe Verbindung zwischen Träumen und psychischer Gesundheit. Erfahre, wie Angst, Depression und Trauma deine Träume beeinflussen und wie Traumarbeit die Heilung unterstützen kann.</p>
         </a>
         <a href="warum-traeumen-wir-die-wissenschaft-hinter-ihren-naechtlichen-abenteuern" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Wissenschaft</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Die Wissenschaft hinter deinen nächtlichen Abenteuern</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Warum träumen wir? Was die Wissenschaft weiß und was noch offen ist</h3>
             <p class="text-sm text-gray-400">Entdecke die faszinierende Wissenschaft des Träumens. Erfahre mehr über die wichtigsten Theorien, Gehirnaktivität während des Träumens und was deine Träume über das Bewusstsein verraten.</p>
         </a>
   </div>

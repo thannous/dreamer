@@ -46,6 +46,7 @@ jest.mock('expo-router', () => {
 });
 jest.mock('@/lib/appVariant', () => ({ get isLucidTrainer() { return mockLucid; } }));
 jest.mock('@/context/AuthContext', () => ({ AuthProvider: (props: React.PropsWithChildren) => mockChildren(props), useAuth: () => ({ user: mockUser, loading: mockAuthLoading }) }));
+jest.mock('@/context/LucidTrainerContext', () => ({ LucidTrainerProvider: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/context/OnboardingContext', () => ({ OnboardingProvider: (props: React.PropsWithChildren) => mockChildren(props), useOnboarding: () => ({ loading: false, scope: mockUser ? `user:${mockUser.id}` : 'guest', state: { status: 'completed', pendingRecordingIntent: null } }) }));
 jest.mock('@/context/LanguageContext', () => ({ LanguageProvider: (props: React.PropsWithChildren) => mockChildren(props), useLanguage: () => ({ language: 'en', loaded: mockPreferenceLoaded }) }));
 jest.mock('@/context/ThemeContext', () => ({ ThemeProvider: (props: React.PropsWithChildren) => mockChildren(props), useTheme: () => ({ mode: 'dark' }) }));
@@ -59,7 +60,6 @@ jest.mock('@/components/StartupSplashScreen', () => ({ __esModule: true, default
 jest.mock('@/components/ErrorBoundary', () => ({ ErrorBoundary: (props: React.PropsWithChildren) => mockChildren(props) }));
 jest.mock('@/components/analysis/AnalysisFlightIndicator', () => ({ AnalysisFlightIndicator: () => <div data-testid="analysis-host" /> }));
 jest.mock('@/components/reminders/EngagementRemindersHost', () => ({ EngagementRemindersHost: () => <div data-testid="reminders-host" /> }));
-jest.mock('@/components/speech/OfflineModelPromptHost', () => ({ OfflineModelPromptHost: () => <div data-testid="speech-host" /> }));
 jest.mock('@/components/releases/WhatsNewModal', () => ({ WhatsNewModalHost: () => null }));
 jest.mock('@/components/VercelAnalytics', () => ({ VercelAnalytics: () => null }));
 jest.mock('@/components/VercelSpeedInsights', () => ({ VercelSpeedInsights: () => null }));

@@ -251,9 +251,10 @@ Lleva una lista aparte con las imágenes que podrían servirte, ordenadas por pr
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
 Con Noctalia, cuenta tu sueño en voz alta nada más despertar. Se transcribe y se guarda en tu diario, donde puedes releer tus sueños uno junto a otro y ver qué imágenes se repiten.
 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/diario-de-suenos-por-voz">
-Probar el diario de sueños por voz <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=suenos-y-creatividad_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -344,7 +345,7 @@ No. Las alarmas repetidas fragmentan el sueño, y dormir poco perjudica la atenc
 <a class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="suenos-de-ansiedad-significado">
 <div>
 <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-<div class="font-serif text-lg text-dream-cream mt-1">Sueños de ansiedad: por qué los tienes y cómo detenerlos</div>
+<div class="font-serif text-lg text-dream-cream mt-1">Sueños de ansiedad: por qué los tienes y qué ayuda de verdad</div>
 </div>
 <i class="w-5 h-5 mt-1 text-dream-salmon shrink-0" data-lucide="arrow-right"></i>
 </a>
@@ -360,17 +361,17 @@ No. Las alarmas repetidas fragmentan el sueño, y dormir poco perjudica la atenc
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="guia-incubacion-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo soñar exactamente lo que deseas esta noche</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo pedir un sueño esta noche y qué esperar</h3>
 <p class="text-sm text-gray-400">Aprende las técnicas ancestrales y modernas para plantar sueños específicos y estimular la creatividad.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="sueno-rem-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Ciencia</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños: comprender el reinicio nocturno de tu cerebro</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Sueño REM y sueños: qué pasa de verdad en tu cerebro por la noche</h3>
 <p class="text-sm text-gray-400">En qué momento de la noche llega el sueño REM, por qué sus sueños son tan vívidos y qué lo acorta.</p>
 </a>
 <a class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1" href="como-recordar-suenos">
 <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
+<h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas prácticas</h3>
 <p class="text-sm text-gray-400">Métodos prácticos para mejorar el recuerdo onírico y no volver a perder una intuición creativa de tu mente dormida.</p>
 </a>
 </div>
@@ -380,6 +381,6 @@ No. Las alarmas repetidas fragmentan el sueño, y dormir poco perjudica la atenc
 <!-- Health Disclaimer (E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo es solo informativo y no constituye consejo médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional de salud cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo es solo informativo y no constituye consejo médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional de salud cualificado.
                 </p>
 </aside>

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Noctalia",
     "slug": "noctalia",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "icon": "./assets/images/icon.png",
     "scheme": "noctalia",
     "userInterfaceStyle": "automatic",
@@ -62,7 +62,7 @@
           }
         ]
       },
-      "buildNumber": "26"
+      "buildNumber": "27"
     },
     "android": {
       "versionCode": 92,

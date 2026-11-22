@@ -6,11 +6,27 @@ import { PERSONA_PROVIDER } from './persona-models.mjs';
 import { personaContracts, personaIdentity } from './persona-contract.mjs';
 import { sameServedOrigin } from './web-ports.mjs';
 
-// The locked SDK (package.json, package-lock.json); a report from another version does not qualify.
-// The model stack is pinned with it: agent steps load `ai` (e2e/dist/agent/ai-sdk.js), the
-// ChatGPT route wraps @ai-sdk/openai, and the gate's decision filter is @e2e-dev/decision.
-export const SDK_PINS = { e2e: '0.23.1', '@e2e-dev/web': '0.16.0', '@e2e-dev/mobile': '0.12.7', 'agent-device': '0.21.37',
-  ai: '7.0.170', '@ai-sdk/openai': '4.0.115', '@e2e-dev/decision': '0.3.3' };
+// These packages determine the engine, model and device identities in a qualifying report.
+const sdkPackages = ['e2e', '@e2e-dev/web', '@e2e-dev/mobile', 'agent-device', 'ai', '@ai-sdk/openai', '@e2e-dev/decision'];
+const manifest = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
+export const SDK_PINS = Object.freeze(Object.fromEntries(sdkPackages.map(name => {
+  const version = manifest.devDependencies[name];
+  if (!/^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(version)) throw new Error(`Expected an exact SDK pin for ${name}`);
+  return [name, version];
+})));
+
+export function inspectInstalledSdk(directory) {
+  const pins = {};
+  for (const name of sdkPackages) {
+    try {
+      pins[name] = JSON.parse(readFileSync(join(directory, 'node_modules', name, 'package.json'), 'utf8')).version ?? null;
+    } catch {
+      pins[name] = null;
+    }
+  }
+  return { pins, matches: sdkPackages.every(name => pins[name] === SDK_PINS[name]) };
+}
+
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 // Preserve the former UTF-8 stdout.trim() identity without buffering a whole diff.
 // A hash copy marks the last content byte; later whitespace stays provisional.

@@ -1,7 +1,12 @@
 /* @jest-environment jsdom */
 import React, { createRef } from 'react';
 import { act, render } from '@testing-library/react';
-import { LucidArtStatusBar, type LucidArtStatusBarController } from '../LucidArtStatusBar';
+import {
+  LucidArtStatusBar,
+  LucidArtStatusBarProvider,
+  useLucidArtStatusBarActive,
+  type LucidArtStatusBarController,
+} from '../LucidArtStatusBar';
 
 let mockFocused = true;
 let mockPlatform = 'ios';
@@ -60,5 +65,33 @@ test('web does not call native stack APIs or attach a scroll controller', () => 
   expect(mockPush).not.toHaveBeenCalled();
   expect(mockSetStyle).not.toHaveBeenCalled();
   expect(controller.current).toBeNull();
+  view.unmount();
+});
+
+test('LucidArtStatusBarProvider exposes active night-art state to stack options across scroll and unmount', () => {
+  const overArt = { current: true };
+  const controller = createRef<LucidArtStatusBarController['current']>();
+  let latestActive = false;
+  function Probe() {
+    latestActive = useLucidArtStatusBarActive();
+    return null;
+  }
+  const view = render(
+    <LucidArtStatusBarProvider>
+      <Probe />
+      <LucidArtStatusBar overArtRef={overArt} controllerRef={controller} pageBar="dark" />
+    </LucidArtStatusBarProvider>
+  );
+  expect(latestActive).toBe(true);
+  act(() => controller.current?.(false));
+  expect(latestActive).toBe(false);
+  act(() => controller.current?.(true));
+  expect(latestActive).toBe(true);
+  view.rerender(
+    <LucidArtStatusBarProvider>
+      <Probe />
+    </LucidArtStatusBarProvider>
+  );
+  expect(latestActive).toBe(false);
   view.unmount();
 });

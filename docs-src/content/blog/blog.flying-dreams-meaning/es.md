@@ -219,21 +219,7 @@
 <p>
                     Una sola entrada no demuestra nada. Los vínculos se ven cuando anotas los mismos detalles durante varias noches, también las noches en que no vuelas.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Apunta tu vuelo antes de que se esfume</h4>
-<p class="text-sm text-gray-400 mb-4">En Noctalia, cuenta tu sueño en voz alta al despertar. Se transcribe, se guarda en tu diario y puedes releer tus sueños de volar uno al lado del otro.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/es/diario-de-suenos-por-voz">
-                                Prueba Noctalia gratis <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="emotions">Alegría, miedo, frustración: lo que cambia la emoción</h2>
 <p>
                     Dos personas pueden sobrevolar la misma ciudad en sueños y despertar con impresiones opuestas. La emoción suele estar más cerca de la vida despierta que el decorado.
@@ -293,9 +279,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Guarda tus sueños de volar en Noctalia junto con lo que sentiste. Al releerlos juntos verás cuándo vuelven y qué los acompaña.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/diario-de-suenos-por-voz">
-                    Empieza tu diario de sueños <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=suenos-de-volar_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- Symbol Guide CTA -->
 <aside class="glass-panel rounded-xl p-6 my-8 border border-dream-salmon/20">
@@ -383,7 +370,7 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños de caer: por qué sueñas que caes al vacío</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Soñar que caes de un lugar alto: por qué ocurre y qué puede significar</div>
       </div>
     </a>
     <a href="suenos-con-serpientes" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
@@ -406,17 +393,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="significado-suenos-recurrentes" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: qué comparar entre episodios</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños recurrentes: por qué se repite el mismo sueño y qué puede ayudar</h3>
             <p class="text-sm text-gray-400">Contexto, emociones y cambios que conviene anotar cuando una escena vuelve.</p>
         </a>
         <a href="suenos-dientes-caen" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se caen los dientes: significado e interpretación</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que se te caen los dientes: 7 pistas para entender este sueño</h3>
             <p class="text-sm text-gray-400">Detalles físicos, contexto reciente y preguntas para evitar una lectura automática.</p>
         </a>
         <a href="suenos-de-caer" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Interpretación</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Sueños de caer: por qué sueñas que caes al vacío</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Soñar que caes de un lugar alto: por qué ocurre y qué puede significar</h3>
             <p class="text-sm text-gray-400">Qué observar en una caída, desde el lugar hasta la sensación al despertar.</p>
         </a>
   </div>

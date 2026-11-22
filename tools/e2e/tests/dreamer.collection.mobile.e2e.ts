@@ -41,8 +41,8 @@ for (const offline of [false, true]) {
     platforms: offline ? ['android'] : ['ios', 'android'],
     skip: process.env.E2E_NATIVE_MOCK_MODE !== 'true' ? 'Requires owned mock-persistent Release.'
       : offline && FLEET_PHONE ? PHONE_SETTINGS_SKIP : false,
-  }, async (fixtures) => {
-    const { app, screen, device } = fixtures;
+  }, async ({ app, screen, device, platform }) => {
+    const fixtures = { app, screen, device, platform };
     // collection633Start begins with app.open() through billingGuest.
     await collection633Start(fixtures);
     if (offline) {

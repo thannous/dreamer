@@ -70,10 +70,8 @@ function getAndroidStoreUrl(lang) {
 
 // Public web app (Expo web build) CTA. The URL only carries campaign
 // attribution — never visitor data. Parameters are emitted in a fixed order
-// so identical surfaces always produce byte-identical links. `lang` is kept
-// for parity with `getAndroidStoreUrl`; the web app currently derives its
-// language from the browser and reads no language hint from the URL.
-function getWebAppUrl(lang, { medium, content } = {}) {
+// so identical surfaces always produce byte-identical links.
+function getWebAppUrl({ medium, content } = {}) {
   const base = siteConfig.storeLinks?.webAppBase;
   if (!base) {
     throw new Error('Missing storeLinks.webAppBase in docs-src/config/site.config.json');

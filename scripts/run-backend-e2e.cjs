@@ -5,7 +5,7 @@ const path = require('node:path');
 const os = require('node:os');
 const { randomUUID } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
-const { assertBackendTarget, normalizeStackStatus, prepareLocalMigrations } = require('./lib/backend-e2e-local.cjs');
+const { assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations } = require('./lib/backend-e2e-local.cjs');
 const { withOwnedProcess } = require('./lib/backend-e2e-process.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -64,6 +64,19 @@ if (!/^\[experimental\]\s*$/m.test(input)) throw new Error('supabase/config.toml
 input = input.replace(/^\[experimental\]\s*$/m, '[experimental]\nstack = true');
 fs.writeFileSync(config, input);
 
+// The local-only SQL behind « Nouvel invité » (tools/dev-local/guest-reset.sql), never a
+// migration: the guest journey resets its device on this disposable stack as on dev:local.
+// `db query` takes one command per call, so the statements are split on their marker lines.
+function installGuestReset() {
+  const source = fs.readFileSync(path.join(root, 'tools/dev-local/guest-reset.sql'), 'utf8');
+  for (const [index, statement] of source.split(/^-- statement$/m).entries()) {
+    const file = path.join(workdir, `guest-reset-${index}.sql`);
+    fs.writeFileSync(file, statement, { mode: 0o600 });
+    try { command(cli, ['db', 'query', '--workdir', workdir, '--file', file], { stdio: ['ignore', 'pipe', 'inherit'] }); }
+    finally { fs.rmSync(file, { force: true }); }
+  }
+}
+
 const statusFile = path.join(workdir, 'status.json');
 let started = false;
 let stackId;
@@ -85,10 +98,16 @@ async function main() {
       if (status.LOCAL_E2E_STACK.runtime !== runtime) throw new Error('Unexpected local stack runtime');
       stackId = status.LOCAL_E2E_STACK.id;
       fs.writeFileSync(statusFile, JSON.stringify(status), { mode: 0o600 });
-      const safety = JSON.parse(command(cli, ['db', 'query', '--workdir', workdir, '--db-url', status.DB_URL,
+      const safety = JSON.parse(command(cli, ['db', 'query', '--workdir', workdir,
         'select count(*) as active_jobs from cron.job where active', '--output-format', 'json'],
       { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8' }));
-      if (Number(safety.rows?.[0]?.active_jobs) !== 0) throw new Error('Disposable local cron jobs must be inactive');
+      assertNoActiveCronJobs(safety);
+      installGuestReset();
+      // The fixtures start their local APIs with --cached-only: fill Deno's cache first, so a
+      // fresh machine runs the suite without a prior Deno check.
+      for (const api of ['tools/e2e/test-support/native-recovery-api.ts', 'tools/dev-local/api-server.ts']) {
+        command('deno', ['cache', '--no-config', api], { env: process.env });
+      }
       const url = assertBackendTarget(status);
       const profile = path.join(workdir, 'expo.env');
       const publicEnv = {
@@ -105,7 +124,9 @@ async function main() {
         EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: '',
         EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID: '',
         EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID: '',
-        EXPO_PUBLIC_TURNSTILE_SITE_KEY: '',
+        // Cloudflare's documented always-pass test site key, so web guests can ask for a session.
+        // The browser never reaches Cloudflare: only the guest fixture answers the widget script.
+        EXPO_PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
       };
       fs.writeFileSync(profile, Object.entries(publicEnv).map(([key, value]) => `${key}=${value}`).join('\n') + '\n', { mode: 0o600 });
       await runChild(process.execPath, ['tools/e2e/run.mjs', 'backend', 'web', 'run', ...args], {

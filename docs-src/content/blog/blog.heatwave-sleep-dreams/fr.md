@@ -55,7 +55,7 @@
 <span class="text-sm text-purple-300/60">6 min de lecture</span>
 </div>
 <h1 class="font-serif text-3xl md:text-5xl mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-dream-lavender to-purple-400/50 leading-tight">Canicule, sommeil et rêves : pourquoi les nuits chaudes changent ce dont vous vous souvenez</h1>
-<p class="text-lg text-purple-200/80 leading-relaxed">Il est 4 h, le drap colle et le ventilateur ne brasse que de l'air tiède. Vous couriez dans une gare, en retard pour quelque chose, et la scène s'est coupée net. Pendant une canicule, beaucoup de personnes se réveillent avec plus de fragments de rêves que d'habitude. La chaleur n'écrit pas vos rêves : elle change surtout la fréquence de vos réveils, et donc ce que vous en retenez.</p>
+<p class="text-lg text-purple-200/80 leading-relaxed">La fenêtre est grande ouverte, mais l'air de la nuit ne bouge presque pas. Vous retournez l'oreiller du côté encore frais, vous vous rendormez, et vous refaites surface une troisième fois avant l'aube avec la moitié d'une conversation encore en tête. Pendant une canicule, beaucoup de personnes se réveillent avec plus de fragments de rêves que d'habitude. La chaleur n'écrit pas vos rêves : elle change surtout la fréquence de vos réveils, et donc ce que vous en retenez.</p>
 </header>
 <figure class="mb-10 overflow-hidden rounded-2xl border border-white/10 bg-dream-purple/20">
 <img alt="Chambre chaude la nuit avec fragments de rêves au-dessus du lit" class="w-full h-auto" fetchpriority="high" height="630" loading="eager" sizes="(max-width: 768px) 100vw, 1200px" src="../../img/blog/heatwave-sleep-dreams.webp" srcset="../../img/blog/heatwave-sleep-dreams-480w.webp 480w, ../../img/blog/heatwave-sleep-dreams-800w.webp 800w, ../../img/blog/heatwave-sleep-dreams-1200w.webp 1200w" width="1200">
@@ -94,7 +94,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Gardez le rêve avant que la matinée l'efface</h2>
 <p>Racontez le rêve et la nuit à voix haute, ou tapez-les. Noctalia les transcrit et les range dans votre journal : vous pouvez relire vos rêves de canicule côte à côte et voir ce qui revient quand les nuits se rafraîchissent.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/fr/journal-de-reves-vocal">Noter votre prochain rêve à la voix</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=canicule-sommeil-reves_fr" rel="nofollow noopener noreferrer" target="_blank">Télécharger Noctalia sur Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </div>
 <h2>Questions fréquentes</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">Pourquoi ai-je l'impression de rêver davantage quand il fait chaud ?</summary><p class="mt-3">Vous ne rêvez probablement pas davantage. Vous vous réveillez plus souvent, et chaque réveil peut saisir un rêve en cours : plus de fragments restent donc en mémoire au matin.</p></details>

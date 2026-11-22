@@ -201,17 +201,14 @@ const { default: DreamCategoriesScreen } = require('@/app/dream-categories/[id]'
 
 describe('Dream categories screen', () => {
   it('[B] Given a dream When pressing a category Then it navigates to the chat route', () => {
-    // Given
     mockUseLocalSearchParams.mockReturnValue({ id: '123' });
     mockUseDreams.mockReturnValue({
       dreams: [{ id: 123, title: 'A dream', chatHistory: [] }],
     });
 
-    // When
     render(<DreamCategoriesScreen />);
     fireEvent.click(screen.getByTestId(TID.Button.DreamCategory('symbols')));
 
-    // Then
     expect(mockPush).toHaveBeenCalledWith({
       pathname: '/dream-chat/[id]',
       params: { id: '123', category: 'symbols' },
@@ -219,7 +216,6 @@ describe('Dream categories screen', () => {
   });
 
   it('[B] Given a fully explored dream When pressing synthesis Then it opens the synthesis chat route', () => {
-    // Given
     mockUseLocalSearchParams.mockReturnValue({ id: '123' });
     mockUseDreams.mockReturnValue({
       dreams: [
@@ -238,11 +234,9 @@ describe('Dream categories screen', () => {
       ],
     });
 
-    // When
     render(<DreamCategoriesScreen />);
     fireEvent.click(screen.getByTestId(TID.Button.Exploration360Synthesis));
 
-    // Then
     expect(mockPush).toHaveBeenCalledWith({
       pathname: '/dream-chat/[id]',
       params: { id: '123', mode: 'synthesis' },
@@ -265,14 +259,11 @@ describe('Dream categories screen', () => {
   });
 
   it('[E] Given an unknown dream id When rendering Then it shows a not-found message', () => {
-    // Given
     mockUseLocalSearchParams.mockReturnValue({ id: '999' });
     mockUseDreams.mockReturnValue({ dreams: [] });
 
-    // When
     render(<DreamCategoriesScreen />);
 
-    // Then
     expect(screen.getByText('dream_categories.not_found.title')).toBeTruthy();
   });
 });

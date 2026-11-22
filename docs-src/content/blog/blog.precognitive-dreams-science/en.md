@@ -169,21 +169,7 @@
 <p>
                     Replication matters because a reliable predictive effect should appear again under preregistered or clearly planned conditions, with blinded judging and adequate samples. The available results do not yet meet that standard. The evidence therefore supports an open but cautious conclusion: <strong>people report meaningful experiences, while dependable prediction remains unestablished</strong>.
                 </p>
-<!-- CTA inline -->
-<aside class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-dream-salmon/10 rounded-xl">
-<i class="w-6 h-6 text-dream-salmon" data-lucide="sparkles"></i>
-</div>
-<div>
-<h4 class="font-serif text-lg text-dream-cream mb-2">Keep a Prospective Dream Record</h4>
-<p class="text-sm text-gray-400 mb-4">Noctalia timestamps journal entries so you can compare the original wording with a later event. A timestamp improves the record; it is not proof that a dream predicted the future.</p>
-<a class="inline-flex items-center gap-2 text-sm text-dream-salmon hover:text-dream-salmonLight transition-colors" href="/">
-                                Start Recording Dreams <i class="w-4 h-4" data-lucide="arrow-right"></i>
-</a>
-</div>
-</div>
-</aside>
+
 <h2 id="explanations">How Confirmation Bias and Memory Shape Precognitive Dreams</h2>
 <p>
                     A <a class="text-dream-salmon hover:underline" href="https://www.research.ed.ac.uk/en/publications/psychological-factors-in-precognitive-dream-experiences-the-role-/" rel="nofollow noopener noreferrer" target="_blank">2014 paper on psychological factors</a> directly tested selective recall and the tendency to find correspondences. Participants remembered more dream-event pairs presented as confirmed than pairs presented as disconfirmed. Belief in precognitive dreams was also associated with finding more connections between randomly paired dreams and news reports.
@@ -249,9 +235,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Use Noctalia's timestamped journal to preserve what you wrote, compare later events, and count both matches and misses. Better records support reflection; they do not turn an apparent match into scientific proof.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/">
-                    Start Tracking Your Dreams <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=en&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=precognitive-dreams-science_en" rel="nofollow noopener noreferrer" target="_blank">
+                    Get Noctalia on Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Available now on Android (Google Play) · Coming soon to the App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -323,13 +310,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Previous article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Dream Incubation: How to Dream About Exactly What You Want Tonight</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Dream incubation: how to ask for a dream tonight, and what to expect</div>
       </div>
     </a>
     <a href="being-chased-dreams" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Next article</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Being Chased Dreams: Meaning and Interpretation</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Being chased dreams: why you dream of being chased, and what it can mean</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -346,17 +333,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="why-we-forget-dreams" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Forget Our Dreams? The Science Behind Dream Amnesia</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Why do we forget our dreams? The science behind dream amnesia</h3>
             <p class="text-sm text-gray-400">Discover the brain mechanisms and neurochemistry that explain why we forget 95% of our dreams upon waking.</p>
         </a>
         <a href="dreams-mental-health" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and Mental Health: How Your Sleep Reveals Your Mind</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Dreams and mental health: what your nights can (and can't) tell you</h3>
             <p class="text-sm text-gray-400">Discover the deep connection between dreams and mental health. Learn how anxiety, depression, and trauma affect your dreams, and how dream work can support healing.</p>
         </a>
         <a href="why-we-dream-science" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Science</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Why Do We Dream? The Science Behind Your Nightly Adventures</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Why do we dream? What science knows, and what it still doesn't</h3>
             <p class="text-sm text-gray-400">Explore the fascinating science of dreaming. Learn about major theories, brain activity during dreams, and what your dreams reveal about consciousness.</p>
         </a>
   </div>

@@ -104,20 +104,21 @@ describe('supabase secure storage adapter', () => {
     await expect(storage.getItem('session')).resolves.toBe('alphabeta');
   });
 
-  it('writes chunked values and clears on remove', async () => {
+  it('keeps a newly chunked session readable on first login and across replacements', async () => {
     const { supabase } = require('../supabase');
-    const storage = (supabase as any).__options.auth.storage;
+    const storage = supabase.__options.auth.storage;
+    const first = 'x'.repeat(2500);
+    const rotated = 'y'.repeat(3000);
 
-    const large = 'y'.repeat(2500);
-    await storage.setItem('token', large);
-
-    const chunkedWrites = mockSecureStore.setItemAsync.mock.calls.filter(
-      ([key]: [unknown, ...unknown[]]) => typeof key === 'string' && key.startsWith('token.__chunk_')
-    );
-    expect(chunkedWrites.length).toBeGreaterThan(0);
+    for (const value of [first, rotated, 'small', first]) {
+      await storage.setItem('token', value);
+      expect(await storage.getItem('token')).toBe(value);
+      if (value === first) expect(secureStoreData.size).toBeGreaterThan(1);
+    }
 
     await storage.removeItem('token');
-    expect(secureStoreData.has('token')).toBe(false);
+    expect(await storage.getItem('token')).toBeNull();
+    expect(secureStoreData.size).toBe(0);
   });
 
   it('uses explicit PKCE exchange on web and declines automatic URL sessions', () => {

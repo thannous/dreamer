@@ -85,7 +85,8 @@
 <div class="glass-panel rounded-2xl p-6 my-8 border border-dream-salmon/20">
 <h2 class="font-serif text-2xl text-dream-cream mb-3">Gardez le contexte, pas seulement le scénario</h2>
 <p>Dans Noctalia, racontez votre rêve à voix haute au réveil : il est transcrit et rangé dans votre journal, avec une ligne sur la chaleur, vos réveils et votre journée. Relisez vos cauchemars côte à côte pour voir ce qui les accompagne.</p>
-<p><a class="inline-flex items-center justify-center rounded-full bg-dream-salmon px-5 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="/fr/journal-de-reves-vocal">Noter mon cauchemar à voix haute</a></p>
+<p><a class="inline-flex items-center justify-center gap-2 rounded-full bg-dream-salmon px-6 py-3 text-sm font-semibold text-dream-dark hover:bg-dream-cream transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=fr&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=cauchemars-chaleur-stress_fr" rel="nofollow noopener noreferrer" target="_blank">Télécharger Noctalia sur Google Play <i class="w-4 h-4" data-lucide="arrow-right"></i></a></p>
+<p class="text-xs text-purple-300/70 mt-3">Disponible sur Android (Google Play) · Bientôt sur l’App Store (iOS)</p>
 </div>
 <h2>Questions fréquentes</h2>
 <details class="glass-panel rounded-xl p-5 border border-white/10 my-3"><summary class="font-semibold text-dream-cream cursor-pointer">La chaleur peut-elle donner des cauchemars ?</summary><p class="mt-3">Aucune preuve directe ne le montre. La chaleur rend le sommeil plus léger et multiplie les réveils, et se réveiller pendant ou juste après un rêve aide à s'en souvenir.</p></details>

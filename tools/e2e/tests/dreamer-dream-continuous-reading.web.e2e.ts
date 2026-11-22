@@ -51,7 +51,8 @@ for (const mode of ['light', 'dark'] as const) {
     // Reopen from the list so this proves arrival, rather than a scrolled state
     // left over from editing or generating an illustration.
     await page.getByTestId('btn.navigateJournal').click();
-    await page.getByRole('button', { name: /L’éléphant au sommet de la grande roue/ }).click();
+    const journalEntry = page.getByTestId('list.dreams').getByRole('button', { name: /^L’éléphant au sommet de la grande roue,/ });
+    await journalEntry.click();
     const heading = page.getByRole('heading', { name: 'L’éléphant au sommet de la grande roue', exact: true });
     const metadata = page.getByTestId('component.metadataCard');
     for (const viewport of [{ width: 393, height: 852 }, { width: 320, height: 568 }, { width: 844, height: 390 }]) {
@@ -90,7 +91,7 @@ for (const mode of ['light', 'dark'] as const) {
     await page.screenshot({ path: info.outputPath(`dream-${mode}-rotation-reading-header.png`) });
     await page.setViewportSize({ width: 390, height: 844 });
     await page.getByTestId('btn.navigateJournal').click();
-    await page.getByRole('button', { name: /L’éléphant au sommet de la grande roue/ }).click();
+    await journalEntry.click();
     const originalSource = await renderedImage.getAttribute('src');
     await page.emulateMedia({ colorScheme: mode });
     await expect(page.getByTestId('screen.dreamDetail')).toHaveCSS('background-color', mode === 'dark' ? 'rgb(3, 4, 13)' : 'rgb(240, 228, 212)');

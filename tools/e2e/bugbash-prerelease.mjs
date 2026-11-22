@@ -14,8 +14,8 @@ import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FORBIDDEN_KEYS, FORBIDDEN_PROJECT_REFS } from '../../scripts/test-supabase-guard.mjs';
-import { sourceSnapshot, compareSnapshots, SDK_PINS } from './qualification.mjs';
-import { PERSONA_ACT_MODEL, PERSONA_PROVIDER } from './persona-models.mjs';
+import { sourceSnapshot, compareSnapshots, inspectInstalledSdk, SDK_PINS } from './qualification.mjs';
+import { BUGBASH_MODEL, PERSONA_PROVIDER } from './persona-models.mjs';
 import { sameServedOrigin, webPort } from './web-ports.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -112,7 +112,7 @@ export function charterResult(charter, exitCode, report, reportPath, expectedOri
   const identity = run?.runner?.name === 'e2e' && run.runner.version === SDK_PINS.e2e
     && target?.id === 'dreamer-web' && target.platform === 'web' && target.environment === 'test'
     && sameServedOrigin(expectedOrigin, target.baseOrigin) && target.engine?.name === 'web' && target.engine.version === SDK_PINS['@e2e-dev/web']
-    && models.length > 0 && models.every(model => model.provider === PERSONA_PROVIDER && model.model === PERSONA_ACT_MODEL);
+    && models.length > 0 && models.every(model => model.provider === PERSONA_PROVIDER && model.model === BUGBASH_MODEL);
   // e2e 0.23's planner keeps trying new lenses while steps remain, so the step budget this
   // script sets ends a clean charter as often as `finished`; running out of time or getting stuck does not.
   const incomplete = !valid || !identity || ![0, 1].includes(exitCode) || !['finished', 'step-limit'].includes(exploration.ended)
@@ -150,20 +150,17 @@ export function runBugbash({ exploreCharters = true, env = mockEnv(), login = ch
   const output = join(here, campaign);
   mkdirSync(output, { recursive: true });
   const before = sourceSnapshot(root, 'dreamer');
-  const installedSdk = Object.fromEntries(Object.keys(SDK_PINS).map(name => {
-    try { return [name, JSON.parse(readFileSync(join(here, 'node_modules', name, 'package.json'), 'utf8')).version]; }
-    catch { return [name, null]; }
-  }));
+  const { pins: installedSdk, matches } = inspectInstalledSdk(here);
   // A free port (0) unless E2E_WEB_PORT pins one; each charter's report names the port it got.
   let expectedOrigin = null;
   try { expectedOrigin = `http://127.0.0.1:${webPort('dreamer', env)}`; } catch { /* Refused below as INVALID_WEB_PORT. */ }
   const receipt = { schemaVersion: 1, startedAt: new Date().toISOString(), source: before,
-    scope: 'Dreamer web, local mock and synthetic sessions', model: PERSONA_ACT_MODEL, expectedSdk: SDK_PINS, installedSdk, expectedOrigin,
+    scope: 'Dreamer web, local mock and synthetic sessions', model: BUGBASH_MODEL, expectedSdk: SDK_PINS, installedSdk, expectedOrigin,
     rerunCommand: `mise exec -- npm run test:bugbash:prerelease${only ? ` -- --charter ${only}` : ''}`,
     selected: selected.map(charter => charter.slug), charters: [] };
   const save = () => writeFileSync(join(output, 'receipt.json'), `${JSON.stringify(receipt, null, 2)}\n`);
   save();
-  if (!expectedOrigin || Object.entries(SDK_PINS).some(([name, version]) => installedSdk[name] !== version)) {
+  if (!expectedOrigin || !matches) {
     receipt.finishedAt = new Date().toISOString();
     receipt.exitCode = 2;
     receipt.error = !expectedOrigin ? 'INVALID_WEB_PORT' : 'INSTALLED_SDK_PINS';

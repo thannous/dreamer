@@ -1,10 +1,3 @@
-import { createKeyedSerialLock } from '@/lib/serialLock';
-import {
-  getLucidKeyValueStorage,
-  isLucidNativeKeyValueStorage,
-  type LucidKeyValueStorage,
-} from '@/services/lucidKeyValueStorage';
-
 import {
   LUCID_DREAM_REHEARSAL_VERSION,
   isLucidDreamRehearsalCompletion,
@@ -15,23 +8,16 @@ import {
   type LucidDreamRehearsalCompletion,
   type LucidDreamRehearsalSession,
 } from '@/lib/lucid/dreamRehearsal';
+import { getLucidKeyValueStorage, type LucidKeyValueStorage } from '@/services/lucidKeyValueStorage';
 import {
-  isLucidTrainerEncryptedValueError,
-  isLucidTrainerStorageCapacityError,
-  protectLucidTrainerStoredValue,
-  revealLucidTrainerStoredValue,
-} from '@/services/lucidTrainerSecureStorage';
+  createLucidPracticeStore,
+  hasPracticeEnvelopeKeys,
+  type LucidPracticeStorageErrorReason,
+} from '@/services/lucidPracticeStore';
 
-const STORAGE_NAMESPACE = 'noctalia_lucid_dream_rehearsal';
-const STATE_KEY_VERSION = 'state_v1';
-export const LUCID_DREAM_REHEARSAL_STORE_VERSION = 1 as const;
+export const LUCID_DREAM_REHEARSAL_STORE_VERSION = 1 as const satisfies typeof LUCID_DREAM_REHEARSAL_VERSION;
 export const LUCID_DREAM_REHEARSAL_MAX_STORED_COMPLETIONS = 500 as const;
 const ENVELOPE_KEYS = ['version', 'userScope', 'currentSession', 'completions'] as const;
-const EXPORT_KEYS = ['version', 'userScope', 'currentSession', 'completions'] as const;
-const MAX_SCOPE_LENGTH = 256;
-const CONTROL_CHARS = /[\u0000-\u001F\u007F]/;
-
-type AsyncKeyValueStorage = LucidKeyValueStorage;
 
 export type LucidDreamRehearsalStoredEnvelope = {
   version: typeof LUCID_DREAM_REHEARSAL_STORE_VERSION;
@@ -40,21 +26,8 @@ export type LucidDreamRehearsalStoredEnvelope = {
   completions: LucidDreamRehearsalCompletion[];
 };
 
-export type LucidDreamRehearsalExport = {
-  version: typeof LUCID_DREAM_REHEARSAL_STORE_VERSION;
-  userScope: string;
-  currentSession: LucidDreamRehearsalSession | null;
-  completions: LucidDreamRehearsalCompletion[];
-};
-
-export const LUCID_DREAM_REHEARSAL_STORAGE_ERROR_REASONS = [
-  'invalid_scope',
-  'invalid_metadata',
-  'persistence_failed',
-  'storage_full',
-] as const;
-export type LucidDreamRehearsalStorageErrorReason =
-  (typeof LUCID_DREAM_REHEARSAL_STORAGE_ERROR_REASONS)[number];
+export type LucidDreamRehearsalExport = LucidDreamRehearsalStoredEnvelope;
+export type LucidDreamRehearsalStorageErrorReason = LucidPracticeStorageErrorReason;
 
 export class LucidDreamRehearsalStorageError extends Error {
   readonly reason: LucidDreamRehearsalStorageErrorReason;
@@ -66,63 +39,20 @@ export class LucidDreamRehearsalStorageError extends Error {
   }
 }
 
-const { run: withScopeLock, countKeys: countScopeLocks } = createKeyedSerialLock();
+const store = createLucidPracticeStore({
+  namespace: 'noctalia_lucid_dream_rehearsal',
+  suffix: 'state_v1',
+  practice: 'Dream rehearsal',
+  storageLabel: 'dream-rehearsal',
+  ErrorType: LucidDreamRehearsalStorageError,
+  version: LUCID_DREAM_REHEARSAL_STORE_VERSION,
+  keys: ENVELOPE_KEYS,
+  parse: parseEnvelope,
+  empty: emptyEnvelope,
+});
 
-function usesNativeStorage(storage: AsyncKeyValueStorage): boolean {
-  return isLucidNativeKeyValueStorage(storage);
-}
-
-function isUserScope(value: unknown): value is string {
-  return (
-    typeof value === 'string' &&
-    value.trim() === value &&
-    value.length > 0 &&
-    value.length <= MAX_SCOPE_LENGTH &&
-    !CONTROL_CHARS.test(value) &&
-    (value === 'guest' || /^user:[A-Za-z0-9._:-]+$/.test(value))
-  );
-}
-
-function assertScope(userScope: string): string {
-  if (!isUserScope(userScope)) {
-    throw new LucidDreamRehearsalStorageError(
-      'invalid_scope',
-      'Dream rehearsal user scope is invalid'
-    );
-  }
-  return userScope;
-}
-
-function persistenceError(error: unknown): LucidDreamRehearsalStorageError {
-  if (error instanceof LucidDreamRehearsalStorageError) return error;
-  if (isLucidTrainerStorageCapacityError(error)) {
-    return new LucidDreamRehearsalStorageError('storage_full', 'Local storage is full');
-  }
-  const message = error instanceof Error ? error.message : String(error ?? '');
-  const text = message.toLowerCase();
-  if (text.includes('enospc') || text.includes('no space') || text.includes('quota')) {
-    return new LucidDreamRehearsalStorageError('storage_full', 'Local storage is full');
-  }
-  return new LucidDreamRehearsalStorageError(
-    'persistence_failed',
-    'Local dream-rehearsal persistence failed'
-  );
-}
-
-export function getLucidDreamRehearsalStorageKey(userScope: string): string {
-  return `${STORAGE_NAMESPACE}:${encodeURIComponent(assertScope(userScope))}:${STATE_KEY_VERSION}`;
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-  const prototype = Object.getPrototypeOf(value);
-  return prototype === Object.prototype || prototype === null;
-}
-
-function hasExactKeys(value: object, allowed: readonly string[]): boolean {
-  const keys = Object.keys(value);
-  return keys.length === allowed.length && keys.every((key) => allowed.includes(key));
-}
+export const getLucidDreamRehearsalStorageKey = store.storageKey;
+export const countLucidDreamRehearsalScopeLocksForTests = store.countScopeLocks;
 
 function cloneSession(session: LucidDreamRehearsalSession): LucidDreamRehearsalSession {
   const parsed = parseLucidDreamRehearsalSession(session);
@@ -220,7 +150,7 @@ function parseEnvelope(
   value: unknown,
   userScope: string
 ): LucidDreamRehearsalStoredEnvelope | null {
-  if (!isPlainObject(value) || !hasExactKeys(value, ENVELOPE_KEYS)) return null;
+  if (!hasPracticeEnvelopeKeys(value, ENVELOPE_KEYS)) return null;
   if (value.version !== LUCID_DREAM_REHEARSAL_STORE_VERSION) return null;
   if (value.userScope !== userScope) return null;
   const currentSession = parseCurrentSession(value.currentSession);
@@ -256,84 +186,6 @@ function cloneEnvelope(
   };
 }
 
-async function readPlaintext(key: string, storage: AsyncKeyValueStorage): Promise<string | null> {
-  try {
-    const value = await storage.getItem(key);
-    if (!value) return null;
-    if (!usesNativeStorage(storage)) return value;
-    try {
-      return await revealLucidTrainerStoredValue(key, value);
-    } catch (error) {
-      if (isLucidTrainerEncryptedValueError(error)) {
-        await storage.removeItem(key).catch(() => undefined);
-        return null;
-      }
-      throw persistenceError(error);
-    }
-  } catch (error) {
-    if (error instanceof LucidDreamRehearsalStorageError) throw error;
-    throw persistenceError(error);
-  }
-}
-
-async function writePlaintext(
-  key: string,
-  value: string,
-  storage: AsyncKeyValueStorage
-): Promise<void> {
-  try {
-    const protectedValue = usesNativeStorage(storage)
-      ? await protectLucidTrainerStoredValue(key, value)
-      : value;
-    await storage.setItem(key, protectedValue);
-  } catch (error) {
-    throw persistenceError(error);
-  }
-}
-
-export function countLucidDreamRehearsalScopeLocksForTests(): number {
-  return countScopeLocks();
-}
-
-async function loadEnvelope(
-  userScope: string,
-  storage: AsyncKeyValueStorage
-): Promise<LucidDreamRehearsalStoredEnvelope> {
-  const key = getLucidDreamRehearsalStorageKey(userScope);
-  const plaintext = await readPlaintext(key, storage);
-  if (!plaintext) return emptyEnvelope(userScope);
-  try {
-    const parsed = parseEnvelope(JSON.parse(plaintext) as unknown, userScope);
-    if (parsed) return parsed;
-  } catch (error) {
-    if (error instanceof LucidDreamRehearsalStorageError) throw error;
-  }
-  try {
-    await storage.removeItem(key);
-  } catch (error) {
-    throw persistenceError(error);
-  }
-  return emptyEnvelope(userScope);
-}
-
-async function saveEnvelope(
-  envelope: LucidDreamRehearsalStoredEnvelope,
-  storage: AsyncKeyValueStorage
-): Promise<void> {
-  const unique = parseEnvelope(envelope, envelope.userScope);
-  if (!unique) {
-    throw new LucidDreamRehearsalStorageError(
-      'invalid_metadata',
-      'Invalid local dream-rehearsal envelope'
-    );
-  }
-  await writePlaintext(
-    getLucidDreamRehearsalStorageKey(envelope.userScope),
-    JSON.stringify(unique),
-    storage
-  );
-}
-
 function upsertIntoCompletions(
   completions: readonly LucidDreamRehearsalCompletion[],
   incoming: LucidDreamRehearsalCompletion
@@ -348,24 +200,18 @@ function upsertIntoCompletions(
   return rankStoredCompletions([merged, ...without]);
 }
 
-function completionFromSession(
-  session: LucidDreamRehearsalSession
-): LucidDreamRehearsalCompletion | null {
-  return projectLucidDreamRehearsalCompletion(session);
-}
-
 export async function loadLucidDreamRehearsalState(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
-  return withScopeLock(assertScope(userScope), async () => {
-    return cloneEnvelope(await loadEnvelope(userScope, storage));
+  return store.run(userScope, storage, async (transaction) => {
+    return cloneEnvelope(await transaction.load());
   });
 }
 
 export async function loadLucidDreamRehearsalCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalSession | null> {
   const state = await loadLucidDreamRehearsalState(userScope, storage);
   return state.currentSession;
@@ -373,7 +219,7 @@ export async function loadLucidDreamRehearsalCurrentSession(
 
 export async function loadLucidDreamRehearsalCompletions(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalCompletion[]> {
   const state = await loadLucidDreamRehearsalState(userScope, storage);
   return state.completions;
@@ -382,18 +228,18 @@ export async function loadLucidDreamRehearsalCompletions(
 export async function saveLucidDreamRehearsalCurrentSession(
   userScope: string,
   session: LucidDreamRehearsalSession,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
-  return withScopeLock(assertScope(userScope), async () => {
+  return store.run(userScope, storage, async (transaction) => {
     if (!isLucidDreamRehearsalSession(session)) {
       throw new LucidDreamRehearsalStorageError(
         'invalid_metadata',
         'Invalid dream rehearsal session'
       );
     }
-    const current = await loadEnvelope(userScope, storage);
+    const current = await transaction.load();
     const nextSession = cloneSession(session);
-    const projected = completionFromSession(nextSession);
+    const projected = projectLucidDreamRehearsalCompletion(nextSession);
     const completions = projected
       ? upsertIntoCompletions(current.completions, projected)
       : current.completions.map(cloneCompletion);
@@ -403,24 +249,24 @@ export async function saveLucidDreamRehearsalCurrentSession(
       currentSession: nextSession,
       completions,
     };
-    await saveEnvelope(envelope, storage);
+    await transaction.save(envelope);
     return cloneEnvelope(envelope);
   });
 }
 
 export async function clearLucidDreamRehearsalCurrentSession(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
-  return withScopeLock(assertScope(userScope), async () => {
-    const current = await loadEnvelope(userScope, storage);
+  return store.run(userScope, storage, async (transaction) => {
+    const current = await transaction.load();
     const envelope: LucidDreamRehearsalStoredEnvelope = {
       version: LUCID_DREAM_REHEARSAL_STORE_VERSION,
       userScope,
       currentSession: null,
       completions: current.completions.map(cloneCompletion),
     };
-    await saveEnvelope(envelope, storage);
+    await transaction.save(envelope);
     return cloneEnvelope(envelope);
   });
 }
@@ -428,26 +274,23 @@ export async function clearLucidDreamRehearsalCurrentSession(
 export async function upsertLucidDreamRehearsalCompletion(
   userScope: string,
   completion: LucidDreamRehearsalCompletion,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalCompletion[]> {
-  return withScopeLock(assertScope(userScope), async () => {
+  return store.run(userScope, storage, async (transaction) => {
     if (!isLucidDreamRehearsalCompletion(completion)) {
       throw new LucidDreamRehearsalStorageError(
         'invalid_metadata',
         'Invalid dream rehearsal completion'
       );
     }
-    const current = await loadEnvelope(userScope, storage);
+    const current = await transaction.load();
     const completions = upsertIntoCompletions(current.completions, completion);
-    await saveEnvelope(
-      {
-        version: LUCID_DREAM_REHEARSAL_STORE_VERSION,
-        userScope,
-        currentSession: current.currentSession,
-        completions,
-      },
-      storage
-    );
+    await transaction.save({
+      version: LUCID_DREAM_REHEARSAL_STORE_VERSION,
+      userScope,
+      currentSession: current.currentSession,
+      completions,
+    });
     return completions.map(cloneCompletion);
   });
 }
@@ -459,11 +302,10 @@ export async function updateLucidDreamRehearsalState(
   ) =>
     | LucidDreamRehearsalStoredEnvelope
     | Promise<LucidDreamRehearsalStoredEnvelope>,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
-  return withScopeLock(assertScope(userScope), async () => {
-    const current = cloneEnvelope(await loadEnvelope(userScope, storage));
-    const updated = await updater(cloneEnvelope(current));
+  return store.run(userScope, storage, async (transaction) => {
+    const updated = await updater(await transaction.load());
     const parsed = parseEnvelope(updated, userScope);
     if (!parsed) {
       throw new LucidDreamRehearsalStorageError(
@@ -471,70 +313,24 @@ export async function updateLucidDreamRehearsalState(
         'Invalid dream rehearsal state'
       );
     }
-    await saveEnvelope(parsed, storage);
+    await transaction.save(parsed);
     return cloneEnvelope(parsed);
   });
 }
 
 export async function clearLucidDreamRehearsalState(
   userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<void> {
-  return withScopeLock(assertScope(userScope), async () => {
-    try {
-      await storage.removeItem(getLucidDreamRehearsalStorageKey(userScope));
-    } catch (error) {
-      throw persistenceError(error);
-    }
-  });
+  return store.run(userScope, storage, ({ clear }) => clear());
 }
 
-export async function exportLucidDreamRehearsalState(
-  userScope: string,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
-): Promise<LucidDreamRehearsalExport> {
-  const state = await loadLucidDreamRehearsalState(userScope, storage);
-  return cloneEnvelope(state);
-}
+export const exportLucidDreamRehearsalState = loadLucidDreamRehearsalState;
 
 export async function importLucidDreamRehearsalState(
   userScope: string,
   payload: unknown,
-  storage: AsyncKeyValueStorage = getLucidKeyValueStorage()
+  storage: LucidKeyValueStorage = getLucidKeyValueStorage()
 ): Promise<LucidDreamRehearsalStoredEnvelope> {
-  return withScopeLock(assertScope(userScope), async () => {
-    if (!isPlainObject(payload) || !hasExactKeys(payload, EXPORT_KEYS)) {
-      throw new LucidDreamRehearsalStorageError(
-        'invalid_metadata',
-        'Dream rehearsal import payload is invalid'
-      );
-    }
-    if (payload.version !== LUCID_DREAM_REHEARSAL_STORE_VERSION) {
-      throw new LucidDreamRehearsalStorageError(
-        'invalid_metadata',
-        'Dream rehearsal import version is unknown'
-      );
-    }
-    if (payload.userScope !== userScope) {
-      throw new LucidDreamRehearsalStorageError(
-        'invalid_metadata',
-        'Dream rehearsal import scope does not match'
-      );
-    }
-    const parsed = parseEnvelope(payload, userScope);
-    if (!parsed) {
-      throw new LucidDreamRehearsalStorageError(
-        'invalid_metadata',
-        'Dream rehearsal import payload is invalid'
-      );
-    }
-    await saveEnvelope(parsed, storage);
-    return cloneEnvelope(parsed);
-  });
-}
-
-export function assertLucidDreamRehearsalStoreContract(): void {
-  if (LUCID_DREAM_REHEARSAL_STORE_VERSION !== LUCID_DREAM_REHEARSAL_VERSION) {
-    throw new Error('Dream rehearsal store version must stay aligned with the domain');
-  }
+  return store.importEnvelope(userScope, payload, storage);
 }

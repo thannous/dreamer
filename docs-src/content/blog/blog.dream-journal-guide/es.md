@@ -148,9 +148,10 @@
 <p class="text-purple-200/70 mb-6 max-w-lg mx-auto">
                     Noctalia permite guardar el relato por escrito o por voz y volver a tus notas. Conserva tus recuerdos y tus preguntas como cosas distintas.
                 </p>
-<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="/es/">
-                    Obtener Noctalia <i class="w-5 h-5" data-lucide="arrow-right"></i>
-</a>
+<a class="inline-flex items-center gap-2 px-8 py-4 bg-dream-salmon text-dream-dark rounded-full font-bold hover:bg-dream-salmon/90 transition-colors" href="https://play.google.com/store/apps/details?id=com.tanuki75.noctalia&amp;hl=es&amp;utm_source=noctalia_site&amp;utm_medium=blog_page&amp;utm_campaign=blog_cta&amp;utm_content=guia-diario-suenos_es" rel="nofollow noopener noreferrer" target="_blank">
+                    Descargar Noctalia en Google Play <i class="w-5 h-5" data-lucide="arrow-right"></i>
+                </a>
+<p class="text-xs text-purple-300/70 mt-4">Disponible en Android (Google Play) · Próximamente en el App Store (iOS)</p>
 </aside>
 <!-- FAQ Section -->
 <section class="mt-16">
@@ -206,13 +207,13 @@
       <i data-lucide="arrow-left" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo anterior</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Parálisis del sueño: por qué no puedes moverte y cómo detenerla</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Parálisis del sueño: por qué no puedes moverte y cómo salir de ella</div>
       </div>
     </a>
     <a href="suenos-salud-mental" class="glass-panel rounded-xl p-5 flex items-start justify-between gap-3 hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
       <div>
         <span class="text-xs text-purple-300/60 uppercase tracking-wide">Artículo siguiente</span>
-        <div class="font-serif text-lg text-dream-cream mt-1">Sueños y Salud Mental: Cómo Tu Sueño Revela Tu Mente</div>
+        <div class="font-serif text-lg text-dream-cream mt-1">Sueños y salud mental: lo que tus noches pueden decir de ti, y lo que no</div>
       </div>
       <i data-lucide="arrow-right" class="w-5 h-5 mt-1 text-dream-salmon shrink-0"></i>
     </a>
@@ -229,17 +230,17 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="como-recordar-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas efectivas</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Cómo recordar tus sueños: 10 técnicas prácticas</h3>
             <p class="text-sm text-gray-400">Una rutina para anotar fragmentos al despertar, sin prometer un resultado.</p>
         </a>
         <a href="guia-incubacion-suenos" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo soñar exactamente lo que quieres esta noche</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">Incubación de sueños: cómo pedir un sueño esta noche y qué esperar</h3>
             <p class="text-sm text-gray-400">Aprende el arte antiguo de la incubación onírica para resolver problemas y estimular tu creatividad.</p>
         </a>
         <a href="guia-pesadillas" class="glass-panel rounded-xl p-6 block hover:border-dream-salmon/30 transition-all hover:-translate-y-1">
             <span class="text-xs text-dream-salmon uppercase mb-2 block">Guía</span>
-            <h3 class="font-serif text-lg text-dream-cream mb-2">Pesadillas: Causas, Significado y Cómo Detenerlas</h3>
+            <h3 class="font-serif text-lg text-dream-cream mb-2">¿Por qué tengo pesadillas? Causas y soluciones</h3>
             <p class="text-sm text-gray-400">¿Por qué tenemos pesadillas? Descubre las causas de los malos sueños, su significado y técnicas probadas para reducir su frecuencia y dormir mejor.</p>
         </a>
   </div>
@@ -249,6 +250,6 @@
 <!-- Health Disclaimer (TI-97 E-E-A-T) -->
 <aside aria-label="Aviso" class="glass-panel rounded-xl p-4 my-8 border border-purple-500/20" role="note">
 <p class="text-sm text-purple-200/70">
-<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimenta trastornos del sueño persistentes o problemas de salud mental, consulte a un profesional sanitario cualificado.
+<strong class="text-dream-cream">Importante:</strong> Este artículo tiene fines informativos únicamente y no constituye asesoramiento médico o psicológico. Si experimentas trastornos del sueño persistentes o problemas de salud mental, consulta a un profesional sanitario cualificado.
                 </p>
 </aside>

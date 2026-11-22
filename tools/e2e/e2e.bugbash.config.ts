@@ -1,7 +1,7 @@
 import type { E2EConfig } from 'e2e';
 import { chatgpt } from 'e2e/oauth/chatgpt';
 import base from './e2e.config';
-import { PERSONA_ACT_MODEL } from './persona-models.mjs';
+import { BUGBASH_MODEL } from './persona-models.mjs';
 
 const shared: E2EConfig = base;
 // Facts every model call reads (in explore, the explorer and the planner): what is
@@ -12,7 +12,7 @@ const context = 'Noctalia Dreamer is running as a local mock. Seeded copy and mo
 // How every explorer acts; only the act loop reads `system`.
 const rules = 'Stay on the loopback origin. Use a visible mock profile when a journey needs an account. Do not buy, subscribe, create a real account, or call a production service.';
 const persona = {
-  model: chatgpt(PERSONA_ACT_MODEL),
+  model: chatgpt(BUGBASH_MODEL),
   maxSteps: 40,
   maxModelCalls: 40,
   context,

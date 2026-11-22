@@ -139,7 +139,10 @@ jest.mock('@/constants/lucidTheme', () => ({
 
 jest.mock('@/hooks/useLucidNow', () => ({ useLucidNow: () => NOW }));
 
+type MockRealityCheck = { id: string; occurredAt: number };
 const mockTrainerState = {
+  realityChecks: undefined as MockRealityCheck[] | undefined,
+  preferences: undefined as { timeZone: string } | undefined,
   onboarding: {
     goal: 'first_lucid_dream' as LucidGoal,
     experience: 'beginner' as LucidExperienceLevel,
@@ -229,6 +232,8 @@ describe('Lucid Trainer progress screen', () => {
     mockTrainerState.onboarding.experience = 'beginner';
     mockTrainerState.weeklyReviews = [];
     mockTrainerState.experiments = [...originalExperiments];
+    mockTrainerState.realityChecks = undefined;
+    mockTrainerState.preferences = undefined;
     mockActiveDreamSigns = [];
     cleanup();
   });
@@ -449,5 +454,25 @@ describe('Lucid Trainer progress screen', () => {
     expect(screen.queryByText('null/5')).toBeNull();
     const body = (document.body.textContent ?? '').toLowerCase();
     expect(body).not.toMatch(/did not dream|no dream|no recall/);
+  });
+
+  it('shows 7-day mindful pause counts and active days separately from the 4 overview metrics', () => {
+    // NOW is 14 November 2023 at 22:13 UTC: the card covers 8 to 14 November.
+    mockTrainerState.preferences = { timeZone: 'UTC' };
+    mockTrainerState.realityChecks = [
+      { id: 'rc-1', occurredAt: NOW - 3_600_000 },
+      { id: 'rc-2', occurredAt: NOW - 86_400_000 },
+      // 7 November at 23:13: inside the last 168 hours but 7 calendar days back.
+      { id: 'rc-edge', occurredAt: NOW - 7 * 86_400_000 + 3_600_000 },
+      { id: 'rc-old', occurredAt: NOW - 10 * 86_400_000 },
+    ];
+
+    render(<LucidProgressScreen />);
+
+    expect(screen.getByTestId('lucid-progress-reality-checks-count').textContent).toBe('2checks');
+    expect(screen.getByTestId('lucid-progress-reality-checks-days').textContent).toBe('2active days');
+    expect(screen.getAllByTestId(/metric-/)).toHaveLength(4);
+    fireEvent.click(screen.getByTestId('lucid-progress-reality-checks-open'));
+    expect(mockPush).toHaveBeenCalledWith('/lucid/reality-check');
   });
 });
