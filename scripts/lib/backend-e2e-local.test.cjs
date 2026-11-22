@@ -74,6 +74,8 @@ async function runnerFixture(args, qualifyStatus = 0, startStatus = 0) {
   let config = '';
   try {
     fs.mkdirSync(path.join(ownedRoot, 'supabase'));
+    fs.mkdirSync(path.join(ownedRoot, 'tools/dev-local'), { recursive: true });
+    fs.writeFileSync(path.join(ownedRoot, 'tools/dev-local/guest-reset.sql'), 'create function a();\n-- statement\nrevoke a;\n');
     fs.writeFileSync(path.join(ownedRoot, 'supabase/config.toml'), 'project_id = "fixture"\n[api]\nport = 54321\n[db]\nport = 54322\nsql_paths = ["./seed.sql"]\n[experimental]\nstack = true\n');
     const spawnSync = (binary, argv, options) => {
       calls.push({ binary, argv: [...argv], env: options.env });
@@ -88,6 +90,9 @@ async function runnerFixture(args, qualifyStatus = 0, startStatus = 0) {
         endpoints: { api: { address: '127.0.0.1' } },
       });
       if (argv[0] === 'db' && argv[1] === 'query') stdout = JSON.stringify({ rows: [{ active_jobs: 0 }] });
+      if (argv[0] === 'db' && argv[1] === 'query' && argv.includes('--file')) {
+        calls[calls.length - 1].sql = fs.readFileSync(argv[argv.indexOf('--file') + 1], 'utf8');
+      }
       if (argv[0] === '--run' && argv[1] === 'db:qualify:local') {
         qualifierReceipt = JSON.parse(fs.readFileSync(options.env.TI528_LOCAL_STATUS, 'utf8'));
       }
@@ -137,6 +142,26 @@ test('without --runtime the runner owns a native stack, never a container runtim
   assert.equal(result.calls.some(({ binary }) => /^(docker|podman)/.test(path.basename(binary))), false);
   const browser = result.calls.find(({ argv }) => argv[0] === 'tools/e2e/run.mjs' && argv[1] === 'backend' && argv[2] === 'web');
   assert.equal(browser.env.E2E_BACKEND_RUNTIME, 'native');
+  assert.deepEqual(result.leftovers, []);
+});
+
+test('the local APIs are cached before the browser journeys start them cached-only', async () => {
+  const result = await runnerFixture([]);
+  assert.equal(result.failure, undefined);
+  const cached = result.calls.filter(({ binary, argv }) => binary === 'deno' && argv[0] === 'cache');
+  assert.deepEqual(cached.map(({ argv }) => argv.at(-1)),
+    ['tools/e2e/test-support/native-recovery-api.ts', 'tools/dev-local/api-server.ts']);
+  const browser = result.calls.findIndex(({ argv }) => argv[0] === 'tools/e2e/run.mjs');
+  assert.ok(cached.every(call => result.calls.indexOf(call) < browser));
+});
+
+test('the guest reset SQL is installed one statement at a time before the browser journeys', async () => {
+  const result = await runnerFixture([]);
+  assert.equal(result.failure, undefined);
+  const installs = result.calls.filter(({ argv }) => argv[0] === 'db' && argv.includes('--file'));
+  assert.deepEqual(installs.map(({ sql }) => sql.trim()), ['create function a();', 'revoke a;']);
+  const browser = result.calls.findIndex(({ argv }) => argv[0] === 'tools/e2e/run.mjs');
+  assert.ok(installs.every(install => result.calls.indexOf(install) < browser));
   assert.deepEqual(result.leftovers, []);
 });
 
