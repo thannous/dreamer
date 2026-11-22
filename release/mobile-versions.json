@@ -13,9 +13,10 @@
       "baseline": "Adoption snapshot, not a Store publication claim"
     },
     "meditation": {
-      "version": "0.1.0",
-      "sourceRef": "bc4911f711ac0dccc3e7f9247434bb6e6fb9470b",
-      "baseline": "Adoption snapshot, not a Store publication claim"
+      "version": "1.0.0",
+      "sourceRef": "3d041a4aa1b718ab2862c27dafeea1925d11bb9b",
+      "published": false,
+      "baseline": "Prepared source snapshot; not a Store publication claim"
     }
   }
 }

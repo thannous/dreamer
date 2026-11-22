@@ -1,0 +1,17 @@
+{
+  "locale": {
+    "appStore": "de-DE",
+    "googlePlay": "de-DE"
+  },
+  "name": "Noctalia Meditation",
+  "description": "Wenn dir das Abschalten schwerfällt, nimm dir mit Noctalia Meditation einen Moment Zeit. Wähle eine Atemübung, starte eine Meditation oder höre vor dem Schlafengehen eine Klangkulisse.\n\nEntdecke sechs Welten mit jeweils eigener Optik und Klangkulisse. Atme in deinem Tempo, speichere Einheiten für später und stelle bei Bedarf eine Erinnerung ein.\n\nDie Klangkulissen sind kostenlos in der App enthalten. Streaming oder separate Audio-Downloads sind nicht nötig. Du brauchst weder ein Konto noch ein Abo.",
+  "releaseNotes": "Die erste Version bietet Atemübungen, Meditationen, sechs Welten, eine Merkliste für Einheiten und optionale Erinnerungen.",
+  "appStore": {
+    "subtitle": "Atmen und zur Ruhe kommen",
+    "keywords": "Atmung,Schlaf,Entspannung,Achtsamkeit,Klangkulisse,Timer,offline",
+    "promotionalText": "Gönn dir eine Pause: Folge einem Atemrhythmus, lausche einer Klangkulisse oder wähle eine Meditation zum Tagesausklang."
+  },
+  "googlePlay": {
+    "shortDescription": "Atemübungen, Meditation und Klangwelten für einen ruhigen Abend."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "locale": {
+    "appStore": "en-US",
+    "googlePlay": "en-US"
+  },
+  "name": "Noctalia Meditation",
+  "description": "When the day feels hard to put down, take a moment with Noctalia Meditation. Try a breathing exercise, start a meditation or listen to an ambient soundscape as you get ready for bed.\n\nExplore six atmospheric worlds, each with its own visual and sound setting. Follow the breathing rhythm at your own pace, save sessions to return to and set an optional reminder when it suits you.\n\nAmbient sounds are free and included in the app: no streaming or separate audio download is needed. No app account or subscription is required.",
+  "releaseNotes": "The first release brings breathing exercises, meditations, six atmospheric worlds, saved sessions and optional reminders.",
+  "appStore": {
+    "subtitle": "Breathe, unwind and rest",
+    "keywords": "breathing,sleep,relaxation,mindfulness,ambience,wind down,timer,offline",
+    "promotionalText": "A quiet moment to slow down. Follow a breathing rhythm, settle into an ambient soundscape or choose a meditation for the end of your day."
+  },
+  "googlePlay": {
+    "shortDescription": "Breathing exercises, meditations and ambient sounds for a quieter evening."
+  }
+}
