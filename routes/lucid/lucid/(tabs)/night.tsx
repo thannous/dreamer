@@ -714,28 +714,35 @@ export default function LucidNightScreen() {
                 );
               })}
             </View>
-            <View style={[styles.ambienceControls, reflow && styles.ambienceControlsReflow]}>
-              <LucidButton
-                label={
-                  ambienceNeedsRetry
-                    ? ambienceCopy.retry
-                    : ambience.isPlaying
-                      ? copy.ambiencePause
-                      : copy.ambiencePlay
-                }
-                variant="secondary"
-                icon={ambienceNeedsRetry ? 'refresh' : ambience.isPlaying ? 'pause' : 'play'}
-                disabled={!ambienceNeedsRetry && (!ambience.isLoaded || ambience.isBuffering)}
-                onPress={() => void (ambience.isPlaying ? ambience.pause() : ambience.play())}
-                testID="lucid-night-ambience-play"
-              />
-              <LucidButton
-                label={copy.ambienceStop}
-                variant="ghost"
-                icon="stop"
-                onPress={() => void ambience.stop()}
-                testID="lucid-night-ambience-stop"
-              />
+            <View
+              testID="lucid-night-ambience-controls"
+              style={[styles.ambienceControls, reflow && styles.ambienceControlsReflow]}
+            >
+              <View style={[styles.ambienceControl, reflow && styles.ambienceControlReflow]}>
+                <LucidButton
+                  label={
+                    ambienceNeedsRetry
+                      ? ambienceCopy.retry
+                      : ambience.isPlaying
+                        ? copy.ambiencePause
+                        : copy.ambiencePlay
+                  }
+                  variant="secondary"
+                  icon={ambienceNeedsRetry ? 'refresh' : ambience.isPlaying ? 'pause' : 'play'}
+                  disabled={!ambienceNeedsRetry && (!ambience.isLoaded || ambience.isBuffering)}
+                  onPress={() => void (ambience.isPlaying ? ambience.pause() : ambience.play())}
+                  testID="lucid-night-ambience-play"
+                />
+              </View>
+              <View style={[styles.ambienceControl, reflow && styles.ambienceControlReflow]}>
+                <LucidButton
+                  label={copy.ambienceStop}
+                  variant="ghost"
+                  icon="stop"
+                  onPress={() => void ambience.stop()}
+                  testID="lucid-night-ambience-stop"
+                />
+              </View>
             </View>
             {ambience.error ? (
               <Text
@@ -1005,8 +1012,10 @@ const styles = StyleSheet.create({
   },
   disclosureCopy: { flex: 1, gap: LucidSpace.xs },
   signals: { gap: LucidSpace.md },
-  ambienceControls: { flexDirection: 'row', gap: LucidSpace.sm },
-  ambienceControlsReflow: { flexDirection: 'column' },
+  ambienceControls: { flexDirection: 'row', flexWrap: 'wrap', gap: LucidSpace.sm },
+  ambienceControlsReflow: { flexDirection: 'column', flexWrap: 'nowrap' },
+  ambienceControl: { flexGrow: 1, flexShrink: 1 },
+  ambienceControlReflow: { flexGrow: 0, width: '100%' },
   soundRow: { flexDirection: 'row', gap: LucidSpace.sm },
   soundRowReflow: { flexDirection: 'column' },
   sound: {

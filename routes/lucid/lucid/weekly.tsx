@@ -7,8 +7,12 @@ import { getLucidPalette, LucidRadius, LucidSpace, LucidType } from '@/constants
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
-import { getLucidLocalDateKey } from '@/lib/lucid/calendar';
-import { buildLucidWeeklyReview } from '@/lib/lucid/progress';
+import {
+  buildLucidCalendarWeeklyReview,
+  countLucidPracticeDays,
+  countLucidRecallDays,
+  getLucidProgressDateKey,
+} from '@/lib/lucid/progress';
 import { closeLucidRoute, LUCID_HOME_HREF } from '@/lib/lucid/routes';
 
 const COPY = {
@@ -24,13 +28,24 @@ export default function LucidWeeklyScreen() {
   const { state, content, saveWeeklyReview } = useLucidTrainer(); const copy = COPY[content.locale];
   const [notes, setNotes] = useState(''); const [saving, setSaving] = useState(false); const [step, setStep] = useState(0);
   const now = useLucidNow(); const { fontScale, width } = useWindowDimensions(); const compact = width < 380 || fontScale >= 1.3;
-  const review = useMemo(() => { const endAt = now + 1; return buildLucidWeeklyReview(state!.experiments, { startAt: endAt - 7 * 86400000, endAt }); }, [now, state]);
-  const dateKey = getLucidLocalDateKey(review.currentWindow.startAt);
-  const practiceDays = new Set(state!.progress.flatMap((item) => item.practiceDates).filter((key) => key >= dateKey)).size;
+  const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
+  // One window of 7 calendar days, today included, for every figure the review saves.
+  const review = useMemo(() => buildLucidCalendarWeeklyReview(state!.experiments, now, timeZone), [now, state, timeZone]);
+  const dateKey = getLucidProgressDateKey(review.currentWindow.startAt, timeZone);
+  const { practiceDays, recallDays } = useMemo(() => ({
+    practiceDays: countLucidPracticeDays({
+      progress: state!.progress,
+      realityChecks: state!.realityChecks,
+      experiments: state!.experiments,
+      window: review.currentWindow,
+      timeZone,
+    }),
+    recallDays: countLucidRecallDays(state!.experiments, review.currentWindow, timeZone),
+  }), [review.currentWindow, state, timeZone]);
   const close = () => closeLucidRoute(router, LUCID_HOME_HREF);
   const goBack = () => step === 0 ? close() : setStep((value) => value - 1);
-  const save = async () => { setSaving(true); try { await saveWeeklyReview({ weekStart: dateKey, practiceDays: Math.min(7, practiceDays), recallDays: Math.min(7, review.current.recalledDreams), lucidDreams: review.current.lucidDreams, recommendedTechnique: review.coaching.technique, notes: notes.trim() || undefined }); Alert.alert(copy.saved, content.weeklyReview.coachingNote, [{ text: content.chrome.common.done, onPress: close }]); } finally { setSaving(false); } };
-  const metrics = <View style={[styles.metrics, compact && styles.metricsCompact]}><LucidMetric value={String(practiceDays)} label={copy.practice} style={compact ? styles.metricCompact : undefined} /><LucidMetric value={String(review.current.recalledDreams)} label={copy.recall} style={compact ? styles.metricCompact : undefined} /><LucidMetric value={String(review.current.lucidDreams)} label={copy.lucid} style={compact ? styles.metricCompact : undefined} /></View>;
+  const save = async () => { setSaving(true); try { await saveWeeklyReview({ weekStart: dateKey, practiceDays, recallDays, lucidDreams: review.current.lucidDreams, recommendedTechnique: review.coaching.technique, notes: notes.trim() || undefined }); Alert.alert(copy.saved, content.weeklyReview.coachingNote, [{ text: content.chrome.common.done, onPress: close }]); } finally { setSaving(false); } };
+  const metrics = <View style={[styles.metrics, compact && styles.metricsCompact]}><LucidMetric value={String(practiceDays)} label={copy.practice} style={compact ? styles.metricCompact : undefined} /><LucidMetric value={String(recallDays)} label={copy.recall} style={compact ? styles.metricCompact : undefined} /><LucidMetric value={String(review.current.lucidDreams)} label={copy.lucid} style={compact ? styles.metricCompact : undefined} /></View>;
   const focus = review.coaching.technique ? content.programs[review.coaching.technique].title : copy[review.coaching.action];
 
   return <LucidScreen eyebrow={`${copy.step} ${step + 1} ${copy.of} 3`} title={step === 2 ? copy.summary : copy.title} subtitle={step === 0 ? content.weeklyReview.intro : undefined} trailing={<LucidIconAction label={step === 0 ? content.chrome.common.back : copy.back} icon={step === 0 ? 'close' : 'arrow-back'} onPress={goBack} />} testID="lucid-weekly">

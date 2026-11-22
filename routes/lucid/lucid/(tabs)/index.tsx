@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LUCID_HERO_DARK_SHARE, LUCID_TAB_BAR_INSET, LucidScreen } from '@/components/lucid/LucidUI';
@@ -18,6 +18,9 @@ import {
 import { useLucidTrainer } from '@/context/LucidTrainerContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLucidNow } from '@/hooks/useLucidNow';
+import { getLucidLocalDateKey } from '@/lib/lucid/calendar';
+import type { LucidLocale } from '@/lib/lucid/model';
+import { getLucidDateKeyInTimeZone } from '@/lib/lucid/morningCapture';
 import {
   getLucidDayPhase,
   getLucidPersonalizedPlan,
@@ -289,7 +292,46 @@ type ContextAction = {
   testID: 'lucid-today-morning' | 'lucid-today-reality' | 'lucid-tab-night';
   icon: 'sunny-outline' | 'eye-outline' | 'moon-outline';
   label: string;
+  badge?: string;
   accessibilityLabel: string;
+};
+
+const TODAY_EXTRA: Record<LucidLocale, {
+  todayCount: (count: number) => string;
+  remindersTitle: string;
+  remindersBody: string;
+  remindersAction: string;
+}> = {
+  en: {
+    todayCount: (count) => `${count} today`,
+    remindersTitle: 'Training reminders are off',
+    remindersBody: 'Lucid never enables notifications without asking. Turn on gentle training reminders whenever you want.',
+    remindersAction: 'Enable reminders',
+  },
+  fr: {
+    todayCount: (count) => `${count} aujourd’hui`,
+    remindersTitle: 'Rappels d’entraînement désactivés',
+    remindersBody: 'Lucid n’active aucune notification sans votre accord. Activez des rappels d’entraînement doux quand vous le souhaitez.',
+    remindersAction: 'Activer les rappels',
+  },
+  es: {
+    todayCount: (count) => `${count} hoy`,
+    remindersTitle: 'Recordatorios desactivados',
+    remindersBody: 'Lucid nunca activa notificaciones sin preguntar. Activa recordatorios de entrenamiento suaves cuando quieras.',
+    remindersAction: 'Activar recordatorios',
+  },
+  de: {
+    todayCount: (count) => `${count} heute`,
+    remindersTitle: 'Trainingserinnerungen sind aus',
+    remindersBody: 'Lucid aktiviert Mitteilungen nie ungefragt. Schalte sanfte Trainingserinnerungen ein, wann immer du möchtest.',
+    remindersAction: 'Erinnerungen aktivieren',
+  },
+  it: {
+    todayCount: (count) => `${count} oggi`,
+    remindersTitle: 'Promemoria disattivati',
+    remindersBody: 'Lucid non attiva mai le notifiche senza chiedere. Attiva promemoria di allenamento delicati quando vuoi.',
+    remindersAction: 'Attiva i promemoria',
+  },
 };
 
 type LucidTodayCopy = (typeof COPY)[keyof typeof COPY];
@@ -502,6 +544,28 @@ export default function LucidTodayScreen() {
     planSummary.overline === primaryPresentation.overline &&
     planSummary.title === primaryPresentation.title &&
     planSummary.hint === primaryPresentation.hint;
+  const extraCopy = TODAY_EXTRA[content.locale];
+  const timeZone = state!.preferences?.timeZone ?? state!.onboarding?.sleepSchedule?.timeZone;
+  const toDateKey = (timestamp: number) =>
+    (timeZone ? getLucidDateKeyInTimeZone(timestamp, timeZone) : null)
+    ?? getLucidLocalDateKey(timestamp);
+  const todayKey = toDateKey(now);
+  const morningTodayCount = (state!.experiments ?? []).filter(
+    (item) =>
+      Number.isFinite(item.occurredAt) &&
+      toDateKey(item.occurredAt) === todayKey &&
+      item.captureMode !== 'nothing_for_now' &&
+      // A spoken capture may be saved with only its linked local recording.
+      Boolean(item.recallText?.trim() || item.result || item.voiceCapture === 'local_note')
+  ).length;
+  const realityChecksTodayCount = (state!.realityChecks ?? []).filter(
+    (item) => Number.isFinite(item.occurredAt) && toDateKey(item.occurredAt) === todayKey
+  ).length;
+  // Reminders are scheduled natively only: web cannot honour this card's action.
+  const showRemindersOptIn =
+    Platform.OS !== 'web' &&
+    state?.preferences?.notificationsEnabled === false &&
+    state?.onboarding?.notificationsPermission !== 'denied';
   const contextActions: ContextAction[] = [
     {
       key: 'morning',
@@ -509,7 +573,10 @@ export default function LucidTodayScreen() {
       testID: 'lucid-today-morning',
       icon: 'sunny-outline',
       label: copy.morning,
-      accessibilityLabel: copy.log,
+      badge: morningTodayCount > 0 ? extraCopy.todayCount(morningTodayCount) : undefined,
+      accessibilityLabel: morningTodayCount > 0
+        ? `${copy.log} · ${extraCopy.todayCount(morningTodayCount)}`
+        : copy.log,
     },
     {
       key: 'reality',
@@ -517,7 +584,10 @@ export default function LucidTodayScreen() {
       testID: 'lucid-today-reality',
       icon: 'eye-outline',
       label: copy.reality,
-      accessibilityLabel: copy.doCheck,
+      badge: realityChecksTodayCount > 0 ? extraCopy.todayCount(realityChecksTodayCount) : undefined,
+      accessibilityLabel: realityChecksTodayCount > 0
+        ? `${copy.doCheck} · ${extraCopy.todayCount(realityChecksTodayCount)}`
+        : copy.doCheck,
     },
     {
       key: 'night',
@@ -644,6 +714,17 @@ export default function LucidTodayScreen() {
                 <Text style={[styles.contextLabel, { color: palette.text }]}>
                   {action.label}
                 </Text>
+                {action.badge ? (
+                  <Text
+                    testID={`${action.testID}-count`}
+                    style={[
+                      styles.contextBadge,
+                      { color: action.key === 'morning' ? palette.amber : palette.accent },
+                    ]}
+                  >
+                    {action.badge}
+                  </Text>
+                ) : null}
               </PressableScale>
             ))}
           </View>
@@ -797,6 +878,43 @@ export default function LucidTodayScreen() {
             ))}
           </View>
         </View>
+
+        {showRemindersOptIn ? (
+          <View
+            style={[
+              styles.remindersCard,
+              { backgroundColor: palette.surface, borderColor: palette.borderInteractive },
+            ]}
+            testID="lucid-today-reminders"
+          >
+            <View style={styles.remindersHeader}>
+              <Ionicons color={palette.amber} name="notifications-outline" size={LucidIcon.md} />
+              <View style={styles.remindersCopy}>
+                <Text style={[styles.remindersTitle, { color: palette.text }]}>
+                  {extraCopy.remindersTitle}
+                </Text>
+                <Text style={[styles.remindersBody, { color: palette.textSecondary }]}>
+                  {extraCopy.remindersBody}
+                </Text>
+              </View>
+            </View>
+            <PressableScale
+              accessibilityLabel={extraCopy.remindersAction}
+              accessibilityRole="button"
+              onPress={() => router.push('/lucid/permissions')}
+              testID="lucid-today-reminders-enable"
+              style={[
+                styles.remindersAction,
+                { backgroundColor: palette.surfaceRaised, borderColor: palette.borderInteractive },
+              ]}
+            >
+              <Ionicons color={palette.accent} name="notifications-outline" size={LucidIcon.sm} />
+              <Text style={[styles.remindersActionLabel, { color: palette.text }]}>
+                {extraCopy.remindersAction}
+              </Text>
+            </PressableScale>
+          </View>
+        ) : null}
 
       </Reveal>
     </LucidScreen>
@@ -1019,5 +1137,52 @@ const styles = StyleSheet.create({
     fontSize: LucidType.caption[0],
     lineHeight: LucidType.caption[1],
     textAlign: 'center',
+  },
+  contextBadge: {
+    fontFamily: 'Outfit_700Bold',
+    fontSize: LucidType.overline[0],
+    lineHeight: LucidType.overline[1],
+    textAlign: 'center',
+  },
+  remindersCard: {
+    borderRadius: LucidRadius.xl,
+    borderWidth: 1,
+    padding: LucidSpace.lg,
+    gap: LucidSpace.md,
+  },
+  remindersHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: LucidSpace.sm,
+  },
+  remindersCopy: {
+    flex: 1,
+    gap: LucidSpace.xs,
+  },
+  remindersTitle: {
+    fontFamily: 'Outfit_700Bold',
+    fontSize: LucidType.bodySm[0],
+    lineHeight: LucidType.bodySm[1],
+  },
+  remindersBody: {
+    fontFamily: 'Outfit_400Regular',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
+  },
+  remindersAction: {
+    minHeight: 44,
+    borderRadius: LucidRadius.full,
+    borderWidth: 1,
+    paddingHorizontal: LucidSpace.md,
+    paddingVertical: LucidSpace.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: LucidSpace.xs,
+  },
+  remindersActionLabel: {
+    fontFamily: 'Outfit_700Bold',
+    fontSize: LucidType.caption[0],
+    lineHeight: LucidType.caption[1],
   },
 });

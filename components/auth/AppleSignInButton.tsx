@@ -11,7 +11,11 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { attempt } from '@/lib/attempt';
 import { signInWithApple } from '@/lib/auth';
 import { createScopedLogger } from '@/lib/logger';
-import { clearStayOnSettingsIntent, requestStayOnSettingsIntent } from '@/lib/navigationIntents';
+import {
+  clearStayOnSettingsIntent,
+  requestStayOnSettingsIntent,
+  type AuthReturnDestination,
+} from '@/lib/navigationIntents';
 import { TID } from '@/lib/testIDs';
 import { TypeScale } from '@/constants/typeScale';
 
@@ -30,7 +34,7 @@ function getErrorMessage(error: unknown): string | undefined {
 export default function AppleSignInButton({
   returnTo = '/settings',
 }: {
-  returnTo?: '/settings' | '/lucid/(tabs)/settings';
+  returnTo?: AuthReturnDestination | null;
 }) {
   const [loading, setLoading] = useState(false);
   const { colors, mode } = useTheme();
@@ -45,7 +49,9 @@ export default function AppleSignInButton({
     setLoading(true);
     log.debug('User tapped "Continue with Apple"');
     await attempt(async () => {
-      requestStayOnSettingsIntent({ destination: returnTo });
+      if (returnTo) {
+        requestStayOnSettingsIntent({ destination: returnTo });
+      }
       await signInWithApple();
       log.debug('Sign-in successful');
     }, {

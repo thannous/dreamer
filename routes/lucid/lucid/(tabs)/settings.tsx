@@ -404,6 +404,14 @@ const COPY = {
   },
 } as const;
 
+const REMINDERS_PAUSED: Record<LucidLocale, string> = {
+  en: 'paused',
+  fr: 'en pause',
+  es: 'en pausa',
+  de: 'pausiert',
+  it: 'in pausa',
+};
+
 type OnboardingSettingsPatch = {
   goal?: LucidGoal;
   experience?: LucidExperienceLevel;
@@ -842,7 +850,15 @@ export default function LucidSettingsScreen() {
 
       <LucidSectionHeader title={copy.training} />
       <LucidCard>
-        <View style={styles.counter}>
+        <LucidToggleRow
+          title={copy.notifications}
+          description={copy.notificationsBody}
+          value={state.preferences.notificationsEnabled}
+          disabled={savingSetting}
+          onValueChange={changeNotificationsEnabled}
+          icon="notifications"
+        />
+        <View style={[styles.counter, { borderTopColor: palette.border, borderTopWidth: StyleSheet.hairlineWidth }]}>
           <View style={styles.counterCopy}>
             <Text style={[styles.accountTitle, { color: palette.text }]}>{copy.weekly}</Text>
             <Text style={[styles.accountSub, { color: palette.textSecondary }]}>
@@ -871,8 +887,12 @@ export default function LucidSettingsScreen() {
         <View style={[styles.counter, { borderTopColor: palette.border, borderTopWidth: StyleSheet.hairlineWidth }]}>
           <View style={styles.counterCopy}>
             <Text style={[styles.accountTitle, { color: palette.text }]}>{copy.reminders}</Text>
-            <Text style={[styles.accountSub, { color: palette.textSecondary }]}>
+            <Text
+              testID="lucid-reminders-summary"
+              style={[styles.accountSub, { color: palette.textSecondary }]}
+            >
               {state.preferences.realityCheckRemindersPerDay} {copy.perDay}
+              {state.preferences.notificationsEnabled ? '' : ` · ${REMINDERS_PAUSED[content.locale]}`}
             </Text>
           </View>
           <View style={styles.counterButtons}>
@@ -933,14 +953,6 @@ export default function LucidSettingsScreen() {
             })}
           </View>
         </View>
-        <LucidToggleRow
-          title={copy.notifications}
-          description={copy.notificationsBody}
-          value={state.preferences.notificationsEnabled}
-          disabled={savingSetting}
-          onValueChange={changeNotificationsEnabled}
-          icon="notifications"
-        />
       </LucidCard>
 
       <LucidSectionHeader title={copy.schedule} caption={copy.scheduleBody} />
