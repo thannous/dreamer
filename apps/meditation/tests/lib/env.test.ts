@@ -1,5 +1,6 @@
 import {
   areAccountsEnabled,
+  areMockWorldSalesEnabled,
   isAudioMockModeEnabled,
   isMockModeEnabled,
 } from '@/lib/env';
@@ -90,5 +91,29 @@ describe('isAudioMockModeEnabled', () => {
     setAudioMockEnv(value);
 
     expect(isAudioMockModeEnabled()).toBe(true);
+  });
+});
+
+describe('areMockWorldSalesEnabled', () => {
+  const originalMock = process.env.EXPO_PUBLIC_MOCK_MODE;
+  const originalSales = process.env.EXPO_PUBLIC_MOCK_WORLD_SALES;
+
+  afterEach(() => {
+    setMockEnv(originalMock);
+    if (originalSales === undefined) delete process.env.EXPO_PUBLIC_MOCK_WORLD_SALES;
+    else process.env.EXPO_PUBLIC_MOCK_WORLD_SALES = originalSales;
+  });
+
+  it('requires both explicit mock sales and general mock mode', () => {
+    setMockEnv('true');
+    delete process.env.EXPO_PUBLIC_MOCK_WORLD_SALES;
+    expect(areMockWorldSalesEnabled()).toBe(false);
+
+    process.env.EXPO_PUBLIC_MOCK_WORLD_SALES = 'true';
+    setMockEnv('false');
+    expect(areMockWorldSalesEnabled()).toBe(false);
+
+    setMockEnv('true');
+    expect(areMockWorldSalesEnabled()).toBe(true);
   });
 });
