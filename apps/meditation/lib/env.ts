@@ -8,6 +8,7 @@
 export type ExpoPublicEnvKey =
   | 'EXPO_PUBLIC_MOCK_MODE'
   | 'EXPO_PUBLIC_MOCK_AUDIO'
+  | 'EXPO_PUBLIC_MOCK_WORLD_SALES'
   | 'EXPO_PUBLIC_ACCOUNTS_ENABLED'
   | 'EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED'
   | 'EXPO_PUBLIC_REVENUECAT_IOS_KEY'
@@ -19,6 +20,8 @@ export function getExpoPublicEnvValue(key: ExpoPublicEnvKey): string | undefined
       return process.env.EXPO_PUBLIC_MOCK_MODE;
     case 'EXPO_PUBLIC_MOCK_AUDIO':
       return process.env.EXPO_PUBLIC_MOCK_AUDIO;
+    case 'EXPO_PUBLIC_MOCK_WORLD_SALES':
+      return process.env.EXPO_PUBLIC_MOCK_WORLD_SALES;
     case 'EXPO_PUBLIC_ACCOUNTS_ENABLED':
       return process.env.EXPO_PUBLIC_ACCOUNTS_ENABLED;
     case 'EXPO_PUBLIC_SUBSCRIPTIONS_ENABLED':
@@ -36,6 +39,9 @@ const isTrue = (value: string | undefined): boolean => value === 'true' || value
 
 export const isMockModeEnabled = (): boolean =>
   isTrue(getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_MODE'));
+
+export const areMockWorldSalesEnabled = (): boolean =>
+  isMockModeEnabled() && isTrue(getExpoPublicEnvValue('EXPO_PUBLIC_MOCK_WORLD_SALES'));
 
 /**
  * Audio is intentionally independent from purchase/storage mocks. Device QA

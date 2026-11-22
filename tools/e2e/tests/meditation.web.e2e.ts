@@ -58,6 +58,56 @@ test('Meditation onboarding persists and tabs, editorial path, history and world
   await app.screenshot('editorial-path-history-and-world-settings');
 });
 
+test('Meditation simulates a one-time universe purchase and keeps access after restart', { tags: ['purchases', 'persistence'] }, async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await app.open();
+  await meditationJourney(app, screen, false, false);
+
+  const worldName = screen.getByTestId('home.world.name', { visible: true });
+  const worldToggle = screen.getByTestId('home.world-switcher.toggle', { visible: true });
+  const tide = screen.getByRole('radio', 'Deep tide', { exact: true, visible: true });
+  await worldToggle.tap();
+  await expect(tide.getByText('0,99 €', { exact: true })).toBeVisible();
+  await tide.tap();
+  await screen.getByTestId('home.journey.cta', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.worldPurchase', { visible: true })).toBeVisible();
+  const buy = screen.getByTestId('btn.worldPurchase.buy', { visible: true });
+  await expect(buy).toHaveText(/Get · 0,99\s€/);
+  await buy.tap();
+
+  await expect(worldName).toHaveText('Deep tide');
+  const owned = screen.getByTestId('home.world.owned', { visible: true });
+  await expect(owned).toBeVisible();
+  await app.restart();
+  await expect(owned).toBeVisible();
+  await screen.getByTestId('home.journey.cta', { visible: true }).tap();
+  await expect(screen.getByTestId('screen.session', { visible: true })).toBeVisible();
+  await app.screenshot('meditation-purchased-universe-session');
+});
+
+test('Meditation applies the selected free universe theme and restores it after restart', { tags: ['appearance', 'persistence'] }, async ({ app, screen, browser }) => {
+  await isolateWeb(browser, app);
+  await app.open();
+  await meditationJourney(app, screen, false, false);
+
+  const worldName = screen.getByTestId('home.world.name', { visible: true });
+  const worldNameColor = () => browser.evaluate(() => {
+    const heading = document.querySelector('[data-testid="home.world.name"]');
+    return heading ? getComputedStyle(heading).color : null;
+  });
+  await expect(worldName).toHaveText('Constellation');
+  await expect.poll(worldNameColor).toBe('rgb(255, 249, 239)');
+  await screen.getByTestId('home.world-switcher.toggle', { visible: true }).tap();
+  await screen.getByRole('radio', 'Inner dawn', { exact: true, visible: true }).tap();
+
+  await expect(worldName).toHaveText('Inner dawn');
+  await expect.poll(worldNameColor).toBe('rgb(56, 45, 53)');
+  await app.restart();
+  await expect(worldName).toHaveText('Inner dawn');
+  await expect.poll(worldNameColor).toBe('rgb(56, 45, 53)');
+  await app.screenshot('meditation-inner-dawn-theme');
+});
+
 test('Meditation finds a session, persists its favourite after restart and persists its removal', { tags: ['library', 'persistence'] }, async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await app.open();

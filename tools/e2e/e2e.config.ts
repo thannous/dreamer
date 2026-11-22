@@ -123,6 +123,7 @@ export default {
           ...(branch ? {} : backend ? { E2E_BACKEND_PROFILE: process.env.E2E_BACKEND_PROFILE! } : {
             EXPO_PUBLIC_MOCK_MODE: 'true', EXPO_PUBLIC_MOCK_AUDIO: 'true', EXPO_PUBLIC_MOCK_PERSISTENCE: 'true',
           }),
+          ...(product === 'meditation' && !personas ? { EXPO_PUBLIC_MOCK_WORLD_SALES: 'true' } : {}),
           EXPO_PUBLIC_PERFORMANCE_TRACING: process.env.EXPO_PUBLIC_PERFORMANCE_TRACING === 'true' ? 'true' : 'false',
           ...(product === 'meditation' ? {} : {
             NOCTALIA_APP_VARIANT: product === 'lucid' ? 'lucid' : 'noctalia',

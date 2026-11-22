@@ -27,10 +27,14 @@ test('Meditation release persists saving and removing a favourite across restart
   await app.screenshot('meditation-native-favourite-removal');
 });
 
-test('Meditation release keeps playback across background and records one completed session', { tags: ['audio', 'recovery', 'persistence'], timeout: 240_000 }, async ({ app, screen, platform, device }) => {
+test('Meditation release keeps playback across background and records one session and a one-day streak', { tags: ['audio', 'recovery', 'persistence'], timeout: 240_000 }, async ({ app, screen, platform, device }) => {
   await app.open();
   await app.clearState();
   await meditationJourney(app, screen, platform === 'ios');
+  await screen.getByTestId('tab.profile', { visible: true }).tap();
+  await expect(screen.getByTestId('profile.empty-glass', { visible: true })).toBeVisible();
+  await expect(screen.getByTestId('text.profile.streak', { visible: true })).toHaveCount(0);
+  await screen.getByTestId('tab.home', { visible: true }).tap();
   await screen.getByTestId('home.journey.cta', { visible: true }).tap();
   await screen.getByTestId('btn.session.play', { visible: true }).tap();
   const position = screen.getByTestId('text.player.position', { visible: true });
@@ -58,8 +62,8 @@ test('Meditation release keeps playback across background and records one comple
   await slider.tap({ position: { x: bounds.width - 1, y: bounds.height / 2 } });
   await expect(screen.getByTestId('screen.sessionComplete', { visible: true })).toBeVisible();
   await screen.getByTestId('btn.complete.home', { visible: true }).tap();
-  for (let restart = 0; restart < 2; restart++) {
-    await app.restart();
+  for (let restart = 0; restart <= 2; restart++) {
+    if (restart > 0) await app.restart();
     await screen.getByTestId('tab.profile', { visible: true }).tap();
     const streak = screen.getByTestId('text.profile.streak', { visible: true });
     await screen.scrollUntilVisible(streak);
