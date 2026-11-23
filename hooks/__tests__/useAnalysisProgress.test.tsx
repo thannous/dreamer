@@ -95,6 +95,24 @@ describe('useAnalysisProgress', () => {
       expect(result.current.progress).toBe(27);
     });
 
+    it('starts the next step animation from the progress reached mid-animation', () => {
+      const { result } = renderHook(() => useAnalysisProgress(), { wrapper: strictWrapper });
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+        jest.advanceTimersByTime(250);
+      });
+      expect(result.current.progress).toBeCloseTo(12.5);
+
+      act(() => {
+        result.current.setStep(AnalysisStep.GENERATING_IMAGE);
+        jest.advanceTimersByTime(25);
+      });
+
+      expect(result.current.progress).toBeCloseTo(12.5 + (65 - 12.5) / 20);
+      expect(jest.getTimerCount()).toBe(1);
+    });
+
     it('leaves no timer running after unmount mid-animation', () => {
       const { result, unmount } = renderHook(() => useAnalysisProgress(), { wrapper: strictWrapper });
 
