@@ -81,6 +81,8 @@ export function useAnalysisProgress() {
 
   // Track the target progress for smooth animation
   const animationRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Progress the next animation starts from, kept outside setState updaters so they stay pure
+  const progressRef = useRef(0);
   // Deduplicate haptics when the same step is set repeatedly
   const lastHapticStepRef = useRef<AnalysisStep>(AnalysisStep.IDLE);
 
@@ -99,29 +101,29 @@ export function useAnalysisProgress() {
       clearInterval(animationRef.current);
     }
 
-    setState((prev) => {
-      const startProgress = prev.progress;
-      const diff = targetProgress - startProgress;
-      const duration = 500; // 500ms animation
-      const steps = 20;
-      const increment = diff / steps;
-      let currentStep = 0;
+    const startProgress = progressRef.current;
+    const duration = 500; // 500ms animation
+    const steps = 20;
+    const increment = (targetProgress - startProgress) / steps;
+    let currentStep = 0;
 
-      animationRef.current = setInterval(() => {
-        currentStep++;
-        if (currentStep >= steps) {
-          setState((p) => ({ ...p, progress: targetProgress }));
-          if (animationRef.current) {
-            clearInterval(animationRef.current);
-            animationRef.current = null;
-          }
-        } else {
-          setState((p) => ({ ...p, progress: startProgress + increment * currentStep }));
+    const updateProgress = (progress: number) => {
+      progressRef.current = progress;
+      setState((p) => ({ ...p, progress }));
+    };
+
+    animationRef.current = setInterval(() => {
+      currentStep++;
+      if (currentStep >= steps) {
+        updateProgress(targetProgress);
+        if (animationRef.current) {
+          clearInterval(animationRef.current);
+          animationRef.current = null;
         }
-      }, duration / steps);
-
-      return prev;
-    });
+      } else {
+        updateProgress(startProgress + increment * currentStep);
+      }
+    }, duration / steps);
   }, []);
 
   const setStep = useCallback(
@@ -148,6 +150,7 @@ export function useAnalysisProgress() {
       clearInterval(animationRef.current);
       animationRef.current = null;
     }
+    progressRef.current = 0;
     setState({
       step: AnalysisStep.ERROR,
       progress: 0,
@@ -167,6 +170,7 @@ export function useAnalysisProgress() {
       animationRef.current = null;
     }
     lastHapticStepRef.current = AnalysisStep.IDLE;
+    progressRef.current = 0;
     setState({
       step: AnalysisStep.IDLE,
       progress: 0,
