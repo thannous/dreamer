@@ -51,9 +51,11 @@ deterministic local fixture.
 configured external SMTP and custom send-email hooks. The test follows a real
 Supabase Auth recovery message in Chromium and checks that the old password is
 rejected, the new password signs in as the same account, and the link can be
-used only once. Tokens are kept out of the trace. Without `--mail`, the mail
-test is skipped and the existing backend campaign runs as before.
-
+used only once. On replay, Supabase Auth must return `otp_expired` without
+issuing a new credential, then the app must show the expired link screen.
+Tokens are kept out of the trace. The app release gate runs the entire backend
+campaign with `--mail`. Manual runs without it skip only the recovery email
+journey.
 
 The native runtime needs Linux amd64/arm64 with glibc 2.35+ (Ubuntu 22.04 or later)
 or macOS 14+ on Apple silicon. Supabase does not support it on Windows or on Intel

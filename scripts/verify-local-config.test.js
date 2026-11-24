@@ -27,13 +27,22 @@ const tracked = () => execFileSync('git', ['ls-files'], { cwd: ROOT, encoding: '
 
 /** The files a scope leaves out, by the engine's own matcher (an ES module). */
 function outside(globs, files) {
-  return JSON.parse(execFileSync(process.execPath, [
-    '--input-type=module', '-e',
-    `import { readFileSync } from 'node:fs';
-     import { matchesAny } from ${JSON.stringify(ENGINE)};
-     const [globs, files] = JSON.parse(readFileSync(0, 'utf8'));
-     process.stdout.write(JSON.stringify(files.filter((file) => !matchesAny(file, globs))));`,
-  ], { input: JSON.stringify([globs, files]), encoding: 'utf8', maxBuffer: 64 << 20 }));
+  // Passing the full inventory through execFileSync's stdin can stall on macOS.
+  const dir = mkdtempSync(path.join(tmpdir(), 'noctalia-verify-globs-'));
+  try {
+    const input = path.join(dir, 'scope.json');
+    writeFileSync(input, JSON.stringify([globs, files]));
+    return JSON.parse(execFileSync(process.execPath, [
+      '--input-type=module', '-e',
+      `import { readFileSync } from 'node:fs';
+       import { matchesAny } from ${JSON.stringify(ENGINE)};
+       const [globs, files] = JSON.parse(readFileSync(process.argv[1], 'utf8'));
+       process.stdout.write(JSON.stringify(files.filter((file) => !matchesAny(file, globs))));`,
+      input,
+    ], { encoding: 'utf8', maxBuffer: 64 << 20 }));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 const checkNamed = (name) => config.checks.find((check) => check.name === name);
@@ -295,7 +304,7 @@ describe('verify-local.config.mjs', () => {
   it('e2e-backend needs the native Supabase runtime, never Docker, and really runs the journeys', () => {
     // A failed probe leaves the check unavailable (proof incomplete); it can never pass it.
     const check = config.checks.find((entry) => entry.name === 'e2e-backend');
-    expect(check.command).toBe('npm run test:e2e:backend');
+    expect(check.command).toBe('npm run test:e2e:backend -- --mail');
     expect(check.specialised).toBe(true);
     expect(check.requires.command).toBe('node scripts/check-native-supabase-runtime.cjs');
     expect(check.requires.hint).toContain('needs Linux glibc>=2.35 (WSL2 on Windows) or macOS 14+ Apple silicon');

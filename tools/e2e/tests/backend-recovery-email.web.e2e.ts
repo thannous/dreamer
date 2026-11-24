@@ -44,7 +44,9 @@ async function recoveryLink(mailOrigin: string, recipient: string, appOrigin: st
   throw new Error('No recovery email reached the local mailbox');
 }
 
-async function openRecoveryLink(browser: Browser, page: Page, link: string, appOrigin: string) {
+async function openRecoveryLink(
+  browser: Browser, page: Page, link: string, appOrigin: string, expected: 'fresh' | 'spent',
+) {
   const entry = '/__e2e_recovery_mail';
   const route = new URL(entry, appOrigin).href;
   // Follow the actual Auth link without exposing the verification URL to the
@@ -56,6 +58,23 @@ async function openRecoveryLink(browser: Browser, page: Page, link: string, appO
     callback.pathname !== '/auth/reset-password' || callback.username || callback.password) {
     throw new Error('The local Auth verification did not redirect to this app');
   }
+  // Assert the server verdict before Chromium can reject a code because its PKCE
+  // verifier was already consumed. Keep authorization codes out of assertion output.
+  const fragment = new URLSearchParams(callback.hash.slice(1));
+  const errorCode = callback.searchParams.get('error_code') ?? fragment.get('error_code');
+  const credentialKeys = [
+    'code', 'token', 'token_hash', 'access_token', 'refresh_token', 'provider_token', 'provider_refresh_token',
+  ];
+  const hasCredential = [callback.searchParams, fragment].some(params =>
+    credentialKeys.some(key => params.has(key)) ||
+    params.getAll('sb_flow_id').some(flow => flow.includes('?token_hash=')));
+  if (expected === 'fresh' && (!callback.searchParams.get('code') || errorCode !== null)) {
+    throw new Error('Local Auth did not issue a code for the fresh recovery link');
+  }
+  if (expected === 'spent' && (errorCode !== 'otp_expired' || hasCredential)) {
+    throw new Error('Local Auth did not reject the spent recovery link');
+  }
+
   // The SDK owns the navigation to the neutral URL and suppresses intermediate URLs.
   await page.route(route, handler => handler.fulfill({
     status: 302,
@@ -96,7 +115,7 @@ describe('Password recovery through local email', { tags: ['auth-mail'] }, () =>
     await expect(screen.getByTestId('text.auth.forgotPasswordStatus')).toBeVisible();
 
     const link = await recoveryLink(mailOrigin!, account.email, appOrigin);
-    await openRecoveryLink(browser, page, link, appOrigin);
+    await openRecoveryLink(browser, page, link, appOrigin, 'fresh');
     const reset = screen.getByTestId('screen.auth.resetPassword');
     await reset.getByTestId('input.auth.recoveryEmail').fill(account.email);
     await page.getByTestId('input.auth.newPassword').fill(newPassword);
@@ -117,7 +136,7 @@ describe('Password recovery through local email', { tags: ['auth-mail'] }, () =>
     } finally {
       await verifier.auth.signOut({ scope: 'local' });
     }
-    await openRecoveryLink(browser, page, link, appOrigin);
+    await openRecoveryLink(browser, page, link, appOrigin, 'spent');
     await expect(reset).toContainText('This link is no longer valid');
     await expect(reset.getByTestId('input.auth.newPassword')).toHaveCount(0);
   });
