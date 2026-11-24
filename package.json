@@ -328,6 +328,7 @@
     "playwright": "^1.58.2",
     "react-test-renderer": "19.3.0",
     "sharp": "0.35.5",
+    "smol-toml": "1.9.0",
     "stream-json": "file:tools/stream-json",
     "supabase": "3.2.0",
     "typescript": "~6.0.3",

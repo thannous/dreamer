@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations } = require('./backend-e2e-local.cjs');
+const { assertBackendTarget, assertNoActiveCronJobs, assertNoExternalSmtpConfig, normalizeStackStatus, prepareLocalMigrations } = require('./backend-e2e-local.cjs');
 
 const local = () => ({
   API_URL: 'http://127.0.0.1:20710', DB_URL: 'postgresql://postgres:postgres@127.0.0.1:32102/postgres',
@@ -42,6 +42,33 @@ test('cron safety requires exactly one verified zero count in either CLI output 
 test('a runtime exposing a non-loopback service cannot qualify as a local-only stack', () => {
   assert.throws(() => normalizeStackStatus({ id: 'a'.repeat(64), runtime: 'native', env: local(),
     endpoints: { 'database.sql': { address: '0.0.0.0' } } }));
+});
+
+test('the mail profile only accepts the mailbox advertised by the owned local stack', () => {
+  const payload = {
+    id: 'a'.repeat(64),
+    runtime: 'native',
+    env: { ...local(), MAILPIT_URL: 'http://127.0.0.1:23112' },
+    endpoints: { 'mailpit.http': { address: '127.0.0.1', port: 23112, protocol: 'http' } },
+  };
+  assert.equal(normalizeStackStatus(payload, { mail: true }).MAILPIT_URL, payload.env.MAILPIT_URL);
+  assert.equal(normalizeStackStatus(payload).MAILPIT_URL, undefined);
+  assert.throws(() => normalizeStackStatus({ ...payload, endpoints: {} }, { mail: true }));
+  for (const MAILPIT_URL of [local().API_URL, 'https://mail.example.test:23112', 'http://127.0.0.1:23112/path']) {
+    assert.throws(() => normalizeStackStatus({ ...payload, env: { ...payload.env, MAILPIT_URL } }, { mail: true }));
+  }
+});
+
+test('the mail profile refuses external SMTP settings before the local stack starts', () => {
+  assert.doesNotThrow(() => assertNoExternalSmtpConfig('[local_smtp]\nenabled = true'));
+  assert.doesNotThrow(() => assertNoExternalSmtpConfig('[auth.email.smtp]\nenabled = false'));
+  for (const config of [
+    '[auth.email.smtp]\nhost = "smtp.example.test"',
+    'auth.email.smtp = {enabled = true}',
+    '[auth."email".smtp]\nenabled = true',
+    '[auth.hook.send_email]\nenabled = true',
+    '[auth.email.smtp',
+  ]) assert.throws(() => assertNoExternalSmtpConfig(config));
 });
 
 // The UI suite cannot safely prove that an unattended scheduler never calls production.

@@ -10,6 +10,9 @@ export { expect, login, journal, client, admin } from './backend-fixtures';
 
 export type RecoveryState = {
   analysisProviderCalls: number;
+  chatProviderCalls: number;
+  droppedChatCompletions: number;
+  chatRequests: string[];
   analysisDispatches: number;
   analysisRequests: string[];
   pendingWorkers: number;
@@ -22,7 +25,7 @@ export type RecoveryState = {
 };
 export type RecoveryFixture = {
   origin: string;
-  control: (command: { reset?: boolean; analysisHold?: boolean; analysisOutage?: boolean }) => Promise<void>;
+  control: (command: { reset?: boolean; analysisHold?: boolean; analysisOutage?: boolean; chatDropDone?: boolean }) => Promise<void>;
   state: () => Promise<RecoveryState>;
 };
 

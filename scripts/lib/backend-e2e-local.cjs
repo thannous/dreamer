@@ -24,7 +24,32 @@ function assertBackendTarget(status) {
   return url;
 }
 
-function normalizeStackStatus(payload) {
+/** Parse the entire configuration; unknown/ambiguous SMTP shapes fail closed. */
+function assertNoExternalSmtpConfig(source) {
+  let config;
+  try { config = require('smol-toml').parse(source); }
+  catch { throw new Error('Backend email E2E requires parseable TOML configuration'); }
+  const mailTransports = [config.auth?.email?.smtp, config.auth?.hook?.send_email];
+  if (mailTransports.some(settings => settings !== undefined &&
+    (Object.prototype.toString.call(settings) !== '[object Object]' || settings.enabled !== false))) {
+    throw new Error('Backend email E2E refuses external SMTP or a custom send-email hook');
+  }
+}
+
+function assertBackendMailTarget(status) {
+  const api = assertBackendTarget(status);
+  const mail = new URL(status.MAILPIT_URL);
+  const port = Number(mail.port);
+  const dbPort = Number(new URL(status.DB_URL).port);
+  if (mail.protocol !== 'http:' || mail.hostname !== '127.0.0.1' || mail.username || mail.password ||
+      mail.pathname !== '/' || mail.search || mail.hash || port < 20000 || port > 32767 ||
+      port === Number(api.port) || port === dbPort) {
+    throw new Error('Backend email E2E requires the distinct owned loopback Mailpit endpoint');
+  }
+  return mail;
+}
+
+function normalizeStackStatus(payload, options = {}) {
   const status = {
     API_URL: payload.env?.API_URL,
     DB_URL: payload.env?.DB_URL,
@@ -35,6 +60,14 @@ function normalizeStackStatus(payload) {
   assertBackendTarget(status);
   for (const endpoint of Object.values(payload.endpoints ?? {})) {
     if (endpoint.address !== '127.0.0.1') throw new Error('Local stack has a non-loopback endpoint');
+  }
+  if (options.mail) {
+    status.MAILPIT_URL = payload.env?.MAILPIT_URL;
+    const mail = assertBackendMailTarget(status);
+    const advertised = Object.entries(payload.endpoints ?? {}).some(([name, endpoint]) =>
+      /mail|inbucket/i.test(name) && endpoint.address === mail.hostname &&
+      Number(endpoint.port) === Number(mail.port) && endpoint.protocol === 'http');
+    if (!advertised) throw new Error('Mailpit endpoint is not advertised by this local stack');
   }
   return status;
 }
@@ -71,4 +104,4 @@ function prepareLocalMigrations(source, target) {
   return { neutralizedUrls, disabledSchedules };
 }
 
-module.exports = { assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations };
+module.exports = { assertBackendTarget, assertBackendMailTarget, assertNoExternalSmtpConfig, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations };

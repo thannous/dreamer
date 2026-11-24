@@ -29,11 +29,31 @@ mise exec -- npm run test:e2e:backend -- --qualify-ti528
 ```
 
 `--runtime native` is still accepted; any other `--runtime` is refused before a
-process starts. The second command runs all nine backend scenarios, the database
+process starts. The second command runs the standard backend campaign, the database
 contracts, then the four TI528 suites (six integration cases) sequentially on the
 same owned stack.
 The runner passes its own private status to TI528 and preserves stack cleanup on
 success or failure; the rerun metadata includes the option.
+
+To run the two recovery journeys ported to TesterArmy 0.24:
+
+```sh
+mise exec -- npm run test:e2e:backend -- --tag chat-recovery
+mise exec -- npm run test:e2e:backend -- --mail --tag auth-mail
+```
+
+The chat journey drops the final acknowledgement after the real backend commits
+the exchange. It checks the same request on retry, one provider call, one quota
+charge and one persisted exchange after the browser reloads. The provider is a
+deterministic local fixture.
+
+`--mail` enables only the owned stack's Mailpit mailbox. The runner refuses
+configured external SMTP and custom send-email hooks. The test follows a real
+Supabase Auth recovery message in Chromium and checks that the old password is
+rejected, the new password signs in as the same account, and the link can be
+used only once. Tokens are kept out of the trace. Without `--mail`, the mail
+test is skipped and the existing backend campaign runs as before.
+
 
 The native runtime needs Linux amd64/arm64 with glibc 2.35+ (Ubuntu 22.04 or later)
 or macOS 14+ on Apple silicon. Supabase does not support it on Windows or on Intel
@@ -58,7 +78,7 @@ URLs in those copies are replaced with an unavailable loopback endpoint, and
 scheduled jobs are disabled in the same migration that creates them. Tracked
 migrations are untouched. The runner also asserts zero active cron jobs
 before the suite. These fixture changes prevent unattended production calls; the
-nine backend scenarios do not qualify scheduled reconciliation or AI workers.
+backend scenarios do not qualify scheduled reconciliation or AI workers.
 It never resets an existing project. Unique accounts are created per test and
 deleted on completion, including failure. The Plus account is provisioned through
 the existing service-role subscription RPC, without a purchase or billing bypass
