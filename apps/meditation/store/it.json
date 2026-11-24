@@ -1,0 +1,17 @@
+{
+  "locale": {
+    "appStore": "it",
+    "googlePlay": "it-IT"
+  },
+  "name": "Noctalia Meditazione",
+  "description": "Se fai fatica a lasciarti alle spalle la giornata, fai una pausa con Noctalia Meditazione. Scegli un esercizio di respirazione, inizia una meditazione o ascolta un paesaggio sonoro prima di andare a letto.\n\nEsplora sei mondi, ciascuno con il proprio paesaggio visivo e sonoro. Respira al tuo ritmo, salva le sessioni a cui vuoi tornare e imposta un promemoria se ti va.\n\nI suoni d’ambiente sono gratuiti e inclusi nell’app: non servono streaming o download audio separati. Non sono necessari account o abbonamenti.",
+  "releaseNotes": "La prima versione include esercizi di respirazione, meditazioni, sei mondi, sessioni salvate e promemoria facoltativi.",
+  "appStore": {
+    "subtitle": "Respira e rilassati",
+    "keywords": "respiro,sonno,rilassamento,consapevolezza,ambiente,timer,offline",
+    "promotionalText": "Prenditi un momento per rallentare: segui il ritmo del respiro, ascolta un paesaggio sonoro o scegli una meditazione per la sera."
+  },
+  "googlePlay": {
+    "shortDescription": "Esercizi di respirazione, meditazioni e suoni d’ambiente per la sera."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "locale": {
+    "appStore": "fr-FR",
+    "googlePlay": "fr-FR"
+  },
+  "name": "Noctalia Méditation",
+  "description": "Quand la journée a du mal à se terminer, accordez-vous une pause avec Noctalia Méditation. Choisissez un exercice de respiration, lancez une méditation ou écoutez une ambiance sonore avant le coucher.\n\nExplorez six univers, chacun avec son propre décor et son ambiance sonore. Respirez à votre rythme, enregistrez vos séances pour y revenir et programmez un rappel si vous le souhaitez.\n\nLes ambiances sonores sont gratuites et incluses dans l’application, sans streaming ni téléchargement audio séparé. Aucun compte ni abonnement n’est nécessaire.",
+  "releaseNotes": "Cette première version propose des exercices de respiration, des méditations, six univers, des séances enregistrées et des rappels facultatifs.",
+  "appStore": {
+    "subtitle": "Respirer et se détendre",
+    "keywords": "respiration,sommeil,relaxation,pleine conscience,ambiance,minuteur,hors ligne",
+    "promotionalText": "Accordez-vous un moment pour ralentir : suivez le rythme de votre souffle, écoutez une ambiance ou choisissez une méditation du soir."
+  },
+  "googlePlay": {
+    "shortDescription": "Exercices de respiration, méditations et ambiances pour un soir plus calme."
+  }
+}
