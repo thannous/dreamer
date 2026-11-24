@@ -5,7 +5,7 @@ const path = require('node:path');
 const os = require('node:os');
 const { randomUUID } = require('node:crypto');
 const { spawnSync } = require('node:child_process');
-const { assertBackendTarget, assertNoActiveCronJobs, normalizeStackStatus, prepareLocalMigrations } = require('./lib/backend-e2e-local.cjs');
+const { assertBackendTarget, assertNoActiveCronJobs, assertNoExternalSmtpConfig, normalizeStackStatus, prepareLocalMigrations } = require('./lib/backend-e2e-local.cjs');
 const { withOwnedProcess } = require('./lib/backend-e2e-process.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -23,13 +23,19 @@ const runtime = 'native';
 const qualificationIndex = args.indexOf('--qualify-ti528');
 const qualifyTi528 = qualificationIndex >= 0;
 if (qualifyTi528) args.splice(qualificationIndex, 1);
+const mailIndex = args.indexOf('--mail');
+const mail = mailIndex >= 0;
+if (mail) args.splice(mailIndex, 1);
+if (args.includes('--mail')) throw new Error('--mail may be specified only once');
+const sourceConfig = fs.readFileSync(path.join(root, 'supabase/config.toml'), 'utf8');
+if (mail) assertNoExternalSmtpConfig(sourceConfig);
 const workdir = fs.mkdtempSync(path.join(os.tmpdir(), 'noctalia-backend-e2e-'));
 const project = `noctalia-backend-e2e-disposable-${randomUUID().slice(0, 8)}`;
 const target = path.join(workdir, 'supabase');
 const cli = process.env.E2E_SUPABASE_CLI || path.join(root, 'node_modules/.bin/supabase');
 const quote = arg => `'${arg.replaceAll("'", "'\"'\"'")}'`;
 const rerunArgs = [...(requestedRuntime ? ['--runtime', requestedRuntime] : []),
-  ...(qualifyTi528 ? ['--qualify-ti528'] : []), ...args].map(quote).join(' ');
+  ...(qualifyTi528 ? ['--qualify-ti528'] : []), ...(mail ? ['--mail'] : []), ...args].map(quote).join(' ');
 // Supabase documents this one for root runs of the native runtime; other SUPABASE_* settings are dropped.
 const keptSupabaseEnv = ['SUPABASE_NATIVE_POSTGRES_USER'];
 // The rerun repeats the overrides that chose the executable, the database user and the workers.
@@ -53,13 +59,17 @@ function command(binary, argv, options = {}) {
 const config = path.join(target, 'config.toml');
 fs.mkdirSync(target, { recursive: true, mode: 0o700 });
 const migrationFixtures = prepareLocalMigrations(path.join(root, 'supabase/migrations'), path.join(target, 'migrations'));
-let input = fs.readFileSync(path.join(root, 'supabase/config.toml'), 'utf8');
+let input = sourceConfig;
 input = input.replace(/^project_id\s*=.*$/m, `project_id = "${project}"`)
   .replace('sql_paths = ["./seed.sql"]', 'sql_paths = []')
   .replaceAll('127.0.0.1:3000', '127.0.0.1:8085')
   // The native stack assigns its own loopback ports; a fixed port is never kept.
   .replace(/^\s*(?:port|shadow_port|inspector_port|smtp_port|pop3_port|vector_port)\s*=.*$/gm, '')
   .replace(/^\s*stack\s*=.*$/gm, '');
+if (mail) {
+  input = input.replace(/^additional_redirect_urls\s*=.*$/m,
+    'additional_redirect_urls = ["http://127.0.0.1:8085/auth/reset-password"]');
+}
 if (!/^\[experimental\]\s*$/m.test(input)) throw new Error('supabase/config.toml needs an [experimental] table');
 input = input.replace(/^\[experimental\]\s*$/m, '[experimental]\nstack = true');
 fs.writeFileSync(config, input);
@@ -92,9 +102,9 @@ async function main() {
       fs.mkdirSync(cliEnv.SUPABASE_HOME, { recursive: true, mode: 0o700 });
       started = true;
       const output = command(cli, ['stack', 'start', '--workdir', workdir, '--runtime', runtime,
-        '--exclude', 'realtime,functions,studio,mail,analytics,pooler', '--eager', '--output-format', 'json'],
+        '--exclude', mail ? 'realtime,functions,studio,analytics,pooler' : 'realtime,functions,studio,mail,analytics,pooler', '--eager', '--output-format', 'json'],
       { stdio: ['ignore', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-      const status = normalizeStackStatus(JSON.parse(output));
+      const status = normalizeStackStatus(JSON.parse(output), { mail });
       if (status.LOCAL_E2E_STACK.runtime !== runtime) throw new Error('Unexpected local stack runtime');
       stackId = status.LOCAL_E2E_STACK.id;
       fs.writeFileSync(statusFile, JSON.stringify(status), { mode: 0o600 });

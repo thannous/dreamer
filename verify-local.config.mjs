@@ -778,7 +778,7 @@ export default {
     { name: 'app-media-published', command: 'node --test scripts/app-media-release.test.mjs', kinds: ['release'], targets: ['app'] },
     {
       name: 'e2e-backend',
-      command: 'npm run test:e2e:backend',
+      command: 'npm run test:e2e:backend -- --mail',
       kinds: ['release'],
       targets: ['app'],
       specialised: true,

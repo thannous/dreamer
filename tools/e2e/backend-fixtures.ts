@@ -7,13 +7,14 @@ import { appMediaResponse } from './app-media-fixtures';
 import { expect } from './web-parity-fixtures';
 import { webEngine } from './web-engine';
 import { fileURLToPath } from 'node:url';
-import { assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
+import { assertBackendMailTarget, assertBackendTarget } from '../../scripts/lib/backend-e2e-local.cjs';
 
 export const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 
 const status = JSON.parse(readFileSync(process.env.E2E_BACKEND_STATUS_FILE!, 'utf8'));
 const url = assertBackendTarget(status);
 export const backendOrigin = url.origin;
+export const mailOrigin = status.MAILPIT_URL ? assertBackendMailTarget(status).origin : undefined;
 const options = { auth: { persistSession: false, autoRefreshToken: false } };
 export const admin = createClient(url.href, status.SERVICE_ROLE_KEY, options);
 
