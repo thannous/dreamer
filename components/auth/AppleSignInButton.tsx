@@ -9,7 +9,8 @@ import { Fonts } from '@/constants/theme';
 import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { attempt } from '@/lib/attempt';
-import { signInWithApple } from '@/lib/auth';
+import { ACCOUNT_SWITCH_REQUIRED, cancelAccountSwitch, confirmAccountSwitch, signInWithApple } from '@/lib/auth';
+import { askAccountSwitch } from '@/components/auth/accountSwitch';
 import { createScopedLogger } from '@/lib/logger';
 import {
   clearStayOnSettingsIntent,
@@ -52,7 +53,17 @@ export default function AppleSignInButton({
       if (returnTo) {
         requestStayOnSettingsIntent({ destination: returnTo });
       }
-      await signInWithApple();
+      try {
+        await signInWithApple();
+      } catch (error) {
+        if (getErrorCode(error) !== ACCOUNT_SWITCH_REQUIRED) throw error;
+        // That identity already has an account: leaving the silent one is the person's call.
+        if (!await askAccountSwitch(t)) {
+          cancelAccountSwitch();
+          throw new Error('SIGN_IN_CANCELLED');
+        }
+        await confirmAccountSwitch();
+      }
       log.debug('Sign-in successful');
     }, {
       catch: (error) => {

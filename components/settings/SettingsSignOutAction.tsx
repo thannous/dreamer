@@ -7,6 +7,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useTranslation } from '@/hooks/useTranslation';
 import { whileHeld } from '@/lib/attempt';
 import { signOut } from '@/lib/auth';
+import { isSilentAccount } from '@/lib/silentAccount';
 import { TID } from '@/lib/testIDs';
 
 /** The existing sign-out service, presented as a secondary footer action. */
@@ -27,7 +28,8 @@ export function SettingsSignOutAction() {
     });
   };
 
-  if (!user) return null;
+  // Signing out of a silent account would lock its journal away: it has nothing to sign in with.
+  if (!user || isSilentAccount(user)) return null;
   return (
     <>
       <Pressable

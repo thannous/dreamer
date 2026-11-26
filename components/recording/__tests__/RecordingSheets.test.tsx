@@ -5,6 +5,7 @@ import { describe, expect, it, jest } from '@jest/globals';
 
 import {
   DictationOffSheet,
+  MicPermissionRationaleSheet,
   QuotaLimitSheet,
 } from '@/components/recording/RecordingSheets';
 import { TID } from '@/lib/testIDs';
@@ -34,8 +35,10 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
     titleTestID,
     children,
     actions,
+    dismissBehavior,
   }: {
     visible: boolean;
+    dismissBehavior?: 'pan' | 'none';
     title: string;
     subtitle?: string;
     headerIcon?: string;
@@ -59,7 +62,7 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
     };
   }) => (
     visible ? (
-      <section>
+      <section data-dismiss-behavior={dismissBehavior ?? 'pan'}>
         <h1 data-testid={titleTestID}>{title}</h1>
         {headerIcon ? <span data-testid={`header-icon.${headerIcon}`} /> : null}
         {subtitle ? <p>{subtitle}</p> : null}
@@ -195,6 +198,23 @@ jest.mock('@/hooks/useTranslation', () => ({
 }));
 
 describe('RecordingSheets', () => {
+  // App Review 5.1.1(iv), 2026-11-25: the message before the microphone request offers one
+  // neutral action and no way to put the request off. The system prompt itself cannot be
+  // driven from a journey, so the sheet's contract is held here.
+  it('leads from the microphone rationale to the system request by a single neutral action', () => {
+    const onContinue = jest.fn();
+    const { container } = render(<MicPermissionRationaleSheet visible onContinue={onContinue} />);
+
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].getAttribute('data-testid')).toBe(TID.Button.MicRationaleContinue);
+    expect(buttons[0].textContent).toBe('recording.mic_rationale.continue');
+    expect(container.querySelector('section')?.getAttribute('data-dismiss-behavior')).toBe('none');
+
+    fireEvent.click(buttons[0]);
+    expect(onContinue).toHaveBeenCalledTimes(1);
+  });
+
   it('walks through turning iOS Dictation back on, step by step, and offers typing instead', () => {
     const onUseText = jest.fn();
     const onClose = jest.fn();

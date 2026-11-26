@@ -28,6 +28,8 @@ import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '
 import AppleSignInButton from '@/components/auth/AppleSignInButton';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
+import { askAccountSwitch } from '@/components/auth/accountSwitch';
+import { getPendingAccountEmail, isSilentAccount } from '@/lib/silentAccount';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import {
   requestPasswordReset,
@@ -112,7 +114,11 @@ export const EmailAuthCard: React.FC<Props> = ({
   const isEmbedded = presentation === 'embedded';
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
-  const { user, loading: authLoading } = useAuth();
+  const { user: sessionUser, loading: authLoading } = useAuth();
+  // A silent account (made by a purchase without registering) has no way to sign in yet:
+  // this card keeps offering to create an account or sign in, which upgrades it in place.
+  const silentAccount = isSilentAccount(sessionUser);
+  const user = silentAccount ? null : sessionUser;
   const onboarding = useOptionalOnboarding();
   const dreamsActions = useOptionalDreamsActions();
   const { language } = useLanguage();
@@ -132,12 +138,15 @@ export const EmailAuthCard: React.FC<Props> = ({
   const [touched, setTouched] = useState({ email: false, password: false });
   const [submitting, setSubmitting] = useState<'signin' | 'signup' | 'signout' | null>(null);
   const [mockProfileLoading, setMockProfileLoading] = useState<MockProfile | null>(null);
-  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  const [typedUnverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  // An address given to a silent account and not confirmed yet is still waiting after a relaunch.
+  const unverifiedEmail = typedUnverifiedEmail ?? getPendingAccountEmail(sessionUser);
   const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [pendingVerification, setPendingVerification] = useState<{
     email: string;
     password: string;
     visible: boolean;
+    purpose: 'signup' | 'add_email';
   } | null>(null);
   const [verificationPolling, setVerificationPolling] = useState(false);
   const [lastVerificationEmailSentAt, setLastVerificationEmailSentAt] = useState<number | null>(null);
@@ -221,7 +230,8 @@ export const EmailAuthCard: React.FC<Props> = ({
       emailForVerification: string,
       passwordForVerification: string,
       showDialog = true,
-      lastSentAt: number | null = null
+      lastSentAt: number | null = null,
+      purpose: 'signup' | 'add_email' = 'signup',
     ) => {
       const normalizedEmail = emailForVerification.trim();
       const lastSentTimestamp = lastSentAt ?? Date.now();
@@ -229,6 +239,7 @@ export const EmailAuthCard: React.FC<Props> = ({
         email: normalizedEmail,
         password: passwordForVerification,
         visible: showDialog,
+        purpose,
       });
       setUnverifiedEmail(normalizedEmail);
       setResendStatus('idle');
@@ -254,7 +265,11 @@ export const EmailAuthCard: React.FC<Props> = ({
       ? 'settings.account.alert.signin_failed.message'
       : titleKey === 'auth.forgot_password.error_title'
         ? 'auth.forgot_password.error_message'
-        : null;
+        // An account without an email takes the address in place: one that already has an
+        // account is refused by the server, and signing in is the way to that account.
+        : (error as { code?: unknown } | null)?.code === 'email_exists'
+          ? 'settings.account.alert.signup_failed.email_exists'
+          : null;
     setAuthErrorSheet({ visible: true, titleKey, messageKey });
   };
 
@@ -270,6 +285,8 @@ export const EmailAuthCard: React.FC<Props> = ({
         email: trimmedEmail,
       });
     }
+    // Leaving a silent account strands its journal: the person decides, knowing it.
+    if (silentAccount && !await askAccountSwitch(t)) return;
     setSubmitting('signin');
     requestAuthReturn();
     await attempt(async () => {
@@ -304,7 +321,7 @@ export const EmailAuthCard: React.FC<Props> = ({
       const needsVerification = !newUser?.email_confirmed_at;
       if (needsVerification) {
         clearStayOnSettingsIntent();
-        startVerificationFlow(trimmedEmail, passwordForVerification, true, Date.now());
+        startVerificationFlow(trimmedEmail, passwordForVerification, true, Date.now(), silentAccount ? 'add_email' : 'signup');
       } else {
         clearPendingVerification();
       }
@@ -332,6 +349,7 @@ export const EmailAuthCard: React.FC<Props> = ({
 
   const handleMockSignIn = async (profile: MockProfile) => {
     if (!isMockModeEnabled) return;
+    if (silentAccount && !await askAccountSwitch(t)) return;
     setMockProfileLoading(profile);
     requestAuthReturn();
     await attempt(async () => {
@@ -446,7 +464,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     }
     setResendStatus('sending');
     try {
-      await resendVerificationEmail(targetEmail);
+      await resendVerificationEmail(targetEmail, pendingVerification?.purpose ?? (getPendingAccountEmail(sessionUser) ? 'add_email' : 'signup'));
       const now = Date.now();
       setLastVerificationEmailSentAt(now);
       setCooldownTick(now);
@@ -931,7 +949,7 @@ export const EmailAuthCard: React.FC<Props> = ({
         ]}
         testID={isEmbedded ? undefined : 'settings-account-migration-hint'}
       >
-        {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_out')}
+        {isLucidTrainer ? lucidDescription : t(silentAccount ? 'settings.account.description_silent' : 'settings.account.description_signed_out')}
       </Text>
 
       {unverifiedEmail ? (
@@ -1128,7 +1146,7 @@ export const EmailAuthCard: React.FC<Props> = ({
             <Text style={[styles.statusPillText, { color: noctalia.text.secondary }]}>
               {user
                 ? t('settings.account.status.signed_in')
-                : t('settings.account.status.guest')}
+                : t(silentAccount ? 'settings.account.status.silent' : 'settings.account.status.guest')}
             </Text>
           </View>
           {user?.email ? (
@@ -1149,7 +1167,7 @@ export const EmailAuthCard: React.FC<Props> = ({
               style={[styles.summaryDescription, { color: noctalia.text.secondary }]}
               testID="settings-account-migration-hint"
             >
-              {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_out')}
+              {isLucidTrainer ? lucidDescription : t(silentAccount ? 'settings.account.description_silent' : 'settings.account.description_signed_out')}
             </Text>
           )}
         </View>

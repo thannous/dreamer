@@ -7,7 +7,9 @@
  * the free and Plus accounts sign in, read their quota and get a question too.
  * It reads only the local manifest and never reaches production.
  */
+import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
+import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -176,6 +178,56 @@ await step('private dream-images bucket exists', async () => {
   });
   const bucket = await response.json();
   if (!response.ok || bucket.public !== false) throw new Error(JSON.stringify(bucket).slice(0, 200));
+});
+
+await step('a silent account adopts guest images without consuming guest status', async () => {
+  const localUrl = new URL(manifest.status.API_URL).origin;
+  const options = { auth: { persistSession: false, autoRefreshToken: false } };
+  const admin = createClient(localUrl, manifest.status.SERVICE_ROLE_KEY, options);
+  const guestPath = 'guest_' + fingerprint + '/adoption-fixture.webp';
+  const fixture = new Uint8Array([82, 73, 70, 70]);
+  const upload = await admin.storage.from('dream-images').upload(guestPath, fixture, { contentType: 'image/webp' });
+  assert.ifError(upload.error);
+
+  const session = await call('/auth/v1/signup', { body: {} });
+  assert.equal(session.user.is_anonymous, true);
+  const destination = session.user.id + '/adoption-fixture.webp';
+  const auth = { Authorization: 'Bearer ' + session.access_token };
+  const userClient = createClient(localUrl, anon, options);
+  const endpoint = '/functions/v1/api/auth/adopt-guest-images';
+
+  try {
+    await assert.rejects(() => call(endpoint, { body: { fingerprint }, headers: guestHeaders }), /401/);
+    await assert.rejects(() => call(endpoint, { body: { fingerprint }, headers: auth }), /401/);
+    const signedIn = await userClient.auth.setSession(session);
+    assert.ifError(signedIn.error);
+    const userStorage = userClient.storage.from('dream-images');
+    const before = await userStorage.download(destination);
+    assert.ok(before.error, 'The account folder must not contain the guest image yet.');
+    const email = 'adoption-' + crypto.randomUUID() + '@noctalia.test';
+    const linked = await userClient.auth.updateUser({ email, password: 'Local-guest-test-42' });
+    assert.ifError(linked.error);
+    const refreshed = await userClient.auth.refreshSession();
+    assert.ifError(refreshed.error);
+    assert.equal(refreshed.data.user.id, session.user.id);
+    assert.equal(refreshed.data.user.is_anonymous, false);
+    const copy = {
+      body: { fingerprint },
+      headers: { ...guestHeaders, Authorization: 'Bearer ' + refreshed.data.session.access_token },
+    };
+    await call(endpoint, copy);
+    await call(endpoint, copy);
+    const image = await userStorage.download(destination);
+    assert.ifError(image.error);
+    assert.deepEqual(new Uint8Array(await image.data.arrayBuffer()), fixture);
+    assert.ifError((await admin.storage.from('dream-images').download(guestPath)).error);
+    const guestQuota = await call('/functions/v1/api/quota/status', { body: {}, headers: guestHeaders });
+    assert.equal(guestQuota.tier, 'guest');
+    assert.equal(guestQuota.isUpgraded, false);
+  } finally {
+    await admin.storage.from('dream-images').remove([guestPath, destination]);
+    await admin.auth.admin.deleteUser(session.user.id);
+  }
 });
 
 const failed = results.filter((result) => !result.ok).length;

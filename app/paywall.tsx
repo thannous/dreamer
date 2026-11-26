@@ -32,6 +32,8 @@ import { useQuota } from '@/hooks/useQuota';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getPaywallTrigger, trackProductEvent } from '@/lib/analytics';
+import { claimGuestPurchaseOutcomeReport, peekGuestPurchaseOutcome } from '@/lib/guestPurchase';
+import { isSilentAccount } from '@/lib/silentAccount';
 import { markStoreReviewPaywallSeen } from '@/lib/storeReview';
 import {
   clearReturnToPaywallIntent,
@@ -122,6 +124,11 @@ function PaywallScreen() {
   // Read on arrival: the root layout drops the paywall intent once this screen shows.
   const [restoreAfterSignIn] = useState(() => Boolean(userId) && peekReturnToPaywallRestore());
   const restoreAfterSignInStartedRef = useRef(false);
+  // A guest's purchase signs the silent account in, which rebuilds this screen: the new
+  // screen reports the purchase the previous one started.
+  const [guestPurchaseOutcome] = useState(() => (userId ? peekGuestPurchaseOutcome() : null));
+  const guestPurchaseAnnouncedRef = useRef(false);
+  const silentAccount = isSilentAccount(user);
 
   const rootStyle = useMemo(
     () => [styles.root, { backgroundColor: noctalia.screen.background }],
@@ -280,23 +287,59 @@ function PaywallScreen() {
     if (!currentSession()) return;
     if (outcome === 'plus') {
       setToast({
-        message: t(purchaseOutcomeRef.current === 'restored' ? 'subscription.paywall.toast.restored' : 'subscription.paywall.toast.success'),
+        message: t(purchaseOutcomeRef.current === 'restored'
+          ? 'subscription.paywall.toast.restored'
+          : silentAccount ? 'subscription.paywall.toast.success_device' : 'subscription.paywall.toast.success'),
         mode: 'success',
       });
     } else if (outcome === 'free') {
       setToast({ message: t('subscription.paywall.toast.nothing_to_restore'), mode: 'info' });
     }
-  }, [currentSession, t]);
+  }, [currentSession, silentAccount, t]);
+
+  useEffect(() => {
+    if (!guestPurchaseOutcome || guestPurchaseAnnouncedRef.current || !isActive || awaitingServerAccess) return;
+    guestPurchaseAnnouncedRef.current = true;
+    purchaseOutcomeRef.current = guestPurchaseOutcome === 'restore' ? 'restored' : 'completed';
+    // The request to come back here is left to navigation, which drops it once the new
+    // account's restart has settled on this screen; dropping it now would open Capture.
+    if (claimGuestPurchaseOutcomeReport()) {
+      if (guestPurchaseOutcome === 'restore') {
+        void trackProductEvent('restore_completed', { trigger: paywallTrigger, outcome: 'restored' });
+      } else {
+        void trackProductEvent('purchase_completed', {
+          trigger: paywallTrigger,
+          plan: subscriptionStatus?.productId?.includes('annual') ? 'annual' : 'monthly',
+          tier: 'plus',
+        });
+      }
+    }
+    showActivationOutcome('plus');
+  }, [awaitingServerAccess, guestPurchaseOutcome, isActive, paywallTrigger, showActivationOutcome, subscriptionStatus?.productId]);
+
+  // A guest's confirmed purchase signs the silent account in, and a new account restarts
+  // navigation: asking to come back here keeps the buyer on the offer that confirms it.
+  // Without an account in the end (cancelled, nothing to restore, failure), the request is dropped.
+  const holdOfferForGuest = useCallback(() => {
+    if (!userId) requestReturnToPaywallIntent(paywallTrigger);
+  }, [paywallTrigger, userId]);
+  const releaseOfferForGuest = useCallback(() => {
+    if (!userId && currentSession()) clearReturnToPaywallIntent();
+  }, [currentSession, userId]);
 
   const handleRetryActivation = useCallback(async () => {
     if (!currentSession() || operationInFlightRef.current || processing) return;
     setOperationPending(true);
+    holdOfferForGuest();
     await whileHeld(operationInFlightRef, async () => {
       showActivationOutcome(await confirmAccessAndResume(null));
     }, {
-      finally: () => { if (currentSession()) setOperationPending(false); },
+      finally: () => {
+        releaseOfferForGuest();
+        if (currentSession()) setOperationPending(false);
+      },
     });
-  }, [confirmAccessAndResume, currentSession, processing, showActivationOutcome]);
+  }, [confirmAccessAndResume, currentSession, holdOfferForGuest, processing, releaseOfferForGuest, showActivationOutcome]);
 
   const handlePurchase = useCallback(async () => {
     if (!currentSession() || !effectiveSelectedId || !canPurchase || !selectedPlan || operationInFlightRef.current) return;
@@ -306,6 +349,7 @@ function PaywallScreen() {
       plan: selectedPlan,
       tier: analyticsTier,
     });
+    holdOfferForGuest();
     await whileHeld(operationInFlightRef, async () => {
       const nextStatus = await purchase(effectiveSelectedId);
       if (!currentSession()) return;
@@ -325,13 +369,17 @@ function PaywallScreen() {
           reason: classifyPurchaseFailure(purchaseError),
         });
       },
-      finally: () => { if (currentSession()) setOperationPending(false); },
+      finally: () => {
+        releaseOfferForGuest();
+        if (currentSession()) setOperationPending(false);
+      },
     });
-  }, [analyticsTier, canPurchase, confirmAccessAndResume, currentSession, effectiveSelectedId, paywallTrigger, purchase, selectedPlan, showActivationOutcome]);
+  }, [analyticsTier, canPurchase, confirmAccessAndResume, currentSession, effectiveSelectedId, holdOfferForGuest, paywallTrigger, purchase, releaseOfferForGuest, selectedPlan, showActivationOutcome]);
 
   const handleRestore = useCallback(async () => {
     if (!currentSession() || processing || requiresAuth || awaitingServerAccess || operationInFlightRef.current) return;
     setOperationPending(true);
+    holdOfferForGuest();
     await whileHeld(operationInFlightRef, async () => {
       const nextStatus = await restore();
       if (!currentSession()) return;
@@ -351,9 +399,12 @@ function PaywallScreen() {
           outcome: classifyPurchaseFailure(restoreError) === 'cancelled' ? 'cancelled' : 'failed',
         });
       },
-      finally: () => { if (currentSession()) setOperationPending(false); },
+      finally: () => {
+        releaseOfferForGuest();
+        if (currentSession()) setOperationPending(false);
+      },
     });
-  }, [awaitingServerAccess, confirmAccessAndResume, currentSession, paywallTrigger, processing, requiresAuth, restore, showActivationOutcome]);
+  }, [awaitingServerAccess, confirmAccessAndResume, currentSession, holdOfferForGuest, paywallTrigger, processing, releaseOfferForGuest, requiresAuth, restore, showActivationOutcome]);
 
   useEffect(() => {
     if (!restoreAfterSignIn || restoreAfterSignInStartedRef.current || requiresAuth || loading || processing) return;
@@ -836,7 +887,31 @@ function PaywallScreen() {
               </Text>
             ) : null}
 
-            {/* A guest is asked to sign in before paying: say why, right under the button. */}
+            {/* A guest buys without registering (App Review 5.1.1(v)): say that an account is
+                optional and what it adds, and leave the way in for someone who has one. */}
+            {!isActive && !user && !requiresAuth && !loading && !storeUnavailable && !awaitingServerAccess ? (
+              <>
+                <Text
+                  style={[styles.authReason, { color: noctalia.text.secondary }]}
+                  testID={TID.Text.PaywallGuestNotice}
+                >
+                  {t('subscription.paywall.notice.guest')}
+                </Text>
+                <Pressable
+                  style={({ pressed }) => [styles.restoreButton, pressed && styles.legalLinkPressed]}
+                  onPress={handleOpenAuth}
+                  disabled={busy || awaitingServerAccess}
+                  accessibilityRole="button"
+                  testID={TID.Button.PaywallSignIn}
+                >
+                  <Text style={[styles.legalLink, { color: noctalia.text.secondary }]}>
+                    {t('subscription.paywall.button.sign_in')}
+                  </Text>
+                </Pressable>
+              </>
+            ) : null}
+
+            {/* Where a guest cannot buy yet (Lucid, or no silent account): sign in first, and say why. */}
             {!isActive && requiresAuth ? (
               <Text
                 style={[styles.authReason, { color: noctalia.text.secondary }]}
@@ -875,7 +950,7 @@ function PaywallScreen() {
             </Text>
           ) : null}
           {/* A utility, not an offer: it sits with the fine print, still a full 44pt target.
-              Everyone sees it (App Review 3.1.1); a guest signs in on the way. */}
+              Everyone sees it (App Review 3.1.1); a guest restores without registering. */}
           {/* Nothing to restore from where no store is reachable (the keyless web build). */}
           {storeUnavailable ? null : (
           <Pressable

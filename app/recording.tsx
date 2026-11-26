@@ -1706,12 +1706,8 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
     capturePressHint,
   } : null);
 
-  const handleMicRationaleClose = useCallback(() => {
-    hasSeenMicRationaleRef.current = true;
-    setShowMicRationaleSheet(false);
-  }, []);
-
-  const handleMicRationaleAllow = useCallback(async () => {
+  // The only way on from the rationale: the system request follows it every time.
+  const handleMicRationaleContinue = useCallback(async () => {
     if (!isHydrated) return;
     hasSeenMicRationaleRef.current = true;
     setShowMicRationaleSheet(false);
@@ -1730,12 +1726,6 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
 
   const handleDictationOffUseText = useCallback(async () => {
     setShowDictationOffSheet(false);
-    await switchToTextMode();
-  }, [switchToTextMode]);
-
-  const handleMicRationaleUseText = useCallback(async () => {
-    hasSeenMicRationaleRef.current = true;
-    setShowMicRationaleSheet(false);
     await switchToTextMode();
   }, [switchToTextMode]);
 
@@ -2141,9 +2131,7 @@ function RecordingScreen({ draftScope }: RecordingScreenProps) {
       ) : null}
       <MicPermissionRationaleSheet
         visible={showMicRationaleSheet}
-        onClose={handleMicRationaleClose}
-        onAllow={handleMicRationaleAllow}
-        onUseText={handleMicRationaleUseText}
+        onContinue={handleMicRationaleContinue}
       />
       <DictationOffSheet
         visible={showDictationOffSheet}

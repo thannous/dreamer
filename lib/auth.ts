@@ -1,4 +1,11 @@
-import { createClient, type AuthChangeEvent, type Session, type User } from '@supabase/supabase-js';
+import {
+  createClient,
+  type AuthChangeEvent,
+  type AuthTokenResponse,
+  type Session,
+  type SignInWithIdTokenCredentials,
+  type User,
+} from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 
 import { getSupabasePublicConfiguration, supabase } from './supabase';
@@ -6,6 +13,7 @@ import * as mockAuth from './mockAuth';
 import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
 import { NETWORK_REQUEST_POLICIES } from './networkPolicy';
+import { isSilentAccount } from './silentAccount';
 import type { SubscriptionTier } from './types';
 import { isLucidTrainer } from './appVariant';
 import { PASSWORD_RESET_ROUTE } from './authRoutes';
@@ -319,6 +327,73 @@ async function markFingerprintUpgraded(
   }
 }
 
+async function isCurrentAccountSilent(): Promise<boolean> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    return isSilentAccount(data?.session?.user);
+  } catch {
+    return false;
+  }
+}
+
+/** Thrown when a silent account would have to be left for another account: the UI asks first. */
+export const ACCOUNT_SWITCH_REQUIRED = 'ACCOUNT_SWITCH_REQUIRED';
+const ACCOUNT_SWITCH_TTL_MS = 5 * 60 * 1000;
+let pendingAccountSwitch: { credentials: SignInWithIdTokenCredentials; until: number } | null = null;
+
+/**
+ * Exchanges a provider identity token. On a silent account the identity is attached to it,
+ * so the journal and the subscription stay where they are. If that identity (or its email)
+ * already has a Noctalia account, nothing is done yet: leaving the silent account strands
+ * its journal, so the caller asks the person and then calls `confirmAccountSwitch`.
+ */
+async function exchangeIdentityToken(credentials: SignInWithIdTokenCredentials): Promise<AuthTokenResponse> {
+  if (await isCurrentAccountSilent()) {
+    const linked = await supabase.auth.linkIdentity(credentials);
+    const code = linked.error?.code;
+    if (code === 'identity_already_exists' || code === 'email_exists') {
+      pendingAccountSwitch = { credentials, until: Date.now() + ACCOUNT_SWITCH_TTL_MS };
+      throw Object.assign(new Error(ACCOUNT_SWITCH_REQUIRED), { code: ACCOUNT_SWITCH_REQUIRED });
+    }
+    return linked;
+  }
+  return supabase.auth.signInWithIdToken(credentials);
+}
+
+/** The person agreed to leave the silent account for the account that identity already has. */
+export async function confirmAccountSwitch(): Promise<User> {
+  const pending = pendingAccountSwitch;
+  pendingAccountSwitch = null;
+  if (!pending || Date.now() >= pending.until) throw new Error('SIGN_IN_CANCELLED');
+  const { data, error } = await supabase.auth.signInWithIdToken(pending.credentials);
+  if (error) throw error;
+  if (!data.user) throw new Error('No user data received from Supabase');
+  await ensureSessionPersistence(data.session ?? null, 'confirmAccountSwitch');
+  return data.user;
+}
+
+export function cancelAccountSwitch(): void {
+  pendingAccountSwitch = null;
+}
+
+/**
+ * Makes the account a guest's confirmed purchase is attached to: no email, no name, nothing
+ * asked. Call it only after the store confirmed a purchase or a restore.
+ */
+export async function createSilentAccount(): Promise<User> {
+  if (isMockMode) {
+    return mockAuth.signInAnonymously();
+  }
+
+  const { data, error } = await supabase.auth.signInAnonymously();
+  if (error) throw error;
+  if (!data.user) throw new Error('No user data received from Supabase');
+  await ensureSessionPersistence(data.session ?? null, 'createSilentAccount');
+  // The device is not marked as upgraded: this account has nothing to sign in with, and a
+  // device marked that way is refused as a guest ("sign in to continue") if it is ever deleted.
+  return data.user;
+}
+
 export function onAuthChange(cb: (user: User | null, session: Session | null) => void) {
   const handleAuthChange = (user: User | null, session: Session | null) => {
     if (user) {
@@ -511,6 +586,17 @@ export async function signUpWithEmailPassword(email: string, password: string, u
     return mockAuth.signUpWithEmailPassword(email, userLang);
   }
 
+  if (await isCurrentAccountSilent()) {
+    // The silent account takes the email and password: same journal, same subscription.
+    // The address is confirmed from the email Supabase sends, as for any new account.
+    const { data: updated, error: updateError } = await supabase.auth.updateUser(
+      { email, password, ...(userLang ? { data: { lang: userLang } } : {}) },
+      { emailRedirectTo: getNativeEmailRedirect() }
+    );
+    if (updateError) throw updateError;
+    return updated.user;
+  }
+
   const guestUpgradeProof = await captureGuestUpgradeProof();
   const signUpOptions = {
     emailRedirectTo: getNativeEmailRedirect(),
@@ -535,9 +621,17 @@ export async function signUpWithEmailPassword(email: string, password: string, u
   return data.user;
 }
 
-export async function resendVerificationEmail(email: string) {
+export async function resendVerificationEmail(email: string, purpose: 'signup' | 'add_email' = 'signup') {
   if (isMockMode) {
     await mockAuth.resendVerificationEmail(email);
+    return;
+  }
+
+  if (purpose === 'add_email' && await isCurrentAccountSilent()) {
+    // The address is not the account's yet, so the server's "resend" finds no one to write
+    // to. Asking for the change again is what sends the confirmation email again.
+    const { error: updateError } = await supabase.auth.updateUser({ email }, { emailRedirectTo: getNativeEmailRedirect() });
+    if (updateError) throw updateError;
     return;
   }
 
@@ -601,7 +695,7 @@ export async function signInWithGoogle(): Promise<User> {
 
     // Sign in to Supabase with the Google ID token
     log.debug('Exchanging ID token with Supabase');
-    const { data, error } = await supabase.auth.signInWithIdToken({
+    const { data, error } = await exchangeIdentityToken({
       provider: 'google',
       token: idToken,
     });
@@ -683,7 +777,7 @@ export async function signInWithApple(): Promise<User> {
     log.debug('Starting Apple Sign-In process');
     const credential = await requestAppleIdentityCredential();
     log.debug('Exchanging Apple identity token with Supabase');
-    const { data, error } = await supabase.auth.signInWithIdToken({
+    const { data, error } = await exchangeIdentityToken({
       provider: 'apple',
       token: credential.identityToken,
       nonce: credential.nonce,

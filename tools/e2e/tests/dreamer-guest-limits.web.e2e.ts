@@ -84,8 +84,9 @@ test('a guest out of illustrations is offered Plus from the dream page', async (
   const offer = page.getByTestId('screen.paywall');
   await expect(offer).toBeVisible();
   await expect(offer.getByText('Image generation', { exact: true })).toBeVisible();
-  // The offer itself asks a guest to sign in before any purchase.
-  await expect(page.getByTestId('btn.paywall.purchase')).toContainText('Sign in');
+  // The offer sells to a guest directly: no sign-in before a purchase (App Review 5.1.1(v)).
+  await expect(page.getByTestId('btn.paywall.purchase')).not.toContainText('Sign in');
+  await expect(page.getByTestId('text.paywall.guestNotice')).toBeVisible();
   await expect(page.getByTestId('screen.account')).toHaveCount(0);
 });
 

@@ -40,6 +40,18 @@ describe('classifyError', () => {
     expect(classifyError(error).userMessage).toContain('Noctalia Plus');
   });
 
+  // The server refuses AI routes to an account without an email once its Plus has ended.
+  it('tells a lapsed account without an email how to continue, in every catalog, without a retry', () => {
+    const error = Object.assign(new Error('HTTP 403'), { status: 403,
+      body: { code: 'SILENT_ACCOUNT_PLUS_REQUIRED', error: 'Noctalia Plus or a free account is required' } });
+    for (const lang of ['en', 'fr', 'de', 'es', 'it', 'pt']) {
+      const catalog = readFileSync(join(__dirname, `../i18n/${lang}.ts`), 'utf8');
+      const translate = (key: string) => (catalog.includes(`'${key}':`) ? `${lang}:${key}` : key);
+      expect(classifyError(error, translate)).toMatchObject({ type: ErrorType.CLIENT,
+        userMessage: `${lang}:error.silent_account_plus_required`, canRetry: false });
+    }
+  });
+
   it('should classify network errors correctly', () => {
     const error = new Error('Network request failed');
     const result = classifyError(error);

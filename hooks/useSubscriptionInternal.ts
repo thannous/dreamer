@@ -3,12 +3,32 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import type { User } from '@supabase/supabase-js';
 import { useAuth } from '@/context/AuthContext';
 import { useAppState } from '@/hooks/useAppState';
+import { createSilentAccount } from '@/lib/auth';
+import {
+  carryGuestOnboardingToNextAccount,
+  clearGuestPurchaseAttempt,
+  clearGuestPurchasePending,
+  handGuestPurchaseOutcomeToPaywall,
+  isGuestPurchaseEnabled,
+  isSilentAccountAvailable,
+  markGuestPurchasePending,
+  readGuestPurchaseAttempt,
+  readGuestPurchasePending,
+  readSilentPlusHandover,
+  saveGuestPurchaseAttempt,
+  setSilentPlusHandover,
+  takeGuestPurchaseOutcome,
+  type GuestPurchaseKind,
+} from '@/lib/guestPurchase';
+import { isSilentAccount } from '@/lib/silentAccount';
 import { normalizeSubscriptionTier } from '@/lib/quotaTier';
 import { isEntitlementExpired } from '@/lib/revenuecat';
 import { isUserCancelledError as isSharedUserCancelledError, type RevenueCatLikeError } from '@/lib/subscriptionErrors';
 import type { PurchasePackage, SubscriptionStatus } from '@/lib/types';
 import { quotaService } from '@/services/quotaService';
+import { adoptSilentAccountGuestImages } from '@/services/silentAccountMedia';
 import {
+  getGuestStoreCustomerId,
   initializeSubscription,
   isMockSubscriptionService,
   isSubscriptionInitialized,
@@ -17,6 +37,7 @@ import {
   purchaseSubscriptionPackage,
   refreshSubscriptionStatus,
   restoreSubscriptionPurchases,
+  syncSubscriptionPurchases,
 } from '@/services/subscriptionService';
 import { syncSubscriptionFromServer, type SubscriptionSyncResponse } from '@/services/subscriptionSyncService';
 import { simulateMockSubscriptionSync } from '@/services/mocks/subscriptionServiceMock';
@@ -91,6 +112,11 @@ function formatError(e: unknown): Error {
       return new Error('subscription.error.not_initialized');
     }
 
+    // The store took the payment; the account it belongs to could not be made yet.
+    if (msg.includes('silent_account_failed')) {
+      return new Error('subscription.error.account_setup');
+    }
+
     if (msg.includes('user not identified') || msg.includes('not logged in')) {
       return new Error('subscription.error.not_logged_in');
     }
@@ -130,6 +156,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   const [refreshing, setRefreshing] = useState(false);
   const [activationPending, setActivationPending] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  // Whether a guest can buy here: the server must be able to make the silent account first.
+  const [guestStoreReady, setGuestStoreReady] = useState(false);
+  const silentAccount = isSilentAccount(user);
   const shouldLoadPackages = options?.loadPackages === true;
   const isMockMode = isMockSubscriptionService;
   const appMetadataTier = normalizeSubscriptionTier(user?.app_metadata?.tier, 'free');
@@ -144,10 +173,12 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     setRefreshing(false);
     setActivationPending(false);
     setError(null);
+    setGuestStoreReady(false);
   }
 
   const mounted = useRef(false);
   const initializing = useRef(true);
+  const storeLoginReady = useRef(false);
   const lastSyncAttempt = useRef<{ at: number } | null>(null);
   const expiredExpiryKey = useRef<string | null>(null);
   const storeOperation = useRef({ running: false, pending: false, refreshes: 0, observationVersion: 0 });
@@ -156,6 +187,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   useLayoutEffect(() => {
     mounted.current = true;
     initializing.current = true;
+    storeLoginReady.current = false;
     lastSyncAttempt.current = null;
     expiredExpiryKey.current = null;
     storeOperation.current = { running: false, pending: false, refreshes: 0, observationVersion: 0 };
@@ -305,6 +337,89 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
 
   const applyStoreObservationRef = useRef(applyStoreObservation);
   useLayoutEffect(() => { applyStoreObservationRef.current = applyStoreObservation; }, [applyStoreObservation]);
+  const convergeRef = useRef(converge);
+  useLayoutEffect(() => { convergeRef.current = converge; }, [converge]);
+
+  // A guest's purchase is confirmed by the store: make the account it belongs to. Signing
+  // that account in rebuilds this hook, which then confirms Plus with the server.
+  const attachToSilentAccount = useCallback(async (
+    kind: GuestPurchaseKind,
+    observed: SubscriptionStatus,
+    options?: { quiet?: boolean },
+  ) => {
+    await markGuestPurchasePending(kind);
+    setPending(true);
+    // Only a purchase made in front of the paywall is announced there.
+    if (!options?.quiet) handGuestPurchaseOutcomeToPaywall(kind);
+    carryGuestOnboardingToNextAccount();
+    try {
+      await createSilentAccount();
+    } catch {
+      takeGuestPurchaseOutcome();
+      throw new Error('silent_account_failed');
+    }
+    return { ...observed, serverConfirmed: false, storeActive: true } satisfies SubscriptionOperationResult;
+  }, [setPending]);
+
+  // The payment went through earlier and its account was not made (no network, app closed).
+  const resumeGuestPurchase = useCallback(async (options?: { quiet?: boolean }): Promise<SubscriptionOperationResult> => {
+    assertSession();
+    const state = storeOperation.current;
+    if (state.running) throw new Error('subscription_operation_pending');
+    state.running = true;
+    invalidateStoreReads();
+    if (!options?.quiet) {
+      setRefreshing(true);
+      setError(null);
+    }
+    try {
+      // Only a purchase or a restore this guest made here gets an account: an active store
+      // customer alone (an account's, left by a lost session) never does.
+      const [confirmed, attempt] = await Promise.all([readGuestPurchasePending(), readGuestPurchaseAttempt()]);
+      assertSession();
+      const kind = confirmed ?? attempt?.kind;
+      if (kind) {
+        await initializeSubscription(null);
+        assertSession();
+        const customerId = await getGuestStoreCustomerId();
+        assertSession();
+        if (!attempt || attempt.customerId === customerId) {
+          const observed = await refreshSubscriptionStatus();
+          assertSession();
+          if (observed?.isActive && (confirmed || !attempt?.activeBefore)) {
+            return await attachToSilentAccount(kind, observed, options);
+          }
+          // An empty read can precede store reconciliation. Keep the attempt for the next
+          // foreground and continue to block a second sale if the checkout already confirmed.
+          setPending(Boolean(confirmed));
+          return { tier: 'free', isActive: false, serverConfirmed: !confirmed, storeActive: Boolean(confirmed) };
+        } else {
+          await clearGuestPurchasePending();
+        }
+      }
+      setPending(false);
+      return { tier: 'free', isActive: false, serverConfirmed: true, storeActive: false };
+    } catch (err) {
+      if (isSessionCurrent() && !options?.quiet) setError(formatError(err));
+      throw err;
+    } finally {
+      if (isSessionCurrent()) {
+        state.running = false;
+        if (!options?.quiet) setRefreshing(false);
+      }
+    }
+  }, [assertSession, attachToSilentAccount, invalidateStoreReads, isSessionCurrent, setPending]);
+  // Asked again whenever it matters (the offer opens, the app returns, a retry): one failed
+  // request must not leave a guest on the sign-in-first offer for the whole session.
+  const ensureGuestStore = useCallback(async (): Promise<boolean> => {
+    if (userId || !isGuestPurchaseEnabled) return false;
+    const available = await isSilentAccountAvailable();
+    if (isSessionCurrent()) setGuestStoreReady(available);
+    return available;
+  }, [isSessionCurrent, userId]);
+
+  const resumeGuestPurchaseRef = useRef(resumeGuestPurchase);
+  useLayoutEffect(() => { resumeGuestPurchaseRef.current = resumeGuestPurchase; }, [resumeGuestPurchase]);
 
   useEffect(() => {
     let active = true;
@@ -314,10 +429,66 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       setLoading(true);
       setError(null);
       try {
-        if (!userId && !shouldLoadPackages) return;
-        const observed = await initializeSubscription(userId);
+        const awaitingAccount = isGuestPurchaseEnabled ? await readGuestPurchasePending() : null;
+        const guestAttempt = !userId && isGuestPurchaseEnabled ? await readGuestPurchaseAttempt() : null;
         if (!current()) return;
-        if (userId) applyStoreObservationRef.current('status_change', observed);
+        if (!userId && !shouldLoadPackages && !awaitingAccount && !guestAttempt) return;
+        const guestCanBuy = !userId && isGuestPurchaseEnabled && await isSilentAccountAvailable();
+        if (!current()) return;
+        if (!userId) setGuestStoreReady(guestCanBuy);
+        if (awaitingAccount) setPending(true);
+        let observed = await initializeSubscription(userId);
+        if (!current()) return;
+        if (userId) {
+          storeLoginReady.current = true;
+          // A purchase made on this device before this account existed, or held by the
+          // silent account this one replaces, belongs to it now: the store moves it here.
+          let handover = !silentAccount && isGuestPurchaseEnabled ? await readSilentPlusHandover() : null;
+          if (!current()) return;
+          if (handover?.sourceUserId === userId) {
+            // Linking a login in place leaves the store on the same account.
+            await setSilentPlusHandover(null);
+            handover = null;
+          } else if (handover && handover.targetUserId && handover.targetUserId !== userId) {
+            handover = null;
+          } else if (handover && !handover.targetUserId) {
+            handover = { ...handover, targetUserId: userId };
+            // A retry belongs to this destination even if the user later signs in elsewhere.
+            await setSilentPlusHandover(handover);
+          }
+          if (!current()) return;
+          const beforeSync = observed;
+          const hasTransferredReceipt = (status: SubscriptionStatus) => !!handover?.receipts.length &&
+            handover.receipts.every(key => status.deviceStoreReceipts?.includes(key));
+          let storeAnswered = true;
+          if ((handover && !hasTransferredReceipt(observed)) || (awaitingAccount && !observed.isActive)) {
+            try {
+              await syncSubscriptionPurchases();
+              observed = await refreshSubscriptionStatus();
+            } catch {
+              // Asked again at the next launch; Restore purchases does the same on demand.
+              storeAnswered = false;
+            }
+            if (!current()) return;
+          }
+          // Legacy markers lack a receipt identity. A new active receipt on this device is
+          // required before we can retire one; a destination that already had Plus is ambiguous.
+          const legacyReceiptArrived = handover?.sourceUserId === null && !beforeSync.isActive &&
+            Boolean(observed.deviceStoreReceipts?.length);
+          const transferred = storeAnswered && (hasTransferredReceipt(observed) || legacyReceiptArrived);
+          if (transferred) await setSilentPlusHandover(null);
+          if (!current()) return;
+          if ((awaitingAccount || transferred) && observed.isActive) {
+            setPending(true);
+            await convergeRef.current(awaitingAccount ?? 'restore', observed).catch(() => {});
+            if (!current()) return;
+          } else {
+            applyStoreObservationRef.current('status_change', observed);
+          }
+        } else if (awaitingAccount || guestAttempt) {
+          if (guestCanBuy) await resumeGuestPurchaseRef.current({ quiet: true }).catch(() => {});
+          if (!current()) return;
+        }
         if (shouldLoadPackages) {
           const offerings = await loadSubscriptionPackages();
           if (current()) setPackages(offerings);
@@ -333,11 +504,24 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     };
     void run();
     return () => { active = false; };
-  }, [isSessionCurrent, shouldLoadPackages, userId]);
+  }, [isSessionCurrent, setPending, shouldLoadPackages, silentAccount, userId]);
 
   useEffect(() => {
     if (userId && status) syncInBackground('status_change');
   }, [status, syncInBackground, userId]);
+
+  // Server-confirmed Plus: the guest purchase has its account. While that account is still
+  // silent, the next account signed in on this device takes the subscription over.
+  useEffect(() => {
+    if (!userId || !status || activationPending || !isGuestPurchaseEnabled) return;
+    const plus = status.tier === 'plus' && status.isActive;
+    if (plus) void clearGuestPurchasePending();
+    if (silentAccount && (!plus || status.deviceStoreReceipts?.length)) {
+      void setSilentPlusHandover(plus && status.deviceStoreReceipts
+        ? { sourceUserId: userId, receipts: status.deviceStoreReceipts }
+        : null).catch(() => {});
+    }
+  }, [activationPending, silentAccount, status, userId]);
 
   useEffect(() => {
     if (!userId || !status || !isSessionCurrent() || storeOperation.current.pending) return;
@@ -358,8 +542,11 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     return () => { active = false; };
   }, [isSessionCurrent, status, userId]);
 
-  const runStoreOperation = useCallback(async (source: 'purchase' | 'restore', operation: () => Promise<SubscriptionStatus>) => {
-    if (!userId) throw new Error('auth_required');
+  const runStoreOperation = useCallback(async (
+    source: 'purchase' | 'restore',
+    operation: (options?: { allowAnonymous?: boolean }) => Promise<SubscriptionStatus>,
+  ): Promise<SubscriptionOperationResult> => {
+    if (!userId && !guestStoreReady) throw new Error('auth_required');
     assertSession();
     const state = storeOperation.current;
     if (state.running || state.pending) throw new Error('subscription_operation_pending');
@@ -367,17 +554,38 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     invalidateStoreReads();
     setProcessing(true);
     setError(null);
+    let guestAttemptSaved = false;
     try {
       await initializeSubscription(userId);
       assertSession();
-      const observed = await operation();
+      if (userId) storeLoginReady.current = true;
+      if (!userId) {
+        const customerId = await getGuestStoreCustomerId();
+        const before = await refreshSubscriptionStatus();
+        if (!await ensureGuestStore()) throw new Error('auth_required');
+        assertSession();
+        await saveGuestPurchaseAttempt({ kind: source, customerId, activeBefore: before?.isActive ?? false, startedAt: Date.now() });
+        guestAttemptSaved = true;
+        assertSession();
+      }
+      const observed = await operation(userId ? undefined : { allowAnonymous: true });
       assertSession();
+      if (!userId) {
+        // Nothing asked of a guest before the store: the account comes after the payment.
+        if (!observed.isActive) {
+          if (source === 'restore') await clearGuestPurchaseAttempt();
+          return { tier: 'free', isActive: false, serverConfirmed: true, storeActive: false };
+        }
+        return await attachToSilentAccount(source, observed);
+      }
       // A purchase or an active restored receipt can still need activation.
       // An empty restore reconciles without blocking a new purchase.
       if (source === 'purchase' || observed.isActive) setPending(true);
       return await converge(source, observed);
     } catch (err) {
-      if (isSessionCurrent() && !isUserCancelledError(err)) setError(formatError(err));
+      const cancelled = isUserCancelledError(err);
+      if (guestAttemptSaved && cancelled) await clearGuestPurchaseAttempt();
+      if (isSessionCurrent() && !cancelled) setError(formatError(err));
       throw err;
     } finally {
       if (isSessionCurrent()) {
@@ -385,12 +593,33 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         setProcessing(false);
       }
     }
-  }, [assertSession, converge, invalidateStoreReads, isSessionCurrent, setPending, userId]);
+  }, [assertSession, attachToSilentAccount, converge, ensureGuestStore, guestStoreReady, invalidateStoreReads, isSessionCurrent, setPending, userId]);
 
-  const purchase = useCallback((id: string) => runStoreOperation('purchase', () => purchaseSubscriptionPackage(id)), [runStoreOperation]);
+  const purchase = useCallback((id: string) => runStoreOperation('purchase', (options) => purchaseSubscriptionPackage(id, options)), [runStoreOperation]);
   const restore = useCallback(() => runStoreOperation('restore', restoreSubscriptionPurchases), [runStoreOperation]);
-  const refreshSubscription = useCallback(async () => {
-    if (!userId) throw new Error('auth_required');
+  const observeActivation = useCallback(async () => {
+    let observed = await refreshSubscriptionStatus();
+    assertSession();
+    const awaitingAccount = !observed?.isActive && storeOperation.current.pending && isGuestPurchaseEnabled
+      ? await readGuestPurchasePending()
+      : null;
+    assertSession();
+    if (awaitingAccount) {
+      await syncSubscriptionPurchases();
+      assertSession();
+      observed = await refreshSubscriptionStatus();
+      assertSession();
+      if (!observed?.isActive) return undefined;
+    }
+    return observed;
+  }, [assertSession]);
+
+  const refreshSubscription = useCallback(async (): Promise<SubscriptionOperationResult> => {
+    if (!userId) {
+      // A guest has nothing to refresh, except a paid purchase still waiting for its account.
+      if (!storeOperation.current.pending || !await ensureGuestStore()) throw new Error('auth_required');
+      return resumeGuestPurchase();
+    }
     assertSession();
     const state = storeOperation.current;
     state.refreshes++;
@@ -398,12 +627,15 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     setRefreshing(true);
     setError(null);
     try {
-      if (initializing.current) {
+      if (initializing.current || !storeLoginReady.current) {
         await initializeSubscription(userId);
         assertSession();
+        storeLoginReady.current = true;
       }
-      const observed = await refreshSubscriptionStatus();
-      assertSession();
+      const observed = await observeActivation();
+      if (observed === undefined) {
+        return { tier: appMetadataTier, isActive: appMetadataTier === 'plus', serverConfirmed: false, storeActive: true };
+      }
       if (!observed) throw new Error('Purchases not initialized');
       return await converge('manual_refresh', observed);
     } catch (err) {
@@ -413,7 +645,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       state.refreshes--;
       if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
     }
-  }, [assertSession, converge, invalidateStoreReads, isSessionCurrent, userId]);
+  }, [appMetadataTier, assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, observeActivation, resumeGuestPurchase, userId]);
 
   // A store-confirmed purchase whose server confirmation failed keeps every
   // store observation paused (see canObserveStore), so nothing else would ever
@@ -421,12 +653,24 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   // These attempts are silent; the paywall keeps its own visible retry.
   const retryPendingActivation = useCallback(async () => {
     const state = storeOperation.current;
-    if (!userId || !state.pending || state.running || state.refreshes > 0 || !isSessionCurrent()) return;
+    if (!userId) {
+      // A guest's paid purchase still waits for its account: try again without a word.
+      if (!state.running && isSessionCurrent() &&
+          (state.pending || await readGuestPurchaseAttempt()) && await ensureGuestStore()) {
+        await resumeGuestPurchase({ quiet: true }).catch(() => {});
+      }
+      return;
+    }
+    if (!state.pending || state.running || state.refreshes > 0 || initializing.current || !isSessionCurrent()) return;
     state.refreshes++;
     invalidateStoreReads();
     try {
-      const observed = await refreshSubscriptionStatus();
-      assertSession();
+      if (!storeLoginReady.current) {
+        await initializeSubscription(userId);
+        assertSession();
+        storeLoginReady.current = true;
+      }
+      const observed = await observeActivation();
       if (observed) await converge('manual_refresh', observed);
     } catch {
       // Still pending: the next attempt, or the user's own retry, tries again.
@@ -434,12 +678,13 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       state.refreshes--;
       if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
     }
-  }, [assertSession, converge, invalidateStoreReads, isSessionCurrent, userId]);
+  }, [assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, observeActivation, resumeGuestPurchase, userId]);
   const retryPendingActivationRef = useRef(retryPendingActivation);
   useLayoutEffect(() => { retryPendingActivationRef.current = retryPendingActivation; }, [retryPendingActivation]);
 
   useEffect(() => {
-    if (!activationPending || !userId) return;
+    // A guest's paid purchase waits for its account on the same schedule.
+    if (!activationPending || (!userId && !isGuestPurchaseEnabled)) return;
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const schedule = (attempt: number) => {
@@ -457,7 +702,18 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     };
   }, [activationPending, sessionKey, userId]);
 
-  useAppState(() => { void retryPendingActivationRef.current(); });
+  const recoverGuestImages = useCallback(() => {
+    if (isGuestPurchaseEnabled && userId && !isMockMode && isSessionCurrent()) {
+      void adoptSilentAccountGuestImages(userId, silentAccount, isSessionCurrent).catch(() => {});
+    }
+  }, [isMockMode, isSessionCurrent, silentAccount, userId]);
+  useEffect(recoverGuestImages, [recoverGuestImages]);
+
+  useAppState(() => {
+    recoverGuestImages();
+    void ensureGuestStore().catch(() => {});
+    void retryPendingActivationRef.current();
+  });
 
   const onResume = useCallback((next: SubscriptionStatus) => {
     if (!isSessionCurrent() || initializing.current) return;
@@ -523,12 +779,16 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     error,
     clearError,
     packages,
-    requiresAuth: !userId,
+    // A guest buys without registering wherever the silent account can be made (App Review
+    // 5.1.1(v)); elsewhere, and in Lucid, signing in still comes first.
+    requiresAuth: !userId && (!isGuestPurchaseEnabled || (!loading && !guestStoreReady)),
     /** No store is reachable from this build: status is shown, nothing is sold. */
     storeUnavailable: isSubscriptionStoreUnavailable === true,
     purchase,
     restore,
     refreshSubscription,
+    /** Asks again whether a guest can buy here; the offer calls it each time it opens. */
+    ensureGuestStore,
   };
 }
 

@@ -79,11 +79,12 @@ test('guest reads and sees its first dream illustrated unasked, then is offered 
   await app.screenshot('guest-second-dream-unread');
 });
 
-// App Review (2026-10-19): each card leads with the amount billed, and a guest reads why to
-// sign in and the renewal terms before any purchase.
+// App Review (2026-10-19): each card leads with the amount billed, and a guest reads the renewal
+// terms before any purchase. Since 2026-11-25 (5.1.1(v)) a guest buys without registering and
+// reads that an account is optional.
 // The web, like Android, leads the annual card with its monthly equivalent and bills in the
 // small line; only iOS leads with the billed amount (owner decision 2026-10-19).
-test('guest Plus offer shows the yearly bill, the sign-in reason and the renewal terms', async ({ app, screen, browser }) => {
+test('guest Plus offer shows the yearly bill, the optional account and the renewal terms', async ({ app, screen, browser }) => {
   await isolateWeb(browser, app);
   await startGuest(app, screen, browser);
   await openQuickSettings(screen);
@@ -94,8 +95,10 @@ test('guest Plus offer shows the yearly bill, the sign-in reason and the renewal
   await expect(annual).toContainText('per month');
   await expect(annual.getByTestId('btn.paywall.selectAnnual.detail')).toHaveText('Billed 29,99 € yearly');
   await expect(screen.getByTestId('btn.paywall.selectMonthly.price', { visible: true })).toHaveText('4,99 €');
-  await expect(screen.getByTestId('text.paywall.authReason', { visible: true }))
-    .toHaveText('Sign in to unlock and sync your subscription across devices.');
+  await expect(screen.getByTestId('text.paywall.authReason')).toHaveCount(0);
+  await expect(screen.getByTestId('text.paywall.guestNotice', { visible: true }))
+    .toHaveText('No account needed. You can create one later to use Plus on your other devices.');
+  await expect(screen.getByTestId('btn.paywall.purchase', { visible: true })).not.toContainText('Sign in');
   await expect(screen.getByTestId('text.paywall.storeNotice', { visible: true })).toContainText('renews automatically');
   await expect(screen.getByTestId('btn.paywall.termsOfUse', { visible: true })).toBeVisible();
   await expect(screen.getByTestId('btn.paywall.restore', { visible: true })).toBeVisible();

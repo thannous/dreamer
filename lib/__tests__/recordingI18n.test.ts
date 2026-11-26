@@ -72,9 +72,7 @@ const recordingPreferenceKeys = [
 const micRationaleKeys = [
   'recording.mic_rationale.title',
   'recording.mic_rationale.message',
-  'recording.mic_rationale.allow',
-  'recording.mic_rationale.text_fallback',
-  'recording.mic_rationale.dismiss',
+  'recording.mic_rationale.continue',
 ] as const;
 
 const onboardingTourKeys = [
@@ -300,6 +298,16 @@ describe('Recording i18n - bottom sheets', () => {
         expect(typeof value).toBe('string');
         expect(value.length).toBeGreaterThan(0);
       }
+    }
+  });
+
+  // App Review 5.1.1(iv): the button that precedes the system request must not ask for the permission itself.
+  it('names the microphone rationale action as a neutral next step', async () => {
+    await Promise.all(languages.map((lang) => loadTranslations(lang)));
+
+    for (const lang of languages) {
+      expect(getTranslator(lang)('recording.mic_rationale.continue'))
+        .not.toMatch(/allow|autoris|erlaub|permit|consent|micro|mikro/i);
     }
   });
 

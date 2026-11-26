@@ -167,8 +167,9 @@ for (const profile of ['existing', 'new'] as const) {
     await billingTap(screen, 'quick-settings.plus');
     await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();
     await screen.scrollUntilVisible(screen.getByTestId('btn.paywall.purchase', { visible: true }));
-    await expect(screen.getByTestId('btn.paywall.purchase', { visible: true })).toHaveText('Sign in to subscribe');
-    await billingTap(screen, 'btn.paywall.purchase');
+    // A guest can buy at once (App Review 5.1.1(v)); the link is for someone who has an account.
+    await expect(screen.getByTestId('btn.paywall.purchase', { visible: true })).toHaveText('Unlock unlimited');
+    await billingTap(screen, 'btn.paywall.signIn');
     await billingTap(screen, 'settings-account-open-signin', 'up');
     await screen.getByTestId(`btn.mockProfile.${profile}`, { visible: true }).tap();
     await expect(screen.getByTestId('screen.paywall', { visible: true })).toBeVisible();

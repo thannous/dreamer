@@ -37,15 +37,16 @@ test('German onboarding, offer and settings keep every action readable at 320px'
   await expectReadable(screen, browser, 'btn.onboarding.intro.next');
   await startGuest(screen, browser);
 
-  // The offer as a guest meets it: sign in to subscribe, the renewal terms, the terms of use.
+  // The offer as a guest meets it: no account needed, the renewal terms, the terms of use.
   await openHome(screen);
   await screen.getByTestId('btn.header.home.settings').tap();
   await screen.getByTestId('quick-settings.plus').tap();
   await expect(screen.getByTestId('screen.paywall')).toBeVisible();
-  await expect(screen.getByTestId('btn.paywall.purchase')).toContainText('Anmelden');
+  await expect(screen.getByTestId('btn.paywall.purchase')).not.toContainText('Anmelden');
+  await expect(screen.getByTestId('text.paywall.guestNotice')).toContainText('Kein Konto nötig');
   await expect(screen.getByTestId('text.paywall.storeNotice')).toContainText('verlängert sich automatisch');
   await expect(screen.getByTestId('btn.paywall.termsOfUse')).toContainText('Nutzungsbedingungen');
-  for (const testId of ['component.paywall.comparison', 'btn.paywall.purchase', 'text.paywall.storeNotice', 'btn.paywall.termsOfUse'])
+  for (const testId of ['component.paywall.comparison', 'btn.paywall.purchase', 'text.paywall.guestNotice', 'btn.paywall.signIn', 'text.paywall.storeNotice', 'btn.paywall.termsOfUse'])
     await expectReadable(screen, browser, testId);
   await expectNoSidewaysScroll(app, browser, 'offer-de-320');
   await screen.getByTestId('btn.paywall.close').tap();

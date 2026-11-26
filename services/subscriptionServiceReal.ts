@@ -193,9 +193,24 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
   }
 }
 
-async function assertIdentifiedUser(): Promise<void> {
+/**
+ * A guest buys and restores on the store's anonymous customer: App Review 5.1.1(v) does not
+ * allow asking for an account first. The account without an email is made after the store
+ * confirms, and signing it in moves the purchase onto it (see `ensureConfiguredImpl`).
+ */
+export type StoreOperationOptions = { allowAnonymous?: boolean };
+
+async function assertIdentifiedUser(options?: StoreOperationOptions): Promise<void> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
+  }
+  if (options?.allowAnonymous && persistedState.userId === null) {
+    // A lost session can leave the SDK on the account it last knew: a guest never buys on it.
+    if (!(await Purchases.isAnonymous())) {
+      await Purchases.logOut();
+      resetCachedState();
+    }
+    return;
   }
   if (!persistedState.userId) {
     throw new Error('Purchases user not identified');
@@ -209,7 +224,22 @@ async function assertIdentifiedUser(): Promise<void> {
 
 // Use pure functions from lib/revenuecat.ts for mapping
 function mapStatus(info: CustomerInfo | null): SubscriptionStatus {
-  return mapStatusPure(info as CustomerInfoLike);
+  const status = mapStatusPure(info as CustomerInfoLike);
+  const deviceStore = Platform.OS === 'ios' ? 'APP_STORE' : Platform.OS === 'android' ? 'PLAY_STORE' : 'RC_BILLING';
+  const testStore = getStoreMode() === 'RevenueCat Test Store';
+  const receiptKeys = Object.values(info?.subscriptionsByProductIdentifier ?? {}).flatMap(subscription => {
+    if (!subscription.isActive || (subscription.store !== deviceStore && !testStore)) return [];
+    const identity = subscription.originalPurchaseDate
+      ? [subscription.productIdentifier, subscription.originalPurchaseDate]
+      : subscription.storeTransactionId;
+    return identity ? [JSON.stringify([subscription.store, subscription.isSandbox, identity])] : [];
+  });
+  return receiptKeys.length ? { ...status, deviceStoreReceipts: receiptKeys } : status;
+}
+
+export async function getGuestStoreCustomerId(): Promise<string> {
+  await assertIdentifiedUser({ allowAnonymous: true });
+  return Purchases.getAppUserID();
 }
 
 function mapPackage(pkg: PurchasesPackage): InternalPackage {
@@ -315,11 +345,11 @@ export function addStatusUpdateListener(listener: SubscriptionStatusListener): (
   };
 }
 
-export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
+export async function purchasePackage(id: string, options?: StoreOperationOptions): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
-  await assertIdentifiedUser();
+  await assertIdentifiedUser(options);
   let internal = findInternalPackage(id);
   if (!internal) {
     await fetchPackages();
@@ -333,11 +363,11 @@ export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
   return status;
 }
 
-export async function restorePurchases(): Promise<SubscriptionStatus> {
+export async function restorePurchases(options?: StoreOperationOptions): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
-  await assertIdentifiedUser();
+  await assertIdentifiedUser(options);
   const info = await Purchases.restorePurchases();
   const status = mapStatus(info);
   return status;

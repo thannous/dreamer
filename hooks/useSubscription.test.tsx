@@ -19,6 +19,7 @@ let mockSelectedSubscriptionMock = false;
 jest.mock('../services/subscriptionService', () => {
   return {
     get isMockSubscriptionService() { return mockSelectedSubscriptionMock; },
+    getGuestStoreCustomerId: jest.fn(async () => 'guest-device'),
     initializeSubscription: jest.fn(async () => ({ tier: 'free', isActive: false })),
     isSubscriptionInitialized: jest.fn(() => false),
     getSubscriptionStatus: jest.fn(async () => ({ tier: 'free', isActive: false })),
@@ -32,6 +33,34 @@ jest.mock('../services/subscriptionService', () => {
     addSubscriptionStatusUpdateListener: jest.fn(() => () => {}),
   };
 });
+
+// Guest purchase: what the device remembers, and whether the server can make a silent account.
+const mockGuestPurchase = {
+  available: false,
+  pending: null as 'purchase' | 'restore' | null,
+  handover: null as import('@/lib/guestPurchase').SilentPlusHandover | null,
+  attempt: null as import('@/lib/guestPurchase').GuestPurchaseAttempt | null,
+};
+jest.mock('@/lib/guestPurchase', () => ({
+  isGuestPurchaseEnabled: true,
+  isSilentAccountAvailable: jest.fn(async () => mockGuestPurchase.available),
+  readGuestPurchasePending: jest.fn(async () => mockGuestPurchase.pending),
+  markGuestPurchasePending: jest.fn(async (kind: 'purchase' | 'restore') => { mockGuestPurchase.pending = kind; }),
+  clearGuestPurchasePending: jest.fn(async () => { mockGuestPurchase.pending = null; mockGuestPurchase.attempt = null; }),
+  readGuestPurchaseAttempt: jest.fn(async () => mockGuestPurchase.attempt),
+  saveGuestPurchaseAttempt: jest.fn(async (attempt: typeof mockGuestPurchase.attempt) => { mockGuestPurchase.attempt = attempt; }),
+  clearGuestPurchaseAttempt: jest.fn(async () => { mockGuestPurchase.attempt = null; }),
+  readSilentPlusHandover: jest.fn(async () => mockGuestPurchase.handover),
+  setSilentPlusHandover: jest.fn(async (handover: typeof mockGuestPurchase.handover) => { mockGuestPurchase.handover = handover; }),
+  handGuestPurchaseOutcomeToPaywall: jest.fn(),
+  takeGuestPurchaseOutcome: jest.fn(() => null),
+  carryGuestOnboardingToNextAccount: jest.fn(),
+}));
+jest.mock('@/services/silentAccountMedia', () => ({ adoptSilentAccountGuestImages: jest.fn(async () => {}) }));
+const mockCreateSilentAccount = jest.fn(async (): Promise<unknown> => ({ id: 'silent-1', is_anonymous: true }));
+jest.mock('@/lib/auth', () => ({
+  createSilentAccount: () => mockCreateSilentAccount(),
+}));
 
 jest.mock('../services/subscriptionSyncService', () => ({
   syncSubscriptionFromServer: jest.fn(),
@@ -137,6 +166,8 @@ describe('useSubscription', () => {
     jest.clearAllMocks();
     mockSelectedSubscriptionMock = false;
     mockGeneration = 1;
+    Object.assign(mockGuestPurchase, { available: false, pending: null, handover: null, attempt: null });
+    mockCreateSilentAccount.mockReset().mockImplementation(async () => ({ id: 'silent-1', is_anonymous: true }));
     const { Platform } = require('react-native');
     Platform.OS = 'ios';
     mockCurrentUser = { id: 'user-1', app_metadata: { subscription_version: 1 }, user_metadata: {} };
@@ -350,20 +381,21 @@ describe('useSubscription', () => {
       expect(syncSubscriptionPurchases).not.toHaveBeenCalled();
     });
 
-    it('given unauthenticated user when using subscription then requires auth', async () => {
+    // Where the server cannot make a silent account, a guest is never taken to the store:
+    // a payment the app could not attach to an account must not happen.
+    it('given unauthenticated user and no silent account on the server then requires auth', async () => {
       mockCurrentUser = null;
       const { result } = renderSubscriptionHook();
 
-      // Hook renders automatically
-
+      await waitFor(() => expect(result.current.loading).toBe(false));
       expect(result.current.requiresAuth).toBe(true);
       expect(result.current.status).toBeNull();
       expect(result.current.packages).toHaveLength(0);
     });
 
-    it('given unauthenticated user when loading packages then shows prices without enabling purchase', async () => {
+    it('given unauthenticated user and no silent account on the server when loading packages then shows prices without enabling purchase', async () => {
       mockCurrentUser = null;
-      const { initializeSubscription, loadSubscriptionPackages } = require('../services/subscriptionService');
+      const { initializeSubscription, loadSubscriptionPackages, purchaseSubscriptionPackage } = require('../services/subscriptionService');
       const { result } = renderSubscriptionHook({ loadPackages: true });
 
       await waitFor(() => {
@@ -374,6 +406,7 @@ describe('useSubscription', () => {
       expect(loadSubscriptionPackages).toHaveBeenCalledTimes(1);
       expect(result.current.requiresAuth).toBe(true);
       await expect(result.current.purchase('mock_monthly')).rejects.toThrow('auth_required');
+      expect(purchaseSubscriptionPackage).not.toHaveBeenCalled();
     });
 
     it('given unauthenticated user when purchasing then rejects with auth error', async () => {
@@ -397,6 +430,246 @@ describe('useSubscription', () => {
       const { result } = renderSubscriptionHook();
 
       await expect(result.current.refreshSubscription()).rejects.toThrow('auth_required');
+    });
+  });
+
+  // App Review 5.1.1(v), 2026-11-25: a guest buys without registering. The store is paid on
+  // its anonymous customer; the silent account is made only once the store confirms.
+  describe('guest purchase without registering', () => {
+    const renderGuestPaywall = async () => {
+      mockCurrentUser = null;
+      mockGuestPurchase.available = true;
+      const hook = renderSubscriptionHook({ loadPackages: true });
+      await waitFor(() => expect(hook.result.current.packages).toHaveLength(1));
+      return hook;
+    };
+
+    it('lets a guest buy, then makes the silent account once the store confirms', async () => {
+      const { purchaseSubscriptionPackage } = require('../services/subscriptionService');
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      const { result } = await renderGuestPaywall();
+      expect(result.current.requiresAuth).toBe(false);
+
+      let outcome: any;
+      await act(async () => { outcome = await result.current.purchase('mock_monthly'); });
+
+      expect(purchaseSubscriptionPackage).toHaveBeenCalledWith('mock_monthly', { allowAnonymous: true });
+      expect(mockCreateSilentAccount).toHaveBeenCalledTimes(1);
+      expect(mockCreateSilentAccount.mock.invocationCallOrder[0])
+        .toBeGreaterThan(jest.mocked(purchaseSubscriptionPackage).mock.invocationCallOrder[0]);
+      expect(mockGuestPurchase.pending).toBe('purchase');
+      expect(outcome).toEqual(expect.objectContaining({ storeActive: true, serverConfirmed: false }));
+      // The guest session never asks the server: only the account confirms Plus.
+      expect(syncSubscriptionFromServer).not.toHaveBeenCalled();
+    });
+
+    it('revalidates eligibility when the guest presses buy', async () => {
+      const { purchaseSubscriptionPackage } = require('../services/subscriptionService');
+      const { result } = await renderGuestPaywall();
+      mockGuestPurchase.available = false;
+
+      await act(async () => {
+        await expect(result.current.purchase('mock_monthly')).rejects.toThrow('auth_required');
+      });
+
+      expect(purchaseSubscriptionPackage).not.toHaveBeenCalled();
+      expect(result.current.requiresAuth).toBe(true);
+    });
+
+    it('makes no account when the guest cancels the purchase', async () => {
+      const { purchaseSubscriptionPackage } = require('../services/subscriptionService');
+      jest.mocked(purchaseSubscriptionPackage).mockRejectedValueOnce(Object.assign(new Error('cancelled'), { userCancelled: true }));
+      const { result } = await renderGuestPaywall();
+
+      await act(async () => { await expect(result.current.purchase('mock_monthly')).rejects.toThrow('cancelled'); });
+
+      expect(mockCreateSilentAccount).not.toHaveBeenCalled();
+      expect(mockGuestPurchase.pending).toBeNull();
+      expect(result.current.error).toBeNull();
+      expect(result.current.activationPending).toBe(false);
+      expect(mockGuestPurchase.attempt).toBeNull();
+    });
+
+    it('makes no account when a guest restores and the store holds nothing', async () => {
+      const { restoreSubscriptionPurchases } = require('../services/subscriptionService');
+      jest.mocked(restoreSubscriptionPurchases).mockResolvedValueOnce({ tier: 'free', isActive: false } as any);
+      const { result } = await renderGuestPaywall();
+
+      let outcome: any;
+      await act(async () => { outcome = await result.current.restore(); });
+
+      expect(restoreSubscriptionPurchases).toHaveBeenCalledWith({ allowAnonymous: true });
+      expect(outcome).toEqual({ tier: 'free', isActive: false, serverConfirmed: true, storeActive: false });
+      expect(mockCreateSilentAccount).not.toHaveBeenCalled();
+    });
+
+    it('keeps a paid purchase pending when the account cannot be made, and retries without a second payment', async () => {
+      const { purchaseSubscriptionPackage, refreshSubscriptionStatus } = require('../services/subscriptionService');
+      mockCreateSilentAccount.mockRejectedValueOnce(new Error('Network request failed'));
+      const { result } = await renderGuestPaywall();
+
+      await act(async () => { await expect(result.current.purchase('mock_monthly')).rejects.toThrow('silent_account_failed'); });
+
+      expect(result.current.error?.message).toBe('subscription.error.account_setup');
+      expect(result.current.activationPending).toBe(true);
+      expect(mockGuestPurchase.pending).toBe('purchase');
+      // A second purchase is refused while the first one waits for its account.
+      await act(async () => { await expect(result.current.purchase('mock_monthly')).rejects.toThrow('subscription_operation_pending'); });
+
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValue({ tier: 'plus', isActive: true } as any);
+      await act(async () => { await result.current.refreshSubscription(); });
+
+      expect(mockCreateSilentAccount).toHaveBeenCalledTimes(2);
+      expect(purchaseSubscriptionPackage).toHaveBeenCalledTimes(1);
+    });
+
+    it('finishes at the next launch a purchase whose account was never made', async () => {
+      const { refreshSubscriptionStatus } = require('../services/subscriptionService');
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValue({ tier: 'plus', isActive: true } as any);
+      mockCurrentUser = null;
+      mockGuestPurchase.available = true;
+      mockGuestPurchase.pending = 'purchase';
+
+      renderSubscriptionHook();
+
+      await waitFor(() => expect(mockCreateSilentAccount).toHaveBeenCalledTimes(1));
+    });
+
+    it('recovers a guest payment accepted before JavaScript could record confirmation', async () => {
+      const { purchaseSubscriptionPackage, refreshSubscriptionStatus } = require('../services/subscriptionService');
+      const checkout = await renderGuestPaywall();
+      let finishPurchase!: (status: SubscriptionStatus) => void;
+      jest.mocked(purchaseSubscriptionPackage).mockImplementationOnce(() => new Promise(resolve => {
+        finishPurchase = resolve;
+      }));
+      let dispatched!: Promise<unknown>;
+      await act(async () => {
+        dispatched = checkout.result.current.purchase('mock_monthly').catch((error: unknown) => error);
+      });
+      expect(purchaseSubscriptionPackage).toHaveBeenCalledTimes(1);
+      expect(mockGuestPurchase.pending).toBeNull();
+      expect(mockGuestPurchase.attempt).toMatchObject({ kind: 'purchase', customerId: 'guest-device' });
+      checkout.unmount();
+
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValue({ tier: 'plus', isActive: true });
+      renderSubscriptionHook();
+      await waitFor(() => expect(mockCreateSilentAccount).toHaveBeenCalledTimes(1));
+      await act(async () => { finishPurchase({ tier: 'plus', isActive: true }); await dispatched; });
+      expect(purchaseSubscriptionPackage).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps the handover pending if the destination has a different active subscription', async () => {
+      const { initializeSubscription, refreshSubscriptionStatus, syncSubscriptionPurchases } = require('../services/subscriptionService');
+      const destinationStatus = { tier: 'plus', isActive: true, deviceStoreReceipts: ['destination-receipt'] };
+      mockGuestPurchase.handover = { sourceUserId: 'silent-1', receipts: ['source-receipt'] };
+      jest.mocked(initializeSubscription).mockResolvedValue(destinationStatus);
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValue(destinationStatus);
+
+      const hook = renderSubscriptionHook();
+      await waitFor(() => expect(hook.result.current.loading).toBe(false));
+      expect(syncSubscriptionPurchases).toHaveBeenCalledTimes(1);
+      expect(mockGuestPurchase.handover).toMatchObject({ receipts: ['source-receipt'], targetUserId: 'user-1' });
+      hook.unmount();
+
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValue({
+        ...destinationStatus, deviceStoreReceipts: ['destination-receipt', 'source-receipt'],
+      });
+      renderSubscriptionHook();
+      await waitFor(() => expect(mockGuestPurchase.handover).toBeNull());
+    });
+
+    it('never makes an account for an active store customer the guest did not buy or restore as', async () => {
+      const { refreshSubscriptionStatus } = require('../services/subscriptionService');
+      // A lost session can leave the store on an account's customer, active.
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValue({ tier: 'plus', isActive: true } as any);
+      const { result } = await renderGuestPaywall();
+
+      await act(async () => { await expect(result.current.refreshSubscription()).rejects.toThrow('auth_required'); });
+
+      expect(mockCreateSilentAccount).not.toHaveBeenCalled();
+    });
+
+    it('opens the purchase to a guest once the server answers, after a first failed check', async () => {
+      mockCurrentUser = null;
+      mockGuestPurchase.available = false;
+      const { result } = renderSubscriptionHook({ loadPackages: true });
+      await waitFor(() => expect(result.current.packages).toHaveLength(1));
+      expect(result.current.requiresAuth).toBe(true);
+
+      mockGuestPurchase.available = true;
+      // Several hooks listen for the foreground: the app coming back reaches each of them.
+      const listeners = mockForegroundListener.mock.calls.map((call: unknown[]) => call[0] as () => void);
+      await act(async () => { listeners.forEach((listener: () => void) => listener()); });
+
+      await waitFor(() => expect(result.current.requiresAuth).toBe(false));
+    });
+
+    it('shows a paid purchase as pending, not a second sale, while the server cannot be reached', async () => {
+      mockCurrentUser = null;
+      mockGuestPurchase.available = false;
+      mockGuestPurchase.pending = 'purchase';
+      const { result } = renderSubscriptionHook({ loadPackages: true });
+
+      await waitFor(() => expect(result.current.activationPending).toBe(true));
+      expect(mockCreateSilentAccount).not.toHaveBeenCalled();
+      await act(async () => { await expect(result.current.purchase('mock_monthly')).rejects.toThrow(); });
+      expect(require('../services/subscriptionService').purchaseSubscriptionPackage).not.toHaveBeenCalled();
+    });
+
+    it('confirms Plus with the server once the silent account is signed in, then forgets the pending purchase', async () => {
+      const { initializeSubscription } = require('../services/subscriptionService');
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      jest.mocked(initializeSubscription).mockResolvedValue({ tier: 'plus', isActive: true, deviceStoreReceipts: ['source-receipt'] });
+      mockCurrentUser = { id: 'silent-1', is_anonymous: true, app_metadata: {}, user_metadata: {} };
+      mockGuestPurchase.pending = 'purchase';
+
+      const { result } = renderSubscriptionHook();
+
+      await waitFor(() => expect(result.current.isActive).toBe(true));
+      expect(syncSubscriptionFromServer).toHaveBeenCalledWith('purchase');
+      await waitFor(() => expect(mockGuestPurchase.pending).toBeNull());
+      // While the account is still silent, the next account signed in here takes Plus over.
+      await waitFor(() => expect(mockGuestPurchase.handover).toEqual({ sourceUserId: 'silent-1', receipts: ['source-receipt'] }));
+    });
+
+    it('keeps activation pending and retries a failed store login on foreground', async () => {
+      const { initializeSubscription, refreshSubscriptionStatus, syncSubscriptionPurchases } = require('../services/subscriptionService');
+      const paid = { tier: 'plus', isActive: true };
+      mockCurrentUser = { id: 'silent-1', is_anonymous: true, app_metadata: {}, user_metadata: {} };
+      mockGuestPurchase.pending = 'purchase';
+      jest.mocked(initializeSubscription).mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(paid);
+      jest.mocked(refreshSubscriptionStatus)
+        .mockResolvedValueOnce({ tier: 'free', isActive: false })
+        .mockResolvedValue(paid);
+      const { result } = renderSubscriptionHook();
+
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      expect(result.current.activationPending).toBe(true);
+      expect(mockGuestPurchase.pending).toBe('purchase');
+      expect(refreshSubscriptionStatus).not.toHaveBeenCalled();
+
+      const listeners = mockForegroundListener.mock.calls.map((call: unknown[]) => call[0] as () => void);
+      await act(async () => { listeners.forEach((listener: () => void) => listener()); });
+      await waitFor(() => expect(result.current.isActive).toBe(true));
+      expect(initializeSubscription).toHaveBeenCalledTimes(2);
+      expect(syncSubscriptionPurchases).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockGuestPurchase.pending).toBeNull());
+    });
+
+    it('moves Plus from the silent account to the account that signs in after it', async () => {
+      const { initializeSubscription, refreshSubscriptionStatus, syncSubscriptionPurchases } = require('../services/subscriptionService');
+      const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');
+      // The store still holds the subscription under the silent account's customer.
+      jest.mocked(initializeSubscription).mockResolvedValue({ tier: 'free', isActive: false } as any);
+      jest.mocked(refreshSubscriptionStatus).mockResolvedValue({ tier: 'plus', isActive: true, deviceStoreReceipts: ['source-receipt'] });
+      mockGuestPurchase.handover = { sourceUserId: 'silent-1', receipts: ['source-receipt'] };
+
+      const { result } = renderSubscriptionHook();
+
+      await waitFor(() => expect(result.current.isActive).toBe(true));
+      expect(syncSubscriptionPurchases).toHaveBeenCalledTimes(1);
+      expect(syncSubscriptionFromServer).toHaveBeenCalledWith('restore');
+      expect(mockGuestPurchase.handover).toBeNull();
     });
   });
 

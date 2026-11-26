@@ -53,6 +53,33 @@ export function toLoggedRoute(
   };
 }
 
+/**
+ * Routes that spend on an AI provider. A silent account (a Supabase anonymous user, made by
+ * the app after a guest's purchase) reaches them only while Noctalia Plus is active: anyone
+ * can create an anonymous user against the public auth endpoint, and without this the free
+ * account's monthly analyses would be open to it with no device proof and no purchase.
+ */
+export const SILENT_ACCOUNT_PLUS_ROUTES: ReadonlySet<string> = new Set([
+  'POST /chat',
+  'POST /recall-question',
+  'POST /format-recall',
+  'POST /moon-letter',
+  'POST /analysis-preview',
+  'POST /transcribe',
+  'POST /analyzeDream',
+  'POST /analyzeDreamFull',
+  'POST /categorizeDream',
+  'POST /analysis-jobs',
+  'POST /image-jobs',
+  'POST /generateImage',
+]);
+
+const silentAccountRefused = () => new Response(JSON.stringify({
+  error: 'Noctalia Plus or a free account is required',
+  code: 'SILENT_ACCOUNT_PLUS_REQUIRED',
+  userMessage: 'Create a free account, or renew Noctalia Plus, to continue.',
+}), { status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+
 export type ApiHandlerDependencies = {
   routes: RouteTable;
   createClient?: typeof createClient;
@@ -134,6 +161,17 @@ export const createApiHandler = (dependencies: ApiHandlerDependencies) => {
         }
 
         return errorResponse('Not found', 404);
+      }
+
+      if (user?.is_anonymous === true && SILENT_ACCOUNT_PLUS_ROUTES.has(route)) {
+        try {
+          // Read through the caller's own client: PostgREST checks the JWT again.
+          const { data: tier, error } = await supabase.rpc('get_effective_subscription_tier', { p_user_id: user.id });
+          if (error) return errorResponse('Subscription state unavailable', 503);
+          if (tier !== 'plus') return silentAccountRefused();
+        } catch {
+          return errorResponse('Subscription state unavailable', 503);
+        }
       }
 
       return await handler({

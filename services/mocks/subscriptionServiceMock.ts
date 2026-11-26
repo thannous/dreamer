@@ -20,6 +20,10 @@ const operationCounts = new Map<string, { purchases: number; restores: number }>
 // A simulated store receipt is separate from locally loaded access and scoped to its owner.
 const receipts = new Map<string, SubscriptionStatus>();
 const DEFAULT_PLUS_PRODUCT_ID = 'mock_plus';
+// A guest buys on the store's anonymous customer; the receipt joins the account that signs in next.
+const GUEST_RECEIPT_OWNER = 'guest-device';
+export const getGuestStoreCustomerId = async (): Promise<string> => GUEST_RECEIPT_OWNER;
+type MockStoreOperationOptions = { allowAnonymous?: boolean };
 const listeners = new Set<SubscriptionStatusListener>();
 
 // Development preview only. Production uses the localized price strings returned by each store.
@@ -80,7 +84,7 @@ async function syncStatusWithCurrentUser(): Promise<SubscriptionStatus> {
     currentStatus = null;
     currentStatusUserId = userId;
     hasExplicitStatus = false;
-    if (nextPurchase?.userId !== userId) nextPurchase = null;
+    if (nextPurchase?.userId !== (userId ?? GUEST_RECEIPT_OWNER)) nextPurchase = null;
   }
 
   // Refresh must preserve explicit expiry/free states as well as active purchases.
@@ -104,6 +108,14 @@ export async function initialize(_userId?: string | null): Promise<SubscriptionS
   initialized = true;
   if (!currentStatus) {
     currentStatus = getDefaultStatus();
+  }
+  const user = await getCurrentUser();
+  const guestReceipt = receipts.get(GUEST_RECEIPT_OWNER);
+  if (user && guestReceipt) {
+    // Signing in after a guest purchase moves it onto the account, as the store's login does.
+    receipts.delete(GUEST_RECEIPT_OWNER);
+    receipts.set(user.id, guestReceipt);
+    return setStatus(guestReceipt, user.id);
   }
   return syncStatusWithCurrentUser();
 }
@@ -199,6 +211,12 @@ function buildMockScenarioStatus(scenario: MockSubscriptionScenario): Subscripti
 
 export async function applyMockScenario(scenario: MockSubscriptionScenario): Promise<SubscriptionStatus> {
   const user = await getCurrentUser();
+  if (!user && scenario === 'restore_available') {
+    // A guest whose store account already holds a subscription (bought before a reinstall).
+    initialized = true;
+    receipts.set(GUEST_RECEIPT_OWNER, buildMockScenarioStatus('monthly'));
+    return setStatus(buildMockScenarioStatus(scenario), null);
+  }
   if (!user) throw new Error('auth_required');
   initialized = true;
   const status = buildMockScenarioStatus(scenario);
@@ -209,8 +227,7 @@ export async function applyMockScenario(scenario: MockSubscriptionScenario): Pro
 
 export async function setNextMockPurchaseOutcome(outcome: MockPurchaseOutcome): Promise<void> {
   const user = await getCurrentUser();
-  if (!user) throw new Error('auth_required');
-  nextPurchase = { userId: user.id, outcome };
+  nextPurchase = { userId: user?.id ?? GUEST_RECEIPT_OWNER, outcome };
 }
 
 /** Fail convergence and its automatic retry, then allow the explicit retry. */
@@ -231,37 +248,39 @@ export function getMockBillingOperationCounts(userId?: string) {
   return (userId && operationCounts.get(userId)) || { purchases: 0, restores: 0 };
 }
 
-export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
+export async function purchasePackage(id: string, options?: MockStoreOperationOptions): Promise<SubscriptionStatus> {
   if (!initialized) {
     throw new Error('Purchases not initialized');
   }
   const pkg = mockPackages.find((item) => item.id === id);
   if (!pkg) throw new Error('ITEM_UNAVAILABLE');
   const user = await getCurrentUser();
-  if (!user) throw new Error('auth_required');
-  const counts = getMockBillingOperationCounts(user.id);
-  operationCounts.set(user.id, { ...counts, purchases: counts.purchases + 1 });
-  const outcome = nextPurchase?.userId === user.id ? nextPurchase.outcome : 'success';
+  if (!user && !options?.allowAnonymous) throw new Error('auth_required');
+  const owner = user?.id ?? GUEST_RECEIPT_OWNER;
+  const counts = getMockBillingOperationCounts(owner);
+  operationCounts.set(owner, { ...counts, purchases: counts.purchases + 1 });
+  const outcome = nextPurchase?.userId === owner ? nextPurchase.outcome : 'success';
   nextPurchase = null;
   if (outcome === 'cancelled') {
     throw Object.assign(new Error('Purchase cancelled'), { userCancelled: true });
   }
   if (outcome === 'error') throw new Error('NETWORK_ERROR');
   const status = buildMockScenarioStatus(pkg.interval === 'annual' ? 'annual' : 'monthly');
-  receipts.set(user.id, status);
-  return setStatus(status, user.id);
+  receipts.set(owner, status);
+  return setStatus(status, user?.id ?? null);
 }
 
-export async function restorePurchases(): Promise<SubscriptionStatus> {
+export async function restorePurchases(options?: MockStoreOperationOptions): Promise<SubscriptionStatus> {
   if (!initialized) {
     throw new Error('Purchases not initialized');
   }
   const user = await getCurrentUser();
-  if (!user) throw new Error('auth_required');
-  const counts = getMockBillingOperationCounts(user.id);
-  operationCounts.set(user.id, { ...counts, restores: counts.restores + 1 });
-  const receipt = receipts.get(user.id);
-  return receipt ? setStatus(receipt, user.id) : syncStatusWithCurrentUser();
+  if (!user && !options?.allowAnonymous) throw new Error('auth_required');
+  const owner = user?.id ?? GUEST_RECEIPT_OWNER;
+  const counts = getMockBillingOperationCounts(owner);
+  operationCounts.set(owner, { ...counts, restores: counts.restores + 1 });
+  const receipt = receipts.get(owner);
+  return receipt ? setStatus(receipt, user?.id ?? null) : syncStatusWithCurrentUser();
 }
 
 export async function refreshStatus(): Promise<SubscriptionStatus> {

@@ -1,3 +1,4 @@
+import { takeGuestOnboardingCarry } from '@/lib/guestPurchase';
 import type { Href } from 'expo-router';
 
 import type { AccountScope } from '@/lib/accountScope';
@@ -333,7 +334,7 @@ async function readSnapshot(scope: OnboardingScope): Promise<{
     };
   }
 
-  if (scope.startsWith('user:mock-') && isMockDogfoodPersistenceEnabled()) {
+  if ((scope.startsWith('user:mock-') && isMockDogfoodPersistenceEnabled()) || (scope !== 'guest' && takeGuestOnboardingCarry(now))) {
     const guestSnapshot = await getOnboardingStateSnapshot('guest');
     if (guestSnapshot) {
       try {
