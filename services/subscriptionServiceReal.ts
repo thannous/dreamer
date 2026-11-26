@@ -205,6 +205,11 @@ async function assertIdentifiedUser(options?: StoreOperationOptions): Promise<vo
     throw new Error('Purchases not initialized');
   }
   if (options?.allowAnonymous && persistedState.userId === null) {
+    // A lost session can leave the SDK on the account it last knew: a guest never buys on it.
+    if (!(await Purchases.isAnonymous())) {
+      await Purchases.logOut();
+      resetCachedState();
+    }
     return;
   }
   if (!persistedState.userId) {

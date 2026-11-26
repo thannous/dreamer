@@ -28,7 +28,8 @@ import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '
 import AppleSignInButton from '@/components/auth/AppleSignInButton';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
-import { isSilentAccount } from '@/lib/silentAccount';
+import { askAccountSwitch } from '@/components/auth/accountSwitch';
+import { getPendingAccountEmail, isSilentAccount } from '@/lib/silentAccount';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import {
   requestPasswordReset,
@@ -137,7 +138,9 @@ export const EmailAuthCard: React.FC<Props> = ({
   const [touched, setTouched] = useState({ email: false, password: false });
   const [submitting, setSubmitting] = useState<'signin' | 'signup' | 'signout' | null>(null);
   const [mockProfileLoading, setMockProfileLoading] = useState<MockProfile | null>(null);
-  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  const [typedUnverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  // An address given to a silent account and not confirmed yet is still waiting after a relaunch.
+  const unverifiedEmail = typedUnverifiedEmail ?? getPendingAccountEmail(sessionUser);
   const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [pendingVerification, setPendingVerification] = useState<{
     email: string;
@@ -279,6 +282,8 @@ export const EmailAuthCard: React.FC<Props> = ({
         email: trimmedEmail,
       });
     }
+    // Leaving a silent account strands its journal: the person decides, knowing it.
+    if (silentAccount && !await askAccountSwitch(t)) return;
     setSubmitting('signin');
     requestAuthReturn();
     await attempt(async () => {
@@ -341,6 +346,7 @@ export const EmailAuthCard: React.FC<Props> = ({
 
   const handleMockSignIn = async (profile: MockProfile) => {
     if (!isMockModeEnabled) return;
+    if (silentAccount && !await askAccountSwitch(t)) return;
     setMockProfileLoading(profile);
     requestAuthReturn();
     await attempt(async () => {

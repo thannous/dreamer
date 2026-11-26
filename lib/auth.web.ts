@@ -330,6 +330,13 @@ export async function signInWithEmailPassword(email: string, password: string) {
   return data.user;
 }
 
+/** Native identity sign-in asks before leaving a silent account; the web has no such exchange. */
+export const ACCOUNT_SWITCH_REQUIRED = 'ACCOUNT_SWITCH_REQUIRED';
+export async function confirmAccountSwitch(): Promise<User> {
+  throw new Error('SIGN_IN_CANCELLED');
+}
+export function cancelAccountSwitch(): void {}
+
 /**
  * Makes the account a guest's confirmed purchase is attached to: no email, no name, nothing
  * asked. The web build sells nothing today; this mirrors the native module for the day it does.

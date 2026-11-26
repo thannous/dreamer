@@ -42,6 +42,18 @@ const {
   };
 });
 
+const mockStoreIdentity = {
+  isAnonymous: jest.fn(async (..._args: unknown[]) => true),
+  getAppUserID: jest.fn(async (..._args: unknown[]) => '$RCAnonymousID:device'),
+  logIn: jest.fn(async (..._args: unknown[]) => ({})),
+  logOut: jest.fn(async (..._args: unknown[]) => ({})),
+  getOfferings: jest.fn(async (..._args: unknown[]) => ({
+    current: { availablePackages: [{ identifier: '$rc_monthly', packageType: 'MONTHLY', product: { identifier: 'noctalia_plus_monthly', price: 4.99, priceString: '4,99 €', currencyCode: 'EUR', title: 'Monthly', description: '' } }] },
+  })),
+  purchasePackage: jest.fn(async (..._args: unknown[]) => ({ customerInfo: null })),
+  restorePurchases: jest.fn(async (..._args: unknown[]) => null),
+};
+
 jest.mock('@/lib/env', () => ({
   getExpoPublicEnvValue: (key: string) => mockGetPublicEnvValue(key),
 }));
@@ -70,6 +82,13 @@ jest.mock('react-native-purchases', () => ({
     configure: mockConfigure,
     getCustomerInfo: mockGetCustomerInfo,
     invalidateCustomerInfoCache: jest.fn(),
+    isAnonymous: (...args: unknown[]) => mockStoreIdentity.isAnonymous(...args),
+    getAppUserID: (...args: unknown[]) => mockStoreIdentity.getAppUserID(...args),
+    logIn: (...args: unknown[]) => mockStoreIdentity.logIn(...args),
+    logOut: (...args: unknown[]) => mockStoreIdentity.logOut(...args),
+    getOfferings: (...args: unknown[]) => mockStoreIdentity.getOfferings(...args),
+    purchasePackage: (...args: unknown[]) => mockStoreIdentity.purchasePackage(...args),
+    restorePurchases: (...args: unknown[]) => mockStoreIdentity.restorePurchases(...args),
     setLogHandler: mockSetLogHandler,
     showManageSubscriptions: mockShowManageSubscriptions,
   },
@@ -168,5 +187,54 @@ describe('subscriptionServiceReal management', () => {
 
     expect(mockOpenURL).toHaveBeenCalledWith(playUrl);
     expect(mockShowManageSubscriptions).not.toHaveBeenCalled();
+  });
+});
+
+// App Review 5.1.1(v): a guest buys and restores on the store's anonymous customer.
+describe('subscriptionServiceReal guest store operations', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+    mockClearPublicEnv();
+    mockPlatform.OS = 'ios';
+    mockSetPublicEnvValue('EXPO_PUBLIC_REVENUECAT_IOS_KEY', 'appl_key');
+    mockStoreIdentity.isAnonymous.mockResolvedValue(true);
+    delete (globalThis as typeof globalThis & { __dreamerPurchases?: unknown })
+      .__dreamerPurchases;
+  });
+
+  it('refuses a purchase or a restore without an account unless the guest path asks for it', async () => {
+    const service = require('../subscriptionServiceReal');
+    await service.initialize(null);
+
+    await expect(service.purchasePackage('$rc_monthly')).rejects.toThrow('Purchases user not identified');
+    await expect(service.restorePurchases()).rejects.toThrow('Purchases user not identified');
+    expect(mockStoreIdentity.purchasePackage).not.toHaveBeenCalled();
+    expect(mockStoreIdentity.restorePurchases).not.toHaveBeenCalled();
+  });
+
+  it('lets a guest buy and restore on the anonymous customer', async () => {
+    const service = require('../subscriptionServiceReal');
+    await service.initialize(null);
+
+    await service.purchasePackage('$rc_monthly', { allowAnonymous: true });
+    await service.restorePurchases({ allowAnonymous: true });
+
+    expect(mockStoreIdentity.purchasePackage).toHaveBeenCalledTimes(1);
+    expect(mockStoreIdentity.restorePurchases).toHaveBeenCalledTimes(1);
+    expect(mockStoreIdentity.logOut).not.toHaveBeenCalled();
+  });
+
+  it('leaves an account the store still remembers before a guest buys', async () => {
+    // A lost session: no account in the app, the SDK still on that account's customer.
+    mockStoreIdentity.isAnonymous.mockResolvedValue(false);
+    const service = require('../subscriptionServiceReal');
+    await service.initialize(null);
+
+    await service.purchasePackage('$rc_monthly', { allowAnonymous: true });
+
+    expect(mockStoreIdentity.logOut).toHaveBeenCalledTimes(1);
+    expect(mockStoreIdentity.logOut.mock.invocationCallOrder[0])
+      .toBeLessThan(mockStoreIdentity.purchasePackage.mock.invocationCallOrder[0]);
   });
 });

@@ -36,7 +36,7 @@ export function MicPermissionRationaleSheet({
   return (
     <StandardBottomSheet
       visible={visible}
-      // The gesture is blocked; a host that still reports a dismissal goes on to the request.
+      // Required by the sheet and never reached: with no dismissal there is no way out but Continue.
       onClose={onContinue}
       dismissBehavior="none"
       title={t('recording.mic_rationale.title')}

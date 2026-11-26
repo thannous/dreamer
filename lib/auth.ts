@@ -327,12 +327,6 @@ async function markFingerprintUpgraded(
   }
 }
 
-/**
- * Exchanges a provider identity token. On a silent account the identity is attached to it,
- * so the journal and the subscription stay where they are. If that identity already has a
- * Noctalia account (or linking is off on the server), the person is signed in to that
- * account instead and the subscription follows through the store (`setSilentPlusHandover`).
- */
 async function isCurrentAccountSilent(): Promise<boolean> {
   try {
     const { data } = await supabase.auth.getSession();
@@ -342,15 +336,44 @@ async function isCurrentAccountSilent(): Promise<boolean> {
   }
 }
 
+/** Thrown when a silent account would have to be left for another account: the UI asks first. */
+export const ACCOUNT_SWITCH_REQUIRED = 'ACCOUNT_SWITCH_REQUIRED';
+const ACCOUNT_SWITCH_TTL_MS = 5 * 60 * 1000;
+let pendingAccountSwitch: { credentials: SignInWithIdTokenCredentials; until: number } | null = null;
+
+/**
+ * Exchanges a provider identity token. On a silent account the identity is attached to it,
+ * so the journal and the subscription stay where they are. If that identity (or its email)
+ * already has a Noctalia account, nothing is done yet: leaving the silent account strands
+ * its journal, so the caller asks the person and then calls `confirmAccountSwitch`.
+ */
 async function exchangeIdentityToken(credentials: SignInWithIdTokenCredentials): Promise<AuthTokenResponse> {
   if (await isCurrentAccountSilent()) {
     const linked = await supabase.auth.linkIdentity(credentials);
-    if (!linked.error) return linked;
-    const code = linked.error.code;
-    if (code !== 'identity_already_exists' && code !== 'manual_linking_disabled') return linked;
-    log.debug('Identity not attached to the silent account; signing in to its own account', { code });
+    const code = linked.error?.code;
+    if (code === 'identity_already_exists' || code === 'email_exists') {
+      pendingAccountSwitch = { credentials, until: Date.now() + ACCOUNT_SWITCH_TTL_MS };
+      throw Object.assign(new Error(ACCOUNT_SWITCH_REQUIRED), { code: ACCOUNT_SWITCH_REQUIRED });
+    }
+    return linked;
   }
   return supabase.auth.signInWithIdToken(credentials);
+}
+
+/** The person agreed to leave the silent account for the account that identity already has. */
+export async function confirmAccountSwitch(): Promise<User> {
+  const pending = pendingAccountSwitch;
+  pendingAccountSwitch = null;
+  if (!pending || Date.now() >= pending.until) throw new Error('SIGN_IN_CANCELLED');
+  const { data, error } = await supabase.auth.signInWithIdToken(pending.credentials);
+  if (error) throw error;
+  if (!data.user) throw new Error('No user data received from Supabase');
+  await ensureSessionPersistence(data.session ?? null, 'confirmAccountSwitch');
+  return data.user;
+}
+
+export function cancelAccountSwitch(): void {
+  pendingAccountSwitch = null;
 }
 
 /**
@@ -362,14 +385,12 @@ export async function createSilentAccount(): Promise<User> {
     return mockAuth.signInAnonymously();
   }
 
-  const guestUpgradeProof = await captureGuestUpgradeProof();
   const { data, error } = await supabase.auth.signInAnonymously();
   if (error) throw error;
   if (!data.user) throw new Error('No user data received from Supabase');
   await ensureSessionPersistence(data.session ?? null, 'createSilentAccount');
-  await markFingerprintUpgraded(guestUpgradeProof).catch(() => {
-    // Fail silently if marking fails
-  });
+  // The device is not marked as upgraded: this account has nothing to sign in with, and a
+  // device marked that way is refused as a guest ("sign in to continue") if it is ever deleted.
   return data.user;
 }
 
@@ -606,8 +627,16 @@ export async function resendVerificationEmail(email: string) {
     return;
   }
 
+  if (await isCurrentAccountSilent()) {
+    // The address is not the account's yet, so the server's "resend" finds no one to write
+    // to. Asking for the change again is what sends the confirmation email again.
+    const { error: updateError } = await supabase.auth.updateUser({ email }, { emailRedirectTo: getNativeEmailRedirect() });
+    if (updateError) throw updateError;
+    return;
+  }
+
   const { error } = await supabase.auth.resend({
-    type: (await isCurrentAccountSilent()) ? 'email_change' : 'signup',
+    type: 'signup',
     email,
     options: {
       emailRedirectTo: getNativeEmailRedirect(),

@@ -3,7 +3,8 @@ import { isLucidTrainer } from '@/lib/appVariant';
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, ActivityIndicator, Alert, Platform } from 'react-native';
 import { attempt } from '@/lib/attempt';
-import { signInWithGoogle, signInWithGoogleWeb } from '@/lib/auth';
+import { ACCOUNT_SWITCH_REQUIRED, cancelAccountSwitch, confirmAccountSwitch, signInWithGoogle, signInWithGoogleWeb } from '@/lib/auth';
+import { askAccountSwitch } from '@/components/auth/accountSwitch';
 import { ThemeLayout } from '@/constants/journalTheme';
 import { getAuthDesignTokens } from '@/constants/authTheme';
 import { Fonts } from '@/constants/theme';
@@ -59,7 +60,17 @@ export default function GoogleSignInButton({
       if (returnTo) {
         requestStayOnSettingsIntent({ destination: returnTo });
       }
-      await signInWithGoogle();
+      try {
+        await signInWithGoogle();
+      } catch (error) {
+        if (getErrorCode(error) !== ACCOUNT_SWITCH_REQUIRED) throw error;
+        // That identity already has an account: leaving the silent one is the person's call.
+        if (!await askAccountSwitch(t)) {
+          cancelAccountSwitch();
+          throw new Error('SIGN_IN_CANCELLED');
+        }
+        await confirmAccountSwitch();
+      }
       log.debug('Sign-in successful');
       // Navigation is handled by auth state listener in settings screen
     }, {

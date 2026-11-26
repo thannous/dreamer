@@ -366,6 +366,14 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       setError(null);
     }
     try {
+      // Only a purchase or a restore this guest made here gets an account: an active store
+      // customer alone (an account's, left by a lost session) never does.
+      const awaiting = await readGuestPurchasePending();
+      assertSession();
+      if (!awaiting) {
+        setPending(false);
+        return { tier: 'free', isActive: false, serverConfirmed: true, storeActive: false };
+      }
       await initializeSubscription(null);
       assertSession();
       const observed = await refreshSubscriptionStatus();
@@ -375,7 +383,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         setPending(false);
         return { tier: 'free', isActive: false, serverConfirmed: true, storeActive: false };
       }
-      return await attachToSilentAccount((await readGuestPurchasePending()) ?? 'restore', observed, options);
+      return await attachToSilentAccount(awaiting, observed, options);
     } catch (err) {
       if (isSessionCurrent() && !options?.quiet) setError(formatError(err));
       throw err;
@@ -386,6 +394,15 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       }
     }
   }, [assertSession, attachToSilentAccount, invalidateStoreReads, isSessionCurrent, setPending]);
+  // Asked again whenever it matters (the offer opens, the app returns, a retry): one failed
+  // request must not leave a guest on the sign-in-first offer for the whole session.
+  const ensureGuestStore = useCallback(async (): Promise<boolean> => {
+    if (userId || !isGuestPurchaseEnabled) return false;
+    const available = await isSilentAccountAvailable();
+    if (available && isSessionCurrent()) setGuestStoreReady(true);
+    return available;
+  }, [isSessionCurrent, userId]);
+
   const resumeGuestPurchaseRef = useRef(resumeGuestPurchase);
   useLayoutEffect(() => { resumeGuestPurchaseRef.current = resumeGuestPurchase; }, [resumeGuestPurchase]);
 
@@ -430,9 +447,10 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
             if (awaitingAccount && storeAnswered) void clearGuestPurchasePending();
             applyStoreObservationRef.current('status_change', observed);
           }
-        } else if (awaitingAccount && guestCanBuy) {
+        } else if (awaitingAccount) {
+          // Paid, and no account yet: the offer shows the activation, never a second sale.
           setPending(true);
-          void resumeGuestPurchaseRef.current({ quiet: true }).catch(() => {});
+          if (guestCanBuy) void resumeGuestPurchaseRef.current({ quiet: true }).catch(() => {});
         }
         if (shouldLoadPackages) {
           const offerings = await loadSubscriptionPackages();
@@ -523,8 +541,11 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   const purchase = useCallback((id: string) => runStoreOperation('purchase', (options) => purchaseSubscriptionPackage(id, options)), [runStoreOperation]);
   const restore = useCallback(() => runStoreOperation('restore', restoreSubscriptionPurchases), [runStoreOperation]);
   const refreshSubscription = useCallback(async (): Promise<SubscriptionOperationResult> => {
-    if (!userId && guestStoreReady) return resumeGuestPurchase();
-    if (!userId) throw new Error('auth_required');
+    if (!userId) {
+      // A guest has nothing to refresh, except a paid purchase still waiting for its account.
+      if (!storeOperation.current.pending || !await ensureGuestStore()) throw new Error('auth_required');
+      return resumeGuestPurchase();
+    }
     assertSession();
     const state = storeOperation.current;
     state.refreshes++;
@@ -547,7 +568,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       state.refreshes--;
       if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
     }
-  }, [assertSession, converge, guestStoreReady, invalidateStoreReads, isSessionCurrent, resumeGuestPurchase, userId]);
+  }, [assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, resumeGuestPurchase, userId]);
 
   // A store-confirmed purchase whose server confirmation failed keeps every
   // store observation paused (see canObserveStore), so nothing else would ever
@@ -557,7 +578,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     const state = storeOperation.current;
     if (!userId) {
       // A guest's paid purchase still waits for its account: try again without a word.
-      if (guestStoreReady && state.pending && !state.running && isSessionCurrent()) {
+      if (state.pending && !state.running && isSessionCurrent() && await ensureGuestStore()) {
         await resumeGuestPurchase({ quiet: true }).catch(() => {});
       }
       return;
@@ -575,12 +596,13 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       state.refreshes--;
       if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
     }
-  }, [assertSession, converge, guestStoreReady, invalidateStoreReads, isSessionCurrent, resumeGuestPurchase, userId]);
+  }, [assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, resumeGuestPurchase, userId]);
   const retryPendingActivationRef = useRef(retryPendingActivation);
   useLayoutEffect(() => { retryPendingActivationRef.current = retryPendingActivation; }, [retryPendingActivation]);
 
   useEffect(() => {
-    if (!activationPending || !userId) return;
+    // A guest's paid purchase waits for its account on the same schedule.
+    if (!activationPending || (!userId && !isGuestPurchaseEnabled)) return;
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const schedule = (attempt: number) => {
@@ -598,7 +620,10 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     };
   }, [activationPending, sessionKey, userId]);
 
-  useAppState(() => { void retryPendingActivationRef.current(); });
+  useAppState(() => {
+    void ensureGuestStore().catch(() => {});
+    void retryPendingActivationRef.current();
+  });
 
   const onResume = useCallback((next: SubscriptionStatus) => {
     if (!isSessionCurrent() || initializing.current) return;
@@ -672,6 +697,8 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     purchase,
     restore,
     refreshSubscription,
+    /** Asks again whether a guest can buy here; the offer calls it each time it opens. */
+    ensureGuestStore,
   };
 }
 
