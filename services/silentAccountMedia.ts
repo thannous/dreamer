@@ -8,13 +8,17 @@ import { NETWORK_REQUEST_POLICIES } from '@/lib/networkPolicy';
 
 const inFlight = new Map<string, Promise<void>>();
 
-/** A failed adoption is retried when this silent account returns to the foreground. */
-export function adoptSilentAccountGuestImages(userId: string, isCurrent: () => boolean): Promise<void> {
+/** A failed adoption is retried for the same account, including after it adds a login. */
+export function adoptSilentAccountGuestImages(userId: string, silentAccount: boolean, isCurrent: () => boolean): Promise<void> {
   const existing = inFlight.get(userId);
   if (existing) return existing;
   const run = (async () => {
     const storageKey = backendStorageKey('guest-images-adopted.' + userId);
-    if (await AsyncStorage.getItem(storageKey) || !isCurrent()) return;
+    const state = await AsyncStorage.getItem(storageKey);
+    if (!isCurrent() || state === '1' || (!silentAccount && state !== 'pending')) return;
+    // The UUID survives adding a login. Save the retry before obtaining proof or calling the API.
+    if (state !== 'pending') await AsyncStorage.setItem(storageKey, 'pending');
+    if (!isCurrent()) return;
     const headers = await getGuestHeaders({ forImageAdoption: true });
     const fingerprint = headers['x-guest-fingerprint'];
     const token = await getAccessToken();

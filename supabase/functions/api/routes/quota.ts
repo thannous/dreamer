@@ -273,12 +273,6 @@ async function handleGuestAccountTransition(
       );
     }
 
-    if (imagesOnly && user.is_anonymous !== true) {
-      return new Response(JSON.stringify({ error: 'Forbidden' }), {
-        status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
-    }
-
     if (!body?.fingerprint || typeof body.fingerprint !== 'string') {
       return new Response(
         JSON.stringify({ error: 'Missing or invalid fingerprint' }),
@@ -320,6 +314,8 @@ async function handleGuestAccountTransition(
     });
 
     if (imagesOnly) {
+      // The signed-in user is the only destination, even if they have since linked a login.
+      // The device proof grants access only to its own guest folder.
       if (!adminClient.storage) throw new Error('Storage unavailable');
       await adoptGuestImages(adminClient.storage, ctx.storageBucket, fingerprint, user.id, true);
       return new Response(null, { status: 204, headers: corsHeaders });

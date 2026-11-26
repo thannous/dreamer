@@ -632,6 +632,30 @@ describe('useSubscription', () => {
       await waitFor(() => expect(mockGuestPurchase.handover).toEqual({ sourceUserId: 'silent-1', receipts: ['source-receipt'] }));
     });
 
+    it('keeps activation pending and retries a failed store login on foreground', async () => {
+      const { initializeSubscription, refreshSubscriptionStatus, syncSubscriptionPurchases } = require('../services/subscriptionService');
+      const paid = { tier: 'plus', isActive: true };
+      mockCurrentUser = { id: 'silent-1', is_anonymous: true, app_metadata: {}, user_metadata: {} };
+      mockGuestPurchase.pending = 'purchase';
+      jest.mocked(initializeSubscription).mockRejectedValueOnce(new Error('Offline')).mockResolvedValue(paid);
+      jest.mocked(refreshSubscriptionStatus)
+        .mockResolvedValueOnce({ tier: 'free', isActive: false })
+        .mockResolvedValue(paid);
+      const { result } = renderSubscriptionHook();
+
+      await waitFor(() => expect(result.current.loading).toBe(false));
+      expect(result.current.activationPending).toBe(true);
+      expect(mockGuestPurchase.pending).toBe('purchase');
+      expect(refreshSubscriptionStatus).not.toHaveBeenCalled();
+
+      const listeners = mockForegroundListener.mock.calls.map((call: unknown[]) => call[0] as () => void);
+      await act(async () => { listeners.forEach((listener: () => void) => listener()); });
+      await waitFor(() => expect(result.current.isActive).toBe(true));
+      expect(initializeSubscription).toHaveBeenCalledTimes(2);
+      expect(syncSubscriptionPurchases).toHaveBeenCalledTimes(1);
+      await waitFor(() => expect(mockGuestPurchase.pending).toBeNull());
+    });
+
     it('moves Plus from the silent account to the account that signs in after it', async () => {
       const { initializeSubscription, refreshSubscriptionStatus, syncSubscriptionPurchases } = require('../services/subscriptionService');
       const { syncSubscriptionFromServer } = require('../services/subscriptionSyncService');

@@ -178,6 +178,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
 
   const mounted = useRef(false);
   const initializing = useRef(true);
+  const storeLoginReady = useRef(false);
   const lastSyncAttempt = useRef<{ at: number } | null>(null);
   const expiredExpiryKey = useRef<string | null>(null);
   const storeOperation = useRef({ running: false, pending: false, refreshes: 0, observationVersion: 0 });
@@ -186,6 +187,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   useLayoutEffect(() => {
     mounted.current = true;
     initializing.current = true;
+    storeLoginReady.current = false;
     lastSyncAttempt.current = null;
     expiredExpiryKey.current = null;
     storeOperation.current = { running: false, pending: false, refreshes: 0, observationVersion: 0 };
@@ -387,8 +389,10 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
           if (observed?.isActive && (confirmed || !attempt?.activeBefore)) {
             return await attachToSilentAccount(kind, observed, options);
           }
-          // Keep an unconfirmed attempt for the next foreground if the store has yet to report it.
-          if (confirmed) await clearGuestPurchasePending();
+          // An empty read can precede store reconciliation. Keep the attempt for the next
+          // foreground and continue to block a second sale if the checkout already confirmed.
+          setPending(Boolean(confirmed));
+          return { tier: 'free', isActive: false, serverConfirmed: !confirmed, storeActive: Boolean(confirmed) };
         } else {
           await clearGuestPurchasePending();
         }
@@ -432,9 +436,11 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
         const guestCanBuy = !userId && isGuestPurchaseEnabled && await isSilentAccountAvailable();
         if (!current()) return;
         if (!userId) setGuestStoreReady(guestCanBuy);
+        if (awaitingAccount) setPending(true);
         let observed = await initializeSubscription(userId);
         if (!current()) return;
         if (userId) {
+          storeLoginReady.current = true;
           // A purchase made on this device before this account existed, or held by the
           // silent account this one replaces, belongs to it now: the store moves it here.
           let handover = !silentAccount && isGuestPurchaseEnabled ? await readSilentPlusHandover() : null;
@@ -477,11 +483,9 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
             await convergeRef.current(awaitingAccount ?? 'restore', observed).catch(() => {});
             if (!current()) return;
           } else {
-            if (awaitingAccount && storeAnswered) void clearGuestPurchasePending();
             applyStoreObservationRef.current('status_change', observed);
           }
         } else if (awaitingAccount || guestAttempt) {
-          if (awaitingAccount) setPending(true);
           if (guestCanBuy) await resumeGuestPurchaseRef.current({ quiet: true }).catch(() => {});
           if (!current()) return;
         }
@@ -554,6 +558,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     try {
       await initializeSubscription(userId);
       assertSession();
+      if (userId) storeLoginReady.current = true;
       if (!userId) {
         const customerId = await getGuestStoreCustomerId();
         const before = await refreshSubscriptionStatus();
@@ -592,6 +597,23 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
 
   const purchase = useCallback((id: string) => runStoreOperation('purchase', (options) => purchaseSubscriptionPackage(id, options)), [runStoreOperation]);
   const restore = useCallback(() => runStoreOperation('restore', restoreSubscriptionPurchases), [runStoreOperation]);
+  const observeActivation = useCallback(async () => {
+    let observed = await refreshSubscriptionStatus();
+    assertSession();
+    const awaitingAccount = !observed?.isActive && storeOperation.current.pending && isGuestPurchaseEnabled
+      ? await readGuestPurchasePending()
+      : null;
+    assertSession();
+    if (awaitingAccount) {
+      await syncSubscriptionPurchases();
+      assertSession();
+      observed = await refreshSubscriptionStatus();
+      assertSession();
+      if (!observed?.isActive) return undefined;
+    }
+    return observed;
+  }, [assertSession]);
+
   const refreshSubscription = useCallback(async (): Promise<SubscriptionOperationResult> => {
     if (!userId) {
       // A guest has nothing to refresh, except a paid purchase still waiting for its account.
@@ -605,12 +627,15 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
     setRefreshing(true);
     setError(null);
     try {
-      if (initializing.current) {
+      if (initializing.current || !storeLoginReady.current) {
         await initializeSubscription(userId);
         assertSession();
+        storeLoginReady.current = true;
       }
-      const observed = await refreshSubscriptionStatus();
-      assertSession();
+      const observed = await observeActivation();
+      if (observed === undefined) {
+        return { tier: appMetadataTier, isActive: appMetadataTier === 'plus', serverConfirmed: false, storeActive: true };
+      }
       if (!observed) throw new Error('Purchases not initialized');
       return await converge('manual_refresh', observed);
     } catch (err) {
@@ -620,7 +645,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       state.refreshes--;
       if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
     }
-  }, [assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, resumeGuestPurchase, userId]);
+  }, [appMetadataTier, assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, observeActivation, resumeGuestPurchase, userId]);
 
   // A store-confirmed purchase whose server confirmation failed keeps every
   // store observation paused (see canObserveStore), so nothing else would ever
@@ -636,12 +661,16 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       }
       return;
     }
-    if (!state.pending || state.running || state.refreshes > 0 || !isSessionCurrent()) return;
+    if (!state.pending || state.running || state.refreshes > 0 || initializing.current || !isSessionCurrent()) return;
     state.refreshes++;
     invalidateStoreReads();
     try {
-      const observed = await refreshSubscriptionStatus();
-      assertSession();
+      if (!storeLoginReady.current) {
+        await initializeSubscription(userId);
+        assertSession();
+        storeLoginReady.current = true;
+      }
+      const observed = await observeActivation();
       if (observed) await converge('manual_refresh', observed);
     } catch {
       // Still pending: the next attempt, or the user's own retry, tries again.
@@ -649,7 +678,7 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
       state.refreshes--;
       if (isSessionCurrent()) setRefreshing(state.refreshes > 0);
     }
-  }, [assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, resumeGuestPurchase, userId]);
+  }, [assertSession, converge, ensureGuestStore, invalidateStoreReads, isSessionCurrent, observeActivation, resumeGuestPurchase, userId]);
   const retryPendingActivationRef = useRef(retryPendingActivation);
   useLayoutEffect(() => { retryPendingActivationRef.current = retryPendingActivation; }, [retryPendingActivation]);
 
@@ -674,8 +703,8 @@ export function useSubscriptionInternal(options?: UseSubscriptionOptions) {
   }, [activationPending, sessionKey, userId]);
 
   const recoverGuestImages = useCallback(() => {
-    if (silentAccount && userId && !isMockMode && isSessionCurrent()) {
-      void adoptSilentAccountGuestImages(userId, isSessionCurrent).catch(() => {});
+    if (isGuestPurchaseEnabled && userId && !isMockMode && isSessionCurrent()) {
+      void adoptSilentAccountGuestImages(userId, silentAccount, isSessionCurrent).catch(() => {});
     }
   }, [isMockMode, isSessionCurrent, silentAccount, userId]);
   useEffect(recoverGuestImages, [recoverGuestImages]);

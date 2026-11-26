@@ -193,15 +193,28 @@ await step('a silent account adopts guest images without consuming guest status'
   assert.equal(session.user.is_anonymous, true);
   const destination = session.user.id + '/adoption-fixture.webp';
   const auth = { Authorization: 'Bearer ' + session.access_token };
-  const userStorage = createClient(localUrl, anon, { ...options, global: { headers: auth } }).storage.from('dream-images');
+  const userClient = createClient(localUrl, anon, options);
   const endpoint = '/functions/v1/api/auth/adopt-guest-images';
 
   try {
     await assert.rejects(() => call(endpoint, { body: { fingerprint }, headers: guestHeaders }), /401/);
     await assert.rejects(() => call(endpoint, { body: { fingerprint }, headers: auth }), /401/);
+    const signedIn = await userClient.auth.setSession(session);
+    assert.ifError(signedIn.error);
+    const userStorage = userClient.storage.from('dream-images');
     const before = await userStorage.download(destination);
     assert.ok(before.error, 'The account folder must not contain the guest image yet.');
-    const copy = { body: { fingerprint }, headers: { ...guestHeaders, ...auth } };
+    const email = 'adoption-' + crypto.randomUUID() + '@noctalia.test';
+    const linked = await userClient.auth.updateUser({ email, password: 'Local-guest-test-42' });
+    assert.ifError(linked.error);
+    const refreshed = await userClient.auth.refreshSession();
+    assert.ifError(refreshed.error);
+    assert.equal(refreshed.data.user.id, session.user.id);
+    assert.equal(refreshed.data.user.is_anonymous, false);
+    const copy = {
+      body: { fingerprint },
+      headers: { ...guestHeaders, Authorization: 'Bearer ' + refreshed.data.session.access_token },
+    };
     await call(endpoint, copy);
     await call(endpoint, copy);
     const image = await userStorage.download(destination);
