@@ -281,6 +281,17 @@ export function classifyError(error: Error, t?: TranslateFunction): ClassifiedEr
       };
     }
 
+    // An account without an email (made by a purchase without registering) whose Plus ended.
+    if (status === 403 && code === 'SILENT_ACCOUNT_PLUS_REQUIRED') {
+      return {
+        type: ErrorType.CLIENT,
+        message: error.message,
+        originalError: error,
+        userMessage: translate('error.silent_account_plus_required'),
+        canRetry: false,
+      };
+    }
+
     if ((status === 401 || status === 403) &&
       (code === 'GUEST_DEVICE_UPGRADED' || isUpgraded || /login required/i.test(bodyError))
     ) {

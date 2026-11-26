@@ -674,6 +674,37 @@ describe('EmailAuthCard', () => {
       .toBe('true');
   });
 
+  // An account without an email, made by a purchase without registering (App Review 5.1.1(v)).
+  describe('for a silent account', () => {
+    it('keeps offering to create an account or sign in, and never to sign out', () => {
+      mockCurrentUser = { id: 'silent-1', is_anonymous: true, email: '' };
+
+      render(<EmailAuthCard />);
+
+      expect(screen.getByText('settings.account.description_silent')).toBeTruthy();
+      expect(screen.getByTestId(TID.Button.AuthSignUp)).toBeTruthy();
+      expect(screen.queryByTestId(TID.Button.AuthSignOut)).toBeNull();
+      expect(screen.queryByText('settings.account.description_signed_in')).toBeNull();
+    });
+
+    it('says to sign in instead when the address already has an account', async () => {
+      mockCurrentUser = { id: 'silent-1', is_anonymous: true, email: '' };
+      mockSignUpWithEmailPassword.mockRejectedValueOnce(Object.assign(new Error('email exists'), { code: 'email_exists' }));
+      render(<EmailAuthCard />);
+      fireEvent.change(screen.getByTestId(TID.Input.AuthEmail), { target: { value: 'user@example.com' } });
+      fireEvent.change(screen.getByTestId(TID.Input.AuthPassword), { target: { value: 'password' } });
+      await waitFor(() => {
+        expect((screen.getByTestId(TID.Button.AuthSignUp) as HTMLButtonElement).disabled).toBe(false);
+      });
+
+      fireEvent.click(screen.getByTestId(TID.Button.AuthSignUp));
+
+      await waitFor(() => {
+        expect(document.querySelector('[data-subtitle="settings.account.alert.signup_failed.email_exists"]')).not.toBeNull();
+      });
+    });
+  });
+
   it('renders signed-in state and allows sign-out', async () => {
     mockCurrentUser = { email: 'user@example.com' };
 

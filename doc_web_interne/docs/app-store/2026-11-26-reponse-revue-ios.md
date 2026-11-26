@@ -28,7 +28,7 @@ Gardes :
 
 - **Pas de paiement sans compte possible.** Avant d'ouvrir l'achat à un invité, l'app vérifie que le serveur accepte les comptes anonymes (`/auth/v1/settings`). Sinon elle garde l'ancien parcours (se connecter d'abord).
 - **Paiement passé, compte pas créé** (réseau coupé, app fermée) : l'achat reste « en attente d'activation », l'app réessaie seule au retour au premier plan et au lancement suivant, et le bouton du paywall réessaie sans second paiement.
-- **Abus.** N'importe qui peut créer un utilisateur anonyme sur le point d'accès public de Supabase. Le routeur de la fonction `api` refuse donc à un compte silencieux sans Plus actif toutes les routes qui coûtent de l'IA (403 `SILENT_ACCOUNT_PLUS_REQUIRED`). Un compte silencieux dont l'abonnement a expiré doit créer un compte gratuit pour retrouver les analyses mensuelles gratuites.
+- **Abus.** N'importe qui peut créer un utilisateur anonyme sur le point d'accès public de Supabase. Le routeur partagé par les fonctions `api`, `capture-recall` et `illustration-hd` refuse donc à un compte silencieux sans Plus actif toutes les routes qui coûtent de l'IA (403 `SILENT_ACCOUNT_PLUS_REQUIRED`). Un compte silencieux dont l'abonnement a expiré doit créer un compte gratuit pour retrouver les analyses mensuelles gratuites.
 - Lucid ne change pas : la connexion y précède toujours l'achat.
 - Android et le web suivent le même code. Le web ne vend rien aujourd'hui.
 
@@ -38,7 +38,7 @@ Aucune n'est faite. L'ordre compte : la configuration et la fonction d'abord, la
 
 1. **Supabase, projet de production → Authentication.** Activer « Allow anonymous sign-ins » et « Manual linking ». Le fichier `supabase/config.toml` ne règle que l'environnement local. Vérifier la limite « anonymous sign-ins per hour » (30 par IP par défaut).
 2. **RevenueCat → Project settings → Transfer behavior.** Doit être « Transfer to new App User ID » (réglage par défaut), sinon Plus ne suit pas vers un compte existant.
-3. **Déployer la fonction `api`** depuis le SHA fusionné (garde des comptes silencieux). À faire avant ou avec l'étape 1 : l'étape 1 seule ouvrirait les analyses gratuites aux comptes anonymes.
+3. **Déployer les fonctions `api`, `capture-recall` et `illustration-hd`** depuis le SHA fusionné : elles partagent le routeur qui porte la garde des comptes silencieux. À faire avant ou avec l'étape 1 : l'étape 1 seule ouvrirait les analyses gratuites aux comptes anonymes.
 4. **Build iOS 4.0.1 (28)** depuis le SHA fusionné, puis TestFlight (`release:prepare`, `verify:release`, `release:simulators -- --suites all`, `release:build`).
 5. **Sur un iPhone, depuis TestFlight** (achat sandbox) : invité → S'abonner → feuille Apple sans connexion → Plus actif ; Réglages → Compte affiche « Sans compte » ; ajouter Apple garde Plus et le journal ; « Restaurer les achats » en invité après réinstallation ; dictée : message, « Continuer », demande du système.
 6. **App Store Connect** : coller les six descriptions ; remplacer les notes de revue ; rattacher la build 28 ; répondre à la revue (texte ci-dessous) ; soumettre.
@@ -72,11 +72,12 @@ Vérifié sur ce poste, branche `fix/app-review-compliance` :
 - Types (app et tests) et lint : propres.
 - Jest : 582 suites, 6 876 tests, tous passés. Deno (`api`, `revenuecat-webhook`) : 442 passés.
 - Parcours TesterArmy sur l'app web simulée (store et comptes simulés) : un invité achète Plus sans compte puis voit « Sans compte » et l'offre de créer un compte ; un achat annulé ne crée rien ; une restauration vide ne crée rien, une restauration avec achat active Plus ; les parcours existants du paywall invité, de l'offre en allemand à 320 px et des limites invité, mis à jour.
+- Backend local réel (`tools/dev-local`, Auth et fonction `api` de ce commit, `config.toml` de la branche) : `/auth/v1/settings` annonce les comptes anonymes ; le compte silencieux se crée ; sans Plus, `/analyzeDream`, `/chat` et `/image-jobs` répondent 403 `SILENT_ACCOUNT_PLUS_REQUIRED` et `/quota/status` répond ; avec Plus accordé, la garde laisse passer ; e-mail et mot de passe s'ajoutent au même compte, qui se reconnecte ensuite avec eux ; une adresse déjà prise est refusée (`email_exists`) et le compte silencieux reste connecté. Ce backend confirme les adresses sans e-mail : l'étape de confirmation de la production n'y est pas jouée.
 
 Non vérifié :
 
 - Un vrai achat sandbox sur iPhone, et le rattachement RevenueCat anonyme → compte.
-- Supabase réel : création du compte anonyme, ajout d'Apple, de Google et d'un e-mail (confirmation de type « changement d'adresse »), avec la configuration de production.
+- Supabase de production : l'ajout d'Apple et de Google au compte silencieux, et l'e-mail de confirmation envoyé quand on y ajoute une adresse (type « changement d'adresse »).
 - La feuille du micro sur un iPhone (le parcours natif `dreamer-voice` est mis à jour, pas rejoué).
 - Android : le parcours natif de facturation est mis à jour, pas rejoué.
 

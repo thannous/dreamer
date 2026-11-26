@@ -259,7 +259,11 @@ export const EmailAuthCard: React.FC<Props> = ({
       ? 'settings.account.alert.signin_failed.message'
       : titleKey === 'auth.forgot_password.error_title'
         ? 'auth.forgot_password.error_message'
-        : null;
+        // An account without an email takes the address in place: one that already has an
+        // account is refused by the server, and signing in is the way to that account.
+        : (error as { code?: unknown } | null)?.code === 'email_exists'
+          ? 'settings.account.alert.signup_failed.email_exists'
+          : null;
     setAuthErrorSheet({ visible: true, titleKey, messageKey });
   };
 
