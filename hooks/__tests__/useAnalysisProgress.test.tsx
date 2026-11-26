@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { act, renderHook } from '@testing-library/react';
+import { StrictMode, type ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
@@ -56,6 +57,71 @@ describe('useAnalysisProgress', () => {
       });
 
       expect(result.current.error).toBeNull();
+    });
+  });
+
+  describe('progress animation under StrictMode', () => {
+    const strictWrapper = ({ children }: { children: ReactNode }) => <StrictMode>{children}</StrictMode>;
+
+    it('runs a single progress timer that stops once the target is reached', () => {
+      const { result } = renderHook(() => useAnalysisProgress(), { wrapper: strictWrapper });
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+
+      expect(jest.getTimerCount()).toBe(1);
+
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      expect(result.current.progress).toBe(25);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('starts the next step animation from the progress already reached', () => {
+      const { result } = renderHook(() => useAnalysisProgress(), { wrapper: strictWrapper });
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+        jest.advanceTimersByTime(1000);
+      });
+      act(() => {
+        result.current.setStep(AnalysisStep.GENERATING_IMAGE);
+        jest.advanceTimersByTime(25);
+      });
+
+      expect(result.current.progress).toBe(27);
+    });
+
+    it('starts the next step animation from the progress reached mid-animation', () => {
+      const { result } = renderHook(() => useAnalysisProgress(), { wrapper: strictWrapper });
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+        jest.advanceTimersByTime(250);
+      });
+      expect(result.current.progress).toBeCloseTo(12.5);
+
+      act(() => {
+        result.current.setStep(AnalysisStep.GENERATING_IMAGE);
+        jest.advanceTimersByTime(25);
+      });
+
+      expect(result.current.progress).toBeCloseTo(12.5 + (65 - 12.5) / 20);
+      expect(jest.getTimerCount()).toBe(1);
+    });
+
+    it('leaves no timer running after unmount mid-animation', () => {
+      const { result, unmount } = renderHook(() => useAnalysisProgress(), { wrapper: strictWrapper });
+
+      act(() => {
+        result.current.setStep(AnalysisStep.ANALYZING);
+      });
+      unmount();
+
+      expect(jest.getTimerCount()).toBe(0);
     });
   });
 
