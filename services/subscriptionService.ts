@@ -78,6 +78,7 @@ const refuseStoreOperation = async (): Promise<never> => {
 // Includes keyless web/development fallbacks, not only the global mock profile.
 export const isMockSubscriptionService = shouldMock;
 export const initializeSubscription = service.initialize;
+export const getGuestStoreCustomerId = service.getGuestStoreCustomerId;
 export const isSubscriptionInitialized = service.isInitialized;
 export const getSubscriptionStoreMode = service.getStoreMode;
 export const getSubscriptionStatus = service.getStatus;

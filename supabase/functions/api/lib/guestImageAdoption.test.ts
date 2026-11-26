@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { assertEquals, assertRejects } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { adoptGuestImages, type GuestImageStorage } from './guestImageAdoption.ts';
 
 type Listed = { name: string; id: string | null };
@@ -61,4 +61,22 @@ Deno.test('never reads a folder named by a fingerprint that is more than one pat
     assertEquals(lists, []);
     assertEquals(copies, []);
   }
+});
+
+Deno.test('silent adoption reports storage failures so the device can retry', async () => {
+  await assertRejects(
+    () => adoptGuestImages(storage(null, { listError: true }).client, 'dream-images', FINGERPRINT, USER, true),
+    Error,
+    'Guest image listing failed',
+  );
+  const client: GuestImageStorage = {
+    from: () => ({
+      list: async (prefix) => ({
+        data: prefix === USER ? [] : [{ name: 'one.webp', id: 'guest-object' }],
+        error: null,
+      }),
+      copy: async () => ({ error: new Error('storage temporarily unavailable') }),
+    }),
+  };
+  await assertRejects(() => adoptGuestImages(client, 'dream-images', FINGERPRINT, USER, true), Error, 'Guest image copy failed');
 });

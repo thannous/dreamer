@@ -22,6 +22,7 @@ const receipts = new Map<string, SubscriptionStatus>();
 const DEFAULT_PLUS_PRODUCT_ID = 'mock_plus';
 // A guest buys on the store's anonymous customer; the receipt joins the account that signs in next.
 const GUEST_RECEIPT_OWNER = 'guest-device';
+export const getGuestStoreCustomerId = async (): Promise<string> => GUEST_RECEIPT_OWNER;
 type MockStoreOperationOptions = { allowAnonymous?: boolean };
 const listeners = new Set<SubscriptionStatusListener>();
 

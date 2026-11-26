@@ -1,5 +1,6 @@
 import { isLucidTrainer } from '@/lib/appVariant';
 import { isMockModeEnabled } from '@/lib/env';
+import { fetchJSON } from '@/lib/http';
 
 /**
  * Buying Noctalia Plus without registering (App Review 5.1.1(v)).
@@ -13,6 +14,16 @@ export const isGuestPurchaseEnabled = !isLucidTrainer;
 export type GuestPurchaseKind = 'purchase' | 'restore';
 
 // A store-confirmed purchase whose account is not made, or not confirmed by the server, yet.
+const ATTEMPT_KEY = 'noctalia.guest_purchase.attempt';
+const ATTEMPT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+
+export type GuestPurchaseAttempt = {
+  kind: GuestPurchaseKind;
+  customerId: string;
+  activeBefore: boolean;
+  startedAt: number;
+};
+
 const PENDING_KEY = 'noctalia.guest_purchase.pending';
 // Plus sits on this device's silent account: the next account signed in here takes it over.
 const HANDOVER_KEY = 'noctalia.silent_plus.handover';
@@ -28,32 +39,43 @@ const getPublicConfiguration = () =>
   (require('@/lib/supabase') as typeof import('@/lib/supabase')).getSupabasePublicConfiguration();
 
 const SETTINGS_TIMEOUT_MS = 8000;
-let silentAccountsAvailable = false;
 
-/**
- * Whether the server can make a silent account. Asked before any payment: a guest must
- * never pay for a purchase the app could not then attach to an account.
- */
+/** Re-read the server setting before a guest store operation. */
 export async function isSilentAccountAvailable(): Promise<boolean> {
-  if (isMockModeEnabled() || silentAccountsAvailable) return true;
+  if (isMockModeEnabled()) return true;
   const config = getPublicConfiguration();
   if (!config) return false;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), SETTINGS_TIMEOUT_MS);
   try {
-    const response = await fetch(`${config.projectUrl}/auth/v1/settings`, {
-      headers: { apikey: config.publicKey },
-      signal: controller.signal,
-    });
-    if (!response.ok) return false;
-    const settings = (await response.json()) as { external?: { anonymous_users?: unknown } } | null;
-    silentAccountsAvailable = settings?.external?.anonymous_users === true;
-    return silentAccountsAvailable;
+    const settings = await fetchJSON<{ external?: { anonymous_users?: unknown } }>(
+      config.projectUrl + '/auth/v1/settings',
+      { headers: { apikey: config.publicKey }, timeoutMs: SETTINGS_TIMEOUT_MS },
+    );
+    return settings?.external?.anonymous_users === true;
   } catch {
     return false;
-  } finally {
-    clearTimeout(timeout);
   }
+}
+
+export async function readGuestPurchaseAttempt(): Promise<GuestPurchaseAttempt | null> {
+  try {
+    const value = await getStorage().getItem(ATTEMPT_KEY);
+    const attempt = value ? JSON.parse(value) as Partial<GuestPurchaseAttempt> : null;
+    if (!attempt || (attempt.kind !== 'purchase' && attempt.kind !== 'restore') ||
+        typeof attempt.customerId !== 'string' || typeof attempt.activeBefore !== 'boolean' ||
+        typeof attempt.startedAt !== 'number' || Date.now() - attempt.startedAt > ATTEMPT_MAX_AGE_MS) return null;
+    return attempt as GuestPurchaseAttempt;
+  } catch {
+    return null;
+  }
+}
+
+export async function saveGuestPurchaseAttempt(attempt: GuestPurchaseAttempt): Promise<void> {
+  // A store operation must not start if we cannot save the record used to recover it.
+  await getStorage().setItem(ATTEMPT_KEY, JSON.stringify(attempt));
+}
+
+export async function clearGuestPurchaseAttempt(): Promise<void> {
+  await getStorage().removeItem(ATTEMPT_KEY).catch(() => {});
 }
 
 export async function readGuestPurchasePending(): Promise<GuestPurchaseKind | null> {
@@ -75,27 +97,31 @@ export async function markGuestPurchasePending(kind: GuestPurchaseKind): Promise
 
 export async function clearGuestPurchasePending(): Promise<void> {
   try {
-    await getStorage().removeItem(PENDING_KEY);
+    await getStorage().multiRemove([PENDING_KEY, ATTEMPT_KEY]);
   } catch {
     // Read again, and cleared again, on the next confirmed status.
   }
 }
 
-export async function hasSilentPlusHandover(): Promise<boolean> {
+export type SilentPlusHandover = { sourceUserId: string | null; receipts: string[]; targetUserId?: string };
+
+export async function readSilentPlusHandover(): Promise<SilentPlusHandover | null> {
   try {
-    return (await getStorage().getItem(HANDOVER_KEY)) === '1';
+    const value = await getStorage().getItem(HANDOVER_KEY);
+    if (value === '1') return { sourceUserId: null, receipts: [] };
+    const handover = value ? JSON.parse(value) as Partial<SilentPlusHandover> : null;
+    if (!handover || (handover.sourceUserId !== null && typeof handover.sourceUserId !== 'string') ||
+        !Array.isArray(handover.receipts) || !handover.receipts.every(key => typeof key === 'string') ||
+        (handover.targetUserId !== undefined && typeof handover.targetUserId !== 'string')) return null;
+    return handover as SilentPlusHandover;
   } catch {
-    return false;
+    return null;
   }
 }
 
-export async function setSilentPlusHandover(pending: boolean): Promise<void> {
-  try {
-    if (pending) await getStorage().setItem(HANDOVER_KEY, '1');
-    else await getStorage().removeItem(HANDOVER_KEY);
-  } catch {
-    // Without the mark, Restore purchases still moves the subscription.
-  }
+export async function setSilentPlusHandover(handover: SilentPlusHandover | null): Promise<void> {
+  if (handover) await getStorage().setItem(HANDOVER_KEY, JSON.stringify(handover));
+  else await getStorage().removeItem(HANDOVER_KEY);
 }
 
 // Signing the silent account in rebuilds the paywall (and navigation may bring a fresh one):

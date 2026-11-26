@@ -31,16 +31,21 @@ export function assertDeviceBinding(devices: { deviceProperties?: { name?: strin
   assert.equal(matches[0].hardwareProperties?.reality, 'physical', 'Require a physical iPhone.');
   assert.equal(matches[0].hardwareProperties?.udid, udid, 'Engine name and inspected UDID must identify the same iPhone.');
 }
-export function currentOwner(log: string, expected: string): string {
+export function currentIOSStoreUser(log: string): string {
   const events = [...log.matchAll(/\[RevenueCat\] (Logged in|Logged out) (\{[^\n]+\})/g)];
   const last = events.at(-1);
   assert.ok(last, 'Require a fresh native identity event since app.open().');
   assert.equal(last[1], 'Logged in', 'A later logout invalidates the previous owner login.');
   const login = JSON.parse(last[2]);
   assert.equal(login.isAnonymous, false); assert.equal(login.platform, 'ios');
-  assert.equal(login.appUserId, expected, 'Require the approved current owner.');
-  assert.equal(login.userId, expected);
-  return expected;
+  assert.match(login.appUserId, /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i);
+  assert.equal(login.userId, login.appUserId);
+  return login.appUserId;
+}
+export function currentOwner(log: string, expected: string): string {
+  const id = currentIOSStoreUser(log);
+  assert.equal(id, expected, 'Require the approved current owner.');
+  return id;
 }
 export function assertPendingAttempt(attempt: Attempt | undefined, id: string, campaignId: string, ownerId: string, sourceRevision: string, now = Date.now()): asserts attempt is Attempt {
   assert.ok(attempt, 'Require an explicit pending purchase attempt, not retained legacy state.');

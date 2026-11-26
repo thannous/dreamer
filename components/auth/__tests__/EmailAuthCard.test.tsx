@@ -493,7 +493,7 @@ describe('EmailAuthCard', () => {
     fireEvent.click(screen.getByTestId(TID.Button.AuthResendVerification));
 
     await waitFor(() => {
-      expect(mockResendVerificationEmail).toHaveBeenCalledWith('user@example.com');
+      expect(mockResendVerificationEmail).toHaveBeenCalledWith('user@example.com', 'signup');
     });
 
     expect(mockAlert).not.toHaveBeenCalled();
@@ -676,6 +676,17 @@ describe('EmailAuthCard', () => {
 
   // An account without an email, made by a purchase without registering (App Review 5.1.1(v)).
   describe('for a silent account', () => {
+    it('resends a pending address change after relaunch', async () => {
+      mockCurrentUser = { id: 'silent-1', is_anonymous: true, new_email: 'new@example.com' };
+
+      render(<EmailAuthCard />);
+      fireEvent.click(screen.getByTestId(TID.Button.AuthResendVerification));
+
+      await waitFor(() => {
+        expect(mockResendVerificationEmail).toHaveBeenCalledWith('new@example.com', 'add_email');
+      });
+    });
+
     it('keeps offering to create an account or sign in, and never to sign out', () => {
       mockCurrentUser = { id: 'silent-1', is_anonymous: true, email: '' };
 

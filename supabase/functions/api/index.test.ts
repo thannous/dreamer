@@ -380,7 +380,7 @@ Deno.test('every route that spends on an AI provider is closed to a silent accou
     'POST /qa/guest-device/status', 'POST /qa/guest-device/enroll', 'POST /qa/guest-device/revoke',
     'POST /analytics/session', 'POST /analytics/events', 'DELETE /analytics/events',
     'POST /subscription/refresh', 'POST /subscription/sync', 'POST /subscription/reconcile',
-    'POST /quota/status', 'POST /auth/mark-upgrade', 'POST /auth/apple-token', 'DELETE /account',
+    'POST /quota/status', 'POST /auth/mark-upgrade', 'POST /auth/adopt-guest-images', 'POST /auth/apple-token', 'DELETE /account',
     'POST /analysis-jobs/status', 'POST /image-jobs/status',
   ]);
   for (const route of apiRoutes.keys()) {

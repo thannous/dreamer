@@ -224,7 +224,22 @@ async function assertIdentifiedUser(options?: StoreOperationOptions): Promise<vo
 
 // Use pure functions from lib/revenuecat.ts for mapping
 function mapStatus(info: CustomerInfo | null): SubscriptionStatus {
-  return mapStatusPure(info as CustomerInfoLike);
+  const status = mapStatusPure(info as CustomerInfoLike);
+  const deviceStore = Platform.OS === 'ios' ? 'APP_STORE' : Platform.OS === 'android' ? 'PLAY_STORE' : 'RC_BILLING';
+  const testStore = getStoreMode() === 'RevenueCat Test Store';
+  const receiptKeys = Object.values(info?.subscriptionsByProductIdentifier ?? {}).flatMap(subscription => {
+    if (!subscription.isActive || (subscription.store !== deviceStore && !testStore)) return [];
+    const identity = subscription.originalPurchaseDate
+      ? [subscription.productIdentifier, subscription.originalPurchaseDate]
+      : subscription.storeTransactionId;
+    return identity ? [JSON.stringify([subscription.store, subscription.isSandbox, identity])] : [];
+  });
+  return receiptKeys.length ? { ...status, deviceStoreReceipts: receiptKeys } : status;
+}
+
+export async function getGuestStoreCustomerId(): Promise<string> {
+  await assertIdentifiedUser({ allowAnonymous: true });
+  return Purchases.getAppUserID();
 }
 
 function mapPackage(pkg: PurchasesPackage): InternalPackage {

@@ -146,6 +146,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     email: string;
     password: string;
     visible: boolean;
+    purpose: 'signup' | 'add_email';
   } | null>(null);
   const [verificationPolling, setVerificationPolling] = useState(false);
   const [lastVerificationEmailSentAt, setLastVerificationEmailSentAt] = useState<number | null>(null);
@@ -229,7 +230,8 @@ export const EmailAuthCard: React.FC<Props> = ({
       emailForVerification: string,
       passwordForVerification: string,
       showDialog = true,
-      lastSentAt: number | null = null
+      lastSentAt: number | null = null,
+      purpose: 'signup' | 'add_email' = 'signup',
     ) => {
       const normalizedEmail = emailForVerification.trim();
       const lastSentTimestamp = lastSentAt ?? Date.now();
@@ -237,6 +239,7 @@ export const EmailAuthCard: React.FC<Props> = ({
         email: normalizedEmail,
         password: passwordForVerification,
         visible: showDialog,
+        purpose,
       });
       setUnverifiedEmail(normalizedEmail);
       setResendStatus('idle');
@@ -318,7 +321,7 @@ export const EmailAuthCard: React.FC<Props> = ({
       const needsVerification = !newUser?.email_confirmed_at;
       if (needsVerification) {
         clearStayOnSettingsIntent();
-        startVerificationFlow(trimmedEmail, passwordForVerification, true, Date.now());
+        startVerificationFlow(trimmedEmail, passwordForVerification, true, Date.now(), silentAccount ? 'add_email' : 'signup');
       } else {
         clearPendingVerification();
       }
@@ -461,7 +464,7 @@ export const EmailAuthCard: React.FC<Props> = ({
     }
     setResendStatus('sending');
     try {
-      await resendVerificationEmail(targetEmail);
+      await resendVerificationEmail(targetEmail, pendingVerification?.purpose ?? (getPendingAccountEmail(sessionUser) ? 'add_email' : 'signup'));
       const now = Date.now();
       setLastVerificationEmailSentAt(now);
       setCooldownTick(now);

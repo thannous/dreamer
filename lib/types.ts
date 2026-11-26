@@ -314,6 +314,8 @@ export interface SubscriptionStatus {
   expiryDate?: string | null;
   productId?: string | null;
   willRenew?: boolean;
+  /** Active receipts on the device store, used to confirm an account handover. */
+  deviceStoreReceipts?: string[];
 }
 
 export type PurchaseInterval = 'monthly' | 'annual';

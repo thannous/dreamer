@@ -566,7 +566,7 @@ const fetchGuestSession = async (
   };
 };
 
-const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
+const ensureGuestSession = async (forImageAdoption = false): Promise<GuestSessionRecord | null> => {
   if (cached && isSessionValid(cached)) {
     updateGuestBootstrapState('ready');
     return cached;
@@ -577,8 +577,7 @@ const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
     return null;
   }
 
-  const accessToken = await getAccessToken();
-  if (accessToken) {
+  if (!forImageAdoption && await getAccessToken()) {
     return null;
   }
 
@@ -601,7 +600,8 @@ const ensureGuestSession = async (): Promise<GuestSessionRecord | null> => {
       return stored;
     }
 
-    const fingerprint = await getDeviceFingerprint();
+    const fingerprint = forImageAdoption ? await getExistingDeviceFingerprint() : await getDeviceFingerprint();
+    if (!fingerprint) return null;
     const fresh = await fetchGuestSession(fingerprint);
     if (!fresh) {
       updateGuestBootstrapState('degraded', GuestSessionErrorCode.UNAVAILABLE);
@@ -682,10 +682,10 @@ export async function getGuestMediaOwner(): Promise<string | null> {
 }
 
 export async function getGuestHeaders(
-  options?: { requireSession?: boolean }
+  options?: { requireSession?: boolean; forImageAdoption?: boolean }
 ): Promise<Record<string, string>> {
   try {
-    const session = await ensureGuestSession();
+    const session = await ensureGuestSession(options?.forImageAdoption);
     if (!session) {
       if (options?.requireSession) {
         throw toGuestSessionError(getGuestBootstrapState());

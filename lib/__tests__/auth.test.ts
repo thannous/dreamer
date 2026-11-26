@@ -908,7 +908,7 @@ describe('auth helpers', () => {
       expect(user?.id).toBe('silent-1');
 
       // The address is not the account's yet: asking for the change again is what resends.
-      await auth.resendVerificationEmail('user@example.com');
+      await auth.resendVerificationEmail('user@example.com', 'add_email');
       expect(mockSupabaseAuth.updateUser).toHaveBeenLastCalledWith(
         { email: 'user@example.com' },
         { emailRedirectTo: expect.any(String) }

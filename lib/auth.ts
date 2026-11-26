@@ -621,13 +621,13 @@ export async function signUpWithEmailPassword(email: string, password: string, u
   return data.user;
 }
 
-export async function resendVerificationEmail(email: string) {
+export async function resendVerificationEmail(email: string, purpose: 'signup' | 'add_email' = 'signup') {
   if (isMockMode) {
     await mockAuth.resendVerificationEmail(email);
     return;
   }
 
-  if (await isCurrentAccountSilent()) {
+  if (purpose === 'add_email' && await isCurrentAccountSilent()) {
     // The address is not the account's yet, so the server's "resend" finds no one to write
     // to. Asking for the change again is what sends the confirmation email again.
     const { error: updateError } = await supabase.auth.updateUser({ email }, { emailRedirectTo: getNativeEmailRedirect() });

@@ -10,7 +10,7 @@
 type StorageObjects = {
   list: (
     path: string,
-    options?: { limit?: number },
+    options?: { limit?: number; search?: string },
   ) => Promise<{ data: { name: string; id: string | null }[] | null; error: unknown }>;
   copy: (from: string, to: string) => Promise<{ error: unknown }>;
 };
@@ -33,19 +33,31 @@ export async function adoptGuestImages(
   bucket: string,
   fingerprint: string,
   userId: string,
+  requireAll = false,
 ): Promise<number> {
   if (!SAFE_FINGERPRINT.test(fingerprint) || !userId) return 0;
   const objects = storage.from(bucket);
   const folder = guestImageFolder(fingerprint);
   const { data, error } = await objects.list(folder, { limit: MAX_ADOPTED_OBJECTS });
-  if (error || !data) return 0;
+  if (error || !data) {
+    if (requireAll) throw new Error('Guest image listing failed');
+    return 0;
+  }
 
   let adopted = 0;
   for (const entry of data) {
     // Folders are listed with a null id; only files are copied.
     if (!entry.name || entry.id === null) continue;
     const { error: copyError } = await objects.copy(`${folder}/${entry.name}`, `${userId}/${entry.name}`);
-    if (!copyError) adopted += 1;
+    if (!copyError) {
+      adopted += 1;
+    } else if (requireAll) {
+      // An earlier attempt may already have copied this object.
+      const destination = await objects.list(userId, { search: entry.name, limit: MAX_ADOPTED_OBJECTS });
+      if (destination.error || !destination.data?.some(item => item.id && item.name === entry.name)) {
+        throw new Error('Guest image copy failed');
+      }
+    }
   }
   return adopted;
 }

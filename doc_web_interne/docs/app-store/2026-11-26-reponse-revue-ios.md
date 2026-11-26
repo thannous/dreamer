@@ -81,6 +81,16 @@ Non vérifié :
 - La feuille du micro sur un iPhone (le parcours natif `dreamer-voice` est mis à jour, pas rejoué).
 - Android : le parcours natif de facturation est mis à jour, pas rejoué.
 
+### Recette du paiement invité sur iPhone
+
+Le parcours Sandbox « Physical iPhone real Apple sandbox guest purchase attaches a new receipt to a silent account »
+part d'une installation de qualification sans session Noctalia, avec le compte Sandbox validé par le propriétaire et
+un dossier de preuves neuf. Il ouvre directement la feuille Apple, attend la confirmation physique du propriétaire
+et vérifie que le nouveau compte possède le reçu Sandbox créé pendant l'essai et que le quota Plus est actif.
+Utiliser le lanceur gardé documenté dans [la procédure RevenueCat](../revenuecat-qa-workflow.md#ios-physique--réutiliser-la-préparation-sandbox).
+Le parcours historique de connexion à un compte existant reste disponible séparément. La recette TestFlight doit
+aussi couvrir la restauration sans compte, la conservation des illustrations invitées et l'invite système du micro.
+
 ## Limites connues
 
 - Se connecter à un compte existant depuis un compte silencieux laisse derrière lui tout son journal, rêves d'invité compris. L'app prévient et demande confirmation ; une fusion côté serveur serait la vraie réponse et reste à faire.

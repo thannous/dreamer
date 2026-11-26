@@ -389,7 +389,7 @@ export async function signUpWithEmailPassword(email: string, password: string, u
   return data.user;
 }
 
-export async function resendVerificationEmail(email: string) {
+export async function resendVerificationEmail(email: string, _purpose: 'signup' | 'add_email' = 'signup') {
   if (isMockMode) {
     await mockAuth.resendVerificationEmail(email);
     return;

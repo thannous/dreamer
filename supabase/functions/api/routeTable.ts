@@ -16,7 +16,7 @@ import {
   handleGuestQaRevoke,
   handleGuestQaStatus,
 } from './routes/guestQa.ts';
-import { handleAuthMarkUpgrade, handleQuotaStatus } from './routes/quota.ts';
+import { handleAuthMarkUpgrade, handleQuotaStatus, handleSilentAccountImageAdoption } from './routes/quota.ts';
 import { handleSubscriptionRefresh, handleSubscriptionReconcile, handleSubscriptionSync } from './routes/subscription.ts';
 import { handleTranscribe } from './routes/transcribe.ts';
 import { handleProductAnalytics } from './routes/analytics.ts';
@@ -41,6 +41,7 @@ export const apiRoutes = new Map<string, RouteHandler>([
   ['POST /subscription/reconcile', handleSubscriptionReconcile],
   ['POST /quota/status', handleQuotaStatus],
   ['POST /auth/mark-upgrade', handleAuthMarkUpgrade],
+  ['POST /auth/adopt-guest-images', handleSilentAccountImageAdoption],
   ['POST /auth/apple-token', handleStoreAppleAuthToken],
   ['DELETE /account', handleDeleteAccount],
   ['POST /chat', handleChat],

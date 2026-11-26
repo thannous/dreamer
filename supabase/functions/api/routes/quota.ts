@@ -240,9 +240,24 @@ export async function handleQuotaStatus(
   }
 }
 
-export async function handleAuthMarkUpgrade(
+export function handleAuthMarkUpgrade(
   ctx: ApiContext,
   deps: QuotaStatusDependencies = {},
+): Promise<Response> {
+  return handleGuestAccountTransition(ctx, deps, false);
+}
+
+export function handleSilentAccountImageAdoption(
+  ctx: ApiContext,
+  deps: QuotaStatusDependencies = {},
+): Promise<Response> {
+  return handleGuestAccountTransition(ctx, deps, true);
+}
+
+async function handleGuestAccountTransition(
+  ctx: ApiContext,
+  deps: QuotaStatusDependencies,
+  imagesOnly: boolean,
 ): Promise<Response> {
   const { req, user, supabaseUrl, supabaseServiceRoleKey } = ctx;
 
@@ -256,6 +271,12 @@ export async function handleAuthMarkUpgrade(
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
+    }
+
+    if (imagesOnly && user.is_anonymous !== true) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
     }
 
     if (!body?.fingerprint || typeof body.fingerprint !== 'string') {
@@ -297,6 +318,12 @@ export async function handleAuthMarkUpgrade(
     const adminClient = createAdmin(supabaseUrl, supabaseServiceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
+
+    if (imagesOnly) {
+      if (!adminClient.storage) throw new Error('Storage unavailable');
+      await adoptGuestImages(adminClient.storage, ctx.storageBucket, fingerprint, user.id, true);
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
 
     const platform = verifiedGuest.payload?.platform;
     const verifiedAppAttest = platform === 'ios' && verifiedGuest.payload?.v === 3;
@@ -348,9 +375,9 @@ export async function handleAuthMarkUpgrade(
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch {
-    console.error('[api] /auth/mark-upgrade request failed');
+    console.error(imagesOnly ? '[api] guest image adoption failed' : '[api] /auth/mark-upgrade request failed');
     return new Response(
-      JSON.stringify({ error: 'Unable to mark guest upgrade' }),
+      JSON.stringify({ error: imagesOnly ? 'Unable to adopt guest images' : 'Unable to mark guest upgrade' }),
       { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }

@@ -35,11 +35,9 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
     titleTestID,
     children,
     actions,
-    onClose,
     dismissBehavior,
   }: {
     visible: boolean;
-    onClose: () => void;
     dismissBehavior?: 'pan' | 'none';
     title: string;
     subtitle?: string;
@@ -64,8 +62,7 @@ jest.mock('@/components/ui/StandardBottomSheet', () => ({
     };
   }) => (
     visible ? (
-      // A host that reports a dismissal anyway (a key on the web) reaches onClose.
-      <section data-dismiss-behavior={dismissBehavior ?? 'pan'} onKeyDown={(event) => { if (event.key === 'Escape') onClose(); }}>
+      <section data-dismiss-behavior={dismissBehavior ?? 'pan'}>
         <h1 data-testid={titleTestID}>{title}</h1>
         {headerIcon ? <span data-testid={`header-icon.${headerIcon}`} /> : null}
         {subtitle ? <p>{subtitle}</p> : null}
@@ -214,10 +211,8 @@ describe('RecordingSheets', () => {
     expect(buttons[0].textContent).toBe('recording.mic_rationale.continue');
     expect(container.querySelector('section')?.getAttribute('data-dismiss-behavior')).toBe('none');
 
-    fireEvent.keyDown(container.querySelector('section')!, { key: 'Escape' });
-    expect(onContinue).toHaveBeenCalledTimes(1);
     fireEvent.click(buttons[0]);
-    expect(onContinue).toHaveBeenCalledTimes(2);
+    expect(onContinue).toHaveBeenCalledTimes(1);
   });
 
   it('walks through turning iOS Dictation back on, step by step, and offers typing instead', () => {

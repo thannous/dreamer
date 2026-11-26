@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { isAbsolute, join } from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
-import { currentOwner, assertPendingAttempt, verifyPurchase, nativeTransactions, ATTEMPT_TTL_MS, type Attempt, type Attestation, type Subscription } from '../iphone-sandbox-guards';
+import { currentIOSStoreUser, currentOwner, assertPendingAttempt, verifyPurchase, nativeTransactions, ATTEMPT_TTL_MS, type Attempt, type Attestation, type Subscription } from '../iphone-sandbox-guards';
 type F = Omit<TestFixtures, 'agent'> & { device: Device };
 const evidence = process.env.E2E_IPHONE_EVIDENCE!;
 const statePath = join(evidence, 'physical-flow-state.json');
@@ -40,6 +40,42 @@ test('Physical iPhone real Apple sandbox returns to offer after existing-account
   await app.screenshot('physical-return-after-signin'); await tap(screen, 'btn.paywall.close', 'up'); await home(f); await device.home(); await device.openApp('com.tanuki75.noctalia');
   await expect(screen.getByTestId('screen.recording', { visible: true })).toBeVisible(); await expect(screen.getByTestId('screen.paywall', { visible: true })).toHaveCount(0);
   await app.screenshot('physical-foreground-no-paywall'); phase('auth-return-passed', { authReturnPassed: true, appUserId: await qa(f) });
+});
+
+test('Physical iPhone real Apple sandbox guest purchase attaches a new receipt to a silent account', { timeout: 900_000 }, async ({ app, screen, device, platform }) => {
+  const f = { app, screen, device, platform };
+  assert.equal(process.env.E2E_IPHONE_ALLOW_PURCHASE, 'true', 'Require --allow-sandbox-purchase and owner confirmation.');
+  assert.ok(!state().guestPurchaseStartedAt, 'Use a fresh guest evidence directory. Never repeat a pending guest payment.');
+  assert.ok(!state().purchaseAttempt || state().purchaseAttempt.completedAt, 'Another purchase is already pending.');
+  await open(f);
+  await settings(f);
+  await offer(f);
+  await expect(screen.getByTestId('btn.paywall.signIn', { visible: true })).toBeVisible();
+  const buy = screen.getByTestId('btn.paywall.purchase', { visible: true });
+  await screen.scrollUntilVisible(buy);
+  await expect(buy).toBeEnabled();
+  await expect(buy).not.toHaveText(/Se connecter pour souscrire|Sign in to subscribe/);
+  const startedAt = Date.now();
+  phase('guest-sandbox-awaiting-apple-sheet', { guestPurchaseStartedAt: startedAt });
+  await buy.tap();
+  await expect(screen.getByText(/environment\s*:\s*sandbox|environnement\s*:\s*sandbox|environnement\s+(?:de\s+)?test|test environment|(?:à|a) des fins de test uniquement|ne serez pas (?:debit|factur)|won.t be charged/i, { visible: true })).toBeVisible({ timeout: 60_000 });
+  await app.screenshot('guest-apple-sandbox-sheet');
+  phase('guest-sandbox-awaiting-owner-confirmation');
+  await expect(screen.getByTestId('toast.paywall.success', { visible: true })).toBeVisible({ timeout: 600_000 });
+
+  const log = readFileSync(process.env.E2E_IPHONE_METRO_LOG!, 'utf8');
+  const id = currentIOSStoreUser(log.slice(nativeLogStart));
+  const customer = await subscriber(id);
+  const receipt = customer.subscriptions.noctalia_plus_monthly;
+  assert.ok(receipt?.is_sandbox && receipt.store === 'app_store', 'The new account must own a Sandbox App Store receipt.');
+  assert.ok(Date.parse(receipt.purchase_date) >= startedAt - 5_000, 'The receipt must come from this checkout.');
+  await app.screenshot('guest-silent-account-plus');
+  await tap(screen, 'btn.paywall.close', 'up');
+  await settings(f);
+  const quota = screen.getByTestId('quota.analysisValue', { visible: true });
+  await screen.scrollUntilVisible(quota);
+  await expect(quota).toHaveText(/Illimité|Unlimited/);
+  phase('guest-sandbox-purchase-passed', { guestPurchasePassed: true });
 });
 
 test('Physical iPhone real Apple sandbox monthly purchase activates server-confirmed Plus', { timeout: 900_000 }, async ({ app, screen, device, platform }) => {
