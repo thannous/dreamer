@@ -187,7 +187,7 @@ async function openGuestOffer(screen: Screen, browser: Browser) {
 
 // App Review 5.1.1(v), 2026-11-25: a guest buys Plus without registering. The store confirms,
 // the app makes an account without an email, and creating a real one stays optional.
-test('a guest buys Plus without an account, and an account stays optional afterwards', { tags: ['smoke'] }, async ({ app, screen, browser }) => {
+test('a guest buys Plus without an account, and an account stays optional afterwards', async ({ app, screen, browser }) => {
   await openGuestOffer(screen, browser);
   await screen.getByTestId('btn.paywall.selectMonthly').tap();
   await screen.getByTestId('btn.paywall.purchase').tap();
