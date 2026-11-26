@@ -315,6 +315,75 @@ Deno.test('an interrupted Claude stream reports retryable failure without commit
   assertEquals(hosts, ['api.anthropic.com']);
 }));
 
+Deno.test('cancelling a chat response stops generation and releases the unfinished turn', () => withChatKeys(async () => {
+  const { context } = streamingTurn();
+  const fixture = await claudeStream('Partial answer').text();
+  const split = fixture.indexOf('event: content_block_stop');
+  const encoder = new TextEncoder();
+  const released = Promise.withResolvers<string>();
+  let providerSignal: AbortSignal | undefined;
+  let finishFixture: (() => void) | undefined;
+  globalThis.fetch = async (input, init) => {
+    providerSignal = new Request(input, init).signal;
+    return new Response(new ReadableStream({
+      start(controller) {
+        controller.enqueue(encoder.encode(fixture.slice(0, split)));
+        providerSignal!.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError')), { once: true });
+        finishFixture = () => {
+          controller.enqueue(encoder.encode(fixture.slice(split)));
+          controller.close();
+        };
+      },
+    }), { headers: { 'Content-Type': 'text/event-stream' } });
+  };
+  const writes: string[] = [];
+  const response = await handleChat(context, {
+    admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }),
+    createAdminClient: (() => ({
+      rpc: async (name: string, params: Record<string, string>) => {
+        writes.push(name);
+        released.resolve(params.p_error_code);
+        return { data: { completed: true }, error: null };
+      },
+    })) as never,
+  });
+  const reader = response.body!.getReader();
+  assertEquals(new TextDecoder().decode((await reader.read()).value).includes('Partial answer'), true);
+  await reader.cancel();
+  try {
+    assertEquals(providerSignal?.aborted, true);
+    assertEquals(await released.promise, 'CHAT_CLIENT_CANCELLED');
+    assertEquals(writes, ['fail_authenticated_chat_turn']);
+  } finally {
+    if (!providerSignal?.aborted) finishFixture?.();
+  }
+}));
+
+Deno.test('disconnect during commit preserves a completed authenticated chat turn', () => withChatKeys(async () => {
+  globalThis.fetch = async () => claudeStream('Complete answer');
+  const { context } = streamingTurn();
+  const committing = Promise.withResolvers<void>();
+  const committed = Promise.withResolvers<void>();
+  const writes: string[] = [];
+  const response = await handleChat(context, {
+    admitRequest: async () => ({ tier: 'free', actorClass: 'FREE' }),
+    createAdminClient: (() => ({
+      rpc: async (name: string) => {
+        writes.push(name);
+        committing.resolve();
+        await committed.promise;
+        return { data: { completed: true }, error: null };
+      },
+    })) as never,
+  });
+  await committing.promise;
+  await response.body!.cancel();
+  committed.resolve();
+  // Let the HTTP producer consume the RPC result and finish closing its stream.
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assertEquals(writes, ['complete_authenticated_chat_turn']);
+}));
+
 for (const stream of [false, true]) {
   Deno.test(`self-harm reply is fixed, persisted and provider-free (stream=${stream})`, async () => {
     const previousKey = Deno.env.get('ANTHROPIC_API_KEY');
