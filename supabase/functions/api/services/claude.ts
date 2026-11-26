@@ -125,18 +125,19 @@ export type ClaudeTextStream = { deltas: AsyncGenerator<string>; usage: () => Cl
  * and returns a retryable error. `timeoutMs` bounds the entire stream, including
  * a stall after the first text.
  */
-export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise<ClaudeTextStream> => {
+export const startClaudeTextStream = async (options: ClaudeTextOptions, signal?: AbortSignal): Promise<ClaudeTextStream> => {
+  signal?.throwIfAborted();
   const permit = claudeProviderCircuit.enter(options.timeoutMs);
   let stream: ReturnType<ReturnType<typeof createClient>['messages']['stream']>;
   try {
     stream = createClient(options.apiKey, options.timeoutMs).messages.stream({
-    model: options.model,
-    max_tokens: options.maxTokens ?? 16000,
-    system: options.system,
-    messages: options.messages,
-    thinking: { type: 'adaptive' },
-    output_config: { effort: options.effort },
-    });
+      model: options.model,
+      max_tokens: options.maxTokens ?? 16000,
+      system: options.system,
+      messages: options.messages,
+      thinking: { type: 'adaptive' },
+      output_config: { effort: options.effort },
+    }, { signal });
   } catch (error) {
     permit.failure(isProviderAvailabilityFailure(error));
     throw error;
@@ -159,7 +160,8 @@ export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise
   } catch (error) {
     clearTimeout(timer);
     stream.abort();
-    permit.failure(isProviderAvailabilityFailure(error));
+    if (signal?.aborted) permit.cancel();
+    else permit.failure(isProviderAvailabilityFailure(error));
     throw error;
   }
   let usage: ClaudeUsage | null = null;
@@ -178,7 +180,8 @@ export const startClaudeTextStream = async (options: ClaudeTextOptions): Promise
       if (final?.stop_reason !== 'end_turn') throw new ClaudeStopError(final?.stop_reason ?? null);
       permit.success();
     } catch (error) {
-      permit.failure(isProviderAvailabilityFailure(error));
+      if (signal?.aborted) permit.cancel();
+      else permit.failure(isProviderAvailabilityFailure(error));
       throw error;
     } finally {
       permit.cancel();

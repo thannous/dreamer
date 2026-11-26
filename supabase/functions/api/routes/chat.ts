@@ -769,9 +769,11 @@ export async function handleChat(
 
     if (wantsStream) {
       // Setup waits for the first text; failure remains a normal JSON error.
+      const downstream = new AbortController();
+      const signal = AbortSignal.any([req.signal, downstream.signal]);
       const claudeStream = await startClaudeTextStream({
         apiKey: anthropicApiKey, ...claudeChat, system: systemPreamble, messages: claudeMessages,
-      });
+      }, signal);
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream<Uint8Array>({
@@ -781,24 +783,31 @@ export async function handleChat(
           let accumulated = '';
           try {
             for await (const delta of claudeStream.deltas) {
+              signal.throwIfAborted();
               accumulated += delta;
               send({ delta });
             }
+            signal.throwIfAborted();
             logClaudeSpend('/chat', claudeChat.model, claudeChat.effort, claudeStream.usage());
             const reply = accumulated.trim();
             if (!reply) throw new Error('Empty model response');
 
             const modelMessage = buildModelMessage(reply, [{ text: reply }]);
             await persistModelMessage(modelMessage);
-            send({ done: true, text: reply, message: modelMessage });
+            if (!signal.aborted) send({ done: true, text: reply, message: modelMessage });
           } catch (streamError) {
-            console.error('[api] /chat stream failed');
-            await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_STREAM_FAILED');
-            const errorInfo = classifyClaudeError(streamError);
-            send({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter, status: errorInfo.status });
+            await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, signal.aborted ? 'CHAT_CLIENT_CANCELLED' : 'CHAT_STREAM_FAILED');
+            if (!signal.aborted) {
+              console.error('[api] /chat stream failed');
+              const errorInfo = classifyClaudeError(streamError);
+              send({ error: errorInfo.userMessage, code: errorInfo.code, retryAfter: errorInfo.retryAfter, status: errorInfo.status });
+            }
           } finally {
-            controller.close();
+            if (!downstream.signal.aborted) controller.close();
           }
+        },
+        cancel() {
+          downstream.abort();
         },
       });
 
@@ -838,6 +847,10 @@ export async function handleChat(
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   } catch (e) {
+    if (req.signal.aborted) {
+      await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_CLIENT_CANCELLED');
+      return new Response(null, { status: 499, headers: corsHeaders });
+    }
     await markAuthenticatedTurnFailed(ctx, dependencies, authenticatedTurn, 'CHAT_REQUEST_FAILED');
     console.error('[api] /chat request failed');
     const errorInfo = classifyClaudeError(e);
