@@ -65,7 +65,7 @@ test('system speech adds to the draft without a Noctalia audio upload', options,
   const editor = screen.getByTestId('input.dreamTranscript');
   await editor.fill('A quiet harbor.');
   await screen.getByTestId('btn.recordToggle', { visible: true }).tap();
-  const rationale = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
+  const rationale = screen.getByTestId('btn.recording.micRationale.continue', { visible: true });
   if (await rationale.isVisible()) await rationale.tap();
   await expect.poll(() => browser.evaluate(() =>
     (window as unknown as { speechTest: { starts: number } }).speechTest.starts)).toBe(1);
@@ -90,7 +90,7 @@ test('without system speech the draft remains editable and no audio is uploaded'
   const stopDialog = await browser.onDialog('accept');
   try {
     await screen.getByTestId('btn.recordToggle', { visible: true }).tap();
-    const rationale = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
+    const rationale = screen.getByTestId('btn.recording.micRationale.continue', { visible: true });
     if (await rationale.isVisible()) await rationale.tap();
     await expect(screen.getByTestId('text.recording.fallbackNotice')).toBeVisible();
   } finally {

@@ -28,6 +28,7 @@ import { EmailVerificationPendingDialog, EmailVerificationSuccessDialog } from '
 import AppleSignInButton from '@/components/auth/AppleSignInButton';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
 import EmailVerificationBanner from '@/components/auth/EmailVerificationBanner';
+import { isSilentAccount } from '@/lib/silentAccount';
 import { EyeIcon, EyeOffIcon } from '@/components/icons/DreamIcons';
 import {
   requestPasswordReset,
@@ -112,7 +113,11 @@ export const EmailAuthCard: React.FC<Props> = ({
   const isEmbedded = presentation === 'embedded';
   const cardBg = noctalia.surface.raised;
   const { t } = useTranslation();
-  const { user, loading: authLoading } = useAuth();
+  const { user: sessionUser, loading: authLoading } = useAuth();
+  // A silent account (made by a purchase without registering) has no way to sign in yet:
+  // this card keeps offering to create an account or sign in, which upgrades it in place.
+  const silentAccount = isSilentAccount(sessionUser);
+  const user = silentAccount ? null : sessionUser;
   const onboarding = useOptionalOnboarding();
   const dreamsActions = useOptionalDreamsActions();
   const { language } = useLanguage();
@@ -931,7 +936,7 @@ export const EmailAuthCard: React.FC<Props> = ({
         ]}
         testID={isEmbedded ? undefined : 'settings-account-migration-hint'}
       >
-        {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_out')}
+        {isLucidTrainer ? lucidDescription : t(silentAccount ? 'settings.account.description_silent' : 'settings.account.description_signed_out')}
       </Text>
 
       {unverifiedEmail ? (
@@ -1128,7 +1133,7 @@ export const EmailAuthCard: React.FC<Props> = ({
             <Text style={[styles.statusPillText, { color: noctalia.text.secondary }]}>
               {user
                 ? t('settings.account.status.signed_in')
-                : t('settings.account.status.guest')}
+                : t(silentAccount ? 'settings.account.status.silent' : 'settings.account.status.guest')}
             </Text>
           </View>
           {user?.email ? (
@@ -1149,7 +1154,7 @@ export const EmailAuthCard: React.FC<Props> = ({
               style={[styles.summaryDescription, { color: noctalia.text.secondary }]}
               testID="settings-account-migration-hint"
             >
-              {isLucidTrainer ? lucidDescription : t('settings.account.description_signed_out')}
+              {isLucidTrainer ? lucidDescription : t(silentAccount ? 'settings.account.description_silent' : 'settings.account.description_signed_out')}
             </Text>
           )}
         </View>

@@ -6,6 +6,7 @@ import {
   createApiHandler,
   type RouteHandler,
   routeSegmentAllowlist,
+  SILENT_ACCOUNT_PLUS_ROUTES,
   toLoggedRoute,
   toLoggedRouterReason,
 } from './router.ts';
@@ -324,5 +325,65 @@ Deno.test('auth transport failures return 503 for ordinary bearers before dispat
     assertEquals(response.status, 503);
     assertEquals(dispatched, false);
     await response.body?.cancel();
+  }
+});
+
+// A silent account is a Supabase anonymous user, which anyone can create against the public
+// auth endpoint. Only one holding Plus may reach a route that spends on an AI provider.
+const silentAccountHandler = (tier: unknown, error: unknown = null) => {
+  let dispatched = 0;
+  const handler = createApiHandler({
+    routes: new Map<string, RouteHandler>([
+      ['POST /analyzeDream', () => { dispatched += 1; return Promise.resolve(new Response('ran')); }],
+      ['POST /subscription/refresh', () => { dispatched += 1; return Promise.resolve(new Response('ran')); }],
+    ]),
+    createClient: (() => ({
+      auth: { getUser: () => Promise.resolve({ data: { user: { id: 'silent-1', is_anonymous: true } } }) },
+      rpc: (name: string, args: Record<string, unknown>) => {
+        assertEquals(name, 'get_effective_subscription_tier');
+        assertEquals(args, { p_user_id: 'silent-1' });
+        return Promise.resolve({ data: tier, error });
+      },
+    })) as unknown as ApiHandlerDependencies['createClient'],
+    readEnv,
+  });
+  return { handler, dispatched: () => dispatched };
+};
+
+Deno.test('a silent account without Plus is refused on AI routes and still reaches its subscription refresh', async () => {
+  const free = silentAccountHandler('free');
+  const refused = await free.handler(request('/analyzeDream', { authenticated: true }));
+  assertEquals(refused.status, 403);
+  assertEquals((await refused.json()).code, 'SILENT_ACCOUNT_PLUS_REQUIRED');
+  assertEquals(free.dispatched(), 0);
+
+  const refresh = await free.handler(request('/subscription/refresh', { authenticated: true }));
+  assertEquals(await refresh.text(), 'ran');
+  assertEquals(free.dispatched(), 1);
+});
+
+Deno.test('a silent account holding Plus is dispatched; an unreadable tier fails closed', async () => {
+  const plus = silentAccountHandler('plus');
+  assertEquals(await (await plus.handler(request('/analyzeDream', { authenticated: true }))).text(), 'ran');
+
+  const unreadable = silentAccountHandler(null, { code: 'PGRST301' });
+  const response = await unreadable.handler(request('/analyzeDream', { authenticated: true }));
+  assertEquals(response.status, 503);
+  assertEquals(unreadable.dispatched(), 0);
+});
+
+Deno.test('every route that spends on an AI provider is closed to a silent account without Plus', async () => {
+  const { apiRoutes } = await import('./routeTable.ts');
+  // Routes a silent account may always use: its session, status reads, account and billing.
+  const open = new Set([
+    'POST /guest/session', 'POST /guest/session/challenge',
+    'POST /qa/guest-device/status', 'POST /qa/guest-device/enroll', 'POST /qa/guest-device/revoke',
+    'POST /analytics/session', 'POST /analytics/events', 'DELETE /analytics/events',
+    'POST /subscription/refresh', 'POST /subscription/sync', 'POST /subscription/reconcile',
+    'POST /quota/status', 'POST /auth/mark-upgrade', 'POST /auth/apple-token', 'DELETE /account',
+    'POST /analysis-jobs/status', 'POST /image-jobs/status',
+  ]);
+  for (const route of apiRoutes.keys()) {
+    assertEquals(SILENT_ACCOUNT_PLUS_ROUTES.has(route), !open.has(route), route);
   }
 });

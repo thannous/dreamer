@@ -220,7 +220,8 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
       });
       return;
     }
-    if (!user) {
+    // A guest's store account can already hold a subscription: the only state a guest can load.
+    if (!user && scenario !== 'restore_available') {
       setAction({
         label: 'Auth required',
         detail: 'Load a mock account before applying subscription states.',
@@ -231,7 +232,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
 
     try {
       const nextStatus = await applyMockScenario(scenario);
-      await syncLocalStatus(nextStatus);
+      if (user) await syncLocalStatus(nextStatus);
       setAction({
         label: `Mock scenario: ${scenario}`,
         detail: actionStatusDetail(nextStatus, user?.id),
@@ -247,14 +248,15 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
   }, [isMockMode, syncLocalStatus, user]);
 
   const handleMockPurchaseOutcome = useCallback(async (outcome: MockPurchaseOutcome) => {
-    if (!isMockMode || !user) return;
+    // A guest buys too: the next attempt can be simulated without an account.
+    if (!isMockMode) return;
     try {
       await setNextMockPurchaseOutcome(outcome);
       setAction({ label: `Next mock purchase: ${outcome}`, kind: 'success' });
     } catch (err) {
       setAction({ label: 'Mock purchase setup failed', detail: (err as Error).message, kind: 'error' });
     }
-  }, [isMockMode, user]);
+  }, [isMockMode]);
 
   const handleDelayedActivation = useCallback(async () => {
     if (!isMockMode || !user) return;
@@ -524,7 +526,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
               key={item.id}
               label={item.label}
               hint={item.hint}
-              disabled={isBusy || !user}
+              disabled={isBusy || (!user && item.id !== 'restore_available')}
               selected={selectedMockScenario === item.id}
               onPress={() => void handleMockScenario(item.id)}
               testID={TID.Button.SubscriptionQaScenario(item.id)}
@@ -585,7 +587,7 @@ export function SubscriptionQALab({ presentation = 'card' }: SubscriptionQALabPr
               key={outcome}
               label={outcome}
               hint="One attempt, then success"
-              disabled={isBusy || !user}
+              disabled={isBusy}
               onPress={() => void handleMockPurchaseOutcome(outcome)}
               testID={`btn.subscription.qa.purchase.${outcome}`}
             />

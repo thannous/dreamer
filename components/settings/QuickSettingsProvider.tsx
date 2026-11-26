@@ -11,6 +11,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { QuickSettingsContext } from '@/context/QuickSettingsContext';
 import { useAuth } from '@/context/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { isSilentAccount } from '@/lib/silentAccount';
 import { buildPaywallHref } from '@/lib/paywallRoute';
 import { isMockDogfoodPersistenceEnabled } from '@/lib/env';
 import { useTheme } from '@/context/ThemeContext';
@@ -102,8 +103,10 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
   const [showLanguage, setShowLanguage] = useState(false);
   const { user, loading: authLoading } = useAuth();
   const { isActive, loading: subscriptionLoading } = useSubscription();
+  // No email to show and nothing to sign in with yet: the drawer still offers the account.
+  const silentAccount = isSilentAccount(user);
   const profileName = getProfileName(user)
-    || t(user ? 'settings.quick.profile' : 'settings.account.status.guest');
+    || t(silentAccount ? 'settings.account.status.silent' : user ? 'settings.quick.profile' : 'settings.account.status.guest');
   const initials = profileName.split(/\s+/).slice(0, 2).map((part) => Array.from(part)[0]).join('').toLocaleUpperCase();
   const plusActive = Boolean(user) && isActive;
 
@@ -126,18 +129,18 @@ export function QuickSettingsContent({ onClose, onSettings, onAccount, onPlus }:
           accessibilityState={{ disabled: authLoading }} testID="quick-settings.profile"
           className="min-h-16 flex-row items-center gap-3">
           <View className="h-14 w-14 items-center justify-center rounded-full bg-ink-soft" accessible={false}>
-            {user ? <Text className="font-sans-medium text-h2 text-ivory">{initials}</Text>
+            {user && !silentAccount ? <Text className="font-sans-medium text-h2 text-ivory">{initials}</Text>
               : <IconSymbol name="person.fill" size={24} color={tokens.text.secondary} />}
           </View>
           <View className="min-w-0 flex-1 gap-1">
             <Text numberOfLines={2} className="font-sans-medium text-h3 text-ivory">{authLoading ? t('settings.quick.loading') : profileName}</Text>
             <Text numberOfLines={2} className="font-sans text-body-sm text-ivory-muted">
-              {user ? (user.email || t('settings.account.status.signed_in')) : t('settings.account.local_hint')}
+              {silentAccount ? t('settings.account.silent_hint') : user ? (user.email || t('settings.account.status.signed_in')) : t('settings.account.local_hint')}
             </Text>
           </View>
           <IconSymbol name="chevron.right" size={18} color={tokens.text.secondary} />
         </Pressable>
-        {!user ? (
+        {!user || silentAccount ? (
           <Pressable onPress={onAccount} disabled={authLoading} accessibilityRole="button"
             hitSlop={ROW_HIT_SLOP} pressRetentionOffset={PRESS_RETENTION}
             accessibilityState={{ disabled: authLoading }} testID="quick-settings.signin"

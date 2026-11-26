@@ -29,8 +29,9 @@ test('Physical iPhone real Apple sandbox returns to offer after existing-account
   const f = { app, screen, device, platform };
   await open(f); await home(f);
   await screen.getByTestId('btn.header.home.settings', { visible: true }).tap(); await tap(screen, 'quick-settings.plus');
-  const buy = screen.getByTestId('btn.paywall.purchase', { visible: true }); await screen.scrollUntilVisible(buy); await expect(buy).toHaveText(/Se connecter pour souscrire|Sign in to subscribe/);
-  await app.screenshot('physical-guest-offer'); await buy.tap(); await tap(screen, 'settings-account-open-signin', 'up');
+  const buy = screen.getByTestId('btn.paywall.purchase', { visible: true }); await screen.scrollUntilVisible(buy); await expect(buy).not.toHaveText(/Se connecter pour souscrire|Sign in to subscribe/);
+  // A guest can buy at once (App Review 5.1.1(v)); this journey takes the link for an existing account.
+  await app.screenshot('physical-guest-offer'); await tap(screen, 'btn.paywall.signIn'); await tap(screen, 'settings-account-open-signin', 'up');
   await expect(screen.getByTestId('btn.auth.google', { visible: true })).toBeVisible();
   phase('awaiting-existing-google-signin'); await screen.getByTestId('btn.auth.google', { visible: true }).tap();
   await app.screenshot('physical-google-auth-prompt');

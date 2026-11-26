@@ -193,9 +193,19 @@ async function ensureConfiguredImpl(normalizedUserId: string | null): Promise<vo
   }
 }
 
-async function assertIdentifiedUser(): Promise<void> {
+/**
+ * A guest buys and restores on the store's anonymous customer: App Review 5.1.1(v) does not
+ * allow asking for an account first. The account without an email is made after the store
+ * confirms, and signing it in moves the purchase onto it (see `ensureConfiguredImpl`).
+ */
+export type StoreOperationOptions = { allowAnonymous?: boolean };
+
+async function assertIdentifiedUser(options?: StoreOperationOptions): Promise<void> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
+  }
+  if (options?.allowAnonymous && persistedState.userId === null) {
+    return;
   }
   if (!persistedState.userId) {
     throw new Error('Purchases user not identified');
@@ -315,11 +325,11 @@ export function addStatusUpdateListener(listener: SubscriptionStatusListener): (
   };
 }
 
-export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
+export async function purchasePackage(id: string, options?: StoreOperationOptions): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
-  await assertIdentifiedUser();
+  await assertIdentifiedUser(options);
   let internal = findInternalPackage(id);
   if (!internal) {
     await fetchPackages();
@@ -333,11 +343,11 @@ export async function purchasePackage(id: string): Promise<SubscriptionStatus> {
   return status;
 }
 
-export async function restorePurchases(): Promise<SubscriptionStatus> {
+export async function restorePurchases(options?: StoreOperationOptions): Promise<SubscriptionStatus> {
   if (!persistedState.configured) {
     throw new Error('Purchases not initialized');
   }
-  await assertIdentifiedUser();
+  await assertIdentifiedUser(options);
   const info = await Purchases.restorePurchases();
   const status = mapStatus(info);
   return status;

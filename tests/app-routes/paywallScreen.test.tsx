@@ -15,7 +15,14 @@ jest.mock('@/lib/storeReview', () => ({
 jest.mock('@/components/ui/DreamerBackground', () => ({ DreamerArtworkWindow: () => null, DreamerBackground: () => null }));
 
 let mockParams: Record<string, string> = { trigger: 'settings' };
-let mockUser = { id: 'user-1' };
+let mockUser: { id: string; is_anonymous?: boolean } = { id: 'user-1' };
+// The purchase a guest made on the previous paywall screen, handed to the rebuilt one.
+let mockGuestPurchaseOutcome: 'purchase' | 'restore' | null = null;
+let mockGuestPurchaseReported = false;
+jest.mock('@/lib/guestPurchase', () => ({
+  peekGuestPurchaseOutcome: () => mockGuestPurchaseOutcome,
+  claimGuestPurchaseOutcomeReport: () => { const first = !mockGuestPurchaseReported; mockGuestPurchaseReported = true; return first; },
+}));
 let mockGeneration = 1;
 const mockIsCurrentSession = (id: string | null, generation: number) =>
   (mockUser?.id ?? null) === id && mockGeneration === generation;
@@ -751,11 +758,82 @@ describe('Paywall screen', () => {
     render(<PaywallScreen />);
     cleanup();
     mockPeekReturnToPaywallRestore.mockReturnValue(true);
-    mockUser = null as unknown as { id: string };
+    mockUser = null as unknown as typeof mockUser;
     mockUseSubscription.mockReturnValue({ ...mockUseSubscription(), requiresAuth: true });
     render(<PaywallScreen />);
 
     expect(mockRestore).not.toHaveBeenCalled();
+  });
+
+  // App Review 5.1.1(v), 2026-11-25: buying must not ask a guest to register first.
+  describe('for a guest who can buy without registering', () => {
+    beforeEach(() => {
+      mockUser = null as unknown as typeof mockUser;
+      mockGuestPurchaseOutcome = null;
+      mockGuestPurchaseReported = false;
+    });
+    afterEach(() => {
+      mockUser = { id: 'user-1' };
+      mockGuestPurchaseOutcome = null;
+    });
+
+    it('sends the purchase straight to the store and says an account is optional', async () => {
+      render(<PaywallScreen />);
+
+      expect(screen.getByTestId(TID.Text.PaywallGuestNotice).textContent).toBe('subscription.paywall.notice.guest');
+      expect(screen.queryByTestId(TID.Text.PaywallAuthReason)).toBeNull();
+      expect(screen.queryByText('subscription.paywall.button.primary.auth')).toBeNull();
+
+      fireEvent.click(screen.getByTestId(TID.Button.PaywallPurchase));
+
+      await waitFor(() => expect(mockPurchase).toHaveBeenCalledWith('annual'));
+      // No sign-in screen on the way; the offer only asks to stay in front when the account appears.
+      expect(mockReplace).not.toHaveBeenCalled();
+      expect(mockRequestReturnToPaywallIntent).toHaveBeenCalledWith('settings');
+    });
+
+    it('restores without signing in', async () => {
+      render(<PaywallScreen />);
+
+      fireEvent.click(screen.getByTestId(TID.Button.PaywallRestore));
+
+      await waitFor(() => expect(mockRestore).toHaveBeenCalledTimes(1));
+      expect(mockReplace).not.toHaveBeenCalled();
+      // Nothing to restore, so no account: the request to come back here is dropped.
+      await waitFor(() => expect(mockClearReturnToPaywallIntent).toHaveBeenCalled());
+    });
+
+    it('keeps the way in for someone who already has an account', () => {
+      render(<PaywallScreen />);
+
+      fireEvent.click(screen.getByTestId(TID.Button.PaywallSignIn));
+
+      expect(mockRequestReturnToPaywallIntent).toHaveBeenCalledWith('settings', { persist: true });
+      expect(mockReplace).toHaveBeenCalledWith('/settings?section=account');
+      expect(mockPurchase).not.toHaveBeenCalled();
+    });
+
+    it('announces the purchase on the screen rebuilt for the silent account', async () => {
+      mockUser = { id: 'silent-1', is_anonymous: true };
+      mockGuestPurchaseOutcome = 'purchase';
+      mockUseSubscription.mockReturnValue({
+        ...mockUseSubscription(),
+        status: { tier: 'plus', isActive: true, expiryDate: null, productId: 'mock_annual' },
+        isActive: true,
+      });
+      render(<PaywallScreen />);
+
+      expect((await screen.findByTestId(TID.Toast.PaywallSuccess)).textContent).toBe('subscription.paywall.toast.success_device');
+      expect(mockTrackProductEvent).toHaveBeenCalledWith('purchase_completed', { trigger: 'settings', plan: 'annual', tier: 'plus' });
+      expect(screen.queryByTestId(TID.Text.PaywallGuestNotice)).toBeNull();
+
+      // Navigation can bring a second offer in front: it announces too, and reports nothing twice.
+      cleanup();
+      mockTrackProductEvent.mockClear();
+      render(<PaywallScreen />);
+      expect((await screen.findByTestId(TID.Toast.PaywallSuccess)).textContent).toBe('subscription.paywall.toast.success_device');
+      expect(mockTrackProductEvent).not.toHaveBeenCalledWith('purchase_completed', expect.anything());
+    });
   });
 
   it('clears the return-to-paywall intent when the paywall is closed on purpose', () => {

@@ -330,6 +330,22 @@ export async function signInWithEmailPassword(email: string, password: string) {
   return data.user;
 }
 
+/**
+ * Makes the account a guest's confirmed purchase is attached to: no email, no name, nothing
+ * asked. The web build sells nothing today; this mirrors the native module for the day it does.
+ */
+export async function createSilentAccount(): Promise<User> {
+  if (isMockMode) {
+    return mockAuth.signInAnonymously();
+  }
+
+  const { data, error } = await supabase.auth.signInAnonymously();
+  if (error) throw error;
+  if (!data.user) throw new Error('No user data received from Supabase');
+  await ensureSessionPersistence(data.session ?? null);
+  return data.user;
+}
+
 export async function signUpWithEmailPassword(email: string, password: string, userLang?: string) {
   if (isMockMode) {
     return mockAuth.signUpWithEmailPassword(email, userLang);

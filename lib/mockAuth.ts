@@ -153,6 +153,7 @@ async function applyProfile(profile: MockProfile, emailOverride?: string, option
     preloadDreamsNow();
   }
 
+  const silentAccountId = options?.preserveStorage && currentUser?.is_anonymous ? currentUser.id : null;
   currentUser = buildMockUser({
     email: emailOverride ?? config.email,
     displayName: config.displayName,
@@ -160,6 +161,8 @@ async function applyProfile(profile: MockProfile, emailOverride?: string, option
     profile,
     emailConfirmed: config.emailConfirmed,
   });
+  // Registering from the silent account keeps that account, as attaching an identity does.
+  if (silentAccountId) currentUser = { ...currentUser, id: silentAccountId };
 
   if (shouldResetState) {
     quotaService.invalidate(null);
@@ -184,6 +187,28 @@ export async function signUpWithEmailPassword(email: string, _lang?: string): Pr
     return buildMockUser({ email, displayName: config.displayName, tier: config.tier, profile: 'new', emailConfirmed: false });
   }
   return applyProfile('new', email, { preserveStorage: true });
+}
+
+/**
+ * The silent account made after a guest's purchase: no email, and the guest's dreams stay.
+ * Its Plus comes from the simulated store receipt, not from the profile.
+ */
+export async function signInAnonymously(): Promise<User> {
+  const timestamp = new Date().toISOString();
+  currentUser = {
+    id: `mock-silent-${Math.random().toString(36).slice(2)}`,
+    app_metadata: { provider: 'anonymous', providers: ['anonymous'] },
+    user_metadata: { tier: 'free' },
+    aud: 'authenticated',
+    is_anonymous: true,
+    created_at: timestamp,
+    last_sign_in_at: timestamp,
+    role: 'authenticated',
+    identities: [],
+  } as User;
+  accountCreatedOnDevice = true;
+  emitAuthChange();
+  return currentUser;
 }
 
 export async function signInWithGoogle(): Promise<User> {

@@ -44,7 +44,7 @@ async function startMicrophone({ app, screen }: VoiceFixtures) {
   await record.tap();
   // Both native sheets present asynchronously; iOS also omits the wrapper
   // from its tree. Wait for the actual action or an observed next speech state.
-  const allow = screen.getByTestId('btn.recording.micRationale.allow', { visible: true });
+  const allow = screen.getByTestId('btn.recording.micRationale.continue', { visible: true });
   const microphonePrompt = screen.getByTestId('com.android.permissioncontroller:id/permission_message', { visible: true });
   const speechPrompt = screen.getByText(/(?:Speech Recognition|reconnaissance vocale)/i, { visible: true });
   const denied = screen.getByText('Microphone permission is required to record dreams.', { visible: true });

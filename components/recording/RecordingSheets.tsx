@@ -19,36 +19,33 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { TID } from '@/lib/testIDs';
 import type { SubscriptionTier } from '@/lib/types';
 
+/**
+ * Says what the microphone is for before the system asks. One action only, and no way
+ * out: after this message the reader always meets the system request, where the choice
+ * is theirs to make (App Review 5.1.1(iv)).
+ */
 export function MicPermissionRationaleSheet({
   visible,
-  onClose,
-  onAllow,
-  onUseText,
+  onContinue,
 }: {
   visible: boolean;
-  onClose: () => void;
-  onAllow: () => void;
-  onUseText: () => void;
+  onContinue: () => void;
 }) {
   const { t } = useTranslation();
 
   return (
     <StandardBottomSheet
       visible={visible}
-      onClose={onClose}
+      // The gesture is blocked; a host that still reports a dismissal goes on to the request.
+      onClose={onContinue}
+      dismissBehavior="none"
       title={t('recording.mic_rationale.title')}
       subtitle={t('recording.mic_rationale.message')}
       testID={TID.Sheet.MicRationale}
       actions={{
-        primaryLabel: t('recording.mic_rationale.allow'),
-        onPrimary: onAllow,
-        primaryTestID: TID.Button.MicRationaleAllow,
-        secondaryLabel: t('recording.mic_rationale.text_fallback'),
-        onSecondary: onUseText,
-        secondaryTestID: TID.Button.MicRationaleUseText,
-        linkLabel: t('recording.mic_rationale.dismiss'),
-        onLink: onClose,
-        linkTestID: TID.Button.MicRationaleDismiss,
+        primaryLabel: t('recording.mic_rationale.continue'),
+        onPrimary: onContinue,
+        primaryTestID: TID.Button.MicRationaleContinue,
       }}
     />
   );

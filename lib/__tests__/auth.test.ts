@@ -16,6 +16,8 @@ const mockSupabaseAuth = {
   resetPasswordForEmail: jest.fn(),
   updateUser: jest.fn(),
   signInWithIdToken: jest.fn(),
+  signInAnonymously: jest.fn(),
+  linkIdentity: jest.fn(),
   signInWithOAuth: jest.fn(),
   signOut: jest.fn(),
   onAuthStateChange: jest.fn(),
@@ -778,6 +780,115 @@ describe('auth helpers', () => {
       })
     );
     expect(user.id).toBe('user-1');
+  });
+
+  // App Review 5.1.1(v): a guest's confirmed purchase gets an account without an email.
+  describe('silent account', () => {
+    const silentSession = { data: { session: { access_token: 'access-token', user: { id: 'silent-1', is_anonymous: true } } } };
+
+    it('is made without asking anything and marks the guest device as upgraded', async () => {
+      mockSupabaseAuth.signInAnonymously.mockResolvedValueOnce({
+        data: {
+          user: { id: 'silent-1', is_anonymous: true },
+          session: { access_token: 'access-token', refresh_token: 'refresh-token' },
+        },
+        error: null,
+      });
+      const auth = await loadAuth();
+
+      const user = await auth.createSilentAccount();
+
+      expect(user).toEqual({ id: 'silent-1', is_anonymous: true });
+      expect(mockSupabaseAuth.signInAnonymously).toHaveBeenCalledWith();
+      expect(mockSupabaseAuth.signUp).not.toHaveBeenCalled();
+      expect(mockFetchJSON).toHaveBeenCalledWith(
+        'https://api.example.com/auth/mark-upgrade',
+        expect.objectContaining({ body: { fingerprint: 'device-1' } })
+      );
+    });
+
+    it('surfaces a server that cannot make it, so the purchase stays pending', async () => {
+      mockSupabaseAuth.signInAnonymously.mockResolvedValueOnce({
+        data: { user: null, session: null },
+        error: Object.assign(new Error('Anonymous sign-ins are disabled'), { code: 'anonymous_provider_disabled' }),
+      });
+      const auth = await loadAuth();
+
+      await expect(auth.createSilentAccount()).rejects.toThrow('Anonymous sign-ins are disabled');
+    });
+
+    it('takes Sign in with Apple in place: same account, same journal, same subscription', async () => {
+      mockSupabaseAuth.getSession.mockResolvedValue(silentSession);
+      defaultAppleModule.signInAsync.mockResolvedValueOnce({ identityToken: 'apple-id-token', user: 'apple-user' });
+      mockSupabaseAuth.linkIdentity.mockResolvedValueOnce({
+        data: { user: { id: 'silent-1', email: 'user@example.com', is_anonymous: false }, session: null },
+        error: null,
+      });
+      const auth = await loadAuth();
+
+      const user = await auth.signInWithApple();
+
+      expect(mockSupabaseAuth.linkIdentity).toHaveBeenCalledWith({
+        provider: 'apple', token: 'apple-id-token', nonce: 'mock-uuid-1234',
+      });
+      expect(mockSupabaseAuth.signInWithIdToken).not.toHaveBeenCalled();
+      expect(user.id).toBe('silent-1');
+    });
+
+    it('signs in to the Apple ID\'s own account when it already has one', async () => {
+      mockSupabaseAuth.getSession.mockResolvedValue(silentSession);
+      defaultAppleModule.signInAsync.mockResolvedValueOnce({ identityToken: 'apple-id-token', user: 'apple-user' });
+      mockSupabaseAuth.linkIdentity.mockResolvedValueOnce({
+        data: { user: null, session: null },
+        error: Object.assign(new Error('Identity is already linked to another user'), { code: 'identity_already_exists' }),
+      });
+      mockSupabaseAuth.signInWithIdToken.mockResolvedValueOnce({
+        data: { user: { id: 'user-1', email: 'user@example.com' }, session: null },
+        error: null,
+      });
+      const auth = await loadAuth();
+
+      const user = await auth.signInWithApple();
+
+      expect(mockSupabaseAuth.signInWithIdToken).toHaveBeenCalledWith({
+        provider: 'apple', token: 'apple-id-token', nonce: 'mock-uuid-1234',
+      });
+      expect(user.id).toBe('user-1');
+    });
+
+    it('does not switch account when attaching the identity fails for another reason', async () => {
+      mockSupabaseAuth.getSession.mockResolvedValue(silentSession);
+      defaultAppleModule.signInAsync.mockResolvedValueOnce({ identityToken: 'apple-id-token', user: 'apple-user' });
+      mockSupabaseAuth.linkIdentity.mockResolvedValueOnce({
+        data: { user: null, session: null },
+        error: Object.assign(new Error('Network request failed'), { status: 0 }),
+      });
+      const auth = await loadAuth();
+
+      await expect(auth.signInWithApple()).rejects.toThrow('Network request failed');
+      expect(mockSupabaseAuth.signInWithIdToken).not.toHaveBeenCalled();
+    });
+
+    it('takes an email and a password in place instead of creating a second account', async () => {
+      mockSupabaseAuth.getSession.mockResolvedValue(silentSession);
+      mockSupabaseAuth.updateUser.mockResolvedValueOnce({
+        data: { user: { id: 'silent-1', is_anonymous: true, new_email: 'user@example.com' } },
+        error: null,
+      });
+      const auth = await loadAuth();
+
+      const user = await auth.signUpWithEmailPassword('user@example.com', 'pass', 'en');
+
+      expect(mockSupabaseAuth.updateUser).toHaveBeenCalledWith(
+        { email: 'user@example.com', password: 'pass', data: { lang: 'en' } },
+        { emailRedirectTo: expect.any(String) }
+      );
+      expect(mockSupabaseAuth.signUp).not.toHaveBeenCalled();
+      expect(user?.id).toBe('silent-1');
+
+      await auth.resendVerificationEmail('user@example.com');
+      expect(mockSupabaseAuth.resend).toHaveBeenCalledWith(expect.objectContaining({ type: 'email_change', email: 'user@example.com' }));
+    });
   });
 
   it('throws when Apple sign-in is cancelled', async () => {

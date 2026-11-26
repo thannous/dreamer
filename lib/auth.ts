@@ -1,4 +1,11 @@
-import { createClient, type AuthChangeEvent, type Session, type User } from '@supabase/supabase-js';
+import {
+  createClient,
+  type AuthChangeEvent,
+  type AuthTokenResponse,
+  type Session,
+  type SignInWithIdTokenCredentials,
+  type User,
+} from '@supabase/supabase-js';
 import { Platform } from 'react-native';
 
 import { getSupabasePublicConfiguration, supabase } from './supabase';
@@ -6,6 +13,7 @@ import * as mockAuth from './mockAuth';
 import { getExpoPublicEnvValue, isMockModeEnabled } from './env';
 import { createScopedLogger } from './logger';
 import { NETWORK_REQUEST_POLICIES } from './networkPolicy';
+import { isSilentAccount } from './silentAccount';
 import type { SubscriptionTier } from './types';
 import { isLucidTrainer } from './appVariant';
 import { PASSWORD_RESET_ROUTE } from './authRoutes';
@@ -319,6 +327,52 @@ async function markFingerprintUpgraded(
   }
 }
 
+/**
+ * Exchanges a provider identity token. On a silent account the identity is attached to it,
+ * so the journal and the subscription stay where they are. If that identity already has a
+ * Noctalia account (or linking is off on the server), the person is signed in to that
+ * account instead and the subscription follows through the store (`setSilentPlusHandover`).
+ */
+async function isCurrentAccountSilent(): Promise<boolean> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    return isSilentAccount(data?.session?.user);
+  } catch {
+    return false;
+  }
+}
+
+async function exchangeIdentityToken(credentials: SignInWithIdTokenCredentials): Promise<AuthTokenResponse> {
+  if (await isCurrentAccountSilent()) {
+    const linked = await supabase.auth.linkIdentity(credentials);
+    if (!linked.error) return linked;
+    const code = linked.error.code;
+    if (code !== 'identity_already_exists' && code !== 'manual_linking_disabled') return linked;
+    log.debug('Identity not attached to the silent account; signing in to its own account', { code });
+  }
+  return supabase.auth.signInWithIdToken(credentials);
+}
+
+/**
+ * Makes the account a guest's confirmed purchase is attached to: no email, no name, nothing
+ * asked. Call it only after the store confirmed a purchase or a restore.
+ */
+export async function createSilentAccount(): Promise<User> {
+  if (isMockMode) {
+    return mockAuth.signInAnonymously();
+  }
+
+  const guestUpgradeProof = await captureGuestUpgradeProof();
+  const { data, error } = await supabase.auth.signInAnonymously();
+  if (error) throw error;
+  if (!data.user) throw new Error('No user data received from Supabase');
+  await ensureSessionPersistence(data.session ?? null, 'createSilentAccount');
+  await markFingerprintUpgraded(guestUpgradeProof).catch(() => {
+    // Fail silently if marking fails
+  });
+  return data.user;
+}
+
 export function onAuthChange(cb: (user: User | null, session: Session | null) => void) {
   const handleAuthChange = (user: User | null, session: Session | null) => {
     if (user) {
@@ -511,6 +565,17 @@ export async function signUpWithEmailPassword(email: string, password: string, u
     return mockAuth.signUpWithEmailPassword(email, userLang);
   }
 
+  if (await isCurrentAccountSilent()) {
+    // The silent account takes the email and password: same journal, same subscription.
+    // The address is confirmed from the email Supabase sends, as for any new account.
+    const { data: updated, error: updateError } = await supabase.auth.updateUser(
+      { email, password, ...(userLang ? { data: { lang: userLang } } : {}) },
+      { emailRedirectTo: getNativeEmailRedirect() }
+    );
+    if (updateError) throw updateError;
+    return updated.user;
+  }
+
   const guestUpgradeProof = await captureGuestUpgradeProof();
   const signUpOptions = {
     emailRedirectTo: getNativeEmailRedirect(),
@@ -542,7 +607,7 @@ export async function resendVerificationEmail(email: string) {
   }
 
   const { error } = await supabase.auth.resend({
-    type: 'signup',
+    type: (await isCurrentAccountSilent()) ? 'email_change' : 'signup',
     email,
     options: {
       emailRedirectTo: getNativeEmailRedirect(),
@@ -601,7 +666,7 @@ export async function signInWithGoogle(): Promise<User> {
 
     // Sign in to Supabase with the Google ID token
     log.debug('Exchanging ID token with Supabase');
-    const { data, error } = await supabase.auth.signInWithIdToken({
+    const { data, error } = await exchangeIdentityToken({
       provider: 'google',
       token: idToken,
     });
@@ -683,7 +748,7 @@ export async function signInWithApple(): Promise<User> {
     log.debug('Starting Apple Sign-In process');
     const credential = await requestAppleIdentityCredential();
     log.debug('Exchanging Apple identity token with Supabase');
-    const { data, error } = await supabase.auth.signInWithIdToken({
+    const { data, error } = await exchangeIdentityToken({
       provider: 'apple',
       token: credential.identityToken,
       nonce: credential.nonce,

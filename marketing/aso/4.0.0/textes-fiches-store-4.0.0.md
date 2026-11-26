@@ -30,7 +30,7 @@ Mots-clés (86 car.)
 interpretación,diccionario,significado,pesadilla,dormir,lúcido,noche,análisis,IA,soñar
 ```
 
-Description (2108 car.)
+Description (2168 car.)
 
 ```
 Cada sueño deja una huella. Noctalia te ayuda a guardarla y a ver lo que vuelve noche tras noche.
@@ -61,7 +61,7 @@ INTELIGENCIA ARTIFICIAL
 Los análisis y las conversaciones los produce Anthropic (Claude), y las ilustraciones Google (Gemini). Reciben el texto del sueño cifrado, solo para ofrecer la función que pides, sin tu nombre, tu correo ni tu cuenta. Noctalia te pide permiso antes del primer uso; tu diario funciona sin IA.
 
 NOCTALIA PLUS
-Una suscripción opcional desbloquea más análisis, conversaciones e ilustraciones. Está ligada a tu cuenta de Noctalia, para acompañarte en iPhone, Android y la web; «Restaurar compras» está en la oferta. El pago se carga en tu cuenta de Apple al confirmar. La suscripción se renueva automáticamente salvo que la canceles al menos 24 horas antes del final del periodo en curso; puedes gestionarla y cancelarla en los ajustes de tu cuenta de Apple.
+Una suscripción opcional desbloquea más análisis, conversaciones e ilustraciones. No hace falta una cuenta para suscribirte; una cuenta gratuita de Noctalia, opcional, te permite usarla en tus otros dispositivos y en la web; «Restaurar compras» está en la oferta. El pago se carga en tu cuenta de Apple al confirmar. La suscripción se renueva automáticamente salvo que la canceles al menos 24 horas antes del final del periodo en curso; puedes gestionarla y cancelarla en los ajustes de tu cuenta de Apple.
 
 Condiciones de uso: https://noctalia.app/es/terminos
 Privacidad: https://noctalia.app/es/politica-privacidad
@@ -94,7 +94,7 @@ Mots-clés (86 car.)
 Traumdeutung,Lexikon,Bedeutung,Albtraum,Schlaf,luzid,Tagebuch,Nacht,Analyse,KI,träumen
 ```
 
-Description (2254 car.)
+Description (2313 car.)
 
 ```
 Jeder Traum hinterlässt eine Spur. Noctalia hilft dir, sie festzuhalten und zu sehen, was Nacht für Nacht wiederkehrt.
@@ -125,7 +125,7 @@ KÜNSTLICHE INTELLIGENZ
 Analysen und Gespräche stammen von Anthropic (Claude), Illustrationen von Google (Gemini). Sie erhalten den Text des Traums verschlüsselt, nur für die Funktion, die du anforderst, ohne deinen Namen, deine E-Mail oder dein Konto. Noctalia fragt vor der ersten Nutzung nach deiner Zustimmung; dein Tagebuch funktioniert auch ohne KI.
 
 NOCTALIA PLUS
-Ein optionales Abo schaltet mehr Analysen, Gespräche und Illustrationen frei. Es gehört zu deinem Noctalia-Konto und begleitet dich auf iPhone, Android und im Web; „Käufe wiederherstellen“ findest du im Angebot. Die Zahlung wird bei Bestätigung deinem Apple Account belastet. Das Abo verlängert sich automatisch, wenn es nicht mindestens 24 Stunden vor Ende des laufenden Zeitraums gekündigt wird; du kannst es in den Einstellungen deines Apple Accounts verwalten und kündigen.
+Ein optionales Abo schaltet mehr Analysen, Gespräche und Illustrationen frei. Zum Abonnieren brauchst du kein Konto; mit einem optionalen, kostenlosen Noctalia-Konto begleitet es dich auf deinen anderen Geräten und im Web; „Käufe wiederherstellen“ findest du im Angebot. Die Zahlung wird bei Bestätigung deinem Apple Account belastet. Das Abo verlängert sich automatisch, wenn es nicht mindestens 24 Stunden vor Ende des laufenden Zeitraums gekündigt wird; du kannst es in den Einstellungen deines Apple Accounts verwalten und kündigen.
 
 Nutzungsbedingungen: https://noctalia.app/de/agb
 Datenschutz: https://noctalia.app/de/datenschutz
@@ -158,7 +158,7 @@ Mots-clés (91 car.)
 interpretazione,dizionario,significato,incubo,sonno,lucido,notte,analisi,IA,sognare,smorfia
 ```
 
-Description (2149 car.)
+Description (2213 car.)
 
 ```
 Ogni sogno lascia una traccia. Noctalia ti aiuta a conservarla e a vedere cosa ritorna notte dopo notte.
@@ -189,7 +189,7 @@ INTELLIGENZA ARTIFICIALE
 Le analisi e le conversazioni sono prodotte da Anthropic (Claude), le illustrazioni da Google (Gemini). Ricevono il testo del sogno cifrato, solo per fornire la funzione che chiedi, senza il tuo nome, la tua email o il tuo account. Noctalia ti chiede il consenso prima del primo utilizzo; il tuo diario funziona anche senza IA.
 
 NOCTALIA PLUS
-Un abbonamento facoltativo sblocca più analisi, conversazioni e illustrazioni. È legato al tuo account Noctalia, per seguirti su iPhone, Android e sul web; «Ripristina acquisti» si trova nell'offerta. Il pagamento viene addebitato sul tuo account Apple alla conferma. L'abbonamento si rinnova automaticamente salvo disdetta almeno 24 ore prima della fine del periodo in corso; puoi gestirlo e disdirlo nelle impostazioni del tuo account Apple.
+Un abbonamento facoltativo sblocca più analisi, conversazioni e illustrazioni. Per abbonarti non serve un account; un account Noctalia gratuito, facoltativo, ti permette di usarlo sugli altri tuoi dispositivi e sul web; «Ripristina acquisti» si trova nell'offerta. Il pagamento viene addebitato sul tuo account Apple alla conferma. L'abbonamento si rinnova automaticamente salvo disdetta almeno 24 ore prima della fine del periodo in corso; puoi gestirlo e disdirlo nelle impostazioni del tuo account Apple.
 
 Termini di utilizzo: https://noctalia.app/it/termini
 Privacy: https://noctalia.app/it/privacy-policy
@@ -222,7 +222,7 @@ Mots-clés (81 car.)
 interpretação,dicionário,significado,pesadelo,sono,lúcido,noite,análise,IA,sonhar
 ```
 
-Description (2098 car.)
+Description (2143 car.)
 
 ```
 Cada sonho deixa uma marca. O Noctalia ajuda você a guardá-la e a ver o que volta noite após noite.
@@ -253,7 +253,7 @@ INTELIGÊNCIA ARTIFICIAL
 As análises e as conversas são produzidas pela Anthropic (Claude), e as ilustrações pelo Google (Gemini). Eles recebem o texto do sonho criptografado, apenas para oferecer a função que você pede, sem seu nome, seu e-mail ou sua conta. O Noctalia pede sua permissão antes do primeiro uso; seu diário funciona sem IA.
 
 NOCTALIA PLUS
-Uma assinatura opcional libera mais análises, conversas e ilustrações. Ela fica ligada à sua conta Noctalia e acompanha você no iPhone, no Android e na web; “Restaurar compras” fica na oferta. O pagamento é cobrado na sua conta Apple na confirmação. A assinatura é renovada automaticamente, a menos que seja cancelada pelo menos 24 horas antes do fim do período atual; você pode gerenciá-la e cancelá-la nos ajustes da sua conta Apple.
+Uma assinatura opcional libera mais análises, conversas e ilustrações. Não é preciso ter conta para assinar; uma conta Noctalia gratuita, opcional, permite usá-la nos seus outros dispositivos e na web; “Restaurar compras” fica na oferta. O pagamento é cobrado na sua conta Apple na confirmação. A assinatura é renovada automaticamente, a menos que seja cancelada pelo menos 24 horas antes do fim do período atual; você pode gerenciá-la e cancelá-la nos ajustes da sua conta Apple.
 
 Termos de uso: https://noctalia.app/pt-br/termos-de-uso
 Privacidade: https://noctalia.app/pt-br/politica-de-privacidade

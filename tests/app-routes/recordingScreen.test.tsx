@@ -459,21 +459,16 @@ jest.doMock('@/components/recording/RecordingFooter', () => ({
 
 jest.doMock('@/components/recording/RecordingSheets', () => ({
   MicPermissionRationaleSheet: ({
-    onAllow,
-    onUseText,
+    onContinue,
     visible,
   }: {
-    onAllow: () => void;
-    onUseText: () => void;
+    onContinue: () => void;
     visible: boolean;
   }) =>
     visible ? (
       <div data-testid="mic-rationale">
-        <button data-testid="mic-rationale-allow" onClick={onAllow}>
-          Allow
-        </button>
-        <button data-testid="mic-rationale-text" onClick={onUseText}>
-          Use text
+        <button data-testid="mic-rationale-continue" onClick={onContinue}>
+          Continue
         </button>
       </div>
     ) : null,
@@ -1565,7 +1560,7 @@ describe('Recording screen', () => {
     expect(await screen.findByTestId('mic-rationale')).toBeTruthy();
     expect(mockStartRecording).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByTestId('mic-rationale-allow'));
+    fireEvent.click(screen.getByTestId('mic-rationale-continue'));
 
     await waitFor(() => {
       expect(mockStartRecording).toHaveBeenCalledTimes(1);
@@ -1583,7 +1578,7 @@ describe('Recording screen', () => {
     fireEvent.click(screen.getByTestId('recording-voice-control'));
     await screen.findByTestId('mic-rationale');
     expect(status()).toBe('idle');
-    fireEvent.click(screen.getByTestId('mic-rationale-allow'));
+    fireEvent.click(screen.getByTestId('mic-rationale-continue'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     expect(status()).toBe('preparing');
 
@@ -1606,7 +1601,7 @@ describe('Recording screen', () => {
     const editor = screen.getByTestId(TID.Input.DreamTranscript);
 
     fireEvent.click(screen.getByTestId('recording-voice-control'));
-    fireEvent.click(await screen.findByTestId('mic-rationale-allow'));
+    fireEvent.click(await screen.findByTestId('mic-rationale-continue'));
     await waitFor(() => expect(mockStartRecording).toHaveBeenCalledTimes(1));
     expect(document.activeElement).not.toBe(editor);
 
@@ -1622,7 +1617,7 @@ describe('Recording screen', () => {
     const editor = screen.getByTestId(TID.Input.DreamTranscript);
 
     fireEvent.click(screen.getByTestId('recording-voice-control'));
-    fireEvent.click(await screen.findByTestId('mic-rationale-allow'));
+    fireEvent.click(await screen.findByTestId('mic-rationale-continue'));
     await screen.findByTestId(TID.Text.RecordingFallbackNotice);
 
     expect(document.activeElement).not.toBe(editor);
@@ -1680,7 +1675,7 @@ describe('Recording screen', () => {
     });
 
     fireEvent.click(screen.getByTestId('recording-voice-control'));
-    fireEvent.click(await screen.findByTestId('mic-rationale-allow'));
+    fireEvent.click(await screen.findByTestId('mic-rationale-continue'));
 
     expect(await screen.findByTestId(TID.Text.RecordingFallbackNotice)).toBeTruthy();
     expect(screen.getByTestId('recording-composer').getAttribute('data-layout')).toBe('voiceFirst');

@@ -169,10 +169,77 @@ async function openGuestOfferSignIn(screen: Screen, browser: Browser) {
   await screen.getByTestId('btn.header.home.settings').tap();
   await screen.getByTestId('quick-settings.plus').tap();
   await expect(screen.getByTestId('screen.paywall')).toBeVisible();
-  await expect(screen.getByTestId('btn.paywall.purchase')).toContainText('Sign in');
-  await screen.getByTestId('btn.paywall.purchase').tap();
+  // A guest can buy at once (App Review 5.1.1(v)); the link is for someone who has an account.
+  await expect(screen.getByTestId('btn.paywall.purchase')).not.toContainText('Sign in');
+  await screen.getByTestId('btn.paywall.signIn').tap();
   await screen.getByTestId('settings-account-open-signin').tap();
 }
+
+async function openGuestOffer(screen: Screen, browser: Browser) {
+  await startGuest(screen, browser);
+  await openHome(screen);
+  await screen.getByTestId('btn.header.home.settings').tap();
+  await screen.getByTestId('quick-settings.plus').tap();
+  await expect(screen.getByTestId('screen.paywall')).toBeVisible();
+  await expect(screen.getByTestId('text.paywall.guestNotice'))
+    .toHaveText('No account needed. You can create one later to use Plus on your other devices.');
+}
+
+// App Review 5.1.1(v), 2026-11-25: a guest buys Plus without registering. The store confirms,
+// the app makes an account without an email, and creating a real one stays optional.
+test('a guest buys Plus without an account, and an account stays optional afterwards', { tags: ['smoke'] }, async ({ app, screen, browser }) => {
+  await openGuestOffer(screen, browser);
+  await screen.getByTestId('btn.paywall.selectMonthly').tap();
+  await screen.getByTestId('btn.paywall.purchase').tap();
+  await expect(screen.getByTestId('toast.paywall.success')).toContainText('Noctalia Plus is now active on this device.');
+  // No sign-in screen was shown on the way.
+  await expect(browser).toHaveURL(/\/paywall/);
+  await app.screenshot('guest-plus-without-account');
+  await screen.getByTestId('btn.paywall.close').tap();
+  await openSettings(screen);
+  await expect(screen.getByTestId('quota.analysisValue')).toContainText('Unlimited');
+  const account = screen.getByTestId('settings-account-summary');
+  await expect(account).toContainText('No account yet');
+  await expect(account).toContainText('Create one to keep your journal and use Plus on your other devices.');
+  // It has nothing to sign back in with: signing out is not offered, creating an account is.
+  await expect(screen.getByTestId('btn.auth.signOut')).toHaveCount(0);
+  await expect(screen.getByTestId('settings-account-open-signin')).toBeVisible();
+  await app.screenshot('guest-plus-account-optional');
+});
+
+test('a guest who cancels the purchase stays a guest with nothing created', async ({ screen, browser }) => {
+  await startGuest(screen, browser);
+  await openSettings(screen);
+  await screen.getByTestId('screen.subscription.qaLab.toggle').tap();
+  await screen.getByTestId('btn.subscription.qa.purchase.cancelled').tap();
+  await screen.getByTestId('settings-section-subscription').tap();
+  await expect(screen.getByTestId('screen.paywall')).toBeVisible();
+  await screen.getByTestId('btn.paywall.purchase').tap();
+  await expect(screen.getByTestId('btn.paywall.purchase')).toBeEnabled();
+  await expect(screen.getByTestId('toast.paywall.success')).toHaveCount(0);
+  await expect(screen.getByTestId('bottomSheet.paywall.error')).toBeHidden();
+  await expect(screen.getByTestId('text.paywall.guestNotice')).toBeVisible();
+  await screen.getByTestId('btn.paywall.close').tap();
+  await expect(screen.getByTestId('settings-account-summary')).toContainText('Guest');
+});
+
+test('a guest restores a store subscription without an account, and an empty restore creates nothing', async ({ screen, browser }) => {
+  await openGuestOffer(screen, browser);
+  await screen.getByTestId('btn.paywall.restore').tap();
+  await expect(screen.getByTestId('toast.paywall.info')).toContainText('No active subscription');
+  await screen.getByTestId('btn.paywall.close').tap();
+  await openSettings(screen);
+  await expect(screen.getByTestId('settings-account-summary')).toContainText('Guest');
+  // The store account now holds a subscription bought before (a reinstall, another device).
+  await screen.getByTestId('screen.subscription.qaLab.toggle').tap();
+  await screen.getByTestId('btn.subscription.qa.scenario.restore_available').tap();
+  await screen.getByTestId('settings-section-subscription').tap();
+  await screen.getByTestId('btn.paywall.restore').tap();
+  await expect(screen.getByTestId('toast.paywall.success')).toContainText('Purchases restored.');
+  await screen.getByTestId('btn.paywall.close').tap();
+  await expect(screen.getByTestId('quota.analysisValue')).toContainText('Unlimited');
+  await expect(screen.getByTestId('settings-account-summary')).toContainText('No account yet');
+});
 
 const returnToPaywall = (browser: Browser) => browser.evaluate(() => sessionStorage.getItem('dreamer:return_to_paywall'));
 
